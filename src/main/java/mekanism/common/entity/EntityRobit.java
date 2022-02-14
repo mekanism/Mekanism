@@ -10,10 +10,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.MekanismAPI;
@@ -22,14 +24,14 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -51,6 +53,7 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.lib.security.ISecurityObject;
@@ -67,6 +70,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.interfaces.ISustainedInventory;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.SecurityUtils;
@@ -133,6 +137,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DROP_PICKUP = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<RobitSkin> SKIN = define(MekanismDataSerializers.<RobitSkin>getRegistryEntrySerializer());
+
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
+
     public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
     private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
@@ -150,6 +162,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private final Set<Player> playersUsing = new ObjectOpenHashSet<>();
 
     private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe> recipeCacheLookupMonitor;
+    private final BooleanSupplier recheckAllRecipeErrors;
+    private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
     private final IInputHandler<@NonNull ItemStack> inputHandler;
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -173,6 +187,10 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         getNavigation().setCanFloat(false);
         setCustomNameVisible(true);
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+        // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
+        // recipe the same tick and thus create uneven spikes of CPU usage
+        int checkOffset = level.random.nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
+        recheckAllRecipeErrors = () -> !playersUsing.isEmpty() && level.getGameTime() % TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY == checkOffset;
         energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
 
         inventorySlots = new ArrayList<>();
@@ -189,12 +207,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
         inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(this, 116, 35));
+        smeltingInputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
+        smeltingOutputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
 
         mainContainerSlots = Collections.singletonList(energySlot);
         smeltingContainerSlots = Arrays.asList(smeltingInputSlot, smeltingOutputSlot);
 
-        inputHandler = InputHelper.getInputHandler(smeltingInputSlot);
-        outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot);
+        inputHandler = InputHelper.getInputHandler(smeltingInputSlot, RecipeError.NOT_ENOUGH_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Nullable
@@ -643,15 +663,34 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return getItemVariant();
     }
 
+    @Override
+    public void clearRecipeErrors(int cacheIndex) {
+        Arrays.fill(trackedErrors, false);
+    }
+
     @Nonnull
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
-        return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
+        return OneInputCachedRecipe.itemToItem(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+              .setErrorsChanged(errors -> {
+                  for (int i = 0; i < trackedErrors.length; i++) {
+                      trackedErrors[i] = errors.contains(TRACKED_ERROR_TYPES.get(i));
+                  }
+              })
               .setEnergyRequirements(MekanismConfig.usage.energizedSmelter, energyContainer)
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::onContentsChanged)
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
+    }
+
+    public BooleanSupplier getWarningCheck(RecipeError error) {
+        int errorIndex = TRACKED_ERROR_TYPES.indexOf(error);
+        if (errorIndex == -1) {
+            //Something went wrong
+            return () -> false;
+        }
+        return () -> trackedErrors[errorIndex];
     }
 
     public void addContainerTrackers(MekanismContainer container) {
@@ -661,6 +700,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
         } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.get()) {
             container.track(SyncableInt.create(() -> progress, value -> progress = value));
+            container.trackArray(trackedErrors);
         }
     }
 

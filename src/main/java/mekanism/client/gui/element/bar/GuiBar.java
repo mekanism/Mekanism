@@ -9,14 +9,15 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.slot.GuiSlot;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
+import mekanism.common.inventory.warning.ISupportsWarning;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement {
+public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement implements ISupportsWarning<GuiBar<INFO>> {
 
     public static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "base.png");
 
@@ -31,9 +32,9 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         this.horizontal = horizontal;
     }
 
-    //TODO - WARNING SYSTEM: Hook up usage of warnings
+    @Override
     public GuiBar<INFO> warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
-        this.warningSupplier = gui().trackWarning(type, warningSupplier);
+        this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
 
@@ -62,8 +63,8 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, getResource());
             renderBarOverlay(matrix, mouseX, mouseY, partialTicks, handlerLevel);
-            if (warning && handlerLevel == 1) {
-                //TODO - WARNING SYSTEM: Also decide if this should be using some check for when it is just close to max so that it is easily visible
+            if (warning && handlerLevel >= 0.98) {
+                //Greater than 98% filled, render secondary piece anyway just to make it more visible
                 RenderSystem.setShaderTexture(0, WARNING_TEXTURE);
                 //Note: We also start the drawing after half the dimension so that we are sure it will properly line up with
                 // the one drawn to the background if the contents of things are translucent

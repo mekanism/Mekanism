@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
@@ -10,7 +11,8 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ItemStackChemicalToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.ILongInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
@@ -34,6 +36,7 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
@@ -52,8 +55,15 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> implements
       ItemChemicalRecipeLookupHandler<Gas, GasStack, NucleosynthesizingRecipe> {
 
-    public static final int BASE_DURATION = 400;
-    public static final long MAX_GAS = 10_000;
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
+    private static final int BASE_DURATION = 400;
+    private static final long MAX_GAS = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded",
                                                                                         "getInputChemicalFilledPercentage"})
@@ -76,7 +86,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     public TileEntityAntiprotonicNucleosynthesizer(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, BASE_DURATION);
+        super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
@@ -85,9 +95,9 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
-        itemInputHandler = InputHelper.getInputHandler(inputSlot);
-        gasInputHandler = InputHelper.getInputHandler(gasTank);
-        outputHandler = OutputHelper.getOutputHandler(outputSlot);
+        itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
+        gasInputHandler = InputHelper.getInputHandler(gasTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Override
@@ -117,8 +127,10 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, this, 6, 69));
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, gasTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 26, 40));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 152, 40));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, gasTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 26, 40))
+              .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 152, 40))
+              .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 173, 69));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
@@ -136,6 +148,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     @Override
     public void onCachedRecipeChanged(@Nullable CachedRecipe<NucleosynthesizingRecipe> cachedRecipe, int cacheIndex) {
+        super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
         //Note: Because we don't support speed upgrades we can do this in a much cleaner way than how we have to do it for the PRC
         ticksRequired = cachedRecipe == null ? BASE_DURATION : cachedRecipe.getRecipe().getDuration();
     }
@@ -157,7 +170,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Nonnull
     @Override
     public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(@Nonnull NucleosynthesizingRecipe recipe, int cacheIndex) {
-        return new ItemStackChemicalToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, outputHandler)
+        return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

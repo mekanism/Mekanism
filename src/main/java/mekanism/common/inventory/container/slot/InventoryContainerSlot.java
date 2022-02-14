@@ -7,6 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.warning.ISupportsWarning;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -22,18 +23,27 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     private final BasicInventorySlot slot;
     @Nullable
     private final SlotOverlay slotOverlay;
+    @Nullable
+    private final Consumer<ISupportsWarning<?>> warningAdder;
 
     public InventoryContainerSlot(BasicInventorySlot slot, int x, int y, ContainerSlotType slotType, @Nullable SlotOverlay slotOverlay,
-          Consumer<ItemStack> uncheckedSetter) {
+          @Nullable Consumer<ISupportsWarning<?>> warningAdder, Consumer<ItemStack> uncheckedSetter) {
         super(emptyInventory, 0, x, y);
         this.slot = slot;
         this.slotType = slotType;
         this.slotOverlay = slotOverlay;
+        this.warningAdder = warningAdder;
         this.uncheckedSetter = uncheckedSetter;
     }
 
     public IInventorySlot getInventorySlot() {
         return slot;
+    }
+
+    public void addWarnings(ISupportsWarning<?> slot) {
+        if (warningAdder != null) {
+            warningAdder.accept(slot);
+        }
     }
 
     @Nonnull

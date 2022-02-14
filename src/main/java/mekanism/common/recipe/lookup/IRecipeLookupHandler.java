@@ -8,8 +8,8 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends IContentsListener {
 
@@ -71,6 +71,15 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @param cacheIndex   The "recipe index" for which cache to interact with.
      */
     default void onCachedRecipeChanged(@Nullable CachedRecipe<RECIPE> cachedRecipe, int cacheIndex) {
+        clearRecipeErrors(cacheIndex);
+    }
+
+    /**
+     * Called by {@link #onCachedRecipeChanged(CachedRecipe, int)} when the list of cached errors should be reset due to the recipe not being valid any more.
+     *
+     * @param cacheIndex The "recipe index" for which cache to interact with.
+     */
+    default void clearRecipeErrors(int cacheIndex) {
     }
 
     /**

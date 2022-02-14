@@ -1,6 +1,7 @@
 package mekanism.common.tile.factory;
 
 import java.util.Arrays;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
@@ -16,8 +17,9 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe;
-import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe.ChemicalUsageMultiplier;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.inputs.handler.ILongInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.common.Mekanism;
@@ -54,6 +56,14 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
+    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
+          RecipeError.NOT_ENOUGH_ENERGY, true,
+          RecipeError.NOT_ENOUGH_INPUT, false,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT, true,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    );
+
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem")
     private GasInventorySlot extraSlot;
@@ -66,8 +76,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     private long baseTotalUsage;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state);
-        gasInputHandler = InputHelper.getInputHandler(gasTank);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
+        gasInputHandler = InputHelper.getInputHandler(gasTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
         baseTotalUsage = BASE_TICKS_REQUIRED;
@@ -179,8 +189,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nonnull
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackConstantChemicalToItemStackCachedRecipe<>(recipe, inputHandlers[cacheIndex], gasInputHandler, gasUsageMultiplier,
-              used -> usedSoFar[cacheIndex] = used, outputHandlers[cacheIndex])
+        return new ItemStackConstantChemicalToItemStackCachedRecipe<>(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], gasInputHandler,
+              gasUsageMultiplier, used -> usedSoFar[cacheIndex] = used, outputHandlers[cacheIndex])
+              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

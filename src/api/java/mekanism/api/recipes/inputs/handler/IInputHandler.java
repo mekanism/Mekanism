@@ -1,12 +1,17 @@
 package mekanism.api.recipes.inputs.handler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.inputs.InputIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Interface describing handling of an input.
  *
  * @param <INPUT> Type of input handled by this handler.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IInputHandler<INPUT> {
 
     /**
@@ -44,25 +49,23 @@ public interface IInputHandler<INPUT> {
     void use(INPUT recipeInput, int operations);
 
     /**
-     * Calculates how many operations the input can sustain.
+     * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called {@link
+     * OperationTracker#shouldContinueChecking()} is {@code true}.
      *
+     * @param tracker     Tracker of current errors and max operations.
      * @param recipeInput Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.
-     * @param currentMax  The current maximum number of operations that can happen.
-     *
-     * @return The number of operations the input can sustain.
      */
-    default int operationsCanSupport(INPUT recipeInput, int currentMax) {
-        return operationsCanSupport(recipeInput, currentMax, 1);
+    default void calculateOperationsCanSupport(OperationTracker tracker, INPUT recipeInput) {
+        calculateOperationsCanSupport(tracker, recipeInput, 1);
     }
 
     /**
-     * Calculates how many operations the input can sustain.
+     * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called {@link
+     * OperationTracker#shouldContinueChecking()} is {@code true}.
      *
+     * @param tracker         Tracker of current errors and max operations.
      * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.
-     * @param currentMax      The current maximum number of operations that can happen.
      * @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
-     *
-     * @return The number of operations the input can sustain.
      */
-    int operationsCanSupport(INPUT recipeInput, int currentMax, int usageMultiplier);
+    void calculateOperationsCanSupport(OperationTracker tracker, INPUT recipeInput, int usageMultiplier);
 }

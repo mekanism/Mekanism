@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
-import mekanism.client.gui.warning.IWarningTracker;
+import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

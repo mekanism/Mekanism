@@ -1,9 +1,10 @@
 package mekanism.common.tile.machine;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -11,11 +12,11 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ChemicalToChemicalCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -52,6 +53,13 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
     public static final int MAX_GAS = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
@@ -73,7 +81,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     private EnergyInventorySlot energySlot;
 
     public TileEntityIsotopicCentrifuge(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.ISOTOPIC_CENTRIFUGE, pos, state);
+        super(MekanismBlocks.ISOTOPIC_CENTRIFUGE, pos, state, TRACKED_ERROR_TYPES);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true).setEjecting(true);
@@ -84,8 +92,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
               .setCanTankEject(tank -> tank != inputTank);
 
-        inputHandler = InputHelper.getInputHandler(inputTank);
-        outputHandler = OutputHelper.getOutputHandler(outputTank);
+        inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Nonnull
@@ -152,18 +160,13 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     @Nonnull
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
-        return new ChemicalToChemicalCachedRecipe<>(recipe, inputHandler, outputHandler)
+        return OneInputCachedRecipe.chemicalToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setOnFinish(() -> markDirty(false))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
-                  }
-                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
-              });
+              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
     }
 
     public MachineEnergyContainer<TileEntityIsotopicCentrifuge> getEnergyContainer() {

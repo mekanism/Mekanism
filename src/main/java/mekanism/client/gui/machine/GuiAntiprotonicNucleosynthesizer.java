@@ -3,6 +3,7 @@ package mekanism.client.gui.machine;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -16,6 +17,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.lib.effect.BoltEffect;
@@ -57,8 +59,10 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 45, 18, 104, 68).jeiCategory(tile));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
-        addRenderableWidget(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.SMALL_MED, this, 5, 18));
-        addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.SMALL_MED, this, 172, 18));
+        addRenderableWidget(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.SMALL_MED, this, 5, 18))
+              .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
+        addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.SMALL_MED, this, 172, 18))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public Component getTooltip() {
@@ -69,7 +73,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
             public double getLevel() {
                 return Math.min(1, tile.getScaledProgress());
             }
-        }, 5, 88, 183, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+        }, 5, 88, 183, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))))
+              .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
     }
 
     @Override

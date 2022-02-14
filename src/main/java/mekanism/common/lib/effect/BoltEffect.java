@@ -2,6 +2,7 @@ package mekanism.common.lib.effect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -201,7 +202,7 @@ public class BoltEffect {
         private final List<Vec3> vecs = new ArrayList<>();
 
         protected void addQuad(Vec3... quadVecs) {
-            vecs.addAll(Arrays.asList(quadVecs));
+            Collections.addAll(vecs, quadVecs);
         }
 
         public List<Vec3> getVecs() {

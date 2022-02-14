@@ -15,7 +15,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;

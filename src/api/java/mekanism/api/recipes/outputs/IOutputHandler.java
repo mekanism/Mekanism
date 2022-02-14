@@ -1,10 +1,14 @@
 package mekanism.api.recipes.outputs;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
+
 /**
  * Interface describing handling of an output.
  *
  * @param <OUTPUT> Type of output handled by this handler.
  */
+@ParametersAreNonnullByDefault
 public interface IOutputHandler<OUTPUT> {
 
     /**
@@ -16,12 +20,11 @@ public interface IOutputHandler<OUTPUT> {
     void handleOutput(OUTPUT toOutput, int operations);
 
     /**
-     * Calculates how many operations the output has room for.
+     * Calculates how many operations the output has room for and updates the given operation tracker. It can be assumed that when this method is called {@link
+     * OperationTracker#shouldContinueChecking()} is {@code true}.
      *
-     * @param toOutput   Output result.
-     * @param currentMax The current maximum number of operations that can happen.
-     *
-     * @return The number of operations the output has room for.
+     * @param tracker  Tracker of current errors and max operations.
+     * @param toOutput Output result.
      */
-    int operationsRoomFor(OUTPUT toOutput, int currentMax);
+    void calculateOperationsCanSupport(OperationTracker tracker, OUTPUT toOutput);
 }

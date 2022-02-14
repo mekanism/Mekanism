@@ -1,7 +1,9 @@
 package mekanism.common.tile.machine;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -10,10 +12,10 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.AutomationType;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ChemicalToChemicalCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -42,14 +44,19 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
     public static final long MAX_GAS = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
@@ -73,7 +80,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     private GasInventorySlot outputSlot;
 
     public TileEntitySolarNeutronActivator(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, pos, state);
+        super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, pos, state, TRACKED_ERROR_TYPES);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.FRONT);
         configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true).setEjecting(true);
@@ -82,8 +89,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
               .setCanTankEject(tank -> tank != inputTank);
-        inputHandler = InputHelper.getInputHandler(inputTank);
-        outputHandler = OutputHelper.getOutputHandler(outputTank);
+        inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Nonnull
@@ -182,18 +189,16 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @Nonnull
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
-        return new ChemicalToChemicalCachedRecipe<>(recipe, inputHandler, outputHandler)
+        return OneInputCachedRecipe.chemicalToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setOnFinish(() -> markDirty(false))
               //Edge case handling, this should almost always end up being 1
               .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? (int) Math.ceil(1 / productionRate) : 1)
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
-                  }
-                  return Math.min(currentMax, productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);
+              .setPostProcessOperations(tracker -> {
+                  //Update based on production rate (no recipe errors)
+                  tracker.updateOperations(productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);
               });
     }
 

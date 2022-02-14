@@ -24,7 +24,7 @@ public class EnergyContainerHelper {
         return new EnergyContainerHelper(new ConfigEnergyContainerHolder(facingSupplier, configSupplier));
     }
 
-    public void addContainer(@Nonnull IEnergyContainer container) {
+    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@Nonnull CONTAINER container) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -35,9 +35,10 @@ public class EnergyContainerHelper {
         } else {
             throw new IllegalArgumentException("Holder does not know how to add containers");
         }
+        return container;
     }
 
-    public void addContainer(@Nonnull IEnergyContainer container, RelativeSide... sides) {
+    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@Nonnull CONTAINER container, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -46,6 +47,7 @@ public class EnergyContainerHelper {
         } else {
             throw new IllegalArgumentException("Holder does not know how to add containers on specific sides");
         }
+        return container;
     }
 
     public IEnergyContainerHolder build() {

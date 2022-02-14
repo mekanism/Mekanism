@@ -35,7 +35,7 @@ public class InventorySlotHelper {
         return new InventorySlotHelper(new ConfigInventorySlotHolder(facingSupplier, configSupplier));
     }
 
-    public void addSlot(@Nonnull IInventorySlot slot) {
+    public <SLOT extends IInventorySlot> SLOT addSlot(@Nonnull SLOT slot) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -48,9 +48,10 @@ public class InventorySlotHelper {
         } else {
             throw new IllegalArgumentException("Holder does not know how to add slots");
         }
+        return slot;
     }
 
-    public void addSlot(@Nonnull IInventorySlot slot, RelativeSide... sides) {
+    public <SLOT extends IInventorySlot> SLOT addSlot(@Nonnull SLOT slot, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -59,6 +60,7 @@ public class InventorySlotHelper {
         } else {
             throw new IllegalArgumentException("Holder does not know how to add slots on specific sides");
         }
+        return slot;
     }
 
     public IInventorySlotHolder build() {

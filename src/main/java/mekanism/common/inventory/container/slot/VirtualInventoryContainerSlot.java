@@ -20,7 +20,7 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     private boolean shouldDrawOverlay;
 
     public VirtualInventoryContainerSlot(BasicInventorySlot slot, SelectedWindowData windowData, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter) {
-        super(slot, 0, 0, ContainerSlotType.IGNORED, slotOverlay, uncheckedSetter);
+        super(slot, 0, 0, ContainerSlotType.IGNORED, slotOverlay, null, uncheckedSetter);
         this.windowData = windowData;
     }
 

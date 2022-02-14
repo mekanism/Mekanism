@@ -1,5 +1,6 @@
 package mekanism.common.tile.factory;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
@@ -9,7 +10,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.CombinerCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.common.Mekanism;
@@ -31,14 +33,22 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
+    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
+          RecipeError.NOT_ENOUGH_ENERGY, true,
+          RecipeError.NOT_ENOUGH_INPUT, false,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT, true,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    );
+
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput")
     private InputInventorySlot extraSlot;
 
     public TileEntityCombiningFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state);
-        extraInputHandler = InputHelper.getInputHandler(extraSlot);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
+        extraInputHandler = InputHelper.getInputHandler(extraSlot, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
     }
 
     @Override
@@ -97,7 +107,8 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Nonnull
     @Override
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
-        return new CombinerCachedRecipe(recipe, inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
+        return TwoInputCachedRecipe.combiner(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
+              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

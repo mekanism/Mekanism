@@ -1,12 +1,17 @@
 package mekanism.api.recipes.inputs.handler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.inputs.InputIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Interface describing handling of an input that can handle long values.
  *
  * @param <INPUT> Type of input handled by this handler.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface ILongInputHandler<INPUT> extends IInputHandler<INPUT> {
 
     @Override
@@ -24,19 +29,18 @@ public interface ILongInputHandler<INPUT> extends IInputHandler<INPUT> {
     void use(INPUT recipeInput, long operations);
 
     @Override
-    default int operationsCanSupport(INPUT recipeInput, int currentMax, int usageMultiplier) {
+    default void calculateOperationsCanSupport(OperationTracker tracker, INPUT recipeInput, int usageMultiplier) {
         //Wrap to the long implementation
-        return operationsCanSupport(recipeInput, currentMax, (long) usageMultiplier);
+        calculateOperationsCanSupport(tracker, recipeInput, (long) usageMultiplier);
     }
 
     /**
-     * Calculates how many operations the input can sustain.
+     * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called {@link
+     * OperationTracker#shouldContinueChecking()} is {@code true}.
      *
+     * @param tracker         Tracker of current errors and max operations.
      * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.
-     * @param currentMax      The current maximum number of operations that can happen.
-     * @param usageMultiplier Usage multiplier to multiply the recipeIngredient's amount by per operation.
-     *
-     * @return The number of operations the input can sustain.
+     * @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
      */
-    int operationsCanSupport(INPUT recipeInput, int currentMax, long usageMultiplier);
+    void calculateOperationsCanSupport(OperationTracker tracker, INPUT recipeInput, long usageMultiplier);
 }

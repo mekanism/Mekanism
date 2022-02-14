@@ -1,6 +1,7 @@
 package mekanism.common.tile.machine;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +19,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -67,23 +69,34 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe>,
       ISustainedData {
 
+    public static final RecipeError NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR = RecipeError.create();
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE,
+          RecipeError.NOT_ENOUGH_INPUT,
+          NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR,
+          NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
+    /**
+     * The maximum amount of gas this block can store.
+     */
+    private static final long MAX_GAS = 2_400;
+
     /**
      * This separator's water slot.
      */
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
     public BasicFluidTank fluidTank;
-    /**
-     * The maximum amount of gas this block can store.
-     */
-    private static final long MAX_GAS = 2_400;
     /**
      * The amount of oxygen this block is storing.
      */
@@ -116,7 +129,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private EnergyInventorySlot energySlot;
 
     public TileEntityElectrolyticSeparator(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.ELECTROLYTIC_SEPARATOR, pos, state);
+        super(MekanismBlocks.ELECTROLYTIC_SEPARATOR, pos, state, TRACKED_ERROR_TYPES);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -156,8 +169,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
                   return true;
               });
 
-        inputHandler = InputHelper.getInputHandler(fluidTank);
-        outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
+        inputHandler = InputHelper.getInputHandler(fluidTank, RecipeError.NOT_ENOUGH_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(leftTank, NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR, rightTank, NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR);
     }
 
     @Nonnull
@@ -201,6 +214,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Override
     public void onCachedRecipeChanged(@Nullable CachedRecipe<ElectrolysisRecipe> cachedRecipe, int cacheIndex) {
+        super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
         recipeEnergyMultiplier = cachedRecipe == null ? FloatingLong.ONE : cachedRecipe.getRecipe().getEnergyMultiplier();
         energyContainer.updateEnergyPerTick();
     }
@@ -277,18 +291,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Nonnull
     @Override
     public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
-        return new ElectrolysisCachedRecipe(recipe, inputHandler, outputHandler)
+        return OneInputCachedRecipe.separating(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(() -> markDirty(false))
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
-                  }
-                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
-              });
+              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
     }
 
     public ElectrolyticSeparatorEnergyContainer getEnergyContainer() {

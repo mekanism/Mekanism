@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
 import net.minecraft.client.Minecraft;

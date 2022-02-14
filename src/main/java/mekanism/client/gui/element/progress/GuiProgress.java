@@ -13,13 +13,14 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.inventory.warning.ISupportsWarning;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress> {
+public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
 
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
@@ -28,7 +29,6 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     private ColorDetails colorDetails;
     @Nullable
     private BooleanSupplier warningSupplier;
-    private boolean useFullProgressForWarning;
 
     public GuiProgress(IBooleanProgressInfoHandler handler, ProgressType type, IGuiWrapper gui, int x, int y) {
         this((IProgressInfoHandler) handler, type, gui, x, y);
@@ -45,15 +45,9 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         return this;
     }
 
-    //TODO - WARNING SYSTEM: Hook up usage of warnings
+    @Override
     public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
-        return warning(type, warningSupplier, true);
-    }
-
-    public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier, boolean useFullProgressForWarning) {
-        this.warningSupplier = gui().trackWarning(type, warningSupplier);
-        //TODO - WARNING SYSTEM: Evaluate if we even want this to be a thing?
-        this.useFullProgressForWarning = useFullProgressForWarning;
+        this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
 
@@ -64,7 +58,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
             RenderSystem.setShaderTexture(0, getResource());
             blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
-            double progress = warning && useFullProgressForWarning ? 1 : getProgress();
+            double progress = warning ? 1 : getProgress();
             if (type.isVertical()) {
                 int displayInt = (int) (progress * height);
                 if (displayInt > 0) {

@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -22,8 +23,8 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     protected int baseTicksRequired;
     public int ticksRequired;
 
-    protected TileEntityProgressMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, int baseTicksRequired) {
-        super(blockProvider, pos, state);
+    protected TileEntityProgressMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, int baseTicksRequired) {
+        super(blockProvider, pos, state, errorTypes);
         this.baseTicksRequired = baseTicksRequired;
         ticksRequired = this.baseTicksRequired;
     }

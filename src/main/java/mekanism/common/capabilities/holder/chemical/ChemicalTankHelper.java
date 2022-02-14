@@ -55,7 +55,7 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         return new ChemicalTankHelper<>(new ConfigSlurryTankHolder(facingSupplier, configSupplier));
     }
 
-    public void addTank(@Nonnull TANK tank) {
+    public TANK addTank(@Nonnull TANK tank) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -66,9 +66,10 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
+        return tank;
     }
 
-    public void addTank(@Nonnull TANK tank, RelativeSide... sides) {
+    public TANK addTank(@Nonnull TANK tank, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -77,6 +78,7 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }
+        return tank;
     }
 
     public IChemicalTankHolder<CHEMICAL, STACK, TANK> build() {

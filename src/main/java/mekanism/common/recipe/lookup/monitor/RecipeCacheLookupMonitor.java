@@ -8,7 +8,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
-import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedRecipe;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 

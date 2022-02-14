@@ -11,11 +11,15 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.inputs.InputIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class InputHelper {
 
     private InputHelper() {
@@ -24,19 +28,19 @@ public class InputHelper {
     /**
      * Wrap an inventory slot into an {@link IInputHandler}.
      *
-     * @param slot Slot to wrap.
+     * @param slot           Slot to wrap.
+     * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot slot) {
+    public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
+        Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
         return new IInputHandler<@NonNull ItemStack>() {
 
-            @Nonnull
             @Override
             public ItemStack getInput() {
                 return slot.getStack();
             }
 
-            @Nonnull
             @Override
             public ItemStack getRecipeInput(InputIngredient<@NonNull ItemStack> recipeIngredient) {
                 ItemStack input = getInput();
@@ -48,7 +52,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(@Nonnull ItemStack recipeInput, int operations) {
+            public void use(ItemStack recipeInput, int operations) {
                 if (operations == 0) {
                     //Just exit if we are somehow here at zero operations
                     return;
@@ -60,17 +64,23 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(@Nonnull ItemStack recipeInput, int currentMax, int usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier <= 0) {
-                    //Short circuit that if we already can't perform any operations or don't want to use any, just return
-                    return currentMax;
+            public void calculateOperationsCanSupport(OperationTracker tracker, ItemStack recipeInput, int usageMultiplier) {
+                //Only calculate if we need to use anything
+                if (usageMultiplier > 0) {
+                    //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
+                    // Note: If we can't, we treat it as we just don't have enough of the input to better support cases
+                    // where we may want to allow not having the input be required for recipe matching
+                    if (!recipeInput.isEmpty()) {
+                        //TODO: Simulate?
+                        int operations = getInput().getCount() / (recipeInput.getCount() * usageMultiplier);
+                        if (operations > 0) {
+                            tracker.updateOperations(operations);
+                            return;
+                        }
+                    }
+                    // Not enough input to match the recipe, reset the progress
+                    tracker.resetProgress(notEnoughError);
                 }
-                if (recipeInput.isEmpty()) {
-                    //If the input is empty that means there is no ingredient that matches
-                    return 0;
-                }
-                //TODO: Simulate?
-                return Math.min(getInput().getCount() / (recipeInput.getCount() * usageMultiplier), currentMax);
             }
         };
     }
@@ -78,10 +88,12 @@ public class InputHelper {
     /**
      * Wrap a chemical tank into an {@link ILongInputHandler}.
      *
-     * @param tank Tank to wrap.
+     * @param tank           Tank to wrap.
+     * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static <STACK extends ChemicalStack<?>> ILongInputHandler<@NonNull STACK> getInputHandler(IChemicalTank<?, STACK> tank) {
+    public static <STACK extends ChemicalStack<?>> ILongInputHandler<@NonNull STACK> getInputHandler(IChemicalTank<?, STACK> tank, RecipeError notEnoughError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
+        Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
         return new ILongInputHandler<@NonNull STACK>() {
 
             @Nonnull
@@ -102,7 +114,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(@Nonnull STACK recipeInput, long operations) {
+            public void use(STACK recipeInput, long operations) {
                 if (operations == 0 || recipeInput.isEmpty()) {
                     //Just exit if we are somehow here at zero operations
                     // or if something went wrong, this if should never really be true if we got to finishProcessing
@@ -116,18 +128,23 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(@Nonnull STACK recipeInput, int currentMax, long usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier <= 0) {
-                    //Short circuit that if we already can't perform any operations or don't want to use any, just return
-                    return currentMax;
+            public void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, long usageMultiplier) {
+                //Only calculate if we need to use anything
+                if (usageMultiplier > 0) {
+                    //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+                    // Note: If we can't, we treat it as we just don't have enough of the input to better support cases
+                    // where we may want to allow not having the input be required for recipe matching
+                    if (!recipeInput.isEmpty()) {
+                        //TODO: Simulate the drain?
+                        int operations = MathUtils.clampToInt(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier));
+                        if (operations > 0) {
+                            tracker.updateOperations(operations);
+                            return;
+                        }
+                    }
+                    // Not enough input to match the recipe, reset the progress
+                    tracker.resetProgress(notEnoughError);
                 }
-                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
-                if (recipeInput.isEmpty()) {
-                    //If the input is empty that means there is no ingredient that matches
-                    return 0;
-                }
-                //TODO: Simulate the drain?
-                return Math.min(MathUtils.clampToInt(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier)), currentMax);
             }
         };
     }
@@ -135,10 +152,12 @@ public class InputHelper {
     /**
      * Wrap a fluid tank into an {@link IInputHandler}.
      *
-     * @param tank Tank to wrap.
+     * @param tank           Tank to wrap.
+     * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank tank) {
+    public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank tank, RecipeError notEnoughError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
+        Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
         return new IInputHandler<@NonNull FluidStack>() {
 
             @Nonnull
@@ -159,7 +178,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(@Nonnull FluidStack recipeInput, int operations) {
+            public void use(FluidStack recipeInput, int operations) {
                 if (operations == 0 || recipeInput.isEmpty()) {
                     //Just exit if we are somehow here at zero operations
                     // or if something went wrong, this if should never really be true if we got to finishProcessing
@@ -173,18 +192,23 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(@Nonnull FluidStack recipeInput, int currentMax, int usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier <= 0) {
-                    //Short circuit that if we already can't perform any operations or don't want to use any, just return
-                    return currentMax;
+            public void calculateOperationsCanSupport(OperationTracker tracker, FluidStack recipeInput, int usageMultiplier) {
+                //Only calculate if we need to use anything
+                if (usageMultiplier > 0) {
+                    //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
+                    // Note: If we can't, we treat it as we just don't have enough of the input to better support cases
+                    // where we may want to allow not having the input be required for recipe matching
+                    if (!recipeInput.isEmpty()) {
+                        //TODO: Simulate the drain?
+                        int operations = getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier);
+                        if (operations > 0) {
+                            tracker.updateOperations(operations);
+                            return;
+                        }
+                    }
+                    // Not enough input to match the recipe, reset the progress
+                    tracker.resetProgress(notEnoughError);
                 }
-                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
-                if (recipeInput.isEmpty()) {
-                    //If the input is empty that means there is no ingredient that matches
-                    return 0;
-                }
-                //TODO: Simulate the drain?
-                return Math.min(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier), currentMax);
             }
         };
     }

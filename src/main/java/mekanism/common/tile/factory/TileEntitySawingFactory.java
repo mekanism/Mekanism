@@ -1,5 +1,6 @@
 package mekanism.common.tile.factory;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
@@ -10,7 +11,8 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.SawmillCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -21,10 +23,12 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.InventoryUtils;
@@ -36,11 +40,19 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
+    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
+          RecipeError.NOT_ENOUGH_ENERGY, true,
+          RecipeError.NOT_ENOUGH_INPUT, false,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
+          TileEntityPrecisionSawmill.NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR, false,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    );
+
     protected IInputHandler<@NonNull ItemStack>[] inputHandlers;
     protected IOutputHandler<@NonNull ChanceOutput>[] outputHandlers;
 
     public TileEntitySawingFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
     }
 
     @Override
@@ -55,11 +67,14 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
             OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 57);
             OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 77);
             FactoryInputInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, recipeCacheLookupMonitors[i], xPos, 13);
-            builder.addSlot(inputSlot);
-            builder.addSlot(outputSlot);
-            builder.addSlot(secondaryOutputSlot);
-            inputHandlers[i] = InputHelper.getInputHandler(inputSlot);
-            outputHandlers[i] = OutputHelper.getOutputHandler(outputSlot, secondaryOutputSlot);
+            int index = i;
+            builder.addSlot(inputSlot).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT, index)));
+            builder.addSlot(outputSlot).tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE, index)));
+            builder.addSlot(secondaryOutputSlot).tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT,
+                  getWarningCheck(TileEntityPrecisionSawmill.NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR, index)));
+            inputHandlers[i] = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
+            outputHandlers[i] = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE, secondaryOutputSlot,
+                  TileEntityPrecisionSawmill.NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR);
             processInfoSlots[i] = new ProcessInfo(i, inputSlot, outputSlot, secondaryOutputSlot);
         }
     }
@@ -113,7 +128,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     @Nonnull
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@Nonnull SawmillRecipe recipe, int cacheIndex) {
-        return new SawmillCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
+        return OneInputCachedRecipe.sawing(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
+              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

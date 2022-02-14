@@ -2,16 +2,16 @@ package mekanism.common.content.boiler;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
@@ -31,10 +31,10 @@ import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
@@ -115,7 +115,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> cooledCoolantCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas.has(CooledCoolant.class));
-        gasTanks.addAll(Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank));
+        Collections.addAll(gasTanks, steamTank, superheatedCoolantTank, cooledCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile, CASING_HEAT_CAPACITY, () -> CASING_INVERSE_CONDUCTION_COEFFICIENT,
               () -> CASING_INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);
         heatCapacitors.add(heatCapacitor);

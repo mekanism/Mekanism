@@ -18,9 +18,9 @@ import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.element.window.GuiWindow;
-import mekanism.client.gui.warning.IWarningTracker;
-import mekanism.client.gui.warning.WarningTracker;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
+import mekanism.common.inventory.warning.IWarningTracker;
+import mekanism.common.inventory.warning.WarningTracker;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -107,7 +107,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void addWarningTab(IWarningTracker warningTracker) {
-        //TODO - WARNING SYSTEM: Move this for any GUIs that also have a heat tab (81 y would be above heat)
         addRenderableWidget(new GuiWarningTab(this, warningTracker, 109));
     }
 
@@ -452,6 +451,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                     continue;
                 }
                 GuiSlot guiSlot = new GuiSlot(type, this, slot.x - 1, slot.y - 1);
+                containerSlot.addWarnings(guiSlot);
                 SlotOverlay slotOverlay = containerSlot.getSlotOverlay();
                 if (slotOverlay != null) {
                     guiSlot.with(slotOverlay);

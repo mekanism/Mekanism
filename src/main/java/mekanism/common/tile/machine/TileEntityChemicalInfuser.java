@@ -1,9 +1,9 @@
 package mekanism.common.tile.machine;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
@@ -12,7 +12,8 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ChemicalChemicalToChemicalCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.ChemicalChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -52,7 +53,16 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> implements EitherSideChemicalRecipeLookupHandler<Gas, GasStack, ChemicalInfuserRecipe> {
 
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE,
+          RecipeError.NOT_ENOUGH_LEFT_INPUT,
+          RecipeError.NOT_ENOUGH_RIGHT_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
     public static final long MAX_GAS = 10_000;
+
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
                                                                                         "getLeftInputFilledPercentage"})
     public IGasTank leftTank;
@@ -79,7 +89,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalInfuser(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.CHEMICAL_INFUSER, pos, state);
+        super(MekanismBlocks.CHEMICAL_INFUSER, pos, state, TRACKED_ERROR_TYPES);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -113,9 +123,9 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
 
-        leftInputHandler = InputHelper.getInputHandler(leftTank);
-        rightInputHandler = InputHelper.getInputHandler(rightTank);
-        outputHandler = OutputHelper.getOutputHandler(centerTank);
+        leftInputHandler = InputHelper.getInputHandler(leftTank, RecipeError.NOT_ENOUGH_LEFT_INPUT);
+        rightInputHandler = InputHelper.getInputHandler(rightTank, RecipeError.NOT_ENOUGH_RIGHT_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(centerTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Nonnull
@@ -184,18 +194,13 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Nonnull
     @Override
     public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
-        return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, leftInputHandler, rightInputHandler, outputHandler)
+        return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(() -> markDirty(false))
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
-                  }
-                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
-              });
+              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
     }
 
     public MachineEnergyContainer<TileEntityChemicalInfuser> getEnergyContainer() {

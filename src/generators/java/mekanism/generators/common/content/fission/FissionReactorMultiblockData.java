@@ -1,10 +1,11 @@
 package mekanism.generators.common.content.fission;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -15,7 +16,6 @@ import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.AutomationType;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
@@ -143,7 +143,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         wasteTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
+        Collections.addAll(gasTanks, fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
               () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);
         heatCapacitors.add(heatCapacitor);

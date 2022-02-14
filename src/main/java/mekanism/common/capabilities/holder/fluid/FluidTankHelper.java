@@ -24,7 +24,7 @@ public class FluidTankHelper {
         return new FluidTankHelper(new ConfigFluidTankHolder(facingSupplier, configSupplier));
     }
 
-    public void addTank(@Nonnull IExtendedFluidTank tank) {
+    public <TANK extends IExtendedFluidTank> TANK addTank(@Nonnull TANK tank) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -35,9 +35,10 @@ public class FluidTankHelper {
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
+        return tank;
     }
 
-    public void addTank(@Nonnull IExtendedFluidTank tank, RelativeSide... sides) {
+    public <TANK extends IExtendedFluidTank> TANK addTank(@Nonnull TANK tank, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -46,6 +47,7 @@ public class FluidTankHelper {
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }
+        return tank;
     }
 
     public IFluidTankHolder build() {

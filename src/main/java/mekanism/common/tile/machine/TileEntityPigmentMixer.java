@@ -1,9 +1,9 @@
 package mekanism.common.tile.machine;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -12,7 +12,8 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ChemicalChemicalToChemicalCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.ChemicalChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -55,6 +56,15 @@ import net.minecraft.world.phys.AABB;
 public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixingRecipe> implements IBoundingBlock,
       EitherSideChemicalRecipeLookupHandler<Pigment, PigmentStack, PigmentMixingRecipe> {
 
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE,
+          RecipeError.NOT_ENOUGH_LEFT_INPUT,
+          RecipeError.NOT_ENOUGH_RIGHT_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
+
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
                                                                                         "getLeftInputFilledPercentage"})
     public IPigmentTank leftInputTank;
@@ -81,7 +91,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     private EnergyInventorySlot energySlot;
 
     public TileEntityPigmentMixer(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.PIGMENT_MIXER, pos, state);
+        super(MekanismBlocks.PIGMENT_MIXER, pos, state, TRACKED_ERROR_TYPES);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -115,9 +125,9 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.PIGMENT);
 
-        leftInputHandler = InputHelper.getInputHandler(leftInputTank);
-        rightInputHandler = InputHelper.getInputHandler(rightInputTank);
-        outputHandler = OutputHelper.getOutputHandler(outputTank);
+        leftInputHandler = InputHelper.getInputHandler(leftInputTank, RecipeError.NOT_ENOUGH_LEFT_INPUT);
+        rightInputHandler = InputHelper.getInputHandler(rightInputTank, RecipeError.NOT_ENOUGH_RIGHT_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Nonnull
@@ -188,18 +198,13 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Nonnull
     @Override
     public CachedRecipe<PigmentMixingRecipe> createNewCachedRecipe(@Nonnull PigmentMixingRecipe recipe, int cacheIndex) {
-        return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, leftInputHandler, rightInputHandler, outputHandler)
+        return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(() -> markDirty(false))
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
-                  }
-                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
-              });
+              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
     }
 
     @Nonnull

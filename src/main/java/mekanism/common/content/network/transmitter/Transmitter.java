@@ -1,6 +1,5 @@
 package mekanism.common.content.network.transmitter;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -26,14 +25,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
@@ -80,7 +79,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         this.transmitterTile = transmitterTile;
         acceptorCache = createAcceptorCache();
         supportedTransmissionTypes = EnumSet.noneOf(TransmissionType.class);
-        supportedTransmissionTypes.addAll(Arrays.asList(transmissionTypes));
+        Collections.addAll(supportedTransmissionTypes, transmissionTypes);
     }
 
     protected AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache() {

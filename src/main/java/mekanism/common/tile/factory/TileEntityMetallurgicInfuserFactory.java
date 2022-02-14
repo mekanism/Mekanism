@@ -1,5 +1,6 @@
 package mekanism.common.tile.factory;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
@@ -14,7 +15,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ItemStackChemicalToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.common.Mekanism;
@@ -44,6 +46,14 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
 
+    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
+          RecipeError.NOT_ENOUGH_ENERGY, true,
+          RecipeError.NOT_ENOUGH_INPUT, false,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT, true,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    );
+
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
@@ -53,8 +63,8 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     private IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state);
-        infusionInputHandler = InputHelper.getInputHandler(infusionTank);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
+        infusionInputHandler = InputHelper.getInputHandler(infusionTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         configComponent.addSupported(TransmissionType.INFUSION);
         configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);
     }
@@ -142,7 +152,9 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Nonnull
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new ItemStackChemicalToItemStackCachedRecipe<>(recipe, inputHandlers[cacheIndex], infusionInputHandler, outputHandlers[cacheIndex])
+        return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], infusionInputHandler,
+                    outputHandlers[cacheIndex])
+              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

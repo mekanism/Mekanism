@@ -1,9 +1,9 @@
-package mekanism.client.gui.warning;
+package mekanism.common.inventory.warning;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.network.chat.Component;
 
 public interface IWarningTracker {

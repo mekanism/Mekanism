@@ -1,11 +1,15 @@
 package mekanism.common.tile.factory;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,6 +23,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -51,6 +56,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.EnumUtils;
@@ -74,6 +80,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected static final int BASE_TICKS_REQUIRED = 200;
 
     protected FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
+    protected BooleanSupplier[] recheckAllRecipeErrors;
+    protected final ErrorTracker errorTracker;
     private final boolean[] activeStates;
     protected ProcessInfo[] processInfoSlots;
     /**
@@ -104,7 +112,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     protected EnergyInventorySlot energySlot;
 
-    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, Map<RecipeError, Boolean> errorTypes) {
         super(blockProvider, pos, state);
         type = Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -134,6 +142,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         progress = new int[tier.processes];
         activeStates = new boolean[tier.processes];
+        recheckAllRecipeErrors = new BooleanSupplier[tier.processes];
+        for (int i = 0; i < recheckAllRecipeErrors.length; i++) {
+            //Note: We store one per slot so that we can recheck the different slots at different times to reduce the load on the server
+            recheckAllRecipeErrors[i] = TileEntityRecipeMachine.shouldRecheckAllErrors(this);
+        }
+        errorTracker = new ErrorTracker(errorTypes, tier.processes);
     }
 
     /**
@@ -301,6 +315,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return recipeCacheLookupMonitors[cacheIndex].getCachedRecipe(cacheIndex);
     }
 
+    public BooleanSupplier getWarningCheck(RecipeError error, int processIndex) {
+        return errorTracker.getWarningCheck(error, processIndex);
+    }
+
+    @Override
+    public void clearRecipeErrors(int cacheIndex) {
+        Arrays.fill(errorTracker.trackedErrors[cacheIndex], false);
+    }
+
     protected void setActiveState(boolean state, int cacheIndex) {
         activeStates[cacheIndex] = state;
     }
@@ -423,6 +446,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.trackArray(progress);
+        errorTracker.track(container);
         container.track(SyncableFloatingLong.create(this::getLastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(this::isSorting, value -> sorting = value));
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
@@ -708,6 +732,64 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 lazyMinPerSlot = null;
             }
             return minPerSlot;
+        }
+    }
+
+    protected static class ErrorTracker {
+
+        private final List<RecipeError> errorTypes;
+        private final IntList globalTypes;
+
+        //TODO: See if we can get it so we only have to sync a single version of global types?
+        private final boolean[][] trackedErrors;
+        private final int processes;
+
+        public ErrorTracker(Map<RecipeError, Boolean> errorTypes, int processes) {
+            this.errorTypes = List.copyOf(errorTypes.keySet());
+            globalTypes = new IntArrayList();
+            for (int i = 0; i < this.errorTypes.size(); i++) {
+                RecipeError error = this.errorTypes.get(i);
+                if (errorTypes.get(error)) {
+                    globalTypes.add(i);
+                }
+            }
+            this.processes = processes;
+            trackedErrors = new boolean[this.processes][];
+            int errors = this.errorTypes.size();
+            for (int i = 0; i < trackedErrors.length; i++) {
+                trackedErrors[i] = new boolean[errors];
+            }
+        }
+
+        private void track(MekanismContainer container) {
+            for (boolean[] processTrackedErrors : trackedErrors) {
+                //Note: We don't need a special syncable boolean for two depth arrays
+                // as long as our arrays are in the same order on client and server
+                for (int j = 0; j < processTrackedErrors.length; j++) {
+                    container.track(SyncableBoolean.create(processTrackedErrors, j));
+                }
+            }
+        }
+
+        public void onErrorsChanged(Set<RecipeError> errors, int processIndex) {
+            boolean[] processTrackedErrors = trackedErrors[processIndex];
+            for (int i = 0; i < processTrackedErrors.length; i++) {
+                processTrackedErrors[i] = errors.contains(errorTypes.get(i));
+            }
+        }
+
+        private BooleanSupplier getWarningCheck(RecipeError error, int processIndex) {
+            if (processIndex >= 0 && processIndex < processes) {
+                int errorIndex = errorTypes.indexOf(error);
+                if (errorIndex >= 0) {
+                    if (globalTypes.contains(errorIndex)) {
+                        return () -> Arrays.stream(trackedErrors).anyMatch(processTrackedErrors -> processTrackedErrors[errorIndex]);
+                    }
+                    return () -> trackedErrors[processIndex][errorIndex];
+                }
+            }
+            //Something went wrong
+            return () -> false;
         }
     }
 }

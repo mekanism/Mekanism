@@ -1,4 +1,4 @@
-package mekanism.client.gui.warning;
+package mekanism.common.inventory.warning;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -11,7 +11,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
 
-//TODO - 1.18: Look at TODOs related to warning system
 public class WarningTracker implements IWarningTracker {
 
     private final Map<WarningType, List<BooleanSupplier>> warnings = new EnumMap<>(WarningType.class);
@@ -67,6 +66,7 @@ public class WarningTracker implements IWarningTracker {
     // by virtue of how EnumMaps iterate
     public enum WarningType {
         INPUT_DOESNT_PRODUCE_OUTPUT(MekanismLang.ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT),
+        //TODO - 1.18: Should this be renamed to not enough input? We don't really have a no matching recipe
         NO_MATCHING_RECIPE(MekanismLang.ISSUE_NO_MATCHING_RECIPE),
         NO_SPACE_IN_OUTPUT(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT),
         NOT_ENOUGH_ENERGY(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY),
@@ -81,7 +81,7 @@ public class WarningTracker implements IWarningTracker {
         WarningType(ILangEntry langEntry) {
             //Note: We use a default size of one as in most cases we will only have one of any given type of warning except for things
             // with multiple outputs or for factories
-            //TODO - WARNING SYSTEM: Should we maybe define default capacity in WarningType as some things may make more sense to have slightly higher?
+            //TODO: Eventually we may want to define a default capacity in WarningType as some things may make more sense to have slightly higher?
             this(langEntry, 1);
         }
 

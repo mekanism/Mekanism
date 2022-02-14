@@ -1,5 +1,6 @@
 package mekanism.common.tile.factory;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
@@ -7,7 +8,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
@@ -22,8 +24,15 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements
       ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
+    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
+          RecipeError.NOT_ENOUGH_ENERGY, true,
+          RecipeError.NOT_ENOUGH_INPUT, false,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    );
+
     public TileEntityItemStackToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
     }
 
     @Override
@@ -69,7 +78,8 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Nonnull
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackToItemStackCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
+        return OneInputCachedRecipe.itemToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
+              .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

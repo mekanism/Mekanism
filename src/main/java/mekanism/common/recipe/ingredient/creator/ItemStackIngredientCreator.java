@@ -17,6 +17,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.creator.IItemStackIngredientCreator;
+import mekanism.common.util.StackUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
@@ -147,12 +148,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
         @Override
         public ItemStack getMatchingInstance(ItemStack stack) {
-            if (test(stack)) {
-                ItemStack matching = stack.copy();
-                matching.setCount(amount);
-                return matching;
-            }
-            return ItemStack.EMPTY;
+            return test(stack) ? StackUtils.size(stack, amount) : ItemStack.EMPTY;
         }
 
         @Override

@@ -10,14 +10,15 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.inventory.warning.ISupportsWarning;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 
-public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
+public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISupportsWarning<GuiSlot> {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
@@ -48,14 +49,14 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     public GuiSlot validity(Supplier<ItemStack> validityCheck) {
-        //TODO - WARNING SYSTEM: Evaluate if any of these validity things should be moved to the warning system
+        //TODO - 1.18: Evaluate if any of these validity things should be moved to the warning system
         this.validityCheck = validityCheck;
         return this;
     }
 
-    //TODO - WARNING SYSTEM: Hook up usage of warnings
+    @Override
     public GuiSlot warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
-        this.warningSupplier = gui().trackWarning(type, warningSupplier);
+        this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
 

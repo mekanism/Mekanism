@@ -13,6 +13,7 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -26,6 +27,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import net.minecraft.world.entity.player.Inventory;
@@ -51,10 +53,13 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        addRenderableWidget(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4));
-        addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).jeiCategory(tile));
+        addRenderableWidget(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4))
+              .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_INPUT));
+        addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).jeiCategory(tile))
+              .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
         //Init slot display before gui screen, so it can reference it, but add it after, so it renders above it
         slotDisplay = new GuiSequencedSlotDisplay(this, 129, 14, () -> iterStacks);
         updateSlotContents();

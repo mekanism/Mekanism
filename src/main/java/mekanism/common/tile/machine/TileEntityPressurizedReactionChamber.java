@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.AutomationType;
@@ -16,6 +17,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
@@ -39,6 +41,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ITripleRecipeLookupHandler.ItemFluidChemicalRecipeLookupHandler;
@@ -56,8 +59,23 @@ import net.minecraftforge.fluids.FluidStack;
 public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> implements
       ItemFluidChemicalRecipeLookupHandler<Gas, GasStack, PressurizedReactionRecipe> {
 
+    public static final RecipeError NOT_ENOUGH_ITEM_INPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_FLUID_INPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_GAS_INPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR = RecipeError.create();
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          NOT_ENOUGH_ITEM_INPUT_ERROR,
+          NOT_ENOUGH_FLUID_INPUT_ERROR,
+          NOT_ENOUGH_GAS_INPUT_ERROR,
+          NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR,
+          NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
     private static final int BASE_DURATION = 100;
     private static final long MAX_GAS = 10_000;
+
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded",
                                                                                      "getInputFluidFilledPercentage"})
     public BasicFluidTank inputFluidTank;
@@ -83,7 +101,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, pos, state, BASE_DURATION);
+        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.FLUID, inputFluidTank);
@@ -94,10 +112,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
               .setCanTankEject(tank -> tank != inputGasTank);
 
-        itemInputHandler = InputHelper.getInputHandler(inputSlot);
-        fluidInputHandler = InputHelper.getInputHandler(inputFluidTank);
-        gasInputHandler = InputHelper.getInputHandler(inputGasTank);
-        outputHandler = OutputHelper.getOutputHandler(outputGasTank, outputSlot);
+        itemInputHandler = InputHelper.getInputHandler(inputSlot, NOT_ENOUGH_ITEM_INPUT_ERROR);
+        fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, NOT_ENOUGH_FLUID_INPUT_ERROR);
+        gasInputHandler = InputHelper.getInputHandler(inputGasTank, NOT_ENOUGH_GAS_INPUT_ERROR);
+        outputHandler = OutputHelper.getOutputHandler(outputSlot, NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR, outputGasTank, NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR);
     }
 
     @Nonnull
@@ -135,14 +153,17 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeABC(item, inputFluidTank.getFluid(), inputGasTank.getStack()), this::containsRecipeA,
-              recipeCacheLookupMonitor, 54, 35));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
+              recipeCacheLookupMonitor, 54, 35))
+              .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(NOT_ENOUGH_ITEM_INPUT_ERROR)));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35))
+              .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(NOT_ENOUGH_SPACE_ITEM_OUTPUT_ERROR)));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 141, 17));
         return builder.build();
     }
 
     @Override
     public void onCachedRecipeChanged(@Nullable CachedRecipe<PressurizedReactionRecipe> cachedRecipe, int cacheIndex) {
+        super.onCachedRecipeChanged(cachedRecipe, cacheIndex);
         int recipeDuration;
         if (cachedRecipe == null) {
             recipeDuration = BASE_DURATION;
@@ -187,7 +208,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Nonnull
     @Override
     public CachedRecipe<PressurizedReactionRecipe> createNewCachedRecipe(@Nonnull PressurizedReactionRecipe recipe, int cacheIndex) {
-        return new PressurizedReactionCachedRecipe(recipe, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler)
+        return new PressurizedReactionCachedRecipe(recipe, recheckAllRecipeErrors, itemInputHandler, fluidInputHandler, gasInputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

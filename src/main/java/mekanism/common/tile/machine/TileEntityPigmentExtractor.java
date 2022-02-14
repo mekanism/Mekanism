@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -12,7 +13,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.ItemStackToChemicalCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -32,6 +34,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
@@ -46,6 +49,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToPigmentRecipe> implements ItemRecipeLookupHandler<ItemStackToPigmentRecipe> {
+
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IPigmentTank pigmentTank;
@@ -62,7 +72,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     private EnergyInventorySlot energySlot;
 
     public TileEntityPigmentExtractor(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, 100);
+        super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, TRACKED_ERROR_TYPES, 100);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupOutputConfig(TransmissionType.PIGMENT, pigmentTank, RelativeSide.RIGHT);
@@ -71,8 +81,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.PIGMENT);
 
-        inputHandler = InputHelper.getInputHandler(inputSlot);
-        outputHandler = OutputHelper.getOutputHandler(pigmentTank);
+        inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(pigmentTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Nonnull
@@ -95,7 +105,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 26, 36));
+        builder.addSlot(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 26, 36))
+              .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addSlot(outputSlot = PigmentInventorySlot.drain(pigmentTank, this, 152, 55));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 14));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -129,7 +140,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     @Nonnull
     @Override
     public CachedRecipe<ItemStackToPigmentRecipe> createNewCachedRecipe(@Nonnull ItemStackToPigmentRecipe recipe, int cacheIndex) {
-        return new ItemStackToChemicalCachedRecipe<>(recipe, inputHandler, outputHandler)
+        return OneInputCachedRecipe.itemToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

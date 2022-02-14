@@ -2,10 +2,10 @@ package mekanism.common.tile.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.slurry.ISlurryTank;
@@ -14,7 +14,8 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.chemical.FluidChemicalToChemicalCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -58,8 +59,17 @@ import net.minecraftforge.fluids.FluidStack;
 public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> implements
       FluidChemicalRecipeLookupHandler<Slurry, SlurryStack, FluidSlurryToSlurryRecipe> {
 
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
     private static final long MAX_SLURRY = 10_000;
     private static final int MAX_FLUID = 10_000;
+
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
     public BasicFluidTank fluidTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryInput", "getSlurryInputCapacity", "getSlurryInputNeeded",
@@ -86,7 +96,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalWasher(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.CHEMICAL_WASHER, pos, state);
+        super(MekanismBlocks.CHEMICAL_WASHER, pos, state, TRACKED_ERROR_TYPES);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.SLURRY, TransmissionType.FLUID, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(Collections.singletonList(fluidSlot), Arrays.asList(slurryOutputSlot, fluidOutputSlot), energySlot, true);
         configComponent.setupIOConfig(TransmissionType.SLURRY, inputTank, outputTank, RelativeSide.RIGHT).setEjecting(true);
@@ -96,9 +106,9 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.SLURRY);
 
-        fluidInputHandler = InputHelper.getInputHandler(fluidTank);
-        slurryInputHandler = InputHelper.getInputHandler(inputTank);
-        outputHandler = OutputHelper.getOutputHandler(outputTank);
+        slurryInputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
+        fluidInputHandler = InputHelper.getInputHandler(fluidTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
     @Nonnull
@@ -171,18 +181,13 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Nonnull
     @Override
     public CachedRecipe<FluidSlurryToSlurryRecipe> createNewCachedRecipe(@Nonnull FluidSlurryToSlurryRecipe recipe, int cacheIndex) {
-        return new FluidChemicalToChemicalCachedRecipe<>(recipe, fluidInputHandler, slurryInputHandler, outputHandler)
+        return TwoInputCachedRecipe.fluidChemicalToChemical(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(() -> markDirty(false))
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
-                  }
-                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
-              });
+              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
     }
 
     @Override

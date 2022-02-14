@@ -1,22 +1,23 @@
 package mekanism.common.tile.machine;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.RotaryCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
@@ -64,6 +65,19 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<RotaryRecipe> implements IHasMode {
 
+    public static final RecipeError NOT_ENOUGH_FLUID_INPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_GAS_INPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR = RecipeError.create();
+    public static final RecipeError NOT_ENOUGH_SPACE_FLUID_OUTPUT_ERROR = RecipeError.create();
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE,
+          NOT_ENOUGH_FLUID_INPUT_ERROR,
+          NOT_ENOUGH_GAS_INPUT_ERROR,
+          NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR,
+          NOT_ENOUGH_SPACE_FLUID_OUTPUT_ERROR,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
     private static final int CAPACITY = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGas", "getGasCapacity", "getGasNeeded", "getGasFilledPercentage"})
@@ -97,7 +111,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private EnergyInventorySlot energySlot;
 
     public TileEntityRotaryCondensentrator(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.ROTARY_CONDENSENTRATOR, pos, state);
+        super(MekanismBlocks.ROTARY_CONDENSENTRATOR, pos, state, TRACKED_ERROR_TYPES);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(Arrays.asList(gasInputSlot, fluidInputSlot), Arrays.asList(gasOutputSlot, fluidOutputSlot), energySlot, true);
         configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.LEFT, true).setEjecting(true);
@@ -115,10 +129,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
                   return true;
               });
 
-        gasInputHandler = InputHelper.getInputHandler(gasTank);
-        fluidInputHandler = InputHelper.getInputHandler(fluidTank);
-        gasOutputHandler = OutputHelper.getOutputHandler(gasTank);
-        fluidOutputHandler = OutputHelper.getOutputHandler(fluidTank);
+        gasInputHandler = InputHelper.getInputHandler(gasTank, NOT_ENOUGH_GAS_INPUT_ERROR);
+        fluidInputHandler = InputHelper.getInputHandler(fluidTank, NOT_ENOUGH_FLUID_INPUT_ERROR);
+        gasOutputHandler = OutputHelper.getOutputHandler(gasTank, NOT_ENOUGH_SPACE_GAS_OUTPUT_ERROR);
+        fluidOutputHandler = OutputHelper.getOutputHandler(fluidTank, NOT_ENOUGH_SPACE_FLUID_OUTPUT_ERROR);
     }
 
     @Nonnull
@@ -240,23 +254,24 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Nonnull
     @Override
     public CachedRecipe<RotaryRecipe> createNewCachedRecipe(@Nonnull RotaryRecipe recipe, int cacheIndex) {
-        return new RotaryCachedRecipe(recipe, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, () -> mode)
+        return new RotaryCachedRecipe(recipe, recheckAllRecipeErrors, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, () -> mode)
+              .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(() -> markDirty(false))
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
+              .setPostProcessOperations(tracker -> {
+                  //Calculate number of operations based on available space and available inputs (this produces no errors)
+                  if (mode) {//Fluid to gas
+                      tracker.updateOperations(Math.min(fluidTank.getFluidAmount(), MathUtils.clampToInt(gasTank.getNeeded())));
+                  } else {//Gas to fluid
+                      tracker.updateOperations(Math.min(MathUtils.clampToInt(gasTank.getStored()), fluidTank.getNeeded()));
                   }
-                  int possibleProcess = Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
-                  if (mode) {
-                      //Fluid to gas
-                      return Math.min(Math.min(fluidTank.getFluidAmount(), MathUtils.clampToInt(gasTank.getNeeded())), possibleProcess);
+                  if (tracker.shouldContinueChecking()) {
+                      //If we should continue processing, and we have space for multiple operations, check if the number of speed upgrades
+                      // limits our processing amount (and if so apply any errors that should be applied
+                      MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent);
                   }
-                  //Gas to fluid
-                  return Math.min(Math.min(MathUtils.clampToInt(gasTank.getStored()), fluidTank.getNeeded()), possibleProcess);
               });
     }
 

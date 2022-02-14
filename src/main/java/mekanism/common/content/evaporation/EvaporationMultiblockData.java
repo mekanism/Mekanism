@@ -1,5 +1,8 @@
 package mekanism.common.content.evaporation;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IEvaporationSolar;
@@ -8,7 +11,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.FluidToFluidCachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.cache.OneInputCachedRecipe;
 import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -35,19 +39,25 @@ import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLooku
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
 
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
     private static final int MAX_OUTPUT = 10_000;
     public static final int MAX_HEIGHT = 18;
     public static final double MAX_MULTIPLIER_TEMP = 3_000;
@@ -74,6 +84,9 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public double lastEnvironmentLoss;
 
     private final RecipeCacheLookupMonitor<FluidToFluidRecipe> recipeCacheLookupMonitor;
+    private final BooleanSupplier recheckAllRecipeErrors;
+    @ContainerSync
+    private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
     private final IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
@@ -92,12 +105,13 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
         super(tile);
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+        recheckAllRecipeErrors = TileEntityRecipeMachine.shouldRecheckAllErrors(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         fluidTanks.add(inputTank = MultiblockFluidTank.input(this, tile, this::getMaxFluid, this::containsRecipe, recipeCacheLookupMonitor));
         fluidTanks.add(outputTank = MultiblockFluidTank.output(this, tile, () -> MAX_OUTPUT, BasicFluidTank.alwaysTrue));
-        inputHandler = InputHelper.getInputHandler(inputTank);
-        outputHandler = OutputHelper.getOutputHandler(outputTank);
+        inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
+        outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         inventorySlots.add(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
         inventorySlots.add(outputInputSlot = OutputInventorySlot.at(this, 28, 51));
         inventorySlots.add(inputOutputSlot = FluidInventorySlot.drain(outputTank, this, 132, 20));
@@ -196,10 +210,20 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         return findFirstRecipe(inputHandler);
     }
 
+    @Override
+    public void clearRecipeErrors(int cacheIndex) {
+        Arrays.fill(trackedErrors, false);
+    }
+
     @Nonnull
     @Override
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
-        return new FluidToFluidCachedRecipe(recipe, inputHandler, outputHandler)
+        return OneInputCachedRecipe.fluidToFluid(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+              .setErrorsChanged(errors -> {
+                  for (int i = 0; i < trackedErrors.length; i++) {
+                      trackedErrors[i] = errors.contains(TRACKED_ERROR_TYPES.get(i));
+                  }
+              })
               .setActive(active -> {
                   //TODO: Make the numbers for lastGain be based on how much the recipe provides as an output rather than "assuming" it is 1 mB
                   // Also fix that the numbers don't quite accurately reflect the values as we modify number of operations, and not have a fractional
@@ -215,13 +239,19 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
                   }
               })
               .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? (int) Math.ceil(1 / tempMultiplier) : 1)
-              .setPostProcessOperations(currentMax -> {
-                  if (currentMax <= 0) {
-                      //Short circuit that if we already can't perform any outputs, just return
-                      return currentMax;
-                  }
-                  return Math.min(currentMax, tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
+              .setPostProcessOperations(tracker -> {
+                  //Update based on temperature (no recipe errors)
+                  tracker.updateOperations(tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
               });
+    }
+
+    public boolean hasWarning(RecipeError error) {
+        int errorIndex = TRACKED_ERROR_TYPES.indexOf(error);
+        if (errorIndex == -1) {
+            //Something went wrong
+            return false;
+        }
+        return trackedErrors[errorIndex];
     }
 
     @Override

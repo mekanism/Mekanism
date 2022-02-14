@@ -4,9 +4,9 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.lang.annotation.ElementType;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -124,17 +124,27 @@ public class SyncMapper extends BaseAnnotationScanner {
                 }
                 String getterName = getAnnotationValue(data, "getter", "");
                 PropertyField newField;
-                SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
+                Class<?> fieldType = field.getType();
+                SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(fieldType)).findFirst().orElse(null);
                 try {
                     if (handler == null) {
-                        PropertyType type = PropertyType.getFromType(field.getType());
+                        PropertyType type = PropertyType.getFromType(fieldType);
                         String setterName = getAnnotationValue(data, "setter", "");
                         if (type != null) {
                             newField = new PropertyField(new TrackedFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
                                   LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), type));
-                        } else if (field.getType().isEnum()) {
+                        } else if (fieldType.isEnum()) {
                             newField = new PropertyField(new EnumFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
-                                  LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), field.getType()));
+                                  LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), fieldType));
+                        } else if (fieldType.isArray()) {
+                            Class<?> arrayFieldType = fieldType.getComponentType();
+                            PropertyType arrayType = PropertyType.getFromType(arrayFieldType);
+                            if (arrayType != null) {
+                                newField = new PropertyField(new ArrayFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName), arrayType));
+                            } else {
+                                Mekanism.logger.error("Attempted to sync an invalid array field '{}' in class '{}'.", fieldName, annotatedClass.getSimpleName());
+                                continue;
+                            }
                         } else {
                             Mekanism.logger.error("Attempted to sync an invalid field '{}' in class '{}'.", fieldName, annotatedClass.getSimpleName());
                             continue;
@@ -172,16 +182,16 @@ public class SyncMapper extends BaseAnnotationScanner {
         PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, clazz -> getData(syncablePropertyMap, clazz, PropertyDataClassCache.EMPTY));
         for (PropertyField field : cache.propertyFieldMap.get(tag)) {
             for (TrackedFieldData data : field.trackedData) {
-                container.track(data.createSyncableData(holderSupplier));
+                data.track(container, holderSupplier);
             }
         }
     }
 
     private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, String getterName) throws Throwable {
         PropertyField ret = new PropertyField();
+        // create a getter for the actual property field itself
+        Function<Object, O> fieldGetter = LambdaMetaFactoryUtil.createGetter(field, objType, getterName);
         for (SpecialPropertyData<O> data : handler.specialData) {
-            // create a getter for the actual property field itself
-            Function<Object, O> fieldGetter = LambdaMetaFactoryUtil.createGetter(field, objType, getterName);
             // create a new tracked field
             TrackedFieldData trackedField = TrackedFieldData.create(data.propertyType, obj -> data.get(fieldGetter.apply(obj)), (obj, val) -> data.set(fieldGetter.apply(obj), val));
             if (trackedField != null) {
@@ -204,7 +214,7 @@ public class SyncMapper extends BaseAnnotationScanner {
         private final List<TrackedFieldData> trackedData = new ArrayList<>();
 
         private PropertyField(TrackedFieldData... data) {
-            trackedData.addAll(Arrays.asList(data));
+            Collections.addAll(trackedData, data);
         }
 
         private void addTrackedData(TrackedFieldData data) {
@@ -226,6 +236,10 @@ public class SyncMapper extends BaseAnnotationScanner {
         private TrackedFieldData(Function<Object, Object> getter, BiConsumer<Object, Object> setter, PropertyType propertyType) {
             this(getter, setter);
             this.propertyType = propertyType;
+        }
+
+        protected void track(MekanismContainer container, Supplier<Object> holderSupplier) {
+            container.track(createSyncableData(holderSupplier));
         }
 
         protected Object get(Object dataObj) {
@@ -259,6 +273,15 @@ public class SyncMapper extends BaseAnnotationScanner {
         protected static TrackedFieldData create(Class<?> propertyType, Function<Object, Object> getter, BiConsumer<Object, Object> setter) {
             if (propertyType.isEnum()) {
                 return new EnumFieldData(getter, setter, propertyType);
+            } else if (propertyType.isArray()) {
+                Class<?> arrayType = propertyType.getComponentType();
+                //Note: We don't support arrays of arrays
+                PropertyType type = PropertyType.getFromType(arrayType);
+                if (type == null) {
+                    Mekanism.logger.error("Tried to create property data for invalid array type '{}'.", arrayType.getName());
+                    return null;
+                }
+                return new ArrayFieldData(getter, type);
             }
             PropertyType type = PropertyType.getFromType(propertyType);
             if (type == null) {
@@ -293,15 +316,63 @@ public class SyncMapper extends BaseAnnotationScanner {
         }
     }
 
+    //Assumes length of array is constant regardless of holder implementation
+    protected static class ArrayFieldData extends TrackedFieldData {
+
+        protected ArrayFieldData(Function<Object, Object> getter, PropertyType propertyType) {
+            super(getter, null, propertyType);
+        }
+
+        @Override
+        protected void track(MekanismContainer container, Supplier<Object> holderSupplier) {
+            Object holder = holderSupplier.get();
+            if (holder != null) {
+                //Try to get the current holder
+                Object field = get(holder);
+                if (field.getClass().isArray()) {
+                    //Validate the field is an array
+                    int length = Array.getLength(field);
+                    for (int i = 0; i < length; i++) {
+                        int index = i;
+                        //For each element in the array, add a tracker for it
+                        container.track(create(() -> {
+                            Object obj = holderSupplier.get();
+                            return obj == null ? getDefault() : Array.get(get(obj), index);
+                        }, value -> {
+                            Object obj = holderSupplier.get();
+                            if (obj != null) {
+                                Array.set(get(obj), index, value);
+                            }
+                        }));
+                    }
+                } else {
+                    Mekanism.logger.error("Unexpected field type '{}' is not an array.", field.getClass());
+                }
+            } else {
+                Mekanism.logger.error("Unable to get holder object to add array tracker to.");
+            }
+        }
+
+        @Override
+        protected void set(Object dataObj, Object value) {
+            throw new UnsupportedOperationException("Unsupported, uses overridden.");
+        }
+
+        @Override
+        protected ISyncableData createSyncableData(Supplier<Object> obj) {
+            throw new UnsupportedOperationException("Unsupported, uses overridden.");
+        }
+    }
+
     private static class SpecialPropertyHandler<O> {
 
         private final Class<O> fieldType;
-        private final List<SpecialPropertyData<O>> specialData = new ArrayList<>();
+        private final List<SpecialPropertyData<O>> specialData;
 
         @SafeVarargs
         private SpecialPropertyHandler(Class<O> fieldType, SpecialPropertyData<O>... data) {
             this.fieldType = fieldType;
-            specialData.addAll(Arrays.asList(data));
+            specialData = List.of(data);
         }
     }
 

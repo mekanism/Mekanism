@@ -14,9 +14,10 @@ import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.GuiSlot;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.warning.ISupportsWarning;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -26,7 +27,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class GuiGauge<T> extends GuiTexturedElement {
+public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupportsWarning<GuiGauge<T>> {
 
     private final GaugeType gaugeType;
     protected boolean dummy;
@@ -43,9 +44,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         this.gaugeType = gaugeType;
     }
 
-    //TODO - WARNING SYSTEM: Hook up usage of warnings
+    @Override
     public GuiGauge<T> warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
-        this.warningSupplier = gui().trackWarning(type, warningSupplier);
+        this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
 
@@ -92,9 +93,8 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             applyRenderColor();
             drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
             MekanismRenderer.resetColor();
-            if (warning && scale == height - 2) {
-                //TODO - WARNING SYSTEM: Also decide if this should be using some check for when it is just close to max so that it is easily visible
-                //If we have a warning and the gauge is entirely filled draw a warning vertically next to it
+            if (warning && (scale / (double) (height - 2)) > 0.98) {
+                //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 RenderSystem.setShaderTexture(0, WARNING_TEXTURE);
                 int halfWidth = (width - 2) / 2;
                 //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
