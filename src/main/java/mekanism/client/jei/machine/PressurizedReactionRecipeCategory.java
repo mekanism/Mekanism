@@ -1,5 +1,6 @@
 package mekanism.client.jei.machine;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -20,12 +21,15 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
 
 public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
+
+    private static final String OUTPUT_GAS = "outputGas";
 
     private final GuiGauge<?> inputGas;
     private final GuiGauge<?> inputFluid;
@@ -53,6 +57,15 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     }
 
     @Override
+    public void draw(PressurizedReactionRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrix, double mouseX, double mouseY) {
+        super.draw(recipe, recipeSlotsView, matrix, mouseX, mouseY);
+        if (recipeSlotsView.findSlotByName(OUTPUT_GAS).isEmpty()) {
+            //If we don't have an output gas at all for this recipe, draw the bar overlay manually
+            outputGas.drawBarOverlay(matrix);
+        }
+    }
+
+    @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PressurizedReactionRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
@@ -67,8 +80,8 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
         }
         if (!gasOutputs.stream().allMatch(GasStack::isEmpty)) {
-            //TODO - 1.18: Make sure we add the gauge overlay even if there are no gas outputs
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs);
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs)
+                  .setSlotName(OUTPUT_GAS);
         }
     }
 }
