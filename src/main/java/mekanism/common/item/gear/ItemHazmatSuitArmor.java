@@ -2,20 +2,18 @@ package mekanism.common.item.gear;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemHazmatSuitArmor extends ArmorItem {
 
@@ -39,8 +37,12 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     }
 
     @Override
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
+    }
+
+    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        stack.hideTooltipPart(TooltipPart.MODIFIERS);
         return new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
     }
 

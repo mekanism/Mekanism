@@ -7,12 +7,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -36,7 +35,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -67,7 +65,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem {
@@ -315,9 +312,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        stack.hideTooltipPart(TooltipPart.MODIFIERS);
-        return super.initCapabilities(stack, nbt);
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @Override

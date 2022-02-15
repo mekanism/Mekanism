@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -42,7 +42,6 @@ import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,7 +63,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode> {
 
@@ -265,9 +263,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        stack.hideTooltipPart(TooltipPart.MODIFIERS);
-        return super.initCapabilities(stack, nbt);
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @Override

@@ -197,8 +197,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
+    }
+
+    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        stack.hideTooltipPart(TooltipPart.MODIFIERS);
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
         ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack),

@@ -26,7 +26,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +34,6 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
@@ -109,9 +107,8 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        stack.hideTooltipPart(TooltipPart.MODIFIERS);
-        return super.initCapabilities(stack, nbt);
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @Override

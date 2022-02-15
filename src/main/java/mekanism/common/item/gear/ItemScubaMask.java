@@ -2,18 +2,15 @@ package mekanism.common.item.gear;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemScubaMask extends ItemSpecialArmor {
 
@@ -29,9 +26,8 @@ public class ItemScubaMask extends ItemSpecialArmor {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        stack.hideTooltipPart(TooltipPart.MODIFIERS);
-        return super.initCapabilities(stack, nbt);
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @ParametersAreNonnullByDefault

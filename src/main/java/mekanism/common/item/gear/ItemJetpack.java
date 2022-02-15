@@ -29,7 +29,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -40,7 +39,6 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
@@ -123,11 +121,11 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
         if (!(this instanceof ItemArmoredJetpack)) {
-            stack.hideTooltipPart(TooltipPart.MODIFIERS);
+            return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
         }
-        return super.initCapabilities(stack, nbt);
+        return super.getDefaultTooltipHideFlags(stack);
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
