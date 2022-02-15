@@ -97,4 +97,9 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     protected List<ItemStack> getTagStacks(String tagName) {
         return TagCache.getItemTagStacks(tagName);
     }
+
+    @Override
+    protected List<ItemStack> getModIDStacks(String tagName) {
+        return TagCache.getItemModIDStacks(tagName);
+    }
 }

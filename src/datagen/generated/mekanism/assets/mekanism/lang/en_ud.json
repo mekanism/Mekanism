@@ -651,6 +651,7 @@
   "filter.mekanism.modid.no_id": "\u15E1I oN",
   "filter.mekanism.modid.same_id": "\u15E1I \u01DD\u026F\u0250S",
   "filter.mekanism.new": "%s :\u028D\u01DDN",
+  "filter.mekanism.no_matches": "s\u0287\u01DD\u1D77\u0279\u0250\u0287 \u1D77u\u1D09\u0265\u0254\u0287\u0250\u026F oN",
   "filter.mekanism.oredictionificator": "\u0279\u01DD\u0287\uA781\u1D09\u2132 \u0279o\u0287\u0250\u0254\u1D09\u025F\u1D09uo\u1D09\u0287\u0254\u1D09p\u01DD\u0279O",
   "filter.mekanism.oredictionificator.invalid_namespace": "\u01DD\u0254\u0250ds\u01DD\u026F\u0250u \u1D77\u0250\u0287 p\u1D09\uA781\u0250\u028CuI",
   "filter.mekanism.oredictionificator.invalid_path": "\u0265\u0287\u0250d \u1D77\u0250\u0287 p\u1D09\uA781\u0250\u028CuI",

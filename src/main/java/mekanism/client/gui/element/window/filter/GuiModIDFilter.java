@@ -54,7 +54,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
-            return TagCache.getModIDStacks(filter.getModID(), false);
+            return TagCache.getItemModIDStacks(filter.getModID());
         }
         return Collections.emptyList();
     }
@@ -110,15 +110,24 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             filterSaveFailed(getNoFilterSaveError());
         } else if (name.equals(filter.getModID())) {
             filterSaveFailed(MekanismLang.MODID_FILTER_SAME_ID);
+        } else if (!hasMatchingTargets(name)) {
+            //Even though we got the mod id from the target if it is not a click, there may not be any
+            // matching elements if say a mod only adds fluids. and we are matching items
+            filterSaveFailed(MekanismLang.TEXT_FILTER_NO_MATCHES);
         } else {
             filter.setModID(name);
             slotDisplay.updateStackList();
             text.setText("");
+            filterSaveSuccess();
             success = true;
         }
         if (click) {
             playClickSound();
         }
         return success;
+    }
+
+    protected boolean hasMatchingTargets(String name) {
+        return !TagCache.getItemModIDStacks(name).isEmpty();
     }
 }

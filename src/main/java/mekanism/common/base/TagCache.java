@@ -10,10 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +22,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -37,9 +37,10 @@ public final class TagCache {
     private TagCache() {
     }
 
-    private static final Map<String, List<ItemStack>> blockTagStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, MatchingStacks> blockTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
-    private static final Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, List<ItemStack>> itemModIDStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, MatchingStacks> blockModIDStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<Material, List<ItemStack>> materialStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<Block, List<String>> tileEntityTypeTagCache = new Object2ObjectOpenHashMap<>();
 
@@ -50,11 +51,11 @@ public final class TagCache {
     public static void resetTagCaches() {
         blockTagStacks.clear();
         itemTagStacks.clear();
-        //These maps have the boolean value be based on a tag
+        tileEntityTypeTagCache.clear();
+        //These maps have the boolean value be based on if an element is in a given tag
         blockTagBlacklistedElements.clear();
         modIDBlacklistedElements.clear();
         materialBlacklistedElements.clear();
-        tileEntityTypeTagCache.clear();
     }
 
     public static List<String> getItemTags(@Nonnull ItemStack check) {
@@ -101,51 +102,81 @@ public final class TagCache {
         return asStrings.build();
     }
 
-    public static List<ItemStack> getItemTagStacks(@Nonnull String oreName) {
-        return getTagStacks(itemTagStacks, ItemTags.getAllTags(), oreName);
-    }
-
-    public static List<ItemStack> getBlockTagStacks(@Nonnull String oreName) {
-        return getTagStacks(blockTagStacks, BlockTags.getAllTags(), oreName);
-    }
-
-    private static <TYPE extends ItemLike > List < ItemStack > getTagStacks(Map < String, List < ItemStack >> cache, TagCollection < TYPE > tagCollection,
-          @Nonnull String oreName) {
-        if (cache.containsKey(oreName)) {
-            return cache.get(oreName);
+    public static List<ItemStack> getItemTagStacks(@Nonnull String tagName) {
+        if (itemTagStacks.containsKey(tagName)) {
+            return itemTagStacks.get(tagName);
         }
-        Set<TYPE> items = new HashSet<>();
-        for (Map.Entry<ResourceLocation, Tag<TYPE>> entry : tagCollection.getAllTags().entrySet()) {
-            if (WildcardMatcher.matches(oreName, entry.getKey().toString())) {
-                items.addAll(entry.getValue().getValues());
-            }
-        }
-        List<ItemStack> stacks = items.stream().map(ItemStack::new).toList();
-        cache.put(oreName, stacks);
+        Set<Item> items = collectTagStacks(ItemTags.getAllTags(), tagName, item -> item != MekanismBlocks.BOUNDING_BLOCK.asItem());
+        List<ItemStack> stacks = items.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList();
+        itemTagStacks.put(tagName, stacks);
         return stacks;
     }
 
-    public static List<ItemStack> getModIDStacks(@Nonnull String modName, boolean forceBlock) {
-        if (modIDStacks.containsKey(modName)) {
-            return modIDStacks.get(modName);
+    public static MatchingStacks getBlockTagStacks(@Nonnull String tagName) {
+        if (blockTagStacks.containsKey(tagName)) {
+            return blockTagStacks.get(tagName);
+        }
+        Set<Block> blocks = collectTagStacks(BlockTags.getAllTags(), tagName, block -> block != MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        return getMatching(blockTagStacks, blocks, tagName);
+    }
+
+    private static <TYPE extends ItemLike> Set<TYPE> collectTagStacks(TagCollection<TYPE> tagCollection, String tagName, Predicate<TYPE> validElement) {
+        Set<TYPE> items = new HashSet<>();
+        for (Map.Entry<ResourceLocation, Tag<TYPE>> entry : tagCollection.getAllTags().entrySet()) {
+            if (WildcardMatcher.matches(tagName, entry.getKey().toString())) {
+                List<TYPE> elements = entry.getValue().getValues();
+                for (TYPE element : elements) {
+                    if (validElement.test(element)) {
+                        items.add(element);
+                    }
+                }
+            }
+        }
+        return items;
+    }
+
+    private static MatchingStacks getMatching(Map<String, MatchingStacks> cache, Set<Block> blocks, String name) {
+        if (blocks.isEmpty()) {
+            return MatchingStacks.NONE;
+        }
+        //Filter out any stacks that are empty such as if we are mining a block that doesn't have a direct item representation
+        MatchingStacks matchingStacks = new MatchingStacks(true, blocks.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList());
+        cache.put(name, matchingStacks);
+        return matchingStacks;
+    }
+
+    public static List<ItemStack> getItemModIDStacks(@Nonnull String modName) {
+        if (itemModIDStacks.containsKey(modName)) {
+            return itemModIDStacks.get(modName);
         }
         List<ItemStack> stacks = new ArrayList<>();
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
-            if (!forceBlock || item instanceof BlockItem) {
-                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
-                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof BlockBounding) {
-                    continue;
-                }
+            //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
+            if (item != MekanismBlocks.BOUNDING_BLOCK.asItem()) {
                 //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
                 // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
                 ItemStack stack = new ItemStack(item);
-                if (WildcardMatcher.matches(modName, MekanismUtils.getModId(stack))) {
+                if (!stack.isEmpty() && WildcardMatcher.matches(modName, MekanismUtils.getModId(stack))) {
                     stacks.add(stack);
                 }
             }
         }
-        modIDStacks.put(modName, stacks);
+        itemModIDStacks.put(modName, stacks);
         return stacks;
+    }
+
+    public static MatchingStacks getBlockModIDStacks(@Nonnull String modName) {
+        if (blockModIDStacks.containsKey(modName)) {
+            return blockModIDStacks.get(modName);
+        }
+        Set<Block> blocks = new HashSet<>();
+        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+            //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
+            if (block != MekanismBlocks.BOUNDING_BLOCK.getBlock() && WildcardMatcher.matches(modName, block.getRegistryName().getNamespace())) {
+                blocks.add(block);
+            }
+        }
+        return getMatching(blockModIDStacks, blocks, modName);
     }
 
     public static List<ItemStack> getMaterialStacks(@Nonnull ItemStack stack) {
@@ -157,16 +188,12 @@ public final class TagCache {
             return materialStacks.get(material);
         }
         List<ItemStack> stacks = new ArrayList<>();
-        for (Item item : ForgeRegistries.ITEMS.getValues()) {
-            if (item instanceof BlockItem blockItem) {
-                Block block = blockItem.getBlock();
-                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
-                //noinspection ConstantConditions getBlock is nonnull, but if something "goes wrong" it returns null, just skip it
-                if (block == null || block instanceof BlockBounding) {
-                    continue;
-                }
-                if (block.defaultBlockState().getMaterial() == material) {
-                    stacks.add(new ItemStack(item));
+        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+            //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
+            if (block != MekanismBlocks.BOUNDING_BLOCK.getBlock() && block.defaultBlockState().getMaterial() == material) {
+                ItemStack stack = new ItemStack(block);
+                if (!stack.isEmpty()) {
+                    stacks.add(stack);
                 }
             }
         }
@@ -227,5 +254,13 @@ public final class TagCache {
         }
         materialBlacklistedElements.put(material, hasBlacklisted);
         return hasBlacklisted;
+    }
+
+    /**
+     * @apiNote hasMatch might be true even if stacks is empty in the case there are blocks without a corresponding item form.
+     */
+    public record MatchingStacks(boolean hasMatch, List<ItemStack> stacks) {
+
+        private static final MatchingStacks NONE = new MatchingStacks(false, Collections.emptyList());
     }
 }

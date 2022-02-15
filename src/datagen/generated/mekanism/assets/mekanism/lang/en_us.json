@@ -651,6 +651,7 @@
   "filter.mekanism.modid.no_id": "No ID",
   "filter.mekanism.modid.same_id": "Same ID",
   "filter.mekanism.new": "New: %s",
+  "filter.mekanism.no_matches": "No matching targets",
   "filter.mekanism.oredictionificator": "Oredictionificator Filter",
   "filter.mekanism.oredictionificator.invalid_namespace": "Invalid tag namespace",
   "filter.mekanism.oredictionificator.invalid_path": "Invalid tag path",

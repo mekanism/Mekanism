@@ -40,9 +40,14 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
-            return TagCache.getModIDStacks(filter.getModID(), true);
+            return TagCache.getBlockModIDStacks(filter.getModID()).stacks();
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    protected boolean hasMatchingTargets(String name) {
+        return TagCache.getBlockModIDStacks(name).hasMatch();
     }
 
     @Override

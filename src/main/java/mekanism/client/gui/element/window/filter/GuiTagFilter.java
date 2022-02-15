@@ -47,13 +47,20 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
             filterSaveFailed(getNoFilterSaveError());
         } else if (name.equals(filter.getTagName())) {
             filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
+        } else if (!hasMatchingTargets(name)) {
+            filterSaveFailed(MekanismLang.TEXT_FILTER_NO_MATCHES);
         } else {
             filter.setTagName(name);
             slotDisplay.updateStackList();
             text.setText("");
+            filterSaveSuccess();
             return true;
         }
         return false;
+    }
+
+    protected boolean hasMatchingTargets(String name) {
+        return !TagCache.getItemTagStacks(name).isEmpty();
     }
 
     @Nonnull

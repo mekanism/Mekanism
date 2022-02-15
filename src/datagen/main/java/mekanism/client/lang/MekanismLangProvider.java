@@ -879,6 +879,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SORTER_SIZE_MODE, "Size Mode");
         add(MekanismLang.SORTER_SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
         add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");
+        add(MekanismLang.TEXT_FILTER_NO_MATCHES, "No matching targets");
         add(MekanismLang.MATERIAL_FILTER, "Material Filter");
         add(MekanismLang.MATERIAL_FILTER_DETAILS, "Using material of:");
         add(MekanismLang.TAG_FILTER, "Tag Filter");

@@ -40,9 +40,14 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
-            return TagCache.getBlockTagStacks(filter.getTagName());
+            return TagCache.getBlockTagStacks(filter.getTagName()).stacks();
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    protected boolean hasMatchingTargets(String name) {
+        return TagCache.getBlockTagStacks(name).hasMatch();
     }
 
     @Override

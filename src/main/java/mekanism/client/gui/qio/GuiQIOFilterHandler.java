@@ -100,7 +100,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                             list.addAll(TagCache.getItemTagStacks(tagFilter.getTagName()));
                         }
                     } else if (filter instanceof IModIDFilter<?> modIDFilter) {
-                        list.addAll(TagCache.getModIDStacks(modIDFilter.getModID(), false));
+                        list.addAll(TagCache.getItemModIDStacks(modIDFilter.getModID()));
                     }
                 }
                 return list;

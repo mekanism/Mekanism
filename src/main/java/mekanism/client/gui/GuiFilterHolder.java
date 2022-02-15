@@ -71,7 +71,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                     } else if (filter instanceof IMaterialFilter<?> materialFilter) {
                         list.addAll(TagCache.getMaterialStacks(materialFilter.getMaterialItem()));
                     } else if (filter instanceof IModIDFilter<?> modIDFilter) {
-                        list.addAll(TagCache.getModIDStacks(modIDFilter.getModID(), false));
+                        list.addAll(getModIDStacks(modIDFilter.getModID()));
                     }
                 }
                 return list;
@@ -95,6 +95,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     protected abstract List<ItemStack> getTagStacks(String tagName);
+
+    protected abstract List<ItemStack> getModIDStacks(String tagName);
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {

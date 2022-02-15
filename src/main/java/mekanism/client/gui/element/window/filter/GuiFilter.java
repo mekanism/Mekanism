@@ -174,7 +174,12 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected void filterSaveFailed(ILangEntry reason, Object... args) {
         status = reason.translateColored(EnumColor.DARK_RED, args);
-        ticker = 20;
+        ticker = 100;
+    }
+
+    protected void filterSaveSuccess() {
+        status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
+        ticker = 0;
     }
 
     protected void saveFilter() {

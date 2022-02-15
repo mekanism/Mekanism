@@ -173,6 +173,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected List<ItemStack> getTagStacks(String tagName) {
-        return TagCache.getBlockTagStacks(tagName);
+        return TagCache.getBlockTagStacks(tagName).stacks();
+    }
+
+    @Override
+    protected List<ItemStack> getModIDStacks(String tagName) {
+        return TagCache.getBlockModIDStacks(tagName).stacks();
     }
 }
