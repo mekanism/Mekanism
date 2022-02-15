@@ -203,7 +203,7 @@
   "boiler.mekanism.coolant_tank": "Serbatoio di Raffreddamento",
   "boiler.mekanism.heat_transfer": "Trasferimento di Calore",
   "boiler.mekanism.heaters": "Surriscaldatori: %s",
-  "boiler.mekanism.invalid_air_pockets": "Impossibile formare, sacche d'aria interne disconnesse.",
+  "boiler.mekanism.invalid_air_pockets": "Costruzione fallita, presenza incorretta di blocchi d'aria interni alla struttura.",
   "boiler.mekanism.invalid_extra_disperser": "Impossibile formare, Dispersore Pressurizzati invalidi.",
   "boiler.mekanism.invalid_missing_disperser": "Impossibile formare, assenza di Dispersore Pressurizzato a %s.",
   "boiler.mekanism.invalid_no_disperser": "Impossibile formare, assenza dello strato di Dispersori Pressurizzati.",
