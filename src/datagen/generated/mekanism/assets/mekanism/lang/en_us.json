@@ -1067,7 +1067,6 @@
   "miner.mekanism.config": "Digital Miner Config",
   "miner.mekanism.energy_capacity": "Energy Capacity: %s",
   "miner.mekanism.idle": "Not ready",
-  "miner.mekanism.insufficient_buffer": "Insufficient energy buffer!",
   "miner.mekanism.inverse": "Inverse mode",
   "miner.mekanism.low_power": "Low Power",
   "miner.mekanism.missing_block": "Missing block",

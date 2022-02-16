@@ -12,12 +12,15 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityElectricPump;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, MekanismTileContainer<TileEntityElectricPump>> {
@@ -43,8 +46,14 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
             return list;
         }));
         addRenderableWidget(new GuiDownArrow(this, 32, 39));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+                  MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.getEnergyContainer();
+                  return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
+              });
+        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13))
+              .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeeded() < FluidAttributes.BUCKET_VOLUME);
+        //TODO: Eventually we may want to consider showing a warning if the block under the pump is of the wrong type or there wasn't a valid spot to suck
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
     }
 

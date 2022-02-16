@@ -63,7 +63,7 @@ public class UsageConfig extends BaseMekanismConfig {
         energizedSmelter = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "energizedSmelter",
               FloatingLong.createConst(50));
         digitalMiner = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "digitalMiner",
-              FloatingLong.createConst(100));
+              FloatingLong.createConst(1_000));
         electricPump = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "electricPump",
               FloatingLong.createConst(100));
         chargePad = CachedFloatingLongValue.define(this, builder, "Energy that can be transferred at once per charge operation (Joules).", "chargePad",

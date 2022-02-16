@@ -1010,7 +1010,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.INDUCTION_PORT_MODE, "Toggled Induction Port transfer mode to %s.");
         add(MekanismLang.INDUCTION_PORT_OUTPUT_RATE, "Output Rate: %s");
         //Miner
-        add(MekanismLang.MINER_INSUFFICIENT_BUFFER, "Insufficient energy buffer!");
         add(MekanismLang.MINER_BUFFER_FREE, "Free Buffer: %s");
         add(MekanismLang.MINER_TO_MINE, "To mine: %s");
         add(MekanismLang.MINER_SILK_ENABLED, "Silk: %s");

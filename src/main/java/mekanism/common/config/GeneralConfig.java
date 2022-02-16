@@ -237,7 +237,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Digital Miner Settings").push(MINER_CATEGORY);
         minerSilkMultiplier = CachedIntValue.wrap(this, builder.comment("Energy multiplier for using silk touch mode with the Digital Miner.")
-              .define("silkMultiplier", 6));
+              .define("silkMultiplier", 12));
         minerMaxRadius = CachedIntValue.wrap(this, builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability and/or performance. We strongly recommend you leave it at the default value).")
               .defineInRange("maxRadius", 32, 1, Integer.MAX_VALUE));
         minerTicksPerMine = CachedIntValue.wrap(this, builder.comment("Number of ticks required to mine a single block with a Digital Miner (without any upgrades).")

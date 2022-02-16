@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiDigitalSwitch;
@@ -18,7 +16,6 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiVisualsTab;
-import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
@@ -26,6 +23,7 @@ import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.to_server.PacketGuiInteract;
@@ -35,9 +33,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
@@ -80,22 +78,22 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile)), SwitchType.LOWER_ICON));
         addRenderableWidget(new GuiDigitalSwitch(this, 57, 56, SILK, tile::getSilkTouch, MekanismLang.MINER_SILK.translate(),
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile)), SwitchType.LOWER_ICON));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+                  MinerEnergyContainer energyContainer = tile.getEnergyContainer();
+                  return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
+              });
         addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, 64, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             MinerEnergyContainer energyContainer = tile.getEnergyContainer();
-            FloatingLong perTick = energyContainer.getEnergyPerTick();
-            ArrayList<Component> ret = new ArrayList<>(4);
-            ret.add(MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.getMaxEnergy())));
-            ret.add(MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(perTick)));
-            if (perTick.greaterThan(energyContainer.getMaxEnergy())) {
-                ret.add(MekanismLang.MINER_INSUFFICIENT_BUFFER.translateColored(EnumColor.RED));
-            }
-            ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded())));
-            return ret;
+            return List.of(
+                  MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.getMaxEnergy())),
+                  MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
+                  MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded()))
+            );
         }));
 
         int buttonStart = 19;

@@ -93,6 +93,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
@@ -113,6 +114,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters {
 
+    public static final int DEFAULT_HEIGHT_RANGE = 60;
+    public static final int DEFAULT_RADIUS = 10;
+
     private Long2ObjectMap<BitSet> oresToMine = Long2ObjectMaps.emptyMap();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
@@ -122,7 +126,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private boolean inverseRequiresReplacement;
     private Item inverseReplaceTarget = Items.AIR;
     private int minY;
-    private int maxY = 60;
+    private int maxY = minY + DEFAULT_HEIGHT_RANGE;
     private boolean doEject = false;
     private boolean doPull = false;
     public ItemStack missingStack = ItemStack.EMPTY;
@@ -147,7 +151,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public TileEntityDigitalMiner(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIGITAL_MINER, pos, state);
-        radius = 10;
+        radius = DEFAULT_RADIUS;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
         //Return some capabilities as disabled, and handle them with offset capabilities instead
         addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -734,6 +738,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         // the values changed, but it would make the code a decent bit messier, as we couldn't use NBTUtils, and it is a
         // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
         // the default value
+        energyContainer.updateMinerEnergyPerTick();
+    }
+
+    @Override
+    public void setLevel(@Nonnull Level world) {
+        super.setLevel(world);
+        //Update miner energy as the world height is likely different compared to the old pre 1.18 values
         energyContainer.updateMinerEnergyPerTick();
     }
 

@@ -12,13 +12,15 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityFluidicPlenisher;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.FluidStack;
 
 public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher, MekanismTileContainer<TileEntityFluidicPlenisher>> {
@@ -45,7 +47,11 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
             return list;
         }));
         addRenderableWidget(new GuiDownArrow(this, 32, 39));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+                  MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer = tile.getEnergyContainer();
+                  return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
+              });
         addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
     }

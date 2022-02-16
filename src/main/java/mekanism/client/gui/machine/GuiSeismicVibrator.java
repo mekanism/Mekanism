@@ -8,10 +8,12 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrator, MekanismTileContainer<TileEntitySeismicVibrator>> {
 
@@ -27,7 +29,11 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
               tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
               MekanismLang.CHUNK.translate(tile.getBlockPos().getX() >> 4, tile.getBlockPos().getZ() >> 4)
         )));
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
+              .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+                  MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer = tile.getEnergyContainer();
+                  return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
+              });
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
     }
 

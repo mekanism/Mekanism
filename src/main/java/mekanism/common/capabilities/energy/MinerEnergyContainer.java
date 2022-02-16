@@ -7,6 +7,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import net.minecraft.world.level.Level;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -48,7 +49,19 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         if (tile.getSilkTouch()) {
             minerEnergyPerTick = minerEnergyPerTick.multiply(MekanismConfig.general.minerSilkMultiplier.get());
         }
-        minerEnergyPerTick = minerEnergyPerTick.multiply((1 + Math.max((tile.getRadius() - 10) / 22D, 0)) *
-                                                         (1 + Math.max((tile.getMaxY() - tile.getMinY() - 60) / 195D, 0)));
+        double radiusRange = MekanismConfig.general.minerMaxRadius.get() - TileEntityDigitalMiner.DEFAULT_RADIUS;
+        double heightRange;
+        Level level = tile.getLevel();
+        if (level == null) {
+            //Default to a world height of 255 (pre 1.18 height)
+            heightRange = 255 - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE;
+        } else {
+            //Note: We adjust the height by one as the height range is "zero indexed"
+            heightRange = level.getHeight() - 1 - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE;
+        }
+        //If the range for a specific thing is zero, ignore it from the cost calculations
+        double radiusCost = radiusRange == 0 ? 0 : (tile.getRadius() - TileEntityDigitalMiner.DEFAULT_RADIUS) / radiusRange;
+        double heightCost = heightRange == 0 ? 0 : (tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange;
+        minerEnergyPerTick = minerEnergyPerTick.multiply((1 + Math.max(radiusCost, 0)) * (1 + Math.max(heightCost, 0)));
     }
 }
