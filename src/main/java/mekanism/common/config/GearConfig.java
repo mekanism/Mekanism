@@ -282,9 +282,9 @@ public class GearConfig extends BaseMekanismConfig {
               "chargeRate", FloatingLong.createConst(100_000));
         mekaToolEnergyUsageHoe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a hoe.",
               "energyUsageHoe", FloatingLong.createConst(10));
-        mekaToolEnergyUsageShovel = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a shovel for making paths.",
+        mekaToolEnergyUsageShovel = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a shovel for making paths and dowsing campfires.",
               "energyUsageShovel", FloatingLong.createConst(10));
-        mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs.",
+        mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs, scraping, or removing wax.",
               "energyUsageAxe", FloatingLong.createConst(10));
         mekaToolEnergyUsageShearBlock = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear blocks (beehives, pumpkins).",
               "energyUsageShearBlock", FloatingLong.createConst(10));

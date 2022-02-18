@@ -57,10 +57,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.TripWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -95,9 +92,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        //TODO - 1.18: Check actions first the meka tool always has access to
-        return getModules(stack).stream().anyMatch(module -> module.isEnabled() && getProvidedToolActions(module).contains(toolAction));
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
+            return true;
+        }
+        return getModules(stack).stream().anyMatch(module -> module.isEnabled() && getProvidedToolActions(module).contains(action));
     }
 
     private <MODULE extends ICustomModule<MODULE>> Collection<ToolAction> getProvidedToolActions(IModule<MODULE> module) {
@@ -168,13 +167,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
             FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
-            FloatingLong extractedEnergy = energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
-            if (extractedEnergy.equals(energyRequired) || entityliving instanceof Player player && player.isCreative()) {
-                //Only disarm tripwires if we had all the energy we tried to use (or are creative). Otherwise, treat it as if we may have failed to disarm it
-                if (state.is(Blocks.TRIPWIRE) && !state.getValue(TripWireBlock.DISARMED) && isModuleEnabled(stack, MekanismModules.SHEARING_UNIT)) {
-                    world.setBlock(pos, state.setValue(TripWireBlock.DISARMED, true), Block.UPDATE_INVISIBLE);
-                }
-            }
+            energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
         }
         return true;
     }
@@ -233,8 +226,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
                         Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, isOre ? -1 : veinMiningUnit.getCustomInstance().getExcavationRange());
                         MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found,
-                              isModuleEnabled(stack, MekanismModules.SHEARING_UNIT), hardness -> getDestroyEnergy(baseDestroyEnergy, hardness),
-                              distance -> 0.5 * Math.pow(distance, isOre ? 1.5 : 2), state);
+                              hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), distance -> 0.5 * Math.pow(distance, isOre ? 1.5 : 2), state);
                     }
                 }
             }
@@ -246,7 +238,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         return silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
     }
 
-    private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
+    public FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
         return getDestroyEnergy(getDestroyEnergy(itemStack, silk), hardness);
     }
 

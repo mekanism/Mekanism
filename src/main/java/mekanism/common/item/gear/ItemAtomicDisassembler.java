@@ -63,8 +63,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode> {
+
+    //All basic dig actions except shears
+    public static final Set<ToolAction> ALWAYS_SUPPORTED_ACTIONS = Set.of(ToolActions.AXE_DIG, ToolActions.HOE_DIG, ToolActions.SHOVEL_DIG, ToolActions.PICKAXE_DIG,
+          ToolActions.SWORD_DIG);
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -92,6 +98,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         DisassemblerMode mode = getMode(stack);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, mode));
         tooltip.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.INDIGO, mode.getEfficiency()));
+    }
+
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return ALWAYS_SUPPORTED_ACTIONS.contains(action);
     }
 
     @Override
@@ -159,7 +170,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 // only allow mining things that are considered an ore
                 if (!(state.getBlock() instanceof BlockBounding) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     List<BlockPos> found = findPositions(state, pos, world);
-                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found, false,
+                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found,
                           hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), distance -> 0.5 * Math.pow(distance, 1.5), state);
                 }
             }

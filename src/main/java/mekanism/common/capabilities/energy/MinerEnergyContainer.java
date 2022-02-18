@@ -49,6 +49,7 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
         if (tile.getSilkTouch()) {
             minerEnergyPerTick = minerEnergyPerTick.multiply(MekanismConfig.general.minerSilkMultiplier.get());
         }
+        //Ranges are difference between max and default
         double radiusRange = MekanismConfig.general.minerMaxRadius.get() - TileEntityDigitalMiner.DEFAULT_RADIUS;
         double heightRange;
         Level level = tile.getLevel();
@@ -60,8 +61,18 @@ public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigit
             heightRange = level.getHeight() - 1 - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE;
         }
         //If the range for a specific thing is zero, ignore it from the cost calculations
-        double radiusCost = radiusRange == 0 ? 0 : (tile.getRadius() - TileEntityDigitalMiner.DEFAULT_RADIUS) / radiusRange;
-        double heightCost = heightRange == 0 ? 0 : (tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange;
-        minerEnergyPerTick = minerEnergyPerTick.multiply((1 + Math.max(radiusCost, 0)) * (1 + Math.max(heightCost, 0)));
+        double radiusCost;
+        double heightCost;
+        if (radiusRange == 0) {
+            radiusCost = 0;
+        } else {
+            radiusCost = Math.max((tile.getRadius() - TileEntityDigitalMiner.DEFAULT_RADIUS) / radiusRange, 0);
+        }
+        if (heightRange == 0) {
+            heightCost = 0;
+        } else {
+            heightCost = Math.max((tile.getMaxY() - tile.getMinY() - TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE) / heightRange, 0);
+        }
+        minerEnergyPerTick = minerEnergyPerTick.multiply((1 + radiusCost) * (1 + heightCost));
     }
 }

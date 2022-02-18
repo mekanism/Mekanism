@@ -87,8 +87,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.TripWireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -811,8 +809,7 @@ public final class MekanismUtils {
     }
 
     public static void veinMineArea(IEnergyContainer energyContainer, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
-          Collection<BlockPos> found, boolean shears, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier,
-          BlockState sourceState) {
+          Collection<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier, BlockState sourceState) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
@@ -835,11 +832,6 @@ public final class MekanismUtils {
             if (exp == -1) {
                 //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
                 continue;
-            }
-            //If we have the shears module installed, and it is a tripwire, disarm it first
-            if (shears && targetState.is(Blocks.TRIPWIRE) && !targetState.getValue(TripWireBlock.DISARMED)) {
-                targetState = targetState.setValue(TripWireBlock.DISARMED, true);
-                world.setBlock(foundPos, targetState, Block.UPDATE_INVISIBLE);
             }
             //Otherwise, break the block
             Block block = targetState.getBlock();
