@@ -14,6 +14,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -25,6 +26,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +39,10 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     public ItemPortableQIODashboard(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE));
+    }
+
+    public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
+        InventoryUtils.dropItemContents(item, damageSource);
     }
 
     @Override

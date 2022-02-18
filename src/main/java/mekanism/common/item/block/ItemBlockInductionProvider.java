@@ -28,7 +28,7 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockTile<TileE
     }
 
     @Override
-    public void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         InductionProviderTier tier = getTier();
         tooltip.add(MekanismLang.INDUCTION_PORT_OUTPUT_RATE.translateColored(tier.getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getOutput())));
     }

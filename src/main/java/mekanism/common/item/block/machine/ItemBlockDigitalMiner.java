@@ -3,16 +3,14 @@ package mekanism.common.item.block.machine;
 import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
-import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockDigitalMiner extends ItemBlockMachine {
 
     public ItemBlockDigitalMiner(BlockTile<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>> block) {
         super(block);

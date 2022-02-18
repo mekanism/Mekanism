@@ -34,12 +34,12 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTile<?
     }
 
     @Override
-    public void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         MekanismUtils.addFrequencyToTileTooltip(stack, FrequencyType.INVENTORY, tooltip);
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(StorageUtils.getStoredEnergyFromNBT(stack))));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));

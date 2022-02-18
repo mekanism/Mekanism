@@ -58,7 +58,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }

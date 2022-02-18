@@ -20,7 +20,7 @@ public class ItemBlockLogisticalSorter extends ItemBlockTooltip<BlockLogisticalS
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addUpgradesToTooltip(stack, tooltip);
     }

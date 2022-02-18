@@ -24,7 +24,7 @@ public class ItemBlockChargepad extends ItemBlockTooltip<BlockTileModel<?, ?>> {
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
     }
 

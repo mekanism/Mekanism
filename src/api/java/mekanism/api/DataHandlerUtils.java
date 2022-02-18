@@ -78,6 +78,9 @@ public class DataHandlerUtils {
         return NBTConstants.CONTAINER;
     }
 
+    /**
+     * Helper to calculate what the maximum id is in a list of contents.
+     */
     public static int getMaxId(ListTag storedContents, String key) {
         int maxId = -1;
         for (int tagCount = 0; tagCount < storedContents.size(); tagCount++) {

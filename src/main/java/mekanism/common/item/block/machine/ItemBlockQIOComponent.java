@@ -16,7 +16,7 @@ public class ItemBlockQIOComponent extends ItemBlockMachine {
     }
 
     @Override
-    public void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         MekanismUtils.addFrequencyToTileTooltip(stack, FrequencyType.QIO, tooltip);
     }
 }

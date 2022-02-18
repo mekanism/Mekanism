@@ -1,6 +1,7 @@
 package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -37,12 +38,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
     private final List<IInventorySlot> slots;
 
     ItemRecipeData(ListTag slots) {
-        int count = DataHandlerUtils.getMaxId(slots, NBTConstants.SLOT);
-        this.slots = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            this.slots.add(new DummyInventorySlot());
-        }
-        DataHandlerUtils.readContainers(this.slots, slots);
+        this.slots = readContents(slots);
     }
 
     private ItemRecipeData(List<IInventorySlot> slots) {
@@ -147,6 +143,19 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(slots), stack);
         }
         return true;
+    }
+
+    public static List<IInventorySlot> readContents(@Nullable ListTag contents) {
+        if (contents == null) {
+            return Collections.emptyList();
+        }
+        int count = DataHandlerUtils.getMaxId(contents, NBTConstants.SLOT);
+        List<IInventorySlot> slots = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            slots.add(new DummyInventorySlot());
+        }
+        DataHandlerUtils.readContainers(slots, contents);
+        return slots;
     }
 
     private static class DummyInventorySlot extends BasicInventorySlot {

@@ -18,6 +18,7 @@ import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
@@ -27,6 +28,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -38,6 +41,10 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
 
     public ItemRobit(Properties properties) {
         super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE));
+    }
+
+    public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
+        InventoryUtils.dropItemContents(item, damageSource);
     }
 
     @Override

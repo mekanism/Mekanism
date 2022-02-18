@@ -45,7 +45,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), getOwnerUUID(stack)).getTextComponent());
         if (Attribute.has(getBlock(), AttributeSecurity.class)) {
             ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
@@ -54,6 +54,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
                 tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
             }
         }
+        addTypeDetails(stack, world, tooltip, advanced);
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             StorageUtils.addStoredEnergy(stack, tooltip, false);
         }
@@ -68,6 +69,9 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
             MekanismUtils.addUpgradesToTooltip(stack, tooltip);
         }
+    }
+
+    protected void addTypeDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
     }
 
     @Override

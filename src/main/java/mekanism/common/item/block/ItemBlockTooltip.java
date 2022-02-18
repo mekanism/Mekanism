@@ -7,7 +7,10 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.interfaces.IHasDescription;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -27,6 +30,11 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         this.hasDetails = hasDetails;
     }
 
+    public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
+        //Try to drop the inventory contents if we are a block item that persists our inventory
+        InventoryUtils.dropItemContents(item, damageSource);
+    }
+
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
@@ -42,9 +50,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    public void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
     }
 
-    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
     }
 }

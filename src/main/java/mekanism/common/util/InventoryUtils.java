@@ -9,10 +9,21 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.security.IOwnerItem;
+import mekanism.common.lib.security.ISecurityItem;
+import mekanism.common.lib.security.ISecurityObject;
+import mekanism.common.lib.security.SecurityMode;
+import mekanism.common.recipe.upgrade.ItemRecipeData;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -21,6 +32,56 @@ import org.jetbrains.annotations.Contract;
 public final class InventoryUtils {
 
     private InventoryUtils() {
+    }
+
+    /**
+     * Helper to drop the contents of an inventory when it is destroyed if it is public or the cause of the destruction has access to the inventory.
+     */
+    public static void dropItemContents(ItemEntity entity, DamageSource source) {
+        //TODO - 1.18: Add override annotations to all places that call this and also test that this works
+        ItemStack stack = entity.getItem();
+        if (!entity.level.isClientSide && !stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
+            boolean shouldDrop;
+            if (source.getEntity() instanceof Player player) {
+                //If the destroyer is a player use security utils to properly check for access
+                shouldDrop = SecurityUtils.canAccess(player, stack);
+            } else if (!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem ownerItem) {
+                // otherwise, if it is an owner item but not a security item make sure the owner matches,
+                // and only allow it if protection is disabled or the item doesn't have an owner yet
+                shouldDrop = !MekanismConfig.general.allowProtection.get() || ownerItem.getOwnerUUID(stack) == null;
+            } else {
+                // finally, if the destroyer wasn't a player and not just an owner item but not a security item,
+                // wrap it as a security item and allow dropping if it doesn't have security, or it is public
+                ISecurityObject security = SecurityUtils.wrapSecurityItem(stack);
+                shouldDrop = !security.hasSecurity() || security.getSecurityMode() == SecurityMode.PUBLIC;
+            }
+            if (shouldDrop) {
+                ListTag storedContents = sustainedInventory.getInventory(stack);
+                for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
+                    if (!slot.isEmpty()) {
+                        ItemStack slotStack = slot.getStack();
+                        int count = slotStack.getCount();
+                        int max = slotStack.getMaxStackSize();
+                        if (count > max) {
+                            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
+                            // stack counts, drop as many stacks as we need at their max size
+                            while (count > max) {
+                                entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), StackUtils.size(slotStack, max)));
+                                count -= max;
+                            }
+                            if (count > 0) {
+                                //If we have anything left to drop afterward, do so
+                                entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), StackUtils.size(slotStack, count)));
+                            }
+                        } else {
+                            //If we have a valid stack, we can just directly drop that instead without requiring any copies
+                            // as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
+                            entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), slotStack));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
