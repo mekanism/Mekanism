@@ -1,4 +1,4 @@
-package mekanism.common.content.gear.mekasuit;
+package mekanism.generators.common.content.gear.mekasuit;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;

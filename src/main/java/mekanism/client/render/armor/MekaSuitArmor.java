@@ -4,7 +4,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -88,20 +87,9 @@ public class MekaSuitArmor implements ICustomArmor {
     public static final MekaSuitArmor PANTS = new MekaSuitArmor(EquipmentSlot.LEGS, EquipmentSlot.FEET);
     public static final MekaSuitArmor BOOTS = new MekaSuitArmor(EquipmentSlot.FEET, EquipmentSlot.LEGS);
 
-    //TODO - 1.18: Extend a way for modules to be across multiple caches so that the solar helmet can be moved to mek generators
-    // and that addons can add custom rendering for some of their modules if they want
-    private static final Set<ModelData> specialModels = Sets.newHashSet(MekanismModelCache.INSTANCE.MEKASUIT_MODULES);
-
     private static final Table<EquipmentSlot, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
     private static final Map<UUID, BoltRenderer> boltRenderMap = new Object2ObjectOpenHashMap<>();
-
-    static {
-        registerModule("solar_helmet", MekanismModules.SOLAR_RECHARGING_UNIT, EquipmentSlot.HEAD);
-        registerModule("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlot.CHEST);
-        registerModule("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
-        registerModule("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
-    }
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3(-1, 0.5, 0)));
 
@@ -357,35 +345,42 @@ public class MekaSuitArmor implements ICustomArmor {
         Set<String> ignored = new HashSet<>();
 
         if (!modules.isEmpty()) {
-            //TODO: At some point it may make sense to source this from specialModels
-            ModuleOBJModelData modelData = MekanismModelCache.INSTANCE.MEKASUIT_MODULES;
-            Map<ModelPos, Set<String>> quadsToRender = specialQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
-            Map<ModelPos, Set<String>> ledQuadsToRender = specialLEDQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
-            Set<String> matchedParts = new HashSet<>();
-            for (Object2BooleanMap.Entry<ModuleModelSpec> entry : modules.object2BooleanEntrySet()) {
-                ModuleModelSpec spec = entry.getKey();
-                for (String name : modelData.getPartsForSpec(spec, entry.getBooleanValue())) {
-                    if (name.contains(OVERRIDDEN_TAG)) {
-                        overrides.put(spec.processOverrideName(name), new OverrideData(modelData, name));
-                    }
-                    // if this armor unit controls rendering of this module
-                    if (type == spec.slotType) {
-                        // then add the part as one we will need to add to render, this way we can ensure
-                        // we respect any overrides that might be in a later model part
-                        matchedParts.add(name);
+            Map<ModelData, Set<String>> allMatchedParts = new Object2ObjectOpenHashMap<>();
+            for (ModuleOBJModelData modelData : MekanismModelCache.INSTANCE.MEKA_SUIT_MODULES) {
+                Set<String> matchedParts = allMatchedParts.computeIfAbsent(modelData, d -> new HashSet<>());
+                for (Object2BooleanMap.Entry<ModuleModelSpec> entry : modules.object2BooleanEntrySet()) {
+                    ModuleModelSpec spec = entry.getKey();
+                    for (String name : modelData.getPartsForSpec(spec, entry.getBooleanValue())) {
+                        if (name.contains(OVERRIDDEN_TAG)) {
+                            overrides.put(spec.processOverrideName(name), new OverrideData(modelData, name));
+                        }
+                        // if this armor unit controls rendering of this module
+                        if (type == spec.slotType) {
+                            // then add the part as one we will need to add to render, this way we can ensure
+                            // we respect any overrides that might be in a later model part
+                            matchedParts.add(name);
+                        }
                     }
                 }
             }
-            //For all the parts we matched, go through and try adding them, while respecting any overrides we might have
-            for (String name : matchedParts) {
-                ModelPos pos = ModelPos.get(name);
-                if (pos == null) {
-                    Mekanism.logger.warn("MekaSuit part '{}' is invalid from modules model. Ignoring.", name);
-                } else {
-                    //Note: Currently the special quads here for overrides will likely point to our module and module led quads to render
-                    // but for consistency and future proofing it is better to make sure we look it up in case overrides gets other stuff
-                    // added to it at some point
-                    addQuadsToRender(pos, name, overrides, quadsToRender, ledQuadsToRender, specialQuadsToRender, specialLEDQuadsToRender);
+            for (Map.Entry<ModelData, Set<String>> entry : allMatchedParts.entrySet()) {
+                Set<String> matchedParts = entry.getValue();
+                if (!matchedParts.isEmpty()) {
+                    ModelData modelData = entry.getKey();
+                    Map<ModelPos, Set<String>> quadsToRender = specialQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
+                    Map<ModelPos, Set<String>> ledQuadsToRender = specialLEDQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
+                    //For all the parts we matched, go through and try adding them, while respecting any overrides we might have
+                    for (String name : matchedParts) {
+                        ModelPos pos = ModelPos.get(name);
+                        if (pos == null) {
+                            Mekanism.logger.warn("MekaSuit part '{}' is invalid from modules model. Ignoring.", name);
+                        } else {
+                            //Note: Currently the special quads here for overrides will likely point to our module and module led quads to render
+                            // but for consistency and future proofing it is better to make sure we look it up in case overrides gets other stuff
+                            // added to it at some point
+                            addQuadsToRender(pos, name, overrides, quadsToRender, ledQuadsToRender, specialQuadsToRender, specialLEDQuadsToRender);
+                        }
+                    }
                 }
             }
         }
@@ -427,7 +422,7 @@ public class MekaSuitArmor implements ICustomArmor {
         Map<ModelPos, List<BakedQuad>> opaqueMap = new EnumMap<>(ModelPos.class);
         Map<ModelPos, List<BakedQuad>> transparentMap = new EnumMap<>(ModelPos.class);
         for (ModelPos pos : ModelPos.VALUES) {
-            for (ModelData modelData : specialModels) {
+            for (ModelData modelData : MekanismModelCache.INSTANCE.MEKA_SUIT_MODULES) {
                 parseTransparency(modelData, pos, opaqueMap, transparentMap, specialQuadsToRender.getOrDefault(modelData, Collections.emptyMap()),
                       specialLEDQuadsToRender.getOrDefault(modelData, Collections.emptyMap()));
             }
@@ -494,7 +489,7 @@ public class MekaSuitArmor implements ICustomArmor {
         };
     }
 
-    public record ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
+    private record ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
 
         public ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
             this.opaqueQuads = opaqueQuads.isEmpty() ? Collections.emptyMap() : opaqueQuads;
@@ -502,19 +497,7 @@ public class MekaSuitArmor implements ICustomArmor {
         }
     }
 
-    public static class ModuleModelSpec {
-
-        private final ModuleData<?> module;
-        private final EquipmentSlot slotType;
-        private final String name;
-        private final Predicate<LivingEntity> isActive;
-
-        public ModuleModelSpec(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<LivingEntity> isActive) {
-            this.module = module;
-            this.slotType = slotType;
-            this.name = name;
-            this.isActive = isActive;
-        }
+    private record ModuleModelSpec(ModuleData<?> module, EquipmentSlot slotType, String name, Predicate<LivingEntity> isActive) {
 
         /**
          * Score closest to zero is considered best, negative one for no match at all.
@@ -530,21 +513,16 @@ public class MekaSuitArmor implements ICustomArmor {
         public String processOverrideName(String part) {
             return MekaSuitArmor.processOverrideName(part, name);
         }
-
-        public ModuleData<?> getModule() {
-            return module;
-        }
     }
 
     private static String processOverrideName(String part, String name) {
         return part.replaceFirst(OVERRIDDEN_TAG, "").replaceFirst(name + "_", "");
     }
 
-    private static void registerModule(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType) {
-        registerModule(name, moduleDataProvider, slotType, entity -> true);
-    }
-
-    private static void registerModule(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
+    /**
+     * Call via {@link IModuleHelper#addMekaSuitModuleModelSpec(String, IModuleDataProvider, EquipmentSlot, Predicate)}.
+     */
+    public static void registerModule(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
         ModuleData<?> module = moduleDataProvider.getModuleData();
         moduleModelSpec.put(slotType, module, new ModuleModelSpec(module, slotType, name, isActive));
     }

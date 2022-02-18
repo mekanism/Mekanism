@@ -115,6 +115,7 @@ public class MekanismGenerators implements IModModule {
     }
 
     private void imcQueue(InterModEnqueueEvent event) {
+        MekanismIMC.addMekaSuitHelmetModules(GeneratorsModules.SOLAR_RECHARGING_UNIT);
         MekanismIMC.addMekaSuitPantsModules(GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT);
     }
 

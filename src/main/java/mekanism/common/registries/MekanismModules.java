@@ -13,7 +13,6 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMagneticAttractionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleNutritionalInjectionUnit;
-import mekanism.common.content.gear.mekasuit.ModuleSolarRechargingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
@@ -73,10 +72,6 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = MODULES.register("vision_enhancement_unit",
           ModuleVisionEnhancementUnit::new, () -> MekanismItems.MODULE_VISION_ENHANCEMENT.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE)
                 .handlesModeChange().rendersHUD().disabledByDefault());
-    //TODO - 1.18: Decide if we want to move this to Mekanism Generators so we can remove the requires mekanism generators from the description?
-    // It may be a bit of a pain due to how we do the custom models, but also maybe we don't want to in case pack devs want to put in a custom recipe
-    public static final ModuleRegistryObject<ModuleSolarRechargingUnit> SOLAR_RECHARGING_UNIT = MODULES.register("solar_recharging_unit",
-          ModuleSolarRechargingUnit::new, () -> MekanismItems.MODULE_SOLAR_RECHARGING.asItem(), builder -> builder.maxStackSize(8).rarity(Rarity.RARE));
     public static final ModuleRegistryObject<ModuleNutritionalInjectionUnit> NUTRITIONAL_INJECTION_UNIT = MODULES.register("nutritional_injection_unit",
           ModuleNutritionalInjectionUnit::new, () -> MekanismItems.MODULE_NUTRITIONAL_INJECTION.asItem(), builder -> builder.rarity(Rarity.RARE).rendersHUD());
 

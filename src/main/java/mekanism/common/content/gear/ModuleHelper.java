@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
@@ -20,6 +21,8 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
+import mekanism.client.model.MekanismModelCache;
+import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismItems;
@@ -31,6 +34,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.InterModComms;
@@ -202,5 +207,15 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     public IHUDElement hudElement(ResourceLocation icon, Component text, HUDColor color) {
         return HUDElement.of(icon, text, HUDElement.HUDColor.from(color));
+    }
+
+    @Override
+    public synchronized void addMekaSuitModuleModels(ResourceLocation location) {
+        MekanismModelCache.INSTANCE.registerMekaSuitModuleModel(location);
+    }
+
+    @Override
+    public synchronized void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
+        MekaSuitArmor.registerModule(name, moduleDataProvider, slotType, isActive);
     }
 }

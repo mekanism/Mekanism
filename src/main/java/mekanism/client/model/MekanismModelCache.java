@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
@@ -23,9 +25,10 @@ public class MekanismModelCache extends BaseModelCache {
     private final Set<Runnable> callbacks = new HashSet<>();
 
     public final OBJModelData MEKASUIT = registerOBJ(Mekanism.rl("models/entity/mekasuit.obj"));
-    public final ModuleOBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"), ModuleOBJModelData::new);
     public final OBJModelData MEKATOOL_LEFT_HAND = registerOBJ(Mekanism.rl("models/entity/mekatool_left.obj"));
     public final OBJModelData MEKATOOL_RIGHT_HAND = registerOBJ(Mekanism.rl("models/entity/mekatool_right.obj"));
+    private final Set<ModuleOBJModelData> mekaSuitModules = new HashSet<>();
+    public final Set<ModuleOBJModelData> MEKA_SUIT_MODULES = Collections.unmodifiableSet(mekaSuitModules);
 
     public final JSONModelData LIQUIFIER_BLADE = registerJSON(Mekanism.rl("block/liquifier_blade"));
     public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON(Mekanism.rl("block/pigment_mixer_shaft"));
@@ -70,5 +73,14 @@ public class MekanismModelCache extends BaseModelCache {
     public BakedModel getRobitSkin(@Nonnull IRobitSkinProvider skin) {
         JSONModelData data = ROBIT_SKINS.get(skin.getRegistryName());
         return data == null ? BASE_ROBIT : data.getBakedModel();
+    }
+
+    /**
+     * Call via {@link IModuleHelper#addMekaSuitModuleModels(ResourceLocation)}.
+     */
+    public ModuleOBJModelData registerMekaSuitModuleModel(ResourceLocation rl) {
+        ModuleOBJModelData data = register(rl, ModuleOBJModelData::new);
+        mekaSuitModules.add(data);
+        return data;
     }
 }

@@ -55,18 +55,6 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     protected abstract String getType();
 
-    @Nullable
-    @Override
-    public STACK getMatch(Iterable<STACK> ingredients, @Nonnull STACK toMatch, UidContext context) {
-        for (STACK stack : ingredients) {
-            if (toMatch.isTypeEqual(stack)) {
-                return stack;
-            }
-        }
-        //JEI expects null to be returned if there is no match  so that it can filter hidden ingredients
-        return null;
-    }
-
     @Override
     public String getDisplayName(STACK ingredient) {
         return TextComponentUtil.build(ingredient).getString();

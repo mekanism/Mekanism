@@ -1271,10 +1271,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_TELEPORT_REQUIRES_BLOCK, "Requires Block Target");
 
         add(MekanismModules.ENERGY_UNIT, "Energy Unit", "Increases maximum energy capacity.");
-        add(MekanismModules.LASER_DISSIPATION_UNIT, "Laser Dissipation Unit",
-              "Refracts and safely dissipates lasers that hit any MekaSuit armor piece.");
-        add(MekanismModules.RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit",
-              "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
+        add(MekanismModules.LASER_DISSIPATION_UNIT, "Laser Dissipation Unit", "Refracts and safely dissipates lasers that hit any MekaSuit armor piece.");
+        add(MekanismModules.RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit", "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
 
         add(MekanismModules.EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit", "Increases digging speed on any block.");
         add(MekanismModules.ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit", "Amplifies melee attacks on players or mobs.");
@@ -1284,14 +1282,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.SHEARING_UNIT, "Shearing Unit", "Allows the creation of energy blades for precise cutting jobs. Does not add laser swords.");
         add(MekanismModules.TELEPORTATION_UNIT, "Teleportation Unit", "Provides for quick travel to nearby blocks.");
 
-        add(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit",
-              "Uses electrolysis to create breathable oxygen from water. Will also fill a jetpack module with hydrogen when necessary.");
-        add(MekanismModules.INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit",
-              "Applies a miniature electromagnetic field around the breathing apparatus, preventing selected potion effect types.");
-        add(MekanismModules.VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit",
-              "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.");
-        add(MekanismModules.SOLAR_RECHARGING_UNIT, "Solar Recharging Unit",
-              "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.");
+        add(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit", "Uses electrolysis to create breathable oxygen from water. Will also fill a jetpack module with hydrogen when necessary.");
+        add(MekanismModules.INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit", "Applies a miniature electromagnetic field around the breathing apparatus, preventing selected potion effect types.");
+        add(MekanismModules.VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit", "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.");
         add(MekanismModules.NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit", "Automatically feeds the player Nutritional Paste when hungry.");
         add(MekanismModules.JETPACK_UNIT, "Jetpack Unit", "Applies a hydrogen-fueled jetpack to the MekaSuit.");
         add(MekanismModules.GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit", "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");

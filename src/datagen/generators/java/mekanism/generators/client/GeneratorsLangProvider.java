@@ -229,5 +229,6 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
 
         //Modules
         add(GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT, "Geothermal Generator Unit", "Harnesses geothermal energy from the surrounding environment, and improves protection against damage from heat sources. Install multiple for faster charging and greater protection.");
+        add(GeneratorsModules.SOLAR_RECHARGING_UNIT, "Solar Recharging Unit", "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging.");
     }
 }

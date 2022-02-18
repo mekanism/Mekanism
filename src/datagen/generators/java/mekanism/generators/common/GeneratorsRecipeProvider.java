@@ -255,7 +255,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
               .build(consumer);
         //Solar Recharging Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_SOLAR_RECHARGING)
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.MODULE_SOLAR_RECHARGING)
               .pattern(MekanismRecipeProvider.BASIC_MODULE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
