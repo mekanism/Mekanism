@@ -23,7 +23,7 @@ import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
 
@@ -66,7 +66,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PressurizedReactionRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PressurizedReactionRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());

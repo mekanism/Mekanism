@@ -18,7 +18,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,7 +46,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackGasToItemStackRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackGasToItemStackRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<ItemStack> gasItemProviders = new ArrayList<>();
         List<GasStack> scaledGases = new ArrayList<>();

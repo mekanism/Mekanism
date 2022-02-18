@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -19,7 +18,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -50,7 +49,7 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
     protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, RECIPE recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, RECIPE recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initChemical(builder, ingredientType, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition())
               .setSlotName(CHEMICAL_INPUT);

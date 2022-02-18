@@ -28,7 +28,7 @@ import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +78,7 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, NucleosynthesizingRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, NucleosynthesizingRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);

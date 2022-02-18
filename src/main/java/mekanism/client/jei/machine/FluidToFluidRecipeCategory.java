@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine;
 
 import java.util.Arrays;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -20,7 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidRecipe> {
@@ -52,7 +51,7 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidToFluidRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidToFluidRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

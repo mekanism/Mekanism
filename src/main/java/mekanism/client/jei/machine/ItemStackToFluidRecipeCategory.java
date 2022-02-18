@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
@@ -16,7 +15,7 @@ import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +43,7 @@ public class ItemStackToFluidRecipeCategory extends BaseRecipeCategory<ItemStack
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToFluidRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToFluidRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

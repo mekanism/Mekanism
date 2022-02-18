@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
@@ -17,7 +16,7 @@ import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
@@ -41,7 +40,7 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SawmillRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SawmillRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 4, output.getRelativeY() + 4, recipe.getMainOutputDefinition());
         initItem(builder, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 20, output.getRelativeY() + 4, recipe.getSecondaryOutputDefinition());

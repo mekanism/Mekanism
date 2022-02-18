@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -16,7 +15,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidSlurryToSlurryRecipe> {
@@ -41,7 +40,7 @@ public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidS
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidSlurryToSlurryRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidSlurryToSlurryRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_SLURRY, RecipeIngredientRole.INPUT, slurryInput, recipe.getChemicalInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_SLURRY, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());

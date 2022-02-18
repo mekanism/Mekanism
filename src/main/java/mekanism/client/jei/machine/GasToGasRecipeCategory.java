@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.GasToGasRecipe;
@@ -15,7 +14,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
@@ -38,7 +37,7 @@ public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, GasToGasRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, GasToGasRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

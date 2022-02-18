@@ -13,8 +13,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -37,7 +37,7 @@ import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -95,7 +95,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, BoilerJEIRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, BoilerJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water.getRepresentations());
         if (recipe.superHeatedCoolant == null) {
             initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));

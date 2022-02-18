@@ -2,7 +2,6 @@ package mekanism.client.jei.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +37,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
@@ -86,7 +85,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ChemicalCrystallizerRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ChemicalCrystallizerRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
         if (input instanceof GasStackIngredient ingredient) {

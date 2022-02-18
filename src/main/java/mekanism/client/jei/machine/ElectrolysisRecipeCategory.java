@@ -20,7 +20,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisRecipe> {
@@ -48,7 +48,7 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ElectrolysisRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ElectrolysisRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         List<GasStack> leftDefinition = new ArrayList<>();
         List<GasStack> rightDefinition = new ArrayList<>();

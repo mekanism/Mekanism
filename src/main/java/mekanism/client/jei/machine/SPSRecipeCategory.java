@@ -25,7 +25,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.text.EnergyDisplay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 
@@ -58,7 +58,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SPSJEIRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SPSJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.input.getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output));
     }

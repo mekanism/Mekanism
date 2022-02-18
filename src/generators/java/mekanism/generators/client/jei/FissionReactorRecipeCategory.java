@@ -35,7 +35,7 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -76,7 +76,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         //Handle the coolant either special cased water or the proper coolant
         if (recipe.inputCoolant == null) {
             initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, getWaterInput(recipe));

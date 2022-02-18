@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -13,7 +12,7 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackToItemStackRecipe> {
@@ -37,7 +36,7 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToItemStackRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToItemStackRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

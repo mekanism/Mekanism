@@ -23,7 +23,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -53,7 +53,7 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToEnergyRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToEnergyRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations())
               .setSlotName(INPUT);
     }

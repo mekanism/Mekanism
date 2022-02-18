@@ -18,7 +18,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,7 +46,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, MetallurgicInfuserRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, MetallurgicInfuserRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NonNull InfusionStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
         initChemical(builder, MekanismJEI.TYPE_INFUSION, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);
