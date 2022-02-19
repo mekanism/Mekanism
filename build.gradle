@@ -1,30 +1,43 @@
 defaultTasks 'fullBuild'
 
 buildscript {
-    repositories {
-        maven { url = "https://repo1.maven.org/maven2/" }
-        maven {
-            name = "forge"
-            url = "https://maven.minecraftforge.net/"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+  repositories {
+      maven { url = "https://repo1.maven.org/maven2/" }
+      maven {
+          name = "forge"
+          url = "https://maven.minecraftforge.net"
+      }
+      maven {
+          name = "covers"
+          url = "https://nexus.covers1624.net/repository/maven-hosted/"
+      }
+      maven {
+          name = "sonatype"
+          url = "https://oss.sonatype.org/content/repositories/snapshots/"
+      }
+      maven {
+          name = "jitpack"
+          url = "https://jitpack.io/"
+    }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+            changing = true
+        }
     }
 }
 
 repositories {
     maven {
         name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
+        url "https://chickenbones.net/maven/"
     }
     maven {
         name 'ForgeFS'
         url 'https://maven.minecraftforge.net/'
+    }
+    flatDir {
+        dirs 'libs'
     }
 }
 /*
