@@ -23,12 +23,14 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemStack.TooltipDisplayFlags;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
@@ -62,8 +64,8 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.FLOWING.translateColored(EnumColor.GRAY, YesNo.of(getFlowing(stack), true)));
     }
 
@@ -83,8 +85,8 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
-        if (slotType == getEquipmentSlot()) {
+    public void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
+        if (slotType == getSlot()) {
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
             GasStack stored = GasStack.EMPTY;
@@ -106,24 +108,20 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
             boolean newState = !getFlowing(stack);
             setFlowing(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.FLOWING.translate(OnOff.of(newState, true))), Util.DUMMY_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FLOWING.translate(OnOff.of(newState, true))), Util.NIL_UUID);
             }
         }
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-        if (stack.getTag() == null) {
-            stack.setTag(new CompoundNBT());
-        }
-        stack.getTag().putInt("HideFlags", 2);
+        stack.hideTooltipPart(TooltipDisplayFlags.MODIFIERS);
         return super.initCapabilities(stack, nbt);
     }
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
-        return slotType == getEquipmentSlot();
+        return slotType == getSlot();
     }
 
     @ParametersAreNonnullByDefault

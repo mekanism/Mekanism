@@ -2,6 +2,7 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -22,6 +23,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -30,6 +32,7 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.math.voxel.IShape;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -60,9 +63,9 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      * @apiNote This set is only used for purposes of caching all known valid inner blocks of a multiblock structure, for use in checking if we need to revalidate the
      * multiblock when something changes, cases we want to skip are inner nodes just changing state (for example, super heating elements being activated). While we could
      * use internal locations in this case, it might not cut it for the other multiblocks that don't mark all their internal pieces as "internal multiblocks". This set is
-     * not synced or checked anywhere (for things like equals) as it is only used on the server and isn't part of the structures information. It also is not the most
+     * not synced or checked anywhere (for things like equals) as it is only used on the server and isn't part of the structure's information. It also is not the most
      * accurate of checks that get done against this as there is no way to tell if the state actually changed or if the block changed entirely, but assuming no one is
-     * replacing the blocks inside of a multiblock (which is unsupported) it will handle it fine, and we can easily special case it becoming air as having been "broken"
+     * replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
      */
     public Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
 
@@ -96,9 +99,23 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
+    private boolean dirty;
+
     public MultiblockData(TileEntity tile) {
-        remoteSupplier = () -> tile.getWorld().isRemote();
-        worldSupplier = tile::getWorld;
+        remoteSupplier = () -> tile.getLevel().isClientSide();
+        worldSupplier = tile::getLevel;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void resetDirty() {
+        dirty = false;
+    }
+
+    public void markDirty() {
+        dirty = true;
     }
 
     /**
@@ -107,22 +124,45 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      * @return if we need an update packet
      */
     public boolean tick(World world) {
-        boolean ret = false;
+        boolean needsPacket = false;
         for (ValveData data : valves) {
             data.activeTicks = Math.max(0, data.activeTicks - 1);
             if (data.activeTicks > 0 != data.prevActive) {
-                ret = true;
+                needsPacket = true;
             }
             data.prevActive = data.activeTicks > 0;
         }
-        return ret;
+        return needsPacket;
+    }
+
+    protected double calculateAverageAmbientTemperature(World world) {
+        //Take a rough average of the biome temperature by calculating the average of all the corners of the multiblock
+        BlockPos min = getMinPos();
+        BlockPos max = getMaxPos();
+        return HeatAPI.getAmbientTemp(getBiomeTemp(world,
+              min,
+              new BlockPos(max.getX(), min.getY(), min.getZ()),
+              new BlockPos(min.getX(), min.getY(), max.getZ()),
+              new BlockPos(max.getX(), min.getY(), max.getZ()),
+              new BlockPos(min.getX(), max.getY(), min.getZ()),
+              new BlockPos(max.getX(), max.getY(), min.getZ()),
+              new BlockPos(min.getX(), max.getY(), max.getZ()),
+              max
+        ));
+    }
+
+    private static double getBiomeTemp(World world, BlockPos... positions) {
+        if (positions.length == 0) {
+            throw new IllegalArgumentException("No positions given.");
+        }
+        return Arrays.stream(positions).mapToDouble(pos -> world.getBiome(pos).getTemperature(pos)).sum() / positions.length;
     }
 
     public boolean setShape(IShape shape) {
         if (shape instanceof VoxelCuboid) {
             VoxelCuboid cuboid = (VoxelCuboid) shape;
             bounds = cuboid;
-            renderLocation = cuboid.getMinPos().offset(Direction.UP);
+            renderLocation = cuboid.getMinPos().relative(Direction.UP);
             setVolume(bounds.length() * bounds.width() * bounds.height());
             return true;
         }
@@ -179,7 +219,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return worldSupplier.get();
     }
 
-    protected boolean shouldCap(CacheSubstance type) {
+    protected boolean shouldCap(CacheSubstance<?, ?> type) {
         return true;
     }
 
@@ -204,30 +244,37 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void writeUpdateTag(CompoundNBT tag) {
         tag.putInt(NBTConstants.VOLUME, getVolume());
-        tag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(renderLocation));
+        if (renderLocation != null) {//In theory this shouldn't be null here but check it anyway
+            tag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(renderLocation));
+        }
         tag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(bounds.getMinPos()));
         tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(bounds.getMaxPos()));
         if (inventoryID != null) {
-            tag.putUniqueId(NBTConstants.INVENTORY_ID, inventoryID);
+            tag.putUUID(NBTConstants.INVENTORY_ID, inventoryID);
         }
     }
 
+    @ComputerMethod(nameOverride = "getLength")
     public int length() {
         return bounds.length();
     }
 
+    @ComputerMethod(nameOverride = "getWidth")
     public int width() {
         return bounds.width();
     }
 
+    @ComputerMethod(nameOverride = "getHeight")
     public int height() {
         return bounds.height();
     }
 
+    @ComputerMethod
     public BlockPos getMinPos() {
         return bounds.getMinPos();
     }
 
+    @ComputerMethod
     public BlockPos getMaxPos() {
         return bounds.getMaxPos();
     }
@@ -310,7 +357,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Set<Direction> getDirectionsToEmit(BlockPos pos) {
         Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            if (!locations.contains(pos.offset(direction))) {
+            BlockPos neighborPos = pos.relative(direction);
+            if (!locations.contains(neighborPos) && !internalLocations.contains(neighborPos)) {
                 directionsToEmit.add(direction);
             }
         }
@@ -323,6 +371,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     @Override
     public void onContentsChanged() {
+        markDirty();
     }
 
     @Override

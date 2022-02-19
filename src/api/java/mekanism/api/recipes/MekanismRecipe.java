@@ -1,5 +1,6 @@
 package mekanism.api.recipes;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.IgnoredIInventory;
 import net.minecraft.item.ItemStack;
@@ -8,13 +9,18 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-//TODO: Make implementations override equals and hashcode?
-public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {
+/**
+ * Base class for helping wrap our recipes into IRecipes.
+ */
+public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {//TODO: Should we make implementations override equals and hashcode?
 
     private final ResourceLocation id;
 
+    /**
+     * @param id Recipe name.
+     */
     protected MekanismRecipe(ResourceLocation id) {
-        this.id = id;
+        this.id = Objects.requireNonNull(id, "Recipe name cannot be null.");
     }
 
     /**
@@ -36,26 +42,26 @@ public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {
     }
 
     @Override
-    public boolean isDynamic() {
-        //Note: If we make this non dynamic, we can make it show in vanilla's crafting book and also then obey the recipe locking.
+    public boolean isSpecial() {
+        //Note: If we make this non-dynamic, we can make it show in vanilla's crafting book and also then obey the recipe locking.
         // For now none of that works/makes sense in our concept so don't lock it
         return true;
     }
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull IgnoredIInventory inv) {
+    public ItemStack assemble(@Nonnull IgnoredIInventory inv) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return ItemStack.EMPTY;
     }
 }

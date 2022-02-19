@@ -10,6 +10,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiMergedTankGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -28,29 +29,29 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     public GuiDynamicTank(MekanismTileContainer<TileEntityDynamicTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
+        inventoryLabelY += 2;
         dynamicSlots = true;
     }
 
     @Override
-    protected void initPreSlots() {
+    protected void addGuiElements() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addButton(GuiSideHolder.armorHolder(this));
         addButton(new GuiElementHolder(this, 141, 16, 26, 56));
-    }
-
-    @Override
-    public void init() {
-        super.init();
+        super.addGuiElements();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             TankMultiblockData multiblock = tile.getMultiblock();
+            long capacity = multiblock.getChemicalTankCapacity();
             switch (multiblock.mergedTank.getCurrentType()) {
                 case EMPTY:
                     ret.add(MekanismLang.EMPTY.translate());
                     break;
                 case FLUID:
                     addStored(ret, multiblock.getFluidTank().getFluid(), FluidStack::getAmount);
+                    capacity = multiblock.getTankCapacity();
                     break;
                 case GAS:
                     addStored(ret, multiblock.getGasTank());
@@ -66,10 +67,9 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
                     break;
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
-            // capacity is the same for the tank no matter what type it is currently stored
-            ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(multiblock.getTankCapacity())));
+            ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(capacity)));
             return ret;
-        }).defaultFormat().spacing(2));
+        }).spacing(2));
         addButton(new GuiDownArrow(this, 150, 39));
         addButton(new GuiContainerEditModeTab<>(this, tile));
         addButton(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
@@ -87,7 +87,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

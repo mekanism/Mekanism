@@ -1,7 +1,7 @@
 package mekanism.defense.common;
 
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.defense.common.config.MekanismDefenseConfig;
@@ -21,7 +21,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismDefense.MODID)
-public class MekanismDefense implements IModule {
+public class MekanismDefense implements IModModule {
 
     public static final String MODID = "mekanismdefense";
 
@@ -84,7 +84,7 @@ public class MekanismDefense implements IModule {
     }
 
     private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us

@@ -1,5 +1,6 @@
 package mekanism.api.recipes.outputs;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
@@ -23,7 +24,13 @@ public class OutputHelper {
     private OutputHelper() {
     }
 
+    /**
+     * Wrap a chemical tank into an {@link IOutputHandler}.
+     *
+     * @param tank Tank to wrap.
+     */
     public static <STACK extends ChemicalStack<?>> IOutputHandler<@NonNull STACK> getOutputHandler(IChemicalTank<?, STACK> tank) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
         return new IOutputHandler<@NonNull STACK>() {
 
             @Override
@@ -38,37 +45,57 @@ public class OutputHelper {
         };
     }
 
-    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(IExtendedFluidTank fluidTank) {
+    /**
+     * Wrap a fluid tank into an {@link IOutputHandler}.
+     *
+     * @param tank Tank to wrap.
+     */
+    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(IExtendedFluidTank tank) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
         return new IOutputHandler<@NonNull FluidStack>() {
 
             @Override
             public void handleOutput(@Nonnull FluidStack toOutput, int operations) {
-                OutputHelper.handleOutput(fluidTank, toOutput, operations);
+                OutputHelper.handleOutput(tank, toOutput, operations);
             }
 
             @Override
             public int operationsRoomFor(@Nonnull FluidStack toOutput, int currentMax) {
-                return OutputHelper.operationsRoomFor(fluidTank, toOutput, currentMax);
+                return OutputHelper.operationsRoomFor(tank, toOutput, currentMax);
             }
         };
     }
 
-    public static IOutputHandler<@NonNull ItemStack> getOutputHandler(IInventorySlot inventorySlot) {
+    /**
+     * Wrap an inventory slot into an {@link IOutputHandler}.
+     *
+     * @param slot Slot to wrap.
+     */
+    public static IOutputHandler<@NonNull ItemStack> getOutputHandler(IInventorySlot slot) {
+        Objects.requireNonNull(slot, "Slot cannot be null.");
         return new IOutputHandler<@NonNull ItemStack>() {
 
             @Override
             public void handleOutput(@Nonnull ItemStack toOutput, int operations) {
-                OutputHelper.handleOutput(inventorySlot, toOutput, operations);
+                OutputHelper.handleOutput(slot, toOutput, operations);
             }
 
             @Override
             public int operationsRoomFor(@Nonnull ItemStack toOutput, int currentMax) {
-                return OutputHelper.operationsRoomFor(inventorySlot, toOutput, currentMax);
+                return OutputHelper.operationsRoomFor(slot, toOutput, currentMax);
             }
         };
     }
 
+    /**
+     * Wraps two inventory slots, a "main" slot, and a "secondary" slot into an {@link IOutputHandler} for handling {@link ChanceOutput}s.
+     *
+     * @param mainSlot      Main slot to wrap.
+     * @param secondarySlot Secondary slot to wrap.
+     */
     public static IOutputHandler<@NonNull ChanceOutput> getOutputHandler(IInventorySlot mainSlot, IInventorySlot secondarySlot) {
+        Objects.requireNonNull(mainSlot, "Main slot cannot be null.");
+        Objects.requireNonNull(secondarySlot, "Secondary/Extra slot cannot be null.");
         return new IOutputHandler<@NonNull ChanceOutput>() {
 
             @Override
@@ -78,7 +105,7 @@ public class OutputHelper {
                 ItemStack secondaryOutput = toOutput.getSecondaryOutput();
                 for (int i = 0; i < operations; i++) {
                     OutputHelper.handleOutput(secondarySlot, secondaryOutput, operations);
-                    if (i + 1 < operations) {
+                    if (i < operations - 1) {
                         secondaryOutput = toOutput.nextSecondaryOutput();
                     }
                 }
@@ -92,24 +119,40 @@ public class OutputHelper {
         };
     }
 
-    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(IGasTank gasTank, IInventorySlot inventorySlot) {
+    /**
+     * Wraps a gas tank and an inventory slot an {@link IOutputHandler}.
+     *
+     * @param tank Tank to wrap.
+     * @param slot Slot to wrap.
+     */
+    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(IGasTank tank, IInventorySlot slot) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
+        Objects.requireNonNull(slot, "Slot cannot be null.");
         return new IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>>() {
 
             @Override
             public void handleOutput(@Nonnull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int operations) {
-                OutputHelper.handleOutput(inventorySlot, toOutput.getLeft(), operations);
-                OutputHelper.handleOutput(gasTank, toOutput.getRight(), operations);
+                OutputHelper.handleOutput(slot, toOutput.getLeft(), operations);
+                OutputHelper.handleOutput(tank, toOutput.getRight(), operations);
             }
 
             @Override
             public int operationsRoomFor(@Nonnull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int currentMax) {
-                currentMax = OutputHelper.operationsRoomFor(inventorySlot, toOutput.getLeft(), currentMax);
-                return OutputHelper.operationsRoomFor(gasTank, toOutput.getRight(), currentMax);
+                currentMax = OutputHelper.operationsRoomFor(slot, toOutput.getLeft(), currentMax);
+                return OutputHelper.operationsRoomFor(tank, toOutput.getRight(), currentMax);
             }
         };
     }
 
+    /**
+     * Wraps two gas tank into an {@link IOutputHandler}.
+     *
+     * @param leftTank  Left tank to wrap.
+     * @param rightTank Right tank to wrap.
+     */
     public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(IGasTank leftTank, IGasTank rightTank) {
+        Objects.requireNonNull(leftTank, "Left tank cannot be null.");
+        Objects.requireNonNull(rightTank, "Right tank cannot be null.");
         return new IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>>() {
 
             @Override
@@ -126,8 +169,14 @@ public class OutputHelper {
         };
     }
 
-    public static <STACK extends ChemicalStack<?>> void handleOutput(IChemicalTank<?, STACK> tank, STACK toOutput,
-          int operations) {
+    /**
+     * Adds {@code operations} operations worth of {@code toOutput} to the output.
+     *
+     * @param tank       Output.
+     * @param toOutput   Output result.
+     * @param operations Operations to perform.
+     */
+    static <STACK extends ChemicalStack<?>> void handleOutput(IChemicalTank<?, STACK> tank, STACK toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
@@ -157,7 +206,16 @@ public class OutputHelper {
         inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    public static <STACK extends ChemicalStack<?>> int operationsRoomFor(IChemicalTank<?, STACK> tank, STACK toOutput, int currentMax) {
+    /**
+     * Calculates how many operations the output has room for.
+     *
+     * @param tank       Output.
+     * @param toOutput   Output result.
+     * @param currentMax The current maximum number of operations that can happen.
+     *
+     * @return The number of operations the output has room for.
+     */
+    static <STACK extends ChemicalStack<?>> int operationsRoomFor(IChemicalTank<?, STACK> tank, STACK toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
@@ -178,7 +236,7 @@ public class OutputHelper {
         }
         //Copy the stack and make it be max size
         FluidStack maxOutput = new FluidStack(toOutput, Integer.MAX_VALUE);
-        //Then simulate filling the fluid tank so we can see how much actually can fit
+        //Then simulate filling the fluid tank, so we can see how much actually can fit
         FluidStack remainder = fluidTank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
         int amountUsed = maxOutput.getAmount() - remainder.getAmount();
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about

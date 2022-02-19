@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.util.MekanismUtils;
@@ -17,14 +18,13 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> extends TileEntityRecipeMachine<RECIPE> {
 
     private int operatingTicks;
-
-    public int BASE_TICKS_REQUIRED;
-
+    protected int baseTicksRequired;
     public int ticksRequired;
 
     protected TileEntityProgressMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider);
-        ticksRequired = BASE_TICKS_REQUIRED = baseTicksRequired;
+        this.baseTicksRequired = baseTicksRequired;
+        ticksRequired = this.baseTicksRequired;
     }
 
     public double getScaledProgress() {
@@ -35,8 +35,14 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
         this.operatingTicks = ticks;
     }
 
+    @ComputerMethod(nameOverride = "getRecipeProgress")
     public int getOperatingTicks() {
         return operatingTicks;
+    }
+
+    @ComputerMethod
+    public int getTicksRequired() {
+        return ticksRequired;
     }
 
     @Override
@@ -45,15 +51,15 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         return nbtTags;
     }
@@ -62,7 +68,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+            ticksRequired = MekanismUtils.getTicks(this, baseTicksRequired);
         }
     }
 
@@ -74,7 +80,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableInt.create(() -> operatingTicks, this::setOperatingTicks));
-        container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
+        container.track(SyncableInt.create(this::getOperatingTicks, this::setOperatingTicks));
+        container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
     }
 }

@@ -116,7 +116,7 @@ public class BasicInventorySlot implements IInventorySlot {
     private void setStack(ItemStack stack, boolean validateStack) {
         if (stack.isEmpty()) {
             if (current.isEmpty()) {
-                //If we are already empty just exit, so as to not fire onContentsChanged
+                //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
             current = ItemStack.EMPTY;
@@ -133,7 +133,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack, automationType)) {
-            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
         int needed = getLimit(stack) - getCount();
@@ -218,11 +218,24 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public void setSlotType(ContainerSlotType slotType) {
+        //TODO - 1.18: Re-evaluate this method as for the most part we now seem to be handling this in GuiMekanism
+        // and figuring it out based on the data type; which at the very least means we can probably remove some
+        // calls to this. Though there are also some cases where we want to override it where it doesn't now as
+        // the fallback sets it to normal basically regardless (see evaporation multiblock and input slots)
         this.slotType = slotType;
     }
 
     public void setSlotOverlay(@Nullable SlotOverlay slotOverlay) {
         this.slotOverlay = slotOverlay;
+    }
+
+    @Nullable
+    protected final SlotOverlay getSlotOverlay() {
+        return slotOverlay;
+    }
+
+    protected final ContainerSlotType getSlotType() {
+        return slotType;
     }
 
     /**
@@ -246,7 +259,7 @@ public class BasicInventorySlot implements IInventorySlot {
             amount = maxStackSize;
         }
         if (getCount() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         current.setCount(amount);
@@ -294,7 +307,7 @@ public class BasicInventorySlot implements IInventorySlot {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.ITEM, current.write(new CompoundNBT()));
+            nbt.put(NBTConstants.ITEM, current.save(new CompoundNBT()));
             if (getCount() > current.getMaxStackSize()) {
                 nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
             }
@@ -306,7 +319,7 @@ public class BasicInventorySlot implements IInventorySlot {
     public void deserializeNBT(CompoundNBT nbt) {
         ItemStack stack = ItemStack.EMPTY;
         if (nbt.contains(NBTConstants.ITEM, NBT.TAG_COMPOUND)) {
-            stack = ItemStack.read(nbt.getCompound(NBTConstants.ITEM));
+            stack = ItemStack.of(nbt.getCompound(NBTConstants.ITEM));
             NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
         }
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up

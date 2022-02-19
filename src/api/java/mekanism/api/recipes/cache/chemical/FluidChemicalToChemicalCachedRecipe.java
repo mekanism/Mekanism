@@ -1,5 +1,7 @@
 package mekanism.api.recipes.cache.chemical;
 
+import java.util.Objects;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -12,6 +14,9 @@ import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraftforge.fluids.FluidStack;
 
+/**
+ * Base class to help implement handling of fluid chemical to chemical recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FluidChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -22,12 +27,22 @@ public class FluidChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMI
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull STACK> chemicalInputHandler;
 
+    private FluidStack recipeFluid = FluidStack.EMPTY;
+    @Nullable//Note: Shouldn't be null in places it is actually used, but we mark it as nullable, so we don't have to initialize it
+    private STACK recipeChemical;
+
+    /**
+     * @param recipe               Recipe.
+     * @param fluidInputHandler    Fluid input handler.
+     * @param chemicalInputHandler Chemical input handler.
+     * @param outputHandler        Output handler.
+     */
     public FluidChemicalToChemicalCachedRecipe(RECIPE recipe, IInputHandler<@NonNull FluidStack> fluidInputHandler, IInputHandler<@NonNull STACK> chemicalInputHandler,
           IOutputHandler<@NonNull STACK> outputHandler) {
         super(recipe);
-        this.fluidInputHandler = fluidInputHandler;
-        this.chemicalInputHandler = chemicalInputHandler;
-        this.outputHandler = outputHandler;
+        this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");
+        this.chemicalInputHandler = Objects.requireNonNull(chemicalInputHandler, "Chemical input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override
@@ -37,20 +52,20 @@ public class FluidChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMI
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        FluidStack recipeFluid = fluidInputHandler.getRecipeInput(recipe.getFluidInput());
+        recipeFluid = fluidInputHandler.getRecipeInput(recipe.getFluidInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
         if (recipeFluid.isEmpty()) {
             return -1;
         }
-        STACK recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
+        recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
         if (recipeChemical.isEmpty()) {
             return -1;
         }
         //Calculate the current max based on the fluid input
-        currentMax = fluidInputHandler.operationsCanSupport(recipe.getFluidInput(), currentMax);
+        currentMax = fluidInputHandler.operationsCanSupport(recipeFluid, currentMax);
         //Calculate the current max based on the chemical input
-        currentMax = chemicalInputHandler.operationsCanSupport(recipe.getChemicalInput(), currentMax);
+        currentMax = chemicalInputHandler.operationsCanSupport(recipeChemical, currentMax);
         if (currentMax <= 0) {
             //If our input can't handle it return that we should be resetting
             return -1;
@@ -74,16 +89,7 @@ public class FluidChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMI
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        FluidStack recipeFluid = fluidInputHandler.getRecipeInput(recipe.getFluidInput());
-        if (recipeFluid.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-
-        //Now check the chemical input
-        STACK recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
-        if (recipeChemical.isEmpty()) {
+        if (recipeFluid.isEmpty() || recipeChemical == null || recipeChemical.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }

@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.resource.PrimaryResource;
@@ -46,10 +47,10 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_charcoal_block"));
         //Charcoal
         ItemStackToChemicalRecipeBuilder.infusionConversion(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.CHARCOAL),
-                    ItemStackIngredient.from(MekanismTags.Items.DUSTS_CHARCOAL)
-              ),
+              ItemStackIngredient.from(BaseRecipeProvider.createIngredient(
+                    MekanismTags.Items.DUSTS_CHARCOAL,
+                    Items.CHARCOAL
+              )),
               MekanismInfuseTypes.CARBON.getStack(20)
         ).build(consumer, Mekanism.rl(basePath + "from_charcoal"));
 
@@ -60,10 +61,10 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_coal_block"));
         //Coal
         ItemStackToChemicalRecipeBuilder.infusionConversion(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.COAL),
-                    ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL)
-              ),
+              ItemStackIngredient.from(BaseRecipeProvider.createIngredient(
+                    MekanismTags.Items.DUSTS_COAL,
+                    Items.COAL
+              )),
               MekanismInfuseTypes.CARBON.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_coal"));
 
@@ -90,12 +91,12 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
     private void addInfusionConversionFungiRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Mushrooms
         ItemStackToChemicalRecipeBuilder.infusionConversion(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Tags.Items.MUSHROOMS),
+              ItemStackIngredient.from(BaseRecipeProvider.createIngredient(
+                    Tags.Items.MUSHROOMS,
                     //TODO: If these get added to the mushroom tag then we can remove them from here
-                    ItemStackIngredient.from(Blocks.WARPED_FUNGUS),
-                    ItemStackIngredient.from(Blocks.CRIMSON_FUNGUS)
-              ),
+                    Blocks.WARPED_FUNGUS,
+                    Blocks.CRIMSON_FUNGUS
+              )),
               MekanismInfuseTypes.FUNGI.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_mushrooms"));
     }

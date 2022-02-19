@@ -38,7 +38,7 @@ public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.METALLURGIC_INFUSER.getItemStack();
     }
 }

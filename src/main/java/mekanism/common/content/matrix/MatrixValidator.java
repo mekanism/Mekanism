@@ -24,7 +24,7 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
     private final List<TileEntityInductionProvider> providers = new ArrayList<>();
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, MekanismBlockTypes.INDUCTION_CASING)) {
             return CasingType.FRAME;
@@ -42,7 +42,7 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
         if (BlockType.is(state.getBlock(), MekanismBlockTypes.BASIC_INDUCTION_CELL, MekanismBlockTypes.ADVANCED_INDUCTION_CELL,
               MekanismBlockTypes.ELITE_INDUCTION_CELL, MekanismBlockTypes.ULTIMATE_INDUCTION_CELL, MekanismBlockTypes.BASIC_INDUCTION_PROVIDER,
               MekanismBlockTypes.ADVANCED_INDUCTION_PROVIDER, MekanismBlockTypes.ELITE_INDUCTION_PROVIDER, MekanismBlockTypes.ULTIMATE_INDUCTION_PROVIDER)) {
-            //Compare blocks against the type before bothering to lookup the tile
+            //Compare blocks against the type before bothering to look up the tile
             TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityInductionCell) {
                 cells.add((TileEntityInductionCell) tile);

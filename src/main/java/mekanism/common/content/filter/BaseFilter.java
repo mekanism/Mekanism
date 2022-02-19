@@ -6,20 +6,21 @@ import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.content.miner.MinerTagFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
+import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements IFilter<FILTER> {
 
-    //Mark it as abstract so it does not think clone is being implemented by Object
+    //Mark it as abstract, so it does not think clone is being implemented by Object
     @Override
     public abstract FILTER clone();
 
@@ -37,7 +38,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeEnumValue(getFilterType());
+        buffer.writeEnum(getFilterType());
     }
 
     @Nullable
@@ -54,14 +55,14 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     @Nullable
     public static IFilter<?> readFromPacket(PacketBuffer dataStream) {
-        IFilter<?> filter = fromType(dataStream.readEnumValue(FilterType.class));
+        IFilter<?> filter = fromType(dataStream.readEnum(FilterType.class));
         if (filter != null) {
             filter.read(dataStream);
         }
         return filter;
     }
 
-    private static IFilter<?> fromType(FilterType filterType) {
+    public static IFilter<?> fromType(FilterType filterType) {
         switch (filterType) {
             case MINER_ITEMSTACK_FILTER:
                 return new MinerItemStackFilter();
@@ -79,10 +80,12 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
                 return new SorterModIDFilter();
             case SORTER_TAG_FILTER:
                 return new SorterTagFilter();
-            case OREDICTIONIFICATOR:
-                return new OredictionificatorFilter();
+            case OREDICTIONIFICATOR_ITEM_FILTER:
+                return new OredictionificatorItemFilter();
             case QIO_ITEMSTACK_FILTER:
                 return new QIOItemStackFilter();
+            case QIO_MODID_FILTER:
+                return new QIOModIDFilter();
             case QIO_TAG_FILTER:
                 return new QIOTagFilter();
             default:

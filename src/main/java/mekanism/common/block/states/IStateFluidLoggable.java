@@ -28,7 +28,7 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
      * specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link
      * BlockState#getFluidState()} has position information.
      *
-     * @apiNote If overriding to a different amount of fluids make sure to also override {@link #getFluidLoggedProperty()}
+     * @apiNote If overriding to a different amount of fluids, make sure to also override {@link #getFluidLoggedProperty()}
      */
     @Nonnull
     default Fluid[] getSupportedFluids() {
@@ -38,39 +38,39 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
     /**
      * @return BlockState property for representing fluid loggable blocks
      *
-     * @apiNote Ovveride this if changing the number of fluids {@link #getSupportedFluids()} returns.
+     * @apiNote Override this if changing the number of fluids {@link #getSupportedFluids()} returns.
      */
     @Nonnull
     default IntegerProperty getFluidLoggedProperty() {
-        //TODO - 1.17: When removing CorrectingIntegerProperty, evaluate changing this entire thing to being an EnumProperty
+        //TODO - 1.18: When removing CorrectingIntegerProperty, evaluate changing this entire thing to being an EnumProperty
         // so that F3 can show slightly better debug of what it is fluid logged with
         return BlockStateHelper.FLUID_LOGGED;
     }
 
     @Nonnull
     default FluidState getFluid(@Nonnull BlockState state) {
-        int fluidLogged = state.get(getFluidLoggedProperty());
+        int fluidLogged = state.getValue(getFluidLoggedProperty());
         if (fluidLogged > 0) {
             Fluid fluid = getSupportedFluids()[fluidLogged - 1];
             if (fluid instanceof FlowingFluid) {
-                return ((FlowingFluid) fluid).getStillFluidState(false);
+                return ((FlowingFluid) fluid).getSource(false);
             }
-            return fluid.getDefaultState();
+            return fluid.defaultFluidState();
         }
-        return Fluids.EMPTY.getDefaultState();
+        return Fluids.EMPTY.defaultFluidState();
     }
 
     default void updateFluids(@Nonnull BlockState state, @Nonnull IWorld world, @Nonnull BlockPos currentPos) {
-        int fluidLogged = state.get(getFluidLoggedProperty());
+        int fluidLogged = state.getValue(getFluidLoggedProperty());
         if (fluidLogged > 0) {
             Fluid fluid = getSupportedFluids()[fluidLogged - 1];
-            world.getPendingFluidTicks().scheduleTick(currentPos, fluid, fluid.getTickRate(world));
+            world.getLiquidTicks().scheduleTick(currentPos, fluid, fluid.getTickDelay(world));
         }
     }
 
     @Override
-    default boolean canContainFluid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
-        return state.get(getFluidLoggedProperty()) == 0 && isValidFluid(fluid);
+    default boolean canPlaceLiquid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
+        return state.getValue(getFluidLoggedProperty()) == 0 && isValidFluid(fluid);
     }
 
     default int getSupportedFluidPropertyIndex(@Nonnull Fluid fluid) {
@@ -89,12 +89,12 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
      * Overwritten to check against canContainFluid instead of inlining the check to water directly.
      */
     @Override
-    default boolean receiveFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
-        Fluid fluid = fluidState.getFluid();
-        if (canContainFluid(world, pos, state, fluid)) {
-            if (!world.isRemote()) {
-                world.setBlockState(pos, state.with(getFluidLoggedProperty(), getSupportedFluidPropertyIndex(fluid)), BlockFlags.DEFAULT);
-                world.getPendingFluidTicks().scheduleTick(pos, fluid, fluid.getTickRate(world));
+    default boolean placeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
+        Fluid fluid = fluidState.getType();
+        if (canPlaceLiquid(world, pos, state, fluid)) {
+            if (!world.isClientSide()) {
+                world.setBlock(pos, state.setValue(getFluidLoggedProperty(), getSupportedFluidPropertyIndex(fluid)), BlockFlags.DEFAULT);
+                world.getLiquidTicks().scheduleTick(pos, fluid, fluid.getTickDelay(world));
             }
             return true;
         }
@@ -103,11 +103,11 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
 
     @Nonnull
     @Override
-    default Fluid pickupFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    default Fluid takeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         IntegerProperty fluidLoggedProperty = getFluidLoggedProperty();
-        int fluidLogged = state.get(fluidLoggedProperty);
+        int fluidLogged = state.getValue(fluidLoggedProperty);
         if (fluidLogged > 0) {
-            world.setBlockState(pos, state.with(fluidLoggedProperty, 0), BlockFlags.DEFAULT);
+            world.setBlock(pos, state.setValue(fluidLoggedProperty, 0), BlockFlags.DEFAULT);
             return getSupportedFluids()[fluidLogged - 1];
         }
         return Fluids.EMPTY;

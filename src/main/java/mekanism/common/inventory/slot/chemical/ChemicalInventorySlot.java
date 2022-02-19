@@ -20,6 +20,7 @@ import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -39,9 +40,9 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     /**
      * Gets the ChemicalStack from ItemStack conversion, ignoring the size of the item stack.
      */
-    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK getPotentialConversion(
-          MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> recipeType, @Nullable World world, ItemStack itemStack, STACK empty) {
-        ItemStackToChemicalRecipe<CHEMICAL, STACK> foundRecipe = recipeType.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
+    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
+    STACK getPotentialConversion(MekanismRecipeType<RECIPE, SingleItem<RECIPE>> recipeType, @Nullable World world, ItemStack itemStack, STACK empty) {
+        ItemStackToChemicalRecipe<CHEMICAL, STACK> foundRecipe = recipeType.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? empty : foundRecipe.getOutput(itemStack);
     }
 
@@ -59,7 +60,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                 }
                 //Only allow extraction if our item is out of chemical, and doesn't have a valid conversion for it
             }
-            //Always allow extraction if something went horribly wrong and we are not a chemical item AND we can't provide a valid type of chemical
+            //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             STACK conversion = potentialConversionSupplier.apply(stack);
             return conversion.isEmpty() || !chemicalTank.isValid(conversion);
@@ -137,7 +138,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                     }
                     return false;
                 }
-                //Otherwise if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
+                //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
                 return handler.insertChemical(chemicalTank.getStack(), Action.SIMULATE).getAmount() < chemicalTank.getStored();
             }
             return false;
@@ -158,8 +159,10 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     @Nullable
     protected abstract IChemicalHandler<CHEMICAL, STACK> getCapability();
 
-    @Nullable//Note: This is currently nullable as there are some types we don't have direct conversions for: (Slurry)
-    protected abstract MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> getConversionRecipeType();
+    @Nullable
+    protected ItemStackToChemicalRecipe<CHEMICAL, STACK> getConversionRecipe(@Nullable World world, ItemStack stack) {
+        return null;
+    }
 
     /**
      * Fills tank from slot, allowing for the item to also be converted to chemical if need be
@@ -169,20 +172,17 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
             //Fill the tank from the item
             if (!fillTankFromItem()) {
                 //If filling from item failed, try doing it by conversion
-                MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> recipeType = getConversionRecipeType();
-                if (recipeType != null) {
-                    ItemStackToChemicalRecipe<CHEMICAL, STACK> foundRecipe = recipeType.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
-                    if (foundRecipe != null) {
-                        ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
-                        if (!itemInput.isEmpty()) {
-                            STACK output = foundRecipe.getOutput(itemInput);
-                            //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                            if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
-                                //If we can accept it all, then add it and decrease our input
-                                MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                                int amountUsed = itemInput.getCount();
-                                MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
-                            }
+                ItemStackToChemicalRecipe<CHEMICAL, STACK> foundRecipe = getConversionRecipe(worldSupplier.get(), current);
+                if (foundRecipe != null) {
+                    ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
+                    if (!itemInput.isEmpty()) {
+                        STACK output = foundRecipe.getOutput(itemInput);
+                        //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+                        if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
+                            //If we can accept it all, then add it and decrease our input
+                            MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
+                            int amountUsed = itemInput.getCount();
+                            MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
                         }
                     }
                 }

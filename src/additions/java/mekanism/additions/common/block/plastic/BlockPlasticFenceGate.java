@@ -22,10 +22,10 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
     private final EnumColor color;
 
     public BlockPlasticFenceGate(EnumColor color) {
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
-              .hardnessAndResistance(5, 6).harvestTool(ToolType.PICKAXE)));
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.of(BlockPlastic.PLASTIC, color.getMapColor())
+              .strength(5, 6).harvestTool(ToolType.PICKAXE)));
         this.color = color;
-        this.setDefaultState(getDefaultState().with(getFluidLoggedProperty(), 0));
+        this.registerDefaultState(defaultBlockState().setValue(getFluidLoggedProperty(), 0));
     }
 
     @Override
@@ -48,15 +48,15 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
-        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Override
-    protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 }

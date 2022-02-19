@@ -1,6 +1,8 @@
 package mekanism.additions.common;
 
+import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
+import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.SpawnHelper;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -9,10 +11,15 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,7 +32,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismAdditions.MODID)
-public class MekanismAdditions implements IModule {
+public class MekanismAdditions implements IModModule {
 
     public static final String MODID = "mekanismadditions";
 
@@ -37,7 +44,7 @@ public class MekanismAdditions implements IModule {
     public final Version versionNumber;
 
     /**
-     * The VoiceServer manager for walkie talkies
+     * The VoiceServer manager for walkie-talkies
      */
     public static VoiceServerManager voiceManager;
 
@@ -87,7 +94,23 @@ public class MekanismAdditions implements IModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(SpawnHelper::setupEntities);
+        event.enqueueWork(() -> {
+            //Ensure our tags are all initialized
+            AdditionsTags.init();
+            //Setup some stuff related to entities
+            SpawnHelper.setupEntities();
+            //Dispenser behavior
+            DispenserBlock.registerBehavior(AdditionsBlocks.OBSIDIAN_TNT, new DefaultDispenseItemBehavior() {
+                @Nonnull
+                @Override
+                protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+                    BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+                    BlockObsidianTNT.createAndAddEntity(source.getLevel(), blockpos, null);
+                    stack.shrink(1);
+                    return stack;
+                }
+            });
+        });
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
 
@@ -101,13 +124,14 @@ public class MekanismAdditions implements IModule {
     }
 
     private void serverStopping(FMLServerStoppingEvent event) {
-        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
+        if (voiceManager != null) {
             voiceManager.stop();
+            voiceManager = null;
         }
     }
 
     private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us

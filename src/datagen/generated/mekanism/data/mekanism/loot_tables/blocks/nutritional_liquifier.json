@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:nutritional_liquifier"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -13,27 +13,27 @@ import net.minecraft.util.SoundEvents;
 public abstract class BaseSpecialArmorMaterial implements IArmorMaterial {
 
     @Override
-    public int getDurability(EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(EquipmentSlotType slotType) {
         return 0;
     }
 
     @Override
-    public int getEnchantability() {
+    public int getEnchantmentValue() {
         return 0;
     }
 
     @Override
-    public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+    public SoundEvent getEquipSound() {
+        return SoundEvents.ARMOR_EQUIP_GENERIC;
     }
 
     @Override
-    public Ingredient getRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return Ingredient.EMPTY;
     }
 
     @Override
-    public int getDamageReductionAmount(EquipmentSlotType slotType) {
+    public int getDefenseForSlot(EquipmentSlotType slotType) {
         return 0;
     }
 

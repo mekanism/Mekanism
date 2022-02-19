@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:magenta_plastic_transparent"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:magenta"
+  },
+  "output": {
+    "item": "mekanismadditions:magenta_plastic_transparent"
+  }
+}

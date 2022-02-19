@@ -24,7 +24,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         obsidianTNTBlastRadius = CachedIntValue.wrap(this, builder.comment("Radius of the explosion of Obsidian TNT.")
               .define("obsidianTNTBlastRadius", 12));
 
-        voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.")
+        voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.").worldRestart()
               .define("voiceServerEnabled", false));
         voicePort = CachedIntValue.wrap(this, builder.comment("TCP port for the Voice server to listen on.")
               .defineInRange("VoicePort", 36_123, 1, 65_535));

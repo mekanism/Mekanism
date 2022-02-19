@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:redwood_pressure_plate"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:redwood_planks",
+    "count": 2
+  }
+}

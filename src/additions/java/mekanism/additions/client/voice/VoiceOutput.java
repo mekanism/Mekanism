@@ -13,11 +13,10 @@ public class VoiceOutput extends Thread {
     private SourceDataLine sourceLine;
 
     public VoiceOutput(VoiceClient client) {
+        super("VoiceServer Client Output Thread");
         voiceClient = client;
         speaker = new DataLine.Info(SourceDataLine.class, voiceClient.getAudioFormat(), 2_200);
-
         setDaemon(true);
-        setName("VoiceServer Client Output Thread");
     }
 
     @Override

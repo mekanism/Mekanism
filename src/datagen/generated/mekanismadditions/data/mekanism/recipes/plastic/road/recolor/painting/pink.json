@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/road"
+      },
+      "without": {
+        "item": "mekanismadditions:pink_plastic_road"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:pink"
+  },
+  "output": {
+    "item": "mekanismadditions:pink_plastic_road"
+  }
+}

@@ -18,9 +18,13 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
@@ -29,7 +33,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
+public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
     protected IInputHandler<@NonNull ItemStack>[] inputHandlers;
     protected IOutputHandler<@NonNull ChanceOutput>[] outputHandlers;
@@ -49,7 +53,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
             int xPos = baseX + (i * baseXMult);
             OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 57);
             OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 77);
-            FactoryInputInventorySlot<SawmillRecipe> inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, updateSortingListener, xPos, 13);
+            FactoryInputInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, recipeCacheLookupMonitors[i], xPos, 13);
             builder.addSlot(inputSlot);
             builder.addSlot(outputSlot);
             builder.addSlot(secondaryOutputSlot);
@@ -61,7 +65,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return containsRecipe(recipe -> recipe.getInput().testType(stack));
+        return containsRecipe(stack);
     }
 
     @Override
@@ -78,18 +82,16 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     protected SawmillRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack output = outputSlot.getStack();
         ItemStack extra = secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
-        return findFirstRecipe(recipe -> {
-            if (recipe.getInput().testType(fallbackInput)) {
-                ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
-                if (InventoryUtils.areItemsStackable(chanceOutput.getMainOutput(), output)) {
-                    //If the input is good and the primary output matches, make sure that the secondary
-                    // output of this recipe will stack with what is currently in the secondary slot
-                    if (extra.isEmpty()) {
-                        return true;
-                    }
-                    ItemStack secondaryOutput = chanceOutput.getMaxSecondaryOutput();
-                    return secondaryOutput.isEmpty() || ItemHandlerHelper.canItemStacksStack(secondaryOutput, extra);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, recipe -> {
+            ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
+            if (InventoryUtils.areItemsStackable(chanceOutput.getMainOutput(), output)) {
+                //If the input is good and the primary output matches, make sure that the secondary
+                // output of this recipe will stack with what is currently in the secondary slot
+                if (extra.isEmpty()) {
+                    return true;
                 }
+                ItemStack secondaryOutput = chanceOutput.getMaxSecondaryOutput();
+                return secondaryOutput.isEmpty() || ItemHandlerHelper.canItemStacksStack(secondaryOutput, extra);
             }
             return false;
         });
@@ -97,27 +99,24 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
     @Nonnull
     @Override
-    public MekanismRecipeType<SawmillRecipe> getRecipeType() {
+    public MekanismRecipeType<SawmillRecipe, SingleItem<SawmillRecipe>> getRecipeType() {
         return MekanismRecipeType.SAWING;
     }
 
     @Nullable
     @Override
     public SawmillRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandlers[cacheIndex].getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack));
+        return findFirstRecipe(inputHandlers[cacheIndex]);
     }
 
+    @Nonnull
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@Nonnull SawmillRecipe recipe, int cacheIndex) {
         return new SawmillCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
@@ -137,4 +136,14 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     public SawmillUpgradeData getUpgradeData() {
         return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getSecondaryOutput(int process) throws ComputerException {
+        validateValidProcess(process);
+        IInventorySlot secondaryOutputSlot = processInfoSlots[process].getSecondaryOutputSlot();
+        //This should never be null, but in case it is, handle it
+        return secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
+    }
+    //End methods IComputerTile
 }

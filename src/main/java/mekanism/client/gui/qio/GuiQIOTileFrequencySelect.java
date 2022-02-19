@@ -1,80 +1,69 @@
 package mekanism.client.gui.qio;
 
-import java.util.List;
-import java.util.UUID;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.custom.GuiFrequencySelector;
+import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequencySelector;
+import mekanism.client.gui.element.custom.GuiFrequencySelector.ITileGuiFrequencySelector;
 import mekanism.common.Mekanism;
-import mekanism.common.content.qio.IQIOFrequencyHolder;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.network.PacketGuiButtonPress;
-import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
-import mekanism.common.network.PacketGuiSetFrequency;
-import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
-import mekanism.common.network.PacketQIOSetColor;
+import mekanism.common.network.to_server.PacketGuiButtonPress;
+import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
+import mekanism.common.tile.qio.TileEntityQIOComponent;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiQIOTileFrequencySelect extends GuiQIOFrequencySelect<QIOFrequencySelectTileContainer> {
+public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComponent, EmptyTileContainer<TileEntityQIOComponent>> implements
+      IGuiColorFrequencySelector<QIOFrequency>, ITileGuiFrequencySelector<QIOFrequency, TileEntityQIOComponent> {
 
-    private final IQIOFrequencyHolder tile;
-
-    public GuiQIOTileFrequencySelect(QIOFrequencySelectTileContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiQIOTileFrequencySelect(EmptyTileContainer<TileEntityQIOComponent> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        dynamicSlots = true;
-        tile = (IQIOFrequencyHolder) container.getTileEntity();
+        imageHeight -= 11;
+        titleLabelY = 5;
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, (TileEntity) tile))));
+    protected void addGuiElements() {
+        super.addGuiElements();
+        addButton(new GuiFrequencySelector<>(this, 17));
+        addButton(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
     }
 
     @Override
-    public void sendSetFrequency(FrequencyIdentity identity) {
-        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, FrequencyType.QIO, identity, tile.getTilePos()));
+    protected void addGenericTabs() {
+        //Don't add the generic tabs when we are selecting a frequency
     }
 
     @Override
-    public void sendRemoveFrequency(FrequencyIdentity identity) {
-        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.QIO, identity, tile.getTilePos()));
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), titleLabelY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
-    public void sendColorUpdate(int extra) {
-        QIOFrequency freq = getFrequency();
-        if (freq != null) {
-            Mekanism.packetHandler.sendToServer(PacketQIOSetColor.create(tile.getTilePos(), freq, extra));
-        }
+    public FrequencyType<QIOFrequency> getFrequencyType() {
+        return FrequencyType.QIO;
     }
 
     @Override
-    public QIOFrequency getFrequency() {
-        return tile.getQIOFrequency();
+    public TileEntityQIOComponent getTileEntity() {
+        return tile;
     }
 
     @Override
-    public String getOwnerUsername() {
-        return tile.getOwnerName();
-    }
-
-    @Override
-    public UUID getOwnerUUID() {
-        return tile.getOwnerUUID();
-    }
-
-    @Override
-    public List<QIOFrequency> getPublicFrequencies() {
-        return tile.getPublicFrequencies();
-    }
-
-    @Override
-    public List<QIOFrequency> getPrivateFrequencies() {
-        return tile.getPrivateFrequencies();
+    public void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
+        //Adjust spacing for back button
+        int leftShift = 15;
+        int xSize = getXSize() - leftShift;
+        int maxLength = xSize - 12;
+        float textWidth = getStringWidth(text);
+        float scale = Math.min(1, maxLength / textWidth);
+        drawScaledCenteredText(matrix, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
     }
 }

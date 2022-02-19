@@ -18,7 +18,7 @@ abstract class IItemTierHelper implements IItemTier {
      * BaseMekanismMaterial}
      */
     @Override
-    public int getEnchantability() {
+    public int getEnchantmentValue() {
         return getItemEnchantability();
     }
 
@@ -31,7 +31,7 @@ abstract class IItemTierHelper implements IItemTier {
      */
     @Nonnull
     @Override
-    public Ingredient getRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return getItemRepairMaterial();
     }
 }

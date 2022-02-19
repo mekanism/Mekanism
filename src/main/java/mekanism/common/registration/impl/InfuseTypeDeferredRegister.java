@@ -16,8 +16,13 @@ public class InfuseTypeDeferredRegister extends WrappedDeferredRegister<InfuseTy
         return register(name, () -> new InfuseType(InfuseTypeBuilder.builder().color(tint)));
     }
 
-    public InfuseTypeRegistryObject<InfuseType> register(String name, ResourceLocation texture) {
-        return register(name, () -> new InfuseType(InfuseTypeBuilder.builder(texture)));
+    public InfuseTypeRegistryObject<InfuseType> register(String name, ResourceLocation texture, int barColor) {
+        return register(name, () -> new InfuseType(InfuseTypeBuilder.builder(texture)) {
+            @Override
+            public int getColorRepresentation() {
+                return barColor;
+            }
+        });
     }
 
     public <INFUSE_TYPE extends InfuseType> InfuseTypeRegistryObject<INFUSE_TYPE> register(String name, Supplier<? extends INFUSE_TYPE> sup) {

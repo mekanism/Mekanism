@@ -31,37 +31,37 @@ import net.minecraft.world.World;
 public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
 
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
-          makeCuboidShape(0, 0, 0, 16, 3, 16),//Wooden1
-          makeCuboidShape(0, 8, 0, 16, 11, 16),//Wooden2
-          makeCuboidShape(12.5, 11.8, 12.5, 13.5, 13.8, 13.5),//Wick1
-          makeCuboidShape(12.5, 11.5, 7.5, 13.5, 13.5, 8.5),//Wick2
-          makeCuboidShape(12.5, 11.8, 2.5, 13.5, 13.8, 3.5),//Wick3
-          makeCuboidShape(2.5, 11.8, 12.5, 3.5, 13.8, 13.5),//Wick4
-          makeCuboidShape(2.5, 11.5, 7.5, 3.5, 13.5, 8.5),//Wick5
-          makeCuboidShape(2.5, 11.8, 2.5, 3.5, 13.8, 3.5),//Wick6
-          makeCuboidShape(7.5, 11.5, 12.5, 8.5, 13.5, 13.5),//Wick7
-          makeCuboidShape(7.5, 11.5, 2.5, 8.5, 13.5, 3.5),//Wick8
-          makeCuboidShape(7.5, 11.8, 7.5, 8.5, 13.8, 8.5),//Wick9
-          makeCuboidShape(11, -1, 11, 15, 12, 15),//Rod1
-          makeCuboidShape(11, -1, 6, 15, 12, 10),//Rod2
-          makeCuboidShape(11, -1, 1, 15, 12, 5),//Rod3
-          makeCuboidShape(6, -1, 1, 10, 12, 5),//Rod4
-          makeCuboidShape(6, -1, 6, 10, 12, 10),//Rod5
-          makeCuboidShape(6, -1, 11, 10, 12, 15),//Rod6
-          makeCuboidShape(1, -1, 6, 5, 12, 10),//Rod7
-          makeCuboidShape(1, -1, 11, 5, 12, 15),//Rod8
-          makeCuboidShape(1, -1, 1, 5, 12, 5)//Rod9
+          box(0, 0, 0, 16, 3, 16),//Wooden1
+          box(0, 8, 0, 16, 11, 16),//Wooden2
+          box(12.5, 11.8, 12.5, 13.5, 13.8, 13.5),//Wick1
+          box(12.5, 11.5, 7.5, 13.5, 13.5, 8.5),//Wick2
+          box(12.5, 11.8, 2.5, 13.5, 13.8, 3.5),//Wick3
+          box(2.5, 11.8, 12.5, 3.5, 13.8, 13.5),//Wick4
+          box(2.5, 11.5, 7.5, 3.5, 13.5, 8.5),//Wick5
+          box(2.5, 11.8, 2.5, 3.5, 13.8, 3.5),//Wick6
+          box(7.5, 11.5, 12.5, 8.5, 13.5, 13.5),//Wick7
+          box(7.5, 11.5, 2.5, 8.5, 13.5, 3.5),//Wick8
+          box(7.5, 11.8, 7.5, 8.5, 13.8, 8.5),//Wick9
+          box(11, -1, 11, 15, 12, 15),//Rod1
+          box(11, -1, 6, 15, 12, 10),//Rod2
+          box(11, -1, 1, 15, 12, 5),//Rod3
+          box(6, -1, 1, 10, 12, 5),//Rod4
+          box(6, -1, 6, 10, 12, 10),//Rod5
+          box(6, -1, 11, 10, 12, 15),//Rod6
+          box(1, -1, 6, 5, 12, 10),//Rod7
+          box(1, -1, 11, 5, 12, 15),//Rod8
+          box(1, -1, 1, 5, 12, 5)//Rod9
     );
 
     public BlockObsidianTNT() {
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.TNT)));
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.of(Material.EXPLOSIVE)));
         //Uses getDefaultState as starting state to take into account the stuff from super
-        setDefaultState(BlockStateHelper.getDefaultState(getDefaultState()));
+        registerDefaultState(BlockStateHelper.getDefaultState(defaultBlockState()));
     }
 
     @Override
-    protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
@@ -80,25 +80,25 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
 
     @Override
     public void catchFire(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
-        if (!world.isRemote) {
-            TNTEntity tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-            world.addEntity(tnt);
-            world.playSound(null, tnt.getPosX(), tnt.getPosY(), tnt.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        if (!world.isClientSide) {
+            createAndAddEntity(world, pos, igniter);
         }
     }
 
     @Override
-    public void onExplosionDestroy(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
-        if (!world.isRemote) {
-            TNTEntity tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getExplosivePlacedBy());
-            tnt.setFuse((short) (world.rand.nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
-            world.addEntity(tnt);
+    public void wasExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
+        if (!world.isClientSide) {
+            TNTEntity tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getSourceMob());
+            if (tnt != null) {
+                tnt.setFuse((short) (world.random.nextInt(tnt.getLife() / 4) + tnt.getLife() / 8));
+                world.addFreshEntity(tnt);
+            }
         }
     }
 
     @Override
     @Deprecated
-    public boolean allowsMovement(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
+    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
         return false;
     }
 
@@ -119,9 +119,17 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
-        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+    }
+
+    public static void createAndAddEntity(@Nonnull World world, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
+        TNTEntity tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
+        if (tnt != null) {
+            world.addFreshEntity(tnt);
+            world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        }
     }
 }

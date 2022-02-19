@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "tag": "byg:light_gray_dye"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:light_gray",
+    "amount": 768
+  }
+}

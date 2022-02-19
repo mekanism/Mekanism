@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:polished_travertine_stairs"
+    }
+  },
+  "output": {
+    "item": "byg:chiseled_travertine_stairs"
+  }
+}

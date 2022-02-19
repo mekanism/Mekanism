@@ -33,6 +33,7 @@ import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
@@ -69,7 +70,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> implements IItemSustainedInventory, ISecurityItem, IModeItem {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::fluidTank));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setISTER(ISTERProvider::fluidTank));
     }
 
     @Nonnull
@@ -87,12 +88,12 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         } else if (tier == FluidTankTier.CREATIVE) {
             tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
+            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
         if (tier == FluidTankTier.CREATIVE) {
             tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getStorage()));
+            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getStorage())));
         }
     }
 
@@ -104,15 +105,15 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
     }
 
     @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
-        if (isInGroup(group)) {
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
+        if (allowdedIn(group)) {
             FluidTankTier tier = Attribute.getTier(getBlock(), FluidTankTier.class);
             if (tier == FluidTankTier.CREATIVE && MekanismConfig.general.prefilledFluidTanks.get()) {
                 int capacity = tier.getStorage();
                 for (Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
                     //Only add sources
-                    if (fluid.isSource(fluid.getDefaultState())) {
+                    if (fluid.isSource(fluid.defaultFluidState())) {
                         IExtendedFluidTank dummyTank = BasicFluidTank.create(capacity, null);
                         //Manually handle filling it as capabilities are not necessarily loaded yet
                         dummyTank.setStack(new FluidStack(fluid, dummyTank.getCapacity()));
@@ -127,44 +128,44 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null) {
             return ActionResultType.PASS;
         }
-        ItemStack stack = context.getItem();
+        ItemStack stack = context.getItemInHand();
         if (getBucketMode(stack)) {
             return ActionResultType.PASS;
         }
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         if (getBucketMode(stack)) {
             if (getOwnerUUID(stack) == null) {
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     SecurityUtils.claimItem(player, stack);
                 }
                 return new ActionResult<>(ActionResultType.SUCCESS, stack);
             } else if (SecurityUtils.canAccess(player, stack)) {
                 //TODO: At some point maybe try to reduce the duplicate code between this and the dispense behavior
-                BlockRayTraceResult result = rayTrace(world, player, !player.isSneaking() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
+                BlockRayTraceResult result = getPlayerPOVHitResult(world, player, !player.isShiftKeyDown() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
                 //It can be null if there is nothing in range
                 if (result.getType() == Type.BLOCK) {
-                    BlockPos pos = result.getPos();
-                    if (!world.isBlockModifiable(player, pos)) {
+                    BlockPos pos = result.getBlockPos();
+                    if (!world.mayInteract(player, pos)) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
                     IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
                     if (fluidTank == null) {
-                        //If something went wrong and we don't have a fluid tank fail
+                        //If something went wrong, and we don't have a fluid tank fail
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
-                    if (!player.isSneaking()) {
-                        if (!player.canPlayerEdit(pos, result.getFace(), stack)) {
+                    if (!player.isShiftKeyDown()) {
+                        if (!player.mayUseItemAt(pos, result.getDirection(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
                         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
@@ -172,8 +173,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         FluidState fluidState = blockState.getFluidState();
                         if (!fluidState.isEmpty() && fluidState.isSource()) {
                             //Just in case someone does weird things and has a fluid state that is empty and a source
-                            // only allow collecting from non empty sources
-                            Fluid fluid = fluidState.getFluid();
+                            // only allow collecting from non-empty sources
+                            Fluid fluid = fluidState.getType();
                             FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                             Block block = blockState.getBlock();
                             if (block instanceof IFluidBlock) {
@@ -185,15 +186,15 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 //Actually drain it
                                 fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
                             } else if (block instanceof IBucketPickupHandler && validFluid(fluidTank, fluidStack)) {
-                                //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
+                                //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                                 // otherwise we assume the type from the fluid state is correct
-                                fluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
+                                fluid = ((IBucketPickupHandler) block).takeLiquid(world, pos, blockState);
                                 //Update the fluid stack in case something somehow changed about the type
                                 // making sure that we replace to heavy water if we got heavy water
                                 fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                                 if (!validFluid(fluidTank, fluidStack)) {
                                     Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                          fluidState.getFluid().getRegistryName(), pos, world.getDimensionKey().getLocation(), fluid.getRegistryName());
+                                          fluidState.getType().getRegistryName(), pos, world.dimension().location(), fluid.getRegistryName());
                                     return new ActionResult<>(ActionResultType.FAIL, stack);
                                 }
                             }
@@ -212,10 +213,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         }
                     } else {
                         if (fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() < FluidAttributes.BUCKET_VOLUME
-                            || !player.canPlayerEdit(pos.offset(result.getFace()), result.getFace(), stack)) {
+                            || !player.mayUseItemAt(pos.relative(result.getDirection()), result.getDirection(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        if (WorldUtils.tryPlaceContainedLiquid(player, world, pos, fluidTank.getFluid(), result.getFace())) {
+                        if (WorldUtils.tryPlaceContainedLiquid(player, world, pos, fluidTank.getFluid(), result.getDirection())) {
                             if (!player.isCreative()) {
                                 MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
                             }
@@ -224,7 +225,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                     }
                 }
             } else {
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     SecurityUtils.displayNoAccess(player);
                 }
                 return new ActionResult<>(ActionResultType.FAIL, stack);
@@ -268,8 +269,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
             boolean newState = !getBucketMode(stack);
             setBucketMode(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))), Util.DUMMY_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.BUCKET_MODE.translate(OnOff.of(newState, true))), Util.NIL_UUID);
             }
         }
     }
@@ -289,7 +289,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
 
         @Nonnull
         @Override
-        public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+        public ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
             if (stack.getItem() instanceof ItemBlockFluidTank && ((ItemBlockFluidTank) stack.getItem()).getBucketMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 //Note: We don't use DispenseFluidContainer as we have more specific logic for determining if we want it to
@@ -298,40 +298,40 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 //Get the fluid tank for the stack
                 if (fluidTank == null) {
                     //If there isn't one then there is something wrong with the stack, treat it as a normal stack and just eject it
-                    return super.dispenseStack(source, stack);
+                    return super.execute(source, stack);
                 }
-                World world = source.getWorld();
-                BlockPos pos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+                World world = source.getLevel();
+                BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
                 //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
                 BlockState blockState = world.getBlockState(pos);
                 FluidState fluidState = blockState.getFluidState();
                 //If the fluid state in the world isn't empty and is a source try to pick it up otherwise try to dispense the stored fluid
                 if (!fluidState.isEmpty() && fluidState.isSource()) {
                     //Just in case someone does weird things and has a fluid state that is empty and a source
-                    // only allow collecting from non empty sources
-                    Fluid fluid = fluidState.getFluid();
+                    // only allow collecting from non-empty sources
+                    Fluid fluid = fluidState.getType();
                     FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                     Block block = blockState.getBlock();
                     if (block instanceof IFluidBlock) {
                         fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
                         if (!validFluid(fluidTank, fluidStack)) {
                             //If the fluid is not valid, then eject the stack similar to how vanilla does for buckets
-                            return super.dispenseStack(source, stack);
+                            return super.execute(source, stack);
                         }
                         //Actually drain it
                         fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
                     } else if (block instanceof IBucketPickupHandler && validFluid(fluidTank, fluidStack)) {
-                        //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
+                        //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                         // otherwise we assume the type from the fluid state is correct
-                        fluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
+                        fluid = ((IBucketPickupHandler) block).takeLiquid(world, pos, blockState);
                         //Update the fluid stack in case something somehow changed about the type
                         // making sure that we replace to heavy water if we got heavy water
                         fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                         if (!validFluid(fluidTank, fluidStack)) {
                             Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                  fluidState.getFluid().getRegistryName(), pos, world.getDimensionKey().getLocation(), fluid.getRegistryName());
+                                  fluidState.getType().getRegistryName(), pos, world.dimension().location(), fluid.getRegistryName());
                             //If we can't insert or extract it, then eject the stack similar to how vanilla does for buckets
-                            return super.dispenseStack(source, stack);
+                            return super.execute(source, stack);
                         }
                     }
                     if (validFluid(fluidTank, fluidStack)) {
@@ -355,8 +355,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 }
                 //If we can't insert or extract it, then eject the stack similar to how vanilla does for buckets
             }
-            //Otherwise eject it as a normal item
-            return super.dispenseStack(source, stack);
+            //Otherwise, eject it as a normal item
+            return super.execute(source, stack);
         }
     }
 }

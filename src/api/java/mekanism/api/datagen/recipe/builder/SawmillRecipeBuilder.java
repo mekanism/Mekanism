@@ -32,6 +32,12 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         this.secondaryChance = secondaryChance;
     }
 
+    /**
+     * Creates a Sawing recipe builder.
+     *
+     * @param input      Input.
+     * @param mainOutput Main Output.
+     */
     public static SawmillRecipeBuilder sawing(ItemStackIngredient input, ItemStack mainOutput) {
         if (mainOutput.isEmpty()) {
             throw new IllegalArgumentException("This sawing recipe requires a non empty output.");
@@ -39,16 +45,33 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         return new SawmillRecipeBuilder(input, mainOutput, ItemStack.EMPTY, 0, OutputType.PRIMARY);
     }
 
+    /**
+     * Creates a Sawing recipe builder.
+     *
+     * @param input           Input.
+     * @param secondaryOutput Secondary Output.
+     * @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and less than one.
+     */
     public static SawmillRecipeBuilder sawing(ItemStackIngredient input, ItemStack secondaryOutput, double secondaryChance) {
         if (secondaryOutput.isEmpty()) {
             throw new IllegalArgumentException("This sawing recipe requires a non empty secondary output.");
         }
         if (secondaryChance <= 0 || secondaryChance > 1) {
             throw new IllegalArgumentException("This sawing recipe requires a secondary output chance greater than zero and at most one.");
+        } else if (secondaryChance == 1) {
+            throw new IllegalArgumentException("Sawing recipes with a single 100% change output should specify their output as the main output.");
         }
         return new SawmillRecipeBuilder(input, ItemStack.EMPTY, secondaryOutput, secondaryChance, OutputType.SECONDARY);
     }
 
+    /**
+     * Creates a Sawing recipe builder.
+     *
+     * @param input           Input.
+     * @param mainOutput      Main Output.
+     * @param secondaryOutput Secondary Output.
+     * @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
+     */
     public static SawmillRecipeBuilder sawing(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
         if (mainOutput.isEmpty() || secondaryOutput.isEmpty()) {
             throw new IllegalArgumentException("This sawing recipe requires a non empty primary, and secondary output.");
@@ -71,7 +94,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             if (outputType.hasPrimary) {
                 json.add(JsonConstants.MAIN_OUTPUT, SerializerHelper.serializeItemStack(mainOutput));

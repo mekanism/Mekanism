@@ -1,6 +1,6 @@
 package mekanism.common.content.gear;
 
-import mekanism.common.content.gear.Modules.ModuleData;
+import mekanism.api.gear.ModuleData;
 
 public interface IModuleItem {
 

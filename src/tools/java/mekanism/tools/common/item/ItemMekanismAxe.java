@@ -41,18 +41,18 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override
     public float getAttackDamage() {
-        return material.getAxeDamage() + getTier().getAttackDamage();
+        return material.getAxeDamage() + getTier().getAttackDamageBonus();
     }
 
     public int getHarvestLevel() {
-        return getTier().getHarvestLevel();
+        return getTier().getLevel();
     }
 
     /**
@@ -63,8 +63,8 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
      */
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
-        if (EFFECTIVE_ON_MATERIALS.contains(state.getMaterial()) || getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
-            return getTier().getEfficiency();
+        if (DIGGABLE_MATERIALS.contains(state.getMaterial()) || getToolTypes(stack).stream().anyMatch(state::isToolEffective) || blocks.contains(state.getBlock())) {
+            return getTier().getSpeed();
         }
         return 1;
     }
@@ -75,24 +75,24 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
      * @implNote Patches {@link AxeItem} to return true when the block's harvest tool is an axe
      */
     @Override
-    public boolean canHarvestBlock(BlockState state) {
-        return state.getHarvestTool() == ToolType.AXE ? getHarvestLevel() >= state.getHarvestLevel() : super.canHarvestBlock(state);
+    public boolean isCorrectToolForDrops(BlockState state) {
+        return state.getHarvestTool() == ToolType.AXE ? getHarvestLevel() >= state.getHarvestLevel() : super.isCorrectToolForDrops(state);
     }
 
     @Nonnull
     @Override
     public Ingredient getRepairMaterial() {
-        return getTier().getRepairMaterial();
+        return getTier().getRepairIngredient();
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return getTier().getMaxUses();
+        return getTier().getUses();
     }
 
     @Override
-    public boolean isDamageable() {
-        return getTier().getMaxUses() > 0;
+    public boolean canBeDepleted() {
+        return getTier().getUses() > 0;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", material.getAxeAtkSpeed(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", material.getAxeAtkSpeed(), Operation.ADDITION));
     }
 }

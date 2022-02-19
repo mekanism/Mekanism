@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RobitAIFollow extends RobitAIBase {
 
     /**
-     * The robit's owner.
+     * The Robit's owner.
      */
     private PlayerEntity theOwner;
     /**
@@ -25,17 +25,17 @@ public class RobitAIFollow extends RobitAIBase {
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         PlayerEntity player = theRobit.getOwner();
         if (player == null || player.isSpectator()) {
             return false;
-        } else if (theRobit.world.getDimensionKey() != player.world.getDimensionKey()) {
+        } else if (theRobit.level.dimension() != player.level.dimension()) {
             return false;
         } else if (!theRobit.getFollowing()) {
             //Still looks up at the player if on chargepad or not following
-            theRobit.getLookController().setLookPositionWithEntity(player, 6, theRobit.getVerticalFaceSpeed() / 10F);
+            theRobit.getLookControl().setLookAt(player, 6, theRobit.getMaxHeadXRot() / 10F);
             return false;
-        } else if (theRobit.getDistanceSq(player) < (minDist * minDist)) {
+        } else if (theRobit.distanceToSqr(player) < (minDist * minDist)) {
             return false;
         } else if (theRobit.getEnergyContainer().isEmpty()) {
             return false;
@@ -45,15 +45,15 @@ public class RobitAIFollow extends RobitAIBase {
     }
 
     @Override
-    public boolean shouldContinueExecuting() {
-        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() &&
-               !theRobit.getEnergyContainer().isEmpty() && theOwner.world.getDimensionKey() == theRobit.world.getDimensionKey();
+    public boolean canContinueToUse() {
+        return !getNavigator().isDone() && theRobit.distanceToSqr(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() &&
+               !theRobit.getEnergyContainer().isEmpty() && theOwner.level.dimension() == theRobit.level.dimension();
     }
 
     @Override
-    public void resetTask() {
+    public void stop() {
         theOwner = null;
-        super.resetTask();
+        super.stop();
     }
 
     @Override

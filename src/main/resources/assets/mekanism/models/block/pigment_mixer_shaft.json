@@ -1,0 +1,21 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "mekanism:block/pigment_mixer/details",
+		"shaft": "mekanism:block/pigment_mixer/details"
+	},
+	"elements": [
+		{
+			"name": "mixer_shaft",
+			"from": [0, 18, 0],
+			"to": [2, 27, 2],
+			"faces": {
+				"north": {"uv": [14, 4, 15, 8.5], "texture": "#shaft"},
+				"east": {"uv": [14, 4, 15, 8.5], "texture": "#shaft"},
+				"south": {"uv": [14, 4, 15, 8.5], "texture": "#shaft"},
+				"west": {"uv": [14, 4, 15, 8.5], "texture": "#shaft"}
+			}
+		}
+	]
+}

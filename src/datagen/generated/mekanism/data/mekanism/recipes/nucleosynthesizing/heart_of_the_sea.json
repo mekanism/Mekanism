@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:nether_stars"
+    }
+  },
+  "gasInput": {
+    "amount": 5,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:heart_of_the_sea"
+  },
+  "duration": 1250
+}

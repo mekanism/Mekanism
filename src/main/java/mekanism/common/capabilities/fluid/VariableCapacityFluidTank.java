@@ -72,7 +72,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
             amount = maxStackSize;
         }
         if (getFluidAmount() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         stored.setAmount(amount);

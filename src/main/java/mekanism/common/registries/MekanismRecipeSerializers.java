@@ -13,8 +13,11 @@ import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.PaintingRecipe;
+import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
@@ -40,6 +43,9 @@ import mekanism.common.recipe.impl.InfusionConversionIRecipe;
 import mekanism.common.recipe.impl.InjectingIRecipe;
 import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import mekanism.common.recipe.impl.NucleosynthesizingIRecipe;
+import mekanism.common.recipe.impl.PaintingIRecipe;
+import mekanism.common.recipe.impl.PigmentExtractingIRecipe;
+import mekanism.common.recipe.impl.PigmentMixingIRecipe;
 import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
 import mekanism.common.recipe.impl.PurifyingIRecipe;
 import mekanism.common.recipe.impl.RotaryIRecipe;
@@ -58,12 +64,15 @@ import mekanism.common.recipe.serializer.ItemStackToEnergyRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToGasRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToInfuseTypeRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToItemStackRecipeSerializer;
-import mekanism.common.recipe.serializer.MekanismShapedRecipeSerializer;
+import mekanism.common.recipe.serializer.ItemStackToPigmentRecipeSerializer;
 import mekanism.common.recipe.serializer.MetallurgicInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.NucleosynthesizingRecipeSerializer;
+import mekanism.common.recipe.serializer.PaintingRecipeSerializer;
+import mekanism.common.recipe.serializer.PigmentMixingRecipeSerializer;
 import mekanism.common.recipe.serializer.PressurizedReactionRecipeSerializer;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
+import mekanism.common.recipe.serializer.WrappedShapedRecipeSerializer;
 import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import mekanism.common.registration.impl.IRecipeSerializerDeferredRegister;
 import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
@@ -110,7 +119,13 @@ public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializerRegistryObject<ItemStackToInfuseTypeRecipe> INFUSION_CONVERSION = RECIPE_SERIALIZERS.register("infusion_conversion", () -> new ItemStackToInfuseTypeRecipeSerializer<>(InfusionConversionIRecipe::new));
 
+    public static final IRecipeSerializerRegistryObject<ItemStackToPigmentRecipe> PIGMENT_EXTRACTING = RECIPE_SERIALIZERS.register("pigment_extracting", () -> new ItemStackToPigmentRecipeSerializer<>(PigmentExtractingIRecipe::new));
+
+    public static final IRecipeSerializerRegistryObject<PigmentMixingRecipe> PIGMENT_MIXING = RECIPE_SERIALIZERS.register("pigment_mixing", () -> new PigmentMixingRecipeSerializer<>(PigmentMixingIRecipe::new));
+
     public static final IRecipeSerializerRegistryObject<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = RECIPE_SERIALIZERS.register("metallurgic_infusing", () -> new MetallurgicInfuserRecipeSerializer<>(MetallurgicInfuserIRecipe::new));
+
+    public static final IRecipeSerializerRegistryObject<PaintingRecipe> PAINTING = RECIPE_SERIALIZERS.register("painting", () -> new PaintingRecipeSerializer<>(PaintingIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<PressurizedReactionRecipe> REACTION = RECIPE_SERIALIZERS.register("reaction", () -> new PressurizedReactionRecipeSerializer<>(PressurizedReactionIRecipe::new));
 
@@ -118,7 +133,7 @@ public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializerRegistryObject<SawmillRecipe> SAWING = RECIPE_SERIALIZERS.register("sawing", () -> new SawmillRecipeSerializer<>(SawmillIRecipe::new));
 
-    public static final IRecipeSerializerRegistryObject<MekanismShapedRecipe> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", MekanismShapedRecipeSerializer::new);
+    public static final IRecipeSerializerRegistryObject<MekanismShapedRecipe> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> new WrappedShapedRecipeSerializer<>(MekanismShapedRecipe::new));
     public static final IRecipeSerializerRegistryObject<BinInsertRecipe> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new SpecialRecipeSerializer<>(BinInsertRecipe::new));
     public static final IRecipeSerializerRegistryObject<BinExtractRecipe> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new SpecialRecipeSerializer<>(BinExtractRecipe::new));
 }

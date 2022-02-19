@@ -1,0 +1,66 @@
+{
+  "type": "mekanism:painting",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "minVersion": "1.16.3-4.0.2.0",
+      "type": "mekanism:mod_version_loaded"
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:white_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:orange_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:magenta_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:light_blue_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:yellow_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:lime_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:pink_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:gray_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:light_gray_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:cyan_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:purple_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:blue_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:brown_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:green_dark_oak_bed"
+      },
+      {
+        "item": "ilikewood:red_dark_oak_bed"
+      }
+    ]
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:black"
+  },
+  "output": {
+    "item": "ilikewood:black_dark_oak_bed"
+  }
+}

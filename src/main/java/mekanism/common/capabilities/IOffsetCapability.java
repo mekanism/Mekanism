@@ -38,7 +38,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
     }
 
     /**
-     * Checks if a given capability is disabled for this provider on the given side and offset. If false is returned it makes makes no guarantees that the capability is
+     * Checks if a given capability is disabled for this provider on the given side and offset. If false is returned it makes no guarantees that the capability is
      * provided.
      *
      * @param capability The capability to check

@@ -50,8 +50,8 @@ public class GenHandler {
                 ORES.put(type, getOreFeature(type, MekanismFeatures.ORE.getFeature(), false));
                 ORE_RETROGENS.put(type, getOreFeature(type, MekanismFeatures.ORE_RETROGEN.getFeature(), true));
             }
-            SALT_FEATURE = getSaltFeature(MekanismConfig.world.salt, Placements.KELP_PLACEMENT, false);
-            SALT_RETROGEN_FEATURE = getSaltFeature(MekanismConfig.world.salt, MekanismPlacements.TOP_SOLID_RETROGEN.getConfigured(IPlacementConfig.NO_PLACEMENT_CONFIG), true);
+            SALT_FEATURE = getSaltFeature(MekanismConfig.world.salt, Placements.TOP_SOLID_HEIGHTMAP, false);
+            SALT_RETROGEN_FEATURE = getSaltFeature(MekanismConfig.world.salt, MekanismPlacements.TOP_SOLID_RETROGEN.getConfigured(IPlacementConfig.NONE), true);
         }
     }
 
@@ -60,10 +60,10 @@ public class GenHandler {
             BiomeGenerationSettingsBuilder generation = event.getGeneration();
             //Add ores
             for (ConfiguredFeature<?, ?> feature : ORES.values()) {
-                generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
+                generation.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
             }
             //Add salt
-            generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, SALT_FEATURE);
+            generation.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, SALT_FEATURE);
         }
     }
 
@@ -75,11 +75,11 @@ public class GenHandler {
     @Nonnull
     private static ConfiguredFeature<?, ?> getOreFeature(OreType type, Feature<ResizableOreFeatureConfig> feature, boolean retroGen) {
         OreConfig oreConfig = MekanismConfig.world.ores.get(type);
-        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(feature, new ResizableOreFeatureConfig(FillerBlockType.BASE_STONE_OVERWORLD,
+        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(feature, new ResizableOreFeatureConfig(FillerBlockType.NATURAL_STONE,
               type, oreConfig.maxVeinSize), oreConfig.shouldGenerate, retroGen)
-              .withPlacement(MekanismPlacements.RESIZABLE_RANGE.getConfigured(new ResizableTopSolidRangeConfig(type, oreConfig)))
-              .square()
-              .withPlacement(MekanismPlacements.ADJUSTABLE_COUNT.getConfigured(new AdjustableSpreadConfig(type, oreConfig.perChunk)));
+              .decorated(MekanismPlacements.RESIZABLE_RANGE.getConfigured(new ResizableTopSolidRangeConfig(type, oreConfig)))
+              .squared()
+              .decorated(MekanismPlacements.ADJUSTABLE_COUNT.getConfigured(new AdjustableSpreadConfig(type, oreConfig.perChunk)));
         //Register the configured feature
         String name = "ore_" + type.getResource().getRegistrySuffix();
         if (retroGen) {
@@ -92,9 +92,9 @@ public class GenHandler {
     @Nonnull
     private static ConfiguredFeature<?, ?> getSaltFeature(SaltConfig saltConfig, ConfiguredPlacement<NoPlacementConfig> placement, boolean retroGen) {
         ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(MekanismFeatures.DISK.getFeature(),
-              new ResizableSphereReplaceConfig(MekanismBlocks.SALT_BLOCK.getBlock().getDefaultState(), saltConfig), saltConfig.shouldGenerate, retroGen)
-              .withPlacement(placement.square())
-              .withPlacement(MekanismPlacements.ADJUSTABLE_COUNT.getConfigured(new AdjustableSpreadConfig(null, saltConfig.perChunk)));
+              new ResizableSphereReplaceConfig(MekanismBlocks.SALT_BLOCK.getBlock().defaultBlockState(), saltConfig), saltConfig.shouldGenerate, retroGen)
+              .decorated(placement.squared())
+              .decorated(MekanismPlacements.ADJUSTABLE_COUNT.getConfigured(new AdjustableSpreadConfig(null, saltConfig.perChunk)));
         //Register the configured feature
         Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Mekanism.rl(retroGen ? "salt_retrogen" : "salt"), configuredFeature);
         return configuredFeature;
@@ -107,12 +107,12 @@ public class GenHandler {
         BlockPos blockPos = new BlockPos(chunkX * 16, 0, chunkZ * 16);
         Biome biome = world.getBiome(blockPos);
         boolean generated = false;
-        if (isValidBiome(biome.getCategory()) && world.chunkExists(chunkX, chunkZ)) {
-            ChunkGenerator chunkGenerator = world.getChunkProvider().getChunkGenerator();
+        if (isValidBiome(biome.getBiomeCategory()) && world.hasChunk(chunkX, chunkZ)) {
+            ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();
             for (ConfiguredFeature<?, ?> feature : ORE_RETROGENS.values()) {
-                generated |= feature.generate(world, chunkGenerator, random, blockPos);
+                generated |= feature.place(world, chunkGenerator, random, blockPos);
             }
-            generated |= SALT_RETROGEN_FEATURE.generate(world, chunkGenerator, random, blockPos);
+            generated |= SALT_RETROGEN_FEATURE.place(world, chunkGenerator, random, blockPos);
         }
         return generated;
     }

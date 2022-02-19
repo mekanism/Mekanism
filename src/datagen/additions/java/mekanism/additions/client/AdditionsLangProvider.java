@@ -1,5 +1,6 @@
 package mekanism.additions.client;
 
+import java.util.Map;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.item.ItemBalloon;
@@ -7,12 +8,10 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
+import mekanism.api.providers.IBlockProvider;
+import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
-import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.item.block.ItemBlockColoredName;
-import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 
 public class AdditionsLangProvider extends BaseLanguageProvider {
@@ -37,112 +36,28 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         add(AdditionsItems.BABY_STRAY_SPAWN_EGG, "Baby Stray Spawn Egg");
         add(AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG, "Baby Wither Skeleton Spawn Egg");
         add(AdditionsItems.WALKIE_TALKIE, "Walkie-Talkie");
-        addBalloons(AdditionsItems.BLACK_BALLOON, AdditionsItems.RED_BALLOON, AdditionsItems.GREEN_BALLOON, AdditionsItems.BROWN_BALLOON, AdditionsItems.BLUE_BALLOON,
-              AdditionsItems.PURPLE_BALLOON, AdditionsItems.CYAN_BALLOON, AdditionsItems.LIGHT_GRAY_BALLOON, AdditionsItems.GRAY_BALLOON, AdditionsItems.PINK_BALLOON,
-              AdditionsItems.LIME_BALLOON, AdditionsItems.YELLOW_BALLOON, AdditionsItems.LIGHT_BLUE_BALLOON, AdditionsItems.MAGENTA_BALLOON, AdditionsItems.ORANGE_BALLOON,
-              AdditionsItems.WHITE_BALLOON);
+        for (Map.Entry<EnumColor, ItemRegistryObject<ItemBalloon>> entry : AdditionsItems.BALLOONS.entrySet()) {
+            add(entry.getValue(), entry.getKey().getEnglishName() + " Balloon");
+        }
     }
 
     private void addBlocks() {
         add(AdditionsBlocks.OBSIDIAN_TNT, "Obsidian TNT");
-        //Glow Panels
-        addColoredBlocks("Glow Panel", AdditionsBlocks.BLACK_GLOW_PANEL, AdditionsBlocks.RED_GLOW_PANEL, AdditionsBlocks.GREEN_GLOW_PANEL,
-              AdditionsBlocks.BROWN_GLOW_PANEL, AdditionsBlocks.BLUE_GLOW_PANEL, AdditionsBlocks.PURPLE_GLOW_PANEL, AdditionsBlocks.CYAN_GLOW_PANEL,
-              AdditionsBlocks.LIGHT_GRAY_GLOW_PANEL, AdditionsBlocks.GRAY_GLOW_PANEL, AdditionsBlocks.PINK_GLOW_PANEL, AdditionsBlocks.LIME_GLOW_PANEL,
-              AdditionsBlocks.YELLOW_GLOW_PANEL, AdditionsBlocks.LIGHT_BLUE_GLOW_PANEL, AdditionsBlocks.MAGENTA_GLOW_PANEL, AdditionsBlocks.ORANGE_GLOW_PANEL,
-              AdditionsBlocks.WHITE_GLOW_PANEL);
-        //Plastic Blocks
-        addColoredBlocks("Plastic Block", AdditionsBlocks.BLACK_PLASTIC_BLOCK, AdditionsBlocks.RED_PLASTIC_BLOCK, AdditionsBlocks.GREEN_PLASTIC_BLOCK,
-              AdditionsBlocks.BROWN_PLASTIC_BLOCK, AdditionsBlocks.BLUE_PLASTIC_BLOCK, AdditionsBlocks.PURPLE_PLASTIC_BLOCK, AdditionsBlocks.CYAN_PLASTIC_BLOCK,
-              AdditionsBlocks.LIGHT_GRAY_PLASTIC_BLOCK, AdditionsBlocks.GRAY_PLASTIC_BLOCK, AdditionsBlocks.PINK_PLASTIC_BLOCK, AdditionsBlocks.LIME_PLASTIC_BLOCK,
-              AdditionsBlocks.YELLOW_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_BLUE_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_PLASTIC_BLOCK, AdditionsBlocks.ORANGE_PLASTIC_BLOCK,
-              AdditionsBlocks.WHITE_PLASTIC_BLOCK);
-        //Slick Plastic Plastic
-        addColoredBlocks("Slick Plastic Block", AdditionsBlocks.BLACK_SLICK_PLASTIC_BLOCK, AdditionsBlocks.RED_SLICK_PLASTIC_BLOCK,
-              AdditionsBlocks.GREEN_SLICK_PLASTIC_BLOCK, AdditionsBlocks.BROWN_SLICK_PLASTIC_BLOCK, AdditionsBlocks.BLUE_SLICK_PLASTIC_BLOCK,
-              AdditionsBlocks.PURPLE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.CYAN_SLICK_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_GRAY_SLICK_PLASTIC_BLOCK,
-              AdditionsBlocks.GRAY_SLICK_PLASTIC_BLOCK, AdditionsBlocks.PINK_SLICK_PLASTIC_BLOCK, AdditionsBlocks.LIME_SLICK_PLASTIC_BLOCK,
-              AdditionsBlocks.YELLOW_SLICK_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_BLUE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_SLICK_PLASTIC_BLOCK,
-              AdditionsBlocks.ORANGE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.WHITE_SLICK_PLASTIC_BLOCK);
-        //Glow Plastic Blocks
-        addColoredBlocks("Glow Plastic Block", AdditionsBlocks.BLACK_PLASTIC_GLOW_BLOCK, AdditionsBlocks.RED_PLASTIC_GLOW_BLOCK,
-              AdditionsBlocks.GREEN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.BROWN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.BLUE_PLASTIC_GLOW_BLOCK,
-              AdditionsBlocks.PURPLE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.CYAN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
-              AdditionsBlocks.GRAY_PLASTIC_GLOW_BLOCK, AdditionsBlocks.PINK_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIME_PLASTIC_GLOW_BLOCK,
-              AdditionsBlocks.YELLOW_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_BLOCK,
-              AdditionsBlocks.ORANGE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.WHITE_PLASTIC_GLOW_BLOCK);
-        //Reinforced Plastic Blocks
-        addColoredBlocks("Reinforced Plastic Block", AdditionsBlocks.BLACK_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.RED_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlocks.GREEN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.BROWN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.BLUE_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlocks.PURPLE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.CYAN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlocks.GRAY_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.PINK_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIME_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlocks.YELLOW_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlocks.ORANGE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.WHITE_REINFORCED_PLASTIC_BLOCK);
-        //Plastic Road
-        addColoredBlocks("Plastic Road", AdditionsBlocks.BLACK_PLASTIC_ROAD, AdditionsBlocks.RED_PLASTIC_ROAD, AdditionsBlocks.GREEN_PLASTIC_ROAD,
-              AdditionsBlocks.BROWN_PLASTIC_ROAD, AdditionsBlocks.BLUE_PLASTIC_ROAD, AdditionsBlocks.PURPLE_PLASTIC_ROAD, AdditionsBlocks.CYAN_PLASTIC_ROAD,
-              AdditionsBlocks.LIGHT_GRAY_PLASTIC_ROAD, AdditionsBlocks.GRAY_PLASTIC_ROAD, AdditionsBlocks.PINK_PLASTIC_ROAD, AdditionsBlocks.LIME_PLASTIC_ROAD,
-              AdditionsBlocks.YELLOW_PLASTIC_ROAD, AdditionsBlocks.LIGHT_BLUE_PLASTIC_ROAD, AdditionsBlocks.MAGENTA_PLASTIC_ROAD, AdditionsBlocks.ORANGE_PLASTIC_ROAD,
-              AdditionsBlocks.WHITE_PLASTIC_ROAD);
-        //Plastic Road
-        addColoredBlocks("Transparent Plastic Block", AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_BLOCK,
-              AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_BLOCK,
-              AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_BLOCK,
-              AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_BLOCK, AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_BLOCK,
-              AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_BLOCK);
-        //Plastic Stairs
-        addColoredBlocks("Plastic Stairs", AdditionsBlocks.BLACK_PLASTIC_STAIRS, AdditionsBlocks.RED_PLASTIC_STAIRS, AdditionsBlocks.GREEN_PLASTIC_STAIRS,
-              AdditionsBlocks.BROWN_PLASTIC_STAIRS, AdditionsBlocks.BLUE_PLASTIC_STAIRS, AdditionsBlocks.PURPLE_PLASTIC_STAIRS, AdditionsBlocks.CYAN_PLASTIC_STAIRS,
-              AdditionsBlocks.LIGHT_GRAY_PLASTIC_STAIRS, AdditionsBlocks.GRAY_PLASTIC_STAIRS, AdditionsBlocks.PINK_PLASTIC_STAIRS, AdditionsBlocks.LIME_PLASTIC_STAIRS,
-              AdditionsBlocks.YELLOW_PLASTIC_STAIRS, AdditionsBlocks.LIGHT_BLUE_PLASTIC_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_STAIRS,
-              AdditionsBlocks.ORANGE_PLASTIC_STAIRS, AdditionsBlocks.WHITE_PLASTIC_STAIRS);
-        //Plastic Slabs
-        addColoredBlocks("Plastic Slab", AdditionsBlocks.BLACK_PLASTIC_SLAB, AdditionsBlocks.RED_PLASTIC_SLAB, AdditionsBlocks.GREEN_PLASTIC_SLAB,
-              AdditionsBlocks.BROWN_PLASTIC_SLAB, AdditionsBlocks.BLUE_PLASTIC_SLAB, AdditionsBlocks.PURPLE_PLASTIC_SLAB, AdditionsBlocks.CYAN_PLASTIC_SLAB,
-              AdditionsBlocks.LIGHT_GRAY_PLASTIC_SLAB, AdditionsBlocks.GRAY_PLASTIC_SLAB, AdditionsBlocks.PINK_PLASTIC_SLAB, AdditionsBlocks.LIME_PLASTIC_SLAB,
-              AdditionsBlocks.YELLOW_PLASTIC_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_SLAB, AdditionsBlocks.ORANGE_PLASTIC_SLAB,
-              AdditionsBlocks.WHITE_PLASTIC_SLAB);
-        //Plastic Fence
-        addColoredBlocks("Plastic Barrier", AdditionsBlocks.BLACK_PLASTIC_FENCE, AdditionsBlocks.RED_PLASTIC_FENCE, AdditionsBlocks.GREEN_PLASTIC_FENCE,
-              AdditionsBlocks.BROWN_PLASTIC_FENCE, AdditionsBlocks.BLUE_PLASTIC_FENCE, AdditionsBlocks.PURPLE_PLASTIC_FENCE, AdditionsBlocks.CYAN_PLASTIC_FENCE,
-              AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE, AdditionsBlocks.GRAY_PLASTIC_FENCE, AdditionsBlocks.PINK_PLASTIC_FENCE, AdditionsBlocks.LIME_PLASTIC_FENCE,
-              AdditionsBlocks.YELLOW_PLASTIC_FENCE, AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE, AdditionsBlocks.MAGENTA_PLASTIC_FENCE, AdditionsBlocks.ORANGE_PLASTIC_FENCE,
-              AdditionsBlocks.WHITE_PLASTIC_FENCE);
-        //Plastic Fence Gate
-        addColoredBlocks("Plastic Gate", AdditionsBlocks.BLACK_PLASTIC_FENCE_GATE, AdditionsBlocks.RED_PLASTIC_FENCE_GATE, AdditionsBlocks.GREEN_PLASTIC_FENCE_GATE,
-              AdditionsBlocks.BROWN_PLASTIC_FENCE_GATE, AdditionsBlocks.BLUE_PLASTIC_FENCE_GATE, AdditionsBlocks.PURPLE_PLASTIC_FENCE_GATE,
-              AdditionsBlocks.CYAN_PLASTIC_FENCE_GATE, AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE_GATE, AdditionsBlocks.GRAY_PLASTIC_FENCE_GATE,
-              AdditionsBlocks.PINK_PLASTIC_FENCE_GATE, AdditionsBlocks.LIME_PLASTIC_FENCE_GATE, AdditionsBlocks.YELLOW_PLASTIC_FENCE_GATE,
-              AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE_GATE, AdditionsBlocks.MAGENTA_PLASTIC_FENCE_GATE, AdditionsBlocks.ORANGE_PLASTIC_FENCE_GATE,
-              AdditionsBlocks.WHITE_PLASTIC_FENCE_GATE);
-        //Glow Plastic Stairs
-        addColoredBlocks("Glow Plastic Stairs", AdditionsBlocks.BLACK_PLASTIC_GLOW_STAIRS, AdditionsBlocks.RED_PLASTIC_GLOW_STAIRS,
-              AdditionsBlocks.GREEN_PLASTIC_GLOW_STAIRS, AdditionsBlocks.BROWN_PLASTIC_GLOW_STAIRS, AdditionsBlocks.BLUE_PLASTIC_GLOW_STAIRS,
-              AdditionsBlocks.PURPLE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.CYAN_PLASTIC_GLOW_STAIRS, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_STAIRS,
-              AdditionsBlocks.GRAY_PLASTIC_GLOW_STAIRS, AdditionsBlocks.PINK_PLASTIC_GLOW_STAIRS, AdditionsBlocks.LIME_PLASTIC_GLOW_STAIRS,
-              AdditionsBlocks.YELLOW_PLASTIC_GLOW_STAIRS, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_STAIRS,
-              AdditionsBlocks.ORANGE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.WHITE_PLASTIC_GLOW_STAIRS);
-        //Glow Plastic Slabs
-        addColoredBlocks("Glow Plastic Slab", AdditionsBlocks.BLACK_PLASTIC_GLOW_SLAB, AdditionsBlocks.RED_PLASTIC_GLOW_SLAB,
-              AdditionsBlocks.GREEN_PLASTIC_GLOW_SLAB, AdditionsBlocks.BROWN_PLASTIC_GLOW_SLAB, AdditionsBlocks.BLUE_PLASTIC_GLOW_SLAB,
-              AdditionsBlocks.PURPLE_PLASTIC_GLOW_SLAB, AdditionsBlocks.CYAN_PLASTIC_GLOW_SLAB, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_SLAB,
-              AdditionsBlocks.GRAY_PLASTIC_GLOW_SLAB, AdditionsBlocks.PINK_PLASTIC_GLOW_SLAB, AdditionsBlocks.LIME_PLASTIC_GLOW_SLAB,
-              AdditionsBlocks.YELLOW_PLASTIC_GLOW_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_SLAB,
-              AdditionsBlocks.ORANGE_PLASTIC_GLOW_SLAB, AdditionsBlocks.WHITE_PLASTIC_GLOW_SLAB);
-        //Transparent Plastic Stairs
-        addColoredBlocks("Transparent Plastic Stairs", AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_STAIRS,
-              AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_STAIRS,
-              AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_STAIRS,
-              AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_STAIRS,
-              AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_STAIRS,
-              AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_STAIRS);
-        //Transparent Plastic Slabs
-        addColoredBlocks("Transparent Plastic Slab", AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_SLAB,
-              AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_SLAB,
-              AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_SLAB,
-              AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_SLAB,
-              AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_SLAB,
-              AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_SLAB);
+        addColoredBlocks(AdditionsBlocks.GLOW_PANELS, "Glow Panel");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_BLOCKS, "Plastic Block");
+        addColoredBlocks(AdditionsBlocks.SLICK_PLASTIC_BLOCKS, "Slick Plastic Block");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_GLOW_BLOCKS, "Glow Plastic Block");
+        addColoredBlocks(AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, "Reinforced Plastic Block");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_ROADS, "Plastic Road");
+        addColoredBlocks(AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, "Transparent Plastic Block");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_STAIRS, "Plastic Stairs");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_SLABS, "Plastic Slab");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_FENCES, "Plastic Barrier");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_FENCE_GATES, "Plastic Gate");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_GLOW_STAIRS, "Glow Plastic Stairs");
+        addColoredBlocks(AdditionsBlocks.PLASTIC_GLOW_SLABS, "Glow Plastic Slab");
+        addColoredBlocks(AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, "Transparent Plastic Stairs");
+        addColoredBlocks(AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, "Transparent Plastic Slab");
     }
 
     private void addEntities() {
@@ -169,17 +84,9 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         add(AdditionsLang.DESCRIPTION_OBSIDIAN_TNT, "An extremely powerful, obsidian-infused block of TNT. Use at your own peril.");
     }
 
-    @SafeVarargs
-    private final void addBalloons(ItemRegistryObject<ItemBalloon>... balloonROs) {
-        for (ItemRegistryObject<ItemBalloon> balloonRO : balloonROs) {
-            add(balloonRO.getTranslationKey(), balloonRO.getItem().getColor().getEnglishName() + " Balloon");
-        }
-    }
-
-    @SafeVarargs
-    private final <BLOCK extends Block & IColoredBlock> void addColoredBlocks(String suffix, BlockRegistryObject<BLOCK, ItemBlockColoredName>... blockROs) {
-        for (BlockRegistryObject<BLOCK, ItemBlockColoredName> blockRO : blockROs) {
-            add(blockRO.getTranslationKey(), blockRO.getBlock().getColor().getEnglishName() + " " + suffix);
+    private void addColoredBlocks(Map<EnumColor, ? extends IBlockProvider> blocks, String suffix) {
+        for (Map.Entry<EnumColor, ? extends IBlockProvider> entry : blocks.entrySet()) {
+            add(entry.getValue(), entry.getKey().getEnglishName() + " " + suffix);
         }
     }
 }

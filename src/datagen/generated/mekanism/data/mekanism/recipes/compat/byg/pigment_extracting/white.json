@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "tag": "byg:white_dye"
+      },
+      {
+        "item": "byg:oddity_cactus"
+      }
+    ]
+  },
+  "output": {
+    "pigment": "mekanism:white",
+    "amount": 768
+  }
+}

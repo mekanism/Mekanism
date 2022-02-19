@@ -1,9 +1,11 @@
 package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.registries.MekanismSounds;
@@ -20,26 +22,21 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
         this.typeSupplier = typeSupplier;
         this.typeSetter = typeSetter;
         this.options = enumClass.getEnumConstants();
-        active = true;
+        tooltip(() -> Collections.singletonList(this.typeSupplier.get().getTooltip()));
     }
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
-        minecraft.textureManager.bindTexture(type.getIcon());
+        minecraft.textureManager.bind(type.getIcon());
         blit(matrix, x + 3, y + 3, 0, 0, width - 6, height - 6, 6, 6);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
-        TYPE nextType = options[(typeSupplier.get().ordinal() + 1) % options.length];
+        minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
+        TYPE nextType = MathUtils.getByIndexMod(options, typeSupplier.get().ordinal() + 1);
         typeSetter.accept(nextType);
-    }
-
-    @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        displayTooltip(matrix, typeSupplier.get().getTooltip(), mouseX, mouseY);
     }
 }

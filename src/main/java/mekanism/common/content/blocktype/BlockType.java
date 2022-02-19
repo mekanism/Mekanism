@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
+import mekanism.api.tier.ITier;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
+import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
 import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.interfaces.ITypeBlock;
 import net.minecraft.block.Block;
@@ -92,6 +94,13 @@ public class BlockType {
             return (T) this;
         }
 
+        /**
+         * This is the same as {@link #with(Attribute...)} except exists to make it more clear that we are replacing/overriding an existing attribute we added.
+         */
+        public final T replace(Attribute... attrs) {
+            return with(attrs);
+        }
+
         public final T with(Attribute... attrs) {
             holder.add(attrs);
             return getThis();
@@ -109,6 +118,14 @@ public class BlockType {
 
         public T withLight(int light) {
             return with(new AttributeLight(light));
+        }
+
+        public T withComputerSupport(String name) {
+            return with(new AttributeComputerIntegration(name));
+        }
+
+        public T withComputerSupport(ITier tier, String name) {
+            return withComputerSupport(tier.getBaseTier().getLowerName() + name);
         }
 
         public BLOCK build() {

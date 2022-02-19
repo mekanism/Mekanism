@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:slabs/plastic/glow"
+      },
+      "without": {
+        "item": "mekanismadditions:red_plastic_glow_slab"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:red"
+  },
+  "output": {
+    "item": "mekanismadditions:red_plastic_glow_slab"
+  }
+}

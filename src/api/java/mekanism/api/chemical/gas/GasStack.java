@@ -20,6 +20,9 @@ import net.minecraftforge.registries.IRegistryDelegate;
 @MethodsReturnNonnullByDefault
 public class GasStack extends ChemicalStack<Gas> {
 
+    /**
+     * Empty GasStack instance.
+     */
     public static final GasStack EMPTY = new GasStack(MekanismAPI.EMPTY_GAS, 0);
 
     /**
@@ -88,6 +91,9 @@ public class GasStack extends ChemicalStack<Gas> {
      */
     @Override
     public GasStack copy() {
+        if (isEmpty()) {
+            return EMPTY;
+        }
         return new GasStack(this, getAmount());
     }
 }

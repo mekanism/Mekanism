@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:polished_diorite_stairs"
+    }
+  },
+  "output": {
+    "item": "minecraft:diorite_stairs"
+  }
+}

@@ -3,6 +3,7 @@ package mekanism.common.lib.radiation.capability;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
+import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
@@ -10,7 +11,7 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
-import mekanism.common.network.PacketRadiationData;
+import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.LivingEntity;
@@ -41,19 +42,24 @@ public class DefaultRadiationEntity implements IRadiationEntity {
     }
 
     @Override
-    public void update(LivingEntity entity) {
+    public void update(@Nonnull LivingEntity entity) {
         if (entity instanceof PlayerEntity && !MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
             return;
         }
 
-        Random rand = entity.world.getRandom();
+        Random rand = entity.level.getRandom();
         double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
 
-        // Hurt randomly
-        if (severityScale > chance && rand.nextInt() % 2 == 0) {
-            entity.attackEntityFrom(MekanismDamageSource.RADIATION, 1);
+        float strength = 0;
+        if (severityScale > chance) {
+            //Calculate effect strength based on radiation severity
+            strength = Math.max(1, (float) Math.log1p(radiation));
+            //Hurt randomly
+            if (rand.nextBoolean()) {
+                entity.hurt(MekanismDamageSource.RADIATION, strength);
+            }
         }
 
         if (entity instanceof PlayerEntity) {
@@ -64,8 +70,8 @@ public class DefaultRadiationEntity implements IRadiationEntity {
                 PacketRadiationData.sync(player);
             }
 
-            if (severityScale > chance) {
-                player.getFoodStats().addExhaustion(1F);
+            if (strength > 0) {
+                player.getFoodData().addExhaustion(strength);
             }
         }
     }

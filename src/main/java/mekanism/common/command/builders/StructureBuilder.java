@@ -27,26 +27,26 @@ public abstract class StructureBuilder {
     protected void buildPartialFrame(World world, BlockPos start, int cutoff) {
         for (int x = 0; x < sizeX; x++) {
             if (x > cutoff && x < sizeX - 1 - cutoff) {
-                world.setBlockState(start.add(x, 0, 0), getCasing().getDefaultState());
-                world.setBlockState(start.add(x, sizeY - 1, 0), getCasing().getDefaultState());
-                world.setBlockState(start.add(x, 0, sizeZ - 1), getCasing().getDefaultState());
-                world.setBlockState(start.add(x, sizeY - 1, sizeZ - 1), getCasing().getDefaultState());
+                world.setBlockAndUpdate(start.offset(x, 0, 0), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(x, sizeY - 1, 0), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(x, 0, sizeZ - 1), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(x, sizeY - 1, sizeZ - 1), getCasing().defaultBlockState());
             }
         }
         for (int y = 0; y < sizeY; y++) {
             if (y > cutoff && y < sizeY - 1 - cutoff) {
-                world.setBlockState(start.add(0, y, 0), getCasing().getDefaultState());
-                world.setBlockState(start.add(sizeX - 1, y, 0), getCasing().getDefaultState());
-                world.setBlockState(start.add(0, y, sizeZ - 1), getCasing().getDefaultState());
-                world.setBlockState(start.add(sizeX - 1, y, sizeZ - 1), getCasing().getDefaultState());
+                world.setBlockAndUpdate(start.offset(0, y, 0), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(sizeX - 1, y, 0), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(0, y, sizeZ - 1), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(sizeX - 1, y, sizeZ - 1), getCasing().defaultBlockState());
             }
         }
         for (int z = 0; z < sizeZ; z++) {
             if (z > cutoff && z < sizeZ - 1 - cutoff) {
-                world.setBlockState(start.add(0, 0, z), getCasing().getDefaultState());
-                world.setBlockState(start.add(sizeX - 1, 0, z), getCasing().getDefaultState());
-                world.setBlockState(start.add(0, sizeY - 1, z), getCasing().getDefaultState());
-                world.setBlockState(start.add(sizeX - 1, sizeY - 1, z), getCasing().getDefaultState());
+                world.setBlockAndUpdate(start.offset(0, 0, z), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(sizeX - 1, 0, z), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(0, sizeY - 1, z), getCasing().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(sizeX - 1, sizeY - 1, z), getCasing().defaultBlockState());
             }
         }
     }
@@ -55,23 +55,23 @@ public abstract class StructureBuilder {
         for (int x = 1; x < sizeX - 1; x++) {
             for (int z = 1; z < sizeZ - 1; z++) {
                 BlockPos pos = new BlockPos(x, 0, z);
-                world.setBlockState(start.add(pos), getFloorBlock(pos).getDefaultState());
+                world.setBlockAndUpdate(start.offset(pos), getFloorBlock(pos).defaultBlockState());
                 pos = new BlockPos(x, sizeY - 1, z);
-                world.setBlockState(start.add(pos), getRoofBlock(pos).getDefaultState());
+                world.setBlockAndUpdate(start.offset(pos), getRoofBlock(pos).defaultBlockState());
             }
         }
         for (int y = 1; y < sizeY - 1; y++) {
             for (int x = 1; x < sizeZ - 1; x++) {
                 BlockPos pos = new BlockPos(x, y, 0);
-                world.setBlockState(start.add(pos), getWallBlock(pos).getDefaultState());
+                world.setBlockAndUpdate(start.offset(pos), getWallBlock(pos).defaultBlockState());
                 pos = new BlockPos(x, y, sizeZ - 1);
-                world.setBlockState(start.add(pos), getWallBlock(pos).getDefaultState());
+                world.setBlockAndUpdate(start.offset(pos), getWallBlock(pos).defaultBlockState());
             }
             for (int z = 1; z < sizeZ - 1; z++) {
                 BlockPos pos = new BlockPos(0, y, z);
-                world.setBlockState(start.add(pos), getWallBlock(pos).getDefaultState());
+                world.setBlockAndUpdate(start.offset(pos), getWallBlock(pos).defaultBlockState());
                 pos = new BlockPos(sizeZ - 1, y, z);
-                world.setBlockState(start.add(pos), getWallBlock(pos).getDefaultState());
+                world.setBlockAndUpdate(start.offset(pos), getWallBlock(pos).defaultBlockState());
             }
         }
     }
@@ -85,7 +85,7 @@ public abstract class StructureBuilder {
     protected void buildInteriorLayer(World world, BlockPos start, int yLevel, Block block) {
         for (int x = 1; x < sizeX - 1; x++) {
             for (int z = 1; z < sizeZ - 1; z++) {
-                world.setBlockState(start.add(x, yLevel, z), block.getDefaultState());
+                world.setBlockAndUpdate(start.offset(x, yLevel, z), block.defaultBlockState());
             }
         }
     }
@@ -93,21 +93,21 @@ public abstract class StructureBuilder {
     protected void buildPlane(World world, BlockPos start, int x1, int z1, int x2, int z2, int yLevel, Block block) {
         for (int x = x1; x < x2 - 1; x++) {
             for (int z = z1; z < z2 - 1; z++) {
-                world.setBlockState(start.add(x, yLevel, z), block.getDefaultState());
+                world.setBlockAndUpdate(start.offset(x, yLevel, z), block.defaultBlockState());
             }
         }
     }
 
     protected void buildColumn(World world, BlockPos start, BlockPos pos, int height, Block block) {
         for (int y = 0; y < height; y++) {
-            world.setBlockState(start.add(pos).add(0, y, 0), block.getDefaultState());
+            world.setBlockAndUpdate(start.offset(pos).offset(0, y, 0), block.defaultBlockState());
         }
     }
 
     protected <T extends TileEntity> void buildColumn(World world, BlockPos start, BlockPos pos, int height, Block block, Class<T> tileClass, Consumer<T> tileConsumer) {
         for (int y = 0; y < height; y++) {
-            BlockPos position = start.add(pos).add(0, y, 0);
-            world.setBlockState(position, block.getDefaultState());
+            BlockPos position = start.offset(pos).offset(0, y, 0);
+            world.setBlockAndUpdate(position, block.defaultBlockState());
             T tile = WorldUtils.getTileEntity(tileClass, world, position);
             if (tile != null) {
                 tileConsumer.accept(tile);

@@ -13,7 +13,7 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
 
     public UpsideDownLanguageProvider(DataGenerator gen, String modid) {
         super(gen, modid, "en_ud");
-        //Note: This technically is supposed to be upside down british english but we are doing it as upside down US english
+        //Note: This technically is supposed to be upside down british english, but we are doing it as upside down US english
     }
 
     @Override
@@ -68,7 +68,7 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
     private static String convertMessageFormatCode(MessageFormatComponent component) {
         String formatStyle = component.getFormatStyle();
         if (formatStyle != null && component.isChoice()) {
-            //The formatting style is a choice and we want to invert any "excess" text that is part of it
+            //The formatting style is a choice, and we want to invert any "excess" text that is part of it
             String newFormatStyle = invertChoice(formatStyle);
             try {
                 new ChoiceFormat(newFormatStyle);

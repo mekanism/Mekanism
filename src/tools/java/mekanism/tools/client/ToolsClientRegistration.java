@@ -22,7 +22,7 @@ public class ToolsClientRegistration {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> addShieldPropertyOverrides(MekanismTools.rl("blocking"),
-              (stack, world, entity) -> entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F,
+              (stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F,
               ToolsItems.BRONZE_SHIELD, ToolsItems.LAPIS_LAZULI_SHIELD, ToolsItems.OSMIUM_SHIELD, ToolsItems.REFINED_GLOWSTONE_SHIELD,
               ToolsItems.REFINED_OBSIDIAN_SHIELD, ToolsItems.STEEL_SHIELD));
     }
@@ -35,9 +35,9 @@ public class ToolsClientRegistration {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (event.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
             for (ShieldTextures textures : ShieldTextures.values()) {
-                event.addSprite(textures.getBase().getTextureLocation());
+                event.addSprite(textures.getBase().texture());
             }
         }
     }

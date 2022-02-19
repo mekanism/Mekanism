@@ -12,9 +12,10 @@ public class TagResolverHelper {
     private TagResolverHelper() {
     }
 
+    @Deprecated//TODO - 1.18: Remove this, presuming that the changes to when JEI loads made this no longer necessary
     public static <TYPE> List<TYPE> getRepresentations(ITag<TYPE> tag) {
         try {
-            return tag.getAllElements();
+            return tag.getValues();
         } catch (IllegalStateException e) {
             //Why do tags have to be such an annoyance in 1.16
             // This is needed so that we can ensure we give JEI an empty list of representations

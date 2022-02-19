@@ -31,6 +31,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
 public class NBTUtils {
@@ -125,16 +127,16 @@ public class NBTUtils {
     }
 
     public static void setUUIDIfPresent(CompoundNBT nbt, String key, Consumer<UUID> setter) {
-        if (nbt.hasUniqueId(key)) {
-            setter.accept(nbt.getUniqueId(key));
+        if (nbt.hasUUID(key)) {
+            setter.accept(nbt.getUUID(key));
         } else if (hasOldUUID(nbt, key)) {
             setter.accept(getOldUUID(nbt, key));
         }
     }
 
     public static void setUUIDIfPresentElse(CompoundNBT nbt, String key, Consumer<UUID> setter, Runnable notPresent) {
-        if (nbt.hasUniqueId(key)) {
-            setter.accept(nbt.getUniqueId(key));
+        if (nbt.hasUUID(key)) {
+            setter.accept(nbt.getUUID(key));
         } else if (hasOldUUID(nbt, key)) {
             setter.accept(getOldUUID(nbt, key));
         } else {
@@ -226,22 +228,58 @@ public class NBTUtils {
 
     public static void setItemStackIfPresent(CompoundNBT nbt, String key, Consumer<ItemStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
-            setter.accept(ItemStack.read(nbt.getCompound(key)));
+            setter.accept(ItemStack.of(nbt.getCompound(key)));
         }
     }
 
     public static void setResourceLocationIfPresent(CompoundNBT nbt, String key, Consumer<ResourceLocation> setter) {
         if (nbt.contains(key, NBT.TAG_STRING)) {
-            ResourceLocation value = ResourceLocation.tryCreate(nbt.getString(key));
+            ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));
             if (value != null) {
                 setter.accept(value);
             }
         }
     }
 
+    public static void setResourceLocationIfPresentElse(CompoundNBT nbt, String key, Consumer<ResourceLocation> setter, Runnable notPresent) {
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));
+            if (value == null) {
+                notPresent.run();
+            } else {
+                setter.accept(value);
+            }
+        }
+    }
+
+    public static <REG extends IForgeRegistryEntry<REG>> void setRegistryEntryIfPresentElse(CompoundNBT nbt, String key, IForgeRegistry<REG> registry,
+          Consumer<REG> setter, Runnable notPresent) {
+        setResourceLocationIfPresentElse(nbt, key, rl -> {
+            REG reg = registry.getValue(rl);
+            if (reg == null) {
+                notPresent.run();
+            } else {
+                setter.accept(reg);
+            }
+        }, notPresent);
+    }
+
     public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundNBT nbt, String key, Int2ObjectFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
         if (nbt.contains(key, NBT.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));
         }
+    }
+
+    public static <V extends IForgeRegistryEntry<V>> V readRegistryEntry(CompoundNBT nbt, String key, IForgeRegistry<V> registry, V fallback) {
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            ResourceLocation rl = ResourceLocation.tryParse(nbt.getString(key));
+            if (rl != null) {
+                V result = registry.getValue(rl);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return fallback;
     }
 }

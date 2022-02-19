@@ -22,8 +22,9 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringS
         this.langEntry = langEntry;
     }
 
+    @Nonnull
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
     }
 

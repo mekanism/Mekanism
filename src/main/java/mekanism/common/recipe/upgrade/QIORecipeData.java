@@ -33,7 +33,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
         itemMap = new Object2LongOpenHashMap<>(data.getTypes());
         for (int i = 0; i < nbtItemMap.size(); i++) {
             CompoundNBT tag = nbtItemMap.getCompound(i);
-            ItemStack itemType = ItemStack.read(tag.getCompound(NBTConstants.ITEM));
+            ItemStack itemType = ItemStack.of(tag.getCompound(NBTConstants.ITEM));
             itemMap.put(HashedItem.create(itemType), tag.getLong(NBTConstants.AMOUNT));
         }
     }
@@ -70,7 +70,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
         ListNBT list = new ListNBT();
         for (Entry<HashedItem> entry : itemMap.object2LongEntrySet()) {
             CompoundNBT tag = new CompoundNBT();
-            tag.put(NBTConstants.ITEM, entry.getKey().getStack().write(new CompoundNBT()));
+            tag.put(NBTConstants.ITEM, entry.getKey().getStack().save(new CompoundNBT()));
             tag.putLong(NBTConstants.AMOUNT, entry.getLongValue());
             list.add(tag);
         }

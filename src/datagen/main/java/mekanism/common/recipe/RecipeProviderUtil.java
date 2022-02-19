@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
+import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
@@ -87,6 +88,13 @@ public class RecipeProviderUtil {
               ItemStackIngredient.from(trapdoor.asItem()),
               new ItemStack(planks, 3)
         ), basePath + "trapdoor/" + name, condition);
+    }
+
+    public static void addSandStoneToSandRecipe(Consumer<IFinishedRecipe> consumer, String path, @Nullable ICondition condition, IItemProvider sand, IItemProvider... sandstones) {
+        build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Ingredient.of(sandstones)),
+              new ItemStack(sand, 2)
+        ), path, condition);
     }
 
     private static void build(Consumer<IFinishedRecipe> consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {

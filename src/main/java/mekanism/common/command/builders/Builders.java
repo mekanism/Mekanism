@@ -83,7 +83,7 @@ public class Builders {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 17, Blocks.AIR);
-            world.setBlockState(start.add(1, 1, 0), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getBlock().getDefaultState());
+            world.setBlockAndUpdate(start.offset(1, 1, 0), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getBlock().defaultBlockState());
         }
 
         @Override
@@ -111,8 +111,8 @@ public class Builders {
                         if ((x == -1) == (y == -1) == (z == -1) == (x == 0) == (y == 0) != (z == 0)) {
                             // Check that not all three vars are 0 or -1.
                             if (!(x == -1 || x == 0) || !(y == -1 || y == 0) || !(z == -1 || z == 0)) {
-                                world.setBlockState(start.add(x < 0 ? sizeX + x : x, y < 0 ? sizeY + y : y,
-                                      z < 0 ? sizeZ + z : z), getCasing().getDefaultState());
+                                world.setBlockAndUpdate(start.offset(x < 0 ? sizeX + x : x, y < 0 ? sizeY + y : y,
+                                      z < 0 ? sizeZ + z : z), getCasing().defaultBlockState());
                             }
                         }
                     }

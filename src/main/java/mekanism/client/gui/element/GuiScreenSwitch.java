@@ -1,9 +1,5 @@
 package mekanism.client.gui.element;
 
-import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_X;
-import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_Y;
-import static mekanism.client.gui.element.GuiDigitalSwitch.SWITCH;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.function.BooleanSupplier;
@@ -21,7 +17,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     private final Runnable onToggle;
 
     public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, ITextComponent buttonName, BooleanSupplier stateSupplier, Runnable onToggle) {
-        super(gui, x, y, width, BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
+        super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
         active = true;
@@ -30,9 +26,11 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(SWITCH);
-        blit(matrix, x + width - 2 - BUTTON_SIZE_X, y + 2, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        blit(matrix, x + width - 2 - BUTTON_SIZE_X, y + 2 + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        minecraft.textureManager.bind(GuiDigitalSwitch.SWITCH);
+        int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
+        int buttonSizeY = GuiDigitalSwitch.BUTTON_SIZE_Y;
+        blit(matrix, x + width - 2 - buttonSizeX, y + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
+        blit(matrix, x + width - 2 - buttonSizeX, y + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
     }
 
     @Override
@@ -44,7 +42,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
     }
 }

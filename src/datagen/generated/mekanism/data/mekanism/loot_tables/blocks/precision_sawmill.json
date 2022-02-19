@@ -57,11 +57,6 @@
           ],
           "name": "mekanism:precision_sawmill"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

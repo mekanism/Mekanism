@@ -24,7 +24,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
     }
 
     @Override
-    public boolean generate(@Nonnull ISeedReader seedReader, @Nonnull ChunkGenerator chunkGenerator, Random rand, BlockPos pos, ResizableOreFeatureConfig config) {
+    public boolean place(@Nonnull ISeedReader seedReader, @Nonnull ChunkGenerator chunkGenerator, Random rand, BlockPos pos, ResizableOreFeatureConfig config) {
         float angle = rand.nextFloat() * (float) Math.PI;
         float adjustedSize = config.size.getAsInt() / 8.0F;
         int i = MathHelper.ceil((adjustedSize + 1.0F) / 2.0F);
@@ -44,14 +44,14 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
         for (int l1 = minXStart; l1 <= minXStart + width; ++l1) {
             for (int i2 = minZStart; i2 <= minZStart + width; ++i2) {
                 if (minYStart <= seedReader.getHeight(getHeightmapType(), l1, i2)) {
-                    return func_207803_a(seedReader, rand, config, xMin, xMax, zMin, zMax, yMin, yMax, minXStart, minYStart, minZStart, width, height);
+                    return doPlace(seedReader, rand, config, xMin, xMax, zMin, zMax, yMin, yMax, minXStart, minYStart, minZStart, width, height);
                 }
             }
         }
         return false;
     }
 
-    protected boolean func_207803_a(IWorld world, Random random, ResizableOreFeatureConfig config, double xMin, double xMax, double zMin, double zMax,
+    protected boolean doPlace(IWorld world, Random random, ResizableOreFeatureConfig config, double xMin, double xMax, double zMin, double zMax,
           double yMin, double yMax, int minXStart, int minYStart, int minZStart, int width, int height) {
         BitSet bitset = new BitSet(width * height * width);
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
@@ -115,9 +115,9 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
                                         int l2 = x - minXStart + (y - minYStart) * width + (z - minZStart) * width * height;
                                         if (!bitset.get(l2)) {
                                             bitset.set(l2);
-                                            mutablePos.setPos(x, y, z);
+                                            mutablePos.set(x, y, z);
                                             if (config.target.test(world.getBlockState(mutablePos), random)) {
-                                                world.setBlockState(mutablePos, config.state, BlockFlags.BLOCK_UPDATE);
+                                                world.setBlock(mutablePos, config.state, BlockFlags.BLOCK_UPDATE);
                                                 ++i;
                                             }
                                         }

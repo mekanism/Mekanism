@@ -1,8 +1,9 @@
 package mekanism.generators.common;
 
+import mekanism.api.MekanismIMC;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
@@ -28,6 +29,7 @@ import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.util.ResourceLocation;
@@ -36,10 +38,11 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
-public class MekanismGenerators implements IModule {
+public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
 
@@ -64,6 +67,7 @@ public class MekanismGenerators implements IModule {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(this::imcQueue);
 
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
@@ -72,6 +76,7 @@ public class MekanismGenerators implements IModule {
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         GeneratorsGases.GASES.register(modEventBus);
+        GeneratorsModules.MODULES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
     }
@@ -86,8 +91,12 @@ public class MekanismGenerators implements IModule {
               () -> MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
                     .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
 
-        //Register dispenser behaviors
-        event.enqueueWork(GeneratorsFluids.FLUIDS::registerBucketDispenserBehavior);
+        event.enqueueWork(() -> {
+            //Ensure our tags are all initialized
+            GeneratorTags.init();
+            //Register dispenser behaviors
+            GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
+        });
 
         BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
         BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
@@ -97,6 +106,10 @@ public class MekanismGenerators implements IModule {
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
+    }
+
+    private void imcQueue(InterModEnqueueEvent event) {
+        MekanismIMC.addMekaSuitPantsModules(GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT);
     }
 
     @Override
@@ -115,7 +128,7 @@ public class MekanismGenerators implements IModule {
     }
 
     private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us

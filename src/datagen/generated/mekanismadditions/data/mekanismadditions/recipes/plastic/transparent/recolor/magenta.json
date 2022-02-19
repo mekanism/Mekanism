@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "mekanismadditions:plastic_blocks/transparent"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:magenta_plastic_transparent"
+      }
     },
     "D": {
       "tag": "forge:dyes/magenta"

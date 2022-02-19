@@ -1,0 +1,29 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "byg:blue_sandstone"
+      },
+      {
+        "item": "byg:blue_chiseled_sandstone"
+      },
+      {
+        "item": "byg:blue_cut_sandstone"
+      },
+      {
+        "item": "byg:blue_smooth_sandstone"
+      }
+    ]
+  },
+  "output": {
+    "item": "byg:blue_sand",
+    "count": 2
+  }
+}

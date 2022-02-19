@@ -7,8 +7,6 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
@@ -23,22 +21,20 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 16, 23, 112, 40, () -> Arrays.asList(
               tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
-              MekanismLang.CHUNK.translate(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)
+              MekanismLang.CHUNK.translate(tile.getBlockPos().getX() >> 4, tile.getBlockPos().getZ() >> 4)
         )));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer()));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

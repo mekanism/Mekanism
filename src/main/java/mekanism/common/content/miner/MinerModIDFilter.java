@@ -1,8 +1,10 @@
 package mekanism.common.content.miner;
 
 import mekanism.api.NBTConstants;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
+import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,19 +14,26 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     private String modID;
 
+    public MinerModIDFilter(String modID) {
+        this.modID = modID;
+    }
+
+    public MinerModIDFilter() {
+    }
+
+    public MinerModIDFilter(MinerModIDFilter filter) {
+        super(filter);
+        modID = filter.modID;
+    }
+
     @Override
     public boolean canFilter(BlockState state) {
-        String id = state.getBlock().getRegistryName().getNamespace();
-        if (modID.equals(id) || modID.equals("*")) {
-            return true;
-        } else if (modID.endsWith("*") && !modID.startsWith("*")) {
-            return id.startsWith(modID.substring(0, modID.length() - 1));
-        } else if (modID.startsWith("*") && !modID.endsWith("*")) {
-            return id.endsWith(modID.substring(1));
-        } else if (modID.startsWith("*") && modID.endsWith("*")) {
-            return id.contains(modID.substring(1, modID.length() - 1));
-        }
-        return false;
+        return WildcardMatcher.matches(modID, state.getBlock().getRegistryName().getNamespace());
+    }
+
+    @Override
+    public boolean hasBlacklistedElement() {
+        return TagCache.modIDHasMinerBlacklisted(modID);
     }
 
     @Override
@@ -43,7 +52,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(modID);
+        buffer.writeUtf(modID);
     }
 
     @Override
@@ -54,23 +63,19 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public int hashCode() {
-        int code = 1;
+        int code = super.hashCode();
         code = 31 * code + modID.hashCode();
         return code;
     }
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MinerModIDFilter && ((MinerModIDFilter) filter).modID.equals(modID);
+        return super.equals(filter) && filter instanceof MinerModIDFilter && ((MinerModIDFilter) filter).modID.equals(modID);
     }
 
     @Override
     public MinerModIDFilter clone() {
-        MinerModIDFilter filter = new MinerModIDFilter();
-        filter.replaceStack = replaceStack;
-        filter.requireStack = requireStack;
-        filter.modID = modID;
-        return filter;
+        return new MinerModIDFilter(this);
     }
 
     @Override

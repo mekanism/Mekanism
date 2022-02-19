@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
@@ -44,12 +45,10 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntityTransmitter extends CapabilityTileEntity implements IConfigurable, ITickableTileEntity, IAlloyInteraction {
 
@@ -62,6 +61,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public TileEntityTransmitter(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType());
         this.transmitter = createTransmitter(blockProvider);
+        cacheCoord();
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
@@ -103,19 +103,19 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         super.handleUpdatePacket(tag);
         //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getWorld(), getPos(), this);
+        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         getTransmitter().read(nbtTags);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        return getTransmitter().write(super.write(nbtTags));
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        return getTransmitter().write(super.save(nbtTags));
     }
 
     public void onNeighborTileChange(Direction side) {
@@ -127,8 +127,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void clearRemoved() {
+        super.clearRemoved();
         onWorldJoin();
     }
 
@@ -143,8 +143,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         onWorldSeparate();
         getTransmitter().remove();
     }
@@ -174,26 +174,35 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return loaded;
     }
 
-    @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        if (!isRemote()) {
-            Pair<Vector3d, Vector3d> vecs = MultipartUtils.getRayTraceVectors(player);
-            AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
-            if (result == null) {
-                return ActionResultType.PASS;
-            }
-            List<Direction> list = new ArrayList<>();
+    public Direction getSideLookingAt(PlayerEntity player, Direction fallback) {
+        Direction side = getSideLookingAt(player);
+        return side == null ? fallback : side;
+    }
+
+    @Nullable
+    public Direction getSideLookingAt(PlayerEntity player) {
+        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(player, getBlockPos(), getCollisionBoxes());
+        if (result != null && result.valid()) {
+            List<Direction> list = new ArrayList<>(EnumUtils.DIRECTIONS.length);
             byte connections = getTransmitter().getAllCurrentConnections();
             for (Direction dir : EnumUtils.DIRECTIONS) {
                 if (Transmitter.connectionMapContainsSide(connections, dir)) {
                     list.add(dir);
                 }
             }
-            Direction hitSide;
             int boxIndex = result.hit.subHit + 1;
             if (boxIndex < list.size()) {
-                hitSide = list.get(boxIndex);
-            } else {
+                return list.get(boxIndex);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+        if (!isRemote()) {
+            Direction hitSide = getSideLookingAt(player);
+            if (hitSide == null) {
                 if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE && onConfigure(player, side) == ActionResultType.SUCCESS) {
                     //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
                     getTransmitter().refreshConnections();
@@ -203,12 +212,12 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 hitSide = side;
             }
             transmitter.setConnectionTypeRaw(hitSide, transmitter.getConnectionTypeRaw(hitSide).getNext());
-            //TODO - 10.1: Re-evaluate how much of this is needed because in theory we could try and get most
-            // of it to be handled in the sideChanged method
-            getTransmitter().onModeChange(Direction.byIndex(hitSide.ordinal()));
+            //Note: This stuff happens here and not in sideChanged because we don't want it to happen on load
+            // or things which also would cause sideChanged to be called
+            getTransmitter().onModeChange(Direction.from3DDataValue(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();
-            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.getConnectionTypeRaw(hitSide)), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.getConnectionTypeRaw(hitSide)), Util.NIL_UUID);
             sendUpdatePacket();
         }
         return ActionResultType.SUCCESS;
@@ -246,7 +255,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         //If any of the block is in view, then allow rendering the contents
-        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
     @Nonnull
@@ -271,12 +280,12 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @Override
     public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier) {
-        if (getWorld() != null && getTransmitter().hasTransmitterNetwork()) {
+        if (getLevel() != null && getTransmitter().hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = getTransmitter().getTransmitterNetwork();
             List<Transmitter<?, ?, ?>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
             list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
-                    return Double.compare(o1.getTilePos().distanceSq(pos), o2.getTilePos().distanceSq(pos));
+                    return Double.compare(o1.getTilePos().distSqr(worldPosition), o2.getTilePos().distSqr(worldPosition));
                 }
                 return 0;
             });
@@ -295,7 +304,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                         }
                         if (!sharesSet) {
                             if (transmitterNetwork instanceof DynamicBufferedNetwork) {
-                                //Ensure we save the shares to the tiles so that they can properly take them and they don't get voided
+                                //Ensure we save the shares to the tiles so that they can properly take them, and they don't get voided
                                 ((DynamicBufferedNetwork) transmitterNetwork).validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
                             }
                             sharesSet = true;
@@ -308,7 +317,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                             Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
                                   transmitterPos, transmitterWorld);
                         } else {
-                            transmitterWorld.setBlockState(transmitterPos, upgradeState);
+                            transmitterWorld.setBlockAndUpdate(transmitterPos, upgradeState);
                             TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, transmitterWorld, transmitterPos);
                             if (upgradedTile == null) {
                                 Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitterPos, transmitterWorld);

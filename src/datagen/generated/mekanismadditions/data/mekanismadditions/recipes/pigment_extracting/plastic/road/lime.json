@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:lime_plastic_road"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 42
+  }
+}

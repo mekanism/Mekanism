@@ -1,0 +1,66 @@
+{
+  "type": "mekanism:painting",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "minVersion": "1.16.3-4.0.2.0",
+      "type": "mekanism:mod_version_loaded"
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:orange_crimson_bed"
+      },
+      {
+        "item": "ilikewood:magenta_crimson_bed"
+      },
+      {
+        "item": "ilikewood:light_blue_crimson_bed"
+      },
+      {
+        "item": "ilikewood:yellow_crimson_bed"
+      },
+      {
+        "item": "ilikewood:lime_crimson_bed"
+      },
+      {
+        "item": "ilikewood:pink_crimson_bed"
+      },
+      {
+        "item": "ilikewood:gray_crimson_bed"
+      },
+      {
+        "item": "ilikewood:light_gray_crimson_bed"
+      },
+      {
+        "item": "ilikewood:cyan_crimson_bed"
+      },
+      {
+        "item": "ilikewood:purple_crimson_bed"
+      },
+      {
+        "item": "ilikewood:blue_crimson_bed"
+      },
+      {
+        "item": "ilikewood:brown_crimson_bed"
+      },
+      {
+        "item": "ilikewood:green_crimson_bed"
+      },
+      {
+        "item": "ilikewood:red_crimson_bed"
+      },
+      {
+        "item": "ilikewood:black_crimson_bed"
+      }
+    ]
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:white"
+  },
+  "output": {
+    "item": "ilikewood:white_crimson_bed"
+  }
+}

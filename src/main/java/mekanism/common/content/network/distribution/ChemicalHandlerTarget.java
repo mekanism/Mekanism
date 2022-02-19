@@ -17,6 +17,11 @@ public class ChemicalHandlerTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         this.extra = type;
     }
 
+    public ChemicalHandlerTarget(@Nonnull STACK type, int expectedSize) {
+        super(expectedSize);
+        this.extra = type;
+    }
+
     @Override
     protected void acceptAmount(HANDLER handler, SplitInfo<Long> splitInfo, Long amount) {
         splitInfo.send(amount - handler.insertChemical(ChemicalUtil.copyWithAmount(extra, amount), Action.EXECUTE).getAmount());

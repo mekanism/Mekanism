@@ -1,6 +1,8 @@
 package mekanism.common.util.text;
 
 import java.text.NumberFormat;
+import mekanism.common.MekanismLang;
+import net.minecraft.util.text.ITextComponent;
 
 public final class TextUtils {
 
@@ -10,15 +12,18 @@ public final class TextUtils {
     private static final String HEX_PREFIX = "0x";
     private static final char[] HEX_CODES = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
+    private static final NumberFormat doubleFormatter = NumberFormat.getNumberInstance();
 
-    public static String getPercent(double ratio) {
-        //TODO - 10.1: Move this over to a lang key and make this return an ITextComponent
-        // That or more the percentage symbols into the lang keys that end up taking the percent as a param
-        return Math.round(ratio * 100) + "%";
+    public static ITextComponent getPercent(double ratio) {
+        return MekanismLang.GENERIC_PERCENT.translate(Math.round(ratio * 100));
     }
 
     public static String format(long count) {
         return intFormatter.format(count);
+    }
+
+    public static String format(double count) {
+        return doubleFormatter.format(count);
     }
 
     public static String hex(boolean prefix, int bytes, long value) {

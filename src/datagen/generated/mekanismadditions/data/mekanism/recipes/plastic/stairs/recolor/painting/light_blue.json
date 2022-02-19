@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:stairs/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:light_blue_plastic_stairs"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:light_blue"
+  },
+  "output": {
+    "item": "mekanismadditions:light_blue_plastic_stairs"
+  }
+}

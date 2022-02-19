@@ -32,15 +32,15 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
     }
 
     private void renderArmorPart(MatrixStack matrix, IRenderTypeBuffer renderer, T entity, EquipmentSlotType slot, int light, float partialTicks) {
-        ItemStack stack = entity.getItemStackFromSlot(slot);
+        ItemStack stack = entity.getItemBySlot(slot);
         Item item = stack.getItem();
         if (item instanceof ISpecialGear && item instanceof ArmorItem) {
             ArmorItem armorItem = (ArmorItem) item;
-            if (armorItem.getEquipmentSlot() == slot) {
+            if (armorItem.getSlot() == slot) {
                 CustomArmor model = ((ISpecialGear) item).getGearModel();
-                getEntityModel().setModelAttributes((BipedModel<T>) model);
-                setModelSlotVisible((A) model, slot);
-                model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, partialTicks, stack.hasEffect(), entity, stack);
+                getParentModel().copyPropertiesTo((BipedModel<T>) model);
+                setPartVisibility((A) model, slot);
+                model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, partialTicks, stack.hasFoil(), entity, stack);
             }
         }
     }

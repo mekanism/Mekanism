@@ -33,7 +33,7 @@ public class WildcardMatcher {
             }
             textIndex++;
         }
-        // break if there's more text left and we didn't our query with a wildcard char
+        // break if there's more text left, and we didn't end our query with a wildcard char
         return textIndex >= text.length() || (!wildcard.isEmpty() && wildcard.charAt(wildcard.length() - 1) == '*');
     }
 }

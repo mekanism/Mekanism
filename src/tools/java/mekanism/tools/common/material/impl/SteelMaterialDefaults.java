@@ -12,12 +12,12 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 1_792;
+        return 448;
     }
 
     @Override
     public float getAxeDamage() {
-        return 4;
+        return 7;
     }
 
     @Override
@@ -26,83 +26,69 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public float getPaxelDamage() {
+    public int getUses() {
+        return 500;
+    }
+
+    @Override
+    public float getSpeed() {
         return 8;
     }
 
     @Override
-    public int getPaxelHarvestLevel() {
+    public float getAttackDamageBonus() {
         return 3;
     }
 
     @Override
-    public int getPaxelMaxUses() {
-        return 1_250;
-    }
-
-    @Override
-    public float getPaxelEfficiency() {
-        return 18;
-    }
-
-    @Override
-    public int getMaxUses() {
-        return 850;
-    }
-
-    @Override
-    public float getEfficiency() {
-        return 14;
-    }
-
-    @Override
-    public float getAttackDamage() {
-        return 4;
-    }
-
-    @Override
-    public int getHarvestLevel() {
+    public int getLevel() {
         return 3;
     }
 
     @Override
     public int getCommonEnchantability() {
-        return 10;
+        return 16;
     }
 
     @Override
     public float getToughness() {
-        return 1;
+        return 2;
     }
 
     @Override
-    public int getDurability(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 520;
+                return 260;
             case LEGS:
-                return 600;
+                return 300;
             case CHEST:
-                return 640;
+                return 320;
             case HEAD:
-                return 440;
+                return 220;
         }
         return 0;
     }
 
     @Override
-    public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 3;
             case LEGS:
                 return 6;
             case CHEST:
-                return 7;
+                return 8;
             case HEAD:
                 return 3;
         }
         return 0;
+    }
+
+    @Nonnull
+    @Override
+    public String getConfigCommentName() {
+        return "Steel";
     }
 
     @Nonnull
@@ -111,21 +97,16 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
         return "steel";
     }
 
-    @Override
-    public int getPaxelEnchantability() {
-        return 14;
-    }
-
     @Nonnull
     @Override
-    public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_IRON;
+    public SoundEvent getEquipSound() {
+        return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromTag(MekanismTags.Items.INGOTS_STEEL);
+        return Ingredient.of(MekanismTags.Items.INGOTS_STEEL);
     }
 
     @Override

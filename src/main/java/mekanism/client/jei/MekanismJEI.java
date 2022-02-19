@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalUtils.ChemicalToStackCreator;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -26,6 +25,7 @@ import mekanism.client.jei.ChemicalStackHelper.GasStackHelper;
 import mekanism.client.jei.ChemicalStackHelper.InfusionStackHelper;
 import mekanism.client.jei.ChemicalStackHelper.PigmentStackHelper;
 import mekanism.client.jei.ChemicalStackHelper.SlurryStackHelper;
+import mekanism.client.jei.machine.BoilerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalDissolutionRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
@@ -39,26 +39,36 @@ import mekanism.client.jei.machine.ItemStackToEnergyRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToInfuseTypeRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToPigmentRecipeCategory;
 import mekanism.client.jei.machine.MetallurgicInfuserRecipeCategory;
 import mekanism.client.jei.machine.NucleosynthesizingRecipeCategory;
+import mekanism.client.jei.machine.PaintingRecipeCategory;
+import mekanism.client.jei.machine.PigmentMixerRecipeCategory;
 import mekanism.client.jei.machine.PressurizedReactionRecipeCategory;
 import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.SPSRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
-import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
+import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
+import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tile.machine.TileEntityElectricPump;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -92,13 +102,9 @@ public class MekanismJEI implements IModPlugin {
     private static final ResourceLocation GAS_CONVERSION = Mekanism.rl("gas_conversion");
     private static final ResourceLocation INFUSION_CONVERSION = Mekanism.rl("infusion_conversion");
 
-    private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = new ISubtypeInterpreter() {
-        @Override
-        public String apply(ItemStack stack) {
-            if (!stack.hasTag()) {
-                return ISubtypeInterpreter.NONE;
-            }
-            String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY));
+    private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
+        if (context == UidContext.Ingredient && stack.hasTag()) {
+            String nbtRepresentation = getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY);
             nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY));
             nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY));
             nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY));
@@ -106,19 +112,11 @@ public class MekanismJEI implements IModPlugin {
             nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
             return nbtRepresentation;
         }
-
-        @Override
-        public String apply(ItemStack stack, UidContext context) {
-            //Only use the old method if we are an ingredient, for recipes ignore all the NBT
-            return context == UidContext.Ingredient ? apply(stack) : ISubtypeInterpreter.NONE;
-        }
+        return IIngredientSubtypeInterpreter.NONE;
     };
 
     private static String addInterpretation(String nbtRepresentation, String component) {
-        if (nbtRepresentation.isEmpty()) {
-            return component;
-        }
-        return nbtRepresentation + ":" + component;
+        return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
     }
 
     private static String getChemicalComponent(ItemStack stack, Capability<? extends IChemicalHandler<?, ?>> capability) {
@@ -136,7 +134,7 @@ public class MekanismJEI implements IModPlugin {
             }
             return component;
         }
-        return ISubtypeInterpreter.NONE;
+        return IIngredientSubtypeInterpreter.NONE;
     }
 
     private static String getFluidComponent(ItemStack stack) {
@@ -154,7 +152,7 @@ public class MekanismJEI implements IModPlugin {
             }
             return component;
         }
-        return ISubtypeInterpreter.NONE;
+        return IIngredientSubtypeInterpreter.NONE;
     }
 
     private static String getEnergyComponent(ItemStack stack) {
@@ -173,7 +171,7 @@ public class MekanismJEI implements IModPlugin {
             }
             return component;
         }
-        return ISubtypeInterpreter.NONE;
+        return IIngredientSubtypeInterpreter.NONE;
     }
 
     @Nonnull
@@ -204,19 +202,19 @@ public class MekanismJEI implements IModPlugin {
     @SuppressWarnings("RedundantTypeArguments")
     public void registerIngredients(IModIngredientRegistration registry) {
         //The types cannot properly be inferred at runtime
-        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.gasRegistry(), TYPE_GAS, GAS_STACK_HELPER, GasStack::new);
-        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.infuseTypeRegistry(), TYPE_INFUSION, INFUSION_STACK_HELPER, InfusionStack::new);
-        this.<Pigment, PigmentStack>registerIngredientType(registry, MekanismAPI.pigmentRegistry(), TYPE_PIGMENT, PIGMENT_STACK_HELPER, PigmentStack::new);
-        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.slurryRegistry(), TYPE_SLURRY, SLURRY_STACK_HELPER, SlurryStack::new);
+        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.gasRegistry(), TYPE_GAS, GAS_STACK_HELPER);
+        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.infuseTypeRegistry(), TYPE_INFUSION, INFUSION_STACK_HELPER);
+        this.<Pigment, PigmentStack>registerIngredientType(registry, MekanismAPI.pigmentRegistry(), TYPE_PIGMENT, PIGMENT_STACK_HELPER);
+        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.slurryRegistry(), TYPE_SLURRY, SLURRY_STACK_HELPER);
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registry,
-          IForgeRegistry<CHEMICAL> forgeRegistry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper,
-          ChemicalToStackCreator<CHEMICAL, STACK> stackCreator) {
+          IForgeRegistry<CHEMICAL> forgeRegistry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper) {
         List<STACK> types = forgeRegistry.getValues().stream()
               .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
-              .map(chemical -> stackCreator.createStack(chemical, FluidAttributes.BUCKET_VOLUME))
+              .map(chemical -> (STACK) chemical.getStack(FluidAttributes.BUCKET_VOLUME))
               .collect(Collectors.toList());
+        stackHelper.setColorHelper(registry.getColorHelper());
         registry.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());
     }
 
@@ -231,6 +229,9 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new ElectrolysisRecipeCategory(guiHelper));
         registry.addRecipeCategories(new MetallurgicInfuserRecipeCategory(guiHelper));
         registry.addRecipeCategories(new PressurizedReactionRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new ItemStackToPigmentRecipeCategory(guiHelper, MekanismBlocks.PIGMENT_EXTRACTOR));
+        registry.addRecipeCategories(new PigmentMixerRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new PaintingRecipeCategory(guiHelper));
 
         //Register both methods of rotary condensentrator recipes
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
@@ -251,6 +252,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new NucleosynthesizingRecipeCategory(guiHelper));
 
         registry.addRecipeCategories(new SPSRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new BoilerRecipeCategory(guiHelper, MekanismBlocks.BOILER_CASING.getRegistryName()));
 
         registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, MekanismBlocks.PRECISION_SAWMILL));
 
@@ -275,7 +277,6 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        //Register the recipes and their catalysts if enabled
         RecipeRegistryHelper.register(registry, MekanismBlocks.ENERGIZED_SMELTER, MekanismRecipeType.SMELTING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER, MekanismRecipeType.ENRICHING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.CRUSHER, MekanismRecipeType.CRUSHING);
@@ -296,16 +297,28 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismRecipeType.EVAPORATING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, MekanismRecipeType.REACTION);
         RecipeRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismRecipeType.NUCLEOSYNTHESIZING);
+        RecipeRegistryHelper.register(registry, MekanismBlocks.PIGMENT_EXTRACTOR, MekanismRecipeType.PIGMENT_EXTRACTING);
+        RecipeRegistryHelper.register(registry, MekanismBlocks.PIGMENT_MIXER, MekanismRecipeType.PIGMENT_MIXING);
+        RecipeRegistryHelper.register(registry, MekanismBlocks.PAINTING_MACHINE, MekanismRecipeType.PAINTING);
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerNutritionalLiquifier(registry);
-        RecipeRegistryHelper.registerSPS(registry);
+        registry.addRecipes(SPSRecipeCategory.getSPSRecipes(), MekanismBlocks.SPS_CASING.getRegistryName());
+        registry.addRecipes(BoilerRecipeCategory.getBoilerRecipes(), MekanismBlocks.BOILER_CASING.getRegistryName());
         RecipeRegistryHelper.register(registry, ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
         RecipeRegistryHelper.register(registry, GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
         RecipeRegistryHelper.register(registry, INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
+        RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
+        //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
+        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidAttributes.BUCKET_VOLUME), VanillaTypes.FLUID,
+              MekanismLang.JEI_INFO_HEAVY_WATER.translate(TileEntityElectricPump.HEAVY_WATER_AMOUNT));
+        registry.addIngredientInfo(MekanismAPI.moduleRegistry().getValues().stream().map(data -> data.getItemProvider().getItemStack()).collect(Collectors.toList()),
+              VanillaTypes.ITEM, MekanismLang.JEI_INFO_MODULE_INSTALLATION.translate());
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
+        //TODO - 1.18: Re-evaluate how some of the recipes return a list and some return a single element as output representations
+        // Strictly speaking all the output definitions should be based on which set of inputs there is
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CRUSHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.COMBINER);
@@ -321,10 +334,18 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_WASHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ELECTROLYTIC_SEPARATOR);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.SPS_CASING.getRegistryName(), MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT,
+              MekanismBlocks.SUPERCHARGED_COIL);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getRegistryName(), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
+              MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.BOILER_CASING.getRegistryName(), MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE,
+              MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.PIGMENT_EXTRACTOR);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.PIGMENT_MIXER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.PAINTING_MACHINE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GAS_CONVERSION);
         CatalystRegistryHelper.registerCondensentrator(registry);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
@@ -332,15 +353,17 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismItems.ROBIT, MekanismBlocks.ENERGIZED_SMELTER.getRegistryName(), VanillaRecipeCategoryUid.ANVIL,
               VanillaRecipeCategoryUid.CRAFTING, VanillaRecipeCategoryUid.FURNACE);
         //TODO: Decide if we want to make it so all mekanism energy supporting blocks that have gui's are added as catalysts?
-        registry.addRecipeCatalyst(MekanismBlocks.BASIC_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
-        registry.addRecipeCatalyst(MekanismBlocks.ADVANCED_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
-        registry.addRecipeCatalyst(MekanismBlocks.ELITE_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
-        registry.addRecipeCatalyst(MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
+        CatalystRegistryHelper.register(registry, ENERGY_CONVERSION, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE,
+              MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     }
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
+        IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
+        IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
-        registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
+        registry.addRecipeTransferHandler(new FormulaicRecipeTransferInfo());
+        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, QIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, PortableQIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
     }
 }

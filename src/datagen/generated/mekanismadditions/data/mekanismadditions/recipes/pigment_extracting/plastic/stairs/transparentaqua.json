@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:aqua_plastic_transparent_stairs"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:aqua",
+    "amount": 28
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/glow"
+      },
+      "without": {
+        "item": "mekanismadditions:aqua_plastic_glow"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:aqua"
+  },
+  "output": {
+    "item": "mekanismadditions:aqua_plastic_glow"
+  }
+}

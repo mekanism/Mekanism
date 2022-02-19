@@ -27,7 +27,7 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
      */
     @Nonnull
     public static NSSSlurry createSlurry(@Nonnull SlurryStack stack) {
-        //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
+        //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
         return createSlurry(stack.getType());
     }
 
@@ -47,7 +47,7 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
         if (slurry.isEmptyType()) {
             throw new IllegalArgumentException("Can't make NSSSlurry with an empty slurry");
         }
-        //This should never be null or it would have crashed on being registered
+        //This should never be null, or it would have crashed on being registered
         return createSlurry(slurry.getRegistryName());
     }
 

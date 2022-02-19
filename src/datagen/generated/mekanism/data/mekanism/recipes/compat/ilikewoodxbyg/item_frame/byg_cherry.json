@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:byg_cherry_item_frame"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:byg_cherry_stick",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:leather"
+  },
+  "secondaryChance": 1.0
+}

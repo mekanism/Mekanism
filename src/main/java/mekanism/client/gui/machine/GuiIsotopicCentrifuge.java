@@ -9,9 +9,6 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityIsotopicCentrifuge;
 import net.minecraft.entity.player.PlayerInventory;
@@ -21,19 +18,16 @@ public class GuiIsotopicCentrifuge extends GuiConfigurableTile<TileEntityIsotopi
 
     public GuiIsotopicCentrifuge(MekanismTileContainer<TileEntityIsotopicCentrifuge> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
-        titleY = 4;
+        inventoryLabelY += 2;
+        titleLabelY = 4;
         dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), () -> tile.clientEnergyUsed, this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
         addButton(new GuiGasGauge(() -> tile.inputTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 25, 13));
         addButton(new GuiGasGauge(() -> tile.outputTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiProgress(tile::getActive, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategory(tile));
@@ -42,7 +36,7 @@ public class GuiIsotopicCentrifuge extends GuiConfigurableTile<TileEntityIsotopi
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

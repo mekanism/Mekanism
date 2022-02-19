@@ -35,7 +35,7 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockMachine implements 
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (!WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
+        if (!WorldUtils.isValidReplaceableBlock(context.getLevel(), context.getClickedPos().above())) {
             //If there isn't room then fail
             return false;
         }

@@ -33,7 +33,7 @@ public interface IModeItem {
     }
 
     static boolean isModeItem(@Nonnull PlayerEntity player, @Nonnull EquipmentSlotType slotType, boolean allowRadial) {
-        return isModeItem(player.getItemStackFromSlot(slotType), slotType, allowRadial);
+        return isModeItem(player.getItemBySlot(slotType), slotType, allowRadial);
     }
 
     static boolean isModeItem(@Nonnull ItemStack stack, @Nonnull EquipmentSlotType slotType) {

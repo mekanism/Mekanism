@@ -12,18 +12,18 @@ import net.minecraft.world.IWorldReader;
 public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
 
     public BlockPlasticTransparentSlab(EnumColor color) {
-        super(color, properties -> properties.notSolid().setAllowsSpawn(AttributeMobSpawn.NEVER_PREDICATE));
+        super(color, properties -> properties.noOcclusion().isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE));
     }
 
     @Override
     @Deprecated
-    public float getAmbientOcclusionLightValue(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         return 0.8F;
     }
 
     @Override
     @Deprecated
-    public boolean isTransparent(@Nonnull BlockState state) {
+    public boolean useShapeForLightOcclusion(@Nonnull BlockState state) {
         return true;
     }
 
@@ -34,7 +34,7 @@ public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
 
     @Override
     @Deprecated
-    public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
+    public boolean skipRendering(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
         return BlockPlasticTransparent.isSideInvisible(this, state, adjacentBlockState, side);
     }
 

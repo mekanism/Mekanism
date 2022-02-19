@@ -1,8 +1,6 @@
 package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
@@ -31,8 +29,8 @@ public class FilterSelectButton extends MekanismButton {
             MekanismRenderer.resetColor();
         }
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
         int width = getButtonWidth();
         int height = getButtonHeight();
         int x = getButtonX();
@@ -40,6 +38,7 @@ public class FilterSelectButton extends MekanismButton {
         MekanismRenderer.bindTexture(ARROWS);
         blit(matrix, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         RenderSystem.disableBlend();
+        RenderSystem.disableDepthTest();
     }
 
     @Override

@@ -29,6 +29,13 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
         this.output = output;
     }
 
+    /**
+     * Creates a Washing recipe builder.
+     *
+     * @param fluidInput  Fluid Input.
+     * @param slurryInput Slurry Input.
+     * @param output      Output.
+     */
     public static FluidSlurryToSlurryRecipeBuilder washing(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This washing recipe requires a non empty slurry output.");
@@ -48,7 +55,7 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.FLUID_INPUT, fluidInput.serialize());
             json.add(JsonConstants.SLURRY_INPUT, slurryInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeSlurryStack(output));

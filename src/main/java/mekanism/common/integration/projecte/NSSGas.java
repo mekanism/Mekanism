@@ -28,7 +28,7 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
      */
     @Nonnull
     public static NSSGas createGas(@Nonnull GasStack stack) {
-        //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
+        //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
         return createGas(stack.getType());
     }
 
@@ -48,7 +48,7 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
         if (gas.isEmptyType()) {
             throw new IllegalArgumentException("Can't make NSSGas with an empty gas");
         }
-        //This should never be null or it would have crashed on being registered
+        //This should never be null, or it would have crashed on being registered
         return createGas(gas.getRegistryName());
     }
 

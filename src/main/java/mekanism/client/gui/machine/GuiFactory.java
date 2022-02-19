@@ -9,10 +9,7 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registries.MekanismBlocks;
@@ -29,31 +26,28 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         if (tile.hasSecondaryResourceBar()) {
-            ySize += 11;
-            playerInventoryTitleY = 85;
+            imageHeight += 11;
+            inventoryLabelY = 85;
         } else if (tile instanceof TileEntitySawingFactory) {
-            ySize += 21;
-            playerInventoryTitleY = 95;
+            imageHeight += 21;
+            inventoryLabelY = 95;
         } else {
-            playerInventoryTitleY = 75;
+            inventoryLabelY = 75;
         }
         if (tile.tier == FactoryTier.ULTIMATE) {
-            xSize += 34;
-            playerInventoryTitleX = 26;
+            imageWidth += 34;
+            inventoryLabelX = 26;
         }
-        titleY = 4;
+        titleLabelY = 4;
         dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiSortingTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), xSize - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), () -> tile.lastUsage, this));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), imageWidth - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getLastUsage));
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
                 TileEntityMetallurgicInfuserFactory factory = (TileEntityMetallurgicInfuserFactory) this.tile;
@@ -101,7 +95,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

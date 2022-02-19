@@ -1,7 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -69,7 +69,11 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @Override
     public boolean structuralGuiAccessAllowed() {
-        return hasFormedMultiblock() && !clientActiveMultiblock.contains("fusion") && !clientActiveMultiblock.contains("evaporation");
+        return hasFormedMultiblock() && structuralGuiAccessAllowed(clientActiveMultiblock);
+    }
+
+    protected boolean structuralGuiAccessAllowed(@Nonnull String multiblock) {
+        return !multiblock.contains("fusion") && !multiblock.contains("evaporation");
     }
 
     @Override
@@ -77,36 +81,66 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         return structures;
     }
 
+    private MultiblockData getMultiblockData(Structure structure) {
+        //Like the getMultiblockData(MultiblockManager) method except can assume the structure is indeed in our structures map,
+        // so we can slightly short circuit lookup
+        MultiblockData data = structure.getMultiblockData();
+        if (data != null && data.isFormed()) {
+            return data;
+        }
+        return getDefaultData();
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        structures.entrySet().removeIf(entry -> !entry.getValue().isValid());
-        if (ticker >= 3 && structures.isEmpty()) {
-            invalidStructure.tick(this);
-        }
-        // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
-        String activeMultiblock = null;
-        for (Structure s : structures.values()) {
-            IMultiblock<?> master = s.getController();
-            if (master != null && getMultiblockData(s.getManager()).isFormed()) {
-                activeMultiblock = master.getManager().getName().toLowerCase(Locale.ROOT);
-                break;
+        if (ticker % 10 == 0) {
+            String activeMultiblock = null;
+            if (!structures.isEmpty()) {
+                Iterator<Map.Entry<MultiblockManager<?>, Structure>> iterator = structures.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<MultiblockManager<?>, Structure> entry = iterator.next();
+                    Structure structure = entry.getValue();
+                    if (structure.isValid()) {
+                        if (activeMultiblock == null && structure.getController() != null && getMultiblockData(structure).isFormed()) {
+                            activeMultiblock = entry.getKey().getNameLower();
+                        }
+                    } else {
+                        iterator.remove();
+                    }
+                }
             }
-        }
-        if (!Objects.equals(activeMultiblock, clientActiveMultiblock)) {
-            clientActiveMultiblock = activeMultiblock;
-            sendUpdatePacket();
+            if (ticker >= 3 && structures.isEmpty()) {
+                invalidStructure.tick(this, true);
+                //If we managed to find any structures check which one is active
+                for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
+                    Structure structure = entry.getValue();
+                    if (structure.getController() != null && getMultiblockData(structure).isFormed()) {
+                        activeMultiblock = entry.getKey().getNameLower();
+                        break;
+                    }
+                }
+            }
+            // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
+            if (!Objects.equals(activeMultiblock, clientActiveMultiblock)) {
+                clientActiveMultiblock = activeMultiblock;
+                sendUpdatePacket();
+            }
         }
     }
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
-            IMultiblock<?> master = entry.getValue().getController();
-            if (master != null && getMultiblockData(entry.getKey()).isFormed()) {
-                // make sure this block is on the structure first
-                if (entry.getValue().getMultiblockData().getBounds().getRelativeLocation(getPos()).isWall()) {
-                    return master.onActivate(player, hand, stack);
+            Structure structure = entry.getValue();
+            IMultiblock<?> master = structure.getController();
+            if (master != null) {
+                MultiblockData data = getMultiblockData(structure);
+                if (data.isFormed() && structuralGuiAccessAllowed(entry.getKey().getNameLower())) {
+                    // make sure this block is on the structure first
+                    if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
+                        return master.onActivate(player, hand, stack);
+                    }
                 }
             }
         }
@@ -124,14 +158,14 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             for (Structure s : structures.values()) {
                 //For each structure this structural multiblock is a part of
                 if (s.getController() != null) {
-                    MultiblockData multiblockData = getMultiblockData(s.getManager());
+                    MultiblockData multiblockData = getMultiblockData(s);
                     if (multiblockData.isPositionInsideBounds(s, neighborPos)) {
-                        if (!multiblockData.innerNodes.contains(neighborPos) || world.isAirBlock(neighborPos)) {
+                        if (!multiblockData.innerNodes.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
                             //And we are not already an internal part of the structure, or we are changing an internal part to air
                             // then we mark the structure as needing to be re-validated
                             //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
                             // it won't know to invalidate it but oh well. (See java docs on innerNode for more caveats)
-                            s.markForUpdate(world, true);
+                            s.markForUpdate(level, true);
                         }
                     }
                 }
@@ -143,11 +177,10 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             for (Structure s : structures.values()) {
-                IMultiblock<?> master = s.getController();
-                if (master != null && !getMultiblockData(s.getManager()).isFormed()) {
+                if (s.getController() != null && !getMultiblockData(s).isFormed()) {
                     FormationResult result = s.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
-                        player.sendMessage(result.getResultText(), Util.DUMMY_UUID);
+                        player.sendMessage(result.getResultText(), Util.NIL_UUID);
                         return ActionResultType.SUCCESS;
                     }
                 }
@@ -178,23 +211,24 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         if (!isRemote()) {
-            structures.values().forEach(s -> s.invalidate(world));
+            structures.values().forEach(s -> s.invalidate(level));
         }
     }
 
     @Override
-    protected void dumpRadiation() {
-        //NO-OP we handle dumping radiation separately for multiblocks
+    protected boolean shouldDumpRadiation() {
+        //We handle dumping radiation separately for multiblocks
+        return false;
     }
 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         if (!isRemote()) {
-            structures.values().forEach(s -> s.invalidate(world));
+            structures.values().forEach(s -> s.invalidate(level));
         }
     }
 }

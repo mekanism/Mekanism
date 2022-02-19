@@ -4,15 +4,16 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
 
@@ -28,29 +29,26 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    protected void onUpdateServer(FissionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FissionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         boolean burning = multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.isBurning();
         if (burning != prevBurning) {
             prevBurning = burning;
-            sendUpdatePacket();
+            needsPacket = true;
         }
+        return needsPacket;
     }
 
     public double getBoilEfficiency() {
         return (double) Math.round(getMultiblock().getBoilEfficiency() * 1_000) / 1_000;
     }
 
-    public long getMaxBurnRate() {
-        return getMultiblock().fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get();
-    }
-
     public void setReactorActive(boolean active) {
         getMultiblock().setActive(active);
     }
 
-    public String getDamageString() {
-        return Math.round((getMultiblock().reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100) + "%";
+    public ITextComponent getDamageString() {
+        return MekanismLang.GENERIC_PERCENT.translate(getMultiblock().getDamagePercent());
     }
 
     public EnumColor getDamageColor() {
@@ -65,8 +63,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     public void setRateLimitFromPacket(double rate) {
-        getMultiblock().rateLimit = Math.max(Math.min(getMaxBurnRate(), rate), 0);
-        markDirty(false);
+        getMultiblock().setRateLimit(rate);
     }
 
     @Override

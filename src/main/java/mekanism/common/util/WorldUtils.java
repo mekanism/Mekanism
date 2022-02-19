@@ -4,20 +4,18 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.interfaces.IActiveState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -54,13 +52,13 @@ public class WorldUtils {
      */
     @Contract("null, _ -> false")
     public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
-        if (world == null || !World.isValid(pos)) {
+        if (world == null || !World.isInWorldBounds(pos)) {
             return false;
         } else if (world instanceof IWorldReader) {
             //Note: We don't bother checking if it is a world and then isBlockPresent because
             // all that does is also validate the y value is in bounds, and we already check to make
             // sure the position is valid both in the y and xz directions
-            return ((IWorldReader) world).isBlockLoaded(pos);
+            return ((IWorldReader) world).hasChunkAt(pos);
         }
         return true;
     }
@@ -78,15 +76,15 @@ public class WorldUtils {
     @Nullable
     @Contract("null, _, _ -> null")
     private static IChunk getChunkForPos(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
-        if (world == null || !World.isValid(pos)) {
+        if (world == null || !World.isInWorldBounds(pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
-            // Also short circuit to check if the position is out of bounds before bothering to lookup the chunk
+            // Also short circuit to check if the position is out of bounds before bothering to look up the chunk
             return null;
         }
         int chunkX = pos.getX() >> 4;
         int chunkZ = pos.getZ() >> 4;
         long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);
-        //We get the chunk rather than the world so we can cache the chunk improving the overall
+        //We get the chunk rather than the world, so we can cache the chunk improving the overall
         // performance for retrieving a bunch of chunks in the general vicinity
         IChunk chunk = chunkMap.get(combinedChunk);
         if (chunk == null) {
@@ -101,7 +99,7 @@ public class WorldUtils {
 
     /**
      * Gets a blockstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
      *
      * @param world    world
      * @param chunkMap cached chunk map
@@ -126,7 +124,7 @@ public class WorldUtils {
     @Nonnull
     public static Optional<BlockState> getBlockState(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
-            //If the world is null or its a world reader and the block is not loaded, return empty
+            //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
         }
         return Optional.of(world.getBlockState(pos));
@@ -134,7 +132,7 @@ public class WorldUtils {
 
     /**
      * Gets a fluidstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
      *
      * @param world    world
      * @param chunkMap cached chunk map
@@ -159,7 +157,7 @@ public class WorldUtils {
     @Nonnull
     public static Optional<FluidState> getFluidState(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
-            //If the world is null or its a world reader and the block is not loaded, return empty
+            //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
         }
         return Optional.of(world.getFluidState(pos));
@@ -167,7 +165,7 @@ public class WorldUtils {
 
     /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param world    world
      * @param chunkMap cached chunk map
@@ -184,7 +182,7 @@ public class WorldUtils {
 
     /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param clazz    Class type of the TileEntity we expect to be in the position
      * @param world    world
@@ -201,13 +199,13 @@ public class WorldUtils {
 
     /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param clazz        Class type of the TileEntity we expect to be in the position
      * @param world        world
      * @param chunkMap     cached chunk map
      * @param pos          position
-     * @param logWrongType Whether or not an error should be logged if a tile of a different type is found at the position
+     * @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
      *
      * @return tile entity if found, null if either not found, not loaded, or of the wrong type
      */
@@ -231,10 +229,10 @@ public class WorldUtils {
     @Contract("null, _ -> null")
     public static TileEntity getTileEntity(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
-            //If the world is null or its a world reader and the block is not loaded, return null
+            //If the world is null, or it is a world reader and the block is not loaded, return null
             return null;
         }
-        return world.getTileEntity(pos);
+        return world.getBlockEntity(pos);
     }
 
     /**
@@ -258,7 +256,7 @@ public class WorldUtils {
      * @param clazz        Class type of the TileEntity we expect to be in the position
      * @param world        world
      * @param pos          position
-     * @param logWrongType Whether or not an error should be logged if a tile of a different type is found at the position
+     * @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
      *
      * @return tile entity if found, null if either not found or not loaded, or of the wrong type
      */
@@ -283,8 +281,8 @@ public class WorldUtils {
      * @param tile TileEntity to save
      */
     public static void saveChunk(TileEntity tile) {
-        if (tile != null && !tile.isRemoved() && tile.getWorld() != null) {
-            markChunkDirty(tile.getWorld(), tile.getPos());
+        if (tile != null && !tile.isRemoved() && tile.getLevel() != null) {
+            markChunkDirty(tile.getLevel(), tile.getBlockPos());
         }
     }
 
@@ -293,7 +291,7 @@ public class WorldUtils {
      */
     public static void markChunkDirty(World world, BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
-            world.getChunkAt(pos).markDirty();
+            world.getChunkAt(pos).markUnsaved();
         }
         //TODO: This line below is now (1.16+) called by the mark chunk dirty method (without even validating if it is loaded).
         // And with it causes issues where chunks are easily ghost loaded. Why was it added like that and do we need to somehow
@@ -312,17 +310,17 @@ public class WorldUtils {
      * Dismantles a block, dropping it and removing it from the world.
      */
     public static void dismantleBlock(BlockState state, World world, BlockPos pos, @Nullable TileEntity tile) {
-        Block.spawnDrops(state, world, pos, tile);
+        Block.dropResources(state, world, pos, tile);
         world.removeBlock(pos, false);
     }
 
     /**
-     * Gets the distance to a defined Coord4D.
+     * Gets the distance to a defined positions.
      *
-     * @return the distance to the defined Coord4D
+     * @return the distance to the defined positions
      */
     public static double distanceBetween(BlockPos start, BlockPos end) {
-        return MathHelper.sqrt(start.distanceSq(end));
+        return MathHelper.sqrt(start.distSqr(end));
     }
 
     /**
@@ -333,7 +331,7 @@ public class WorldUtils {
     public static Direction sideDifference(BlockPos pos, BlockPos other) {
         BlockPos diff = pos.subtract(other);
         for (Direction side : EnumUtils.DIRECTIONS) {
-            if (side.getXOffset() == diff.getX() && side.getYOffset() == diff.getY() && side.getZOffset() == diff.getZ()) {
+            if (side.getStepX() == diff.getX() && side.getStepY() == diff.getY() && side.getStepZ() == diff.getZ()) {
                 return side;
             }
         }
@@ -341,50 +339,50 @@ public class WorldUtils {
     }
 
     /**
-     * Whether or not the provided chunk is being vibrated by a Seismic Vibrator.
+     * Whether the provided chunk is being vibrated by a Seismic Vibrator.
      *
      * @param chunk chunk to check
      *
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(ChunkPos chunk, World world) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.getDimensionKey() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.dimension() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
     }
 
     public static boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
         Fluid fluid = fluidStack.getFluid();
         if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
-            //If there is no fluid or it cannot be placed in the world just
+            //If there is no fluid, or it cannot be placed in the world just
             return false;
         }
         BlockState state = world.getBlockState(pos);
-        boolean isReplaceable = state.isReplaceable(fluid);
-        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
+        boolean isReplaceable = state.canBeReplaced(fluid);
+        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canPlaceLiquid(world, pos, state, fluid);
         if (state.isAir(world, pos) || isReplaceable || canContainFluid) {
-            if (world.getDimensionType().isUltrawarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
+            if (world.dimensionType().ultraWarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
                 fluid.getAttributes().vaporize(player, world, pos, fluidStack);
             } else if (canContainFluid) {
-                if (!((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
+                if (!((ILiquidContainer) state.getBlock()).placeLiquid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
                     //If something went wrong return that we couldn't actually place it
                     return false;
                 }
                 playEmptySound(player, world, pos, fluidStack);
             } else {
-                if (!world.isRemote() && isReplaceable && !state.getMaterial().isLiquid()) {
+                if (!world.isClientSide() && isReplaceable && !state.getMaterial().isLiquid()) {
                     world.destroyBlock(pos, true);
                 }
                 playEmptySound(player, world, pos, fluidStack);
-                world.setBlockState(pos, fluid.getDefaultState().getBlockState(), BlockFlags.DEFAULT_AND_RERENDER);
+                world.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), BlockFlags.DEFAULT_AND_RERENDER);
             }
             return true;
         }
-        return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
+        return side != null && tryPlaceContainedLiquid(player, world, pos.relative(side), fluidStack, null);
     }
 
     private static void playEmptySound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
         SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound(world, pos);
         if (soundevent == null) {
-            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY;
+            soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         }
         world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
@@ -392,7 +390,7 @@ public class WorldUtils {
     public static void playFillSound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
         SoundEvent soundevent = fluidStack.getFluid().getAttributes().getFillSound(world, pos);
         if (soundevent == null) {
-            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL;
+            soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
         }
         world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
@@ -406,13 +404,15 @@ public class WorldUtils {
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, BlockPos pos) {
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.offset(side);
-            if (isBlockLoaded(world, pos) && isBlockLoaded(world, offset)) {
-                BlockState blockState = world.getBlockState(offset);
-                boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
-                if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getWeakPower(world, offset, side) > 0) {
-                    return true;
+        if (isBlockLoaded(world, pos)) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                BlockPos offset = pos.relative(side);
+                if (isBlockLoaded(world, offset)) {
+                    BlockState blockState = world.getBlockState(offset);
+                    boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
+                    if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getSignal(world, offset, side) > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -429,9 +429,9 @@ public class WorldUtils {
      */
     public static boolean isDirectlyGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.offset(side);
+            BlockPos offset = pos.relative(side);
             if (isBlockLoaded(world, offset)) {
-                if (world.getRedstonePower(pos, side) > 0) {
+                if (world.getSignal(pos, side) > 0) {
                     return true;
                 }
             }
@@ -473,7 +473,7 @@ public class WorldUtils {
      * @return True if the block can be replaced and is within the world's bounds.
      */
     public static boolean isValidReplaceableBlock(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return World.isValid(pos) && world.getBlockState(pos).getMaterial().isReplaceable();
+        return World.isInWorldBounds(pos) && world.getBlockState(pos).getMaterial().isReplaceable();
     }
 
     /**
@@ -485,11 +485,11 @@ public class WorldUtils {
     public static void notifyLoadedNeighborsOfTileChange(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         for (Direction dir : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.offset(dir);
+            BlockPos offset = pos.relative(dir);
             if (isBlockLoaded(world, offset)) {
                 notifyNeighborOfChange(world, offset, pos);
-                if (world.getBlockState(offset).isNormalCube(world, offset)) {
-                    offset = offset.offset(dir);
+                if (world.getBlockState(offset).isRedstoneConductor(world, offset)) {
+                    offset = offset.relative(dir);
                     if (isBlockLoaded(world, offset)) {
                         Block block1 = world.getBlockState(offset).getBlock();
                         //TODO: Make sure this is passing the correct state
@@ -499,6 +499,27 @@ public class WorldUtils {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring positions are loaded.
+     *
+     * @param world     world the change exists in
+     * @param fromPos   pos of our block that updated
+     * @param neighbors Sides to notify the neighbors on.
+     */
+    public static void notifyNeighborsOfChange(@Nullable World world, BlockPos fromPos, Set<Direction> neighbors) {
+        if (!neighbors.isEmpty()) {
+            getBlockState(world, fromPos).ifPresent(sourceState -> {
+                for (Direction neighbor : neighbors) {
+                    BlockPos pos = fromPos.relative(neighbor);
+                    getBlockState(world, pos).ifPresent(state -> {
+                        state.onNeighborChange(world, pos, fromPos);
+                        state.neighborChanged(world, pos, sourceState.getBlock(), fromPos, false);
+                    });
+                }
+            });
         }
     }
 
@@ -524,7 +545,7 @@ public class WorldUtils {
      * @param fromPos      pos of our block that updated
      */
     public static void notifyNeighborOfChange(@Nullable World world, Direction neighborSide, BlockPos fromPos) {
-        notifyNeighborOfChange(world, fromPos.offset(neighborSide), fromPos);
+        notifyNeighborOfChange(world, fromPos.relative(neighborSide), fromPos);
     }
 
     /**
@@ -539,9 +560,9 @@ public class WorldUtils {
             return;
         }
         BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null, Direction.NORTH);
-        world.setBlockState(boundingLocation, newState, BlockFlags.DEFAULT);
-        if (!world.isRemote()) {
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), world, boundingLocation, null, Direction.NORTH);
+        world.setBlock(boundingLocation, newState, BlockFlags.DEFAULT);
+        if (!world.isClientSide()) {
             TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
                 tile.setMainLocation(orig);
@@ -560,9 +581,9 @@ public class WorldUtils {
      */
     public static void makeAdvancedBoundingBlock(IWorld world, BlockPos boundingLocation, BlockPos orig) {
         BlockBounding boundingBlock = MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null, Direction.NORTH);
-        world.setBlockState(boundingLocation, newState, BlockFlags.DEFAULT);
-        if (!world.isRemote()) {
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), world, boundingLocation, null, Direction.NORTH);
+        world.setBlock(boundingLocation, newState, BlockFlags.DEFAULT);
+        if (!world.isClientSide()) {
             TileEntityAdvancedBoundingBlock tile = getTileEntity(TileEntityAdvancedBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
                 tile.setMainLocation(orig);
@@ -573,57 +594,45 @@ public class WorldUtils {
     }
 
     /**
-     * Updates a block's light value and marks it for a render update.
+     * Marks a block for a render update if loaded.
      *
      * @param world world the block is in
      * @param pos   Position of the block
-     * @param tile The tile entity at the position
+     * @param state The block state at the position
      */
-    public static void updateBlock(@Nullable World world, BlockPos pos, TileEntity tile) {
-        if (!isBlockLoaded(world, pos)) {
-            return;
-        }
-        //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
-        // This is because that is mainly used for rendering machine effects, but we need to run a render update
-        // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
-        // For example the laser, or charge pad.
-        //TODO: Render update
-        //world.markBlockRangeForRenderUpdate(pos, pos);
-        BlockState blockState = world.getBlockState(pos);
-        //TODO: Fix this as it is not ideal to just pretend the block was previously air to force it to update
-        // Maybe should use notifyUpdate
-        world.markBlockRangeForRenderUpdate(pos, Blocks.AIR.getDefaultState(), blockState);
-        if (!(tile instanceof IActiveState) || ((IActiveState) tile).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
-            //Update all light types at the position
-            recheckLighting(world, pos);
+    public static void updateBlock(@Nullable World world, @Nonnull BlockPos pos, BlockState state) {
+        if (isBlockLoaded(world, pos)) {
+            world.sendBlockUpdated(pos, state, state, BlockFlags.DEFAULT);
         }
     }
 
     /**
-     * Rechecks the lighting at a specific block's position
+     * Rechecks the lighting at a specific block's position if the block is loaded.
      *
      * @param world world the block is in
      * @param pos   coordinates
      */
-    public static void recheckLighting(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos) {
-        world.getLightManager().checkBlock(pos);
+    public static void recheckLighting(@Nullable IBlockDisplayReader world, @Nonnull BlockPos pos) {
+        if (isBlockLoaded(world, pos)) {
+            world.getLightEngine().checkBlock(pos);
+        }
     }
 
     /**
-     * Vanilla copy of {@link net.minecraft.client.world.ClientWorld#getSunBrightness(float)} used to be World#getSunBrightness
+     * Vanilla copy of {@link net.minecraft.client.world.ClientWorld#getSkyDarken(float)} used to be World#getSunBrightness
      */
     public static float getSunBrightness(World world, float partialTicks) {
-        float f = world.func_242415_f(partialTicks);
+        float f = world.getTimeOfDay(partialTicks);
         float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
         f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
-        f1 = (float) (f1 * (1.0D - world.getRainStrength(partialTicks) * 5.0F / 16.0D));
-        f1 = (float) (f1 * (1.0D - world.getThunderStrength(partialTicks) * 5.0F / 16.0D));
+        f1 = (float) (f1 * (1.0D - world.getRainLevel(partialTicks) * 5.0F / 16.0D));
+        f1 = (float) (f1 * (1.0D - world.getThunderLevel(partialTicks) * 5.0F / 16.0D));
         return f1 * 0.8F + 0.2F;
     }
 
     /**
-     * Checks to see if the block at the position can see the sky and it is daytime.
+     * Checks to see if the block at the position can see the sky, and it is daytime.
      *
      * @param world World to check in.
      * @param pos   Position to check.
@@ -635,7 +644,7 @@ public class WorldUtils {
         //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
         // as vanilla returns false if the world's time is set to a fixed value even if that time
         // would effectively be daytime
-        return world != null && world.getDimensionType().hasSkyLight() && world.getSkylightSubtracted() < 4 && world.canBlockSeeSky(pos);
+        return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSky(pos);
     }
 
     /**

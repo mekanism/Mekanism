@@ -64,27 +64,27 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 int color = MekanismRenderer.getColorARGB(fluidStack, fluidScale);
                 List<String> connectionContents = new ArrayList<>();
                 Model3D model = getModel(null, fluidStack, stage);
-                IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
+                IVertexBuilder buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     ConnectionType connectionType = pipe.getConnectionType(side);
                     if (connectionType == ConnectionType.NORMAL) {
                         //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
                         MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight, FaceDisplay.FRONT);
                     } else if (connectionType != ConnectionType.NONE) {
-                        connectionContents.add(side.getString() + connectionType.getString().toUpperCase(Locale.ROOT));
+                        connectionContents.add(side.getSerializedName() + connectionType.getSerializedName().toUpperCase(Locale.ROOT));
                     }
                     if (model != null) {
-                        //Render the side if there is no connection on that side, or it is a vertical connection and we are not full
+                        //Render the side if there is no connection on that side, or it is a vertical connection, and we are not full
                         model.setSideRender(side, connectionType == ConnectionType.NONE || (side.getAxis().isVertical() && stage != stages - 1));
                     }
                 }
                 MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, fluidScale), glow, overlayLight, FaceDisplay.FRONT);
                 if (!connectionContents.isEmpty()) {
-                    matrix.push();
+                    matrix.pushPose();
                     matrix.translate(0.5, 0.5, 0.5);
                     renderModel(tile, matrix, buffer, MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color),
                           MekanismRenderer.getAlpha(color), glow, overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), connectionContents);
-                    matrix.pop();
+                    matrix.popPose();
                 }
             }
         }

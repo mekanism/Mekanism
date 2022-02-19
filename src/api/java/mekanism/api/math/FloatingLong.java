@@ -413,7 +413,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             }
             // we already know toDivide is > max_long_shift, and other case is impossible
             if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) {
-                //need to check anyways to avoid overflow on toDivide.value +1, so might as well return early
+                //need to check anyway to avoid overflow on toDivide.value +1, so might as well return early
                 return 1;
             }
             long q = Long.divideUnsigned(this.value, toDivide.value);
@@ -438,8 +438,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to a signed long. This gets clamped at the upper bound of {@link
-     * Long#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to a signed long. This gets clamped at the upper bound of {@link Long#MAX_VALUE}
+     * rather than overflowing.
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
@@ -606,7 +606,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * Helper method to divide this {@link FloatingLong} by an unsigned long primitive and returns the result in a new object. This gets clamped at the upper bound of
      * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
-     * @param toDivide The value} to divide by represented as an unsigned long. Must not be zero
+     * @param toDivide The value to divide by represented as an unsigned long. Must not be zero
      *
      * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given unsigned long.
      *
@@ -620,7 +620,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * Helper method to divide this {@link FloatingLong} by a double primitive and returns the result in a new object. This gets clamped at the upper bound of {@link
      * FloatingLong#MAX_VALUE} rather than overflowing.
      *
-     * @param toDivide The value} to divide by, must be greater than zero.
+     * @param toDivide The value to divide by, must be greater than zero.
      *
      * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given double.
      *
@@ -636,7 +636,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
     /**
      * Divides this {@link FloatingLong} by the given {@link FloatingLong} and returns the result as a double. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing. Additionally if the value to divide by is zero, this returns {@code 1}
+     * FloatingLong#MAX_VALUE} rather than overflowing. Additionally, if the value to divide by is zero, this returns {@code 1}
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:stairs/plastic/glow"
+      },
+      "without": {
+        "item": "mekanismadditions:orange_plastic_glow_stairs"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:orange"
+  },
+  "output": {
+    "item": "mekanismadditions:orange_plastic_glow_stairs"
+  }
+}

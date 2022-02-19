@@ -21,13 +21,13 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     private final QIODriveTier tier;
 
     public ItemQIODrive(QIODriveTier tier, Properties properties) {
-        super(properties.maxStackSize(1));
+        super(properties.stacksTo(1));
         this.tier = tier;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         DriveMetadata meta = DriveMetadata.load(stack);
         tooltip.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
               TextUtils.format(meta.getCount()), TextUtils.format(getCountCapacity(stack))));
@@ -37,8 +37,8 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return TextComponentUtil.build(tier.getBaseTier().getTextColor(), super.getDisplayName(stack));
+    public ITextComponent getName(@Nonnull ItemStack stack) {
+        return TextComponentUtil.build(tier.getBaseTier().getTextColor(), super.getName(stack));
     }
 
     @Override

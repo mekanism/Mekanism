@@ -23,11 +23,11 @@ public abstract class MekanismTileEntityRenderer<TILE extends TileEntity> extend
 
     @Override
     public void render(TILE tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight) {
-        if (tile.getWorld() != null) {
-            IProfiler profiler = tile.getWorld().getProfiler();
-            profiler.startSection(getProfilerSection());
+        if (tile.getLevel() != null) {
+            IProfiler profiler = tile.getLevel().getProfiler();
+            profiler.push(getProfilerSection());
             render(tile, partialTick, matrix, renderer, light, overlayLight, profiler);
-            profiler.endSection();
+            profiler.pop();
         }
     }
 
@@ -36,7 +36,7 @@ public abstract class MekanismTileEntityRenderer<TILE extends TileEntity> extend
     protected abstract String getProfilerSection();
 
     protected boolean isInsideBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        Vector3d projectedView = renderDispatcher.renderInfo.getProjectedView();
+        Vector3d projectedView = renderer.camera.getPosition();
         return minX <= projectedView.x && projectedView.x <= maxX &&
                minY <= projectedView.y && projectedView.y <= maxY &&
                minZ <= projectedView.z && projectedView.z <= maxZ;

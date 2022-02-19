@@ -47,6 +47,6 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
 
     @Override
     protected String getDefaultTranslationKey() {
-        return Util.makeTranslationKey("infuse_type", getRegistryName());
+        return Util.makeDescriptionId("infuse_type", getRegistryName());
     }
 }

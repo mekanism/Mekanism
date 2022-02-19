@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:glass_panes/cyan"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:cyan",
+    "amount": 6
+  }
+}

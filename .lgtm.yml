@@ -6,4 +6,4 @@ extraction:
     index:
       java_version: 8
       gradle:
-        version: 6.8.1
+        version: 7.3.3

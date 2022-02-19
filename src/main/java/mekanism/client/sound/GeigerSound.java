@@ -2,7 +2,7 @@ package mekanism.client.sound;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -37,7 +37,7 @@ public class GeigerSound extends PlayerSound {
 
     @Override
     public boolean shouldPlaySound(@Nonnull PlayerEntity player) {
-        return scale == Mekanism.radiationManager.getClientScale();
+        return scale == RadiationManager.INSTANCE.getClientScale();
     }
 
     @Override

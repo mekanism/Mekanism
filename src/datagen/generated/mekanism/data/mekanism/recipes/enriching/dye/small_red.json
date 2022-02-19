@@ -1,17 +1,18 @@
 {
   "type": "mekanism:enriching",
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:beetroot"
+      },
+      {
+        "item": "minecraft:poppy"
+      },
+      {
         "item": "minecraft:red_tulip"
       }
-    },
-    {
-      "ingredient": {
-        "item": "minecraft:poppy"
-      }
-    }
-  ],
+    ]
+  },
   "output": {
     "item": "minecraft:red_dye",
     "count": 2

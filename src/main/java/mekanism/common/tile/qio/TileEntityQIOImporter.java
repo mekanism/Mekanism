@@ -8,12 +8,11 @@ import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.filter.QIOFilter;
-import mekanism.common.content.qio.filter.QIOItemStackFilter;
-import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CapabilityUtils;
@@ -25,6 +24,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -49,23 +49,19 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             tryImport();
             delay = MAX_DELAY;
         }
-
-        if (world.getGameTime() % 10 == 0) {
-            QIOFrequency frequency = getQIOFrequency();
-            setActive(frequency != null);
-        }
     }
 
     private void tryImport() {
         QIOFrequency freq = getQIOFrequency();
-        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-        if (freq == null || !InventoryUtils.isItemHandler(back, getDirection())) {
+        Direction direction = getDirection();
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
+        if (freq == null || !InventoryUtils.isItemHandler(back, direction)) {
             return;
         }
         if (!importWithoutFilter && getFilters().isEmpty()) {
             return;
         }
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(back, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()).resolve();
+        Optional<IItemHandler> capability = CapabilityUtils.getCapability(back, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve();
         if (!capability.isPresent()) {
             return;
         }
@@ -99,24 +95,19 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     private boolean canFilter(ItemStack stack) {
-        // quickly return true if we don't have any filters installed and we allow for filterless importing
+        // quickly return true if we don't have any filters installed, and we allow for filterless importing
         if (importWithoutFilter && getFilters().isEmpty()) {
             return true;
         }
         for (QIOFilter<?> filter : getFilters()) {
-            if (filter instanceof QIOItemStackFilter) {
-                if (Finder.item(((QIOItemStackFilter) filter).getItemStack()).modifies(stack)) {
-                    return true;
-                }
-            } else if (filter instanceof QIOTagFilter) {
-                if (Finder.tag(((QIOTagFilter) filter).getTagName()).modifies(stack)) {
-                    return true;
-                }
+            if (filter.getFinder().modifies(stack)) {
+                return true;
             }
         }
         return false;
     }
 
+    @ComputerMethod
     public boolean getImportWithoutFilter() {
         return importWithoutFilter;
     }
@@ -152,15 +143,24 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        super.getConfigurationData(nbtTags);
-        nbtTags.putBoolean(NBTConstants.AUTO, importWithoutFilter);
-        return nbtTags;
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putBoolean(NBTConstants.AUTO, importWithoutFilter);
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        super.setConfigurationData(nbtTags);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, value -> importWithoutFilter = value);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        NBTUtils.setBooleanIfPresent(data, NBTConstants.AUTO, value -> importWithoutFilter = value);
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void setImportsWithoutFilter(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (importWithoutFilter != value) {
+            toggleImportWithoutFilter();
+        }
+    }
+    //End methods IComputerTile
 }

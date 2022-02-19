@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/banners"
+      },
+      "without": {
+        "item": "minecraft:light_gray_banner"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:light_gray"
+  },
+  "output": {
+    "item": "minecraft:light_gray_banner"
+  }
+}

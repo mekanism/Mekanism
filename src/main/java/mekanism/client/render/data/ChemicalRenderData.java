@@ -9,7 +9,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-//TODO - 10.1: Make it possible for chemicals to define a "glow/light" value and then use that here
+//TODO - 1.18: Make it possible for chemicals to define a "glow/light" value and then use that here
 public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends RenderData {
 
     @Nonnull

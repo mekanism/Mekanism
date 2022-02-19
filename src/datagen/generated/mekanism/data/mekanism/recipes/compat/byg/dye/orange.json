@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "tag": "byg:orange_dye"
+    }
+  },
+  "output": {
+    "item": "minecraft:orange_dye",
+    "count": 2
+  }
+}

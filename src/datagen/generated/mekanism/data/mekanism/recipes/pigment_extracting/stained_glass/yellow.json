@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:glass/yellow"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:yellow",
+    "amount": 16
+  }
+}

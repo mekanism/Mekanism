@@ -9,7 +9,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
-import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -63,7 +62,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
+public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
     public ItemConfigurator(Properties properties) {
         super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties.rarity(Rarity.UNCOMMON));
@@ -71,26 +70,26 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return TextComponentUtil.build(EnumColor.AQUA, super.getDisplayName(stack));
+    public ITextComponent getName(@Nonnull ItemStack stack) {
+        return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        if (!world.isRemote && player != null) {
-            BlockPos pos = context.getPos();
-            Direction side = context.getFace();
-            ItemStack stack = context.getItem();
+        World world = context.getLevel();
+        if (!world.isClientSide && player != null) {
+            BlockPos pos = context.getClickedPos();
+            Direction side = context.getClickedFace();
+            ItemStack stack = context.getItemInHand();
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate
@@ -99,12 +98,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     ISideConfiguration config = (ISideConfiguration) tile;
                     ConfigInfo info = config.getConfig().getConfig(transmissionType);
                     if (info != null) {
-                        RelativeSide relativeSide = RelativeSide.fromDirections(config.getOrientation(), side);
+                        RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
                         DataType dataType = info.getDataType(relativeSide);
-                        if (!player.isSneaking()) {
-                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                                  MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType, dataType.getColor().getColoredName())),
-                                  Util.DUMMY_UUID);
+                        if (!player.isShiftKeyDown()) {
+                            player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
+                                  dataType.getColor().getColoredName())), Util.NIL_UUID);
                         } else if (SecurityUtils.canAccess(player, tile)) {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -114,11 +112,13 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                                 }
                                 energyContainer.extract(energyPerConfigure, Action.EXECUTE, AutomationType.MANUAL);
                             }
+                            DataType old = dataType;
                             dataType = info.incrementDataType(relativeSide);
-                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                                  MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType, dataType.getColor().getColoredName())),
-                                  Util.DUMMY_UUID);
-                            config.getConfig().sideChanged(transmissionType, relativeSide);
+                            if (dataType != old) {
+                                player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType,
+                                      dataType.getColor().getColoredName())), Util.NIL_UUID);
+                                config.getConfig().sideChanged(transmissionType, relativeSide);
+                            }
                         } else {
                             SecurityUtils.displayNoAccess(player);
                         }
@@ -129,7 +129,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
                     if (capability.isPresent()) {
                         IConfigurable config = capability.get();
-                        if (player.isSneaking()) {
+                        if (player.isShiftKeyDown()) {
                             return config.onSneakRightClick(player, side);
                         }
                         return config.onRightClick(player, side);
@@ -158,7 +158,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                                         }
                                         energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
                                     }
-                                    Block.spawnAsEntity(world, pos, inventorySlot.getStack().copy());
+                                    Block.popResource(world, pos, inventorySlot.getStack().copy());
                                     inventorySlot.setEmpty();
                                 }
                             }
@@ -174,9 +174,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     if (SecurityUtils.canAccess(player, tile)) {
                         TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
                         if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
-                            if (!player.isSneaking()) {
+                            if (!player.isShiftKeyDown()) {
                                 tileMekanism.setFacing(side);
-                            } else if (player.isSneaking()) {
+                            } else if (player.isShiftKeyDown()) {
                                 tileMekanism.setFacing(side.getOpposite());
                             }
                         }
@@ -197,17 +197,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
     }
 
     @Override
-    public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
-        return getMode(stack) == ConfiguratorMode.WRENCH;
-    }
-
-    @Override
     public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
         return getMode(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+    public void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
         list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
@@ -218,8 +213,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
         if (mode != newMode) {
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.CONFIGURE_STATE.translate(newMode)), Util.DUMMY_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURE_STATE.translate(newMode)), Util.NIL_UUID);
             }
         }
     }
@@ -258,7 +252,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_INFUSE_TYPES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.INFUSION, EnumColor.BRIGHT_GREEN, true, null),
-        //CONFIGURATE_PIGMENTS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.PIGMENT, EnumColor.BRIGHT_GREEN, true, null), TODO v11 reimplement
+        CONFIGURATE_PIGMENTS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.PIGMENT, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_SLURRIES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.SLURRY, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true, null),
@@ -314,8 +308,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     return TransmissionType.GAS;
                 case CONFIGURATE_INFUSE_TYPES:
                     return TransmissionType.INFUSION;
-                //case CONFIGURATE_PIGMENTS:
-                //    return TransmissionType.PIGMENT;
+                case CONFIGURATE_PIGMENTS:
+                    return TransmissionType.PIGMENT;
                 case CONFIGURATE_SLURRIES:
                     return TransmissionType.SLURRY;
                 case CONFIGURATE_ENERGY:

@@ -25,7 +25,7 @@ import net.minecraft.tileentity.BannerTileEntity;
 public class RenderMekanismShieldItem extends ItemStackTileEntityRenderer {
 
     @Override
-    public void func_239207_a_(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         Item item = stack.getItem();
         ShieldTextures textures;
         if (item == ToolsItems.BRONZE_SHIELD.getItem()) {
@@ -45,16 +45,16 @@ public class RenderMekanismShieldItem extends ItemStackTileEntityRenderer {
             return;
         }
         RenderMaterial material = textures.getBase();
-        matrix.push();
+        matrix.pushPose();
         matrix.scale(1, -1, -1);
-        IVertexBuilder buffer = material.getSprite().wrapBuffer(ItemRenderer.getEntityGlintVertexBuilder(renderer, modelShield.getRenderType(material.getAtlasLocation()), true, stack.hasEffect()));
-        if (stack.getChildTag(NBTConstants.BLOCK_ENTITY_TAG) != null) {
-            modelShield.func_228294_b_().render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
-            List<Pair<BannerPattern, DyeColor>> list = BannerTileEntity.getPatternColorData(ShieldItem.getColor(stack), BannerTileEntity.getPatternData(stack));
-            BannerTileEntityRenderer.func_230180_a_(matrix, renderer, light, overlayLight, modelShield.func_228293_a_(), material, false, list);
+        IVertexBuilder buffer = material.sprite().wrap(ItemRenderer.getFoilBufferDirect(renderer, shieldModel.renderType(material.atlasLocation()), true, stack.hasFoil()));
+        if (stack.getTagElement(NBTConstants.BLOCK_ENTITY_TAG) != null) {
+            shieldModel.handle().render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            List<Pair<BannerPattern, DyeColor>> list = BannerTileEntity.createPatterns(ShieldItem.getColor(stack), BannerTileEntity.getItemPatterns(stack));
+            BannerTileEntityRenderer.renderPatterns(matrix, renderer, light, overlayLight, shieldModel.plate(), material, false, list);
         } else {
-            modelShield.render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            shieldModel.renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
         }
-        matrix.pop();
+        matrix.popPose();
     }
 }

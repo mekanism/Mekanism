@@ -32,26 +32,27 @@ public class GuiArrowSelection extends GuiTexturedElement {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         ITextComponent component = textComponentSupplier.get();
         if (component != null) {
             int tooltipX = mouseX + 5;
             int tooltipY = mouseY - 5;
-            GuiUtils.renderExtendedTexture(matrix, GuiInnerScreen.SCREEN, 2, 2, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16);
-            IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-            matrix.push();
+            GuiUtils.renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16, 256, 256);
+            IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+            matrix.pushPose();
             //Make sure the text is above other renders like JEI
             matrix.translate(0.0D, 0.0D, 300);
-            getFont().func_243247_a(component, tooltipX, tooltipY, screenTextColor(), false, matrix.getLast().getMatrix(),
+            getFont().drawInBatch(component, tooltipX, tooltipY, screenTextColor(), false, matrix.last().pose(),
                   renderType, false, 0, MekanismRenderer.FULL_LIGHT);
-            matrix.pop();
-            renderType.finish();
+            matrix.popPose();
+            renderType.endBatch();
         }
     }
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
     }
 }

@@ -25,7 +25,7 @@ public class HwylaDataProvider implements IServerDataProvider<TileEntity> {
         if (tile instanceof TileEntityBoundingBlock) {
             //If we are a bounding block that has a position set, redirect the check to the main location
             TileEntityBoundingBlock boundingBlock = (TileEntityBoundingBlock) tile;
-            if (!boundingBlock.receivedCoords || tile.getPos().equals(boundingBlock.getMainPos())) {
+            if (!boundingBlock.receivedCoords || tile.getBlockPos().equals(boundingBlock.getMainPos())) {
                 //If the coords haven't been received, exit
                 return;
             }

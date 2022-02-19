@@ -30,7 +30,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockSeismicVibrator extends ItemBlockTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSeismicVibrator(BlockTile<?, ?> block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::seismicVibrator));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setISTER(ISTERProvider::seismicVibrator));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockTooltip<BlockTile<?, ?>> 
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (!WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
+        if (!WorldUtils.isValidReplaceableBlock(context.getLevel(), context.getClickedPos().above())) {
             //If there isn't room then fail
             return false;
         }

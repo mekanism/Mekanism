@@ -37,7 +37,7 @@ public class EnrichingIRecipe extends ItemStackToItemStackRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.ENRICHMENT_CHAMBER.getItemStack();
     }
 }

@@ -47,7 +47,7 @@ public class RecipeFormula {
 
     private void resetToRecipe() {
         for (int i = 0; i < 9; i++) {
-            dummy.setInventorySlotContents(i, input.get(i));
+            dummy.setItem(i, input.get(i));
         }
     }
 
@@ -57,17 +57,32 @@ public class RecipeFormula {
         }
         //Should always be 9 for the size
         for (int i = 0; i < craftingGridSlots.size(); i++) {
-            dummy.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
+            dummy.setItem(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
         }
         return recipe.matches(dummy, world);
+    }
+
+    //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it
+    public ItemStack assemble() {
+        return recipe == null ? ItemStack.EMPTY : recipe.assemble(dummy);
+    }
+
+    //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it
+    public NonNullList<ItemStack> getRemainingItems() {
+        //Should never be null given the assumption matches is called first
+        return recipe == null ? NonNullList.create() : recipe.getRemainingItems(dummy);
     }
 
     public boolean isIngredientInPos(World world, ItemStack stack, int i) {
         if (recipe == null) {
             return false;
+        } else if (stack.isEmpty() && !input.get(i).isEmpty()) {
+            //If the stack being checked is empty but the input isn't expected to be empty,
+            // mark it as not being correct for the position
+            return false;
         }
         resetToRecipe();
-        dummy.setInventorySlotContents(i, stack);
+        dummy.setItem(i, stack);
         return recipe.matches(dummy, world);
     }
 
@@ -75,11 +90,11 @@ public class RecipeFormula {
         IntList ret = new IntArrayList();
         if (recipe != null) {
             for (int i = 0; i < 9; i++) {
-                dummy.setInventorySlotContents(i, stack);
+                dummy.setItem(i, stack);
                 if (recipe.matches(dummy, world)) {
                     ret.add(i);
                 }
-                dummy.setInventorySlotContents(i, input.get(i));
+                dummy.setItem(i, input.get(i));
             }
         }
         return ret;
@@ -106,6 +121,6 @@ public class RecipeFormula {
 
     @Nullable
     private static ICraftingRecipe getRecipeFromGrid(CraftingInventory inv, World world) {
-        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, inv, world).orElse(null);
+        return world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, inv, world).orElse(null);
     }
 }

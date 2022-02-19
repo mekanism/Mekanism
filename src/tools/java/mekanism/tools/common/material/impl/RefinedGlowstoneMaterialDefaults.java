@@ -12,62 +12,42 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 806;
+        return 381;
     }
 
     @Override
     public float getAxeDamage() {
-        return 3;
+        return 6;
     }
 
     @Override
     public float getAxeAtkSpeed() {
-        return -3.1F;
+        return -2.9F;
     }
 
     @Override
-    public float getPaxelDamage() {
-        return 4;
+    public int getUses() {
+        return 384;
     }
 
     @Override
-    public int getPaxelHarvestLevel() {
-        return 3;
+    public float getSpeed() {
+        return 15;
     }
 
     @Override
-    public int getPaxelMaxUses() {
-        return 450;
-    }
-
-    @Override
-    public float getPaxelEfficiency() {
-        return 18;
-    }
-
-    @Override
-    public int getMaxUses() {
-        return 300;
-    }
-
-    @Override
-    public float getEfficiency() {
-        return 14;
-    }
-
-    @Override
-    public float getAttackDamage() {
-        return 5;
-    }
-
-    @Override
-    public int getHarvestLevel() {
+    public float getAttackDamageBonus() {
         return 2;
     }
 
     @Override
+    public int getLevel() {
+        return 3;
+    }
+
+    @Override
     public int getCommonEnchantability() {
-        return 18;
+        return 20;
     }
 
     @Override
@@ -76,33 +56,39 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurability(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 234;
+                return 221;
             case LEGS:
-                return 270;
+                return 255;
             case CHEST:
-                return 288;
+                return 272;
             case HEAD:
-                return 198;
+                return 187;
         }
         return 0;
     }
 
     @Override
-    public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 3;
             case LEGS:
                 return 6;
             case CHEST:
-                return 7;
+                return 8;
             case HEAD:
                 return 3;
         }
         return 0;
+    }
+
+    @Nonnull
+    @Override
+    public String getConfigCommentName() {
+        return "Refined Glowstone";
     }
 
     @Nonnull
@@ -111,21 +97,16 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
         return "refined_glowstone";
     }
 
-    @Override
-    public int getPaxelEnchantability() {
-        return 22;
-    }
-
     @Nonnull
     @Override
-    public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_IRON;
+    public SoundEvent getEquipSound() {
+        return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromTag(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE);
+        return Ingredient.of(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE);
     }
 
     @Override

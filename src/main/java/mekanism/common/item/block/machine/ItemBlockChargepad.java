@@ -20,7 +20,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockChargepad extends ItemBlockTooltip<BlockTileModel<?, ?>> {
 
     public ItemBlockChargepad(BlockTileModel<?, ?> block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
     @Override

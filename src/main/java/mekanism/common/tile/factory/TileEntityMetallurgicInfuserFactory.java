@@ -14,16 +14,23 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ItemStackChemicalToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.upgrade.IUpgradeData;
@@ -32,18 +39,22 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton {
+public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton,
+      ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
 
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
     private InfusionInventorySlot extraSlot;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
+                                                                                        "getInfuseTypeFilledPercentage"})
     private IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
         configComponent.addSupported(TransmissionType.INFUSION);
-        configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, infusionTank, RelativeSide.RIGHT).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);
     }
 
     @Nonnull
@@ -51,9 +62,10 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
-        // as maybe the valid recipes have changed and we need to sort again
-        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes,
-              type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this::onContentsChangedUpdateSorting));
+        // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
+        // if they are not still valid
+        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::containsRecipeB,
+              this::onContentsChangedUpdateSortingAndCache));
         return builder.build();
     }
 
@@ -61,7 +73,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
         super.addSlots(builder, updateSortingListener);
         //Note: We care about the infusion tank not the slot when it comes to recipes and updating sorting
-        builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getWorld, this, 7, 57));
+        builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getLevel, this, 7, 57));
     }
 
     public IInfusionTank getInfusionTank() {
@@ -76,7 +88,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
+        return containsRecipeA(stack);
     }
 
     @Override
@@ -88,7 +100,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     protected boolean isCachedRecipeValid(@Nullable CachedRecipe<MetallurgicInfuserRecipe> cached, @Nonnull ItemStack stack) {
         if (cached != null) {
             MetallurgicInfuserRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getItemInput().testType(stack) && (infusionTank.isEmpty() || cachedRecipe.getInfusionInput().testType(infusionTank.getType()));
+            return cachedRecipe.getItemInput().testType(stack) && (infusionTank.isEmpty() || cachedRecipe.getChemicalInput().testType(infusionTank.getType()));
         }
         return false;
     }
@@ -96,16 +108,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     protected MetallurgicInfuserRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
-        long stored = infusionTank.getStored();
-        InfuseType type = infusionTank.getType();
+        InfusionStack stored = infusionTank.getStack();
         ItemStack output = outputSlot.getStack();
-        return findFirstRecipe(recipe -> {
-            //Check the infusion type before the ItemStack type as it a quicker easier compare check
-            if (stored == 0 || recipe.getInfusionInput().testType(type)) {
-                return recipe.getItemInput().testType(fallbackInput) && InventoryUtils.areItemsStackable(recipe.getOutput(infusionTank.getStack(), fallbackInput), output);
-            }
-            return false;
-        });
+        //TODO: Give it something that is not empty when we don't have a stored infusion stack for getting the output?
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, stored,
+              recipe -> InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, stored), output));
     }
 
     @Override
@@ -120,31 +127,24 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Nonnull
     @Override
-    public MekanismRecipeType<MetallurgicInfuserRecipe> getRecipeType() {
+    public MekanismRecipeType<MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
     }
 
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandlers[cacheIndex].getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        InfusionStack infusionStack = infusionInputHandler.getInput();
-        if (infusionStack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(infusionStack, stack));
+        return findFirstRecipe(inputHandlers[cacheIndex], infusionInputHandler);
     }
 
+    @Nonnull
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
+        return new ItemStackChemicalToItemStackCachedRecipe<>(recipe, inputHandlers[cacheIndex], infusionInputHandler, outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
@@ -174,4 +174,12 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     public void dump() {
         infusionTank.setEmpty();
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void dumpInfuseType() throws ComputerException {
+        validateSecurityIsPublic();
+        dump();
+    }
+    //End methods IComputerTile
 }

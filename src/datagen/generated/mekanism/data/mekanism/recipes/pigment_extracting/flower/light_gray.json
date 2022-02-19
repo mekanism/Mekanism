@@ -1,0 +1,20 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:oxeye_daisy"
+      },
+      {
+        "item": "minecraft:azure_bluet"
+      },
+      {
+        "item": "minecraft:white_tulip"
+      }
+    ]
+  },
+  "output": {
+    "pigment": "mekanism:light_gray",
+    "amount": 768
+  }
+}

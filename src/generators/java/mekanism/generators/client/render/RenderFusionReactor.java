@@ -32,7 +32,7 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
           IProfiler profiler) {
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed() && multiblock.isBurning()) {
-            matrix.push();
+            matrix.pushPose();
             matrix.translate(0.5, -1.5, 0.5);
 
             long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
@@ -47,7 +47,7 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
             scale = 1 - 0.9 * Math.sin(Math.toRadians(ticks * 4 * scaledTemp + 90F));
             renderPart(matrix, buffer, overlayLight, EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
 
-            matrix.pop();
+            matrix.popPose();
         }
     }
 
@@ -59,16 +59,16 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
     private void renderPart(MatrixStack matrix, IVertexBuilder buffer, int overlayLight, EnumColor color, double scale, float ticks, long scaledTemp, int mult1,
           int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
-        matrix.push();
+        matrix.pushPose();
         matrix.scale((float) scale, (float) scale, (float) scale);
-        matrix.rotate(Vector3f.YP.rotationDegrees(ticksScaledTemp * mult1 + shift1));
-        matrix.rotate(RenderEnergyCube.coreVec.rotationDegrees(ticksScaledTemp * mult2 + shift2));
+        matrix.mulPose(Vector3f.YP.rotationDegrees(ticksScaledTemp * mult1 + shift1));
+        matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(ticksScaledTemp * mult2 + shift2));
         core.render(matrix, buffer, MekanismRenderer.FULL_LIGHT, overlayLight, color, 1);
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityFusionReactorController tile) {
+    public boolean shouldRenderOffScreen(TileEntityFusionReactorController tile) {
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         return multiblock.isFormed() && multiblock.isBurning();
     }

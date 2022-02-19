@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/glow"
+      },
+      "without": {
+        "item": "mekanismadditions:pink_plastic_glow"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:pink"
+  },
+  "output": {
+    "item": "mekanismadditions:pink_plastic_glow"
+  }
+}

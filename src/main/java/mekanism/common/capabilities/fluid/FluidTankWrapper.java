@@ -39,6 +39,11 @@ public class FluidTankWrapper implements IExtendedFluidTank {
     }
 
     @Override
+    public void setStackUnchecked(FluidStack stack) {
+        internal.setStackUnchecked(stack);
+    }
+
+    @Override
     public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
         //Only allow inserting if we pass the check
         return insertCheck.getAsBoolean() ? internal.insert(stack, action, automationType) : stack;

@@ -41,6 +41,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
         if (relative.isWall()) {
             Axis axis = Axis.get(cuboid.getSide(pos));
             Axis h = axis.horizontal(), v = axis.vertical();
+            //Note: This ends up becoming immutable by doing this but that is fine and doesn't really matter
             pos = pos.subtract(cuboid.getMinPos());
             return StructureRequirement.REQUIREMENTS[ALLOWED_GRID[h.getCoord(pos)][v.getCoord(pos)]];
         }
@@ -48,7 +49,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     }
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, MekanismBlockTypes.SPS_CASING)) {
             return CasingType.FRAME;
@@ -77,7 +78,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     public FormationResult postcheck(SPSMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
         Set<BlockPos> validCoils = new ObjectOpenHashSet<>();
         for (ValveData valve : structure.valves) {
-            BlockPos pos = valve.location.offset(valve.side.getOpposite());
+            BlockPos pos = valve.location.relative(valve.side.getOpposite());
             if (innerNodes.contains(pos)) {
                 structure.addCoil(valve.location, valve.side.getOpposite());
                 validCoils.add(pos);

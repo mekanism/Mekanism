@@ -9,6 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -16,6 +17,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -42,7 +44,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         return stack -> {
             //If we have more than one item in the input, check if we can fill a single item of it
             // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
-            // though we have special handling to only move one item at a time anyways
+            // though we have special handling to only move one item at a time anyway
             Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack).resolve();
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
@@ -52,7 +54,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                     if (fluidInTank.isEmpty()) {
                         hasEmpty = true;
                     } else if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
-                        //True if the items contents are valid and we can fill the tank with any of our contents
+                        //True if the items contents are valid, and we can fill the tank with any of our contents
                         return true;
                     }
                 }
@@ -152,7 +154,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
             //If we have more than one item in the input, check if we can fill a single item of it
             // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
-            // though we have special handling to only move one item at a time anyways
+            // though we have special handling to only move one item at a time anyway
             LazyOptional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack);
             if (cap.isPresent()) {
                 FluidStack fluidInTank = fluidTank.getFluid();
@@ -160,7 +162,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                     return true;
                 }
                 IFluidHandlerItem itemFluidHandler = cap.resolve().get();
-                //True if the tanks contents are valid and we can fill the item with any of the contents
+                //True if the tanks contents are valid, and we can fill the item with any of the contents
                 return itemFluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0;
             }
             return false;
@@ -224,5 +226,25 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     @Override
     public void setFilling(boolean filling) {
         isFilling = filling;
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = super.serializeNBT();
+        if (isDraining) {
+            nbt.putBoolean(NBTConstants.DRAINING, true);
+        }
+        if (isFilling) {
+            nbt.putBoolean(NBTConstants.FILLING, true);
+        }
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        super.deserializeNBT(nbt);
+        //Grab the booleans regardless if they are present as if they aren't that means they are false
+        isDraining = nbt.getBoolean(NBTConstants.DRAINING);
+        isFilling = nbt.getBoolean(NBTConstants.FILLING);
     }
 }

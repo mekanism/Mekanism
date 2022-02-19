@@ -57,6 +57,7 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS("turbine", "invalid_rotors_not_contiguous"),
     TURBINE_INVALID_TOO_NARROW("turbine", "invalid_too_narrow"),
     TURBINE_INVALID_VENT_BELOW_COMPLEX("turbine", "invalid_vent_below_complex"),
+    TURBINE_INVALID_MISSING_COILS("turbine", "invalid_missing_coils"),
 
     TURBINE("turbine", "industrial_turbine"),
     TURBINE_FLOW_RATE("turbine", "flow_rate"),
@@ -89,6 +90,7 @@ public enum GeneratorsLang implements ILangEntry {
     FISSION_SCRAM("fission", "scram"),
     FISSION_DAMAGE("fission", "damage"),
     FISSION_HEAT_STATISTICS("fission", "heat_statistics"),
+    FISSION_FORCE_DISABLED("fission", "force_disabled"),
     FISSION_FUEL_STATISTICS("fission", "fuel_statistics"),
     FISSION_HEAT_CAPACITY("fission", "heat_capacity"),
     FISSION_SURFACE_AREA("fission", "surface_area"),
@@ -148,7 +150,7 @@ public enum GeneratorsLang implements ILangEntry {
     private final String key;
 
     GeneratorsLang(String type, String path) {
-        this(Util.makeTranslationKey(type, MekanismGenerators.rl(path)));
+        this(Util.makeDescriptionId(type, MekanismGenerators.rl(path)));
     }
 
     GeneratorsLang(String key) {

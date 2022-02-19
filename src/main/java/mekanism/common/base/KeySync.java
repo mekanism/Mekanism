@@ -9,8 +9,7 @@ import java.util.UUID;
 public class KeySync {
 
     public static final int ASCEND = 0;
-    public static final int DESCEND = 1;
-    public static final int BOOST = 2;
+    public static final int BOOST = 1;
 
     public final Map<UUID, KeySet> keys = new Object2ObjectOpenHashMap<>();
 

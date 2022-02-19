@@ -37,11 +37,6 @@
           ],
           "name": "mekanism:laser_tractor_beam"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

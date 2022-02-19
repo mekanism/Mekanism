@@ -27,12 +27,12 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement fluidInput = JSONUtils.isJsonArray(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.FLUID_INPUT) :
-                                 JSONUtils.getJsonObject(json, JsonConstants.FLUID_INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement fluidInput = JSONUtils.isArrayNode(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
+                                 JSONUtils.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
         FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(fluidInput);
-        JsonElement slurryInput = JSONUtils.isJsonArray(json, JsonConstants.SLURRY_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.SLURRY_INPUT) :
-                                  JSONUtils.getJsonObject(json, JsonConstants.SLURRY_INPUT);
+        JsonElement slurryInput = JSONUtils.isArrayNode(json, JsonConstants.SLURRY_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.SLURRY_INPUT) :
+                                  JSONUtils.getAsJsonObject(json, JsonConstants.SLURRY_INPUT);
         SlurryStackIngredient slurryIngredient = SlurryStackIngredient.deserialize(slurryInput);
         SlurryStack output = SerializerHelper.getSlurryStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
@@ -42,7 +42,7 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient fluidInput = FluidStackIngredient.read(buffer);
             SlurryStackIngredient slurryInput = SlurryStackIngredient.read(buffer);
@@ -55,7 +55,7 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

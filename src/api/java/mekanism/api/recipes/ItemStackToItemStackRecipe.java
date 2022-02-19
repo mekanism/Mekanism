@@ -2,7 +2,9 @@ package mekanism.api.recipes;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -14,7 +16,16 @@ import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 /**
- * Inputs: ItemStack (item) Output: ItemStack (transformed)
+ * Input: ItemStack
+ * <br>
+ * Output: ItemStack
+ *
+ * @apiNote There are currently three types of ItemStack to ItemStack recipe types:
+ * <ul>
+ *     <li>Crushing: Can be processed in Crushers and Crushing Factories.</li>
+ *     <li>Enriching: Can be processed in Enrichment Chambers and Enriching Factories.</li>
+ *     <li>Smelting: Can be processed in Energized Smelters, Smelting Factories, and Robits.</li>
+ * </ul>
  */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -24,9 +35,18 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
     private final ItemStackIngredient input;
     private final ItemStack output;
 
+    /**
+     * @param id     Recipe name.
+     * @param input  Input.
+     * @param output Output.
+     */
     public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
         super(id);
-        this.input = input;
+        this.input = Objects.requireNonNull(input, "Input cannot be null.");
+        Objects.requireNonNull(output, "Output cannot be null.");
+        if (output.isEmpty()) {
+            throw new IllegalArgumentException("Output cannot be empty.");
+        }
         this.output = output.copy();
     }
 
@@ -35,27 +55,47 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
         return this.input.test(input);
     }
 
+    /**
+     * Gets the input ingredient.
+     */
     public ItemStackIngredient getInput() {
         return input;
     }
 
+    /**
+     * Gets a new output based on the given input.
+     *
+     * @param input Specific input.
+     *
+     * @return New output.
+     *
+     * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
+     * outputs where things like NBT may be different.
+     * @implNote The passed in input should <strong>NOT</strong> be modified.
+     */
     @Contract(value = "_ -> new", pure = true)
     public ItemStack getOutput(ItemStack input) {
         return output.copy();
     }
 
+    @Nonnull
+    @Override
+    public ItemStack getResultItem() {
+        return output.copy();
+    }
+
     /**
-     * For JEI, gets a display stack
+     * For JEI, gets the output representations to display.
      *
-     * @return Representation of output, MUST NOT be modified
+     * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
     public List<ItemStack> getOutputDefinition() {
-        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
+        return Collections.singletonList(output);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        buffer.writeItemStack(output);
+        buffer.writeItem(output);
     }
 }

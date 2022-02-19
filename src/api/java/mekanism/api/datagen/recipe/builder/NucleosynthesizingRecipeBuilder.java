@@ -33,6 +33,14 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
         this.duration = duration;
     }
 
+    /**
+     * Creates a Nucleosynthesizing recipe builder.
+     *
+     * @param itemInput Item Input.
+     * @param gasInput  Gas Input.
+     * @param output    Output.
+     * @param duration  Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+     */
     public static NucleosynthesizingRecipeBuilder nucleosynthesizing(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This nucleosynthesizing recipe requires a non empty item output.");
@@ -48,6 +56,11 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
         return new NucleosynthesizingRecipeResult(id);
     }
 
+    /**
+     * Builds this recipe using the output item's name as the recipe name.
+     *
+     * @param consumer Finished Recipe Consumer.
+     */
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
@@ -59,7 +72,7 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
             json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));

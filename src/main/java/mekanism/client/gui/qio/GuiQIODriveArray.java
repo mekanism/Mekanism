@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.custom.GuiQIOFrequencyDataScreen;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
@@ -17,22 +16,21 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     public GuiQIODriveArray(MekanismTileContainer<TileEntityQIODriveArray> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        ySize += 40;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 40;
+        inventoryLabelY = imageHeight - 94;
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiQIOFrequencyDataScreen(this, 15, 19, xSize - 32, 46, () -> tile.getFrequency(FrequencyType.QIO)));
+        addButton(new GuiQIOFrequencyDataScreen(this, 15, 19, imageWidth - 32, 46, () -> tile.getFrequency(FrequencyType.QIO)));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

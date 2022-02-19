@@ -7,12 +7,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.window.GuiColorWindow;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiColorPickerSlot extends GuiRelativeElement {
+public class GuiColorPickerSlot extends GuiElement {
 
     private final Supplier<Color> supplier;
     private final Consumer<Color> consumer;
@@ -21,15 +22,14 @@ public class GuiColorPickerSlot extends GuiRelativeElement {
         super(gui, x, y, 18, 18);
         this.supplier = supplier;
         this.consumer = consumer;
-
-        addChild(new GuiElementHolder(gui, x, y, 18, 18));
+        addChild(new GuiElementHolder(gui, relativeX, relativeY, 18, 18));
     }
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         ITextComponent hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, supplier.get().rgb()));
-        guiObj.displayTooltip(matrix, hex, mouseX, mouseY);
+        displayTooltip(matrix, hex, mouseX, mouseY);
     }
 
     @Override
@@ -40,8 +40,8 @@ public class GuiColorPickerSlot extends GuiRelativeElement {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        GuiColorWindow window = new GuiColorWindow(guiObj, guiObj.getWidth() / 2 - 160 / 2, guiObj.getHeight() / 2 - 120 / 2, consumer);
+        GuiColorWindow window = new GuiColorWindow(gui(), getGuiWidth() / 2 - 160 / 2, getGuiHeight() / 2 - 120 / 2, consumer);
         window.setColor(supplier.get());
-        guiObj.addWindow(window);
+        gui().addWindow(window);
     }
 }

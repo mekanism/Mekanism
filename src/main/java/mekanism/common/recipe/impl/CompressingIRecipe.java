@@ -38,7 +38,7 @@ public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.OSMIUM_COMPRESSOR.getItemStack();
     }
 }

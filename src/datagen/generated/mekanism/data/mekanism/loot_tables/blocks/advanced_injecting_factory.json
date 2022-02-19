@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:advanced_injecting_factory"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

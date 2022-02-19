@@ -16,37 +16,37 @@ import net.minecraft.util.ResourceLocation;
 public class ModelTransporterBox extends Model {
 
     private static final ResourceLocation BOX_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "transporter_box.png");
-    private final RenderType RENDER_TYPE = getRenderType(BOX_TEXTURE);
+    private final RenderType RENDER_TYPE = renderType(BOX_TEXTURE);
     private final ModelRenderer box;
 
     public ModelTransporterBox() {
-        super(RenderType::getEntityCutoutNoCull);
-        textureWidth = 64;
-        textureHeight = 64;
+        super(RenderType::entityCutoutNoCull);
+        texWidth = 64;
+        texHeight = 64;
 
         box = new ModelRenderer(this, 0, 0);
         box.addBox(0F, 0F, 0F, 7, 7, 7, false);
-        box.setRotationPoint(-3.5F, 0, -3.5F);
-        box.setTextureSize(64, 64);
+        box.setPos(-3.5F, 0, -3.5F);
+        box.setTexSize(64, 64);
         box.mirror = true;
         setRotation(box, 0F, 0F, 0F);
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float x, float y, float z, EnumColor color) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(x, y, z);
-        render(matrix, renderer.getBuffer(RENDER_TYPE), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
-        matrix.pop();
+        renderToBuffer(matrix, renderer.getBuffer(RENDER_TYPE), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        matrix.popPose();
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         box.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
+        model.xRot = x;
+        model.yRot = y;
+        model.zRot = z;
     }
 }

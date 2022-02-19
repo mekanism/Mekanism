@@ -16,6 +16,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -46,8 +47,8 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height, null);
     }
 
-    public ChemicalStackRenderer(long capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay) {
-        this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height, overlay);
+    public ChemicalStackRenderer(long capacityMb, int width, int height, @Nullable IDrawable overlay) {
+        this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height, overlay);
     }
 
     private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {
@@ -67,10 +68,10 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         RenderSystem.enableAlphaTest();
         drawChemical(matrix, xPosition, yPosition, stack);
         if (overlay != null) {
-            matrix.push();
+            matrix.pushPose();
             matrix.translate(0, 0, 200);
             overlay.draw(matrix, xPosition, yPosition);
-            matrix.pop();
+            matrix.popPose();
         }
         RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
@@ -98,23 +99,20 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         if (chemical.isEmptyType()) {
             return Collections.emptyList();
         }
-        List<ITextComponent> tooltip = new ArrayList<>();
-        tooltip.add(TextComponentUtil.build(chemical));
-        ITextComponent component = null;
+        List<ITextComponent> tooltips = new ArrayList<>();
+        tooltips.add(TextComponentUtil.build(chemical));
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            component = MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb));
+            tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            component = MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()));
+            tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
         }
-        if (component != null) {
-            tooltip.add(component);
-        }
-        return tooltip;
+        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getType(), tooltipFlag.isAdvanced());
+        return tooltips;
     }
 
     @Override
     public FontRenderer getFontRenderer(Minecraft minecraft, @Nonnull STACK stack) {
-        return minecraft.fontRenderer;
+        return minecraft.font;
     }
 
     enum TooltipMode {

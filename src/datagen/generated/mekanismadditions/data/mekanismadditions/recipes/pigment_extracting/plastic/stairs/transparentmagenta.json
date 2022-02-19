@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:magenta_plastic_transparent_stairs"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:magenta",
+    "amount": 28
+  }
+}

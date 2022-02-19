@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dyes/white"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:white",
+    "amount": 256
+  }
+}

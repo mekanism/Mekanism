@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:blue_enchanted_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:blue_enchanted_planks",
+    "count": 5
+  }
+}

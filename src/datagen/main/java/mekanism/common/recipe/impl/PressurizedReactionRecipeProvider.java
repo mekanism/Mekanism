@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.math.FloatingLong;
@@ -7,6 +8,7 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
@@ -29,10 +31,10 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
     private void addCoalGasificationRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Blocks
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_COAL),
-                    ItemStackIngredient.from(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL)
-              ),
+              ItemStackIngredient.from(BaseRecipeProvider.createIngredient(Arrays.asList(
+                    Tags.Items.STORAGE_BLOCKS_COAL,
+                    MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL
+              ))),
               FluidStackIngredient.from(FluidTags.WATER, 1_000),
               GasStackIngredient.from(MekanismGases.OXYGEN, 1_000),
               900,
@@ -50,10 +52,10 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "coals"));
         //Dusts
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL),
-                    ItemStackIngredient.from(MekanismTags.Items.DUSTS_CHARCOAL)
-              ),
+              ItemStackIngredient.from(BaseRecipeProvider.createIngredient(Arrays.asList(
+                    MekanismTags.Items.DUSTS_COAL,
+                    MekanismTags.Items.DUSTS_CHARCOAL
+              ))),
               FluidStackIngredient.from(FluidTags.WATER, 100),
               GasStackIngredient.from(MekanismGases.OXYGEN, 100),
               100,
@@ -121,23 +123,22 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
     private void addSubstrateRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Ethene + oxygen
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(MekanismItems.SUBSTRATE),
-              FluidStackIngredient.from(MekanismTags.Fluids.ETHENE, 50),
-              GasStackIngredient.from(MekanismGases.OXYGEN, 10),
-              60,
-              MekanismItems.HDPE_PELLET.getItemStack(),
-              MekanismGases.OXYGEN.getStack(5)
-        ).energyRequired(FloatingLong.createConst(1_000))
+                    ItemStackIngredient.from(MekanismItems.SUBSTRATE),
+                    FluidStackIngredient.from(MekanismTags.Fluids.ETHENE, 50),
+                    GasStackIngredient.from(MekanismGases.OXYGEN, 10),
+                    60,
+                    MekanismItems.HDPE_PELLET.getItemStack()
+              ).energyRequired(FloatingLong.createConst(1_000))
               .build(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
         //Water + ethene
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(MekanismItems.SUBSTRATE),
-              FluidStackIngredient.from(FluidTags.WATER, 200),
-              GasStackIngredient.from(MekanismGases.ETHENE, 100),
-              400,
-              MekanismItems.SUBSTRATE.getItemStack(8),
-              MekanismGases.OXYGEN.getStack(10)
-        ).energyRequired(FloatingLong.createConst(200))
+                    ItemStackIngredient.from(MekanismItems.SUBSTRATE),
+                    FluidStackIngredient.from(FluidTags.WATER, 200),
+                    GasStackIngredient.from(MekanismGases.ETHENE, 100),
+                    400,
+                    MekanismItems.SUBSTRATE.getItemStack(8),
+                    MekanismGases.OXYGEN.getStack(10)
+              ).energyRequired(FloatingLong.createConst(200))
               .build(consumer, Mekanism.rl(basePath + "water_ethene"));
         //Water + hydrogen
         PressurizedReactionRecipeBuilder.reaction(

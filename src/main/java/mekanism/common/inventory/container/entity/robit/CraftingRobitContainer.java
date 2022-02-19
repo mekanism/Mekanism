@@ -4,14 +4,12 @@ import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.container.entity.IEntityContainer;
-import mekanism.common.inventory.container.entity.MekanismEntityContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.WorkbenchContainer;
-import net.minecraft.network.PacketBuffer;
 
 public class CraftingRobitContainer extends WorkbenchContainer implements IEntityContainer<EntityRobit>, ISecurityContainer {
 
@@ -23,15 +21,12 @@ public class CraftingRobitContainer extends WorkbenchContainer implements IEntit
         entity.open(inv.player);
     }
 
-    public CraftingRobitContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, MekanismEntityContainer.getEntityFromBuf(buf, EntityRobit.class));
-    }
-
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull PlayerEntity player) {
         return entity.isAlive();
     }
 
+    @Nonnull
     @Override
     public EntityRobit getEntity() {
         return entity;
@@ -44,8 +39,8 @@ public class CraftingRobitContainer extends WorkbenchContainer implements IEntit
     }
 
     @Override
-    public void onContainerClosed(@Nonnull PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(@Nonnull PlayerEntity player) {
+        super.removed(player);
         entity.close(player);
     }
 

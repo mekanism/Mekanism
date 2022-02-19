@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:rainbow_eucalyptus_pressure_plate"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:rainbow_eucalyptus_planks",
+    "count": 2
+  }
+}

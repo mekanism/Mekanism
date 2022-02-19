@@ -67,7 +67,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
      */
     default ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack)) {
-            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
         int needed = getLimit(stack) - getCount();
@@ -158,9 +158,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
 
     /**
      * <p>
-     * This function re-implements the vanilla function {@link IInventory#isItemValidForSlot(int, ItemStack)}. It should be used instead of simulated insertions in cases
-     * where the contents and state of the inventory are irrelevant, mainly for the purpose of automation and logic (for instance, testing if a minecart can wait to
-     * deposit its items into a full inventory, or if the items in the minecart can never be placed into the inventory and should move on).
+     * This function re-implements the vanilla function {@link IInventory#canPlaceItem(int, ItemStack)}. It should be used instead of simulated insertions in cases where
+     * the contents and state of the inventory are irrelevant, mainly for the purpose of automation and logic (for instance, testing if a minecart can wait to deposit its
+     * items into a full inventory, or if the items in the minecart can never be placed into the inventory and should move on).
      * </p>
      * <ul>
      * <li>isItemValid is false when insertion of the item is never valid.</li>
@@ -212,7 +212,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
             amount = maxStackSize;
         }
         if (stack.getCount() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         ItemStack newStack = stack.copy();

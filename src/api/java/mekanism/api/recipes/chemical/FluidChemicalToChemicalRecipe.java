@@ -1,5 +1,8 @@
 package mekanism.api.recipes.chemical;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -15,6 +18,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
+/**
+ * Base class for defining fluid chemical to chemical recipes.
+ * <br>
+ * Input: FluidStack
+ * <br>
+ * Input: Chemical
+ * <br>
+ * Output: ChemicalStack of the same chemical type as the input chemical
+ *
+ * @param <INGREDIENT> Input Ingredient type
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -25,11 +39,21 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     private final INGREDIENT chemicalInput;
     protected final STACK output;
 
+    /**
+     * @param id            Recipe name.
+     * @param fluidInput    Fluid input.
+     * @param chemicalInput Chemical input.
+     * @param output        Output.
+     */
     public FluidChemicalToChemicalRecipe(ResourceLocation id, FluidStackIngredient fluidInput, INGREDIENT chemicalInput, STACK output) {
         super(id);
-        this.fluidInput = fluidInput;
-        this.chemicalInput = chemicalInput;
-        this.output = output;
+        this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
+        Objects.requireNonNull(output, "Output cannot be null.");
+        if (output.isEmpty()) {
+            throw new IllegalArgumentException("Output cannot be empty.");
+        }
+        this.output = (STACK) output.copy();
     }
 
     @Override
@@ -37,20 +61,53 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
         return fluidInput.test(fluidStack) && chemicalInput.test(chemicalStack);
     }
 
+    /**
+     * Gets the input fluid ingredient.
+     */
     public FluidStackIngredient getFluidInput() {
         return fluidInput;
     }
 
+    /**
+     * Gets the input chemical ingredient.
+     */
     public INGREDIENT getChemicalInput() {
         return chemicalInput;
     }
 
+    /**
+     * @deprecated Use {@link #getOutputDefinition()}.
+     */
+    @Deprecated//TODO - 1.18: Remove this
     public STACK getOutputRepresentation() {
         return output;
     }
 
+    /**
+     * For JEI, gets the output representations to display.
+     *
+     * @return Representation of the output, <strong>MUST NOT</strong> be modified.
+     */
+    public List<STACK> getOutputDefinition() {
+        return Collections.singletonList(output);
+    }
+
+    /**
+     * Gets a new output based on the given inputs.
+     *
+     * @param fluidStack    Specific fluid input.
+     * @param chemicalStack Specific chemical input.
+     *
+     * @return New output.
+     *
+     * @apiNote While Mekanism does not currently make use of the inputs, it is important to support it and pass the proper value in case any addons define input based
+     * outputs where things like NBT may be different.
+     * @implNote The passed in inputs should <strong>NOT</strong> be modified.
+     */
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract STACK getOutput(FluidStack fluidStack, STACK chemicalStack);
+    public STACK getOutput(FluidStack fluidStack, STACK chemicalStack) {
+        return (STACK) output.copy();
+    }
 
     @Override
     public void write(PacketBuffer buffer) {

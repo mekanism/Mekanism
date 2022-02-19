@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:glass/lime"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 16
+  }
+}

@@ -28,6 +28,12 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         this.output = output;
     }
 
+    /**
+     * Creates a Crushing recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToItemStackRecipeBuilder crushing(ItemStackIngredient input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This crushing recipe requires a non empty item output.");
@@ -35,6 +41,12 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("crushing"));
     }
 
+    /**
+     * Creates an Enriching recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToItemStackRecipeBuilder enriching(ItemStackIngredient input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This enriching recipe requires a non empty item output.");
@@ -42,6 +54,12 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("enriching"));
     }
 
+    /**
+     * Creates a Smelting recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToItemStackRecipeBuilder smelting(ItemStackIngredient input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This smelting recipe requires a non empty item output.");
@@ -54,6 +72,11 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         return new ItemStackToItemStackRecipeResult(id);
     }
 
+    /**
+     * Builds this recipe using the output item's name as the recipe name.
+     *
+     * @param consumer Finished Recipe Consumer.
+     */
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
@@ -65,7 +88,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
         }

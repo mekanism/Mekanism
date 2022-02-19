@@ -25,7 +25,7 @@ public interface IHeatHandler {
 
     /**
      * Returns the inverse conduction coefficient of a given capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat
-     * can dissipate. The trade off is that it also allows for lower amounts of heat to be inserted.
+     * can dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.
      *
      * @param capacitor Capacitor to query.
      *

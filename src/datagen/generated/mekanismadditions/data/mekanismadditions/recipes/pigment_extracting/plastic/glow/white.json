@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:white_plastic_glow"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:white",
+    "amount": 42
+  }
+}

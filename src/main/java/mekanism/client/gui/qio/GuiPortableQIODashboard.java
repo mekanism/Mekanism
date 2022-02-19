@@ -13,32 +13,31 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
 
     public GuiPortableQIODashboard(PortableQIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiQIOFrequencyTab(this, container.getHand()));
+    protected void addGuiElements() {
+        super.addGuiElements();
+        addButton(new GuiQIOFrequencyTab(this, menu.getHand()));
     }
 
     @Override
     public GuiQIOItemViewer<PortableQIODashboardContainer> recreate(PortableQIODashboardContainer container) {
-        return new GuiPortableQIODashboard(container, playerInventory, title);
+        return new GuiPortableQIODashboard(container, inventory, title);
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, getName(), titleY);
+        drawTitleText(matrix, getName(), titleLabelY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
     public FrequencyIdentity getFrequency() {
-        return ((IFrequencyItem) container.getStack().getItem()).getFrequency(container.getStack());
+        return ((IFrequencyItem) menu.getStack().getItem()).getFrequencyIdentity(menu.getStack());
     }
 
     private ITextComponent getName() {
-        return container.getStack().getDisplayName();
+        return menu.getStack().getHoverName();
     }
 }

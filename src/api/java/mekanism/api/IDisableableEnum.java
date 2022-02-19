@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 
 /**
@@ -16,32 +17,21 @@ public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYP
 
     @Nonnull
     @Override
-    @SuppressWarnings("Convert2MethodRef")
-    default TYPE getNext() {
-        //Note: Do not replace this with method reference, or it will crash not being able to resolve the TYPE
-        return getNext(element -> element.isEnabled());
+    default TYPE getNext(@Nonnull Predicate<TYPE> isValid) {
+        return IIncrementalEnum.super.getNext(element -> element.isEnabled() && isValid.test(element));
     }
 
     @Nonnull
     @Override
-    @SuppressWarnings("Convert2MethodRef")
-    default TYPE getPrevious() {
-        //Note: Do not replace this with method reference, or it will crash not being able to resolve the TYPE
-        return getPrevious(element -> element.isEnabled());
+    default TYPE getPrevious(@Nonnull Predicate<TYPE> isValid) {
+        return IIncrementalEnum.super.getPrevious(element -> element.isEnabled() && isValid.test(element));
     }
 
     @Nonnull
     @Override
     default TYPE adjust(int shift) {
-        TYPE result = (TYPE) this;
-        while (shift < 0) {
-            shift++;
-            result = result.getPrevious();
-        }
-        while (shift > 0) {
-            shift--;
-            result = result.getNext();
-        }
-        return result;
+        //Note: We can just pass an always true predicate as we intercept getNext and getPrevious calls to
+        // ensure that they test the element is enabled
+        return adjust(shift, value -> true);
     }
 }

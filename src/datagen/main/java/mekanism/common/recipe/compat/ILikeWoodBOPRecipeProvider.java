@@ -3,16 +3,24 @@ package mekanism.common.recipe.compat;
 import biomesoplenty.api.block.BOPBlocks;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.util.IItemProvider;
+import net.minecraftforge.common.crafting.conditions.AndCondition;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
 @ParametersAreNonnullByDefault
 public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
 
+    //TODO - 1.18: Remove having these extra conditions
+    private final ICondition modLoadedSoulTorchVersion;
+
     public ILikeWoodBOPRecipeProvider() {
-        super(yamahari.ilikewood.plugin.util.Constants.MOD_ID, "biomesoplenty");
+        super(yamahari.ilikewood.plugin.biomesoplenty.util.Constants.MOD_ID, "biomesoplenty");
+        modLoadedSoulTorchVersion = new AndCondition(new ModVersionLoadedCondition(modid, "1.16.5-6.2.2.0"), new ModLoadedCondition("biomesoplenty"));
     }
 
     @Override
@@ -31,6 +39,6 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
     }
 
     private void addWoodType(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider log, IItemProvider fences, IWoodType woodType) {
-        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType, allModsLoaded);
+        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType, allModsLoaded, modLoadedSoulTorchVersion);
     }
 }

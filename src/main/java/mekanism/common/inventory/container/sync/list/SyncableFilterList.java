@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NonNull;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.network.container.property.list.FilterListPropertyData;
-import mekanism.common.network.container.property.list.ListPropertyData;
+import mekanism.common.network.to_client.container.property.list.FilterListPropertyData;
+import mekanism.common.network.to_client.container.property.list.ListPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling filter lists

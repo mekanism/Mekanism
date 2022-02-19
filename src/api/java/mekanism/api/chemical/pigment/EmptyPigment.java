@@ -3,7 +3,6 @@ package mekanism.api.chemical.pigment;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 
@@ -11,7 +10,6 @@ public final class EmptyPigment extends Pigment {
 
     public EmptyPigment() {
         super(PigmentBuilder.builder().hidden());
-        setRegistryName(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "empty_pigment"));
     }
 
     @Override

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanism:fluorite_gem",
+    "count": 9
+  },
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/fluorite"
+    }
+  ]
+}

@@ -32,7 +32,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Gets the energy from ItemStack conversion, ignoring the size of the item stack.
      */
     private static FloatingLong getPotentialConversion(@Nullable World world, ItemStack itemStack) {
-        ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
+        ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? FloatingLong.ZERO : foundRecipe.getOutput(itemStack);
     }
 
@@ -43,7 +43,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new EnergyInventorySlot(energyContainer, worldSupplier, stack -> {
-            //Allow extraction if something went horribly wrong and we are not an energy container item or no longer have any energy left to give
+            //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
             // or we are no longer a valid conversion, this might happen after a reload for example
             return !fillInsertCheck(stack) && getPotentialConversion(worldSupplier.get(), stack).isZero();
         }, stack -> {
@@ -81,7 +81,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             if (itemEnergyHandler == null) {
                 return false;
             }
-            if (energyContainer.isEmpty()) {
+            FloatingLong storedEnergy = energyContainer.getEnergy();
+            if (storedEnergy.isZero()) {
                 //If the energy container is empty, accept the energy item as long as it is not full
                 for (int container = 0; container < itemEnergyHandler.getEnergyContainerCount(); container++) {
                     if (!itemEnergyHandler.getNeededEnergy(container).isZero()) {
@@ -91,23 +92,17 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 }
                 return false;
             }
-            //Otherwise if we can accept any energy that is currently stored in the container, then we allow inserting the item
-            return itemEnergyHandler.insertEnergy(energyContainer.getEnergy(), Action.SIMULATE).smallerThan(energyContainer.getEnergy());
+            //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
+            return itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE).smallerThan(storedEnergy);
         };
         return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
     }
 
     private static boolean fillInsertCheck(ItemStack stack) {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
-        if (itemEnergyHandler != null) {
-            for (int container = 0; container < itemEnergyHandler.getEnergyContainerCount(); container++) {
-                FloatingLong energyInContainer = itemEnergyHandler.getEnergy(container);
-                if (!energyInContainer.isZero()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        //If we can extract any energy we are valid. Note: We can't just use FloatingLong.ONE as depending on conversion rates
+        // that might be less than a single unit and thus can't be extracted
+        return itemEnergyHandler != null && !itemEnergyHandler.extractEnergy(FloatingLong.MAX_VALUE, Action.SIMULATE).isZero();
     }
 
     private final Supplier<World> worldSupplier;
@@ -135,7 +130,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Fill the container from the item
             if (!fillContainerFromItem()) {
                 //If filling from item failed, try doing it by conversion
-                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
+                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
                 if (foundRecipe != null) {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                     if (!itemInput.isEmpty()) {
@@ -213,7 +208,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 FloatingLong storedEnergy = energyContainer.getEnergy();
                 FloatingLong simulatedRemainder = itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE);
                 if (simulatedRemainder.smallerThan(storedEnergy)) {
-                    //We are able to fit at least some of the energy from our container into the item
+                    //We are able to fit at least some energy from our container into the item
                     FloatingLong extractedEnergy = energyContainer.extract(storedEnergy.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
                     if (!extractedEnergy.isZero()) {
                         //If we were able to actually extract it from our energy container, then insert it into the item

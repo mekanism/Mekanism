@@ -11,16 +11,13 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.network.PacketGuiInteract;
-import mekanism.common.network.PacketGuiInteract.GuiInteraction;
+import mekanism.common.network.to_server.PacketGuiInteract;
+import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.entity.player.PlayerInventory;
@@ -39,36 +36,33 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
 
     public GuiFormulaicAssemblicator(MekanismTileContainer<TileEntityFormulaicAssemblicator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 64;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 64;
+        inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15));
         //Overwrite the output slots with a "combined" slot
         addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
-        addButton(new GuiProgress(() -> tile.operatingTicks / (double) tile.ticksRequired, ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(encodeFormulaButton = new MekanismImageButton(this, guiLeft + 7, guiTop + 45, 14, getButtonLocation("encode_formula"),
+        addButton(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer()));
+        encodeFormulaButton = addButton(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, tile)), getOnHover(MekanismLang.ENCODE_FORMULA)));
-        addButton(stockControlButton = new MekanismImageButton(this, guiLeft + 26, guiTop + 75, 16, getButtonLocation("stock_control"),
+        stockControlButton = addButton(new MekanismImageButton(this, 26, 75, 16, getButtonLocation("stock_control"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, tile)),
-              getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.stockControl)))));
-        addButton(fillEmptyButton = new MekanismImageButton(this, guiLeft + 44, guiTop + 75, 16, getButtonLocation("fill_empty"),
+              getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.getStockControl())))));
+        fillEmptyButton = addButton(new MekanismImageButton(this, 44, 75, 16, getButtonLocation("fill_empty"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_ITEMS, tile)), getOnHover(MekanismLang.FILL_EMPTY)));
-        addButton(craftSingleButton = new MekanismImageButton(this, guiLeft + 71, guiTop + 75, 16, getButtonLocation("craft_single"),
+        craftSingleButton = addButton(new MekanismImageButton(this, 71, 75, 16, getButtonLocation("craft_single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_SINGLE, tile)), getOnHover(MekanismLang.CRAFT_SINGLE)));
-        addButton(craftAvailableButton = new MekanismImageButton(this, guiLeft + 89, guiTop + 75, 16, getButtonLocation("craft_available"),
+        craftAvailableButton = addButton(new MekanismImageButton(this, 89, 75, 16, getButtonLocation("craft_available"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_ALL, tile)), getOnHover(MekanismLang.CRAFT_AVAILABLE)));
-        addButton(autoModeButton = new MekanismImageButton(this, guiLeft + 107, guiTop + 75, 16, getButtonLocation("auto_toggle"),
+        autoModeButton = addButton(new MekanismImageButton(this, 107, 75, 16, getButtonLocation("auto_toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
-              getOnHover(() -> MekanismLang.AUTO_MODE.translate(OnOff.of(tile.autoMode)))));
+              getOnHover(() -> MekanismLang.AUTO_MODE.translate(OnOff.of(tile.getAutoMode())))));
         updateEnabledButtons();
     }
 
@@ -79,30 +73,30 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     private void updateEnabledButtons() {
-        encodeFormulaButton.active = !tile.autoMode && tile.isRecipe && canEncode();
+        encodeFormulaButton.active = !tile.getAutoMode() && tile.hasRecipe() && canEncode();
         stockControlButton.active = tile.formula != null && tile.formula.isValidFormula();
-        fillEmptyButton.active = !tile.autoMode;
-        craftSingleButton.active = !tile.autoMode && tile.isRecipe;
-        craftAvailableButton.active = !tile.autoMode && tile.isRecipe;
+        fillEmptyButton.active = !tile.getAutoMode();
+        craftSingleButton.active = !tile.getAutoMode() && tile.hasRecipe();
+        craftAvailableButton.active = !tile.getAutoMode() && tile.hasRecipe();
         autoModeButton.active = tile.formula != null && tile.formula.isValidFormula();
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
     protected ItemStack checkValidity(int slotIndex) {
-        int i = slotIndex - 19;
+        int i = slotIndex - 21;
         if (i >= 0 && tile.formula != null && tile.formula.isValidFormula()) {
             ItemStack stack = tile.formula.input.get(i);
             if (!stack.isEmpty()) {
-                Slot slot = container.inventorySlots.get(slotIndex);
+                Slot slot = menu.slots.get(slotIndex);
                 //Only render the "correct" item in the gui slot if we don't already have that item there
-                if (slot.getStack().isEmpty() || !tile.formula.isIngredientInPos(tile.getWorld(), slot.getStack(), i)) {
+                if (slot.getItem().isEmpty() || !tile.formula.isIngredientInPos(tile.getLevel(), slot.getItem(), i)) {
                     return stack;
                 }
             }
@@ -111,12 +105,12 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(matrix, partialTick, mouseX, mouseY);
+    protected void renderBg(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
+        super.renderBg(matrix, partialTick, mouseX, mouseY);
         //TODO: Gui element
-        SlotOverlay overlay = tile.isRecipe ? SlotOverlay.CHECK : SlotOverlay.X;
-        getMinecraft().textureManager.bindTexture(overlay.getTexture());
-        blit(matrix, guiLeft + 88, guiTop + 22, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
+        SlotOverlay overlay = tile.hasRecipe() ? SlotOverlay.CHECK : SlotOverlay.X;
+        getMinecraft().textureManager.bind(overlay.getTexture());
+        blit(matrix, leftPos + 88, topPos + 22, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
     }
 
     private boolean canEncode() {

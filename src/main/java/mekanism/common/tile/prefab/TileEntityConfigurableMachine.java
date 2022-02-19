@@ -8,12 +8,13 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.util.Direction;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 
 public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
     public TileComponentEjector ejectorComponent;
-    public TileComponentConfig configComponent;
+    public TileComponentConfig configComponent;//does not tick!
 
     public TileEntityConfigurableMachine(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -26,12 +27,30 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     }
 
     @Override
-    public Direction getOrientation() {
-        return getDirection();
+    public TileComponentEjector getEjector() {
+        return ejectorComponent;
     }
 
     @Override
-    public TileComponentEjector getEjector() {
-        return ejectorComponent;
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        CompoundNBT data = super.getConfigurationData(player);
+        getConfig().write(data);
+        getEjector().write(data);
+        return data;
+    }
+
+    @Override
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        getConfig().read(data);
+        getEjector().read(data);
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (ejectorComponent != null) {
+            ejectorComponent.tickServer();
+        }
     }
 }

@@ -1,17 +1,15 @@
 {
   "type": "mekanism:reaction",
-  "itemInput": [
-    {
-      "ingredient": {
+  "itemInput": {
+    "ingredient": [
+      {
         "tag": "forge:storage_blocks/coal"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "tag": "forge:storage_blocks/charcoal"
       }
-    }
-  ],
+    ]
+  },
   "fluidInput": {
     "amount": 1000,
     "tag": "minecraft:water"

@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:willow_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:willow_planks",
+    "count": 3
+  }
+}

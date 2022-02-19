@@ -38,15 +38,15 @@ public class FluidDeferredRegister {
     private static final IDispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior() {
         @Nonnull
         @Override
-        public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
-            World world = source.getWorld();
+        public ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+            World world = source.getLevel();
             BucketItem bucket = (BucketItem) stack.getItem();
-            BlockPos pos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
-            if (bucket.tryPlaceContainedLiquid(null, world, pos, null)) {
-                bucket.onLiquidPlaced(world, stack, pos);
+            BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+            if (bucket.emptyBucket(null, world, pos, null)) {
+                bucket.checkExtraContent(world, stack, pos);
                 return new ItemStack(Items.BUCKET);
             }
-            return super.dispenseStack(source, stack);
+            return super.execute(source, stack);
         }
     };
 
@@ -94,10 +94,10 @@ public class FluidDeferredRegister {
         fluidRegistryObject.updateStill(fluidRegister.register(name, () -> new Source(properties)));
         fluidRegistryObject.updateFlowing(fluidRegister.register(flowingName, () -> new Flowing(properties)));
         fluidRegistryObject.updateBucket(itemRegister.register(bucketName, () -> new BucketItem(fluidRegistryObject::getStillFluid,
-              ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).containerItem(Items.BUCKET))));
+              ItemDeferredRegister.getMekBaseProperties().stacksTo(1).craftRemainder(Items.BUCKET))));
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new FlowingFluidBlock(fluidRegistryObject::getStillFluid,
-              AbstractBlock.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops())));
+              AbstractBlock.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops())));
         allFluids.add(fluidRegistryObject);
         return fluidRegistryObject;
     }
@@ -114,7 +114,7 @@ public class FluidDeferredRegister {
 
     public void registerBucketDispenserBehavior() {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : getAllFluids()) {
-            DispenserBlock.registerDispenseBehavior(fluidRO.getBucket(), BUCKET_DISPENSE_BEHAVIOR);
+            DispenserBlock.registerBehavior(fluidRO.getBucket(), BUCKET_DISPENSE_BEHAVIOR);
         }
     }
 }

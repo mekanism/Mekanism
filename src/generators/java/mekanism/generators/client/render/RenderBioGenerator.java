@@ -24,11 +24,11 @@ import net.minecraftforge.fluids.FluidStack;
 @ParametersAreNonnullByDefault
 public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator> {
 
-    private static final Map<Direction, Int2ObjectMap<Model3D>> energyDisplays = new EnumMap<>(Direction.class);
+    private static final Map<Direction, Int2ObjectMap<Model3D>> fuelModels = new EnumMap<>(Direction.class);
     private static final int stages = 40;
 
     public static void resetCachedModels() {
-        energyDisplays.clear();
+        fuelModels.clear();
     }
 
     public RenderBioGenerator(TileEntityRendererDispatcher renderer) {
@@ -38,13 +38,13 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     @Override
     protected void render(TileEntityBioGenerator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (!tile.bioFuelTank.isEmpty()) {
-            matrix.push();
+            matrix.pushPose();
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
             MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix,
-                  renderer.getBuffer(Atlases.getTranslucentCullBlockType()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight,
+                  renderer.getBuffer(Atlases.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight,
                   FaceDisplay.FRONT);
-            matrix.pop();
+            matrix.popPose();
         }
     }
 
@@ -55,8 +55,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
 
     @SuppressWarnings("incomplete-switch")
     private Model3D getModel(Direction side, int stage) {
-        if (energyDisplays.containsKey(side) && energyDisplays.get(side).containsKey(stage)) {
-            return energyDisplays.get(side).get(stage);
+        if (fuelModels.containsKey(side) && fuelModels.get(side).containsKey(stage)) {
+            return fuelModels.get(side).get(stage);
         }
         Model3D model = new Model3D();
         model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidType.STILL));
@@ -92,7 +92,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         }
         model.minY = 0.4385F;//0.4375 + 0.001; - prevent z fighting at low fuel levels
         model.maxY = 0.4385F + 0.4375F * (stage / (float) stages);//0.4375 + 0.001 + 0.4375 * (stage / (float) stages);
-        energyDisplays.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
+        fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
         return model;
     }
 }

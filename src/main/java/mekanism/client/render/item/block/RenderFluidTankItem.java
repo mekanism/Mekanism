@@ -31,7 +31,7 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
     }
 
     @Override
-    public void func_239207_a_(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
+    public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
           int light, int overlayLight) {
         FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
         FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
@@ -44,21 +44,21 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
                 } else {
                     modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
                 }
-                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
+                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
                       MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT,
                       transformType != TransformType.GUI);
             }
         }
-        matrix.push();
+        matrix.pushPose();
         //TODO: Eventually move more of this to the model json
         matrix.translate(0.5, -0.4, 0.5);
         matrix.scale(0.9F, 0.8F, 0.9F);
-        //Scale to to size of item
+        //Scale to the size of item
         matrix.scale(1.168F, 1.168F, 1.168F);
         //Shift the fluid slightly so that is visible with the min amount in
         matrix.translate(0, -0.06, 0);
-        modelFluidTank.render(matrix, renderer, light, overlayLight, tier, stack.hasEffect());
-        matrix.pop();
+        modelFluidTank.render(matrix, renderer, light, overlayLight, tier, stack.hasFoil());
+        matrix.popPose();
     }
 
     private Model3D getFluidModel(@Nonnull FluidStack fluid, int stage) {

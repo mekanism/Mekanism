@@ -2,41 +2,36 @@ package mekanism.common.tile.qio;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ISpecialConfigData, ISustainedData, ITileFilterHolder<QIOFilter<?>>,
-      IHasSortableFilters {
+public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>>, IHasSortableFilters, ISustainedData {
 
     private HashList<QIOFilter<?>> filters = new HashList<>();
 
     public TileEntityQIOFilterHandler(IBlockProvider blockProvider) {
         super(blockProvider);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Override
+    @ComputerMethod
     public HashList<QIOFilter<?>> getFilters() {
         return filters;
     }
@@ -73,21 +68,23 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (QIOFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            nbtTags.put(NBTConstants.FILTERS, filterTags);
+            data.put(NBTConstants.FILTERS, filterTags);
         }
-        return nbtTags;
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        filters.clear();
+        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof QIOFilter) {
@@ -95,24 +92,6 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
                 }
             }
         }
-    }
-
-    @Override
-    public String getDataType() {
-        return getBlockType().getTranslationKey();
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        return getConfigurationData(nbtTags);
-    }
-
-    @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
-        setConfigurationData(nbtTags);
     }
 
     @Override
@@ -148,4 +127,18 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
         // 1 to 5 types
         return Math.round(1F + upgradeComponent.getUpgrades(Upgrade.SPEED) / 2F);
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private boolean addFilter(QIOFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.add(filter);
+    }
+
+    @ComputerMethod
+    private boolean removeFilter(QIOFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.remove(filter);
+    }
+    //End methods IComputerTile
 }

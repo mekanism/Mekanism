@@ -3,9 +3,9 @@ package mekanism.common.lib.inventory;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * A wrapper of an ItemStack which tests equality and hashes based on item type and NBT data, ignoring stack size.
@@ -15,15 +15,14 @@ import net.minecraft.item.ItemStack;
 public class HashedItem {
 
     public static HashedItem create(@Nonnull ItemStack stack) {
-        //TODO - 10.1: Evaluate uses of this and potentially switch some over to using raw
         return new HashedItem(StackUtils.size(stack, 1));
     }
 
     /**
      * Uses the passed in stack as the raw stack, instead of making a copy of it with a size of one.
      *
-     * @apiNote When using this, you should be very careful to not accidentally modify the backing stack, this is mainly for use where we want to use an {@link
-     * ItemStack} as a key in a map that is local to a single method, and don't want the overhead of copying the stack when it is not needed.
+     * @apiNote When using this, you should be very careful to not accidentally modify the backing stack, this is mainly for use where we want to use an {@link ItemStack}
+     * as a key in a map that is local to a single method, and don't want the overhead of copying the stack when it is not needed.
      */
     public static HashedItem raw(@Nonnull ItemStack stack) {
         return new HashedItem(stack);
@@ -60,7 +59,7 @@ public class HashedItem {
         }
         if (obj instanceof HashedItem) {
             HashedItem other = (HashedItem) obj;
-            return InventoryUtils.areItemsStackable(itemStack, other.itemStack);
+            return ItemHandlerHelper.canItemStacksStack(itemStack, other.itemStack);
         }
         return false;
     }
@@ -121,6 +120,13 @@ public class HashedItem {
                 return 31 * super.hashCode() + uuid.hashCode();
             }
             return super.hashCode();
+        }
+
+        /**
+         * Converts this to a raw HashedItem that doesn't care about UUID anymore.
+         */
+        public HashedItem asRawHashedItem() {
+            return new HashedItem(this);
         }
     }
 }

@@ -29,7 +29,7 @@ public class ChunkCommand {
     static ArgumentBuilder<CommandSource, ?> register() {
         MinecraftForge.EVENT_BUS.register(ChunkCommand.class);
         return Commands.literal("chunk")
-              .requires(cs -> cs.hasPermissionLevel(2))
+              .requires(cs -> cs.hasPermission(2))
               .then(WatchCommand.register())
               .then(UnwatchCommand.register())
               .then(ClearCommand.register())
@@ -42,17 +42,17 @@ public class ChunkCommand {
             return Commands.literal("watch")
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
-                      return watch(source, new ChunkPos(new BlockPos(source.getPos())));
+                      return watch(source, new ChunkPos(new BlockPos(source.getPosition())));
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
-                            ColumnPos column = ColumnPosArgument.fromBlockPos(ctx, "pos");
+                            ColumnPos column = ColumnPosArgument.getColumnPos(ctx, "pos");
                             return watch(ctx.getSource(), new ChunkPos(column.x, column.z));
                         }));
         }
 
         private static int watch(CommandSource source, ChunkPos chunkPos) {
             chunkWatchers.add(ChunkPos.asLong(chunkPos.x, chunkPos.z));
-            source.sendFeedback(MekanismLang.COMMAND_CHUNK_WATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
+            source.sendSuccess(MekanismLang.COMMAND_CHUNK_WATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
             return 0;
         }
     }
@@ -63,17 +63,17 @@ public class ChunkCommand {
             return Commands.literal("unwatch")
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
-                      return unwatch(source, new ChunkPos(new BlockPos(source.getPos())));
+                      return unwatch(source, new ChunkPos(new BlockPos(source.getPosition())));
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
-                            ColumnPos column = ColumnPosArgument.fromBlockPos(ctx, "pos");
+                            ColumnPos column = ColumnPosArgument.getColumnPos(ctx, "pos");
                             return unwatch(ctx.getSource(), new ChunkPos(column.x, column.z));
                         }));
         }
 
         private static int unwatch(CommandSource source, ChunkPos chunkPos) {
             chunkWatchers.remove(ChunkPos.asLong(chunkPos.x, chunkPos.z));
-            source.sendFeedback(MekanismLang.COMMAND_CHUNK_UNWATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
+            source.sendSuccess(MekanismLang.COMMAND_CHUNK_UNWATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
             return 0;
         }
     }
@@ -85,7 +85,7 @@ public class ChunkCommand {
                   .executes(ctx -> {
                       int count = chunkWatchers.size();
                       chunkWatchers.clear();
-                      ctx.getSource().sendFeedback(MekanismLang.COMMAND_CHUNK_CLEAR.translateColored(EnumColor.GRAY, EnumColor.INDIGO, count), true);
+                      ctx.getSource().sendSuccess(MekanismLang.COMMAND_CHUNK_CLEAR.translateColored(EnumColor.GRAY, EnumColor.INDIGO, count), true);
                       return 0;
                   });
         }
@@ -97,12 +97,12 @@ public class ChunkCommand {
             return Commands.literal("flush")
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
-                      ServerChunkProvider sp = source.getWorld().getChunkProvider();
-                      int startCount = sp.getLoadedChunkCount();
+                      ServerChunkProvider sp = source.getLevel().getChunkSource();
+                      int startCount = sp.getLoadedChunksCount();
                       //TODO: Check this
                       //sp.queueUnloadAll();
                       sp.tick(() -> false);
-                      source.sendFeedback(MekanismLang.COMMAND_CHUNK_FLUSH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, startCount - sp.getLoadedChunkCount()), true);
+                      source.sendSuccess(MekanismLang.COMMAND_CHUNK_FLUSH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, startCount - sp.getLoadedChunksCount()), true);
                       return 0;
                   });
         }
@@ -119,13 +119,13 @@ public class ChunkCommand {
     }
 
     private static void handleChunkEvent(ChunkEvent event, ILangEntry direction) {
-        if (event.getWorld() == null || event.getWorld().isRemote()) {
+        if (event.getWorld() == null || event.getWorld().isClientSide()) {
             return;
         }
         ChunkPos pos = event.getChunk().getPos();
-        if (chunkWatchers.contains(pos.asLong())) {
+        if (chunkWatchers.contains(pos.toLong())) {
             ITextComponent message = direction.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(pos));
-            event.getWorld().getPlayers().forEach(player -> player.sendMessage(message, Util.DUMMY_UUID));
+            event.getWorld().players().forEach(player -> player.sendMessage(message, Util.NIL_UUID));
         }
     }
 

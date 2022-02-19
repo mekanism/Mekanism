@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
+import mekanism.common.tile.component.config.DataType;
+
 public class GaugeType {
 
     public static final GaugeType STANDARD = get(GaugeInfo.STANDARD, GaugeOverlay.STANDARD);
@@ -22,6 +24,11 @@ public class GaugeType {
 
     public GaugeOverlay getGaugeOverlay() {
         return gaugeOverlay;
+    }
+
+    public GaugeType with(DataType type) {
+        GaugeInfo info = GaugeInfo.get(type);
+        return info == gaugeInfo ? this : with(info);
     }
 
     public GaugeType with(GaugeInfo info) {

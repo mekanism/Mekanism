@@ -3,6 +3,7 @@ package mekanism.api;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 
+//TODO - 1.18: Move this out of the API
 public class Range3D {
 
     public final RegistryKey<World> dimension;
@@ -27,7 +28,7 @@ public class Range3D {
 
     @Override
     public String toString() {
-        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension.getLocation() + "]";
+        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension.location() + "]";
     }
 
     @Override

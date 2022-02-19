@@ -43,10 +43,10 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
     }
 
     public void addFuelTabContainerTrackers(MekanismContainer container) {
-        SyncMapper.setup(container, FusionReactorMultiblockData.class, this::getMultiblock, "fuel");
+        SyncMapper.INSTANCE.setup(container, FusionReactorMultiblockData.class, this::getMultiblock, "fuel");
     }
 
     public void addHeatTabContainerTrackers(MekanismContainer container) {
-        SyncMapper.setup(container, FusionReactorMultiblockData.class, this::getMultiblock, "heat");
+        SyncMapper.INSTANCE.setup(container, FusionReactorMultiblockData.class, this::getMultiblock, "heat");
     }
 }

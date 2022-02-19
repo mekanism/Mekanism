@@ -5,7 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiTexturedElement extends GuiRelativeElement {
+public abstract class GuiTexturedElement extends GuiElement {
 
     protected final ResourceLocation resource;
 

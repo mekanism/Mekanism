@@ -17,12 +17,12 @@ public abstract class MekanismJavaModel extends Model {
     }
 
     protected IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, @Nonnull RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.getEntityGlintVertexBuilder(renderer, renderType, false, hasEffect);
+        return ItemRenderer.getFoilBufferDirect(renderer, renderType, false, hasEffect);
     }
 
     protected void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
+        model.xRot = x;
+        model.yRot = y;
+        model.zRot = z;
     }
 }

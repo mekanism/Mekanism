@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:lime_slick_plastic"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 42
+  }
+}

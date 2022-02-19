@@ -47,6 +47,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.STEEL_BLOCK, MekanismTags.Items.INGOTS_STEEL, basePath);
+        addStorageBlockRecipe(consumer, MekanismBlocks.FLUORITE_BLOCK, MekanismTags.Items.GEMS_FLUORITE, basePath);
         //Charcoal
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)

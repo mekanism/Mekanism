@@ -17,15 +17,15 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
 
     public RenderObsidianTNTPrimed(EntityRendererManager renderManager) {
         super(renderManager);
-        shadowSize = 0.5F;
+        shadowRadius = 0.5F;
     }
 
     @Override
     public void render(@Nonnull EntityObsidianTNT tnt, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(0, 0.5, 0);
-        if (tnt.getFuse() - partialTick + 1.0F < 10.0F) {
-            float f = 1.0F - (tnt.getFuse() - partialTick + 1.0F) / 10.0F;
+        if (tnt.getLife() - partialTick + 1.0F < 10.0F) {
+            float f = 1.0F - (tnt.getLife() - partialTick + 1.0F) / 10.0F;
             f = MathHelper.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;
@@ -33,17 +33,17 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
             matrix.scale(f1, f1, f1);
         }
 
-        matrix.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+        matrix.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         matrix.translate(-0.5, -0.5, 0.5);
-        matrix.rotate(Vector3f.YP.rotationDegrees(90.0F));
-        TNTMinecartRenderer.renderTntFlash(AdditionsBlocks.OBSIDIAN_TNT.getBlock().getDefaultState(), matrix, renderer, light, tnt.getFuse() / 5 % 2 == 0);
-        matrix.pop();
+        matrix.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+        TNTMinecartRenderer.renderWhiteSolidBlock(AdditionsBlocks.OBSIDIAN_TNT.getBlock().defaultBlockState(), matrix, renderer, light, tnt.getLife() / 5 % 2 == 0);
+        matrix.popPose();
         super.render(tnt, entityYaw, partialTick, matrix, renderer, light);
     }
 
     @Nonnull
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull EntityObsidianTNT entity) {
-        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+    public ResourceLocation getTextureLocation(@Nonnull EntityObsidianTNT entity) {
+        return AtlasTexture.LOCATION_BLOCKS;
     }
 }

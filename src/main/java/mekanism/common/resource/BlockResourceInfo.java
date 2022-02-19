@@ -9,6 +9,7 @@ public enum BlockResourceInfo implements IResource {
     LEAD("lead", 5, 9, 1),
     URANIUM("uranium", 5, 9, 1),
     CHARCOAL("charcoal", 5, 6, 0, 16_000),
+    FLUORITE("fluorite", 5, 9, 1),
     BRONZE("bronze", 5, 9, 1),
     STEEL("steel", 5, 9, 1),
     REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, 2, -1, 8, false, true, PushReaction.BLOCK),

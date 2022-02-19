@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "mekanismadditions:plastic_blocks/reinforced"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/reinforced"
+      },
+      "without": {
+        "item": "mekanismadditions:pink_reinforced_plastic"
+      }
     },
     "D": {
       "tag": "forge:dyes/pink"

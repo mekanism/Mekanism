@@ -28,7 +28,7 @@ public class EnergyAcceptorCache extends AcceptorCache<IStrictEnergyHandler> {
      * @apiNote Only call this from the server side
      */
     public boolean hasStrictEnergyHandlerAndListen(@Nullable TileEntity tile, Direction side) {
-        if (tile != null && !tile.isRemoved() && tile.hasWorld()) {
+        if (tile != null && !tile.isRemoved() && tile.hasLevel()) {
             Direction opposite = side.getOpposite();
             for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
                 if (energyCompat.isUsable()) {

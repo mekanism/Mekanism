@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.qio.QIOFrequency;
@@ -14,6 +15,7 @@ import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import org.jetbrains.annotations.Contract;
 
 public class FrequencyType<FREQ extends Frequency> {
 
@@ -89,12 +91,19 @@ public class FrequencyType<FREQ extends Frequency> {
         return managerWrapper;
     }
 
-    public FrequencyManager<FREQ> getManager(UUID owner) {
+    public FrequencyManager<FREQ> getManager(@Nullable UUID owner) {
         return owner == null ? getManagerWrapper().getPublicManager() : getManagerWrapper().getPrivateManager(owner);
     }
 
-    public FrequencyManager<FREQ> getFrequencyManager(FREQ freq) {
-        return freq.isPrivate() ? getManagerWrapper().getPrivateManager(freq.getOwner()) : getManagerWrapper().getPublicManager();
+    @Nullable
+    @Contract("null -> null")
+    public FrequencyManager<FREQ> getFrequencyManager(@Nullable FREQ freq) {
+        if (freq == null) {
+            return null;
+        } else if (freq.isPublic()) {
+            return getManagerWrapper().getPublicManager();
+        }
+        return getManagerWrapper().getPrivateManager(freq.getOwner());
     }
 
     public FrequencyManager<FREQ> getManager(FrequencyIdentity identity, UUID owner) {
@@ -110,7 +119,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public void write(PacketBuffer buf) {
-        buf.writeString(name);
+        buf.writeUtf(name);
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(PacketBuffer buf) {

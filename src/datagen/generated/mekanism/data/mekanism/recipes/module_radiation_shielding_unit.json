@@ -4,21 +4,21 @@
     "item": "mekanism:module_radiation_shielding_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PPP"
+    "A#A",
+    "APA",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/advanced"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "tag": "forge:storage_blocks/lead"
     },
-    "P": {
+    "H": {
       "item": "mekanism:hdpe_sheet"
     }
   }

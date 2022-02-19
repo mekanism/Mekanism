@@ -37,11 +37,6 @@
           ],
           "name": "mekanism:fuelwood_heater"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

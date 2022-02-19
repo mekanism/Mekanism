@@ -8,18 +8,19 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
@@ -59,7 +60,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     @Nonnull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
         return side -> getMultiblock().getHeatCapacitors(side);
     }
 
@@ -83,23 +84,26 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    protected void onUpdateServer(FusionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {
-            Set<Direction> directionsToEmit = multiblock.getDirectionsToEmit(getPos());
+            Set<Direction> directionsToEmit = multiblock.getDirectionsToEmit(getBlockPos());
             ChemicalUtil.emit(directionsToEmit, multiblock.steamTank, this);
             CableUtils.emit(directionsToEmit, multiblock.energyContainer, this);
         }
+        return needsPacket;
     }
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(Direction side) {
-        TileEntity adj = WorldUtils.getTileEntity(getWorld(), getPos().offset(side));
-        if (adj instanceof TileEntityFusionReactorBlock) {
-            return null;
+    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
+            TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
+            if (!(adj instanceof TileEntityFusionReactorBlock)) {
+                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+            }
         }
-        return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+        return null;
     }
 
     @Override
@@ -107,8 +111,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.DUMMY_UUID);
+            player.sendMessage(MekanismUtils.logFormat(GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }
@@ -117,4 +120,21 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }
+
+    //Methods relating to IComputerTile
+    @Override
+    public boolean exposesMultiblockToComputer() {
+        return false;
+    }
+
+    @ComputerMethod
+    private boolean getMode() {
+        return getActive();
+    }
+
+    @ComputerMethod
+    private void setMode(boolean output) {
+        setActive(output);
+    }
+    //End methods IComputerTile
 }

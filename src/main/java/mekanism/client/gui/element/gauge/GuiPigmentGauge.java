@@ -7,8 +7,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.PacketDropperUse.TankType;
-import net.minecraft.util.text.ITextComponent;
+import mekanism.common.network.to_server.PacketDropperUse.TankType;
 
 public class GuiPigmentGauge extends GuiChemicalGauge<Pigment, PigmentStack, IPigmentTank> {
 
@@ -33,9 +32,5 @@ public class GuiPigmentGauge extends GuiChemicalGauge<Pigment, PigmentStack, IPi
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.PIGMENT;
-    }
-
-    @Override
-    protected void addAttributeTooltips(List<ITextComponent> tooltips, Pigment chemical) {
     }
 }

@@ -16,7 +16,7 @@ public class AdjustableCountPlacement extends SimplePlacement<AdjustableSpreadCo
 
     @Nonnull
     @Override
-    public Stream<BlockPos> getPositions(@Nonnull Random random, @Nonnull AdjustableSpreadConfig config, @Nonnull BlockPos pos) {
+    public Stream<BlockPos> place(@Nonnull Random random, @Nonnull AdjustableSpreadConfig config, @Nonnull BlockPos pos) {
         return IntStream.range(0, config.getSpread(random)).mapToObj(count -> pos);
     }
 }

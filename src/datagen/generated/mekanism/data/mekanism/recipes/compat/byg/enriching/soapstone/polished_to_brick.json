@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:polished_soapstone"
+    }
+  },
+  "output": {
+    "item": "byg:soapstone_bricks"
+  }
+}

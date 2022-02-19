@@ -15,10 +15,27 @@ public class PigmentBuilder extends ChemicalBuilder<Pigment, PigmentBuilder> {
         super(texture);
     }
 
+    /**
+     * Creates a builder for registering a {@link Pigment}, using our default {@link Pigment} texture.
+     *
+     * @return A builder for creating a {@link Pigment}.
+     */
     public static PigmentBuilder builder() {
         return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment/base"));
     }
 
+    /**
+     * Creates a builder for registering a {@link Pigment}, with a given texture.
+     *
+     * @param texture A {@link ResourceLocation} representing the texture this {@link Pigment} will use.
+     *
+     * @return A builder for creating a {@link Pigment}.
+     *
+     * @apiNote The texture will be automatically stitched.
+     * <br>
+     * It is recommended to override {@link Pigment#getColorRepresentation()} if this builder method is not used in combination with {@link #color(int)} due to the
+     * texture not needing tinting.
+     */
     public static PigmentBuilder builder(ResourceLocation texture) {
         return new PigmentBuilder(Objects.requireNonNull(texture));
     }

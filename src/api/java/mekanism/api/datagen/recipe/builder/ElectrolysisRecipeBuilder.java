@@ -30,6 +30,13 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         this.rightGasOutput = rightGasOutput;
     }
 
+    /**
+     * Creates a Separating recipe builder.
+     *
+     * @param input          Input.
+     * @param leftGasOutput  Left Output.
+     * @param rightGasOutput Right Output.
+     */
     public static ElectrolysisRecipeBuilder separating(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
         if (leftGasOutput.isEmpty() || rightGasOutput.isEmpty()) {
             throw new IllegalArgumentException("This separating recipe requires non empty gas outputs.");
@@ -37,6 +44,11 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         return new ElectrolysisRecipeBuilder(input, leftGasOutput, rightGasOutput);
     }
 
+    /**
+     * Sets the energy multiplier for this recipe.
+     *
+     * @param multiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. This value must be greater than or equal to one.
+     */
     public ElectrolysisRecipeBuilder energyMultiplier(FloatingLong multiplier) {
         if (multiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be greater than or equal to one");
@@ -57,7 +69,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             if (energyMultiplier.greaterThan(FloatingLong.ONE)) {
                 //Only add energy usage if it is greater than one, as otherwise it will default to one

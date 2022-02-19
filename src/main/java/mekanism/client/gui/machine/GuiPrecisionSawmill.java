@@ -10,9 +10,6 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,14 +23,11 @@ public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecision
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiUpArrow(this, 60, 38));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getActive, this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
         //Note: We just draw the wide slot on top of the normal slots so that it looks a bit better
         addButton(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 78, 38).jeiCategory(tile));
@@ -42,7 +36,7 @@ public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecision
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

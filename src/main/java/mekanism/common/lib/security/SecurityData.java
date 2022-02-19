@@ -17,13 +17,13 @@ public class SecurityData {
 
     public static SecurityData read(PacketBuffer dataStream) {
         SecurityData data = new SecurityData();
-        data.mode = dataStream.readEnumValue(SecurityMode.class);
+        data.mode = dataStream.readEnum(SecurityMode.class);
         data.override = dataStream.readBoolean();
         return data;
     }
 
     public void write(PacketBuffer dataStream) {
-        dataStream.writeEnumValue(mode);
+        dataStream.writeEnum(mode);
         dataStream.writeBoolean(override);
     }
 }

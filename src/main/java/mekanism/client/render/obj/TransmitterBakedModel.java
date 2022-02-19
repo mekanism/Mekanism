@@ -1,10 +1,10 @@
 package mekanism.client.render.obj;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -69,7 +69,7 @@ public class TransmitterBakedModel implements IBakedModel {
         this.overrides = overrides;
         this.modelLocation = modelLocation;
         //We define our baked variant to be how the item is. As we should always have model data when we have a state
-        List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName2() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE")).collect(Collectors.toList());
+        List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE")).collect(Collectors.toList());
         bakedVariant = internal.bake(new VisibleModelConfiguration(owner, visible), bakery, spriteGetter, modelTransform, overrides, modelLocation);
     }
 
@@ -83,17 +83,17 @@ public class TransmitterBakedModel implements IBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         if (side != null) {
-            return ImmutableList.of();
+            return Collections.emptyList();
         }
         if (extraData.hasProperty(TileEntityTransmitter.TRANSMITTER_PROPERTY)) {
             TransmitterModelData data = extraData.getData(TileEntityTransmitter.TRANSMITTER_PROPERTY);
             RenderType layer = MinecraftForgeClient.getRenderLayer();
-            boolean hasColor = data.getHasColor() && layer == RenderType.getTranslucent();
+            boolean hasColor = data.getHasColor() && layer == RenderType.translucent();
             QuickHash hash = new QuickHash(data.getConnectionsMap(), hasColor);
             if (!modelCache.containsKey(hash)) {
                 List<String> visible = new ArrayList<>();
                 for (Direction dir : EnumUtils.DIRECTIONS) {
-                    visible.add(dir.getString() + data.getConnectionType(dir).getString().toUpperCase(Locale.ROOT));
+                    visible.add(dir.getSerializedName() + data.getConnectionType(dir).getSerializedName().toUpperCase(Locale.ROOT));
                 }
                 List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, null, rand, extraData);
                 modelCache.put(hash, result);
@@ -112,7 +112,7 @@ public class TransmitterBakedModel implements IBakedModel {
         TextureAtlasSprite particle = spriteGetter.apply(configuration.resolveTexture("particle"));
         IModelBuilder<?> builder = IModelBuilder.of(configuration, overrides, particle);
         addPartQuads(configuration, builder, internal);
-        if (glass != null && hasColor && MinecraftForgeClient.getRenderLayer() == RenderType.getTranslucent()) {
+        if (glass != null && hasColor && MinecraftForgeClient.getRenderLayer() == RenderType.translucent()) {
             addPartQuads(configuration, builder, glass);
         }
         return builder.build();
@@ -139,12 +139,12 @@ public class TransmitterBakedModel implements IBakedModel {
 
     @Nullable
     private static Direction directionForPiece(@Nonnull String piece) {
-        return Arrays.stream(EnumUtils.DIRECTIONS).filter(dir -> piece.startsWith(dir.getName2())).findFirst().orElse(null);
+        return Arrays.stream(EnumUtils.DIRECTIONS).filter(dir -> piece.startsWith(dir.getName())).findFirst().orElse(null);
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return bakedVariant.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return bakedVariant.useAmbientOcclusion();
     }
 
     @Override
@@ -158,20 +158,20 @@ public class TransmitterBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
-        return bakedVariant.isSideLit();
+    public boolean usesBlockLight() {
+        return bakedVariant.usesBlockLight();
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return bakedVariant.isBuiltInRenderer();
+    public boolean isCustomRenderer() {
+        return bakedVariant.isCustomRenderer();
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public TextureAtlasSprite getParticleTexture() {
-        return bakedVariant.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return bakedVariant.getParticleIcon();
     }
 
     @Override
@@ -204,8 +204,8 @@ public class TransmitterBakedModel implements IBakedModel {
     @Nonnull
     @Override
     @Deprecated
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return bakedVariant.getItemCameraTransforms();
+    public ItemCameraTransforms getTransforms() {
+        return bakedVariant.getTransforms();
     }
 
     public static class QuickHash {

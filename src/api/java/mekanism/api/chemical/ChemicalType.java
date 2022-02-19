@@ -1,6 +1,6 @@
 package mekanism.api.chemical;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -26,11 +26,13 @@ public enum ChemicalType implements IStringSerializable {
     PIGMENT("pigment", c -> c instanceof Pigment),
     SLURRY("slurry", c -> c instanceof Slurry);
 
-    private static final Map<String, ChemicalType> nameToType = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, ChemicalType> nameToType;
 
     static {
-        for (ChemicalType type : values()) {
-            nameToType.put(type.getString(), type);
+        ChemicalType[] values = values();
+        nameToType = new Object2ObjectArrayMap<>(values.length);
+        for (ChemicalType type : values) {
+            nameToType.put(type.getSerializedName(), type);
         }
     }
 
@@ -44,23 +46,49 @@ public enum ChemicalType implements IStringSerializable {
 
     @Nonnull
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return name;
     }
 
+    /**
+     * Checks if the given chemical is an instance of this Chemical Type.
+     *
+     * @param chemical Chemical to check.
+     *
+     * @return {@code true} if the given chemical is an instance.
+     */
     public boolean isInstance(Chemical<?> chemical) {
         return instanceCheck.test(chemical);
     }
 
+    /**
+     * Writes a Chemical Type to NBT.
+     *
+     * @param nbt Tag to write to.
+     */
     public void write(@Nonnull CompoundNBT nbt) {
-        nbt.putString(NBTConstants.CHEMICAL_TYPE, getString());
+        nbt.putString(NBTConstants.CHEMICAL_TYPE, getSerializedName());
     }
 
+    /**
+     * Gets a chemical type by name.
+     *
+     * @param name Name of the chemical type.
+     *
+     * @return Chemical Type.
+     */
     @Nullable
     public static ChemicalType fromString(String name) {
         return nameToType.get(name);
     }
 
+    /**
+     * Reads a Chemical Type from NBT.
+     *
+     * @param nbt NBT.
+     *
+     * @return Chemical Type.
+     */
     @Nullable
     public static ChemicalType fromNBT(@Nullable CompoundNBT nbt) {
         if (nbt != null && nbt.contains(NBTConstants.CHEMICAL_TYPE, NBT.TAG_STRING)) {
@@ -69,6 +97,13 @@ public enum ChemicalType implements IStringSerializable {
         return null;
     }
 
+    /**
+     * Gets the Chemical Type of a chemical.
+     *
+     * @param chemical Chemical.
+     *
+     * @return Chemical Type.
+     */
     public static ChemicalType getTypeFor(Chemical<?> chemical) {
         if (chemical instanceof Gas) {
             return GAS;
@@ -82,10 +117,24 @@ public enum ChemicalType implements IStringSerializable {
         throw new IllegalStateException("Unknown chemical type");
     }
 
+    /**
+     * Gets the Chemical Type of a chemical stack.
+     *
+     * @param stack Stack.
+     *
+     * @return Chemical Type.
+     */
     public static ChemicalType getTypeFor(ChemicalStack<?> stack) {
         return getTypeFor(stack.getType());
     }
 
+    /**
+     * Gets the Chemical Type of a chemical stack ingredient.
+     *
+     * @param ingredient Ingredient.
+     *
+     * @return Chemical Type.
+     */
     public static ChemicalType getTypeFor(IChemicalStackIngredient<?, ?> ingredient) {
         if (ingredient instanceof GasStackIngredient) {
             return GAS;

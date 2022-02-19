@@ -13,9 +13,6 @@ import mekanism.client.gui.element.gauge.GuiSlurryGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityChemicalWasher;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,24 +23,17 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     public GuiChemicalWasher(MekanismTileContainer<TileEntityChemicalWasher> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleY = 4;
+        titleLabelY = 4;
     }
 
     @Override
-    protected void initPreSlots() {
+    protected void addGuiElements() {
         //Add the side holder before the slots, as it holds a couple of the slots
-        addButton(GuiSideHolder.create(this, xSize, 66, 57, false, SpecialColors.TAB_CHEMICAL_WASHER));
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        addButton(new GuiDownArrow(this, xSize + 8, 91));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
+        addButton(GuiSideHolder.create(this, imageWidth, 66, 57, false, true, SpecialColors.TAB_CHEMICAL_WASHER));
+        super.addGuiElements();
+        addButton(new GuiDownArrow(this, imageWidth + 8, 91));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), () -> tile.clientEnergyUsed, this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 7, 13));
         addButton(new GuiSlurryGauge(() -> tile.inputTank, () -> tile.getSlurryTanks(null), GaugeType.STANDARD, this, 28, 13));
         addButton(new GuiSlurryGauge(() -> tile.outputTank, () -> tile.getSlurryTanks(null), GaugeType.STANDARD, this, 131, 13));

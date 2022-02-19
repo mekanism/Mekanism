@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
@@ -44,20 +43,13 @@ public final class CableUtils {
         if (energyToSend.isZero() || sides.isEmpty()) {
             return FloatingLong.ZERO;
         }
-        //Fake that we have one target given we know that no sides will overlap This allows us to have slightly better performance
-        EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
-            //Insert to access side
-            Direction accessSide = side.getOpposite();
-            //Collect cap
-            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, accessSide).ifPresent(strictEnergyHandler -> target.addHandler(accessSide, strictEnergyHandler));
+        EnergyAcceptorTarget target = new EnergyAcceptorTarget(6);
+        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
+            //Insert to access side and collect the cap if it is present
+            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, side.getOpposite()).ifPresent(target::addHandler);
         });
-
-        int curHandlers = target.getHandlers().size();
-        if (curHandlers > 0) {
-            Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
-            targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
+        if (target.getHandlerCount() > 0) {
+            return EmitUtils.sendToAcceptors(target, energyToSend);
         }
         return FloatingLong.ZERO;
     }

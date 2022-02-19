@@ -1,10 +1,11 @@
 package mekanism.common.lib.distribution;
 
-import java.util.EnumMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import net.minecraft.util.Direction;
+import java.util.LinkedList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  * Keeps track of a target for emitting from various networks.
@@ -16,22 +17,40 @@ import net.minecraft.util.Direction;
 public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA> {
 
     /**
-     * Map of the sides to the handler for that side.
+     * Collection of handlers
      */
-    protected final Map<Direction, HANDLER> handlers = new EnumMap<>(Direction.class);
+    protected final Collection<HANDLER> handlers;
     /**
-     * Map of sides that want more than we can/are willing to provide. Value is the amount they want.
+     * Collection of handler type pairs that want more than we can/are willing to provide. Value is the amount they want.
      */
-    protected final Map<Direction, TYPE> needed = new EnumMap<>(Direction.class);
+    protected final Collection<ImmutablePair<HANDLER, TYPE>> needed;
+
+    private int handlerCount = 0;
 
     protected EXTRA extra;
 
-    public void addHandler(Direction side, HANDLER handler) {
-        handlers.put(side, handler);
+    protected Target() {
+        handlers = new LinkedList<>();
+        needed = new LinkedList<>();
     }
 
-    public Map<Direction, HANDLER> getHandlers() {
-        return handlers;
+    protected Target(Collection<HANDLER> allHandlers) {
+        this.handlers = Collections.unmodifiableCollection(allHandlers);
+        this.needed = new ArrayList<>(allHandlers.size() / 2);
+    }
+
+    protected Target(int expectedSize) {
+        this.handlers = new ArrayList<>(expectedSize);
+        this.needed = new ArrayList<>(expectedSize / 2);
+    }
+
+    public void addHandler(HANDLER handler) {
+        handlers.add(handler);
+        handlerCount++;
+    }
+
+    public int getHandlerCount() {
+        return handlerCount;
     }
 
     /**
@@ -43,8 +62,8 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      */
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
-        for (Direction side : needed.keySet()) {
-            acceptAmount(handlers.get(side), splitInfo, splitInfo.getRemainderAmount());
+        for (ImmutablePair<HANDLER, TYPE> recipient : needed) {
+            acceptAmount(recipient.getLeft(), splitInfo, splitInfo.getRemainderAmount());
         }
     }
 
@@ -78,14 +97,14 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * @param splitInfo Information about current overall split.
      */
     public void sendPossible(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
-        for (Entry<Direction, HANDLER> entry : handlers.entrySet()) {
-            TYPE amountNeeded = simulate(entry.getValue(), toSend);
+        for (HANDLER entry : handlers) {
+            TYPE amountNeeded = simulate(entry, toSend);
             if (amountNeeded.compareTo(splitInfo.getShareAmount()) <= 0) {
                 //Add the amount, in case something changed from simulation only mark actual sent amount
                 // in split info
-                acceptAmount(entry.getValue(), splitInfo, amountNeeded);
+                acceptAmount(entry, splitInfo, amountNeeded);
             } else {
-                needed.put(entry.getKey(), amountNeeded);
+                needed.add(ImmutablePair.of(entry, amountNeeded));
             }
         }
     }
@@ -96,15 +115,15 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * @param splitInfo The new split to (re)check.
      */
     public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
-        Iterator<Entry<Direction, TYPE>> iterator = needed.entrySet().iterator();
+        Iterator<ImmutablePair<HANDLER, TYPE>> iterator = needed.iterator();
         //Use an iterator rather than a copy of the keySet of the needed subMap
         // This allows for us to remove it once we find it without  having to
         // start looping again or make a large number of copies of the set
         while (iterator.hasNext()) {
-            Entry<Direction, TYPE> needInfo = iterator.next();
-            TYPE amountNeeded = needInfo.getValue();
+            ImmutablePair<HANDLER, TYPE> needInfo = iterator.next();
+            TYPE amountNeeded = needInfo.getRight();
             if (amountNeeded.compareTo(splitInfo.getShareAmount()) <= 0) {
-                acceptAmount(handlers.get(needInfo.getKey()), splitInfo, amountNeeded);
+                acceptAmount(needInfo.getLeft(), splitInfo, amountNeeded);
                 //Remove it as it has now been sent
                 iterator.remove();
                 //Continue checking things in case we happen to be

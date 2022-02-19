@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.holder.energy;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -13,16 +12,14 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import net.minecraft.util.Direction;
 
-public class ConfigEnergyContainerHolder extends ConfigHolder implements IEnergyContainerHolder {
-
-    protected final List<IEnergyContainer> containers = new ArrayList<>();
+public class ConfigEnergyContainerHolder extends ConfigHolder<IEnergyContainer> implements IEnergyContainerHolder {
 
     public ConfigEnergyContainerHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         super(facingSupplier, configSupplier);
     }
 
     void addContainer(@Nonnull IEnergyContainer container) {
-        containers.add(container);
+        slots.add(container);
     }
 
     @Override
@@ -33,11 +30,6 @@ public class ConfigEnergyContainerHolder extends ConfigHolder implements IEnergy
     @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction direction) {
-        return getSlots(direction, containers, slotInfo -> {
-            if (slotInfo instanceof EnergySlotInfo && slotInfo.isEnabled()) {
-                return ((EnergySlotInfo) slotInfo).getContainers();
-            }
-            return Collections.emptyList();
-        });
+        return getSlots(direction, slotInfo -> slotInfo instanceof EnergySlotInfo ? ((EnergySlotInfo) slotInfo).getContainers() : Collections.emptyList());
     }
 }

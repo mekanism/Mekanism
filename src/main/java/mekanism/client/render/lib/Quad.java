@@ -248,7 +248,7 @@ public class Quad {
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
-            Vector3d normal = vec3.subtract(vec2).crossProduct(vec1.subtract(vec2)).normalize();
+            Vector3d normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize();
             vertices[0] = Vertex.create(vec1, normal, texture, minU, minV).light(lightU, lightV);
             vertices[1] = Vertex.create(vec2, normal, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, texture, maxU, maxV).light(lightU, lightV);

@@ -18,5 +18,6 @@ public class AdditionsBlockTypes {
           .createBlock(AdditionsLang.DESCRIPTION_GLOW_PANEL)
           .withCustomShape(BlockShapes.GLOW_PANEL)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
+          .withLight(15)
           .build();
 }

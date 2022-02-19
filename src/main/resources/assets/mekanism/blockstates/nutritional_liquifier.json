@@ -1,33 +1,18 @@
 {
   "variants": {
-    "facing=north,active=false": {
+    "facing=north": {
       "model": "mekanism:block/nutritional_liquifier"
     },
-    "facing=south,active=false": {
+    "facing=south": {
       "model": "mekanism:block/nutritional_liquifier",
       "y": 180
     },
-    "facing=east,active=false": {
+    "facing=east": {
       "model": "mekanism:block/nutritional_liquifier",
       "y": 90
     },
-    "facing=west,active=false": {
+    "facing=west": {
       "model": "mekanism:block/nutritional_liquifier",
-      "y": -90
-    },
-    "facing=north,active=true": {
-      "model": "mekanism:block/nutritional_liquifier_active"
-    },
-    "facing=south,active=true": {
-      "model": "mekanism:block/nutritional_liquifier_active",
-      "y": 180
-    },
-    "facing=east,active=true": {
-      "model": "mekanism:block/nutritional_liquifier_active",
-      "y": 90
-    },
-    "facing=west,active=true": {
-      "model": "mekanism:block/nutritional_liquifier_active",
       "y": -90
     }
   }

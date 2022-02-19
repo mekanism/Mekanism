@@ -37,11 +37,6 @@
           ],
           "name": "mekanism:ultimate_fluid_tank"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

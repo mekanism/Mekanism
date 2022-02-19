@@ -2,6 +2,7 @@ package mekanism.common.util.text;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
@@ -20,6 +21,10 @@ public class EnergyDisplay implements IHasTextComponent {
     private EnergyDisplay(FloatingLong energy, FloatingLong max) {
         this.energy = energy;
         this.max = max;
+    }
+
+    public static EnergyDisplay of(IEnergyContainer container) {
+        return of(container.getEnergy(), container.getMaxEnergy());
     }
 
     public static EnergyDisplay of(FloatingLong energy, FloatingLong max) {

@@ -176,7 +176,7 @@ public class LookingAtUtils {
                 Current current = mergedTank.getCurrent();
                 if (current == Current.EMPTY) {
                     if (matchingCurrent != Current.GAS) {
-                        //Skip tanks if overall it is empty and it is not the gas tank
+                        //Skip tanks if overall it is empty, and it is not the gas tank
                         return;
                     }
                 } else if (current != matchingCurrent) {

@@ -18,7 +18,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     public ForgeRegistryTagBuilder<TYPE> add(TYPE element) {
-        this.builder.addItemEntry(element.getRegistryName(), modID);
+        this.builder.addElement(element.getRegistryName(), modID);
         return this;
     }
 
@@ -31,7 +31,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     public ForgeRegistryTagBuilder<TYPE> add(INamedTag<TYPE> tag) {
-        this.builder.addTagEntry(tag.getName(), modID);
+        this.builder.addTag(tag.getName(), modID);
         return this;
     }
 
@@ -44,14 +44,14 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     public ForgeRegistryTagBuilder<TYPE> add(ITag.ITagEntry tag) {
-        builder.addTag(tag, modID);
+        builder.add(tag, modID);
         return this;
     }
 
     @SafeVarargs
     public final ForgeRegistryTagBuilder<TYPE> add(RegistryKey<TYPE>... keys) {
         for (RegistryKey<TYPE> key : keys) {
-            builder.addItemEntry(key.getLocation(), modID);
+            builder.addElement(key.location(), modID);
         }
         return this;
     }

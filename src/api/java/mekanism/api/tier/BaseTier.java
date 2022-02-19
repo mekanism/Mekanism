@@ -1,6 +1,7 @@
 package mekanism.api.tier;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import net.minecraft.util.IStringSerializable;
@@ -29,27 +30,45 @@ public enum BaseTier implements IStringSerializable {
         textColor = c1;
     }
 
+    /**
+     * Gets the name of this tier.
+     */
     public String getSimpleName() {
         return name;
     }
 
+    /**
+     * Gets the lowercase name of this tier.
+     */
     public String getLowerName() {
         return getSimpleName().toLowerCase(Locale.ROOT);
     }
 
+    /**
+     * Gets the color that corresponds to this tier for use in rendering.
+     */
     public EnumColor getColor() {
         return color;
     }
 
+    /**
+     * Gets the color that corresponds to this tier for use in text messages.
+     */
     public EnumColor getTextColor() {
         return textColor;
     }
 
+    @Nonnull
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
     }
 
+    /**
+     * Gets a tier by index.
+     *
+     * @param index Index of the tier.
+     */
     public static BaseTier byIndexStatic(int index) {
         return MathUtils.getByIndexMod(TIERS, index);
     }

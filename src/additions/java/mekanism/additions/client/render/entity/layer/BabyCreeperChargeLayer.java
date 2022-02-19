@@ -18,19 +18,19 @@ public class BabyCreeperChargeLayer extends EnergyLayer<EntityBabyCreeper, Model
     }
 
     @Override
-    protected float func_225634_a_(float modifier) {
+    protected float xOffset(float modifier) {
         return modifier * 0.01F;
     }
 
     @Nonnull
     @Override
-    protected ResourceLocation func_225633_a_() {
+    protected ResourceLocation getTextureLocation() {
         return LIGHTNING_TEXTURE;
     }
 
     @Nonnull
     @Override
-    protected EntityModel<EntityBabyCreeper> func_225635_b_() {
+    protected EntityModel<EntityBabyCreeper> model() {
         return this.creeperModel;
     }
 }

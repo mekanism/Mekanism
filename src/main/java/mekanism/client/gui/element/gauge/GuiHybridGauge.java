@@ -32,8 +32,8 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
           IGuiWrapper gui, int x, int y, int width, int height) {
         super(type, gui, x, y, width, height);
         this.gasTankSupplier = gasTankSupplier;
-        gasGauge = new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height);
-        fluidGauge = new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height);
+        gasGauge = addPositionOnlyChild(new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height));
+        fluidGauge = addPositionOnlyChild(new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height));
     }
 
     public GuiHybridGauge setLabel(ITextComponent label) {
@@ -45,9 +45,7 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // pass the click event to both gauges; if both a fluid and gas are stored in the dropper, insertion checks should prevent both from being
         // inserted at the same time
-        gasGauge.mouseClicked(mouseX, mouseY, button);
-        fluidGauge.mouseClicked(mouseX, mouseY, button);
-        return super.mouseClicked(mouseX, mouseY, button);
+        return gasGauge.mouseClicked(mouseX, mouseY, button) | fluidGauge.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

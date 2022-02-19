@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=top": {
+      "model": "mekanismadditions:block/plastic/transparent_slab_top"
+    },
+    "type=bottom": {
+      "model": "mekanismadditions:block/plastic/transparent_slab"
+    },
+    "type=double": {
+      "model": "mekanismadditions:block/plastic/transparent"
+    }
+  }
+}

@@ -1,7 +1,5 @@
 package mekanism.additions.common.config;
 
-import java.util.ArrayList;
-import java.util.Locale;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.common.config.BaseMekanismConfig;
@@ -10,7 +8,6 @@ import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -89,28 +86,10 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
             this.maxSpawnCostPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob.")
                   .worldRestart()
                   .defineInRange("maxSpawnCostPercentage", 1D, 0, 100));
-            this.biomeBlackList = CachedResourceLocationListValue.wrap(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
-                  .worldRestart()
-                  .defineList("biomeBlackList", new ArrayList<>(), o -> {
-                      if (o instanceof String) {
-                          ResourceLocation rl = ResourceLocation.tryCreate(((String) o).toLowerCase(Locale.ROOT));
-                          if (rl != null) {
-                              return ForgeRegistries.BIOMES.containsKey(rl);
-                          }
-                      }
-                      return false;
-                  }));
-            this.structureBlackList = CachedResourceLocationListValue.wrap(config, builder.comment("The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
-                  .worldRestart()
-                  .defineList("structureBlackList", new ArrayList<>(), o -> {
-                      if (o instanceof String) {
-                          ResourceLocation rl = ResourceLocation.tryCreate(((String) o).toLowerCase(Locale.ROOT));
-                          if (rl != null) {
-                              return ForgeRegistries.STRUCTURE_FEATURES.containsKey(rl);
-                          }
-                      }
-                      return false;
-                  }));
+            this.biomeBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
+                  .worldRestart(), "biomeBlackList", ForgeRegistries.BIOMES::containsKey);
+            this.structureBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
+                  .worldRestart(), "structureBlackList", ForgeRegistries.STRUCTURE_FEATURES::containsKey);
             builder.pop();
         }
     }

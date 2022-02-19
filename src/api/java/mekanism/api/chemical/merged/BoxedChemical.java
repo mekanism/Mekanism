@@ -17,18 +17,44 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 
+/**
+ *
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BoxedChemical implements IHasTextComponent {
 
-    //TODO: Make a subclass for the empty implementation?
+    /**
+     * Empty Boxed Chemical instance.
+     */
     public static final BoxedChemical EMPTY = new BoxedChemical(ChemicalType.GAS, MekanismAPI.EMPTY_GAS);
 
+    /**
+     * Boxes a Chemical.
+     *
+     * @param chemical Chemical to box.
+     *
+     * @return Boxed Chemical.
+     */
+    public static BoxedChemical box(Chemical<?> chemical) {
+        if (chemical.isEmptyType()) {
+            return EMPTY;
+        }
+        return new BoxedChemical(ChemicalType.getTypeFor(chemical), chemical);
+    }
+
+    /**
+     * Reads a Boxed Chemical from a Packet Buffer.
+     *
+     * @param buffer Buffer.
+     *
+     * @return Boxed Chemical.
+     */
     @SuppressWarnings("RedundantCast")
     public static BoxedChemical read(PacketBuffer buffer) {
-        //Note: Casts are needed for compiling so it knows how to read it properly
-        ChemicalType chemicalType = buffer.readEnumValue(ChemicalType.class);
+        //Note: Casts are needed for compiling, so it knows how to read it properly
+        ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
         if (chemicalType == ChemicalType.GAS) {
             return new BoxedChemical(chemicalType, (Gas) buffer.readRegistryId());
         } else if (chemicalType == ChemicalType.INFUSION) {
@@ -42,6 +68,13 @@ public class BoxedChemical implements IHasTextComponent {
         }
     }
 
+    /**
+     * Reads a Boxed Chemical from a CompoundNBT.
+     *
+     * @param nbt NBT.
+     *
+     * @return Boxed Chemical.
+     */
     public static BoxedChemical read(@Nullable CompoundNBT nbt) {
         ChemicalType chemicalType = ChemicalType.fromNBT(nbt);
         Chemical<?> chemical = null;
@@ -57,10 +90,6 @@ public class BoxedChemical implements IHasTextComponent {
         return chemicalType == null || chemical == null ? EMPTY : new BoxedChemical(chemicalType, chemical);
     }
 
-    public static BoxedChemical box(Chemical<?> chemical) {
-        return new BoxedChemical(ChemicalType.getTypeFor(chemical), chemical);
-    }
-
     private final ChemicalType chemicalType;
     private final Chemical<?> chemical;
 
@@ -69,22 +98,42 @@ public class BoxedChemical implements IHasTextComponent {
         this.chemical = chemical;
     }
 
+    /**
+     * Gets whether this boxed chemical is empty.
+     *
+     * @return {@code true} if this boxed chemical is empty, {@code false} otherwise.
+     */
     public boolean isEmpty() {
         return this == EMPTY || chemical.isEmptyType();
     }
 
+    /**
+     * Gets the chemical type.
+     */
     public ChemicalType getChemicalType() {
         return chemicalType;
     }
 
+    /**
+     * Writes this BoxedChemical to a defined tag compound.
+     *
+     * @param nbt - tag compound to write to
+     *
+     * @return tag compound with this BoxedChemical's data
+     */
     public CompoundNBT write(CompoundNBT nbt) {
         chemicalType.write(nbt);
         chemical.write(nbt);
         return nbt;
     }
 
+    /**
+     * Writes this BoxedChemical to a Packet Buffer.
+     *
+     * @param buffer - Buffer to write to.
+     */
     public void write(PacketBuffer buffer) {
-        buffer.writeEnumValue(chemicalType);
+        buffer.writeEnum(chemicalType);
         if (chemicalType == ChemicalType.GAS) {
             buffer.writeRegistryId((Gas) chemical);
         } else if (chemicalType == ChemicalType.INFUSION) {
@@ -96,6 +145,18 @@ public class BoxedChemical implements IHasTextComponent {
         } else {
             throw new IllegalStateException("Unknown chemical type");
         }
+    }
+
+    /**
+     * Gets the internal chemical that was boxed.
+     */
+    public Chemical<?> getChemical() {
+        return chemical;
+    }
+
+    @Override
+    public ITextComponent getTextComponent() {
+        return chemical.getTextComponent();
     }
 
     @Override
@@ -113,14 +174,5 @@ public class BoxedChemical implements IHasTextComponent {
     @Override
     public int hashCode() {
         return Objects.hash(chemicalType, chemical);
-    }
-
-    public Chemical<?> getChemical() {
-        return chemical;
-    }
-
-    @Override
-    public ITextComponent getTextComponent() {
-        return chemical.getTextComponent();
     }
 }

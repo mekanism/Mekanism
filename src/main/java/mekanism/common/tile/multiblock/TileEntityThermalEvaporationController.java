@@ -11,13 +11,14 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    protected void onUpdateServer(EvaporationMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(EvaporationMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         setActive(multiblock.isFormed());
+        return needsPacket;
     }
 
     @Override
-    public boolean renderUpdate() {
+    public boolean canBeMaster() {
         return true;
     }
 }

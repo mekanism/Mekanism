@@ -19,7 +19,11 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -27,7 +31,9 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -40,45 +46,55 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-public class EvaporationMultiblockData extends MultiblockData implements ITileCachedRecipeHolder<FluidToFluidRecipe>, IValveHandler {
+public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
 
     private static final int MAX_OUTPUT = 10_000;
-    private static final int MAX_HEIGHT = 18;
+    public static final int MAX_HEIGHT = 18;
     public static final double MAX_MULTIPLIER_TEMP = 3_000;
+    public static final int FLUID_PER_TANK = 64_000;
 
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
     public BasicFluidTank inputTank;
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public BasicFluidTank outputTank;
     @ContainerSync
     public BasicHeatCapacitor heatCapacitor;
 
-    private boolean temperatureSet;
-
-    private double biomeTemp;
+    private double biomeAmbientTemp;
     private double tempMultiplier;
 
     public float prevScale;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getProductionAmount")
     public double lastGain;
     @ContainerSync
-    public double totalLoss;
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
+    public double lastEnvironmentLoss;
 
-    private CachedRecipe<FluidToFluidRecipe> cachedRecipe;
+    private final RecipeCacheLookupMonitor<FluidToFluidRecipe> recipeCacheLookupMonitor;
 
-    private IEvaporationSolar[] solars = new IEvaporationSolar[4];
+    private final IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
     private final IOutputHandler<@NonNull FluidStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemInput")
     private final FluidInventorySlot inputInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemOutput")
     private final OutputInventorySlot outputInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItemInput")
     private final FluidInventorySlot inputOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItemOutput")
     private final OutputInventorySlot outputOutputSlot;
 
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
         super(tile);
-        fluidTanks.add(inputTank = MultiblockFluidTank.input(this, tile, this::getMaxFluid, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid))));
+        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+        //Default biome temp to the ambient temperature at the block we are at
+        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
+        fluidTanks.add(inputTank = MultiblockFluidTank.input(this, tile, this::getMaxFluid, this::containsRecipe, recipeCacheLookupMonitor));
         fluidTanks.add(outputTank = MultiblockFluidTank.output(this, tile, () -> MAX_OUTPUT, BasicFluidTank.alwaysTrue));
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
@@ -88,12 +104,14 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         inventorySlots.add(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
         inputInputSlot.setSlotType(ContainerSlotType.INPUT);
         inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
-        heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismConfig.general.evaporationHeatCapacity.get() * 3));
+        heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismConfig.general.evaporationHeatCapacity.get() * 3,
+              () -> biomeAmbientTemp));
     }
 
     @Override
     public void onCreated(World world) {
         super.onCreated(world);
+        biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), true);
         updateSolars(world);
@@ -102,13 +120,17 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     @Override
     public boolean tick(World world) {
         boolean needsPacket = super.tick(world);
-        updateTemperature(world);
+        // external heat dissipation
+        lastEnvironmentLoss = simulateEnvironment();
+        // update temperature
+        updateHeatCapacitors(null);
+        //After we update the heat capacitors, update our temperature multiplier
+        // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
+        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
+                         ((double) height() / MAX_HEIGHT);
         inputOutputSlot.drainTank(outputOutputSlot);
         inputInputSlot.fillTank(outputInputSlot);
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (scale != prevScale) {
             prevScale = scale;
@@ -133,62 +155,48 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         writeValves(tag);
     }
 
-    private void updateTemperature(World world) {
-        if (!temperatureSet) {
-            biomeTemp = world.getBiomeManager().getBiome(getMinPos()).getTemperature(getMinPos());
-            temperatureSet = true;
-        }
-        heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * getActiveSolars() * heatCapacitor.getHeatCapacity());
-        double biome = biomeTemp - 0.5;
-        double base = biome > 0 ? biome * 20 : biomeTemp * 40;
-        base += HeatAPI.AMBIENT_TEMP;
-        if (Math.abs(getTemp() - base) < 0.001) {
-            heatCapacitor.handleHeat((base * heatCapacitor.getHeatCapacity()) - heatCapacitor.getHeat());
-            totalLoss = 0;
+    @Override
+    public double simulateEnvironment() {
+        double currentTemperature = getTemperature();
+        double heatCapacity = heatCapacitor.getHeatCapacity();
+        heatCapacitor.handleHeat(getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get() * heatCapacity);
+        if (Math.abs(currentTemperature - biomeAmbientTemp) < 0.001) {
+            heatCapacitor.handleHeat(biomeAmbientTemp * heatCapacity - heatCapacitor.getHeat());
         } else {
-            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(heatCapacitor.getTemperature() - base));
-            if (heatCapacitor.getTemperature() > base) {
+            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(currentTemperature - biomeAmbientTemp));
+            if (currentTemperature > biomeAmbientTemp) {
                 incr = -incr;
             }
-            heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
-            totalLoss = incr < 0 ? -incr / heatCapacitor.getHeatCapacity() : 0;
+            heatCapacitor.handleHeat(heatCapacity * incr);
+            if (incr < 0) {
+                return -incr;
+            }
         }
-
-        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double) height() / MAX_HEIGHT);
-        updateHeatCapacitors(null);
+        return 0;
     }
 
-    public double getTemp() {
+    @ComputerMethod
+    public double getTemperature() {
         return heatCapacitor.getTemperature();
     }
 
     public int getMaxFluid() {
-        return height() * 4 * TankMultiblockData.FLUID_PER_TANK;
+        return height() * 4 * FLUID_PER_TANK;
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<FluidToFluidRecipe> getRecipeType() {
+    public MekanismRecipeType<FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> getRecipeType() {
         return MekanismRecipeType.EVAPORATING;
     }
 
     @Nullable
     @Override
-    public CachedRecipe<FluidToFluidRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
-    }
-
-    @Nullable
-    @Override
     public FluidToFluidRecipe getRecipe(int cacheIndex) {
-        FluidStack fluid = inputHandler.getInput();
-        if (fluid.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(fluid));
+        return findFirstRecipe(inputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
         return new FluidToFluidCachedRecipe(recipe, inputHandler, outputHandler)
@@ -217,10 +225,11 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     @Override
-    public World getTileWorld() {
+    public World getHandlerWorld() {
         return getWorld();
     }
 
+    @ComputerMethod
     private int getActiveSolars() {
         int ret = 0;
         for (IEvaporationSolar solar : solars) {
@@ -231,22 +240,38 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         return ret;
     }
 
-    private void addSolarPanel(TileEntity tile, int i) {
-        if (tile != null && !tile.isRemoved()) {
-            CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN).ifPresent(solar -> solars[i] = solar);
+    private void updateSolarSpot(World world, BlockPos pos, int i) {
+        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        if (tile == null || tile.isRemoved()) {
+            solars[i] = null;
+        } else {
+            solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN).resolve().orElse(null);
         }
     }
 
-    public boolean isSolarSpot(BlockPos pos) {
-        return pos.getY() == getMaxPos().getY() && getBounds().isOnCorner(pos);
+    public void updateSolarSpot(World world, BlockPos pos) {
+        BlockPos maxPos = getMaxPos();
+        //Validate it is actually one of the spots solar panels can go
+        if (pos.getY() == maxPos.getY() && getBounds().isOnCorner(pos)) {
+            int i = 0;
+            if (pos.getX() + 3 == maxPos.getX()) {
+                //If we are westwards our index goes up by one
+                i++;
+            }
+            if (pos.getZ() + 3 == maxPos.getZ()) {
+                //If we are northwards it goes up by two
+                i += 2;
+            }
+            updateSolarSpot(world, pos, i);
+        }
     }
 
-    public void updateSolars(World world) {
-        solars = new IEvaporationSolar[4];
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos()), 0);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(-3, 0, 0)), 1);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(0, 0, -3)), 2);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(-3, 0, -3)), 3);
+    private void updateSolars(World world) {
+        BlockPos maxPos = getMaxPos();
+        updateSolarSpot(world, maxPos, 0);
+        updateSolarSpot(world, maxPos.west(3), 1);
+        updateSolarSpot(world, maxPos.north(3), 2);
+        updateSolarSpot(world, maxPos.offset(-3, 0, -3), 3);
     }
 
     @Override

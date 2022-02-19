@@ -31,6 +31,7 @@ public class TileEntityInductionCell extends TileEntityMekanism {
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), InductionCellTier.class);
     }
 

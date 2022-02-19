@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "mekanismadditions:plastic_blocks/road"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/road"
+      },
+      "without": {
+        "item": "mekanismadditions:gray_plastic_road"
+      }
     },
     "D": {
       "tag": "forge:dyes/gray"

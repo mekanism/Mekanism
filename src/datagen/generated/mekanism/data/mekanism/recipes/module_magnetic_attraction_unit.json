@@ -4,15 +4,15 @@
     "item": "mekanism:module_magnetic_attraction_unit"
   },
   "pattern": [
-    "I#I",
-    "CAC",
-    "PPP"
+    "A#A",
+    "CPC",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
@@ -21,7 +21,7 @@
     "C": {
       "tag": "forge:circuits/elite"
     },
-    "P": {
+    "H": {
       "item": "mekanism:pellet_polonium"
     }
   }

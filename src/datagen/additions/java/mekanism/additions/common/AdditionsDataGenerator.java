@@ -36,7 +36,7 @@ public class AdditionsDataGenerator {
             //Server side data generators
             gen.addProvider(new AdditionsTagProvider(gen, existingFileHelper));
             gen.addProvider(new AdditionsLootProvider(gen));
-            gen.addProvider(new AdditionsRecipeProvider(gen));
+            gen.addProvider(new AdditionsRecipeProvider(gen, existingFileHelper));
         }
     }
 }

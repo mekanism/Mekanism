@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:purple_plastic_glow_slab"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:purple",
+    "amount": 21
+  }
+}

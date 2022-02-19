@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
-import mekanism.common.network.container.property.DoublePropertyData;
+import mekanism.common.network.to_client.container.property.DoublePropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling doubles

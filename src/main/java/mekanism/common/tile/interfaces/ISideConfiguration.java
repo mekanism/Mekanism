@@ -35,7 +35,7 @@ public interface ISideConfiguration {
      *
      * @return machine's current orientation
      */
-    Direction getOrientation();
+    Direction getDirection();
 
     /**
      * Gets this machine's ejector.
@@ -47,23 +47,27 @@ public interface ISideConfiguration {
     @Nullable
     default DataType getActiveDataType(Object container) {
         ConfigInfo info = null;
-        if (container instanceof IGasTank && getConfig().supports(TransmissionType.GAS)) {
-            info = getConfig().getConfig(TransmissionType.GAS);
-        } else if (container instanceof IInfusionTank && getConfig().supports(TransmissionType.INFUSION)) {
-            info = getConfig().getConfig(TransmissionType.INFUSION);
-        } else if (container instanceof IPigmentTank && getConfig().supports(TransmissionType.PIGMENT)) {
-            info = getConfig().getConfig(TransmissionType.PIGMENT);
-        } else if (container instanceof ISlurryTank && getConfig().supports(TransmissionType.SLURRY)) {
-            info = getConfig().getConfig(TransmissionType.SLURRY);
-        } else if (container instanceof IExtendedFluidTank && getConfig().supports(TransmissionType.FLUID)) {
-            info = getConfig().getConfig(TransmissionType.FLUID);
-        } else if (container instanceof IInventorySlot && getConfig().supports(TransmissionType.ITEM)) {
-            info = getConfig().getConfig(TransmissionType.ITEM);
+        TileComponentConfig config = getConfig();
+        if (container instanceof IGasTank && config.supports(TransmissionType.GAS)) {
+            info = config.getConfig(TransmissionType.GAS);
+        } else if (container instanceof IInfusionTank && config.supports(TransmissionType.INFUSION)) {
+            info = config.getConfig(TransmissionType.INFUSION);
+        } else if (container instanceof IPigmentTank && config.supports(TransmissionType.PIGMENT)) {
+            info = config.getConfig(TransmissionType.PIGMENT);
+        } else if (container instanceof ISlurryTank && config.supports(TransmissionType.SLURRY)) {
+            info = config.getConfig(TransmissionType.SLURRY);
+        } else if (container instanceof IExtendedFluidTank && config.supports(TransmissionType.FLUID)) {
+            info = config.getConfig(TransmissionType.FLUID);
+        } else if (container instanceof IInventorySlot && config.supports(TransmissionType.ITEM)) {
+            info = config.getConfig(TransmissionType.ITEM);
         }
         if (info != null) {
             List<DataType> types = info.getDataTypeForContainer(container);
             int count = types.size();
-            if (count > 0 && count < info.getSupportedDataTypes().size() - 1) {
+            //Note: This really is checking that there are data types for container and that there is at most
+            // as many data types as there are supported types (excluding the NONE) type. We just check < instead
+            // of <= size - 1 to cut down slightly on the calculations
+            if (count > 0 && count < info.getSupportedDataTypes().size()) {
                 return types.get(0);
             }
         }

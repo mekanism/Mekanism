@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_frost_walker_unit"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "H#H"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "mekanism:hydrogen_bucket"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    }
+  }
+}

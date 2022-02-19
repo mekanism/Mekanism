@@ -1,0 +1,14 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": { 
+        "layer0": "mekanism:item/hdpe_elytra"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "mekanism:broken": 1
+            },
+            "model": "mekanism:item/hdpe_broken_elytra"
+        }
+    ]
+}

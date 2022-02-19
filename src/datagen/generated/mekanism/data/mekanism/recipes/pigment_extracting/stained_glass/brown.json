@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:glass/brown"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:brown",
+    "amount": 16
+  }
+}

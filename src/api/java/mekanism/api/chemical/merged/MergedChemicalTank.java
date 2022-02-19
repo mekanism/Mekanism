@@ -31,11 +31,24 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 
+/**
+ * Class to help manage having a chemical tank that supports all the different types of chemicals, but only one type at a time.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MergedChemicalTank {
 
+    /**
+     * Creates a new merged chemical tank out of a variety of chemical tanks.
+     *
+     * @param gasTank      Gas tank.
+     * @param infusionTank Infusion tank.
+     * @param pigmentTank  Pigment tank.
+     * @param slurryTank   Slurry tank.
+     *
+     * @return Merged chemical tank.
+     */
     public static MergedChemicalTank create(IGasTank gasTank, IInfusionTank infusionTank, IPigmentTank pigmentTank, ISlurryTank slurryTank) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
@@ -74,10 +87,20 @@ public class MergedChemicalTank {
         }
     }
 
+    /**
+     * Gets all the backing chemical tanks this merged tank manages.
+     */
     public Collection<IChemicalTank<?, ?>> getAllTanks() {
         return tankMap.values();
     }
 
+    /**
+     * Gets the internal chemical tank for a given chemical type.
+     *
+     * @param chemicalType Type of chemical.
+     *
+     * @return Internal tank.
+     */
     public IChemicalTank<?, ?> getTankForType(ChemicalType chemicalType) {
         if (chemicalType == ChemicalType.GAS) {
             return getGasTank();
@@ -91,22 +114,37 @@ public class MergedChemicalTank {
         throw new IllegalStateException("Unknown chemical type");
     }
 
+    /**
+     * Gets the internal gas tank.
+     */
     public final IGasTank getGasTank() {
         return (IGasTank) tankMap.get(ChemicalTankType.GAS);
     }
 
+    /**
+     * Gets the internal infusion tank.
+     */
     public final IInfusionTank getInfusionTank() {
         return (IInfusionTank) tankMap.get(ChemicalTankType.INFUSE_TYPE);
     }
 
+    /**
+     * Gets the internal pigment tank.
+     */
     public final IPigmentTank getPigmentTank() {
         return (IPigmentTank) tankMap.get(ChemicalTankType.PIGMENT);
     }
 
+    /**
+     * Gets the internal slurry tank.
+     */
     public final ISlurryTank getSlurryTank() {
         return (ISlurryTank) tankMap.get(ChemicalTankType.SLURRY);
     }
 
+    /**
+     * Gets the current type of substance stored in this merged chemical tank or {@link Current#EMPTY} if this merged chemical tank is empty.
+     */
     public Current getCurrent() {
         if (!getGasTank().isEmpty()) {
             return Current.GAS;
@@ -120,6 +158,13 @@ public class MergedChemicalTank {
         return Current.EMPTY;
     }
 
+    /**
+     * Gets the internal chemical tank for a given current type. This does not support getting the tank for the empty type.
+     *
+     * @param current Current type.
+     *
+     * @return Internal tank.
+     */
     public IChemicalTank<?, ?> getTankFromCurrent(Current current) {
         switch (current) {
             case GAS:
@@ -131,7 +176,7 @@ public class MergedChemicalTank {
             case SLURRY:
                 return getSlurryTank();
         }
-        throw new IllegalStateException("Unknown chemical type");
+        throw new IllegalStateException("Unknown current chemical type");
     }
 
     public enum Current {

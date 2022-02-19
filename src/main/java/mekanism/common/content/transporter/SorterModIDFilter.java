@@ -12,6 +12,14 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     private String modID;
 
+    public SorterModIDFilter() {
+    }
+
+    public SorterModIDFilter(SorterModIDFilter filter) {
+        super(filter);
+        modID = filter.modID;
+    }
+
     @Override
     public Finder getFinder() {
         return Finder.modID(modID);
@@ -33,7 +41,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(modID);
+        buffer.writeUtf(modID);
     }
 
     @Override
@@ -44,8 +52,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + super.hashCode();
+        int code = super.hashCode();
         code = 31 * code + modID.hashCode();
         return code;
     }
@@ -57,11 +64,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     @Override
     public SorterModIDFilter clone() {
-        SorterModIDFilter filter = new SorterModIDFilter();
-        filter.allowDefault = allowDefault;
-        filter.color = color;
-        filter.modID = modID;
-        return filter;
+        return new SorterModIDFilter(this);
     }
 
     @Override

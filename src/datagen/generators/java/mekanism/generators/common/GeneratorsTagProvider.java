@@ -1,8 +1,10 @@
 package mekanism.generators.common;
 
 import javax.annotation.Nullable;
+import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
+import mekanism.common.tag.MekanismTagProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -67,6 +69,10 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addToTag(GeneratorTags.Fluids.DEUTERIUM, GeneratorsFluids.DEUTERIUM);
         addToTag(GeneratorTags.Fluids.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL);
         addToTag(GeneratorTags.Fluids.TRITIUM, GeneratorsFluids.TRITIUM);
+        //Prevent all our fluids from being duped by create
+        for (FluidRegistryObject<?, ?, ?, ?> fluid : GeneratorsFluids.FLUIDS.getAllFluids()) {
+            addToTag(MekanismTagProvider.CREATE_NO_INFINITE_FLUID, fluid);
+        }
     }
 
     private void addGases() {

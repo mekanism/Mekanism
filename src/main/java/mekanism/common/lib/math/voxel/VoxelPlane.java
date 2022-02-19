@@ -49,7 +49,7 @@ public class VoxelPlane {
     }
 
     public void merge(VoxelPlane other) {
-        //Combine all blocks in the plane that are outside of the frames
+        //Combine all blocks in the plane that are outside the frames
         outsideSet.addAll(other.outsideSet);
         if (other.hasFrame) {
             //If the other VoxelPlane has a frame around it
@@ -114,7 +114,7 @@ public class VoxelPlane {
 
     @Override
     public String toString() {
-        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow).toString() + ")";
+        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow) + ")";
     }
 
     @Override

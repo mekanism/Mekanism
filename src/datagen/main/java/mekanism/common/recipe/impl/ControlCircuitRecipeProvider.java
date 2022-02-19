@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
-import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
@@ -26,7 +26,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
     @Override
     public void addRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "control_circuit/";
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.REDSTONE, 20),
               MekanismItems.BASIC_CONTROL_CIRCUIT.getItemStack()

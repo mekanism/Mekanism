@@ -1,5 +1,6 @@
 package mekanism.api.recipes.inputs;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
@@ -19,13 +20,19 @@ public class InputHelper {
     private InputHelper() {
     }
 
-    public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot inventorySlot) {
+    /**
+     * Wrap an inventory slot into an {@link IInputHandler}.
+     *
+     * @param slot Slot to wrap.
+     */
+    public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot slot) {
+        Objects.requireNonNull(slot, "Slot cannot be null.");
         return new IInputHandler<@NonNull ItemStack>() {
 
             @Nonnull
             @Override
             public ItemStack getInput() {
-                return inventorySlot.getStack();
+                return slot.getStack();
             }
 
             @Nonnull
@@ -47,17 +54,16 @@ public class InputHelper {
                 }
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.getCount() * operations;
-                    logMismatchedStackSize(inventorySlot.shrinkStack(amount, Action.EXECUTE), amount);
+                    logMismatchedStackSize(slot.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull ItemStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier == 0) {
+            public int operationsCanSupport(@Nonnull ItemStack recipeInput, int currentMax, int usageMultiplier) {
+                if (currentMax <= 0 || usageMultiplier <= 0) {
                     //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
-                ItemStack recipeInput = getRecipeInput(recipeIngredient);
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches
                     return 0;
@@ -68,7 +74,13 @@ public class InputHelper {
         };
     }
 
+    /**
+     * Wrap a chemical tank into an {@link ILongInputHandler}.
+     *
+     * @param tank Tank to wrap.
+     */
     public static <STACK extends ChemicalStack<?>> ILongInputHandler<@NonNull STACK> getInputHandler(IChemicalTank<?, STACK> tank) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
         return new ILongInputHandler<@NonNull STACK>() {
 
             @Nonnull
@@ -103,12 +115,11 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull STACK> recipeIngredient, int currentMax, long usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier == 0) {
+            public int operationsCanSupport(@Nonnull STACK recipeInput, int currentMax, long usageMultiplier) {
+                if (currentMax <= 0 || usageMultiplier <= 0) {
                     //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
-                STACK recipeInput = getRecipeInput(recipeIngredient);
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches
@@ -120,13 +131,19 @@ public class InputHelper {
         };
     }
 
-    public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank fluidTank) {
+    /**
+     * Wrap a fluid tank into an {@link IInputHandler}.
+     *
+     * @param tank Tank to wrap.
+     */
+    public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank tank) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
         return new IInputHandler<@NonNull FluidStack>() {
 
             @Nonnull
             @Override
             public FluidStack getInput() {
-                return fluidTank.getFluid();
+                return tank.getFluid();
             }
 
             @Nonnull
@@ -150,17 +167,16 @@ public class InputHelper {
                 FluidStack inputFluid = getInput();
                 if (!inputFluid.isEmpty()) {
                     int amount = recipeInput.getAmount() * operations;
-                    logMismatchedStackSize(fluidTank.shrinkStack(amount, Action.EXECUTE), amount);
+                    logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull FluidStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier == 0) {
+            public int operationsCanSupport(@Nonnull FluidStack recipeInput, int currentMax, int usageMultiplier) {
+                if (currentMax <= 0 || usageMultiplier <= 0) {
                     //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
-                FluidStack recipeInput = getRecipeInput(recipeIngredient);
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches

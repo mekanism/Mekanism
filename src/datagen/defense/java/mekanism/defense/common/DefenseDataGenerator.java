@@ -27,7 +27,7 @@ public class DefenseDataGenerator {
             //Server side data generators
             gen.addProvider(new DefenseTagProvider(gen, existingFileHelper));
             gen.addProvider(new DefenseLootProvider(gen));
-            gen.addProvider(new DefenseRecipeProvider(gen));
+            gen.addProvider(new DefenseRecipeProvider(gen, existingFileHelper));
         }
     }
 }

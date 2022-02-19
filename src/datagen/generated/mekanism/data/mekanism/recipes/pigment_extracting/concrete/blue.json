@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:blue_concrete"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:blue",
+    "amount": 24
+  }
+}

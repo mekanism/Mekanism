@@ -17,6 +17,8 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.content.network.FluidNetwork;
+import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
+import mekanism.common.lib.transmitter.CompatibleTransmitterValidator.CompatibleFluidTransmitterValidator;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
@@ -45,7 +47,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     public MechanicalPipe(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.FLUID);
-        this.tier = Attribute.getTier(blockProvider.getBlock(), PipeTier.class);
+        this.tier = Attribute.getTier(blockProvider, PipeTier.class);
         //TODO: If we make fluids support longs then adjust this
         buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);
@@ -53,7 +55,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     public AcceptorCache<IFluidHandler> getAcceptorCache() {
-        //Cast it here to make things a bit easier, as we know the create is by default of type AcceptorCache
+        //Cast it here to make things a bit easier, as we know createAcceptorCache by default returns an object of type AcceptorCache
         return (AcceptorCache<IFluidHandler>) super.getAcceptorCache();
     }
 
@@ -75,14 +77,16 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
                     //If we don't have a fluid stored try pulling as much as we are able to
                     received = connectedAcceptor.drain(getAvailablePull(), FluidAction.SIMULATE);
                 } else {
-                    //Otherwise try draining the same type of fluid we have stored requesting up to as much as we are able to pull
+                    //Otherwise, try draining the same type of fluid we have stored requesting up to as much as we are able to pull
                     // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
                     // second tank but just asking to drain a specific amount
                     received = connectedAcceptor.drain(new FluidStack(bufferWithFallback, getAvailablePull()), FluidAction.SIMULATE);
                 }
                 if (!received.isEmpty() && takeFluid(received, Action.SIMULATE).isEmpty()) {
-                    FluidStack remainder = takeFluid(received, Action.EXECUTE);
-                    connectedAcceptor.drain(new FluidStack(received, received.getAmount() - remainder.getAmount()), FluidAction.EXECUTE);
+                    //If we received some fluid and are able to insert it all, then actually extract it and insert it into our thing.
+                    // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+                    // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+                    takeFluid(connectedAcceptor.drain(received, FluidAction.EXECUTE), Action.EXECUTE);
                 }
             }
         }
@@ -145,13 +149,18 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    public boolean isValidTransmitter(Transmitter<?, ?, ?> transmitter) {
-        if (super.isValidTransmitter(transmitter) && transmitter instanceof MechanicalPipe) {
+    public CompatibleTransmitterValidator<IFluidHandler, FluidNetwork, MechanicalPipe> getNewOrphanValidator() {
+        return new CompatibleFluidTransmitterValidator(this);
+    }
+
+    @Override
+    public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
+        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof MechanicalPipe) {
+            MechanicalPipe other = (MechanicalPipe) transmitter.getTransmitter();
             FluidStack buffer = getBufferWithFallback();
             if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 buffer = getTransmitterNetwork().lastFluid;
             }
-            MechanicalPipe other = (MechanicalPipe) transmitter;
             FluidStack otherBuffer = other.getBufferWithFallback();
             if (otherBuffer.isEmpty() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 otherBuffer = other.getTransmitterNetwork().lastFluid;
@@ -159,11 +168,6 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
             return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
         }
         return false;
-    }
-
-    @Override
-    public FluidNetwork createEmptyNetwork() {
-        return new FluidNetwork();
     }
 
     @Override

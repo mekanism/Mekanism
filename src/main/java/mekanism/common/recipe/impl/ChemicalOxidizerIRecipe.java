@@ -38,7 +38,7 @@ public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_OXIDIZER.getItemStack();
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorldReader;
@@ -17,17 +18,25 @@ import net.minecraftforge.common.ToolType;
 public class BlockOre extends Block implements IHasDescription {
 
     private final OreType ore;
+    private String descriptionTranslationKey;
 
     public BlockOre(OreType ore) {
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3, 3)
-              .setRequiresTool().harvestTool(ToolType.PICKAXE).harvestLevel(1)));
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.of(Material.STONE).strength(3, 3)
+              .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).harvestLevel(1)));
         this.ore = ore;
+    }
+
+    public String getDescriptionTranslationKey() {
+        if (descriptionTranslationKey == null) {
+            descriptionTranslationKey = Util.makeDescriptionId("description", getRegistryName());
+        }
+        return descriptionTranslationKey;
     }
 
     @Nonnull
     @Override
     public ILangEntry getDescription() {
-        return () -> "description.mekanism." + ore.getResource().getRegistrySuffix() + "_ore";
+        return this::getDescriptionTranslationKey;
     }
 
     @Override

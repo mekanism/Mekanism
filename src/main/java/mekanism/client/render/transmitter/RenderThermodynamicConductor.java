@@ -22,13 +22,13 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
     @Override
     protected void render(TileEntityThermodynamicConductor tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
         ThermodynamicConductor conductor = tile.getTransmitter();
         int argb = HeatUtils.getColorFromTemp(conductor.getTotalTemperature(), conductor.getBaseColor()).argb();
-        renderModel(tile, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()), argb, MekanismRenderer.getAlpha(argb), MekanismRenderer.FULL_LIGHT,
+        renderModel(tile, matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()), argb, MekanismRenderer.getAlpha(argb), MekanismRenderer.FULL_LIGHT,
               overlayLight, MekanismRenderer.heatIcon);
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Override

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:dark_red_plastic_fence",
+    "count": 3
+  },
+  "pattern": [
+    "#R#",
+    "#R#"
+  ],
+  "key": {
+    "R": {
+      "tag": "forge:rods/plastic"
+    },
+    "#": {
+      "item": "mekanismadditions:dark_red_plastic"
+    }
+  }
+}

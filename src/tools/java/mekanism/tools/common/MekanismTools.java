@@ -3,7 +3,7 @@ package mekanism.tools.common;
 import java.util.Random;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
@@ -27,7 +27,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismTools.MODID)
-public class MekanismTools implements IModule {
+public class MekanismTools implements IModModule {
 
     public static final String MODID = "mekanismtools";
 
@@ -58,7 +58,7 @@ public class MekanismTools implements IModule {
     }
 
     private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
@@ -72,8 +72,8 @@ public class MekanismTools implements IModule {
     }
 
     private void setStackIfEmpty(LivingEntity entity, EquipmentSlotType slot, ItemStack item) {
-        if (entity.getItemStackFromSlot(slot).isEmpty()) {
-            entity.setItemStackToSlot(slot, item);
+        if (entity.getItemBySlot(slot).isEmpty()) {
+            entity.setItemSlot(slot, item);
         }
     }
 

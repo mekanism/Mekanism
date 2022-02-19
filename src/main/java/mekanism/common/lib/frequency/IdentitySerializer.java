@@ -17,22 +17,23 @@ public interface IdentitySerializer {
 
         @Override
         public FrequencyIdentity load(CompoundNBT data) {
-            if (!data.getString(NBTConstants.NAME).isEmpty()) {
-                return new FrequencyIdentity(data.getString(NBTConstants.NAME), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
+            String name = data.getString(NBTConstants.NAME);
+            if (!name.isEmpty()) {
+                return new FrequencyIdentity(name, data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
             }
             return null;
         }
 
         @Override
         public void write(PacketBuffer buf, FrequencyIdentity data) {
-            buf.writeString(data.getKey().toString());
+            buf.writeUtf(data.getKey().toString());
             buf.writeBoolean(data.isPublic());
         }
 
         @Override
         public CompoundNBT serialize(FrequencyIdentity data) {
             CompoundNBT tag = new CompoundNBT();
-            tag.putString(NBTConstants.NAME, (String) data.getKey());
+            tag.putString(NBTConstants.NAME, data.getKey().toString());
             tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, data.isPublic());
             return tag;
         }
@@ -41,27 +42,27 @@ public interface IdentitySerializer {
     IdentitySerializer UUID = new IdentitySerializer() {
         @Override
         public FrequencyIdentity read(PacketBuffer buf) {
-            return new FrequencyIdentity(buf.readUniqueId(), buf.readBoolean());
+            return new FrequencyIdentity(buf.readUUID(), buf.readBoolean());
         }
 
         @Override
         public FrequencyIdentity load(CompoundNBT data) {
-            if (!data.getString(NBTConstants.OWNER_UUID).isEmpty()) {
-                return new FrequencyIdentity(data.getString(NBTConstants.OWNER_UUID), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
+            if (data.hasUUID(NBTConstants.OWNER_UUID)) {
+                return new FrequencyIdentity(data.getUUID(NBTConstants.OWNER_UUID), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
             }
             return null;
         }
 
         @Override
         public void write(PacketBuffer buf, FrequencyIdentity data) {
-            buf.writeUniqueId((UUID) data.getKey());
+            buf.writeUUID((UUID) data.getKey());
             buf.writeBoolean(data.isPublic());
         }
 
         @Override
         public CompoundNBT serialize(FrequencyIdentity data) {
             CompoundNBT tag = new CompoundNBT();
-            tag.putUniqueId(NBTConstants.OWNER_UUID, (UUID) data.getKey());
+            tag.putUUID(NBTConstants.OWNER_UUID, (UUID) data.getKey());
             tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, data.isPublic());
             return tag;
         }

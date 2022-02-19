@@ -1,6 +1,6 @@
 package mekanism.common.lib;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
 import mekanism.common.util.StatUtils;
 
 public class Color {
@@ -102,10 +102,10 @@ public class Color {
      * @return blended color
      */
     public Color blend(Color to, double scale) {
-        return rgbai((int) Math.round(r + (to.r - r) * scale),
-              (int) Math.round(g + (to.g - g) * scale),
-              (int) Math.round(b + (to.b - b) * scale),
-              (int) Math.round(a + (to.a - a) * scale));
+        return rgbad(r + (to.r - r) * scale,
+              g + (to.g - g) * scale,
+              b + (to.b - b) * scale,
+              a + (to.a - a) * scale);
     }
 
     public Color blendOnto(Color baseColor) {
@@ -115,12 +115,13 @@ public class Color {
         double rR = sR * sA + dR * (1 - sA);
         double rG = sG * sA + dG * (1 - sA);
         double rB = sB * sA + dB * (1 - sA);
-        double rA = dA * 1D + sA * (1 - dA);
+        double rA = dA + sA * (1 - dA);//dA * 1D + sA * (1 - dA);
         return rgbad(rR, rG, rB, rA);
     }
 
     public Color darken(double amount) {
-        return rgbad(r * (1 - amount), g * (1 - amount), b * (1 - amount), a);
+        double scale = 1 - amount;
+        return rgbad(r * scale, g * scale, b * scale, a);
     }
 
     public static Color blend(Color src, Color dest) {
@@ -240,7 +241,12 @@ public class Color {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(r, g, b, a);
+        return Objects.hash(r, g, b, a);
+    }
+
+    @Override
+    public String toString() {
+        return "[Color: " + r + ", " + g + ", " + b + ", " + a + "]";
     }
 
     public interface ColorFunction {

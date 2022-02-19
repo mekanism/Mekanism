@@ -12,6 +12,14 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
 
     private String tagName;
 
+    public SorterTagFilter() {
+    }
+
+    public SorterTagFilter(SorterTagFilter filter) {
+        super(filter);
+        tagName = filter.tagName;
+    }
+
     @Override
     public Finder getFinder() {
         return Finder.tag(tagName);
@@ -33,7 +41,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(tagName);
+        buffer.writeUtf(tagName);
     }
 
     @Override
@@ -44,8 +52,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + super.hashCode();
+        int code = super.hashCode();
         code = 31 * code + tagName.hashCode();
         return code;
     }
@@ -57,11 +64,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
 
     @Override
     public SorterTagFilter clone() {
-        SorterTagFilter filter = new SorterTagFilter();
-        filter.allowDefault = allowDefault;
-        filter.color = color;
-        filter.tagName = tagName;
-        return filter;
+        return new SorterTagFilter(this);
     }
 
     @Override

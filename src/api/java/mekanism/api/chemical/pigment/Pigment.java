@@ -50,6 +50,6 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
 
     @Override
     protected String getDefaultTranslationKey() {
-        return Util.makeTranslationKey("pigment", getRegistryName());
+        return Util.makeDescriptionId("pigment", getRegistryName());
     }
 }

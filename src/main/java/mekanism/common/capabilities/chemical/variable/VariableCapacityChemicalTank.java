@@ -54,7 +54,7 @@ public abstract class VariableCapacityChemicalTank<CHEMICAL extends Chemical<CHE
             amount = maxStackSize;
         }
         if (getStored() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         stored.setAmount(amount);

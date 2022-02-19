@@ -19,7 +19,7 @@ import net.minecraftforge.common.ToolType;
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
     public BlockTileGlass(TYPE type) {
-        super(type, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 9.6F).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE));
+        super(type, AbstractBlock.Properties.of(Material.GLASS).strength(3.5F, 9.6F).noOcclusion().requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE));
     }
 
     @Override
@@ -29,13 +29,13 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
 
     @Override
     @Deprecated
-    public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
+    public boolean skipRendering(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
         return adjacentBlockState.getBlock() instanceof BlockTileGlass;
     }
 
     @Override
     @Deprecated
-    public float getAmbientOcclusionLightValue(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         return 1.0F;
     }
 
@@ -47,7 +47,7 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getRayTraceShape(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
+    public VoxelShape getVisualShape(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
         return VoxelShapes.empty();
     }
 }

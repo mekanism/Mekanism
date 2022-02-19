@@ -27,38 +27,59 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
 
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     public BlockCardboardBox() {
-        super(AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 0.6F));
+        super(AbstractBlock.Properties.of(Material.WOOL).strength(0.5F, 0.6F));
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        if (!world.isRemote && player.isSneaking()) {
+        if (!player.isShiftKeyDown()) {
+            return ActionResultType.PASS;
+        } else if (!canReplace(world, player, pos, state)) {
+            return ActionResultType.FAIL;
+        }
+        if (!world.isClientSide) {
             TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
             if (box != null && box.storedData != null) {
                 BlockData data = box.storedData;
                 //TODO: Note - this will not allow for rotation of the block based on how it is placed direction wise via the removal of
                 // the cardboard box and will instead leave it how it was when the box was initially put on
-                world.setBlockState(pos, data.blockState);
+                world.setBlockAndUpdate(pos, data.blockState);
                 if (data.tileTag != null) {
                     data.updateLocation(pos);
                     TileEntity tile = WorldUtils.getTileEntity(world, pos);
                     if (tile != null) {
-                        tile.read(state, data.tileTag);
+                        tile.load(state, data.tileTag);
                     }
                 }
                 //TODO: Do we need to call onBlockPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
                 //data.blockState.getBlock().onBlockPlacedBy(world, pos, data.blockState, player, new ItemStack(data.block));
-                spawnAsEntity(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
+                popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
             }
         }
-        return player.isSneaking() ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
+    }
+
+    private static boolean canReplace(World world, PlayerEntity player, BlockPos pos, BlockState state) {
+        //Check if the player is allowed to use the cardboard box in the given position
+        if (world.mayInteract(player, pos)) {
+            //If they are then check if they can "break" the cardboard block that is in that spot
+            if (!MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, pos, state, player))) {
+                //If they can then we need to see if they are allowed to "place" the unboxed block in the given position
+                //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
+                // and fire a place event to see if the player is able to "place" the cardboard box
+                return true;
+            }
+        }
+        return false;
     }
 
     @Nonnull
@@ -68,8 +89,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
         if (tile == null) {
             return itemStack;
-        }
-        if (tile.storedData != null) {
+        } else if (tile.storedData != null) {
             ((ItemBlockCardboardBox) itemStack.getItem()).setBlockData(itemStack, tile.storedData);
         }
         return itemStack;

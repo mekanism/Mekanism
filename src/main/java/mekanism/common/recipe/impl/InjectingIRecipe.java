@@ -38,7 +38,7 @@ public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getItemStack();
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
@@ -54,25 +53,17 @@ public final class FluidUtils {
             return 0;
         }
         FluidStack toSend = stack.copy();
-        //Fake that we have one target given we know that no sides will overlap
-        // This allows us to have slightly better performance
-        FluidHandlerTarget target = new FluidHandlerTarget(stack);
-        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
-            //Insert to access side
-            Direction accessSide = side.getOpposite();
-            //Collect cap
-            CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
+        FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
+        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
+            //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
+            CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                 if (canFill(handler, toSend)) {
-                    target.addHandler(accessSide, handler);
+                    target.addHandler(handler);
                 }
             });
         });
-
-        int curHandlers = target.getHandlers().size();
-        if (curHandlers > 0) {
-            Set<FluidHandlerTarget> targets = new ObjectOpenHashSet<>();
-            targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), toSend);
+        if (target.getHandlerCount() > 0) {
+            return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
         }
         return 0;
     }
@@ -91,7 +82,7 @@ public final class FluidUtils {
                 //If we don't have a fluid stored try draining in general
                 fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
             } else {
-                //Otherwise try draining the same type of fluid we have stored
+                //Otherwise, try draining the same type of fluid we have stored
                 // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
                 // second tank but just asking to drain a specific amount
                 fluidInItem = handler.drain(new FluidStack(fluidTank.getFluid(), Integer.MAX_VALUE), FluidAction.SIMULATE);
@@ -102,11 +93,11 @@ public final class FluidUtils {
                     ItemStack container = handler.getContainer();
                     if (filled > 0) {
                         if (itemStack.getCount() == 1) {
-                            player.setHeldItem(hand, container);
-                        } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
+                            player.setItemInHand(hand, container);
+                        } else if (itemStack.getCount() > 1 && player.inventory.add(container)) {
                             itemStack.shrink(1);
                         } else {
-                            player.dropItem(container, false, true);
+                            player.drop(container, false, true);
                             itemStack.shrink(1);
                         }
                         fluidTank.extract(filled, Action.EXECUTE, AutomationType.MANUAL);
@@ -125,17 +116,17 @@ public final class FluidUtils {
                         if (player.isCreative()) {
                             filled = true;
                         } else if (!container.isEmpty()) {
-                            if (container.getCount() == 1) {
-                                player.setHeldItem(hand, container);
+                            if (itemStack.getCount() == 1) {
+                                player.setItemInHand(hand, container);
                                 filled = true;
-                            } else if (player.inventory.addItemStackToInventory(container)) {
+                            } else if (player.inventory.add(container)) {
                                 itemStack.shrink(1);
                                 filled = true;
                             }
                         } else {
                             itemStack.shrink(1);
                             if (itemStack.isEmpty()) {
-                                player.setHeldItem(hand, ItemStack.EMPTY);
+                                player.setItemInHand(hand, ItemStack.EMPTY);
                             }
                             filled = true;
                         }

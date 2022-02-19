@@ -1,12 +1,9 @@
 package mekanism.common.content.network;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +23,6 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
@@ -44,11 +40,6 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     //TODO: Make fluid storage support storing as longs?
     private int intCapacity;
 
-    public FluidNetwork() {
-        fluidTank = VariableCapacityFluidTank.create(this::getCapacityAsInt, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
-        fluidTanks = Collections.singletonList(fluidTank);
-    }
-
     public FluidNetwork(UUID networkID) {
         super(networkID);
         fluidTank = VariableCapacityFluidTank.create(this::getCapacityAsInt, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
@@ -56,7 +47,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     public FluidNetwork(Collection<FluidNetwork> networks) {
-        this();
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 
@@ -150,41 +141,27 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     @Override
     protected void updateSaveShares(@Nullable MechanicalPipe triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
-        int size = transmittersSize();
-        if (size > 0) {
+        if (!isEmpty()) {
             FluidStack fluidType = fluidTank.getFluid();
-            //Just pretend we are always accessing it from the north
-            Direction side = Direction.NORTH;
-            Set<FluidTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (MechanicalPipe transmitter : transmitters) {
-                FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
-                saveTarget.addHandler(side, transmitter);
-                saveTargets.add(saveTarget);
-            }
-            EmitUtils.sendToAcceptors(saveTargets, size, fluidType.getAmount(), fluidType);
-            for (FluidTransmitterSaveTarget saveTarget : saveTargets) {
-                saveTarget.saveShare(side);
-            }
+            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType, transmitters);
+            EmitUtils.sendToAcceptors(saveTarget, fluidType.getAmount(), fluidType);
+            saveTarget.saveShare();
         }
     }
 
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
-        Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
-        int totalHandlers = 0;
-        for (Entry<BlockPos, Map<Direction, LazyOptional<IFluidHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
-            FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
-            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
-                if (FluidUtils.canFill(acceptor, fluidToSend)) {
-                    target.addHandler(side, acceptor);
-                }
-            }));
-            int curHandlers = target.getHandlers().size();
-            if (curHandlers > 0) {
-                availableAcceptors.add(target);
-                totalHandlers += curHandlers;
+        Collection<Map<Direction, LazyOptional<IFluidHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
+        FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, acceptorValues.size() * 2);
+        for (Map<Direction, LazyOptional<IFluidHandler>> acceptors : acceptorValues) {
+            for (LazyOptional<IFluidHandler> lazyAcceptor : acceptors.values()) {
+                lazyAcceptor.ifPresent(acceptor -> {
+                    if (FluidUtils.canFill(acceptor, fluidToSend)) {
+                        target.addHandler(acceptor);
+                    }
+                });
             }
         }
-        return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend.getAmount(), fluidToSend);
+        return EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend);
     }
 
     @Override
@@ -220,7 +197,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     @Override
     public String toString() {
-        return "[FluidNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[FluidNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -247,13 +224,8 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    public boolean compatibleWithBuffer(@Nonnull FluidStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.fluidTank.isEmpty() || buffer.isEmpty() || this.fluidTank.isFluidEqual(buffer));
-    }
-
-    @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
     @Nonnull

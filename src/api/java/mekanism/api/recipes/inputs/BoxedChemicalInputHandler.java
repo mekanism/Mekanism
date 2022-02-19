@@ -19,6 +19,9 @@ import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 
+/**
+ * Specialized version of {@link ILongInputHandler} for handling boxed chemicals.
+ */
 @ParametersAreNonnullByDefault
 public class BoxedChemicalInputHandler {
 
@@ -28,6 +31,21 @@ public class BoxedChemicalInputHandler {
         this.chemicalTank = Objects.requireNonNull(chemicalTank);
     }
 
+    /**
+     * Returns the currently stored input.
+     *
+     * <p>
+     * <strong>IMPORTANT:</strong> This input <em>MUST NOT</em> be modified. This method is not for altering an input's contents. Any implementers who
+     * are able to detect modification through this method should throw an exception.
+     * </p>
+     * <p>
+     * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED INPUT</em></strong>
+     * </p>
+     *
+     * @return Input stored.
+     *
+     * @apiNote <strong>IMPORTANT:</strong> Do not modify this value.
+     */
     public BoxedChemicalStack getInput() {
         Current current = chemicalTank.getCurrent();
         if (current == Current.EMPTY) {
@@ -36,6 +54,13 @@ public class BoxedChemicalInputHandler {
         return BoxedChemicalStack.box(chemicalTank.getTankFromCurrent(current).getStack());
     }
 
+    /**
+     * Gets a copy of the recipe's ingredient that matches the stored input.
+     *
+     * @param recipeIngredient Recipe ingredient.
+     *
+     * @return Matching instance. The returned value can be safely modified after.
+     */
     public BoxedChemicalStack getRecipeInput(IChemicalStackIngredient<?, ?> recipeIngredient) {
         BoxedChemicalStack input = getInput();
         if (input.isEmpty()) {
@@ -65,13 +90,16 @@ public class BoxedChemicalInputHandler {
         return BoxedChemicalStack.EMPTY;
     }
 
+    /**
+     * Adds {@code operations} operations worth of {@code recipeInput} from the input.
+     *
+     * @param recipeInput Recipe input result.
+     * @param operations  Operations to perform.
+     */
     public void use(BoxedChemicalStack recipeInput, long operations) {
-        if (operations == 0) {
+        if (operations == 0 || recipeInput.isEmpty()) {
             //Just exit if we are somehow here at zero operations
-            return;
-        }
-        if (recipeInput.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
+            // or if something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }
         BoxedChemicalStack inputGas = getInput();
@@ -81,16 +109,59 @@ public class BoxedChemicalInputHandler {
         }
     }
 
+    /**
+     * Calculates how many operations the input can sustain.
+     *
+     * @param recipeIngredient Recipe ingredient.
+     * @param currentMax       The current maximum number of operations that can happen.
+     *
+     * @return The number of operations the input can sustain.
+     */
+    @Deprecated//TODO - 1.18: Remove this
     public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax) {
         return operationsCanSupport(recipeIngredient, currentMax, 1);
     }
 
+    /**
+     * Calculates how many operations the input can sustain.
+     *
+     * @param recipeIngredient Recipe ingredient.
+     * @param currentMax       The current maximum number of operations that can happen.
+     * @param usageMultiplier  Usage multiplier to multiply the recipeIngredient's amount by per operation.
+     *
+     * @return The number of operations the input can sustain.
+     */
+    @Deprecated//TODO - 1.18: Remove this
     public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax, long usageMultiplier) {
+        return operationsCanSupport(getRecipeInput(recipeIngredient), currentMax, usageMultiplier);
+    }
+
+    /**
+     * Calculates how many operations the input can sustain.
+     *
+     * @param recipeInput Recipe input gotten from {@link #getRecipeInput(IChemicalStackIngredient)}.
+     * @param currentMax  The current maximum number of operations that can happen.
+     *
+     * @return The number of operations the input can sustain.
+     */
+    public int operationsCanSupport(BoxedChemicalStack recipeInput, int currentMax) {
+        return operationsCanSupport(recipeInput, currentMax, 1);
+    }
+
+    /**
+     * Calculates how many operations the input can sustain.
+     *
+     * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(IChemicalStackIngredient)}.
+     * @param currentMax      The current maximum number of operations that can happen.
+     * @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
+     *
+     * @return The number of operations the input can sustain.
+     */
+    public int operationsCanSupport(BoxedChemicalStack recipeInput, int currentMax, long usageMultiplier) {
         if (currentMax <= 0 || usageMultiplier == 0) {
             //Short circuit that if we already can't perform any operations or don't want to use any, just return
             return currentMax;
         }
-        BoxedChemicalStack recipeInput = getRecipeInput(recipeIngredient);
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
         if (recipeInput.isEmpty()) {
             //If the input is empty that means there is no ingredient that matches

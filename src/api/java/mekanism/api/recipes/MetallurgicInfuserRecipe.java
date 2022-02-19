@@ -1,62 +1,64 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
+/**
+ * Input: ItemStack
+ * <br>
+ * Input: Infuse Type
+ * <br>
+ * Output: ItemStack
+ *
+ * @apiNote Metallurgic Infusers and Infusing Factories can process this recipe type.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements BiPredicate<InfusionStack, ItemStack> {
+public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe<InfuseType, InfusionStack, InfusionStackIngredient> {
 
-    private final ItemStackIngredient itemInput;
-    private final InfusionStackIngredient infusionInput;
-    private final ItemStack output;
-
+    /**
+     * @param id            Recipe name.
+     * @param itemInput     Item input.
+     * @param infusionInput Infusion input.
+     * @param output        Output.
+     */
     public MetallurgicInfuserRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
-        super(id);
-        this.itemInput = itemInput;
-        this.infusionInput = infusionInput;
-        this.output = output.copy();
+        super(id, itemInput, infusionInput, output);
     }
 
-    @Override
+    /**
+     * @deprecated Switch to using {@link ItemStackChemicalToItemStackRecipe#test(ItemStack, ChemicalStack)}
+     */
+    @Deprecated//TODO - 1.18: Remove this method
     public boolean test(InfusionStack infusionContainer, ItemStack itemStack) {
-        return infusionInput.test(infusionContainer) && itemInput.test(itemStack);
+        return test(itemStack, infusionContainer);
     }
 
-    public List<@NonNull ItemStack> getOutputDefinition() {
-        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
-    }
-
+    /**
+     * @deprecated Switch to using {@link ItemStackChemicalToItemStackRecipe#getOutput(ItemStack, ChemicalStack)}
+     */
+    @Deprecated//TODO - 1.18: Remove this method
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {
-        return output.copy();
+        return getOutput(inputItem, inputInfuse);
     }
 
+    /**
+     * @deprecated Switch to using {@link ItemStackChemicalToItemStackRecipe#getChemicalInput()}
+     */
+    @Deprecated//TODO - 1.18: Remove this method
     public InfusionStackIngredient getInfusionInput() {
-        return this.infusionInput;
-    }
-
-    public ItemStackIngredient getItemInput() {
-        return this.itemInput;
-    }
-
-    @Override
-    public void write(PacketBuffer buffer) {
-        itemInput.write(buffer);
-        infusionInput.write(buffer);
-        buffer.writeItemStack(output);
+        return getChemicalInput();
     }
 }

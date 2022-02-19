@@ -36,7 +36,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -97,7 +96,7 @@ public class StorageUtils {
                     STACK chemicalInTank = handler.getChemicalInTank(tank);
                     tooltip.add(storedFunction.apply(chemicalInTank));
                     if (showAttributes) {
-                        tooltip.addAll(ChemicalUtil.getAttributeTooltips(chemicalInTank.getType()));
+                        ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getType());
                     }
                 }
             } else if (showMissingCap) {
@@ -160,7 +159,7 @@ public class StorageUtils {
 
     /**
      * Gets the fluid if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a fluid handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static FluidStack getStoredFluidFromNBT(ItemStack stack) {
@@ -171,7 +170,7 @@ public class StorageUtils {
 
     /**
      * Gets the gas if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a gas handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
@@ -179,8 +178,8 @@ public class StorageUtils {
     }
 
     /**
-     * Gets the infuse type if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a infusion
-     * handler attached to our item but it may have stored data in its tank from when it was a block
+     * Gets the infuse type if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have an infusion
+     * handler attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
@@ -189,7 +188,7 @@ public class StorageUtils {
 
     /**
      * Gets the pigment if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a pigment handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static PigmentStack getStoredPigmentFromNBT(ItemStack stack) {
@@ -198,7 +197,7 @@ public class StorageUtils {
 
     /**
      * Gets the slurry if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a slurry handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static SlurryStack getStoredSlurryFromNBT(ItemStack stack) {
@@ -213,7 +212,7 @@ public class StorageUtils {
 
     /**
      * Gets the energy if one is stored from an item's container going off the basis there is a single energy container. This is for cases when we may not actually have
-     * an energy handler attached to our item but it may have stored data in its container from when it was a block
+     * an energy handler attached to our item, but it may have stored data in its container from when it was a block
      */
     public static FloatingLong getStoredEnergyFromNBT(ItemStack stack) {
         BasicEnergyContainer container = BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null);
@@ -232,11 +231,13 @@ public class StorageUtils {
 
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
-        Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
-        if (energyCapability.isPresent()) {
-            IStrictEnergyHandler energyHandlerItem = energyCapability.get();
-            if (energyHandlerItem instanceof IMekanismStrictEnergyHandler) {
-                return ((IMekanismStrictEnergyHandler) energyHandlerItem).getEnergyContainer(container, null);
+        if (!stack.isEmpty()) {
+            Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+            if (energyCapability.isPresent()) {
+                IStrictEnergyHandler energyHandlerItem = energyCapability.get();
+                if (energyHandlerItem instanceof IMekanismStrictEnergyHandler) {
+                    return ((IMekanismStrictEnergyHandler) energyHandlerItem).getEnergyContainer(container, null);
+                }
             }
         }
         return null;
@@ -256,9 +257,9 @@ public class StorageUtils {
     }
 
     public static ITextComponent getStoragePercent(double ratio, boolean colorText) {
-        String text = TextUtils.getPercent(ratio);
+        ITextComponent text = TextUtils.getPercent(ratio);
         if (!colorText) {
-            return new StringTextComponent(text);
+            return text;
         }
         EnumColor color;
         if (ratio < 0.01F) {

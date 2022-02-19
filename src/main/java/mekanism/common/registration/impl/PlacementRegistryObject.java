@@ -20,6 +20,6 @@ public class PlacementRegistryObject<CONFIG extends IPlacementConfig, PLACEMENT 
 
     @Nonnull
     public ConfiguredPlacement<CONFIG> getConfigured(CONFIG placementConfig) {
-        return getPlacement().configure(placementConfig);
+        return getPlacement().configured(placementConfig);
     }
 }

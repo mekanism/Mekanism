@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:green_concrete_powder"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:green",
+    "amount": 32
+  }
+}

@@ -31,7 +31,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem {
 
     protected ItemGasArmor(IArmorMaterial material, EquipmentSlotType slot, Properties properties) {
-        super(material, slot, properties.rarity(Rarity.RARE).setNoRepair().maxStackSize(1));
+        super(material, slot, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 
     protected abstract LongSupplier getMaxGas();
@@ -42,7 +42,7 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
     }
 
@@ -69,9 +69,9 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem 
     }
 
     @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
-        if (isInGroup(group)) {
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
+        if (allowdedIn(group)) {
             items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), getMaxGas().getAsLong(), getGasType()));
         }
     }

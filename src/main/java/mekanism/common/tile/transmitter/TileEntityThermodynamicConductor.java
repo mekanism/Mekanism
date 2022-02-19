@@ -65,13 +65,13 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         switch (tier) {
             case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR);
             case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR);
             case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR);
             case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
         }
         return current;
     }
@@ -82,10 +82,10 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         if (type == ConnectionType.NONE) {
             invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
-            WorldUtils.notifyNeighborOfChange(world, side, pos);
+            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
-            //Notify the neighbor on that side our state changed and we now do have a capability
-            WorldUtils.notifyNeighborOfChange(world, side, pos);
+            //Notify the neighbor on that side our state changed, and we now do have a capability
+            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         }
     }
 }

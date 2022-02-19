@@ -80,7 +80,7 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
     }
 
     @Override
-    public void captureCurrentPosition() {
+    public void resetPosition() {
     }
 
     @Override
@@ -88,23 +88,23 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
     }
 
     @Override
-    public void processInput(CInputPacket packet) {
+    public void handlePlayerInput(CInputPacket packet) {
     }
 
     @Override
-    public void processVehicleMove(CMoveVehiclePacket packet) {
+    public void handleMoveVehicle(CMoveVehiclePacket packet) {
     }
 
     @Override
-    public void processConfirmTeleport(CConfirmTeleportPacket packet) {
+    public void handleAcceptTeleportPacket(CConfirmTeleportPacket packet) {
     }
 
     @Override
-    public void handleRecipeBookUpdate(CMarkRecipeSeenPacket packet) {
+    public void handleRecipeBookSeenRecipePacket(CMarkRecipeSeenPacket packet) {
     }
 
     @Override
-    public void func_241831_a(CUpdateRecipeBookStatusPacket packet) {
+    public void handleRecipeBookChangeSettingsPacket(CUpdateRecipeBookStatusPacket packet) {
     }
 
     @Override
@@ -112,91 +112,91 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
     }
 
     @Override
-    public void processTabComplete(CTabCompletePacket packet) {
+    public void handleCustomCommandSuggestions(CTabCompletePacket packet) {
     }
 
     @Override
-    public void processUpdateCommandBlock(CUpdateCommandBlockPacket packet) {
+    public void handleSetCommandBlock(CUpdateCommandBlockPacket packet) {
     }
 
     @Override
-    public void processUpdateCommandMinecart(CUpdateMinecartCommandBlockPacket packet) {
+    public void handleSetCommandMinecart(CUpdateMinecartCommandBlockPacket packet) {
     }
 
     @Override
-    public void processPickItem(CPickItemPacket packet) {
+    public void handlePickItem(CPickItemPacket packet) {
     }
 
     @Override
-    public void processRenameItem(CRenameItemPacket packet) {
+    public void handleRenameItem(CRenameItemPacket packet) {
     }
 
     @Override
-    public void processUpdateBeacon(CUpdateBeaconPacket packet) {
+    public void handleSetBeaconPacket(CUpdateBeaconPacket packet) {
     }
 
     @Override
-    public void processUpdateStructureBlock(CUpdateStructureBlockPacket packet) {
+    public void handleSetStructureBlock(CUpdateStructureBlockPacket packet) {
     }
 
     @Override
-    public void func_217262_a(CUpdateJigsawBlockPacket packet) {
+    public void handleSetJigsawBlock(CUpdateJigsawBlockPacket packet) {
     }
 
     @Override
-    public void func_230549_a_(CJigsawBlockGeneratePacket packet) {
+    public void handleJigsawGenerate(CJigsawBlockGeneratePacket packet) {
     }
 
     @Override
-    public void processSelectTrade(CSelectTradePacket packet) {
+    public void handleSelectTrade(CSelectTradePacket packet) {
     }
 
     @Override
-    public void processEditBook(CEditBookPacket packet) {
+    public void handleEditBook(CEditBookPacket packet) {
     }
 
     @Override
-    public void processNBTQueryEntity(CQueryEntityNBTPacket packet) {
+    public void handleEntityTagQuery(CQueryEntityNBTPacket packet) {
     }
 
     @Override
-    public void processNBTQueryBlockEntity(CQueryTileEntityNBTPacket packet) {
+    public void handleBlockEntityTagQuery(CQueryTileEntityNBTPacket packet) {
     }
 
     @Override
-    public void processPlayer(CPlayerPacket packet) {
+    public void handleMovePlayer(CPlayerPacket packet) {
     }
 
     @Override
-    public void setPlayerLocation(double x, double y, double z, float yaw, float pitch) {
+    public void teleport(double x, double y, double z, float yaw, float pitch) {
     }
 
     @Override
-    public void setPlayerLocation(double x, double y, double z, float yaw, float pitch, Set<Flags> relativeSet) {
+    public void teleport(double x, double y, double z, float yaw, float pitch, Set<Flags> relativeSet) {
     }
 
     @Override
-    public void processPlayerDigging(CPlayerDiggingPacket packet) {
+    public void handlePlayerAction(CPlayerDiggingPacket packet) {
     }
 
     @Override
-    public void processTryUseItemOnBlock(CPlayerTryUseItemOnBlockPacket packet) {
+    public void handleUseItemOn(CPlayerTryUseItemOnBlockPacket packet) {
     }
 
     @Override
-    public void processTryUseItem(CPlayerTryUseItemPacket packet) {
+    public void handleUseItem(CPlayerTryUseItemPacket packet) {
     }
 
     @Override
-    public void handleSpectate(CSpectatePacket packet) {
+    public void handleTeleportToEntityPacket(CSpectatePacket packet) {
     }
 
     @Override
-    public void handleResourcePackStatus(CResourcePackStatusPacket packet) {
+    public void handleResourcePackResponse(CResourcePackStatusPacket packet) {
     }
 
     @Override
-    public void processSteerBoat(CSteerBoatPacket packet) {
+    public void handlePaddleBoat(CSteerBoatPacket packet) {
     }
 
     @Override
@@ -204,87 +204,87 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
     }
 
     @Override
-    public void sendPacket(IPacket<?> packet) {
+    public void send(IPacket<?> packet) {
     }
 
     @Override
-    public void sendPacket(IPacket<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> futureListeners) {
+    public void send(IPacket<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> futureListeners) {
     }
 
     @Override
-    public void processHeldItemChange(CHeldItemChangePacket packet) {
+    public void handleSetCarriedItem(CHeldItemChangePacket packet) {
     }
 
     @Override
-    public void processChatMessage(CChatMessagePacket packet) {
+    public void handleChat(CChatMessagePacket packet) {
     }
 
     @Override
-    public void handleAnimation(CAnimateHandPacket packet) {
+    public void handleAnimate(CAnimateHandPacket packet) {
     }
 
     @Override
-    public void processEntityAction(CEntityActionPacket packet) {
+    public void handlePlayerCommand(CEntityActionPacket packet) {
     }
 
     @Override
-    public void processUseEntity(CUseEntityPacket packet) {
+    public void handleInteract(CUseEntityPacket packet) {
     }
 
     @Override
-    public void processClientStatus(CClientStatusPacket packet) {
+    public void handleClientCommand(CClientStatusPacket packet) {
     }
 
     @Override
-    public void processCloseWindow(CCloseWindowPacket packet) {
+    public void handleContainerClose(CCloseWindowPacket packet) {
     }
 
     @Override
-    public void processClickWindow(CClickWindowPacket packet) {
+    public void handleContainerClick(CClickWindowPacket packet) {
     }
 
     @Override
-    public void processPlaceRecipe(CPlaceRecipePacket packet) {
+    public void handlePlaceRecipe(CPlaceRecipePacket packet) {
     }
 
     @Override
-    public void processEnchantItem(CEnchantItemPacket packet) {
+    public void handleContainerButtonClick(CEnchantItemPacket packet) {
     }
 
     @Override
-    public void processCreativeInventoryAction(CCreativeInventoryActionPacket packet) {
+    public void handleSetCreativeModeSlot(CCreativeInventoryActionPacket packet) {
     }
 
     @Override
-    public void processConfirmTransaction(CConfirmTransactionPacket packet) {
+    public void handleContainerAck(CConfirmTransactionPacket packet) {
     }
 
     @Override
-    public void processUpdateSign(CUpdateSignPacket packet) {
+    public void handleSignUpdate(CUpdateSignPacket packet) {
     }
 
     @Override
-    public void processKeepAlive(CKeepAlivePacket packet) {
+    public void handleKeepAlive(CKeepAlivePacket packet) {
     }
 
     @Override
-    public void processPlayerAbilities(CPlayerAbilitiesPacket packet) {
+    public void handlePlayerAbilities(CPlayerAbilitiesPacket packet) {
     }
 
     @Override
-    public void processClientSettings(CClientSettingsPacket packet) {
+    public void handleClientInformation(CClientSettingsPacket packet) {
     }
 
     @Override
-    public void processCustomPayload(CCustomPayloadPacket packet) {
+    public void handleCustomPayload(CCustomPayloadPacket packet) {
     }
 
     @Override
-    public void func_217263_a(CSetDifficultyPacket packet) {
+    public void handleChangeDifficulty(CSetDifficultyPacket packet) {
     }
 
     @Override
-    public void func_217261_a(CLockDifficultyPacket packet) {
+    public void handleLockDifficulty(CLockDifficultyPacket packet) {
     }
 
     private static class FakeNetworkManager extends NetworkManager {
@@ -294,15 +294,15 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        public void channelActive(ChannelHandlerContext channelHandlerContext) throws Exception {
+        public void channelActive(ChannelHandlerContext channelHandlerContext) {
         }
 
         @Override
-        public void setConnectionState(ProtocolType newState) {
+        public void setProtocol(ProtocolType newState) {
         }
 
         @Override
-        public void channelInactive(ChannelHandlerContext channelHandlerContext) throws Exception {
+        public void channelInactive(ChannelHandlerContext channelHandlerContext) {
         }
 
         @Override
@@ -310,15 +310,15 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        protected void channelRead0(ChannelHandlerContext channelHandlerContext, IPacket<?> packet) throws Exception {
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, IPacket<?> packet) {
         }
 
         @Override
-        public void sendPacket(IPacket<?> packet) {
+        public void send(IPacket<?> packet) {
         }
 
         @Override
-        public void sendPacket(IPacket<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> p_201058_2_) {
+        public void send(IPacket<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> listener) {
         }
 
         @Override
@@ -326,7 +326,7 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        protected void func_241877_b() {
+        protected void tickSecond() {
         }
 
         @Override
@@ -335,34 +335,34 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        public void closeChannel(ITextComponent message) {
+        public void disconnect(ITextComponent message) {
         }
 
         @Override
-        public boolean isLocalChannel() {
+        public boolean isMemoryConnection() {
             return false;
         }
 
         @Override
-        public void func_244777_a(Cipher splitter, Cipher prepender) {
+        public void setEncryptionKey(Cipher splitter, Cipher prepender) {
         }
 
         @Override
-        public boolean isChannelOpen() {
+        public boolean isConnected() {
             return false;
         }
 
         @Override
-        public boolean hasNoChannel() {
+        public boolean isConnecting() {
             return true;
         }
 
         @Override
-        public void disableAutoRead() {
+        public void setReadOnly() {
         }
 
         @Override
-        public void setCompressionThreshold(int threshold) {
+        public void setupCompression(int threshold) {
         }
 
         @Override

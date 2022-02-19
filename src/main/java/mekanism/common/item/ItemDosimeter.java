@@ -20,17 +20,19 @@ import net.minecraft.world.World;
 public class ItemDosimeter extends Item {
 
     public ItemDosimeter(Properties properties) {
-        super(properties.maxStackSize(1).rarity(Rarity.UNCOMMON));
+        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!player.isSneaking() && !world.isRemote()) {
-            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
-                  player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
-                        UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.DUMMY_UUID));
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!player.isShiftKeyDown()) {
+            if (!world.isClientSide()) {
+                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
+                      player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
+                            UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.NIL_UUID));
+            }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

@@ -23,8 +23,11 @@ public enum APILang implements ILangEntry {
     UPGRADE_MUFFLING_DESCRIPTION("upgrade", "muffling.description"),
     UPGRADE_ANCHOR("upgrade", "anchor"),
     UPGRADE_ANCHOR_DESCRIPTION("upgrade", "anchor.description"),
+    UPGRADE_STONE_GENERATOR("upgrade", "stone_generator"),
+    UPGRADE_STONE_GENERATOR_DESCRIPTION("upgrade", "stone_generator.description"),
     //Generic
-    GENERIC("generic", "format"),
+    @Deprecated//TODO - 1.18: Remove this generic lang entry in favor of just having string text components be used
+          GENERIC("generic", "format"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),
@@ -62,12 +65,14 @@ public enum APILang implements ILangEntry {
     CHEMICAL_ATTRIBUTE_RADIATION("chemical", "attribute.radiation"),
     CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY("chemical", "attribute.coolant.efficiency"),
     CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY("chemical", "attribute.coolant.heat_capacity"),
+    CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS("chemical", "attribute.fuel.burn_ticks"),
+    CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY("chemical", "attribute.fuel.energy_density"),
     ;
 
     private final String key;
 
     APILang(String type, String path) {
-        this(Util.makeTranslationKey(type, new ResourceLocation(MekanismAPI.MEKANISM_MODID, path)));
+        this(Util.makeDescriptionId(type, new ResourceLocation(MekanismAPI.MEKANISM_MODID, path)));
     }
 
     APILang(String key) {

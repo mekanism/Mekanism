@@ -52,11 +52,6 @@
           ],
           "name": "mekanism:fluidic_plenisher"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
@@ -19,6 +20,7 @@ import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
 import mekanism.common.inventory.slot.chemical.SlurryInventorySlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank> implements IFluidHandlerSlot {
@@ -99,11 +101,11 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
                 return pigmentInsertPredicate.test(stack);
             } else if (currentType == CurrentType.SLURRY) {
                 return slurryInsertPredicate.test(stack);
-            }//Else the tank is empty, if the item is a fluid handler and it is an internal check allow it
+            }//Else the tank is empty, if the item is a fluid handler, and it is an internal check allow it
             if (automationType == AutomationType.INTERNAL && FluidUtil.getFluidHandler(stack).isPresent()) {
                 return true;
             }
-            //otherwise only allow it if one of the chemical insert predicates matches
+            //otherwise, only allow it if one of the chemical insert predicates matches
             return gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) || slurryInsertPredicate.test(stack);
         }, HybridInventorySlot::hasCapability, listener, x, y);
     }
@@ -140,5 +142,26 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
     @Override
     public void setFilling(boolean filling) {
         isFilling = filling;
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = super.serializeNBT();
+        if (isDraining) {
+            nbt.putBoolean(NBTConstants.DRAINING, true);
+        }
+        if (isFilling) {
+            nbt.putBoolean(NBTConstants.FILLING, true);
+        }
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(@Nonnull CompoundNBT nbt) {
+        super.deserializeNBT(nbt);
+        //Grab the booleans regardless if they are present as if they aren't that means they are false
+        isDraining = nbt.getBoolean(NBTConstants.DRAINING);
+        isFilling = nbt.getBoolean(NBTConstants.FILLING);
     }
 }

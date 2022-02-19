@@ -1,39 +1,44 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.gear.ICustomModule;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.config.IModuleConfigItem;
+import mekanism.api.gear.config.ModuleConfigItemCreator;
+import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.EnumData;
-import mekanism.common.network.PacketLightningRender;
-import mekanism.common.network.PacketLightningRender.LightningPreset;
+import mekanism.common.network.to_client.PacketLightningRender;
+import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
-public class ModuleVeinMiningUnit extends ModuleMekaTool {
+@ParametersAreNonnullByDefault
+public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit> {
 
-    private ModuleConfigItem<Boolean> extendedMode;
-    private ModuleConfigItem<ExcavationRange> excavationRange;
+    private IModuleConfigItem<Boolean> extendedMode;
+    private IModuleConfigItem<ExcavationRange> excavationRange;
 
     @Override
-    public void init() {
-        super.init();
-        addConfigItem(extendedMode = new DisableableModuleConfigItem(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, false, MekanismConfig.gear.mekaToolExtendedMining));
-        addConfigItem(excavationRange = new ModuleConfigItem<>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount() + 1), ExcavationRange.LOW));
+    public void init(IModule<ModuleVeinMiningUnit> module, ModuleConfigItemCreator configItemCreator) {
+        extendedMode = configItemCreator.createDisableableConfigItem("extended_mode", MekanismLang.MODULE_EXTENDED_MODE, false, MekanismConfig.gear.mekaToolExtendedMining);
+        excavationRange = configItemCreator.createConfigItem("excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE,
+              new ModuleEnumData<>(ExcavationRange.class, module.getInstalledCount() + 1, ExcavationRange.LOW));
     }
 
     public boolean isExtended() {
@@ -57,17 +62,17 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
             if (found.size() > maxCount) {
                 return found;
             }
-            for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
+            for (BlockPos pos : BlockPos.betweenClosed(blockPos.offset(-1, -1, -1), blockPos.offset(1, 1, 1))) {
                 //We can check contains as mutable
                 if (!found.contains(pos) && (maxRange == -1 || WorldUtils.distanceBetween(location, pos) <= maxRange)) {
                     Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
                     if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
                         //Make sure to add it as immutable
-                        if (openSet.add(pos.toImmutable())) {
+                        if (openSet.add(pos.immutable())) {
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
                             Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
-                                  Vector3d.copyCentered(blockPos), Vector3d.copyCentered(pos), 10), world, blockPos);
+                                  Vector3d.atCenterOf(blockPos), Vector3d.atCenterOf(pos), 10), world, blockPos);
                         }
                     }
                 }
@@ -77,13 +82,10 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list) {
-        if (!isEnabled()) {
-            return;
-        }
+    public void addHUDStrings(IModule<ModuleVeinMiningUnit> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
         //Only add hud string for extended vein mining if enabled in config
-        if (MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
-            list.add(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
+        if (module.isEnabled() && MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
+            hudStringAdder.accept(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
                   isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
                   isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER));
         }
@@ -101,7 +103,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
 
         ExcavationRange(int range) {
             this.range = range;
-            this.label = new StringTextComponent(Integer.toString(range));
+            this.label = TextComponentUtil.getString(Integer.toString(range));
         }
 
         @Override

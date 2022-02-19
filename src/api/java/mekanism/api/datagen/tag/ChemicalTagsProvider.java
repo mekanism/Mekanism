@@ -13,6 +13,9 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
 import net.minecraftforge.registries.IForgeRegistry;
 
+/**
+ * Helper classes for implementing tag providers for various chemical types.
+ */
 public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryTagsProvider<CHEMICAL> {
 
     private final String baseName;

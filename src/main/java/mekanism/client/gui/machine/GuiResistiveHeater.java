@@ -10,19 +10,17 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketGuiSetEnergy;
-import mekanism.common.network.PacketGuiSetEnergy.GuiEnergyValue;
+import mekanism.common.network.to_server.PacketGuiSetEnergy;
+import mekanism.common.network.to_server.PacketGuiSetEnergy.GuiEnergyValue;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.InputValidator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -32,27 +30,25 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     public GuiResistiveHeater(MekanismTileContainer<TileEntityResistiveHeater> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
+        inventoryLabelY += 2;
         dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 48, 23, 80, 42, () -> Arrays.asList(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
         )).clearFormat());
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(new GuiHeatTab(() -> {
-            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer()));
+        addButton(new GuiHeatTab(this, () -> {
+            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this));
+        }));
 
-        addButton(energyUsageField = new GuiTextField(this, 50, 51, 76, 12));
+        energyUsageField = addButton(new GuiTextField(this, 50, 51, 76, 12));
         energyUsageField.setText(energyUsageField.getText());
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setInputValidator(InputValidator.DIGIT);
@@ -63,14 +59,14 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getPos(),
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getBlockPos(),
                       MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(energyUsageField.getText()))));
             } catch (NumberFormatException ignored) {
             }

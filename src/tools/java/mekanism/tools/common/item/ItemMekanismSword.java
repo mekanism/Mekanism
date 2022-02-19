@@ -38,30 +38,30 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override
-    public float getAttackDamage() {
-        return material.getSwordDamage() + getTier().getAttackDamage();
+    public float getDamage() {
+        return material.getSwordDamage() + getTier().getAttackDamageBonus();
     }
 
     @Nonnull
     @Override
     public Ingredient getRepairMaterial() {
-        return getTier().getRepairMaterial();
+        return getTier().getRepairIngredient();
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return getTier().getMaxUses();
+        return getTier().getUses();
     }
 
     @Override
-    public boolean isDamageable() {
-        return getTier().getMaxUses() > 0;
+    public boolean canBeDepleted() {
+        return getTier().getUses() > 0;
     }
 
     @Nonnull
@@ -72,7 +72,7 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", getAttackDamage(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", material.getSwordAtkSpeed(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", getDamage(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", material.getSwordAtkSpeed(), Operation.ADDITION));
     }
 }

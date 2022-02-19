@@ -102,6 +102,11 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.REDSTONE),
               1
         ).build(consumer, Mekanism.rl(basePath + "note_block"));
+        //Melons
+        SawmillRecipeBuilder.sawing(
+              ItemStackIngredient.from(Blocks.MELON),
+              new ItemStack(Items.MELON_SLICE, 9)
+        ).build(consumer, Mekanism.rl(basePath + "melon"));
         //Planks
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(ItemTags.PLANKS),

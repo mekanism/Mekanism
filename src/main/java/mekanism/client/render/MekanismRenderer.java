@@ -17,6 +17,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
@@ -27,6 +28,8 @@ import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderFluidTank;
+import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
+import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
@@ -67,12 +70,13 @@ public class MekanismRenderer {
     //TODO: Replace various usages of this with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
     public static final int FULL_LIGHT = 0xF000F0;
-    public static final int FULL_SKY_LIGHT = LightTexture.packLight(0, 15);
+    public static final int FULL_SKY_LIGHT = LightTexture.pack(0, 15);
 
     public static OBJModel contentsModel;
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
+    public static TextureAtlasSprite teleporterPortal;
     public static TextureAtlasSprite redstoneTorch;
     public static TextureAtlasSprite redstonePulse;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
@@ -112,7 +116,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
-        return Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(spriteLocation);
+        return Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(spriteLocation);
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
@@ -197,20 +201,20 @@ public class MekanismRenderer {
           BooleanSupplier inMultiblock) {
         FaceDisplay faceDisplay;
         if (!valves.isEmpty()) {
-            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside of them
+            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
             // if we aren't in the multiblock though we can just get away with only rendering the front faces
             faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
             for (ValveData valveData : valves) {
-                matrix.push();
+                matrix.pushPose();
                 matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
                 renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
-                matrix.pop();
+                matrix.popPose();
             }
         }
     }
 
     public static void bindTexture(ResourceLocation texture) {
-        Minecraft.getInstance().textureManager.bindTexture(texture);
+        Minecraft.getInstance().textureManager.bind(texture);
     }
 
     //Color
@@ -274,12 +278,8 @@ public class MekanismRenderer {
     }
 
     public static void color(@Nullable EnumColor color, float alpha) {
-        color(color, alpha, 1.0F);
-    }
-
-    public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
         if (color != null) {
-            RenderSystem.color4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+            RenderSystem.color4f(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
         }
     }
 
@@ -338,54 +338,56 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(MatrixStack matrix, int x, int y, int width, int height, int color) {
-        float r = (color >> 24 & 255) / 255.0F;
-        float g = (color >> 16 & 255) / 255.0F;
-        float b = (color >> 8 & 255) / 255.0F;
-        float a = (color & 255) / 255.0F;
+        float r = getRed(color);
+        float g = getGreen(color);
+        float b = getBlue(color);
+        float a = getAlpha(color);
+        RenderSystem.disableDepthTest();
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
-        bufferbuilder.pos(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
-        tessellator.draw();
+        Matrix4f matrix4f = matrix.last().pose();
+        bufferbuilder.vertex(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
+        tessellator.end();
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
     }
 
     public static float getPartialTick() {
-        return Minecraft.getInstance().getRenderPartialTicks();
+        return Minecraft.getInstance().getFrameTime();
     }
 
     public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
-                matrix.rotate(Vector3f.YP.rotationDegrees(north));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(north));
                 break;
             case SOUTH:
-                matrix.rotate(Vector3f.YP.rotationDegrees(south));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(south));
                 break;
             case WEST:
-                matrix.rotate(Vector3f.YP.rotationDegrees(west));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(west));
                 break;
             case EAST:
-                matrix.rotate(Vector3f.YP.rotationDegrees(east));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(east));
                 break;
         }
     }
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
-        try {
+        try {//TODO - 1.18: Evaluating moving this to our model cache (ObjModelData)
             contentsModel = OBJLoader.INSTANCE.loadModel(new ModelSettings(RenderTransmitterBase.MODEL_LOCATION, true, false, true, true, null));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -394,7 +396,7 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!event.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -404,8 +406,8 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("block/overlay/overlay_white"));
         event.addSprite(Mekanism.rl("liquid/energy"));
         event.addSprite(Mekanism.rl("liquid/heat"));
-
         event.addSprite(Mekanism.rl("icon/redstone_control_pulse"));
+        event.addSprite(Mekanism.rl("block/teleporter_portal"));
 
         //MekaSuit
         event.addSprite(Mekanism.rl("entity/armor/blank"));
@@ -414,6 +416,7 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_helmet"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_exoskeleton"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_gravitational_modulator"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_elytra"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_modules"));
         event.addSprite(Mekanism.rl("entity/armor/mekatool"));
 
@@ -428,6 +431,8 @@ public class MekanismRenderer {
         RenderDigitalMiner.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
+        RenderNutritionalLiquifier.resetCachedModels();
+        RenderPigmentMixer.resetCached();
         RenderMechanicalPipe.onStitch();
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
@@ -435,17 +440,17 @@ public class MekanismRenderer {
         parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
         SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
         SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
+        GuiElementHolder.updateBackgroundColor();
     }
 
     private static void parseColorAtlas(ResourceLocation rl) {
-        EnumColor[] colors = EnumColor.values();
-        List<Color> parsed = ColorAtlas.load(rl, colors.length);
-        if (parsed.size() < colors.length) {
+        List<Color> parsed = ColorAtlas.load(rl, EnumUtils.COLORS.length);
+        if (parsed.size() < EnumUtils.COLORS.length) {
             Mekanism.logger.error("Failed to parse primary color atlas.");
             return;
         }
-        for (int i = 0; i < colors.length; i++) {
-            colors[i].setColorFromAtlas(parsed.get(i).rgbArray());
+        for (int i = 0; i < EnumUtils.COLORS.length; i++) {
+            EnumUtils.COLORS[i].setColorFromAtlas(parsed.get(i).rgbArray());
         }
     }
 
@@ -458,7 +463,7 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
-        if (!map.getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!map.location().equals(AtlasTexture.LOCATION_BLOCKS)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -470,6 +475,7 @@ public class MekanismRenderer {
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
         redstoneTorch = map.getSprite(new ResourceLocation("minecraft:block/redstone_torch"));
         redstonePulse = map.getSprite(Mekanism.rl("icon/redstone_control_pulse"));
+        teleporterPortal = map.getSprite(Mekanism.rl("block/teleporter_portal"));
 
         DigitalMinerBakedModel.onStitch(event);
 

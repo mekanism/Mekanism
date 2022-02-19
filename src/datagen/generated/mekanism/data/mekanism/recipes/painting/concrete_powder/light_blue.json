@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/concrete_powder"
+      },
+      "without": {
+        "item": "minecraft:light_blue_concrete_powder"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:light_blue"
+  },
+  "output": {
+    "item": "minecraft:light_blue_concrete_powder"
+  }
+}

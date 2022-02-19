@@ -166,9 +166,9 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * A sided variant of {@link IItemHandler#isItemValid(int, ItemStack)}, docs copied for convenience.
      *
      * <p>
-     * This function re-implements the vanilla function {@link IInventory#isItemValidForSlot(int, ItemStack)}. It should be used instead of simulated insertions in cases
-     * where the contents and state of the inventory are irrelevant, mainly for the purpose of automation and logic (for instance, testing if a minecart can wait to
-     * deposit its items into a full inventory, or if the items in the minecart can never be placed into the inventory and should move on).
+     * This function re-implements the vanilla function {@link IInventory#canPlaceItem(int, ItemStack)}. It should be used instead of simulated insertions in cases where
+     * the contents and state of the inventory are irrelevant, mainly for the purpose of automation and logic (for instance, testing if a minecart can wait to deposit its
+     * items into a full inventory, or if the items in the minecart can never be placed into the inventory and should move on).
      * </p>
      * <ul>
      * <li>isItemValid is false when insertion of the item is never valid.</li>

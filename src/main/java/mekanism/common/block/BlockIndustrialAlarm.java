@@ -27,34 +27,34 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
     private static final VoxelShape[] MIN_SHAPES = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShapeUtils.setShape(makeCuboidShape(5, 0, 5, 11, 16, 11), MIN_SHAPES, true);
+        VoxelShapeUtils.setShape(box(5, 0, 5, 11, 16, 11), MIN_SHAPES, true);
     }
 
     public BlockIndustrialAlarm() {
-        super(MekanismBlockTypes.INDUSTRIAL_ALARM, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(2, 2.4F));
+        super(MekanismBlockTypes.INDUSTRIAL_ALARM, AbstractBlock.Properties.of(Material.GLASS).strength(2, 2.4F));
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updatePostPlacement(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
-        if (facing.getOpposite() == Attribute.get(state.getBlock(), AttributeStateFacing.class).getDirection(state) && !state.isValidPosition(world, currentPos)) {
-            return Blocks.AIR.getDefaultState();
+        if (facing.getOpposite() == Attribute.get(state, AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
+            return Blocks.AIR.defaultBlockState();
         }
-        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Override
     @Deprecated
-    public boolean isValidPosition(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
-        Direction side = Attribute.get(state.getBlock(), AttributeStateFacing.class).getDirection(state);
+    public boolean canSurvive(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
+        Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
         Direction sideOn = side.getOpposite();
-        BlockPos offsetPos = pos.offset(sideOn);
-        VoxelShape projected = world.getBlockState(offsetPos).getCollisionShape(world, offsetPos).project(side);
+        BlockPos offsetPos = pos.relative(sideOn);
+        VoxelShape projected = world.getBlockState(offsetPos).getBlockSupportShape(world, offsetPos).getFaceShape(side);
         //hasEnoughSolidSide does not quite work for us, as the shape is incorrect
         //Don't allow placing on leaves or a block that is too small
         // same restrictions as vanilla except we have a better check for placing against the side
-        return !state.isIn(BlockTags.LEAVES) && !VoxelShapes.compare(projected, MIN_SHAPES[sideOn.ordinal()], IBooleanFunction.ONLY_SECOND);
+        return !state.is(BlockTags.LEAVES) && !VoxelShapes.joinIsNotEmpty(projected, MIN_SHAPES[sideOn.ordinal()], IBooleanFunction.ONLY_SECOND);
     }
 }

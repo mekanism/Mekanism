@@ -23,6 +23,16 @@
                   "op": "replace"
                 },
                 {
+                  "source": "componentConfig",
+                  "target": "mekData.componentConfig",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentEjector",
+                  "target": "mekData.componentEjector",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"
@@ -41,11 +51,6 @@
             }
           ],
           "name": "mekanism:solar_neutron_activator"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:antiprotonic_nucleosynthesizer"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

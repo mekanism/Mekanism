@@ -13,21 +13,21 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
 
     public GuiPersonalChestItem(PersonalChestItemContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 64;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 64;
+        inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiSecurityTab(this, container.getHand()));
+    protected void addGuiElements() {
+        super.addGuiElements();
+        addButton(new GuiSecurityTab(this, menu.getHand()));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismBlocks.PERSONAL_CHEST.getTextComponent(), titleY);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawTitleText(matrix, MekanismBlocks.PERSONAL_CHEST.getTextComponent(), titleLabelY);
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

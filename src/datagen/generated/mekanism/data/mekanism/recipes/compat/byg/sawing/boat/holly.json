@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:holly_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:holly_planks",
+    "count": 5
+  }
+}

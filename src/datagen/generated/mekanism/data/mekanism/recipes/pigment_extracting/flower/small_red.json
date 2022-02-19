@@ -1,0 +1,20 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:beetroot"
+      },
+      {
+        "item": "minecraft:poppy"
+      },
+      {
+        "item": "minecraft:red_tulip"
+      }
+    ]
+  },
+  "output": {
+    "pigment": "mekanism:red",
+    "amount": 768
+  }
+}

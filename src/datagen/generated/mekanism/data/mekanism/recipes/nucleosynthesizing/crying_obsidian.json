@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:obsidian"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:crying_obsidian"
+  },
+  "duration": 200
+}

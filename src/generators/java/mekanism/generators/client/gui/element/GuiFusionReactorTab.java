@@ -12,8 +12,8 @@ import mekanism.generators.client.GeneratorsSpecialColors;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
-import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
+import mekanism.generators.common.network.to_server.PacketGeneratorsGuiButtonPress;
+import mekanism.generators.common.network.to_server.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -50,7 +50,7 @@ public class GuiFusionReactorTab extends GuiTabElementType<TileEntityFusionReact
 
         @Override
         public void onClick(TileEntityFusionReactorController tile) {
-            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getPos()));
+            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getBlockPos()));
         }
 
         @Override

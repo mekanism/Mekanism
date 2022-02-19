@@ -8,14 +8,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -33,32 +33,29 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwork, ThermodynamicConductor> implements ITileHeatHandler,
       IUpgradeableTransmitter<ThermodynamicConductorUpgradeData> {
 
+    private final CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getTileWorld, this::getTilePos);
     public final ConductorTier tier;
-    private double clientTemperature = HeatAPI.AMBIENT_TEMP;
+    //Default to negative one, so we know we need to calculate it when needed
+    private double clientTemperature = -1;
     private final List<IHeatCapacitor> capacitors;
-    public final BasicHeatCapacitor buffer;
+    public final VariableHeatCapacitor buffer;
 
     public ThermodynamicConductor(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.HEAT);
-        this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
-        buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), this);
+        this.tier = Attribute.getTier(blockProvider, ConductorTier.class);
+        buffer = VariableHeatCapacitor.create(tier.getHeatCapacity(), tier::getInverseConduction, tier::getInverseConductionInsulation, ambientTemperature, this);
         capacitors = Collections.singletonList(buffer);
     }
 
     @Override
     public AcceptorCache<IHeatHandler> getAcceptorCache() {
-        //Cast it here to make things a bit easier, as we know the create is by default of type AcceptorCache
+        //Cast it here to make things a bit easier, as we know createAcceptorCache by default returns an object of type AcceptorCache
         return (AcceptorCache<IHeatHandler>) super.getAcceptorCache();
     }
 
     @Override
     public ConductorTier getTier() {
         return tier;
-    }
-
-    @Override
-    public HeatNetwork createEmptyNetwork() {
-        return new HeatNetwork();
     }
 
     @Override
@@ -139,6 +136,9 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public void onContentsChanged() {
         if (!isRemote()) {
+            if (clientTemperature == -1) {
+                clientTemperature = ambientTemperature.getAsDouble();
+            }
             if (Math.abs(buffer.getTemperature() - clientTemperature) > (buffer.getTemperature() / 20)) {
                 clientTemperature = buffer.getTemperature();
                 getTransmitterTile().sendUpdatePacket();
@@ -147,14 +147,32 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         getTransmitterTile().markDirty(false);
     }
 
+    @Override
+    public double getAmbientTemperature(@Nonnull Direction side) {
+        return ambientTemperature.getTemperature(side);
+    }
+
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(Direction side) {
+    public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
             // network as valid acceptors
             return getAcceptorCache().getConnectedAcceptor(side).resolve().orElse(null);
         }
         return null;
+    }
+
+    @Override
+    public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @Nonnull Direction side) {
+        if (tempToTransfer > 0) {
+            //Look up the adjacent tile from the acceptor cache and then do the type checking
+            TileEntity sink = getAcceptorCache().getConnectedAcceptorTile(side);
+            if (sink instanceof TileEntityTransmitter && TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter) sink)) {
+                //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
+                return currentAdjacentTransfer;
+            }
+        }
+        return ITileHeatHandler.super.incrementAdjacentTransfer(currentAdjacentTransfer, tempToTransfer, side);
     }
 }

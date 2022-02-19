@@ -164,13 +164,13 @@ public class BoltEffect {
 
     private static Vector3d findRandomOrthogonalVector(Vector3d vec, Random rand) {
         Vector3d newVec = new Vector3d(-0.5 + rand.nextDouble(), -0.5 + rand.nextDouble(), -0.5 + rand.nextDouble());
-        return vec.crossProduct(newVec).normalize();
+        return vec.cross(newVec).normalize();
     }
 
     private Pair<BoltQuads, QuadCache> createQuads(QuadCache cache, Vector3d startPos, Vector3d end, float size) {
         Vector3d diff = end.subtract(startPos);
-        Vector3d rightAdd = diff.crossProduct(new Vector3d(0.5, 0.5, 0.5)).normalize().scale(size);
-        Vector3d backAdd = diff.crossProduct(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
+        Vector3d rightAdd = diff.cross(new Vector3d(0.5, 0.5, 0.5)).normalize().scale(size);
+        Vector3d backAdd = diff.cross(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
 
         Vector3d start = cache != null ? cache.prevEnd : startPos;
         Vector3d startRight = cache != null ? cache.prevEndRight : start.add(rightAdd);

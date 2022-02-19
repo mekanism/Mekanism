@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -8,6 +9,9 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraftforge.fluids.FluidStack;
 
+/**
+ * Base class to help implement handling of fluid to fluid recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
@@ -15,10 +19,17 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
     private final IOutputHandler<@NonNull FluidStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
+    private FluidStack recipeFluid = FluidStack.EMPTY;
+
+    /**
+     * @param recipe        Recipe.
+     * @param inputHandler  Input handler.
+     * @param outputHandler Output handler.
+     */
     public FluidToFluidCachedRecipe(FluidToFluidRecipe recipe, IInputHandler<@NonNull FluidStack> inputHandler, IOutputHandler<@NonNull FluidStack> outputHandler) {
         super(recipe);
-        this.inputHandler = inputHandler;
-        this.outputHandler = outputHandler;
+        this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override
@@ -28,13 +39,13 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        FluidStack recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
+        recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
         if (recipeFluid.isEmpty()) {
             return -1;
         }
         //Calculate the current max based on the fluid input
-        currentMax = inputHandler.operationsCanSupport(recipe.getInput(), currentMax);
+        currentMax = inputHandler.operationsCanSupport(recipeFluid, currentMax);
         if (currentMax <= 0) {
             //If our input can't handle it return that we should be resetting
             return -1;
@@ -50,8 +61,6 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        FluidStack recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
         if (recipeFluid.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;

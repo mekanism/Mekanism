@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pink_terracotta"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:pink",
+    "amount": 24
+  }
+}

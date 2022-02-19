@@ -5,8 +5,6 @@ import net.minecraft.nbt.CompoundNBT;
 
 public interface ITileComponent {
 
-    void tick();
-
     void read(CompoundNBT nbtTags);
 
     void write(CompoundNBT nbtTags);
@@ -20,7 +18,9 @@ public interface ITileComponent {
     default void trackForMainContainer(MekanismContainer container) {
     }
 
-    void addToUpdateTag(CompoundNBT updateTag);
+    default void addToUpdateTag(CompoundNBT updateTag) {
+    }
 
-    void readFromUpdateTag(CompoundNBT updateTag);
+    default void readFromUpdateTag(CompoundNBT updateTag) {
+    }
 }

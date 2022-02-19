@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:purple_banner"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:purple",
+    "amount": 64
+  }
+}

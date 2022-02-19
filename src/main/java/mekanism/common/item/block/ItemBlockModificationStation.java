@@ -24,8 +24,8 @@ public class ItemBlockModificationStation extends ItemBlockMachine {
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
         Direction side = MekanismUtils.getRight(Attribute.getFacing(state));
-        BlockPos pos = context.getPos();
-        List<BlockPos> checkList = Arrays.asList(pos.up(), pos.offset(side), pos.up().offset(side));
-        return WorldUtils.areBlocksValidAndReplaceable(context.getWorld(), checkList) && super.placeBlock(context, state);
+        BlockPos pos = context.getClickedPos();
+        List<BlockPos> checkList = Arrays.asList(pos.above(), pos.relative(side), pos.above().relative(side));
+        return WorldUtils.areBlocksValidAndReplaceable(context.getLevel(), checkList) && super.placeBlock(context, state);
     }
 }

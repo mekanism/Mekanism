@@ -50,11 +50,12 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     @Override
     public FormationResult validate(FormationProtocol<T> ctx, Long2ObjectMap<IChunk> chunkMap) {
         BlockPos min = cuboid.getMinPos(), max = cuboid.getMaxPos();
+        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
         for (int x = min.getX(); x <= max.getX(); x++) {
             for (int y = min.getY(); y <= max.getY(); y++) {
                 for (int z = min.getZ(); z <= max.getZ(); z++) {
-                    BlockPos pos = new BlockPos(x, y, z);
-                    FormationResult ret = validateNode(ctx, chunkMap, pos);
+                    mutablePos.set(x, y, z);
+                    FormationResult ret = validateNode(ctx, chunkMap, mutablePos);
                     if (!ret.isFormed()) {
                         return ret;
                     }
@@ -64,16 +65,19 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return FormationResult.SUCCESS;
     }
 
+    /**
+     * @param pos Mutable BlockPos
+     */
     protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
-        StructureRequirement requirement = getStructureRequirement(pos);
         Optional<BlockState> optionalState = WorldUtils.getBlockState(world, chunkMap, pos);
         if (!optionalState.isPresent()) {
             //If the position is not in a loaded chunk or out of bounds of the world, fail
             return FormationResult.FAIL;
         }
         BlockState state = optionalState.get();
+        StructureRequirement requirement = getStructureRequirement(pos);
         if (requirement.isCasing()) {
-            CasingType type = getCasingType(pos, state);
+            CasingType type = getCasingType(state);
             FormationResult ret = validateFrame(ctx, pos, state, type, requirement.needsFrame());
             if (requirement != StructureRequirement.IGNORED && !ret.isFormed()) {
                 return ret;
@@ -81,16 +85,20 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         } else if (!validateInner(state, chunkMap, pos)) {
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
         } else if (!state.isAir(world, pos)) {
-            ctx.innerNodes.add(pos);
+            //Make sure the position is immutable before we store it
+            ctx.innerNodes.add(pos.immutable());
         }
         return FormationResult.SUCCESS;
     }
 
+    /**
+     * @param pos Mutable BlockPos
+     */
     protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
         return state.isAir(world, pos);
     }
 
-    protected abstract CasingType getCasingType(BlockPos pos, BlockState state);
+    protected abstract CasingType getCasingType(BlockState state);
 
     protected boolean isFrameCompatible(TileEntity tile) {
         if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(manager)) {
@@ -99,6 +107,9 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return manager.isCompatible(tile);
     }
 
+    /**
+     * @param pos Mutable BlockPos
+     */
     protected FormationResult validateFrame(FormationProtocol<T> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
         IMultiblockBase tile = structure.getTile(pos);
         // terminate if we encounter a node that already failed this tick
@@ -106,23 +117,24 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
             //If it is not a valid node or if it is supposed to be a frame but is invalid
             // then we are not valid over all
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos);
-        } else {
-            if (tile instanceof IMultiblock) {
-                @SuppressWarnings("unchecked")
-                IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
-                UUID uuid = multiblockTile.getCacheID();
-                if (uuid != null && multiblockTile.getManager() == manager && multiblockTile.hasCache()) {
-                    manager.updateCache(multiblockTile, multiblockTile.getMultiblock());
-                    ctx.idsFound.add(uuid);
-                }
+        }
+        if (tile instanceof IMultiblock) {
+            @SuppressWarnings("unchecked")
+            IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
+            UUID uuid = multiblockTile.getCacheID();
+            if (uuid != null && multiblockTile.getManager() == manager && multiblockTile.hasCache()) {
+                manager.updateCache(multiblockTile, multiblockTile.getMultiblock());
+                ctx.idsFound.add(uuid);
             }
-            ctx.locations.add(pos);
-            if (type.isValve()) {
-                ValveData data = new ValveData();
-                data.location = pos;
-                data.side = getSide(data.location);
-                ctx.valves.add(data);
-            }
+        }
+        //Make sure the position is immutable before we store it
+        pos = pos.immutable();
+        ctx.locations.add(pos);
+        if (type.isValve()) {
+            ValveData data = new ValveData();
+            data.location = pos;
+            data.side = getSide(data.location);
+            ctx.valves.add(data);
         }
         return FormationResult.SUCCESS;
     }

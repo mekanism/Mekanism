@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Mekanism Discord
+    url: https://discord.gg/nmSjMGc
+    about: The best place to receive quick answers to any questions you may have
+  - name: Feature Request
+    url: https://github.com/mekanism/Mekanism-Feature-Requests/issues/new?template=feature_request.yml
+    about: Redirects you to creating an issue on the Mekanism Feature Request issue tracker.

@@ -1,0 +1,74 @@
+{
+  "type": "mekanism:painting",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:white_redwood_bed"
+      },
+      {
+        "item": "ilikewood:orange_redwood_bed"
+      },
+      {
+        "item": "ilikewood:magenta_redwood_bed"
+      },
+      {
+        "item": "ilikewood:light_blue_redwood_bed"
+      },
+      {
+        "item": "ilikewood:yellow_redwood_bed"
+      },
+      {
+        "item": "ilikewood:lime_redwood_bed"
+      },
+      {
+        "item": "ilikewood:pink_redwood_bed"
+      },
+      {
+        "item": "ilikewood:light_gray_redwood_bed"
+      },
+      {
+        "item": "ilikewood:cyan_redwood_bed"
+      },
+      {
+        "item": "ilikewood:purple_redwood_bed"
+      },
+      {
+        "item": "ilikewood:blue_redwood_bed"
+      },
+      {
+        "item": "ilikewood:brown_redwood_bed"
+      },
+      {
+        "item": "ilikewood:green_redwood_bed"
+      },
+      {
+        "item": "ilikewood:red_redwood_bed"
+      },
+      {
+        "item": "ilikewood:black_redwood_bed"
+      }
+    ]
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:gray"
+  },
+  "output": {
+    "item": "ilikewood:gray_redwood_bed"
+  }
+}

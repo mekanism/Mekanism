@@ -50,14 +50,14 @@ public class AcceptorCache<ACCEPTOR> extends AbstractAcceptorCache<ACCEPTOR, Acc
         }
         if (dirtyAcceptor) {
             transmitter.markDirtyAcceptor(side);
-            //If the capability is present and we want to add the listener, add a listener so that once it gets invalidated
+            //If the capability is present, and we want to add the listener, add a listener so that once it gets invalidated
             // we recheck that side assuming that the world and position is still loaded and our tile has not been removed
             NonNullConsumer<LazyOptional<ACCEPTOR>> refreshListener = getRefreshListener(side);
             if (sourceIsSame) {
-                //Add it to the actual acceptor as it is the same as the source and we can do so without any unchecked warnings
+                //Add it to the actual acceptor as it is the same as the source, and we can do so without any unchecked warnings
                 acceptor.addListener(refreshListener);
             } else {
-                //Otherwise use unchecked generics to add the listener to the source acceptor
+                //Otherwise, use unchecked generics to add the listener to the source acceptor
                 CapabilityUtils.addListener(sourceAcceptor, refreshListener);
             }
         }
@@ -76,6 +76,17 @@ public class AcceptorCache<ACCEPTOR> extends AbstractAcceptorCache<ACCEPTOR, Acc
             //TODO: If the tile has been removed should we force an invalidation/recheck?
         }
         return LazyOptional.empty();
+    }
+
+    @Nullable
+    public TileEntity getConnectedAcceptorTile(Direction side) {
+        if (cachedAcceptors.containsKey(side)) {
+            TileEntity tile = cachedAcceptors.get(side).getTile();
+            if (!tile.isRemoved()) {
+                return tile;
+            }
+        }
+        return null;
     }
 
     /**

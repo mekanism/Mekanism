@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:black_concrete_powder"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:black",
+    "amount": 32
+  }
+}

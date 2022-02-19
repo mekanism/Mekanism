@@ -21,10 +21,11 @@ import mekanism.common.content.transporter.PathfinderCache.CachedPath;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
+import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
@@ -49,7 +50,7 @@ public final class TransporterPathfinder {
         List<AcceptorData> acceptors = network.calculateAcceptors(request, stack, chunkMap);
         List<Destination> paths = new ArrayList<>();
         for (AcceptorData data : acceptors) {
-            Destination path = getPath(data, start, stack, min, chunkMap);
+            Destination path = getPath(network, data, start, stack, min, chunkMap);
             if (path != null) {
                 paths.add(path);
             }
@@ -58,35 +59,37 @@ public final class TransporterPathfinder {
         return paths;
     }
 
-    private static boolean checkPath(World world, List<BlockPos> path, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
+    private static boolean checkPath(InventoryNetwork network, List<BlockPos> path, TransporterStack stack) {
         for (int i = path.size() - 1; i > 0; i--) {
-            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, path.get(i));
-            if (tile instanceof TileEntityLogisticalTransporterBase) {
-                EnumColor color = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().getColor();
-                if (color != null && color != stack.color) {
-                    return false;
-                }
-            } else {
+            LogisticalTransporterBase transmitter = network.getTransmitter(path.get(i));
+            if (transmitter == null) {
+                return false;
+            }
+            EnumColor color = transmitter.getColor();
+            if (color != null && color != stack.color) {
                 return false;
             }
         }
         return true;
     }
 
-    private static Destination getPath(AcceptorData data, LogisticalTransporterBase start, TransporterStack stack, int min, Long2ObjectMap<IChunk> chunkMap) {
+    @Nullable
+    private static Destination getPath(InventoryNetwork network, AcceptorData data, LogisticalTransporterBase start, TransporterStack stack, int min,
+          Long2ObjectMap<IChunk> chunkMap) {
         TransitResponse response = data.getResponse();
         if (response.getSendingAmount() >= min) {
             BlockPos dest = data.getLocation();
             CachedPath test = PathfinderCache.getCache(start, dest, data.getSides());
-            if (test != null && checkPath(start.getTileWorld(), test.getPath(), stack, chunkMap)) {
+            if (test != null && checkPath(network, test.getPath(), stack)) {
                 return new Destination(test.getPath(), false, response, test.getCost());
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
-                public boolean isValid(TransporterStack stack, Direction dir, TileEntity tile) {
-                    return TransporterUtils.canInsert(tile, stack.color, response.getStack(), dir, false);
+                public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
+                    return TransporterUtils.canInsert(tile, stack.color, response.getStack(), side, false);
                 }
-            }, start.getTileWorld(), dest, start.getTilePos(), stack, chunkMap);
+            }, network, start.getTileWorld(), dest, start.getTilePos(), stack);
+            p.find(chunkMap);
             List<BlockPos> path = p.getPath();
             if (path.size() >= 2) {
                 PathfinderCache.addCachedPath(start, new PathData(start.getTilePos(), dest, p.getSide()), path, p.finalScore);
@@ -105,46 +108,68 @@ public final class TransporterPathfinder {
         return paths.get(0);
     }
 
+    @Nullable
     public static Destination getNewRRPath(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, TileEntityLogisticalSorter outputter,
           int min) {
-        List<Destination> paths = getPaths(start, stack, request, min);
-        Map<BlockPos, Destination> destPaths = new Object2ObjectOpenHashMap<>();
-        for (Destination d : paths) {
-            BlockPos dest = d.getPath().get(0);
-            Destination destination = destPaths.get(dest);
-            if (destination == null || destination.getPath().size() < d.getPath().size()) {
-                destPaths.put(dest, d);
-            }
+        List<Destination> destinations = getPaths(start, stack, request, min);
+        int destinationCount = destinations.size();
+        if (destinationCount == 0) {
+            return null;
         }
-
-        List<Destination> destinations = new ArrayList<>(destPaths.values());
-        Collections.sort(destinations);
-        Destination closest = null;
-        if (!destinations.isEmpty()) {
-            if (outputter.rrIndex <= destinations.size() - 1) {
-                closest = destinations.get(outputter.rrIndex);
-                if (outputter.rrIndex == destinations.size() - 1) {
-                    outputter.rrIndex = 0;
-                } else if (outputter.rrIndex < destinations.size() - 1) {
-                    outputter.rrIndex++;
+        if (destinationCount > 1 && outputter.rrTarget != null) {
+            //If we have more than one destination and have a "next" round-robin target stored
+            // go through the different destinations and find one that matches
+            for (int i = 0; i < destinationCount; i++) {
+                Destination destination = destinations.get(i);
+                List<BlockPos> path = destination.getPath();
+                BlockPos pos = path.get(0);
+                if (outputter.rrTarget.getPos().equals(pos)) {
+                    Direction sideOfDest = WorldUtils.sideDifference(path.get(1), pos);
+                    if (outputter.rrTarget.getSide().equals(sideOfDest)) {
+                        //When we find one that matches
+                        if (i == destinationCount - 1) {
+                            // if we are the last element mark that the next target is the first one
+                            // Note: We do this rather than just setting it to null so that if more
+                            // targets get added we still continue in the place we are expecting
+                            outputter.rrTarget = SidedBlockPos.get(destinations.get(0));
+                        } else {
+                            // Otherwise, if we are not the last element mark the next target as
+                            // the next destination
+                            outputter.rrTarget = SidedBlockPos.get(destinations.get(i + 1));
+                        }
+                        //We return our matching destination instead of the next one and using rrTarget to
+                        // keep track of what destination we did last as then if we filled it up we would
+                        // not be able to find a match the next iteration and thus be forced to reset
+                        return destination;
+                    }
                 }
-            } else {
-                closest = destinations.get(destinations.size() - 1);
-                outputter.rrIndex = 0;
             }
+            //If we could not find our target anywhere, just fallback and reset to the start of the list
+            // this should only happen if the destination gets broken/removed before we send to it
         }
-        return closest;
+        Destination destination = destinations.get(0);
+        if (destinationCount > 1) {
+            outputter.rrTarget = SidedBlockPos.get(destinations.get(1));
+        } else {
+            outputter.rrTarget = SidedBlockPos.get(destination);
+        }
+        return destination;
     }
 
     public static Pair<List<BlockPos>, Path> getIdlePath(LogisticalTransporterBase start, TransporterStack stack) {
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        InventoryNetwork network = start.getTransmitterNetwork();
+        if (network == null) {
+            return null;
+        }
         if (stack.homeLocation != null) {
+            Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
                     return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
-            }, start.getTileWorld(), stack.homeLocation, start.getTilePos(), stack, chunkMap);
+            }, network, start.getTileWorld(), stack.homeLocation, start.getTilePos(), stack);
+            p.find(chunkMap);
             List<BlockPos> path = p.getPath();
             if (path.size() >= 2) {
                 return Pair.of(path, Path.HOME);
@@ -152,8 +177,8 @@ public final class TransporterPathfinder {
             stack.homeLocation = null;
         }
 
-        IdlePath d = new IdlePath(start.getTileWorld(), start.getTilePos(), stack);
-        Destination dest = d.find(chunkMap);
+        IdlePath d = new IdlePath(network, start.getTilePos(), stack);
+        Destination dest = d.find();
         if (dest == null) {
             return null;
         }
@@ -162,87 +187,102 @@ public final class TransporterPathfinder {
 
     public static class IdlePath {
 
-        private final World world;
+        private final InventoryNetwork network;
         private final BlockPos start;
         private final TransporterStack transportStack;
 
-        public IdlePath(World world, BlockPos obj, TransporterStack stack) {
-            this.world = world;
-            start = obj;
+        public IdlePath(InventoryNetwork network, BlockPos start, TransporterStack stack) {
+            this.network = network;
+            this.start = start;
             transportStack = stack;
         }
 
-        public Destination find(Long2ObjectMap<IChunk> chunkMap) {
+        public Destination find() {
             ArrayList<BlockPos> ret = new ArrayList<>();
             ret.add(start);
-            TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
+            LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
             if (transportStack.idleDir == null) {
-                return getDestination(chunkMap, ret, startTile);
+                return getDestination(ret, startTransmitter);
             }
-            TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap,
-                  start.offset(transportStack.idleDir));
-            if (transportStack.canInsertToTransporter(tile, transportStack.idleDir, startTile)) {
-                loopSide(chunkMap, ret, transportStack.idleDir, startTile);
+            LogisticalTransporterBase transmitter = network.getTransmitter(start.relative(transportStack.idleDir));
+            if (transportStack.canInsertToTransporter(transmitter, transportStack.idleDir, startTransmitter)) {
+                loopSide(ret, transportStack.idleDir, startTransmitter);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
             TransitRequest request = TransitRequest.simple(transportStack.itemStack);
-            if (startTile instanceof TileEntityLogisticalTransporterBase) {
-                Destination newPath = TransporterPathfinder.getNewBasePath(((TileEntityLogisticalTransporterBase) startTile).getTransmitter(), transportStack, request, 0);
+            if (startTransmitter != null) {
+                Destination newPath = TransporterPathfinder.getNewBasePath(startTransmitter, transportStack, request, 0);
                 if (newPath != null && newPath.getResponse() != null) {
                     transportStack.idleDir = null;
                     newPath.setPathType(Path.DEST);
                     return newPath;
                 }
             }
-            return getDestination(chunkMap, ret, startTile);
+            return getDestination(ret, startTransmitter);
         }
 
         @Nullable
-        private Destination getDestination(Long2ObjectMap<IChunk> chunkMap, ArrayList<BlockPos> ret, TileEntity startTile) {
-            Direction newSide = findSide(chunkMap);
+        private Destination getDestination(List<BlockPos> ret, @Nullable LogisticalTransporterBase startTransmitter) {
+            Direction newSide = findSide(startTransmitter);
             if (newSide == null) {
+                if (startTransmitter != null) {
+                    //If we have an idle dir, use that as the "closest" side, otherwise use the side we are closest
+                    // to of the current path
+                    Direction sideClosest = transportStack.idleDir == null ? transportStack.getSide(startTransmitter) : transportStack.idleDir;
+                    //Check all the sides except the one we currently are closest to, as if we only are connected to one side
+                    // then we want to fail
+                    for (Direction side : EnumSet.complementOf(EnumSet.of(sideClosest))) {
+                        if (startTransmitter.getConnectionType(side) != ConnectionType.NONE) {
+                            //If we are connected to a side, idle towards it, the path not pointing at a transmitter
+                            // is gracefully handled
+                            transportStack.idleDir = side;
+                            ret.add(start.relative(side));
+                            return new Destination(ret, true, null, 0).setPathType(Path.NONE);
+                        }
+                    }
+                }
                 return null;
             }
             transportStack.idleDir = newSide;
-            loopSide(chunkMap, ret, newSide, startTile);
+            loopSide(ret, newSide, startTransmitter);
             return new Destination(ret, true, null, 0).setPathType(Path.NONE);
         }
 
-        private void loopSide(Long2ObjectMap<IChunk> chunkMap, List<BlockPos> list, Direction side, TileEntity startTile) {
-            TileEntity lastTile = startTile;
-            BlockPos pos = start.offset(side);
-            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
-            while (transportStack.canInsertToTransporter(tile, side, lastTile)) {
-                lastTile = tile;
+        private void loopSide(List<BlockPos> list, Direction side, @Nullable LogisticalTransporterBase startTransmitter) {
+            LogisticalTransporterBase lastTransmitter = startTransmitter;
+            BlockPos pos = start.relative(side);
+            LogisticalTransporterBase transmitter = network.getTransmitter(pos);
+            while (transportStack.canInsertToTransporter(transmitter, side, lastTransmitter)) {
+                lastTransmitter = transmitter;
                 list.add(pos);
-                pos = pos.offset(side);
-                tile = WorldUtils.getTileEntity(world, chunkMap, pos);
+                pos = pos.relative(side);
+                transmitter = network.getTransmitter(pos);
             }
         }
 
-        private Direction findSide(Long2ObjectMap<IChunk> chunkMap) {
-            TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
+        private Direction findSide(@Nullable LogisticalTransporterBase startTransmitter) {
             if (transportStack.idleDir == null) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
-                    if (transportStack.canInsertToTransporter(tile, side, startTile)) {
+                    if (canInsertToTransporter(side, startTransmitter)) {
                         return side;
                     }
                 }
             } else {
                 Direction opposite = transportStack.idleDir.getOpposite();
                 for (Direction side : EnumSet.complementOf(EnumSet.of(opposite))) {
-                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
-                    if (transportStack.canInsertToTransporter(tile, side, startTile)) {
+                    if (canInsertToTransporter(side, startTransmitter)) {
                         return side;
                     }
                 }
-                TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(opposite));
-                if (transportStack.canInsertToTransporter(tile, opposite, startTile)) {
+                if (canInsertToTransporter(opposite, startTransmitter)) {
                     return opposite;
                 }
             }
             return null;
+        }
+
+        private boolean canInsertToTransporter(Direction from, @Nullable LogisticalTransporterBase startTransmitter) {
+            return transportStack.canInsertToTransporter(network.getTransmitter(start.relative(from)), from, startTransmitter);
         }
     }
 
@@ -304,9 +344,12 @@ public final class TransporterPathfinder {
 
     public static class Pathfinder {
 
-        private final Set<BlockPos> openSet, closedSet;
-        private final Map<BlockPos, BlockPos> navMap;
-        private final Object2DoubleOpenHashMap<BlockPos> gScore, fScore;
+        private final Set<BlockPos> openSet = new ObjectOpenHashSet<>();
+        private final Set<BlockPos> closedSet = new ObjectOpenHashSet<>();
+        private final Map<BlockPos, BlockPos> navMap = new Object2ObjectOpenHashMap<>();
+        private final Object2DoubleOpenHashMap<BlockPos> gScore = new Object2DoubleOpenHashMap<>();
+        private final Object2DoubleOpenHashMap<BlockPos> fScore = new Object2DoubleOpenHashMap<>();
+        private final InventoryNetwork network;
         private final BlockPos start;
         private final BlockPos finalNode;
         private final TransporterStack transportStack;
@@ -314,46 +357,34 @@ public final class TransporterPathfinder {
         private final World world;
         private double finalScore;
         private Direction side;
-        private List<BlockPos> results;
+        private List<BlockPos> results = new ArrayList<>();
 
-        public Pathfinder(DestChecker checker, World world, BlockPos finishObj, BlockPos startObj, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
+        public Pathfinder(DestChecker checker, InventoryNetwork network, World world, BlockPos finalNode, BlockPos start, TransporterStack stack) {
             destChecker = checker;
+            this.network = network;
             this.world = world;
-
-            finalNode = finishObj;
-            start = startObj;
-
+            this.finalNode = finalNode;
+            this.start = start;
             transportStack = stack;
-
-            openSet = new ObjectOpenHashSet<>();
-            closedSet = new ObjectOpenHashSet<>();
-
-            navMap = new Object2ObjectOpenHashMap<>();
-
-            gScore = new Object2DoubleOpenHashMap<>();
-            fScore = new Object2DoubleOpenHashMap<>();
-
-            results = new ArrayList<>();
-
-            find(chunkMap, start);
         }
 
-        public boolean find(Long2ObjectMap<IChunk> chunkMap, BlockPos start) {
+        public boolean find(Long2ObjectMap<IChunk> chunkMap) {
             openSet.add(start);
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
-            fScore.put(start, WorldUtils.distanceBetween(start, finalNode));
+            double totalDistance = WorldUtils.distanceBetween(start, finalNode);
+            fScore.put(start, totalDistance);
             boolean hasValidDirection = false;
-            TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
+            LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                BlockPos neighbor = start.offset(direction);
-                TileEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
-                if (transportStack.canInsertToTransporter(neighborTile, direction, startTile)) {
+                BlockPos neighbor = start.relative(direction);
+                LogisticalTransporterBase neighborTransmitter = network.getTransmitter(neighbor);
+                if (transportStack.canInsertToTransporter(neighborTransmitter, direction, startTransmitter)) {
                     //If we can insert into the transporter, mark that we have a valid path we can take
                     hasValidDirection = true;
                     break;
-                } else if (isValidDestination(start, startTile, direction, neighbor, neighborTile)) {
-                    //Otherwise if we are neighboring our destination, and we can emit to the location or it is going back
+                } else if (isValidDestination(start, startTransmitter, direction, neighbor, chunkMap)) {
+                    //Otherwise, if we are neighboring our destination, and we can emit to the location, or it is going back
                     // to its home location and can connect to it just exit early and return that this is the best path
                     return true;
                 }
@@ -362,7 +393,8 @@ public final class TransporterPathfinder {
                 //If there is no valid direction that the stack can go just exit
                 return false;
             }
-            double maxSearchDistance = 2 * WorldUtils.distanceBetween(start, finalNode);
+            //If the blocks are very close together, allow for path finding up to four blocks away
+            double maxSearchDistance = Math.max(2 * totalDistance, 4);
             while (!openSet.isEmpty()) {
                 BlockPos currentNode = null;
                 double lowestFScore = 0;
@@ -384,17 +416,14 @@ public final class TransporterPathfinder {
                     // Even if it currently has a bit higher of a score
                     continue;
                 }
-                //TODO: Look into getting all the "tile" information from the network's transmitter and acceptor caches
-                // This should also make it easier to eventually add some sort of "wrapped" support for inventory blocks
-                // that do not have TEs. https://github.com/mekanism/Mekanism/issues/6157
-                TileEntity currentNodeTile = WorldUtils.getTileEntity(world, chunkMap, currentNode);
+                LogisticalTransporterBase currentNodeTransmitter = network.getTransmitter(currentNode);
                 double currentScore = gScore.getDouble(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
-                    BlockPos neighbor = currentNode.offset(direction);
-                    TileEntity neighborEntity = WorldUtils.getTileEntity(world, chunkMap, neighbor);
-                    if (transportStack.canInsertToTransporter(neighborEntity, direction, currentNodeTile)) {
+                    BlockPos neighbor = currentNode.relative(direction);
+                    LogisticalTransporterBase neighborTransmitter = network.getTransmitter(neighbor);
+                    if (transportStack.canInsertToTransporter(neighborTransmitter, direction, currentNodeTransmitter)) {
                         //If the neighbor is a transporter and the stack is valid for it
-                        double tentativeG = currentScore + ((TileEntityLogisticalTransporterBase) neighborEntity).getTransmitter().getCost();
+                        double tentativeG = currentScore + neighborTransmitter.getCost();
                         if (closedSet.contains(neighbor) && tentativeG >= gScore.getDouble(neighbor)) {
                             continue;
                         }
@@ -405,8 +434,8 @@ public final class TransporterPathfinder {
                             fScore.put(neighbor, tentativeG + WorldUtils.distanceBetween(neighbor, finalNode));
                             openSet.add(neighbor);
                         }
-                    } else if (isValidDestination(currentNode, currentNodeTile, direction, neighbor, neighborEntity)) {
-                        //Else if the neighbor is the destination and we can send to it
+                    } else if (isValidDestination(currentNode, currentNodeTransmitter, direction, neighbor, chunkMap)) {
+                        //Else if the neighbor is the destination, and we can send to it
                         return true;
                     }
                 }
@@ -419,30 +448,33 @@ public final class TransporterPathfinder {
          *
          * @return True if we found a valid connection to the destination and can insert into it, false otherwise
          */
-        private boolean isValidDestination(BlockPos start, TileEntity startTile, Direction direction, BlockPos neighbor, TileEntity neighborTile) {
+        private boolean isValidDestination(BlockPos start, @Nullable LogisticalTransporterBase startTransporter, Direction direction, BlockPos neighbor,
+              Long2ObjectMap<IChunk> chunkMap) {
             //Check to make sure that it is the destination
-            if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile) && startTile instanceof TileEntityLogisticalTransporterBase) {
-                TileEntityLogisticalTransporterBase transporter = (TileEntityLogisticalTransporterBase) startTile;
-                if (transporter.getTransmitter().canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && transporter.getTransmitter().canConnect(direction))) {
-                    //If it is and we can emit to it (normal or push mode),
-                    // or it is the home location of the stack (it is returning back due to not having been able to get to its destination)
-                    // and we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
-                    // then this is the proper path so we mark it as so and return true indicating that we found and marked the ideal path
-                    side = direction;
-                    results = reconstructPath(navMap, start);
-                    return true;
+            if (startTransporter != null && neighbor.equals(finalNode)) {
+                TileEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
+                if (neighborTile != null && destChecker.isValid(transportStack, direction, neighborTile)) {
+                    if (startTransporter.canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && startTransporter.canConnect(direction))) {
+                        //If it is, and we can emit to it (normal or push mode),
+                        // or it is the home location of the stack (it is returning due to not having been able to get to its destination) and
+                        // we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
+                        // then this is the proper path, so we mark it as so and return true indicating that we found and marked the ideal path
+                        side = direction;
+                        results = reconstructPath(navMap, start);
+                        finalScore = gScore.getDouble(start) + WorldUtils.distanceBetween(start, finalNode);
+                        return true;
+                    }
                 }
             }
             return false;
         }
 
-        private List<BlockPos> reconstructPath(Map<BlockPos, BlockPos> navMap, BlockPos currentNode) {
+        private List<BlockPos> reconstructPath(Map<BlockPos, BlockPos> navMap, BlockPos nextNode) {
             List<BlockPos> path = new ArrayList<>();
-            path.add(currentNode);
-            if (navMap.containsKey(currentNode)) {
-                path.addAll(reconstructPath(navMap, navMap.get(currentNode)));
+            while (nextNode != null) {
+                path.add(nextNode);
+                nextNode = navMap.get(nextNode);
             }
-            finalScore = gScore.getDouble(currentNode) + WorldUtils.distanceBetween(currentNode, finalNode);
             return path;
         }
 

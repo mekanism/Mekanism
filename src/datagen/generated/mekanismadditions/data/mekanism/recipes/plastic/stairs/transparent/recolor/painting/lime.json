@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:stairs/plastic/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:lime_plastic_transparent_stairs"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:lime"
+  },
+  "output": {
+    "item": "mekanismadditions:lime_plastic_transparent_stairs"
+  }
+}

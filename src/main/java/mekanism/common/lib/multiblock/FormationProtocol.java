@@ -98,10 +98,9 @@ public class FormationProtocol<T extends MultiblockData> {
             structureFound.inventoryID = idToUse;
             structureFound.onCreated(pointer.getTileWorld());
             return FormationResult.SUCCESS;
-        } else {
-            pointer.getStructure().removeMultiblock(pointer.getTileWorld());
-            return result.getFormationResult();
         }
+        pointer.getStructure().removeMultiblock(pointer.getTileWorld());
+        return result.getFormationResult();
     }
 
     protected static ITextComponent text(BlockPos pos) {
@@ -128,7 +127,7 @@ public class FormationProtocol<T extends MultiblockData> {
                 return traversedSize;
             }
             for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos offset = ptr.offset(side);
+                BlockPos offset = ptr.relative(side);
                 if (!traversed.contains(offset) && checker.test(offset)) {
                     openSet.add(offset);
                     traversed.add(offset);

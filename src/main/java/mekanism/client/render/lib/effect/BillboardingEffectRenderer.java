@@ -22,35 +22,34 @@ public class BillboardingEffectRenderer {
     private static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void render(CustomEffect effect, BlockPos renderPos, MatrixStack matrixStack, IRenderTypeBuffer renderer, long time, float partialTick) {
-        matrixStack.push();
+        matrixStack.pushPose();
         int gridSize = effect.getTextureGridSize();
         IVertexBuilder buffer = getRenderBuffer(renderer, effect.getTexture());
-        Matrix4f matrix = matrixStack.getLast().getMatrix();
-        ActiveRenderInfo renderInfo = minecraft.gameRenderer.getActiveRenderInfo();
+        Matrix4f matrix = matrixStack.last().pose();
+        ActiveRenderInfo renderInfo = minecraft.gameRenderer.getMainCamera();
         int tick = (int) time % (gridSize * gridSize);
         int xIndex = tick % gridSize, yIndex = tick / gridSize;
         float spriteSize = 1F / gridSize;
-        Quaternion quaternion = renderInfo.getRotation();
-        new Vector3f(-1.0F, -1.0F, 0.0F).transform(quaternion);
+        Quaternion quaternion = renderInfo.rotation();
         Vector3f[] vertexPos = new Vector3f[]{new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
                                               new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
-        Vector3d pos = effect.getPos(partialTick).subtract(Vector3d.copy(renderPos));
+        Vector3d pos = effect.getPos(partialTick).subtract(Vector3d.atLowerCornerOf(renderPos));
         for (int i = 0; i < 4; i++) {
             Vector3f vector3f = vertexPos[i];
             vector3f.transform(quaternion);
             vector3f.mul(effect.getScale());
-            vector3f.add((float) pos.getX(), (float) pos.getY(), (float) pos.getZ());
+            vector3f.add((float) pos.x(), (float) pos.y(), (float) pos.z());
         }
 
         int[] color = effect.getColor().rgbaArray();
         float minU = xIndex * spriteSize, maxU = minU + spriteSize;
         float minV = yIndex * spriteSize, maxV = minV + spriteSize;
 
-        buffer.pos(matrix, vertexPos[0].getX(), vertexPos[0].getY(), vertexPos[0].getZ()).color(color[0], color[1], color[2], color[3]).tex(minU, maxV).endVertex();
-        buffer.pos(matrix, vertexPos[1].getX(), vertexPos[1].getY(), vertexPos[1].getZ()).color(color[0], color[1], color[2], color[3]).tex(maxU, maxV).endVertex();
-        buffer.pos(matrix, vertexPos[2].getX(), vertexPos[2].getY(), vertexPos[2].getZ()).color(color[0], color[1], color[2], color[3]).tex(maxU, minV).endVertex();
-        buffer.pos(matrix, vertexPos[3].getX(), vertexPos[3].getY(), vertexPos[3].getZ()).color(color[0], color[1], color[2], color[3]).tex(minU, minV).endVertex();
-        matrixStack.pop();
+        buffer.vertex(matrix, vertexPos[0].x(), vertexPos[0].y(), vertexPos[0].z()).color(color[0], color[1], color[2], color[3]).uv(minU, maxV).endVertex();
+        buffer.vertex(matrix, vertexPos[1].x(), vertexPos[1].y(), vertexPos[1].z()).color(color[0], color[1], color[2], color[3]).uv(maxU, maxV).endVertex();
+        buffer.vertex(matrix, vertexPos[2].x(), vertexPos[2].y(), vertexPos[2].z()).color(color[0], color[1], color[2], color[3]).uv(maxU, minV).endVertex();
+        buffer.vertex(matrix, vertexPos[3].x(), vertexPos[3].y(), vertexPos[3].z()).color(color[0], color[1], color[2], color[3]).uv(minU, minV).endVertex();
+        matrixStack.popPose();
     }
 
     protected static IVertexBuilder getRenderBuffer(IRenderTypeBuffer renderer, ResourceLocation texture) {

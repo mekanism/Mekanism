@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -9,6 +10,9 @@ import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Base class to help implement handling of crystallizing recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCrystallizerRecipe> {
@@ -16,10 +20,17 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final BoxedChemicalInputHandler inputHandler;
 
+    private BoxedChemicalStack recipeInput = BoxedChemicalStack.EMPTY;
+
+    /**
+     * @param recipe        Recipe.
+     * @param inputHandler  Input handler.
+     * @param outputHandler Output handler.
+     */
     public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BoxedChemicalInputHandler inputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
-        this.inputHandler = inputHandler;
-        this.outputHandler = outputHandler;
+        this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override
@@ -29,13 +40,13 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        BoxedChemicalStack recipeInput = inputHandler.getRecipeInput(recipe.getInput());
+        recipeInput = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
         if (recipeInput.isEmpty()) {
             return -1;
         }
         //Calculate the current max based on the input
-        currentMax = inputHandler.operationsCanSupport(recipe.getInput(), currentMax);
+        currentMax = inputHandler.operationsCanSupport(recipeInput, currentMax);
         if (currentMax <= 0) {
             //If our input can't handle it return that we should be resetting
             return -1;
@@ -51,8 +62,6 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        BoxedChemicalStack recipeInput = inputHandler.getRecipeInput(recipe.getInput());
         if (recipeInput.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;

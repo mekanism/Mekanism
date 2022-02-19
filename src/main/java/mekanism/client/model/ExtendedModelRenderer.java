@@ -26,52 +26,52 @@ public class ExtendedModelRenderer extends ModelRenderer {
     }
 
     public void renderWireFrame(MatrixStack matrix, IVertexBuilder buffer, float red, float green, float blue, float alpha) {
-        if (showModel) {
-            if (!cubeList.isEmpty() || !childModels.isEmpty()) {
-                matrix.push();
-                translateRotate(matrix);
-                MatrixStack.Entry matrixEntry = matrix.getLast();
-                Matrix4f matrix4f = matrixEntry.getMatrix();
-                Matrix3f matrix3f = matrixEntry.getNormal();
-                for (ModelRenderer.ModelBox box : cubeList) {
-                    for (ModelRenderer.TexturedQuad quad : box.quads) {
+        if (visible) {
+            if (!cubes.isEmpty() || !children.isEmpty()) {
+                matrix.pushPose();
+                translateAndRotate(matrix);
+                MatrixStack.Entry matrixEntry = matrix.last();
+                Matrix4f matrix4f = matrixEntry.pose();
+                Matrix3f matrix3f = matrixEntry.normal();
+                for (ModelRenderer.ModelBox box : cubes) {
+                    for (ModelRenderer.TexturedQuad quad : box.polygons) {
                         Vector3f normal = quad.normal.copy();
                         normal.transform(matrix3f);
-                        float normalX = normal.getX();
-                        float normalY = normal.getY();
-                        float normalZ = normal.getZ();
-                        Vector4f vertex = getVertex(matrix4f, quad.vertexPositions[0]);
-                        Vector4f vertex2 = getVertex(matrix4f, quad.vertexPositions[1]);
-                        Vector4f vertex3 = getVertex(matrix4f, quad.vertexPositions[2]);
-                        Vector4f vertex4 = getVertex(matrix4f, quad.vertexPositions[3]);
-                        buffer.pos(vertex.getX(), vertex.getY(), vertex.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                        buffer.pos(vertex2.getX(), vertex2.getY(), vertex2.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        float normalX = normal.x();
+                        float normalY = normal.y();
+                        float normalZ = normal.z();
+                        Vector4f vertex = getVertex(matrix4f, quad.vertices[0]);
+                        Vector4f vertex2 = getVertex(matrix4f, quad.vertices[1]);
+                        Vector4f vertex3 = getVertex(matrix4f, quad.vertices[2]);
+                        Vector4f vertex4 = getVertex(matrix4f, quad.vertices[3]);
+                        buffer.vertex(vertex.x(), vertex.y(), vertex.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
 
-                        buffer.pos(vertex3.getX(), vertex3.getY(), vertex3.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                        buffer.pos(vertex4.getX(), vertex4.getY(), vertex4.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
                         //Vertices missing from base implementation
-                        buffer.pos(vertex2.getX(), vertex2.getY(), vertex2.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                        buffer.pos(vertex3.getX(), vertex3.getY(), vertex3.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
 
-                        buffer.pos(vertex.getX(), vertex.getY(), vertex.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                        buffer.pos(vertex4.getX(), vertex4.getY(), vertex4.getZ()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        buffer.vertex(vertex.x(), vertex.y(), vertex.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                        buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
                     }
                 }
 
-                for (ModelRenderer modelrenderer : childModels) {
+                for (ModelRenderer modelrenderer : children) {
                     if (modelrenderer instanceof ExtendedModelRenderer) {
                         ((ExtendedModelRenderer) modelrenderer).renderWireFrame(matrix, buffer, red, green, blue, alpha);
                     } else {
                         modelrenderer.render(matrix, buffer, MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, red, green, blue, alpha);
                     }
                 }
-                matrix.pop();
+                matrix.popPose();
             }
         }
     }
 
     private static Vector4f getVertex(Matrix4f matrix4f, ModelRenderer.PositionTextureVertex vertex) {
-        Vector4f vector4f = new Vector4f(vertex.position.getX() / 16F, vertex.position.getY() / 16F, vertex.position.getZ() / 16F, 1);
+        Vector4f vector4f = new Vector4f(vertex.pos.x() / 16F, vertex.pos.y() / 16F, vertex.pos.z() / 16F, 1);
         vector4f.transform(matrix4f);
         return vector4f;
     }

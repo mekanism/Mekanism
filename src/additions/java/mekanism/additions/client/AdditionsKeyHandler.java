@@ -1,36 +1,18 @@
 package mekanism.additions.client;
 
 import mekanism.additions.common.AdditionsLang;
-import mekanism.client.MekKeyHandler;
-import mekanism.common.MekanismLang;
+import mekanism.additions.common.config.MekanismAdditionsConfig;
+import mekanism.client.ClientRegistrationUtil;
+import mekanism.client.key.MekKeyBindingBuilder;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
 
-public class AdditionsKeyHandler extends MekKeyHandler {
+public class AdditionsKeyHandler {
 
-    public static final KeyBinding voiceKey = new KeyBinding(AdditionsLang.KEY_VOICE.getTranslationKey(), GLFW.GLFW_KEY_U, MekanismLang.MEKANISM.getTranslationKey());
+    public static final KeyBinding voiceKey = new MekKeyBindingBuilder().description(AdditionsLang.KEY_VOICE).keyCode(GLFW.GLFW_KEY_U)
+          .toggleable(MekanismAdditionsConfig.client.voiceKeyIsToggle).build();
 
-    private static final Builder BINDINGS = new Builder(1)
-          .addBinding(voiceKey, true);
-
-    public AdditionsKeyHandler() {
-        super(BINDINGS);
-        ClientRegistry.registerKeyBinding(voiceKey);
-        MinecraftForge.EVENT_BUS.addListener(this::onTick);
-    }
-
-    private void onTick(InputEvent.KeyInputEvent event) {
-        keyTick();
-    }
-
-    @Override
-    public void keyDown(KeyBinding kb, boolean isRepeat) {
-    }
-
-    @Override
-    public void keyUp(KeyBinding kb) {
+    public static void registerKeybindings() {
+        ClientRegistrationUtil.registerKeyBindings(voiceKey);
     }
 }

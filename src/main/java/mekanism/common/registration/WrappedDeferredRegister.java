@@ -2,6 +2,7 @@ package mekanism.common.registration;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -32,15 +33,14 @@ public class WrappedDeferredRegister<T extends IForgeRegistryEntry<T>> {
      * Only call this from mekanism and for custom registries
      */
     public void createAndRegister(IEventBus bus, String name) {
-        internal.makeRegistry(name, RegistryBuilder::new);
-        register(bus);
+        createAndRegister(bus, name, UnaryOperator.identity());
     }
 
     /**
      * Only call this from mekanism and for custom registries
      */
-    public void createAndRegisterWithTags(IEventBus bus, String name, String tagFolder) {
-        internal.makeRegistry(name, () -> new RegistryBuilder<T>().tagFolder(tagFolder));
+    public void createAndRegister(IEventBus bus, String name, UnaryOperator<RegistryBuilder<T>> builder) {
+        internal.makeRegistry(name, () -> builder.apply(new RegistryBuilder<>()));
         register(bus);
     }
 

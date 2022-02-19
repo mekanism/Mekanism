@@ -15,18 +15,16 @@
       "type": "forge:and"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "ilikewood:magic_post"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "ilikewood:stripped_magic_post"
       }
-    }
-  ],
+    ]
+  },
   "mainOutput": {
     "item": "biomesoplenty:magic_planks",
     "count": 3

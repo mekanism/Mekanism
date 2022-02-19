@@ -4,7 +4,8 @@ import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.client.state.MekanismBlockStateProvider;
-import mekanism.common.integration.MekanismCustomConversions;
+import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
+import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
@@ -39,8 +40,9 @@ public class MekanismDataGenerator {
             //Server side data generators
             gen.addProvider(new MekanismTagProvider(gen, existingFileHelper));
             gen.addProvider(new MekanismLootProvider(gen));
-            gen.addProvider(new MekanismRecipeProvider(gen));
+            gen.addProvider(new MekanismRecipeProvider(gen, existingFileHelper));
             gen.addProvider(new MekanismCustomConversions(gen));
+            gen.addProvider(new MekanismCrTExampleProvider(gen, existingFileHelper));
         }
         //Patchouli is used on both (but server only _needs_ the base book json)
         gen.addProvider(new MekanismMainBookProvider(gen));

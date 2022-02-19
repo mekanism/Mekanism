@@ -26,7 +26,7 @@ public class FormatSplitter {
         while (matcher.find()) {
             int curStart = matcher.start();
             if (curStart > start) {
-                //There is a gap so we need to grab the piece in between
+                //There is a gap, so we need to grab the piece in between
                 components.add(new TextComponent(text.substring(start, curStart)));
             }
             String piece = matcher.group();
@@ -94,7 +94,7 @@ public class FormatSplitter {
                                 //We use subtract one here so when it is incremented at the end of the loop, it starts in the right place
                                 i = secondBracket - 1;
                             } else {
-                                //If we only have a depth of one and it is not a valid message format, then we just add it as a raw string
+                                //If we only have a depth of one, and it is not a valid message format, then we just add it as a raw string
                                 components.add(new TextComponent(piece));
                             }
                         } else {
@@ -125,7 +125,7 @@ public class FormatSplitter {
                 //and then try to add the remaining stuff directly
                 components.addAll(splitMessageFormatInternal(text.substring(secondBracket)));
             } else {
-                //If we don't have a closing bracket and we didn't have more brackets at some point, add what we have as raw text
+                //If we don't have a closing bracket, and we didn't have more brackets at some point, add what we have as raw text
                 String remainingString = formattingCode.toString();
                 if (!remainingString.isEmpty()) {
                     components.add(new TextComponent(remainingString));
@@ -224,7 +224,7 @@ public class FormatSplitter {
         private static MessageFormatComponent fromContents(String contents) {
             int length = contents.length();
             if (length < 3 || contents.charAt(0) != '{' || contents.charAt(length - 1) != '}') {
-                //If we don't have at least one digit between the two brackets or we don't start and end with a bracket
+                //If we don't have at least one digit between the two brackets, or we don't start and end with a bracket
                 // then this is not a valid
                 return null;
             }
@@ -241,7 +241,7 @@ public class FormatSplitter {
                 return null;
             }
             if (firstComma == -1) {
-                //If we don't have a comma so it is only an argument index we can just exit now
+                //If we don't have a comma, so it is only an argument index we can just exit now
                 return new MessageFormatComponent(contents, argumentIndex, null, null, false);
             }
             //Look for the next comma
@@ -282,7 +282,7 @@ public class FormatSplitter {
                     if (formatStyle == null) {
                         return null;
                     }
-                    //Choice is only valid when it has a SubformatPattern so we return null if we don't have a formatStyle
+                    //Choice is only valid when it has a SubformatPattern, so we return null if we don't have a formatStyle
                     try {
                         new ChoiceFormat(formatStyle);
                     } catch (IllegalArgumentException e) {

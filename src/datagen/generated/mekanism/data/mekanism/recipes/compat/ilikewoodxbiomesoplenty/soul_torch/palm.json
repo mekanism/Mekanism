@@ -1,0 +1,33 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "minVersion": "1.16.5-6.2.2.0",
+          "type": "mekanism:mod_version_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "ilikewood:palm_soul_torch"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:palm_torch",
+    "count": 4
+  },
+  "secondaryOutput": {
+    "item": "minecraft:soul_soil"
+  },
+  "secondaryChance": 1.0
+}

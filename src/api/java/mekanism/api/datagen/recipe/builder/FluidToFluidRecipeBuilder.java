@@ -26,6 +26,12 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
         this.output = output;
     }
 
+    /**
+     * Creates an Evaporating recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static FluidToFluidRecipeBuilder evaporating(FluidStackIngredient input, FluidStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This evaporating recipe requires a non empty fluid output.");
@@ -45,7 +51,7 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeFluidStack(output));
         }

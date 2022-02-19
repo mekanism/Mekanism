@@ -17,7 +17,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
             //If it never got set default to 2
             return 2;
         }
-        //Otherwise return the actual so that it can be manually set down to zero
+        //Otherwise, return the actual so that it can be manually set down to zero
         return injectionRate;
     }
 

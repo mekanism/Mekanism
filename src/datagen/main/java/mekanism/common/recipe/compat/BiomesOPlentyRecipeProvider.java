@@ -4,18 +4,22 @@ import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.item.BOPItems;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
+import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
+import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 
 @ParametersAreNonnullByDefault
@@ -27,48 +31,17 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        addDyeRecipes(consumer, basePath);
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
-        addEnrichingDyeRecipes(consumer, basePath + "dye/");
+        addSandRecipes(consumer, basePath + "sandstone_to_sand/");
         //Mud brick -> mud ball
-        ItemStackGasToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(BOPItems.mud_brick),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
-              new ItemStack(BOPItems.mud_ball)
-        ).addCondition(modLoaded)
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
+                    ItemStackIngredient.from(BOPItems.mud_brick),
+                    GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+                    new ItemStack(BOPItems.mud_ball)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "mud_brick_to_mud_ball"));
-        //Black Sandstone -> Sand
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(BOPBlocks.black_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.chiseled_black_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.cut_black_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.smooth_black_sandstone)
-              ),
-              new ItemStack(BOPBlocks.black_sand, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "black_sandstone_to_sand"));
-        //Orange Sandstone -> Sand
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(BOPBlocks.orange_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.chiseled_orange_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.cut_orange_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.smooth_orange_sandstone)
-              ),
-              new ItemStack(BOPBlocks.orange_sand, 2)
-        ).addCondition(new ModVersionLoadedCondition(modid, "1.16.3-12.0.0.404"))//TODO - 1.17: Change this to just modLoaded
-              .build(consumer, Mekanism.rl(basePath + "orange_sandstone_to_sand"));
-        //White Sandstone -> Sand
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(BOPBlocks.white_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.chiseled_white_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.cut_white_sandstone),
-                    ItemStackIngredient.from(BOPBlocks.smooth_white_sandstone)
-              ),
-              new ItemStack(BOPBlocks.white_sand, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "white_sandstone_to_sand"));
+
         //TODO: Bio-fuel recipes?
     }
 
@@ -99,73 +72,57 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
     private void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider boat, IItemProvider door,
           IItemProvider fenceGate, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate,
-              ItemTags.makeWrapperTag(rl(name + "_logs").toString()), pressurePlate, trapdoor, name, modLoaded);
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, tag(name + "_logs"), pressurePlate, trapdoor, name,
+              modLoaded);
     }
 
-    private void addEnrichingDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addSandRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Black Sandstone -> Sand
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "black", modLoaded, BOPBlocks.black_sand, BOPBlocks.black_sandstone,
+              BOPBlocks.chiseled_black_sandstone, BOPBlocks.cut_black_sandstone, BOPBlocks.smooth_black_sandstone);
+        //Orange Sandstone -> Sand
+        //TODO - 1.18: Change this to just modLoaded
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "orange", new ModVersionLoadedCondition(modid, "1.16.3-12.0.0.404"),
+              BOPBlocks.orange_sand, BOPBlocks.orange_sandstone, BOPBlocks.chiseled_orange_sandstone, BOPBlocks.cut_orange_sandstone, BOPBlocks.smooth_orange_sandstone);
+        //White Sandstone -> Sand
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "white", modLoaded, BOPBlocks.white_sand, BOPBlocks.white_sandstone,
+              BOPBlocks.chiseled_white_sandstone, BOPBlocks.cut_white_sandstone, BOPBlocks.smooth_white_sandstone);
+    }
+
+    private void addDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Red
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(BOPBlocks.rose),
-              new ItemStack(Items.RED_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "red"));
+        dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPBlocks.rose);
         //Purple
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(BOPBlocks.violet),
-                    ItemStackIngredient.from(BOPBlocks.lavender)
-              ),
-              new ItemStack(Items.PURPLE_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "purple"));
+        dye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPBlocks.violet, BOPBlocks.lavender);
         //Magenta
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(BOPBlocks.wildflower),
-              new ItemStack(Items.MAGENTA_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "magenta"));
+        dye(consumer, basePath, Items.MAGENTA_DYE, EnumColor.PINK, BOPBlocks.wildflower);
         //Orange
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(BOPBlocks.orange_cosmos),
-                    ItemStackIngredient.from(BOPBlocks.burning_blossom)
-              ),
-              new ItemStack(Items.ORANGE_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "orange"));
+        dye(consumer, basePath, Items.ORANGE_DYE, EnumColor.ORANGE, BOPBlocks.orange_cosmos, BOPBlocks.burning_blossom);
         //Pink
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(BOPBlocks.pink_daffodil),
-                    ItemStackIngredient.from(BOPBlocks.pink_hibiscus)
-              ),
-              new ItemStack(Items.PINK_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "pink"));
+        dye(consumer, basePath, Items.PINK_DYE, EnumColor.BRIGHT_PINK, BOPBlocks.pink_daffodil, BOPBlocks.pink_hibiscus);
         //Cyan
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(BOPBlocks.glowflower),
-              new ItemStack(Items.CYAN_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "cyan"));
+        dye(consumer, basePath, Items.CYAN_DYE, EnumColor.DARK_AQUA, BOPBlocks.glowflower);
         //Gray
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(BOPBlocks.wilted_lily),
-              new ItemStack(Items.GRAY_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "gray"));
+        dye(consumer, basePath, Items.GRAY_DYE, EnumColor.DARK_GRAY, BOPBlocks.wilted_lily);
         //Light Blue
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(BOPBlocks.blue_hydrangea),
-              new ItemStack(Items.LIGHT_BLUE_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "light_blue"));
+        dye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPBlocks.blue_hydrangea);
         //Yellow
+        dye(consumer, basePath, Items.YELLOW_DYE, EnumColor.YELLOW, BOPBlocks.goldenrod);
+    }
+
+    private void dye(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider output, EnumColor color, IItemProvider... inputs) {
+        ItemStackIngredient inputIngredient = ItemStackIngredient.from(Ingredient.of(inputs));
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(BOPBlocks.goldenrod),
-              new ItemStack(Items.YELLOW_DYE, 2)
-        ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "yellow"));
+                    inputIngredient,
+                    new ItemStack(output, 2)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
+        //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
+        long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
+        ItemStackToChemicalRecipeBuilder.pigmentExtracting(
+                    inputIngredient,
+                    MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color).getStack(flowerRate)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
     }
 }

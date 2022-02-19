@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:mangrove_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:mangrove_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "byg:mangrove_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'mekanism.annotation-processor'
+version '1.0'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+repositories {
+    maven {
+        name 'CraftTweaker'
+        url "https://maven.blamejared.com"
+        content {
+            includeGroup 'com.blamejared.crafttweaker'
+        }
+    }
+}
+
+dependencies {
+    implementation "com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}"
+}

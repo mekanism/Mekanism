@@ -40,16 +40,16 @@ public class BuildCommand {
 
     public static final ArgumentBuilder<CommandSource, ?> COMMAND =
           Commands.literal("build")
-                .requires(cs -> cs.hasPermissionLevel(2) && cs.getEntity() instanceof ServerPlayerEntity)
+                .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayerEntity)
                 .then(Commands.literal("remove")
                       .executes(ctx -> {
                           CommandSource source = ctx.getSource();
-                          BlockRayTraceResult result = MekanismUtils.rayTrace(source.asPlayer(), 100);
+                          BlockRayTraceResult result = MekanismUtils.rayTrace(source.getPlayerOrException(), 100);
                           if (result.getType() == RayTraceResult.Type.MISS) {
                               throw MISS.create();
                           }
-                          destroy(source.getWorld(), result.getPos());
-                          source.sendFeedback(MekanismLang.COMMAND_BUILD_REMOVED.translateColored(EnumColor.GRAY), true);
+                          destroy(source.getLevel(), result.getBlockPos());
+                          source.sendSuccess(MekanismLang.COMMAND_BUILD_REMOVED.translateColored(EnumColor.GRAY), true);
                           return 0;
                       }));
 
@@ -57,13 +57,13 @@ public class BuildCommand {
         COMMAND.then(Commands.literal(name)
               .executes(ctx -> {
                   CommandSource source = ctx.getSource();
-                  BlockRayTraceResult result = MekanismUtils.rayTrace(source.asPlayer(), 100);
+                  BlockRayTraceResult result = MekanismUtils.rayTrace(source.getPlayerOrException(), 100);
                   if (result.getType() == RayTraceResult.Type.MISS) {
                       throw MISS.create();
                   }
-                  BlockPos pos = result.getPos().offset(Direction.UP);
-                  builder.build(source.getWorld(), pos);
-                  source.sendFeedback(MekanismLang.COMMAND_BUILD_BUILT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, localizedName), true);
+                  BlockPos pos = result.getBlockPos().relative(Direction.UP);
+                  builder.build(source.getLevel(), pos);
+                  source.sendSuccess(MekanismLang.COMMAND_BUILD_BUILT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, localizedName), true);
                   return 0;
               }));
     }
@@ -83,7 +83,7 @@ public class BuildCommand {
             if (isMekanismBlock(world, chunkMap, ptr)) {
                 world.removeBlock(ptr, false);
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    BlockPos offset = ptr.offset(side);
+                    BlockPos offset = ptr.relative(side);
                     if (traversed.add(offset)) {
                         openSet.add(offset);
                     }

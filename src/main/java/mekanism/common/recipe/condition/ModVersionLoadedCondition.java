@@ -41,6 +41,9 @@ public class ModVersionLoadedCondition implements ICondition {
 
         public static final Serializer INSTANCE = new Serializer();
 
+        private Serializer() {
+        }
+
         @Override
         public void write(JsonObject json, ModVersionLoadedCondition value) {
             json.addProperty("modid", value.modid);
@@ -49,7 +52,7 @@ public class ModVersionLoadedCondition implements ICondition {
 
         @Override
         public ModVersionLoadedCondition read(JsonObject json) {
-            return new ModVersionLoadedCondition(JSONUtils.getString(json, "modid"), JSONUtils.getString(json, "minVersion"));
+            return new ModVersionLoadedCondition(JSONUtils.getAsString(json, "modid"), JSONUtils.getAsString(json, "minVersion"));
         }
 
         @Override

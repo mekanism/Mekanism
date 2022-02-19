@@ -7,7 +7,6 @@ import java.util.Map;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.OreType;
@@ -28,10 +27,26 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class MekanismTags {
 
+    /**
+     * Call to force make sure this is all initialized
+     */
+    public static void init() {
+        Items.init();
+        Blocks.init();
+        Fluids.init();
+        Gases.init();
+        InfuseTypes.init();
+        Slurries.init();
+        TileEntityTypes.init();
+    }
+
     private MekanismTags() {
     }
 
     public static class Items {
+
+        private static void init() {
+        }
 
         private Items() {
         }
@@ -71,9 +86,6 @@ public class MekanismTags {
 
         public static final INamedTag<Item> FUELS = forgeTag("fuels");
         public static final INamedTag<Item> FUELS_BIO = forgeTag("fuels/bio");
-
-        public static final INamedTag<Item> CHESTS_ELECTRIC = forgeTag("chests/electric");
-        public static final INamedTag<Item> CHESTS_PERSONAL = forgeTag("chests/personal");
 
         public static final INamedTag<Item> SALT = forgeTag("salt");
         public static final INamedTag<Item> SAWDUST = forgeTag("sawdust");
@@ -115,6 +127,7 @@ public class MekanismTags {
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final INamedTag<Item> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
+        public static final INamedTag<Item> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
 
         public static final INamedTag<Item> CIRCUITS = forgeTag("circuits");
         public static final INamedTag<Item> CIRCUITS_BASIC = forgeTag("circuits/basic");
@@ -148,16 +161,29 @@ public class MekanismTags {
 
         public static final INamedTag<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
 
+        public static final INamedTag<Item> COLORABLE_WOOL = tag("colorable/wool");
+        public static final INamedTag<Item> COLORABLE_CARPETS = tag("colorable/carpets");
+        public static final INamedTag<Item> COLORABLE_BEDS = tag("colorable/beds");
+        public static final INamedTag<Item> COLORABLE_GLASS = tag("colorable/glass");
+        public static final INamedTag<Item> COLORABLE_GLASS_PANES = tag("colorable/glass_panes");
+        public static final INamedTag<Item> COLORABLE_TERRACOTTA = tag("colorable/terracotta");
+        public static final INamedTag<Item> COLORABLE_CONCRETE = tag("colorable/concrete");
+        public static final INamedTag<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
+        public static final INamedTag<Item> COLORABLE_BANNERS = tag("colorable/banners");
+
         private static INamedTag<Item> forgeTag(String name) {
-            return ItemTags.makeWrapperTag("forge:" + name);
+            return ItemTags.bind("forge:" + name);
         }
 
         private static INamedTag<Item> tag(String name) {
-            return ItemTags.makeWrapperTag(Mekanism.rl(name).toString());
+            return ItemTags.bind(Mekanism.rl(name).toString());
         }
     }
 
     public static class Blocks {
+
+        private static void init() {
+        }
 
         private Blocks() {
         }
@@ -178,6 +204,7 @@ public class MekanismTags {
 
         public static final INamedTag<Block> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
         public static final INamedTag<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
+        public static final INamedTag<Block> MINER_BLACKLIST = tag("miner_blacklist");
         public static final INamedTag<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
 
         public static final INamedTag<Block> CHESTS_ELECTRIC = forgeTag("chests/electric");
@@ -188,17 +215,21 @@ public class MekanismTags {
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final INamedTag<Block> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
+        public static final INamedTag<Block> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
 
         private static INamedTag<Block> forgeTag(String name) {
-            return BlockTags.makeWrapperTag("forge:" + name);
+            return BlockTags.bind("forge:" + name);
         }
 
         private static INamedTag<Block> tag(String name) {
-            return BlockTags.makeWrapperTag(Mekanism.rl(name).toString());
+            return BlockTags.bind(Mekanism.rl(name).toString());
         }
     }
 
     public static class Fluids {
+
+        private static void init() {
+        }
 
         private Fluids() {
         }
@@ -209,9 +240,12 @@ public class MekanismTags {
         public static final INamedTag<Fluid> HEAVY_WATER = forgeTag("heavy_water");
         public static final INamedTag<Fluid> HYDROGEN = forgeTag("hydrogen");
         public static final INamedTag<Fluid> HYDROGEN_CHLORIDE = forgeTag("hydrogen_chloride");
+        public static final INamedTag<Fluid> URANIUM_OXIDE = forgeTag("uranium_oxide");
+        public static final INamedTag<Fluid> URANIUM_HEXAFLUORIDE = forgeTag("uranium_hexafluoride");
         public static final INamedTag<Fluid> LITHIUM = forgeTag("lithium");
         public static final INamedTag<Fluid> OXYGEN = forgeTag("oxygen");
         public static final INamedTag<Fluid> SODIUM = forgeTag("sodium");
+        public static final INamedTag<Fluid> SUPERHEATED_SODIUM = forgeTag("superheated_sodium");
         public static final INamedTag<Fluid> STEAM = forgeTag("steam");
         public static final INamedTag<Fluid> SULFUR_DIOXIDE = forgeTag("sulfur_dioxide");
         public static final INamedTag<Fluid> SULFUR_TRIOXIDE = forgeTag("sulfur_trioxide");
@@ -219,18 +253,19 @@ public class MekanismTags {
         public static final INamedTag<Fluid> HYDROFLUORIC_ACID = forgeTag("hydrofluoric_acid");
 
         private static INamedTag<Fluid> forgeTag(String name) {
-            return FluidTags.makeWrapperTag("forge:" + name);
+            return FluidTags.bind("forge:" + name);
         }
     }
 
     public static class Gases {
 
+        private static void init() {
+        }
+
         private Gases() {
         }
 
         public static final INamedTag<Gas> WATER_VAPOR = tag("water_vapor");
-        //TODO - 10.1: Think of some way via tooltips or something to portray easier which gases won't decay
-        // rather than forcing people to know or use a dictionary
         public static final INamedTag<Gas> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
 
         private static INamedTag<Gas> tag(String name) {
@@ -239,6 +274,9 @@ public class MekanismTags {
     }
 
     public static class InfuseTypes {
+
+        private static void init() {
+        }
 
         private InfuseTypes() {
         }
@@ -257,17 +295,10 @@ public class MekanismTags {
         }
     }
 
-    public static class Pigments {
-
-        private Pigments() {
-        }
-
-        private static INamedTag<Pigment> tag(String name) {
-            return ChemicalTags.PIGMENT.tag(Mekanism.rl(name));
-        }
-    }
-
     public static class Slurries {
+
+        private static void init() {
+        }
 
         private Slurries() {
         }
@@ -281,6 +312,9 @@ public class MekanismTags {
     }
 
     public static class TileEntityTypes {
+
+        private static void init() {
+        }
 
         private TileEntityTypes() {
         }

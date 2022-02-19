@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container.slot;
 
-import com.mojang.datafixers.util.Pair;
 import javax.annotation.Nonnull;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,29 +21,22 @@ public class ArmorSlot extends InsertableSlot {
     public ArmorSlot(PlayerInventory inventory, int index, int x, int y, EquipmentSlotType slotType) {
         super(inventory, index, x, y);
         this.slotType = slotType;
+        setBackground(PlayerContainer.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[this.slotType.getIndex()]);
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         return 1;
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
-        return stack.canEquip(slotType, ((PlayerInventory) inventory).player);
+    public boolean mayPlace(ItemStack stack) {
+        return stack.canEquip(slotType, ((PlayerInventory) container).player);
     }
 
     @Override
-    public boolean canTakeStack(@Nonnull PlayerEntity player) {
-        ItemStack itemstack = getStack();
-        if (!itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack)) {
-            return false;
-        }
-        return super.canTakeStack(player);
-    }
-
-    @Override
-    public Pair<ResourceLocation, ResourceLocation> getBackground() {
-        return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[slotType.getIndex()]);
+    public boolean mayPickup(@Nonnull PlayerEntity player) {
+        ItemStack stack = getItem();
+        return (stack.isEmpty() || player.isCreative() || !EnchantmentHelper.hasBindingCurse(stack)) && super.mayPickup(player);
     }
 }

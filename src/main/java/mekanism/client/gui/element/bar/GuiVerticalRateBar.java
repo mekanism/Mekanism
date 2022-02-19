@@ -14,13 +14,15 @@ public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
     private static final int texHeight = 58;
 
     public GuiVerticalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
-        super(RATE_BAR, gui, handler, x, y, texWidth, texHeight);
+        super(RATE_BAR, gui, handler, x, y, texWidth, texHeight, false);
     }
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        int displayInt = (int) (getHandler().getLevel() * texHeight);
-        //TODO: Should textureX be texWidth + 2
-        blit(matrix, x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+        int displayInt = (int) (handlerLevel * texHeight);
+        if (displayInt > 0) {
+            //TODO: Should textureX be texWidth + 2
+            blit(matrix, x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
+        }
     }
 }

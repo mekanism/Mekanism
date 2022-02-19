@@ -25,6 +25,12 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
         this.output = output;
     }
 
+    /**
+     * Creates an Energy Conversion recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToEnergyRecipeBuilder energyConversion(ItemStackIngredient input, FloatingLong output) {
         if (output.isZero()) {
             throw new IllegalArgumentException("This energy conversion recipe requires an energy output greater than zero");
@@ -44,7 +50,7 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             json.addProperty(JsonConstants.OUTPUT, output);
         }

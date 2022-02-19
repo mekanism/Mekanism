@@ -7,9 +7,9 @@ license="MIT"
     modId="mekanismadditions"
     version="${version}"
     displayName="Mekanism: Additions"
-    displayURL="http://aidancbrady.com/mekanism/"
+    displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
-    credits="unpairedbracket, CyanideX and many others"
+    credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
     logoFile="logo.png"
     description='''Additions module for Mekanism, contains things that don't quite fit in the other modules.'''
 

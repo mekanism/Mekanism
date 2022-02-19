@@ -17,18 +17,18 @@ import net.minecraft.world.IWorldReader;
 public class BlockPlasticTransparent extends BlockPlastic {
 
     public BlockPlasticTransparent(EnumColor color) {
-        super(color, properties -> properties.hardnessAndResistance(5, 6).notSolid().setAllowsSpawn(AttributeMobSpawn.NEVER_PREDICATE));
+        super(color, properties -> properties.strength(5, 6).noOcclusion().isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE));
     }
 
     @Override
     @Deprecated
-    public float getAmbientOcclusionLightValue(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         return 0.8F;
     }
 
     @Override
     @Deprecated
-    public boolean isTransparent(@Nonnull BlockState state) {
+    public boolean useShapeForLightOcclusion(@Nonnull BlockState state) {
         return true;
     }
 
@@ -39,7 +39,7 @@ public class BlockPlasticTransparent extends BlockPlastic {
 
     @Override
     @Deprecated
-    public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
+    public boolean skipRendering(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
         return isSideInvisible(this, state, adjacentBlockState, side);
     }
 
@@ -58,9 +58,9 @@ public class BlockPlasticTransparent extends BlockPlastic {
                     VoxelShape shape = state.getShape(null, null);
                     VoxelShape adjacentShape = adjacentBlockState.getShape(null, null);
 
-                    VoxelShape faceShape = shape.project(side);
-                    VoxelShape adjacentFaceShape = adjacentShape.project(side.getOpposite());
-                    return !VoxelShapes.compare(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
+                    VoxelShape faceShape = shape.getFaceShape(side);
+                    VoxelShape adjacentFaceShape = adjacentShape.getFaceShape(side.getOpposite());
+                    return !VoxelShapes.joinIsNotEmpty(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
                 } catch (Exception ignored) {
                     //Something might have errored due to the null world and position
                 }

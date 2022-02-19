@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:skeleton_skull"
+    }
+  },
+  "gasInput": {
+    "amount": 5,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:wither_skeleton_skull"
+  },
+  "duration": 1250
+}

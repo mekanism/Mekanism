@@ -21,15 +21,15 @@ public class AttributeStateBoilerValveMode implements AttributeState {
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
-        if (Attribute.has(newState.getBlock(), AttributeStateBoilerValveMode.class)) {
-            newState = newState.with(modeProperty, oldState.get(modeProperty));
+        if (Attribute.has(newState, AttributeStateBoilerValveMode.class)) {
+            newState = newState.setValue(modeProperty, oldState.getValue(modeProperty));
         }
         return newState;
     }
 
     @Override
     public BlockState getDefaultState(@Nonnull BlockState state) {
-        return state.with(modeProperty, BoilerValveMode.INPUT);
+        return state.setValue(modeProperty, BoilerValveMode.INPUT);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AttributeStateBoilerValveMode implements AttributeState {
 
         @Nonnull
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return name;
         }
 

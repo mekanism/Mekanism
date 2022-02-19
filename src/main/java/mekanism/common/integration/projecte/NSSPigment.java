@@ -27,7 +27,7 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
      */
     @Nonnull
     public static NSSPigment createPigment(@Nonnull PigmentStack stack) {
-        //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
+        //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
         return createPigment(stack.getType());
     }
 
@@ -47,7 +47,7 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
         if (pigment.isEmptyType()) {
             throw new IllegalArgumentException("Can't make NSSPigment with an empty pigment");
         }
-        //This should never be null or it would have crashed on being registered
+        //This should never be null, or it would have crashed on being registered
         return createPigment(pigment.getRegistryName());
     }
 

@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:cracked_scoria_stone_bricks"
+    }
+  },
+  "output": {
+    "item": "byg:scoria_stonebricks"
+  }
+}

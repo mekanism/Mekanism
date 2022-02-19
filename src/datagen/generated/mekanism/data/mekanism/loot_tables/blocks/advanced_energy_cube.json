@@ -52,11 +52,6 @@
           ],
           "name": "mekanism:advanced_energy_cube"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

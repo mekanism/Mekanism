@@ -39,7 +39,7 @@ public class ChemicalDissolutionIRecipe extends ChemicalDissolutionRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER.getItemStack();
     }
 }

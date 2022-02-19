@@ -50,7 +50,7 @@ public class LambdaMetaFactoryUtil {
             MethodHandle setterMH = LOOKUP.unreflectSetter(field);
             MethodType type = setterMH.type();
             if (fieldType.isPrimitive()) {
-                type = type.wrap().changeReturnType(void.class);
+                type = type.wrap().changeReturnType(Void.TYPE);
             }
             CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept",
                   MethodType.methodType(BiConsumer.class, MethodHandle.class),
@@ -63,21 +63,21 @@ public class LambdaMetaFactoryUtil {
         CallSiteInfo siteInfo;
         Class<?> setterInterface;
         Class<?> setterFieldType = fieldType;
-        if (fieldType == boolean.class) {
+        if (fieldType == Boolean.TYPE) {
             setterInterface = BooleanSetter.class;
-        } else if (fieldType == byte.class) {
+        } else if (fieldType == Byte.TYPE) {
             setterInterface = ByteSetter.class;
-        } else if (fieldType == char.class) {
+        } else if (fieldType == Character.TYPE) {
             setterInterface = CharSetter.class;
-        } else if (fieldType == double.class) {
+        } else if (fieldType == Double.TYPE) {
             setterInterface = ObjDoubleConsumer.class;
-        } else if (fieldType == float.class) {
+        } else if (fieldType == Float.TYPE) {
             setterInterface = FloatSetter.class;
-        } else if (fieldType == int.class) {
+        } else if (fieldType == Integer.TYPE) {
             setterInterface = ObjIntConsumer.class;
-        } else if (fieldType == long.class) {
+        } else if (fieldType == Long.TYPE) {
             setterInterface = ObjLongConsumer.class;
-        } else if (fieldType == short.class) {
+        } else if (fieldType == Short.TYPE) {
             setterInterface = ShortSetter.class;
         } else {
             setterInterface = BiConsumer.class;
@@ -85,40 +85,40 @@ public class LambdaMetaFactoryUtil {
         }
         CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept",
               MethodType.methodType(setterInterface),
-              MethodType.methodType(void.class, Object.class, setterFieldType),
-              LOOKUP.findVirtual(objType, setterName, MethodType.methodType(void.class, fieldType)),
-              MethodType.methodType(void.class, objType, fieldType)
+              MethodType.methodType(Void.TYPE, Object.class, setterFieldType),
+              LOOKUP.findVirtual(objType, setterName, MethodType.methodType(Void.TYPE, fieldType)),
+              MethodType.methodType(Void.TYPE, objType, fieldType)
         );
         siteInfo = new CallSiteInfo(site, null);
-        if (fieldType == boolean.class) {
+        if (fieldType == Boolean.TYPE) {
             BooleanSetter<O> setter = siteInfo.handle == null ? (BooleanSetter<O>) siteInfo.site.getTarget().invokeExact()
                                                               : (BooleanSetter<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Boolean) value);
-        } else if (fieldType == byte.class) {
+        } else if (fieldType == Byte.TYPE) {
             ByteSetter<O> setter = siteInfo.handle == null ? (ByteSetter<O>) siteInfo.site.getTarget().invokeExact()
                                                            : (ByteSetter<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Byte) value);
-        } else if (fieldType == char.class) {
+        } else if (fieldType == Character.TYPE) {
             CharSetter<O> setter = siteInfo.handle == null ? (CharSetter<O>) siteInfo.site.getTarget().invokeExact()
                                                            : (CharSetter<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Character) value);
-        } else if (fieldType == double.class) {
+        } else if (fieldType == Double.TYPE) {
             ObjDoubleConsumer<O> setter = siteInfo.handle == null ? (ObjDoubleConsumer<O>) siteInfo.site.getTarget().invokeExact()
                                                                   : (ObjDoubleConsumer<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Double) value);
-        } else if (fieldType == float.class) {
+        } else if (fieldType == Float.TYPE) {
             FloatSetter<O> setter = siteInfo.handle == null ? (FloatSetter<O>) siteInfo.site.getTarget().invokeExact()
                                                             : (FloatSetter<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Float) value);
-        } else if (fieldType == int.class) {
+        } else if (fieldType == Integer.TYPE) {
             ObjIntConsumer<O> setter = siteInfo.handle == null ? (ObjIntConsumer<O>) siteInfo.site.getTarget().invokeExact()
                                                                : (ObjIntConsumer<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Integer) value);
-        } else if (fieldType == long.class) {
+        } else if (fieldType == Long.TYPE) {
             ObjLongConsumer<O> setter = siteInfo.handle == null ? (ObjLongConsumer<O>) siteInfo.site.getTarget().invokeExact()
                                                                 : (ObjLongConsumer<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Long) value);
-        } else if (fieldType == short.class) {
+        } else if (fieldType == Short.TYPE) {
             ShortSetter<O> setter = siteInfo.handle == null ? (ShortSetter<O>) siteInfo.site.getTarget().invokeExact()
                                                             : (ShortSetter<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
             return (instance, value) -> setter.accept(instance, (Short) value);

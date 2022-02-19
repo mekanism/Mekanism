@@ -20,6 +20,7 @@ public class UsageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue energizedSmelter;
     public final CachedFloatingLongValue digitalMiner;
     public final CachedFloatingLongValue electricPump;
+    public final CachedFloatingLongValue chargePad;
     public final CachedFloatingLongValue rotaryCondensentrator;
     public final CachedFloatingLongValue oxidationChamber;
     public final CachedFloatingLongValue chemicalInfuser;
@@ -37,6 +38,9 @@ public class UsageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue isotopicCentrifuge;
     public final CachedFloatingLongValue nutritionalLiquifier;
     public final CachedFloatingLongValue antiprotonicNucleosynthesizer;
+    public final CachedFloatingLongValue pigmentExtractor;
+    public final CachedFloatingLongValue pigmentMixer;
+    public final CachedFloatingLongValue paintingMachine;
 
     public final CachedFloatingLongValue teleporterBase;
     public final CachedFloatingLongValue teleporterDistance;
@@ -62,6 +66,8 @@ public class UsageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(100));
         electricPump = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "electricPump",
               FloatingLong.createConst(100));
+        chargePad = CachedFloatingLongValue.define(this, builder, "Energy that can be transferred at once per charge operation (Joules).", "chargePad",
+              FloatingLong.createConst(1_024_000));
         rotaryCondensentrator = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "rotaryCondensentrator",
               FloatingLong.createConst(50));
         oxidationChamber = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "oxidationChamber",
@@ -95,6 +101,12 @@ public class UsageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(200));
         antiprotonicNucleosynthesizer = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "antiprotonicNucleosynthesizer",
               FloatingLong.createConst(100_000));
+        pigmentExtractor = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "pigmentExtractor",
+              FloatingLong.createConst(200));
+        pigmentMixer = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "pigmentMixer",
+              FloatingLong.createConst(200));
+        paintingMachine = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "paintingMachine",
+              FloatingLong.createConst(100));
 
         builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
 

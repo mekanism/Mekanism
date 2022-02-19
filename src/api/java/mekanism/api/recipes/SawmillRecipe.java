@@ -3,6 +3,7 @@ package mekanism.api.recipes;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -15,6 +16,15 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
+/**
+ * Input: ItemStack
+ * <br>
+ * Primary Output: ItemStack (can be empty if secondary output is not empty)
+ * <br>
+ * Secondary Output: Chance based ItemStack (can be empty/zero chance if primary output is not empty)
+ *
+ * @apiNote Precision Sawmills and Sawing Factories can process this recipe type.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -27,11 +37,40 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     private final ItemStack secondaryOutput;
     private final double secondaryChance;
 
+    /**
+     * @param id              Recipe name.
+     * @param input           Input.
+     * @param mainOutput      Main Output.
+     * @param secondaryOutput Secondary Output (chance based).
+     * @param secondaryChance Chance of the secondary output being produced. This must be at least zero and at most one.
+     *
+     * @apiNote At least one output must not be empty.
+     */
     public SawmillRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
         super(id);
-        this.input = input;
-        this.mainOutput = mainOutput;
-        this.secondaryOutput = secondaryOutput;
+        this.input = Objects.requireNonNull(input, "Input cannot be null.");
+        Objects.requireNonNull(mainOutput, "Main output cannot be null.");
+        Objects.requireNonNull(secondaryOutput, "Secondary output cannot be null.");
+        if (mainOutput.isEmpty() && secondaryOutput.isEmpty()) {
+            throw new IllegalArgumentException("At least one output must not be empty.");
+        } else if (secondaryChance < 0 || secondaryChance > 1) {
+            throw new IllegalArgumentException("Secondary output chance must be at least zero and at most one.");
+        } else if (mainOutput.isEmpty()) {
+            if (secondaryChance == 0) {
+                throw new IllegalArgumentException("Secondary output must have a chance greater than zero.");
+            } else if (secondaryChance == 1) {
+                //TODO - 1.18: Replace this handling that moves the secondary output to the main output with an exception
+                // This will also need to be double checked in the recipe serializer and in the CrT integration
+                this.mainOutput = secondaryOutput.copy();
+                this.secondaryOutput = ItemStack.EMPTY;
+                this.secondaryChance = 0;
+                return;
+            }
+        } else if (secondaryOutput.isEmpty() && secondaryChance != 0) {
+            throw new IllegalArgumentException("If there is no secondary output, the chance of getting the secondary output should be zero.");
+        }
+        this.mainOutput = mainOutput.copy();
+        this.secondaryOutput = secondaryOutput.copy();
         this.secondaryChance = secondaryChance;
     }
 
@@ -40,23 +79,50 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
         return this.input.test(stack);
     }
 
+    /**
+     * Gets a new chance output based on the given input.
+     *
+     * @param input Specific input.
+     *
+     * @return New chance output.
+     *
+     * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
+     * outputs where things like NBT may be different.
+     * @implNote The passed in input should <strong>NOT</strong> be modified.
+     */
     @Contract(value = "_ -> new")
     public ChanceOutput getOutput(ItemStack input) {
-        return new ChanceOutput(RANDOM.nextDouble());
+        return new ChanceOutput(secondaryChance > 0 ? RANDOM.nextDouble() : 0);
     }
 
+    /**
+     * For JEI, gets the main output representations to display.
+     *
+     * @return Representation of the main output, <strong>MUST NOT</strong> be modified.
+     */
     public List<ItemStack> getMainOutputDefinition() {
         return mainOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(mainOutput);
     }
 
+    /**
+     * For JEI, gets the secondary output representations to display.
+     *
+     * @return Representation of the secondary output, <strong>MUST NOT</strong> be modified.
+     */
     public List<ItemStack> getSecondaryOutputDefinition() {
         return secondaryOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(secondaryOutput);
     }
 
+    /**
+     * Gets the chance (between 0 and 1) of the secondary output being produced.
+     */
     public double getSecondaryChance() {
         return secondaryChance;
     }
 
+    /**
+     * Gets the input ingredient.
+     */
     public ItemStackIngredient getInput() {
         return input;
     }
@@ -64,12 +130,15 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        buffer.writeItemStack(mainOutput);
-        buffer.writeItemStack(secondaryOutput);
+        buffer.writeItem(mainOutput);
+        buffer.writeItem(secondaryOutput);
         buffer.writeDouble(secondaryChance);
     }
 
-    //TODO: nextChanceOutput() method so that we can have a more accurate calculation for OutputHelper
+    /**
+     * Represents a precalculated chance based output. This output keeps track of what random value was calculated for use in comparing if the secondary output should be
+     * created.
+     */
     public class ChanceOutput {
 
         protected final double rand;
@@ -78,17 +147,25 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
             this.rand = rand;
         }
 
+        /**
+         * Gets a copy of the main output of this recipe. This may be empty if there is only a secondary chance based output.
+         */
         public ItemStack getMainOutput() {
             return mainOutput.copy();
         }
 
         /**
-         * Used for checking the maximum amount we can get as a secondary for purposes of seeing if we have space to process
+         * Gets a copy of the secondary output ignoring the random chance of it happening. This is mostly used for checking the maximum amount we can get as a secondary
+         * output for purposes of seeing if we have space to process.
          */
         public ItemStack getMaxSecondaryOutput() {
             return secondaryChance > 0 ? secondaryOutput.copy() : ItemStack.EMPTY;
         }
 
+        /**
+         * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns
+         * an empty stack.
+         */
         public ItemStack getSecondaryOutput() {
             if (rand <= secondaryChance) {
                 return secondaryOutput.copy();
@@ -96,7 +173,10 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
             return ItemStack.EMPTY;
         }
 
-        //TODO: JavaDoc
+        /**
+         * Similar to {@link #getSecondaryOutput()} except that this calculates a new random number to act as if this was another chance output for purposes of handling
+         * multiple operations at once.
+         */
         public ItemStack nextSecondaryOutput() {
             if (secondaryChance > 0) {
                 double rand = RANDOM.nextDouble();

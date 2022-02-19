@@ -1,6 +1,5 @@
 package mekanism.tools.common.registries;
 
-import java.util.Locale;
 import java.util.function.BiFunction;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -17,6 +16,7 @@ import mekanism.tools.common.item.ItemMekanismShovel;
 import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.material.MaterialCreator;
+import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
@@ -28,12 +28,12 @@ public class ToolsItems {
 
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismTools.MODID);
 
-    public static final ItemRegistryObject<ItemMekanismPaxel> WOOD_PAXEL = registerPaxel(ItemTier.WOOD);
-    public static final ItemRegistryObject<ItemMekanismPaxel> STONE_PAXEL = registerPaxel(ItemTier.STONE);
-    public static final ItemRegistryObject<ItemMekanismPaxel> IRON_PAXEL = registerPaxel(ItemTier.IRON);
-    public static final ItemRegistryObject<ItemMekanismPaxel> DIAMOND_PAXEL = registerPaxel(ItemTier.DIAMOND);
-    public static final ItemRegistryObject<ItemMekanismPaxel> GOLD_PAXEL = registerPaxel(ItemTier.GOLD);
-    public static final ItemRegistryObject<ItemMekanismPaxel> NETHERITE_PAXEL = registerPaxel(ItemTier.NETHERITE);
+    public static final ItemRegistryObject<ItemMekanismPaxel> WOOD_PAXEL = registerPaxel(MekanismToolsConfig.tools.wood);
+    public static final ItemRegistryObject<ItemMekanismPaxel> STONE_PAXEL = registerPaxel(MekanismToolsConfig.tools.stone);
+    public static final ItemRegistryObject<ItemMekanismPaxel> IRON_PAXEL = registerPaxel(MekanismToolsConfig.tools.iron);
+    public static final ItemRegistryObject<ItemMekanismPaxel> DIAMOND_PAXEL = registerPaxel(MekanismToolsConfig.tools.diamond);
+    public static final ItemRegistryObject<ItemMekanismPaxel> GOLD_PAXEL = registerPaxel(MekanismToolsConfig.tools.gold);
+    public static final ItemRegistryObject<ItemMekanismPaxel> NETHERITE_PAXEL = registerPaxel(MekanismToolsConfig.tools.netherite);
 
     public static final ItemRegistryObject<ItemMekanismPickaxe> BRONZE_PICKAXE = registerPickaxe(MekanismToolsConfig.tools.bronze);
     public static final ItemRegistryObject<ItemMekanismAxe> BRONZE_AXE = registerAxe(MekanismToolsConfig.tools.bronze);
@@ -135,8 +135,11 @@ public class ToolsItems {
         return register(ItemMekanismPaxel::new, "_paxel", material);
     }
 
-    private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(ItemTier material) {
-        return ITEMS.register(material.name().toLowerCase(Locale.ROOT) + "_paxel", () -> new ItemMekanismPaxel(material));
+    private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(VanillaPaxelMaterialCreator material) {
+        if (material.getVanillaTier() == ItemTier.NETHERITE) {
+            return ITEMS.registerUnburnable(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
+        }
+        return ITEMS.register(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
     }
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(MaterialCreator material, EquipmentSlotType slot) {
@@ -165,7 +168,7 @@ public class ToolsItems {
     private static Item.Properties getBaseProperties(BaseMekanismMaterial material) {
         Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
         if (!material.burnsInFire()) {
-            properties = properties.isImmuneToFire();
+            properties = properties.fireResistant();
         }
         return properties;
     }

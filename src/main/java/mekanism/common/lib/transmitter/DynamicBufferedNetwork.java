@@ -27,9 +27,6 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     private long lastMarkDirtyTime;
     public float currentScale;
 
-    protected DynamicBufferedNetwork() {
-    }
-
     protected DynamicBufferedNetwork(UUID networkID) {
         super(networkID);
     }
@@ -47,8 +44,8 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     }
 
     @Override
-    public void addNewTransmitters(Collection<TRANSMITTER> newTransmitters) {
-        super.addNewTransmitters(newTransmitters);
+    public void addNewTransmitters(Collection<TRANSMITTER> newTransmitters, CompatibleTransmitterValidator<ACCEPTOR, NETWORK, TRANSMITTER> transmitterValidator) {
+        super.addNewTransmitters(newTransmitters, transmitterValidator);
         if (!forceScaleUpdate) {
             //If we currently have no transmitters, mark that we want to force our scale to update to the target after the initial adding
             forceScaleUpdate = isEmpty();
@@ -57,11 +54,11 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
 
     @Override
     protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
+        super.addTransmitterFromCommit(transmitter);
+        chunks.add(WorldUtils.getChunkPosAsLong(transmitter.getTilePos()));
         //Update the capacity here, to make sure that we can actually absorb the buffer properly
         updateCapacity(transmitter);
         absorbBuffer(transmitter);
-        super.addTransmitterFromCommit(transmitter);
-        chunks.add(WorldUtils.getChunkPosAsLong(transmitter.getTilePos()));
     }
 
     @Override
@@ -80,6 +77,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     @Override
     public List<TRANSMITTER> adoptTransmittersAndAcceptorsFrom(NETWORK net) {
         List<TRANSMITTER> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
+        chunks.addAll(net.chunks);
         //Update the capacity
         updateCapacity();
         return transmittersToUpdate;
@@ -94,6 +92,13 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         updateSaveShares(triggerTransmitter);
     }
 
+    @Override
+    public void deregister() {
+        super.deregister();
+        chunks.clear();
+        packetRange = null;
+    }
+
     protected abstract void forceScaleUpdate();
 
     @Nonnull
@@ -102,10 +107,6 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public abstract void absorbBuffer(TRANSMITTER transmitter);
 
     public abstract void clampBuffer();
-
-    public boolean compatibleWithBuffer(BUFFER buffer) {
-        return true;
-    }
 
     public boolean isCompatibleWith(NETWORK other) {
         return true;
@@ -156,7 +157,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public final void validateSaveShares(@Nonnull TRANSMITTER triggerTransmitter) {
         if (world == null) {
             //If the world is null, try falling back to the trigger transmitter's world.
-            // Note: This also in theory could be null so we double check it is not before grabbing the game time
+            // Note: This also in theory could be null, so we double-check it is not before grabbing the game time
             world = triggerTransmitter.getTileWorld();
         }
         if (world != null && world.getGameTime() != lastSaveShareWriteTime) {
@@ -166,7 +167,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     }
 
     public void markDirty() {
-        if (world != null && !world.isRemote && world.getGameTime() != lastMarkDirtyTime) {
+        if (world != null && !world.isClientSide && world.getGameTime() != lastMarkDirtyTime) {
             lastMarkDirtyTime = world.getGameTime();
             chunks.forEach((LongConsumer) chunk -> WorldUtils.markChunkDirty(world, WorldUtils.getBlockPosFromChunkPos(chunk)));
         }
@@ -210,7 +211,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
                 initialized = true;
             }
         }
-        return new Range3D(minX, minZ, maxX, maxZ, world.getDimensionKey());
+        return new Range3D(minX, minZ, maxX, maxZ, world.dimension());
     }
 
     public static class TransferEvent<NETWORK extends DynamicBufferedNetwork<?, NETWORK, ?, ?>> extends Event {

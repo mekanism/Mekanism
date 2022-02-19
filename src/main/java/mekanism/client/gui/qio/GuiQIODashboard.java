@@ -3,6 +3,7 @@ package mekanism.client.gui.qio;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -18,29 +19,29 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
     public GuiQIODashboard(QIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         tile = container.getTileEntity();
-        dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
     }
 
     @Override
     public GuiQIOItemViewer<QIODashboardContainer> recreate(QIODashboardContainer container) {
-        return new GuiQIODashboard(container, playerInventory, title);
+        return new GuiQIODashboard(container, inventory, title);
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, tile.getName(), titleY);
+        drawTitleText(matrix, tile.getName(), titleLabelY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
     public FrequencyIdentity getFrequency() {
         QIOFrequency freq = tile.getFrequency(FrequencyType.QIO);
-        return freq != null ? freq.getIdentity() : null;
+        return freq == null ? null : freq.getIdentity();
     }
 }

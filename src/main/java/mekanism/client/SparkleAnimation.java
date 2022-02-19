@@ -26,7 +26,7 @@ public class SparkleAnimation {
     }
 
     public void run() {
-        World world = tile.getWorld();
+        World world = tile.getLevel();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int xSize = corner2.getX() - corner1.getX() + 1, ySize = corner2.getY() - corner1.getY() + 1, zSize = corner2.getZ() - corner1.getZ() + 1;
         Vector3d origin = new Vector3d(xSize / 2D, ySize / 2D, zSize / 2D);
@@ -44,9 +44,9 @@ public class SparkleAnimation {
     private void sparkleSide(World world, Random random, Vector3d origin, Vector3d displacement, int width, int height, float rotationYaw, float rotationPitch) {
         for (int i = 0; i < 100; i++) {
             Vector3d pos = new Vector3d(width * random.nextDouble(), height * random.nextDouble(), -0.01).subtract(displacement);
-            pos = pos.rotateYaw(rotationYaw).rotatePitch(rotationPitch);
+            pos = pos.yRot(rotationYaw).xRot(rotationPitch);
             pos = pos.add(origin).add(corner1.getX(), corner1.getY(), corner1.getZ());
-            world.addParticle(RedstoneParticleData.REDSTONE_DUST, pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0);
+            world.addParticle(RedstoneParticleData.REDSTONE, pos.x(), pos.y(), pos.z(), 0, 0, 0);
         }
     }
 }

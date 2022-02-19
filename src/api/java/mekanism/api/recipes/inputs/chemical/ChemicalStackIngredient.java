@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
@@ -18,8 +19,11 @@ import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.Ingre
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
 
+/**
+ * Base implementation for how Mekanism handle's ChemicalStack Ingredients.
+ */
 public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
-      IChemicalStackIngredient<CHEMICAL, STACK> {
+      IChemicalStackIngredient<CHEMICAL, STACK> {//TODO - 1.18: Merge this and IChemicalStackIngredient as there isn't much reason to have them be separate
 
     abstract class SingleIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
@@ -66,9 +70,16 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
             return Collections.singletonList(chemicalInstance);
         }
 
+        /**
+         * For use in recipe input caching.
+         */
+        public CHEMICAL getInputRaw() {
+            return chemicalInstance.getType();
+        }
+
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.SINGLE);
+            buffer.writeEnum(IngredientType.SINGLE);
             chemicalInstance.writeToPacket(buffer);
         }
 
@@ -112,7 +123,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
         @Override
         public STACK getMatchingInstance(@Nonnull STACK chemicalStack) {
             if (test(chemicalStack)) {
-                //Our chemical is in the tag so we make a new stack with the given amount
+                //Our chemical is in the tag, so we make a new stack with the given amount
                 return getIngredientInfo().createStack(chemicalStack, amount);
             }
             return getIngredientInfo().getEmptyStack();
@@ -135,9 +146,16 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
             return representations;
         }
 
+        /**
+         * For use in recipe input caching.
+         */
+        public List<CHEMICAL> getRawInput() {
+            return tag.getValues();
+        }
+
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.TAGGED);
+            buffer.writeEnum(IngredientType.TAGGED);
             buffer.writeResourceLocation(getIngredientInfo().getTagLocation(tag));
             buffer.writeVarLong(amount);
         }
@@ -217,9 +235,22 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
             return representations;
         }
 
+        /**
+         * For use in recipe input caching, checks all ingredients even if some match.
+         *
+         * @return {@code true} if any ingredient matches.
+         */
+        public boolean forEachIngredient(Predicate<INGREDIENT> checker) {
+            boolean result = false;
+            for (INGREDIENT ingredient : ingredients) {
+                result |= checker.test(ingredient);
+            }
+            return result;
+        }
+
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.MULTI);
+            buffer.writeEnum(IngredientType.MULTI);
             buffer.writeVarInt(ingredients.length);
             for (INGREDIENT ingredient : ingredients) {
                 ingredient.write(buffer);

@@ -1,6 +1,8 @@
 package mekanism.common.base;
 
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +15,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -24,9 +27,11 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+//TODO: Try to come up with a better name for this class given it also handles things like materials, and modids
 public final class TagCache {
 
     private TagCache() {
@@ -38,9 +43,17 @@ public final class TagCache {
     private static final Map<Material, List<ItemStack>> materialStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<Block, List<String>> tileEntityTypeTagCache = new Object2ObjectOpenHashMap<>();
 
+    private static final Object2BooleanMap<String> blockTagBlacklistedElements = new Object2BooleanOpenHashMap<>();
+    private static final Object2BooleanMap<String> modIDBlacklistedElements = new Object2BooleanOpenHashMap<>();
+    private static final Object2BooleanMap<Material> materialBlacklistedElements = new Object2BooleanOpenHashMap<>();
+
     public static void resetVanillaTagCaches() {
         blockTagStacks.clear();
         itemTagStacks.clear();
+        //These maps have the boolean value be based on a tag
+        blockTagBlacklistedElements.clear();
+        modIDBlacklistedElements.clear();
+        materialBlacklistedElements.clear();
     }
 
     public static void resetCustomTagCaches() {
@@ -59,13 +72,13 @@ public final class TagCache {
         if (block instanceof IHasTileEntity) {
             //If it is one of our blocks, short circuit and just lookup the tile's type directly
             tagsAsString = getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().getTags());
-        } else if (block.hasTileEntity(block.getDefaultState())) {
-            //Otherwise check if the block has a tile entity and if it does, gather all the tile types the block
+        } else if (block.hasTileEntity(block.defaultBlockState())) {
+            //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
             // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
             // that we don't know about and don't handle properly
             Set<ResourceLocation> tileEntityTags = new HashSet<>();
             for (TileEntityType<?> tileEntityType : ForgeRegistries.TILE_ENTITIES) {
-                if (tileEntityType.isValidBlock(block)) {
+                if (tileEntityType.isValid(block)) {
                     tileEntityTags.addAll(tileEntityType.getTags());
                 }
             }
@@ -89,38 +102,26 @@ public final class TagCache {
     }
 
     public static List<ItemStack> getItemTagStacks(@Nonnull String oreName) {
-        if (itemTagStacks.containsKey(oreName)) {
-            return itemTagStacks.get(oreName);
-        }
-        ITagCollection<Item> tagCollection = ItemTags.getCollection();
-        List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
-        Set<Item> items = new HashSet<>();
-        for (ResourceLocation key : keys) {
-            ITag<Item> itemTag = tagCollection.get(key);
-            if (itemTag != null) {
-                items.addAll(itemTag.getAllElements());
-            }
-        }
-        List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
-        itemTagStacks.put(oreName, stacks);
-        return stacks;
+        return getTagStacks(itemTagStacks, ItemTags.getAllTags(), oreName);
     }
 
     public static List<ItemStack> getBlockTagStacks(@Nonnull String oreName) {
-        if (blockTagStacks.containsKey(oreName)) {
-            return blockTagStacks.get(oreName);
+        return getTagStacks(blockTagStacks, BlockTags.getAllTags(), oreName);
+    }
+
+    private static <TYPE extends IItemProvider> List<ItemStack> getTagStacks(Map<String, List<ItemStack>> cache, ITagCollection<TYPE> tagCollection,
+          @Nonnull String oreName) {
+        if (cache.containsKey(oreName)) {
+            return cache.get(oreName);
         }
-        ITagCollection<Block> tagCollection = BlockTags.getCollection();
-        List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
-        Set<Block> blocks = new HashSet<>();
-        for (ResourceLocation key : keys) {
-            ITag<Block> blockTag = tagCollection.get(key);
-            if (blockTag != null) {
-                blocks.addAll(blockTag.getAllElements());
+        Set<TYPE> items = new HashSet<>();
+        for (Map.Entry<ResourceLocation, ITag<TYPE>> entry : tagCollection.getAllTags().entrySet()) {
+            if (WildcardMatcher.matches(oreName, entry.getKey().toString())) {
+                items.addAll(entry.getValue().getValues());
             }
         }
-        List<ItemStack> stacks = blocks.stream().map(ItemStack::new).collect(Collectors.toList());
-        blockTagStacks.put(oreName, stacks);
+        List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
+        cache.put(oreName, stacks);
         return stacks;
     }
 
@@ -131,7 +132,7 @@ public final class TagCache {
         List<ItemStack> stacks = new ArrayList<>();
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (!forceBlock || item instanceof BlockItem) {
-                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderType() with a dummy BlockState
+                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
                 if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof BlockBounding) {
                     continue;
                 }
@@ -148,7 +149,7 @@ public final class TagCache {
     }
 
     public static List<ItemStack> getMaterialStacks(@Nonnull ItemStack stack) {
-        return getMaterialStacks(Block.getBlockFromItem(stack.getItem()).getDefaultState().getMaterial());
+        return getMaterialStacks(Block.byItem(stack.getItem()).defaultBlockState().getMaterial());
     }
 
     public static List<ItemStack> getMaterialStacks(@Nonnull Material material) {
@@ -159,17 +160,72 @@ public final class TagCache {
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (item instanceof BlockItem) {
                 Block block = ((BlockItem) item).getBlock();
-                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderType() with a dummy BlockState
+                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
                 //noinspection ConstantConditions getBlock is nonnull, but if something "goes wrong" it returns null, just skip it
                 if (block == null || block instanceof BlockBounding) {
                     continue;
                 }
-                if (block.getDefaultState().getMaterial() == material) {
+                if (block.defaultBlockState().getMaterial() == material) {
                     stacks.add(new ItemStack(item));
                 }
             }
         }
         materialStacks.put(material, stacks);
         return stacks;
+    }
+
+    public static boolean tagHasMinerBlacklisted(@Nonnull String tag) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+            return false;
+        } else if (blockTagBlacklistedElements.containsKey(tag)) {
+            return blockTagBlacklistedElements.getBoolean(tag);
+        }
+        boolean hasBlacklisted = false;
+        for (Map.Entry<ResourceLocation, ITag<Block>> entry : BlockTags.getAllTags().getAllTags().entrySet()) {
+            if (WildcardMatcher.matches(tag, entry.getKey().toString()) && entry.getValue().getValues().stream().anyMatch(MekanismTags.Blocks.MINER_BLACKLIST::contains)) {
+                hasBlacklisted = true;
+                break;
+            }
+        }
+        blockTagBlacklistedElements.put(tag, hasBlacklisted);
+        return hasBlacklisted;
+    }
+
+    public static boolean modIDHasMinerBlacklisted(@Nonnull String modName) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+            return false;
+        } else if (modIDBlacklistedElements.containsKey(modName)) {
+            return modIDBlacklistedElements.getBoolean(modName);
+        }
+        boolean hasBlacklisted = false;
+        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+            if (MekanismTags.Blocks.MINER_BLACKLIST.contains(block) && WildcardMatcher.matches(modName, block.getRegistryName().getNamespace())) {
+                hasBlacklisted = true;
+                break;
+            }
+        }
+        modIDBlacklistedElements.put(modName, hasBlacklisted);
+        return hasBlacklisted;
+    }
+
+    public static boolean materialHasMinerBlacklisted(@Nonnull ItemStack stack) {
+        return materialHasMinerBlacklisted(Block.byItem(stack.getItem()).defaultBlockState().getMaterial());
+    }
+
+    public static boolean materialHasMinerBlacklisted(@Nonnull Material material) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+            return false;
+        } else if (materialBlacklistedElements.containsKey(material)) {
+            return materialBlacklistedElements.getBoolean(material);
+        }
+        boolean hasBlacklisted = false;
+        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+            if (block.defaultBlockState().getMaterial() == material && MekanismTags.Blocks.MINER_BLACKLIST.contains(block)) {
+                hasBlacklisted = true;
+                break;
+            }
+        }
+        materialBlacklistedElements.put(material, hasBlacklisted);
+        return hasBlacklisted;
     }
 }

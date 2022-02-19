@@ -9,12 +9,13 @@ import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
-public class TeleporterFrequency extends Frequency {
+public class TeleporterFrequency extends Frequency implements IColorableFrequency {
 
     private final Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
     private EnumColor color = EnumColor.PURPLE;
@@ -41,10 +42,12 @@ public class TeleporterFrequency extends Frequency {
         return code;
     }
 
+    @Override
     public EnumColor getColor() {
         return color;
     }
 
+    @Override
     public void setColor(EnumColor color) {
         this.color = color;
     }
@@ -86,13 +89,13 @@ public class TeleporterFrequency extends Frequency {
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, value -> color = value);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
     }
 
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        color = dataStream.readEnumValue(EnumColor.class);
+        setColor(dataStream.readEnum(EnumColor.class));
     }
 
     @Override
@@ -104,6 +107,6 @@ public class TeleporterFrequency extends Frequency {
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeEnumValue(color);
+        buffer.writeEnum(color);
     }
 }

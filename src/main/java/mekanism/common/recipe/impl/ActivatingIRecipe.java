@@ -38,7 +38,7 @@ public class ActivatingIRecipe extends GasToGasRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR.getItemStack();
     }
 }

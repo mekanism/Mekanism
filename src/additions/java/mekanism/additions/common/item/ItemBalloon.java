@@ -21,8 +21,10 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -33,7 +35,7 @@ public class ItemBalloon extends Item {
     public ItemBalloon(EnumColor color) {
         super(ItemDeferredRegister.getMekBaseProperties());
         this.color = color;
-        DispenserBlock.registerDispenseBehavior(this, new DispenserBehavior());
+        DispenserBlock.registerBehavior(this, new DispenserBehavior(this.color));
     }
 
     public EnumColor getColor() {
@@ -42,12 +44,17 @@ public class ItemBalloon extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
-        if (!world.isRemote) {
-            Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(player.renderYawOffset).translate(new Pos3D(player));
-            world.addEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color));
+    public ActionResult<ItemStack> use(World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!world.isClientSide) {
+            boolean rightHand = (player.getMainArm() == HandSide.RIGHT) == (hand == Hand.MAIN_HAND);
+            Vector3d pos = new Pos3D(rightHand ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
+            EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
+            if (balloon == null) {
+                return new ActionResult<>(ActionResultType.FAIL, stack);
+            }
+            world.addFreshEntity(balloon);
         }
-        ItemStack stack = player.getHeldItem(hand);
         if (!player.isCreative()) {
             stack.shrink(1);
         }
@@ -56,41 +63,45 @@ public class ItemBalloon extends Item {
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getName(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBalloon) {
-            return TextComponentUtil.build(((ItemBalloon) item).getColor(), super.getDisplayName(stack));
+            return TextComponentUtil.build(((ItemBalloon) item).getColor(), super.getName(stack));
         }
-        return super.getDisplayName(stack);
+        return super.getName(stack);
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null) {
             return ActionResultType.PASS;
         }
-        ItemStack stack = context.getItem();
-        if (player.isSneaking()) {
-            BlockPos pos = context.getPos();
-            AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));
-            List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
+        ItemStack stack = context.getItemInHand();
+        if (player.isShiftKeyDown()) {
+            BlockPos pos = context.getClickedPos();
+            AxisAlignedBB bound = new AxisAlignedBB(pos, pos.offset(1, 3, 1));
+            List<EntityBalloon> balloonsNear = player.level.getEntitiesOfClass(EntityBalloon.class, bound);
             if (!balloonsNear.isEmpty()) {
                 return ActionResultType.FAIL;
             }
-            World world = context.getWorld();
+            World world = context.getLevel();
             if (WorldUtils.isValidReplaceableBlock(world, pos)) {
-                pos = pos.down();
+                pos = pos.below();
             }
-            if (!Block.hasEnoughSolidSide(world, pos, Direction.UP)) {
+            if (!Block.canSupportCenter(world, pos, Direction.UP)) {
                 return ActionResultType.FAIL;
             }
-            if (WorldUtils.isValidReplaceableBlock(world, pos.up()) && WorldUtils.isValidReplaceableBlock(world, pos.up(2))) {
-                world.removeBlock(pos.up(), false);
-                world.removeBlock(pos.up(2), false);
-                if (!world.isRemote) {
-                    world.addEntity(new EntityBalloon(world, pos, color));
+            if (WorldUtils.isValidReplaceableBlock(world, pos.above()) && WorldUtils.isValidReplaceableBlock(world, pos.above(2))) {
+                world.removeBlock(pos.above(), false);
+                world.removeBlock(pos.above(2), false);
+                if (!world.isClientSide) {
+                    EntityBalloon balloon = EntityBalloon.create(world, pos, color);
+                    if (balloon == null) {
+                        return ActionResultType.FAIL;
+                    }
+                    world.addFreshEntity(balloon);
                     stack.shrink(1);
                 }
                 return ActionResultType.SUCCESS;
@@ -102,18 +113,22 @@ public class ItemBalloon extends Item {
 
     @Nonnull
     @Override
-    public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
-        if (player.isSneaking()) {
-            if (!player.world.isRemote) {
-                AxisAlignedBB bound = new AxisAlignedBB(entity.getPosX() - 0.2, entity.getPosY() - 0.5, entity.getPosZ() - 0.2,
-                      entity.getPosX() + 0.2, entity.getPosY() + entity.getSize(entity.getPose()).height + 4, entity.getPosZ() + 0.2);
-                List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
+    public ActionResultType interactLivingEntity(@Nonnull ItemStack stack, PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
+        if (player.isShiftKeyDown()) {
+            if (!player.level.isClientSide) {
+                AxisAlignedBB bound = new AxisAlignedBB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
+                      entity.getX() + 0.2, entity.getY() + entity.getDimensions(entity.getPose()).height + 4, entity.getZ() + 0.2);
+                List<EntityBalloon> balloonsNear = player.level.getEntitiesOfClass(EntityBalloon.class, bound);
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
                         return ActionResultType.SUCCESS;
                     }
                 }
-                player.world.addEntity(new EntityBalloon(entity, color));
+                EntityBalloon balloon = EntityBalloon.create(entity, color);
+                if (balloon == null) {
+                    return ActionResultType.FAIL;
+                }
+                player.level.addFreshEntity(balloon);
                 stack.shrink(1);
             }
             return ActionResultType.SUCCESS;
@@ -121,21 +136,27 @@ public class ItemBalloon extends Item {
         return ActionResultType.PASS;
     }
 
-    public class DispenserBehavior extends DefaultDispenseItemBehavior {
+    private static class DispenserBehavior extends DefaultDispenseItemBehavior {
+
+        private final EnumColor color;
+
+        public DispenserBehavior(EnumColor color) {
+            this.color = color;
+        }
 
         @Nonnull
         @Override
-        public ItemStack dispenseStack(IBlockSource source, @Nonnull ItemStack stack) {
-            Direction side = source.getBlockState().get(DispenserBlock.FACING);
-            BlockPos sourcePos = source.getBlockPos();
-            BlockPos offsetPos = sourcePos.offset(side);
-            List<LivingEntity> entities = source.getWorld().getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(offsetPos, offsetPos.add(1, 1, 1)));
+        public ItemStack execute(IBlockSource source, @Nonnull ItemStack stack) {
+            Direction side = source.getBlockState().getValue(DispenserBlock.FACING);
+            BlockPos sourcePos = source.getPos();
+            BlockPos offsetPos = sourcePos.relative(side);
+            List<LivingEntity> entities = source.getLevel().getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(offsetPos, offsetPos.offset(1, 1, 1)));
             boolean latched = false;
 
             for (LivingEntity entity : entities) {
-                AxisAlignedBB bound = new AxisAlignedBB(entity.getPosX() - 0.2, entity.getPosY() - 0.5, entity.getPosZ() - 0.2,
-                      entity.getPosX() + 0.2, entity.getPosY() + entity.getSize(entity.getPose()).height + 4, entity.getPosZ() + 0.2);
-                List<EntityBalloon> balloonsNear = source.getWorld().getEntitiesWithinAABB(EntityBalloon.class, bound);
+                AxisAlignedBB bound = new AxisAlignedBB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
+                      entity.getX() + 0.2, entity.getY() + entity.getDimensions(entity.getPose()).height + 4, entity.getZ() + 0.2);
+                List<EntityBalloon> balloonsNear = source.getLevel().getEntitiesOfClass(EntityBalloon.class, bound);
                 boolean hasBalloon = false;
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
@@ -144,36 +165,40 @@ public class ItemBalloon extends Item {
                     }
                 }
                 if (!hasBalloon) {
-                    source.getWorld().addEntity(new EntityBalloon(entity, color));
+                    EntityBalloon balloon = EntityBalloon.create(entity, color);
+                    if (balloon != null) {
+                        source.getLevel().addFreshEntity(balloon);
+                    }
                     latched = true;
                 }
             }
             if (!latched) {
-                Pos3D pos = Pos3D.create(sourcePos).translate(0, -0.5, 0);
+                Vector3d pos = Vector3d.atLowerCornerOf(sourcePos).add(0, -0.5, 0);
                 switch (side) {
                     case DOWN:
-                        pos = pos.translate(0, -2.5, 0);
-                        break;
-                    case UP:
-                        pos = pos.translate(0, 0, 0);
+                        pos = pos.add(0, -3.5, 0);
                         break;
                     case NORTH:
-                        pos = pos.translate(0, -1, -0.5);
+                        pos = pos.add(0, -1, -0.5);
                         break;
                     case SOUTH:
-                        pos = pos.translate(0, -1, 0.5);
+                        pos = pos.add(0, -1, 0.5);
                         break;
                     case WEST:
-                        pos = pos.translate(-0.5, -1, 0);
+                        pos = pos.add(-0.5, -1, 0);
                         break;
                     case EAST:
-                        pos = pos.translate(0.5, -1, 0);
+                        pos = pos.add(0.5, -1, 0);
                         break;
+                    case UP:
                     default:
                         break;
                 }
-                if (!source.getWorld().isRemote) {
-                    source.getWorld().addEntity(new EntityBalloon(source.getWorld(), pos.x, pos.y, pos.z, color));
+                if (!source.getLevel().isClientSide) {
+                    EntityBalloon balloon = EntityBalloon.create(source.getLevel(), pos.x, pos.y, pos.z, color);
+                    if (balloon != null) {
+                        source.getLevel().addFreshEntity(balloon);
+                    }
                 }
             }
             stack.shrink(1);

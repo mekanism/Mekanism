@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/glass"
+      },
+      "without": {
+        "item": "minecraft:pink_stained_glass"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:pink"
+  },
+  "output": {
+    "item": "minecraft:pink_stained_glass"
+  }
+}

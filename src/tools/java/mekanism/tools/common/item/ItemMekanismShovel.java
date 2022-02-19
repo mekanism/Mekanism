@@ -41,18 +41,18 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType, IA
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override
     public float getAttackDamage() {
-        return material.getShovelDamage() + getTier().getAttackDamage();
+        return material.getShovelDamage() + getTier().getAttackDamageBonus();
     }
 
     public int getHarvestLevel() {
-        return getTier().getHarvestLevel();
+        return getTier().getLevel();
     }
 
     /**
@@ -62,7 +62,7 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType, IA
      */
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
-        return getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock()) ? getTier().getEfficiency() : 1;
+        return getToolTypes(stack).stream().anyMatch(state::isToolEffective) || blocks.contains(state.getBlock()) ? getTier().getSpeed() : 1;
     }
 
     /**
@@ -71,24 +71,24 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType, IA
      * @implNote Patches {@link ShovelItem} to return true for more than just snow
      */
     @Override
-    public boolean canHarvestBlock(BlockState state) {
-        return state.getHarvestTool() == ToolType.SHOVEL ? getHarvestLevel() >= state.getHarvestLevel() : super.canHarvestBlock(state);
+    public boolean isCorrectToolForDrops(BlockState state) {
+        return state.getHarvestTool() == ToolType.SHOVEL ? getHarvestLevel() >= state.getHarvestLevel() : super.isCorrectToolForDrops(state);
     }
 
     @Nonnull
     @Override
     public Ingredient getRepairMaterial() {
-        return getTier().getRepairMaterial();
+        return getTier().getRepairIngredient();
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return getTier().getMaxUses();
+        return getTier().getUses();
     }
 
     @Override
-    public boolean isDamageable() {
-        return getTier().getMaxUses() > 0;
+    public boolean canBeDepleted() {
+        return getTier().getUses() > 0;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType, IA
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", material.getShovelAtkSpeed(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", material.getShovelAtkSpeed(), Operation.ADDITION));
     }
 }

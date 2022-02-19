@@ -6,18 +6,16 @@
       "type": "forge:mod_loaded"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "ilikewood:warped_post"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "ilikewood:stripped_warped_post"
       }
-    }
-  ],
+    ]
+  },
   "mainOutput": {
     "item": "minecraft:warped_planks",
     "count": 3

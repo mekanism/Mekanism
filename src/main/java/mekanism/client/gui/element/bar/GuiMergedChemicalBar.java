@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.bar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
@@ -21,6 +22,7 @@ import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.text.ITextComponent;
 
@@ -34,7 +36,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     private final GuiChemicalBar<Slurry, SlurryStack> slurryBar;
 
     public GuiMergedChemicalBar(IGuiWrapper gui, HANDLER handler, MergedChemicalTank chemicalTank, int x, int y, int width, int height, boolean horizontal) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, new IBarInfoHandler() {
+        super(AtlasTexture.LOCATION_BLOCKS, gui, new IBarInfoHandler() {
             @Nullable
             private IChemicalTank<?, ?> getCurrentTank() {
                 Current current = chemicalTank.getCurrent();
@@ -61,7 +63,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
                 } else if (currentTank.getStored() == Long.MAX_VALUE) {
                     return MekanismLang.GENERIC_STORED.translate(currentTank.getType(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(currentTank.getType(), currentTank.getStored());
+                return MekanismLang.GENERIC_STORED_MB.translate(currentTank.getType(), TextUtils.format(currentTank.getStored()));
             }
 
             @Override
@@ -69,20 +71,35 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
                 IChemicalTank<?, ?> currentTank = getCurrentTank();
                 return currentTank == null ? 0 : currentTank.getStored() / (double) currentTank.getCapacity();
             }
-        }, x, y, width, height);
+        }, x, y, width, height, horizontal);
         this.chemicalTank = chemicalTank;
-        gasBar = new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getGasTank(), handler.getGasTanks(null)), x, y, width, height, horizontal);
-        infusionBar = new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getInfusionTank(), handler.getInfusionTanks(null)), x, y, width, height, horizontal);
-        pigmentBar = new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getPigmentTank(), handler.getPigmentTanks(null)), x, y, width, height, horizontal);
-        slurryBar = new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getSlurryTank(), handler.getSlurryTanks(null)), x, y, width, height, horizontal);
+        gasBar = addPositionOnlyChild(new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getGasTank(), handler.getGasTanks(null)), x, y, width, height, horizontal));
+        infusionBar = addPositionOnlyChild(new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getInfusionTank(), handler.getInfusionTanks(null)), x, y, width, height, horizontal));
+        pigmentBar = addPositionOnlyChild(new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getPigmentTank(), handler.getPigmentTanks(null)), x, y, width, height, horizontal));
+        slurryBar = addPositionOnlyChild(new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getSlurryTank(), handler.getSlurryTanks(null)), x, y, width, height, horizontal));
     }
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
+        if (currentBar == null) {
+            super.renderToolTip(matrix, mouseX, mouseY);
+        } else {
+            currentBar.renderToolTip(matrix, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    void drawContentsChecked(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar != null) {
-            currentBar.drawBackground(matrix, mouseX, mouseY, partialTicks);
+            currentBar.drawContentsChecked(matrix, mouseX, mouseY, partialTicks, handlerLevel, warning);
         }
+    }
+
+    @Override
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+        //Rendering is redirected in drawContentsChecked
     }
 
     @Override
@@ -91,15 +108,11 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
         if (currentBar == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
-            gasBar.mouseClicked(mouseX, mouseY, button);
-            infusionBar.mouseClicked(mouseX, mouseY, button);
-            pigmentBar.mouseClicked(mouseX, mouseY, button);
-            slurryBar.mouseClicked(mouseX, mouseY, button);
-        } else {
-            //Otherwise just send the click event to the corresponding bar
-            currentBar.mouseClicked(mouseX, mouseY, button);
+            return gasBar.mouseClicked(mouseX, mouseY, button) | infusionBar.mouseClicked(mouseX, mouseY, button) |
+                   pigmentBar.mouseClicked(mouseX, mouseY, button) | slurryBar.mouseClicked(mouseX, mouseY, button);
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        //Otherwise, just send the click event to the corresponding bar
+        return currentBar.mouseClicked(mouseX, mouseY, button);
     }
 
     @Nullable

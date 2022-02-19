@@ -31,7 +31,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             TankMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null) {
                 RenderData data = getRenderData(multiblock);
@@ -40,15 +40,15 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                     data.height = multiblock.height() - 2;
                     data.length = multiblock.length();
                     data.width = multiblock.width();
-                    matrix.push();
+                    matrix.pushPose();
 
-                    IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
-                    BlockPos pos = tile.getPos();
+                    IVertexBuilder buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
+                    BlockPos pos = tile.getBlockPos();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                     int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                     Model3D model = ModelRenderer.getModel(data, multiblock.prevScale);
                     MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
-                    matrix.pop();
+                    matrix.popPose();
                     if (data instanceof FluidRenderData) {
                         MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, (FluidRenderData) data, pos, glow, overlayLight, isInsideMultiblock(data));
                     }
@@ -80,8 +80,8 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        if (tile.isMaster) {
+    public boolean shouldRenderOffScreen(TileEntityDynamicTank tile) {
+        if (tile.isMaster()) {
             TankMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && !multiblock.isEmpty() && multiblock.renderLocation != null;
         }

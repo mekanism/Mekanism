@@ -43,7 +43,7 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
         }
 
         @Override
-        public void serialize(JsonObject json) {
+        public void serializeRecipeData(JsonObject json) {
             if (group != null && !group.isEmpty()) {
                 json.addProperty(DataGenJsonConstants.GROUP, group);
             }

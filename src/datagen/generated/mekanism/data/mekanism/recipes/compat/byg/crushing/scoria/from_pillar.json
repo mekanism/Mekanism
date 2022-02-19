@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:scoria_pillar"
+    }
+  },
+  "output": {
+    "item": "byg:scoria_stone",
+    "count": 2
+  }
+}

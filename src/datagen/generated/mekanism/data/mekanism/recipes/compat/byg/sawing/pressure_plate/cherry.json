@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:cherry_pressure_plate"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:cherry_planks",
+    "count": 2
+  }
+}

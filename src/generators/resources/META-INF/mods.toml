@@ -7,9 +7,9 @@ license="MIT"
     modId="mekanismgenerators"
     version="${version}"
     displayName="Mekanism: Generators"
-    displayURL="http://aidancbrady.com/mekanism/"
+    displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
-    credits="unpairedbracket, CyanideX and many others"
+    credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
     logoFile="logo.png"
     description='''Generators module for Mekanism'''
 

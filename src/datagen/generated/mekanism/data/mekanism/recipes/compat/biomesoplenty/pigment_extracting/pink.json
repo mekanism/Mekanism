@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "biomesoplenty:pink_daffodil"
+      },
+      {
+        "item": "biomesoplenty:pink_hibiscus"
+      }
+    ]
+  },
+  "output": {
+    "pigment": "mekanism:pink",
+    "amount": 768
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:yellow_carpet"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:yellow",
+    "amount": 128
+  }
+}

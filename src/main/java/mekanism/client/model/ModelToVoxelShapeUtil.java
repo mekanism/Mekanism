@@ -12,7 +12,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.stream.Stream;
-import mekanism.common.Mekanism;
 
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
 public class ModelToVoxelShapeUtil {
@@ -48,36 +47,39 @@ public class ModelToVoxelShapeUtil {
         printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/digital_miner.json");
     }
 
-    public static void printoutModelFile(String path) {
+    private static void printoutModelFile(String path) {
         StringBuilder builder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(path), StandardCharsets.UTF_8)) {
-            stream.forEach(s -> builder.append(s).append("\n"));
+            stream.forEach(s -> builder.append(s).append('\n'));
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
         JsonObject obj = new JsonParser().parse(builder.toString()).getAsJsonObject();
         if (obj.has("elements")) {
             printoutObject(obj);
         } else if (obj.has("layers")) {
-            obj.get("layers").getAsJsonObject().entrySet().forEach(e -> printoutObject(e.getValue().getAsJsonObject()));
+            obj.getAsJsonObject("layers").entrySet().forEach(e -> printoutObject(e.getValue().getAsJsonObject()));
         } else {
-            Mekanism.logger.error("Unable to parse model file.");
+            System.err.println("Unable to parse model file.");
         }
     }
 
     private static void printoutObject(JsonObject obj) {
-        JsonArray array = obj.get("elements").getAsJsonArray();
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
         DecimalFormat df = new DecimalFormat("#.####", otherSymbols);
-        for (int i = 0; i < array.size(); i++) {
+        JsonArray array = obj.getAsJsonArray("elements");
+        for (int i = 0, elements = array.size(); i < elements; i++) {
             JsonObject element = array.get(i).getAsJsonObject();
-            JsonArray from = element.get("from").getAsJsonArray();
-            JsonArray to = element.get("to").getAsJsonArray();
             JsonElement nameObj = element.get("name");
-            String name = nameObj != null ? " // " + nameObj.getAsString() : "";
-            String fromText = df.format(from.get(0).getAsDouble()) + ", " + df.format(from.get(1).getAsDouble()) + ", " + df.format(from.get(2).getAsDouble());
-            String toText = df.format(to.get(0).getAsDouble()) + ", " + df.format(to.get(1).getAsDouble()) + ", " + df.format(to.get(2).getAsDouble());
-            System.out.println("makeCuboidShape(" + fromText + ", " + toText + ")" + (i < array.size() - 1 ? "," : "") + name);
+            String name = nameObj == null ? "" : " // " + nameObj.getAsString();
+            String from = convertCorner(df, element.getAsJsonArray("from"));
+            String to = convertCorner(df, element.getAsJsonArray("to"));
+            System.out.println("box(" + from + ", " + to + ")" + (i < elements - 1 ? "," : "") + name);
         }
+    }
+
+    private static String convertCorner(DecimalFormat df, JsonArray corner) {
+        return df.format(corner.get(0).getAsDouble()) + ", " + df.format(corner.get(1).getAsDouble()) + ", " + df.format(corner.get(2).getAsDouble());
     }
 }

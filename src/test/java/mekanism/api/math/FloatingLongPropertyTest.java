@@ -53,7 +53,7 @@ class FloatingLongPropertyTest implements WithQuickTheories {
         Constraint valueConstraint = Constraint.between(Long.MIN_VALUE, Long.MAX_VALUE).withShrinkPoint(0);
         //Decimal constraint is any possible decimal
         Constraint decimalConstraint = Constraint.between(0, 9_999).withShrinkPoint(0);
-        //Given random generator create floating long using the two constraints we defined above]
+        //Given random generator create floating long using the two constraints we defined above
         return prng -> FloatingLong.createConst(prng.next(valueConstraint), (short) prng.next(decimalConstraint));
     }
 
@@ -71,7 +71,7 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     @DisplayName("Test parsing positive doubles")
     void testFromDouble() {
         qt().forAll(doubles().between(0, Double.MAX_VALUE))
-                .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
+              .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
     }
 
     @Test
@@ -114,8 +114,8 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     @DisplayName("Test dividing by long")
     void testDivisionByLong() {
         qt().forAll(
-                allFloatingLongs(),
-                longs().all()
+              allFloatingLongs(),
+              longs().all()
         ).check((a, b) -> b == 0 || a.divide(b).equals(divideViaBigDecimal(a, FloatingLong.create(b))));
     }
 }

@@ -3,6 +3,7 @@ package mekanism.common.tile.multiblock;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
@@ -33,7 +34,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
 
     @Nonnull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
         return side -> getMultiblock().getHeatCapacitors(side);
     }
 

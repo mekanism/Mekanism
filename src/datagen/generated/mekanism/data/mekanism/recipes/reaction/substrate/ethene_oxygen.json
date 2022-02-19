@@ -17,9 +17,5 @@
   "duration": 60,
   "itemOutput": {
     "item": "mekanism:hdpe_pellet"
-  },
-  "gasOutput": {
-    "gas": "mekanism:oxygen",
-    "amount": 5
   }
 }

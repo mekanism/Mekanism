@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.sync;
 
-import mekanism.common.network.container.property.PropertyData;
+import mekanism.common.network.to_client.container.property.PropertyData;
 
 public interface ISyncableData {
 

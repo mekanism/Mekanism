@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiScalableElement;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -15,13 +14,15 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     protected static final int TEXTURE_WIDTH = 6;
     protected static final int TEXTURE_HEIGHT = 6;
 
-    private final GuiScalableElement background;
+    private final ResourceLocation background;
+    private final int backgroundSideSize;
     protected final int elementHeight;
 
-    protected GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height, int elementHeight, GuiScalableElement background) {
+    protected GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height, int elementHeight, ResourceLocation background, int backgroundSideSize) {
         super(SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.elementHeight = elementHeight;
         this.background = background;
+        this.backgroundSideSize = backgroundSideSize;
     }
 
     @Override
@@ -41,9 +42,8 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
-        background.render(matrix, mouseX, mouseY, partialTicks);
-        background.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        GuiElement.minecraft.textureManager.bindTexture(getResource());
+        renderBackgroundTexture(matrix, background, backgroundSideSize, backgroundSideSize);
+        GuiElement.minecraft.textureManager.bind(getResource());
         //Draw Scroll
         //Top border
         blit(matrix, barX - 1, barY - 1, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
@@ -77,6 +77,6 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return isMouseOver(mouseX, mouseY) && adjustScroll(delta);
+        return isMouseOver(mouseX, mouseY) && adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 }

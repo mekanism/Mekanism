@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.holder.chemical;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -32,16 +31,14 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import net.minecraft.util.Direction;
 
 public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-      extends ConfigHolder implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {
-
-    protected final List<TANK> tanks = new ArrayList<>();
+      extends ConfigHolder<TANK> implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {
 
     protected ConfigChemicalTankHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         super(facingSupplier, configSupplier);
     }
 
     void addTank(@Nonnull TANK tank) {
-        tanks.add(tank);
+        slots.add(tank);
     }
 
     @Nonnull
@@ -50,12 +47,7 @@ public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICA
     @Nonnull
     @Override
     public List<TANK> getTanks(@Nullable Direction direction) {
-        return getSlots(direction, tanks, slotInfo -> {
-            if (slotInfo != null && slotInfo.isEnabled()) {
-                return getTanksFromSlot(slotInfo);
-            }
-            return Collections.emptyList();
-        });
+        return getSlots(direction, this::getTanksFromSlot);
     }
 
     public static class ConfigGasTankHolder extends ConfigChemicalTankHolder<Gas, GasStack, IGasTank> {

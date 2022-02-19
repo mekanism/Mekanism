@@ -24,7 +24,7 @@ public class GuiTextureOnlyElement extends GuiTexturedElement {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         blit(matrix, x, y, 0, 0, width, height, textureWidth, textureHeight);
     }
 }

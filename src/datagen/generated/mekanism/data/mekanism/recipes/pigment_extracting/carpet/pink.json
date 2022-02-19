@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pink_carpet"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:pink",
+    "amount": 128
+  }
+}

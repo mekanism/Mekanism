@@ -7,9 +7,9 @@ license="MIT"
     modId="mekanism"
     version="${version}"
     displayName="Mekanism"
-    displayURL="http://aidancbrady.com/mekanism/"
+    displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
-    credits="unpairedbracket, CyanideX and many others"
+    credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
     logoFile="logo.png"
     description='''Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'''
 
@@ -22,4 +22,22 @@ license="MIT"
     modId="forge"
     mandatory=true
     versionRange="${forge_version}"
+    side="BOTH"
+[[dependencies.mekanism]]
+    modId="crafttweaker"
+    mandatory=false
+    versionRange="${crafttweaker_version}"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.mekanism]]
+    modId="jei"
+    mandatory=false
+    versionRange="${jei_version}"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.mekanism]]
+    modId="jeitweaker"
+    mandatory=false
+    versionRange="${jeitweaker_version}"
+    ordering="AFTER"
     side="BOTH"

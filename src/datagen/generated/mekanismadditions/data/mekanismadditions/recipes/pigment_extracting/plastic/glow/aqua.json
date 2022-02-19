@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:aqua_plastic_glow"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:aqua",
+    "amount": 42
+  }
+}

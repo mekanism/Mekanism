@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:ink_sac"
+      },
+      {
+        "item": "minecraft:wither_rose"
+      }
+    ]
+  },
+  "output": {
+    "pigment": "mekanism:black",
+    "amount": 768
+  }
+}

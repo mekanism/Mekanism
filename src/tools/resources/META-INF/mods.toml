@@ -7,9 +7,9 @@ license="MIT"
     modId="mekanismtools"
     version="${version}"
     displayName="Mekanism: Tools"
-    displayURL="http://aidancbrady.com/mekanism/"
+    displayURL="https://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
-    credits="unpairedbracket, CyanideX and many others"
+    credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
     logoFile="logo.png"
     description='''Tools module for Mekanism'''
 

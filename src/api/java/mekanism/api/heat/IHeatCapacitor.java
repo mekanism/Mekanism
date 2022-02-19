@@ -20,7 +20,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT>, IContents
 
     /**
      * Returns the inverse conduction coefficient of this capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat can
-     * dissipate. The trade off is that it also allows for lower amounts of heat to be inserted.
+     * dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.
      *
      * @return Inverse conduction coefficient of this capacitor.
      *

@@ -1,5 +1,8 @@
 package mekanism.api.tier;
 
+/**
+ * Enum representing the different tiers of alloys.
+ */
 public enum AlloyTier implements ITier {
     INFUSED("infused", BaseTier.ADVANCED),
     REINFORCED("reinforced", BaseTier.ELITE),
@@ -13,6 +16,9 @@ public enum AlloyTier implements ITier {
         this.name = name;
     }
 
+    /**
+     * Gets the name of this alloy tier.
+     */
     public String getName() {
         return name;
     }

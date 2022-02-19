@@ -30,6 +30,9 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
         this.insertCheck = insertCheck;
     }
 
+    /**
+     * Gets the merged chemical tank.
+     */
     public MergedChemicalTank getMergedTank() {
         return mergedTank;
     }

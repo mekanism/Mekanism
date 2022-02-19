@@ -27,11 +27,11 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
             EnergyNetwork network = cable.getTransmitterNetwork();
             //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client
             if (network.currentScale > 0) {
-                matrix.push();
+                matrix.pushPose();
                 matrix.translate(0.5, 0.5, 0.5);
-                renderModel(tile, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()), 0xFFFFFF, network.currentScale, MekanismRenderer.FULL_LIGHT,
+                renderModel(tile, matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()), 0xFFFFFF, network.currentScale, MekanismRenderer.FULL_LIGHT,
                       overlayLight, MekanismRenderer.energyIcon);
-                matrix.pop();
+                matrix.popPose();
             }
         }
     }

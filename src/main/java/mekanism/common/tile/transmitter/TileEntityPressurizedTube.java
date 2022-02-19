@@ -5,16 +5,20 @@ import java.util.List;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
+import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -30,14 +34,18 @@ import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.Pigm
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
+import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter {
+public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
     private final GasHandlerManager gasHandlerManager;
     private final InfusionHandlerManager infusionHandlerManager;
@@ -56,6 +64,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
               new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null)));
         addCapabilityResolver(slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
               new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null)));
+        if (Mekanism.hooks.computerCompatEnabled()) {
+            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
+        }
     }
 
     @Override
@@ -86,13 +97,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         switch (tier) {
             case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PRESSURIZED_TUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PRESSURIZED_TUBE);
             case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE);
             case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PRESSURIZED_TUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PRESSURIZED_TUBE);
             case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE);
         }
         return current;
     }
@@ -122,6 +133,34 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
         };
     }
 
+    @Override
+    public float getRadiationScale() {
+        if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+            BoxedPressurizedTube tube = getTransmitter();
+            if (isRemote()) {
+                if (tube.hasTransmitterNetwork()) {
+                    BoxedChemicalNetwork network = tube.getTransmitterNetwork();
+                    if (!network.lastChemical.isEmpty() && !network.isTankEmpty() && network.lastChemical.getChemical().has(Radiation.class)) {
+                        //Note: This may act as full when the network isn't actually full if there is radioactive stuff
+                        // going through it, but it shouldn't matter too much
+                        return network.currentScale;
+                    }
+                }
+            } else {
+                IGasTank gasTank = tube.getGasTank();
+                if (!gasTank.isEmpty() && gasTank.getStack().has(Radiation.class)) {
+                    return gasTank.getStored() / (float) gasTank.getCapacity();
+                }
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int getRadiationParticleCount() {
+        return MathUtils.clampToInt(3 * getRadiationScale());
+    }
+
     private List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasHandlerManager.getContainers(side);
     }
@@ -147,10 +186,38 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
             invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, side);
             invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
-            WorldUtils.notifyNeighborOfChange(world, side, pos);
+            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
-            //Notify the neighbor on that side our state changed and we now do have a capability
-            WorldUtils.notifyNeighborOfChange(world, side, pos);
+            //Notify the neighbor on that side our state changed, and we now do have a capability
+            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         }
     }
+
+    //Methods relating to IComputerTile
+    @Override
+    public String getComputerName() {
+        return getTransmitter().getTier().getBaseTier().getLowerName() + "PressurizedTube";
+    }
+
+    @ComputerMethod
+    private ChemicalStack<?> getBuffer() {
+        return getTransmitter().getBufferWithFallback().getChemicalStack();
+    }
+
+    @ComputerMethod
+    private long getCapacity() {
+        BoxedPressurizedTube tube = getTransmitter();
+        return tube.hasTransmitterNetwork() ? tube.getTransmitterNetwork().getCapacity() : tube.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getNeeded() {
+        return getCapacity() - getBuffer().getAmount();
+    }
+
+    @ComputerMethod
+    private double getFilledPercentage() {
+        return getBuffer().getAmount() / (double) getCapacity();
+    }
+    //End methods IComputerTile
 }

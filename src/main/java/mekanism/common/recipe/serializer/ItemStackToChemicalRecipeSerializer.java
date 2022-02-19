@@ -21,7 +21,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
 
     private final IFactory<CHEMICAL, STACK, RECIPE> factory;
 
-    public ItemStackToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, RECIPE> factory) {
+    protected ItemStackToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, RECIPE> factory) {
         this.factory = factory;
     }
 
@@ -31,9 +31,9 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
-                            JSONUtils.getJsonObject(json, JsonConstants.INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement input = JSONUtils.isArrayNode(json, JsonConstants.INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.INPUT) :
+                            JSONUtils.getAsJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
         STACK output = fromJson(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
@@ -43,7 +43,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
             STACK output = fromBuffer(buffer);
@@ -55,7 +55,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

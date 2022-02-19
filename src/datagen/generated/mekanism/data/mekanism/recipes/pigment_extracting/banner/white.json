@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:white_banner"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:white",
+    "amount": 64
+  }
+}

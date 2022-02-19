@@ -28,33 +28,33 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
     @Nonnull
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
+    public ResourceLocation getTextureLocation(@Nonnull EntityBalloon entity) {
         return BALLOON_TEXTURE;
     }
 
     @Override
     public void render(@Nonnull EntityBalloon balloon, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(-0.5, -1, -0.5);
 
         if (balloon.isLatchedToEntity()) {
             //Shift the rendering of the balloon to be over the entity
-            double x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.getPosX() - balloon.latchedEntity.lastTickPosX) * partialTick
-                       - (balloon.lastTickPosX + (balloon.getPosX() - balloon.lastTickPosX) * partialTick);
-            double y = balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.getPosY() - balloon.latchedEntity.lastTickPosY) * partialTick
-                       - (balloon.lastTickPosY + (balloon.getPosY() - balloon.lastTickPosY) * partialTick)
+            double x = balloon.latchedEntity.xOld + (balloon.latchedEntity.getX() - balloon.latchedEntity.xOld) * partialTick
+                       - (balloon.xOld + (balloon.getX() - balloon.xOld) * partialTick);
+            double y = balloon.latchedEntity.yOld + (balloon.latchedEntity.getY() - balloon.latchedEntity.yOld) * partialTick
+                       - (balloon.yOld + (balloon.getY() - balloon.yOld) * partialTick)
                        + balloon.getAddedHeight();
-            double z = balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.getPosZ() - balloon.latchedEntity.lastTickPosZ) * partialTick
-                       - (balloon.lastTickPosZ + (balloon.getPosZ() - balloon.lastTickPosZ) * partialTick);
+            double z = balloon.latchedEntity.zOld + (balloon.latchedEntity.getZ() - balloon.latchedEntity.zOld) * partialTick
+                       - (balloon.zOld + (balloon.getZ() - balloon.zOld) * partialTick);
             matrix.translate(x, y, z);
         }
 
         JSONModelData model = balloon.isLatched() ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
 
-        List<BakedQuad> quads = model.getBakedModel().getQuads(null, null, balloon.world.rand);
-        RenderType renderType = RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        List<BakedQuad> quads = model.getBakedModel().getQuads(null, null, balloon.level.random);
+        RenderType renderType = RenderType.entityTranslucent(AtlasTexture.LOCATION_BLOCKS);
         IVertexBuilder builder = renderer.getBuffer(renderType);
-        MatrixStack.Entry last = matrix.getLast();
+        MatrixStack.Entry last = matrix.last();
         for (BakedQuad quad : quads) {
             float[] color = new float[]{1, 1, 1, 1};
             if (quad.getTintIndex() == 0) {
@@ -65,8 +65,8 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
             }
             builder.addVertexData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY);
         }
-        ((IRenderTypeBuffer.Impl) renderer).finish(renderType);
-        matrix.pop();
+        ((IRenderTypeBuffer.Impl) renderer).endBatch(renderType);
+        matrix.popPose();
         super.render(balloon, entityYaw, partialTick, matrix, renderer, light);
     }
 }

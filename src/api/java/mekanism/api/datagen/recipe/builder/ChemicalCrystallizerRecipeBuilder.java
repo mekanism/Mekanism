@@ -31,6 +31,12 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
         this.output = output;
     }
 
+    /**
+     * Creates a Chemical Crystallizing recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ChemicalCrystallizerRecipeBuilder crystallizing(IChemicalStackIngredient<?, ?> input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This crystallizing recipe requires a non empty item output.");
@@ -43,6 +49,11 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
         return new ChemicalCrystallizerRecipeResult(id);
     }
 
+    /**
+     * Builds this recipe using the output item's name as the recipe name.
+     *
+     * @param consumer Finished Recipe Consumer.
+     */
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
@@ -54,8 +65,8 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
-            json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getString());
+        public void serializeRecipeData(@Nonnull JsonObject json) {
+            json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getSerializedName());
             json.add(JsonConstants.INPUT, input.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
         }

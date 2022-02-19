@@ -1,7 +1,5 @@
 package mekanism.common.config.value;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.IMekanismConfig;
@@ -11,23 +9,13 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
  * @param <TYPE> The type this {@link CachedResolvableConfigValue} resolves to
  * @param <REAL> The real type that the {@link ConfigValue} holds
  */
-public abstract class CachedResolvableConfigValue<TYPE, REAL> {
+public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValue<REAL> {
 
-    private final ConfigValue<REAL> internal;
-    private List<Runnable> invalidationListeners;
     @Nullable
     private TYPE cachedValue;
 
     protected CachedResolvableConfigValue(IMekanismConfig config, ConfigValue<REAL> internal) {
-        this.internal = internal;
-        config.addCachedValue(this);
-    }
-
-    public void addInvalidationListener(Runnable listener) {
-        if (invalidationListeners == null) {
-            invalidationListeners = new ArrayList<>();
-        }
-        invalidationListeners.add(listener);
+        super(config, internal);
     }
 
     protected abstract TYPE resolve(REAL encoded);
@@ -48,10 +36,15 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> {
         cachedValue = value;
     }
 
-    public void clearCache() {
-        cachedValue = null;
-        if (invalidationListeners != null) {
-            invalidationListeners.forEach(Runnable::run);
+    @Override
+    protected boolean clearCachedValue(boolean checkChanged) {
+        if (cachedValue == null) {
+            //Isn't cached don't need to clear it or run any invalidation listeners
+            return false;
         }
+        TYPE oldCachedValue = cachedValue;
+        cachedValue = null;
+        //Return if we are meant to check the changed ones, and it is different than it used to be
+        return checkChanged && !oldCachedValue.equals(get());
     }
 }

@@ -23,7 +23,7 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
     }
 
     public static ExtendedSmithingRecipeBuilder smithing(IItemProvider ingredient, IItemProvider upgradeIngredient, IItemProvider result) {
-        return smithing(Ingredient.fromItems(ingredient), Ingredient.fromItems(upgradeIngredient), result);
+        return smithing(Ingredient.of(ingredient), Ingredient.of(upgradeIngredient), result);
     }
 
     public static ExtendedSmithingRecipeBuilder smithing(Ingredient ingredient, Ingredient upgradeIngredient, IItemProvider result) {
@@ -42,10 +42,10 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
         }
 
         @Override
-        public void serialize(JsonObject json) {
-            super.serialize(json);
-            json.add(DataGenJsonConstants.BASE, ingredient.serialize());
-            json.add(DataGenJsonConstants.ADDITION, upgradeIngredient.serialize());
+        public void serializeRecipeData(JsonObject json) {
+            super.serializeRecipeData(json);
+            json.add(DataGenJsonConstants.BASE, ingredient.toJson());
+            json.add(DataGenJsonConstants.ADDITION, upgradeIngredient.toJson());
         }
     }
 }

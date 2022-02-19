@@ -12,12 +12,12 @@ public interface ITileNeighborCache extends ITileWrapper {
 
     default void createNeighborCache() {
         for (Direction side : EnumUtils.DIRECTIONS) {
-            updateNeighborCache(getTilePos().offset(side));
+            updateNeighborCache(getTilePos().relative(side));
         }
     }
 
     default void updateNeighborCache(BlockPos neighborPos) {
-        BlockState state = WorldUtils.getBlockState(getTileWorld(), neighborPos).orElseGet(Blocks.AIR::getDefaultState);
+        BlockState state = WorldUtils.getBlockState(getTileWorld(), neighborPos).orElseGet(Blocks.AIR::defaultBlockState);
         getNeighborCache().put(neighborPos, state);
     }
 

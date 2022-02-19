@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiRelativeElement;
+import mekanism.client.gui.element.GuiElement;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.NonNullSupplier;
 
-public class GuiSequencedSlotDisplay extends GuiRelativeElement {
+public class GuiSequencedSlotDisplay extends GuiElement {
 
     private List<ItemStack> iterStacks = Collections.emptyList();
     private int stackIndex;
@@ -58,9 +58,9 @@ public class GuiSequencedSlotDisplay extends GuiRelativeElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (!renderStack.isEmpty()) {
-            guiObj.getItemRenderer().zLevel += zOffset;
-            guiObj.renderItem(matrix, renderStack, x, y);
-            guiObj.getItemRenderer().zLevel -= zOffset;
+            gui().getItemRenderer().blitOffset += zOffset;
+            gui().renderItem(matrix, renderStack, x, y);
+            gui().getItemRenderer().blitOffset -= zOffset;
         }
     }
 

@@ -33,19 +33,19 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemHohlraum extends Item {
 
     public ItemHohlraum(Properties properties) {
-        super(properties.maxStackSize(1));
+        super(properties.stacksTo(1));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
             //Ensure the capability is not null, as the first call to addInformation happens before capability injection
             Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
             if (capability.isPresent()) {
                 IGasHandler gasHandlerItem = capability.get();
                 if (gasHandlerItem.getTanks() > 0) {
-                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                    //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
                     GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
                     if (!storedGas.isEmpty()) {
                         tooltip.add(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
@@ -79,9 +79,9 @@ public class ItemHohlraum extends Item {
     }
 
     @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
-        if (isInGroup(group)) {
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
+        if (allowdedIn(group)) {
             items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas.get(), GeneratorsGases.FUSION_FUEL));
         }
     }

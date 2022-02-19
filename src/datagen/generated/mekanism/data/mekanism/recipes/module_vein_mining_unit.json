@@ -4,15 +4,15 @@
     "item": "mekanism:module_vein_mining_unit"
   },
   "pattern": [
-    "I#I",
-    "xAs",
-    "PPP"
+    "A#A",
+    "xPs",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
@@ -24,7 +24,7 @@
     "s": {
       "item": "minecraft:diamond_shovel"
     },
-    "P": {
+    "H": {
       "tag": "forge:pellets/polonium"
     }
   }

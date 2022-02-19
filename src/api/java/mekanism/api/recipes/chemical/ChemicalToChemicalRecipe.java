@@ -1,5 +1,8 @@
 package mekanism.api.recipes.chemical;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -13,6 +16,15 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
+/**
+ * Base class for defining chemical to chemical recipes.
+ * <br>
+ * Input: Chemical
+ * <br>
+ * Output: ChemicalStack of the same chemical type as the input chemical
+ *
+ * @param <INGREDIENT> Input Ingredient type
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -22,10 +34,19 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
     private final INGREDIENT input;
     protected final STACK output;
 
+    /**
+     * @param id     Recipe name.
+     * @param input  Input.
+     * @param output Output.
+     */
     public ChemicalToChemicalRecipe(ResourceLocation id, INGREDIENT input, STACK output) {
         super(id);
-        this.input = input;
-        this.output = output;
+        this.input = Objects.requireNonNull(input, "Input cannot be null.");
+        Objects.requireNonNull(output, "Output cannot be null.");
+        if (output.isEmpty()) {
+            throw new IllegalArgumentException("Output cannot be empty.");
+        }
+        this.output = (STACK) output.copy();
     }
 
     @Override
@@ -33,16 +54,45 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
         return input.test(chemicalStack);
     }
 
+    /**
+     * Gets the input ingredient.
+     */
     public INGREDIENT getInput() {
         return input;
     }
 
+    /**
+     * @deprecated Use {@link #getOutputDefinition()}.
+     */
+    @Deprecated//TODO - 1.18: Remove this
     public STACK getOutputRepresentation() {
         return output;
     }
 
+    /**
+     * For JEI, gets the output representations to display.
+     *
+     * @return Representation of the output, <strong>MUST NOT</strong> be modified.
+     */
+    public List<STACK> getOutputDefinition() {
+        return Collections.singletonList(output);
+    }
+
+    /**
+     * Gets a new output based on the given input.
+     *
+     * @param input Specific input.
+     *
+     * @return New output.
+     *
+     * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
+     * outputs where things like NBT may be different.
+     * @implNote The passed in input should <strong>NOT</strong> be modified.
+     */
     @Contract(value = "_ -> new", pure = true)
-    public abstract STACK getOutput(STACK input);
+    public STACK getOutput(STACK input) {
+        return (STACK) output.copy();
+    }
 
     @Override
     public void write(PacketBuffer buffer) {

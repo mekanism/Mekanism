@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:black_carpet"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:black",
+    "amount": 128
+  }
+}

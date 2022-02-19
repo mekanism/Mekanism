@@ -50,7 +50,7 @@ public class NutritionalLiquifierIRecipe extends ItemStackToGasRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.NUTRITIONAL_LIQUIFIER.getItemStack();
     }
 }

@@ -16,11 +16,13 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 
 /**
- * Pos3D - a way of performing operations on objects in a three dimensional environment.
+ * Pos3D - a way of performing operations on objects in a three-dimensional environment.
  *
  * @author aidancbrady
  */
 public class Pos3D extends Vector3d {
+    //TODO - 1.18: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
+    // Though it seems like at least our yRot method is subtly different than the Vector3D yrot method
 
     public Pos3D() {
         this(0, 0, 0);
@@ -44,15 +46,15 @@ public class Pos3D extends Vector3d {
      * @param entity - entity to create the Pos3D from
      */
     public Pos3D(Entity entity) {
-        this(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        this(entity.getX(), entity.getY(), entity.getZ());
     }
 
     public static Pos3D create(TileEntity tile) {
-        return create(tile.getPos());
+        return create(tile.getBlockPos());
     }
 
     public static Pos3D create(Vector3i vec) {
-        return new Pos3D(Vector3d.copy(vec));
+        return new Pos3D(Vector3d.atLowerCornerOf(vec));
     }
 
     /**
@@ -78,10 +80,10 @@ public class Pos3D extends Vector3d {
     }
 
     public static double anglePreNorm(Pos3D pos1, Pos3D pos2) {
-        return Math.acos(pos1.dotProduct(pos2));
+        return Math.acos(pos1.dot(pos2));
     }
 
-    public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2) {
+    public static AxisAlignedBB getAABB(Vector3d pos1, Vector3d pos2) {
         return new AxisAlignedBB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
     }
 
@@ -131,9 +133,9 @@ public class Pos3D extends Vector3d {
     /**
      * Translates this Pos3D by the defined values.
      *
-     * @param x - amount to translate on the x axis
-     * @param y - amount to translate on the y axis
-     * @param z - amount to translate on the z axis
+     * @param x - amount to translate on the x-axis
+     * @param y - amount to translate on the y-axis
+     * @param z - amount to translate on the z-axis
      *
      * @return the translated Pos3D
      */
@@ -175,7 +177,7 @@ public class Pos3D extends Vector3d {
      * Performs the same operation as translate(x, y, z), but by a set amount in a Direction
      */
     public Pos3D translate(Direction direction, double amount) {
-        return translate(direction.getDirectionVec().getX() * amount, direction.getDirectionVec().getY() * amount, direction.getDirectionVec().getZ() * amount);
+        return translate(direction.getNormal().getX() * amount, direction.getNormal().getY() * amount, direction.getNormal().getZ() * amount);
     }
 
     /**
@@ -200,11 +202,11 @@ public class Pos3D extends Vector3d {
      */
     public Pos3D adjustPosition(Direction direction, Entity entity) {
         if (direction.getAxis() == Axis.X) {
-            return new Pos3D(entity.getPosX(), y, z);
+            return new Pos3D(entity.getX(), y, z);
         } else if (direction.getAxis() == Axis.Y) {
-            return new Pos3D(x, entity.getPosY(), z);
+            return new Pos3D(x, entity.getY(), z);
         } //Axis.Z
-        return new Pos3D(x, y, entity.getPosZ());
+        return new Pos3D(x, y, entity.getZ());
     }
 
     /**
@@ -230,26 +232,30 @@ public class Pos3D extends Vector3d {
      */
     @Nonnull
     @Override
-    public Pos3D rotateYaw(float yaw) {
+    public Pos3D yRot(float yaw) {
         double yawRadians = Math.toRadians(yaw);
         double xPos = x;
         double zPos = z;
         if (yaw != 0) {
-            xPos = x * Math.cos(yawRadians) - z * Math.sin(yawRadians);
-            zPos = z * Math.cos(yawRadians) + x * Math.sin(yawRadians);
+            double cos = Math.cos(yawRadians);
+            double sin = Math.sin(yawRadians);
+            xPos = x * cos - z * sin;
+            zPos = z * cos + x * sin;
         }
         return new Pos3D(xPos, y, zPos);
     }
 
     @Nonnull
     @Override
-    public Pos3D rotatePitch(float pitch) {
+    public Pos3D xRot(float pitch) {
         double pitchRadians = Math.toRadians(pitch);
         double yPos = y;
         double zPos = z;
         if (pitch != 0) {
-            yPos = y * Math.cos(pitchRadians) - z * Math.sin(pitchRadians);
-            zPos = z * Math.cos(pitchRadians) + y * Math.sin(pitchRadians);
+            double cos = Math.cos(pitchRadians);
+            double sin = Math.sin(pitchRadians);
+            yPos = y * cos - z * sin;
+            zPos = z * cos + y * sin;
         }
         return new Pos3D(x, yPos, zPos);
     }
@@ -273,12 +279,14 @@ public class Pos3D extends Vector3d {
         return new Pos3D(xPos, yPos, zPos);
     }
 
+    @Nonnull
+    @Override
     public Pos3D multiply(Vector3d pos) {
-        return scale(pos.x, pos.y, pos.z);
+        return multiply(pos.x, pos.y, pos.z);
     }
 
     /**
-     * Scales this Pos3D by the defined x, y, an z values.
+     * Scales this Pos3D by the defined x, y, and z values.
      *
      * @param x - x value to scale by
      * @param y - y value to scale by
@@ -286,14 +294,16 @@ public class Pos3D extends Vector3d {
      *
      * @return scaled Pos3D
      */
-    public Pos3D scale(double x, double y, double z) {
+    @Nonnull
+    @Override
+    public Pos3D multiply(double x, double y, double z) {
         return new Pos3D(this.x * x, this.y * y, this.z * z);
     }
 
     @Nonnull
     @Override
     public Pos3D scale(double scale) {
-        return scale(scale, scale, scale);
+        return multiply(scale, scale, scale);
     }
 
     public Pos3D rotate(float angle, Pos3D axis) {
@@ -309,7 +319,8 @@ public class Pos3D extends Vector3d {
 
     public double[] getRotationMatrix(float angle) {
         double[] matrix = new double[16];
-        Pos3D axis = clone().normalize();
+        //Note: We don't need to bother cloning it here as normalize will return a new object regardless
+        Vector3d axis = normalize();
 
         double x = axis.x;
         double y = axis.y;
@@ -334,7 +345,7 @@ public class Pos3D extends Vector3d {
     }
 
     public double anglePreNorm(Pos3D pos2) {
-        return Math.acos(dotProduct(pos2));
+        return Math.acos(dot(pos2));
     }
 
     @Nonnull

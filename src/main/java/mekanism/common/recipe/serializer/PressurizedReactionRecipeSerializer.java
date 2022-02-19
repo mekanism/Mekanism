@@ -30,15 +30,15 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement itemInput = JSONUtils.isArrayNode(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
+                                JSONUtils.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient solidIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement fluidInput = JSONUtils.isJsonArray(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.FLUID_INPUT) :
-                                 JSONUtils.getJsonObject(json, JsonConstants.FLUID_INPUT);
+        JsonElement fluidInput = JSONUtils.isArrayNode(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
+                                 JSONUtils.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
         FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(fluidInput);
-        JsonElement gasInput = JSONUtils.isJsonArray(json, JsonConstants.GAS_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.GAS_INPUT) :
-                               JSONUtils.getJsonObject(json, JsonConstants.GAS_INPUT);
+        JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
+                               JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
         GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
         FloatingLong energyRequired = FloatingLong.ZERO;
         if (json.has(JsonConstants.ENERGY_REQUIRED)) {
@@ -47,7 +47,7 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
 
         int duration;
         JsonElement ticks = json.get(JsonConstants.DURATION);
-        if (!JSONUtils.isNumber(ticks)) {
+        if (!JSONUtils.isNumberValue(ticks)) {
             throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
         }
         duration = ticks.getAsJsonPrimitive().getAsInt();
@@ -79,14 +79,14 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
             FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
             GasStackIngredient inputGas = GasStackIngredient.read(buffer);
             FloatingLong energyRequired = FloatingLong.readFromBuffer(buffer);
             int duration = buffer.readVarInt();
-            ItemStack outputItem = buffer.readItemStack();
+            ItemStack outputItem = buffer.readItem();
             GasStack outputGas = GasStack.readFromPacket(buffer);
             return this.factory.create(recipeId, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

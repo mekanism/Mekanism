@@ -99,8 +99,8 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
         public void accept(@Nonnull LazyOptional<ACCEPTOR> ignored) {
             TileEntityTransmitter transmitterTile = tile.get();
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
-            if (transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasWorld() && transmitterTile.isLoaded() &&
-                WorldUtils.isBlockLoaded(transmitterTile.getWorld(), transmitterTile.getPos().offset(side))) {
+            if (transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded() &&
+                WorldUtils.isBlockLoaded(transmitterTile.getLevel(), transmitterTile.getBlockPos().relative(side))) {
                 //If it is, then refresh the connection
                 transmitterTile.getTransmitter().refreshConnections(side);
             }

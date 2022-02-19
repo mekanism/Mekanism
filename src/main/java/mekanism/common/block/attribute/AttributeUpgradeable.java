@@ -17,6 +17,6 @@ public class AttributeUpgradeable implements Attribute {
 
     @Nonnull
     public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        return BlockStateHelper.copyStateData(current, upgradeBlock.get().getBlock().getDefaultState());
+        return BlockStateHelper.copyStateData(current, upgradeBlock.get());
     }
 }

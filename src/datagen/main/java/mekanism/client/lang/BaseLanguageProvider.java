@@ -3,7 +3,9 @@ package mekanism.client.lang;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.common.block.attribute.Attribute;
@@ -42,10 +44,16 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         if (key instanceof IBlockProvider) {
             Block block = ((IBlockProvider) key).getBlock();
             if (Attribute.has(block, AttributeGui.class)) {
-                add(Util.makeTranslationKey("container", block.getRegistryName()), value);
+                add(Util.makeDescriptionId("container", block.getRegistryName()), value);
             }
         }
         add(key.getTranslationKey(), value);
+    }
+
+    protected void add(IModuleDataProvider<?> moduleDataProvider, String name, String description) {
+        ModuleData<?> moduleData = moduleDataProvider.getModuleData();
+        add(moduleData.getTranslationKey(), name);
+        add(moduleData.getDescriptionTranslationKey(), description);
     }
 
     protected void addFluid(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, String name) {
@@ -56,7 +64,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void add(String key, String value) {
+    public void add(@Nonnull String key, @Nonnull String value) {
         super.add(key, value);
         if (altProviders.length > 0) {
             List<Component> splitEnglish = FormatSplitter.split(value);
@@ -67,11 +75,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void act(DirectoryCache cache) throws IOException {
-        super.act(cache);
+    public void run(@Nonnull DirectoryCache cache) throws IOException {
+        super.run(cache);
         if (altProviders.length > 0) {
             for (ConvertibleLanguageProvider provider : altProviders) {
-                provider.act(cache);
+                provider.run(cache);
             }
         }
     }

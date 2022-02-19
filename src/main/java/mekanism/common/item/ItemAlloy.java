@@ -27,16 +27,16 @@ public class ItemAlloy extends Item {
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player != null && MekanismConfig.general.transmitterAlloyUpgrade.get()) {
-            World world = context.getWorld();
-            BlockPos pos = context.getPos();
+            World world = context.getLevel();
+            BlockPos pos = context.getClickedPos();
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getFace());
+            LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getClickedFace());
             if (capability.isPresent()) {
-                if (!world.isRemote) {
-                    capability.resolve().get().onAlloyInteraction(player, context.getHand(), context.getItem(), tier);
+                if (!world.isClientSide) {
+                    capability.resolve().get().onAlloyInteraction(player, context.getHand(), context.getItemInHand(), tier);
                 }
                 return ActionResultType.SUCCESS;
             }

@@ -3,14 +3,17 @@ package mekanism.client.model.baked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -29,7 +32,9 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
     public List<BakedQuad> createQuads(QuadsKey<byte[]> key) {
         byte[] driveStatus = key.getData();
         List<BakedQuad> ret = key.getQuads();
-        if (key.getSide() == Attribute.getFacing(key.getBlockState())) {
+        Direction side = key.getSide();
+        BlockState blockState = key.getBlockState();
+        if (blockState != null && side == Attribute.getFacing(blockState)) {
             ret = new ArrayList<>(ret);
             List<BakedQuad> driveQuads = new ArrayList<>();
             for (int i = 0; i < driveStatus.length; i++) {
@@ -38,7 +43,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
                     driveQuads.addAll(getDriveQuads(i, status, key));
                 }
             }
-            ret.addAll(QuadUtils.transformBakedQuads(driveQuads, QuadTransformation.rotate(key.getSide())));
+            ret.addAll(QuadUtils.transformBakedQuads(driveQuads, QuadTransformation.rotate(side)));
         }
         return ret;
     }
@@ -49,6 +54,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
         return QuadUtils.transformBakedQuads(ret, QuadTransformation.translate(new Vector3d(translation[0], translation[1], 0)));
     }
 
+    @Nullable
     @Override
     public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, IModelData data) {
         byte[] driveStatus = data.getData(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);

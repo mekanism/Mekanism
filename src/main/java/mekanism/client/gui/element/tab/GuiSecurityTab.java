@@ -18,10 +18,10 @@ import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityMode;
-import mekanism.common.network.PacketGuiInteract;
-import mekanism.common.network.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.PacketGuiInteract.GuiInteractionEntity;
-import mekanism.common.network.PacketSecurityMode;
+import mekanism.common.network.to_server.PacketGuiInteract;
+import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
+import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
+import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
@@ -40,6 +40,17 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
     private static final ResourceLocation PROTECTED = MekanismUtils.getResource(ResourceType.GUI, "protected.png");
 
+    private static ISecurityObject getItemSecurityObject(@Nonnull Hand hand) {
+        return SecurityUtils.wrapSecurityItem(() -> {
+            ItemStack stack = minecraft.player.getItemInHand(hand);
+            if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
+                minecraft.player.closeContainer();
+                return ItemStack.EMPTY;
+            }
+            return stack;
+        });
+    }
+
     @Nullable
     private final Hand currentHand;
 
@@ -50,17 +61,6 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     public GuiSecurityTab(IGuiWrapper gui, ISecurityObject securityObject, int y) {
         super(PUBLIC, gui, securityObject, gui.getWidth(), y, 26, 18, false);
         this.currentHand = null;
-    }
-
-    private static ISecurityObject getItemSecurityObject(@Nonnull Hand hand) {
-        return SecurityUtils.wrapSecurityItem(() -> {
-            ItemStack stack = minecraft.player.getHeldItem(hand);
-            if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
-                minecraft.player.closeScreen();
-                return ItemStack.EMPTY;
-            }
-            return stack;
-        });
     }
 
     public GuiSecurityTab(IGuiWrapper gui, @Nonnull Hand hand) {
@@ -91,6 +91,7 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         ITextComponent securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(dataSource, Dist.CLIENT));
         ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, dataSource.getOwnerUUID(), dataSource.getOwnerName()).getTextComponent();
         if (SecurityUtils.isOverridden(dataSource, Dist.CLIENT)) {
@@ -108,13 +109,13 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     public void onClick(double mouseX, double mouseY) {
         if (MekanismConfig.general.allowProtection.get()) {
             UUID owner = dataSource.getOwnerUUID();
-            if (owner != null && minecraft.player.getUniqueID().equals(owner)) {
+            if (owner != null && minecraft.player.getUUID().equals(owner)) {
                 if (currentHand != null) {
                     Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, getSecurity().getNext()));
                 } else if (dataSource instanceof TileEntity) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, (TileEntity) dataSource));
                 } else if (dataSource instanceof Entity) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, ((Entity) dataSource).getEntityId()));
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, (Entity) dataSource));
                 }
             }
         }

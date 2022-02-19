@@ -1,14 +1,9 @@
 package mekanism.common.lib.frequency;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.security.ISecurityTile;
-import net.minecraft.tileentity.TileEntity;
 
 public class FrequencyManagerWrapper<FREQ extends Frequency> {
 
@@ -57,21 +52,6 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
             manager.createOrLoad();
         }
         return privateManagers.get(ownerUUID);
-    }
-
-    public List<FREQ> getPublicFrequencies(TileEntity tile, List<FREQ> cache) {
-        return tile.getWorld().isRemote() ? cache : new ArrayList<>(getPublicManager().getFrequencies());
-    }
-
-    public <TILE extends TileEntity & ISecurityTile> List<FREQ> getPrivateFrequencies(TILE tile, List<FREQ> cache) {
-        if (tile.getWorld().isRemote()) {
-            return cache;
-        }
-        UUID ownerUUID = tile.getOwnerUUID();
-        if (ownerUUID == null) {
-            return Collections.emptyList();
-        }
-        return new ArrayList<>(getPrivateManager(ownerUUID).getFrequencies());
     }
 
     public void clear() {

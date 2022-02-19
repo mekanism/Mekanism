@@ -36,6 +36,15 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         this.fluidOutput = fluidOutput;
     }
 
+    /**
+     * Creates a Rotary recipe builder. For converting a fluid into a gas.
+     *
+     * @param fluidInput Input.
+     * @param gasOutput  Output.
+     *
+     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this method in combination with {@link
+     * #rotary(GasStackIngredient, FluidStack)} if the conversion will be possible in both directions.
+     */
     public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, GasStack gasOutput) {
         if (gasOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty gas output.");
@@ -43,6 +52,15 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         return new RotaryRecipeBuilder(fluidInput, EMPTY_GAS_INPUT, gasOutput, FluidStack.EMPTY, RecipeDirection.FLUID_TO_GAS);
     }
 
+    /**
+     * Creates a Rotary recipe builder. For converting a gas into a fluid.
+     *
+     * @param gasInput    Input.
+     * @param fluidOutput Output.
+     *
+     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this method in combination with {@link
+     * #rotary(FluidStackIngredient, GasStack)} if the conversion will be possible in both directions.
+     */
     public static RotaryRecipeBuilder rotary(GasStackIngredient gasInput, FluidStack fluidOutput) {
         if (fluidOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty fluid output.");
@@ -50,6 +68,14 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         return new RotaryRecipeBuilder(EMPTY_FLUID_INPUT, gasInput, GasStack.EMPTY, fluidOutput, RecipeDirection.GAS_TO_FLUID);
     }
 
+    /**
+     * Creates a Rotary recipe builder that is capable of converting a fluid into a gas and a gas into a fluid.
+     *
+     * @param fluidInput  Fluid Input. (For fluid to gas)
+     * @param gasInput    Gas Input. (For gas to fluid)
+     * @param gasOutput   Gas Output. (For fluid to gas)
+     * @param fluidOutput Fluid Output. (For gas to fluid)
+     */
     public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
         if (gasOutput.isEmpty() || fluidOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires non empty gas and fluid outputs.");
@@ -69,7 +95,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             if (direction.hasFluidToGas) {
                 json.add(JsonConstants.FLUID_INPUT, fluidInput.serialize());
                 json.add(JsonConstants.GAS_OUTPUT, SerializerHelper.serializeGasStack(gasOutput));

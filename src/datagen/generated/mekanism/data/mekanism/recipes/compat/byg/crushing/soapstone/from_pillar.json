@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:soapstone_pillar"
+    }
+  },
+  "output": {
+    "item": "byg:soapstone",
+    "count": 2
+  }
+}

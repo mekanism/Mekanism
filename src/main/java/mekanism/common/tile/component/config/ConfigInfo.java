@@ -1,6 +1,7 @@
 package mekanism.common.tile.component.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -27,13 +27,14 @@ public class ConfigInfo {
 
     private final Supplier<Direction> facingSupplier;
     //TODO: Ejecting/can eject, how do we want to use these
-    //TODO: When can eject is false don't even show the auto eject button
     private boolean canEject;
     private boolean ejecting;
     private final Map<RelativeSide, DataType> sideConfig;
     private final Map<DataType, ISlotInfo> slotInfo;
     // used so slot & tank GUIs can quickly reference which color overlay to render
     private final Map<Object, List<DataType>> containerTypeMapping;
+    //Not final so that it can be lazily initialized
+    private Set<RelativeSide> disabledSides;
 
     public ConfigInfo(@Nonnull Supplier<Direction> facingSupplier) {
         this.facingSupplier = facingSupplier;
@@ -63,6 +64,23 @@ public class ConfigInfo {
         this.ejecting = ejecting;
     }
 
+    public void addDisabledSides(@Nonnull RelativeSide... sides) {
+        if (disabledSides == null) {
+            disabledSides = EnumSet.noneOf(RelativeSide.class);
+        }
+        for (RelativeSide side : sides) {
+            disabledSides.add(side);
+            sideConfig.put(side, DataType.NONE);
+        }
+    }
+
+    public boolean isSideEnabled(@Nonnull RelativeSide side) {
+        if (disabledSides == null) {
+            return true;
+        }
+        return !disabledSides.contains(side);
+    }
+
     @Nonnull
     public DataType getDataType(@Nonnull RelativeSide side) {
         return sideConfig.get(side);
@@ -70,7 +88,9 @@ public class ConfigInfo {
 
     public void setDataType(@Nonnull DataType dataType, @Nonnull RelativeSide... sides) {
         for (RelativeSide side : sides) {
-            sideConfig.put(side, dataType);
+            if (isSideEnabled(side)) {
+                sideConfig.put(side, dataType);
+            }
         }
     }
 
@@ -135,13 +155,23 @@ public class ConfigInfo {
     }
 
     public Set<Direction> getSidesForData(@Nonnull DataType dataType) {
-        return getSides(type -> type.equals(dataType));
+        return getSides(type -> type == dataType);
     }
 
     public Set<Direction> getSides(Predicate<DataType> predicate) {
         Direction facing = facingSupplier.get();
-        return sideConfig.entrySet().stream().filter(entry -> predicate.test(entry.getValue())).map(entry ->
-              entry.getKey().getDirection(facing)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
+        Set<Direction> directions = null;
+        for (Map.Entry<RelativeSide, DataType> entry : sideConfig.entrySet()) {
+            if (predicate.test(entry.getValue())) {
+                if (directions == null) {
+                    //Lazy init the set so that if there are none that match we can just use an empty set
+                    // instead of having to initialize an enum set
+                    directions = EnumSet.noneOf(Direction.class);
+                }
+                directions.add(entry.getKey().getDirection(facing));
+            }
+        }
+        return directions == null ? Collections.emptySet() : directions;
     }
 
     public Set<Direction> getAllOutputtingSides() {
@@ -149,7 +179,7 @@ public class ConfigInfo {
     }
 
     public Set<Direction> getSidesForOutput(DataType outputType) {
-        return getSides(type -> type.equals(outputType) || type.equals(DataType.INPUT_OUTPUT));
+        return getSides(type -> type == outputType || type == DataType.INPUT_OUTPUT);
     }
 
     /**
@@ -157,10 +187,14 @@ public class ConfigInfo {
      */
     @Nonnull
     public DataType incrementDataType(@Nonnull RelativeSide relativeSide) {
-        Set<DataType> supportedDataTypes = getSupportedDataTypes();
-        DataType newType = getDataType(relativeSide).getNext(supportedDataTypes::contains);
-        sideConfig.put(relativeSide, newType);
-        return newType;
+        DataType current = getDataType(relativeSide);
+        if (isSideEnabled(relativeSide)) {
+            Set<DataType> supportedDataTypes = getSupportedDataTypes();
+            DataType newType = current.getNext(supportedDataTypes::contains);
+            sideConfig.put(relativeSide, newType);
+            return newType;
+        }
+        return current;
     }
 
     /**
@@ -168,9 +202,13 @@ public class ConfigInfo {
      */
     @Nonnull
     public DataType decrementDataType(@Nonnull RelativeSide relativeSide) {
-        Set<DataType> supportedDataTypes = getSupportedDataTypes();
-        DataType newType = getDataType(relativeSide).getPrevious(supportedDataTypes::contains);
-        sideConfig.put(relativeSide, newType);
-        return newType;
+        DataType current = getDataType(relativeSide);
+        if (isSideEnabled(relativeSide)) {
+            Set<DataType> supportedDataTypes = getSupportedDataTypes();
+            DataType newType = current.getPrevious(supportedDataTypes::contains);
+            sideConfig.put(relativeSide, newType);
+            return newType;
+        }
+        return current;
     }
 }

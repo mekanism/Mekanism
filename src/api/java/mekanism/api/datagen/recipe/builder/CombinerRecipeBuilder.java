@@ -30,6 +30,13 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         this.output = output;
     }
 
+    /**
+     * Creates a Combining recipe builder.
+     *
+     * @param mainInput  Main Input.
+     * @param extraInput Extra/Secondary Input.
+     * @param output     Output.
+     */
     public static CombinerRecipeBuilder combining(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This combining recipe requires a non empty item output.");
@@ -42,6 +49,11 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         return new CombinerRecipeResult(id);
     }
 
+    /**
+     * Builds this recipe using the output item's name as the recipe name.
+     *
+     * @param consumer Finished Recipe Consumer.
+     */
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
@@ -53,7 +65,7 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.MAIN_INPUT, mainInput.serialize());
             json.add(JsonConstants.EXTRA_INPUT, extraInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));

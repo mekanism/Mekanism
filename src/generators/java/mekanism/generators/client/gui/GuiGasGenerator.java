@@ -8,8 +8,6 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
@@ -26,13 +24,11 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiEnergyTab(() -> Arrays.asList(
+    protected void addGuiElements() {
+        super.addGuiElements();
+        addButton(new GuiEnergyTab(this, () -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getGenerationRate().multiply(tile.getUsed()).multiply(tile.getMaxBurnTicks()))),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))));
         addButton(new GuiGasGauge(() -> tile.fuelTank, () -> tile.getGasTanks(null), GaugeType.WIDE, this, 55, 18));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
     }
@@ -40,9 +36,12 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         ITextComponent component = GeneratorsLang.GAS_BURN_RATE.translate(tile.getUsed());
-        drawString(matrix, component, xSize - 8 - getStringWidth(component), playerInventoryTitleY, titleTextColor());
+        int left = inventoryLabelX + getStringWidth(inventory.getDisplayName()) + 4;
+        int end = imageWidth - 8;
+        left = Math.max(left, end - getStringWidth(component));
+        drawTextScaledBound(matrix, component, left, inventoryLabelY, titleTextColor(), end - left);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

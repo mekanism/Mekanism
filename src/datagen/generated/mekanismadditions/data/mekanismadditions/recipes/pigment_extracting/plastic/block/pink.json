@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:pink_plastic"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:pink",
+    "amount": 48
+  }
+}

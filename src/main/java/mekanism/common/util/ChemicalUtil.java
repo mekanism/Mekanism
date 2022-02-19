@@ -1,7 +1,5 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -35,14 +33,19 @@ import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
+import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -98,7 +101,7 @@ public class ChemicalUtil {
     }
 
     /**
-     * Compares a {@link ChemicalType} with the current type of a merged chemical tank.
+     * Compares a {@link ChemicalType} with the current type of merged chemical tank.
      */
     public static boolean compareTypes(ChemicalType chemicalType, Current current) {
         switch (chemicalType) {
@@ -206,22 +209,21 @@ public class ChemicalUtil {
     }
 
     public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        //TODO: Technically doesn't support things where the color is part of the texture such as lava
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         if (!gasStack.isEmpty()) {
-            return gasStack.getChemicalTint();
+            return gasStack.getChemicalColorRepresentation();
         }
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
         if (!infusionStack.isEmpty()) {
-            return infusionStack.getChemicalTint();
+            return infusionStack.getChemicalColorRepresentation();
         }
         PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
         if (!pigmentStack.isEmpty()) {
-            return pigmentStack.getChemicalTint();
+            return pigmentStack.getChemicalColorRepresentation();
         }
         SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
         if (!slurryStack.isEmpty()) {
-            return slurryStack.getChemicalTint();
+            return slurryStack.getChemicalColorRepresentation();
         }
         return 0;
     }
@@ -250,10 +252,21 @@ public class ChemicalUtil {
         return false;
     }
 
-    public static List<ITextComponent> getAttributeTooltips(Chemical<?> chemical) {
-        List<ITextComponent> list = new ArrayList<>();
-        chemical.getAttributes().forEach(attr -> attr.addTooltipText(list));
-        return list;
+    public static void addAttributeTooltips(List<ITextComponent> tooltips, Chemical<?> chemical) {
+        chemical.getAttributes().forEach(attr -> attr.addTooltipText(tooltips));
+    }
+
+    public static void addChemicalDataToTooltip(List<ITextComponent> tooltips, Chemical<?> chemical, boolean advanced) {
+        if (!chemical.isEmptyType()) {
+            addAttributeTooltips(tooltips, chemical);
+            if (chemical instanceof Gas && ((Gas) chemical).isIn(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST)) {
+                tooltips.add(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
+            }
+            if (advanced) {
+                //If advanced tooltips are on, display the registry name
+                tooltips.add(TextComponentUtil.build(TextFormatting.DARK_GRAY, chemical.getRegistryName()));
+            }
+        }
     }
 
     public static void emit(IChemicalTank<?, ?> tank, TileEntity from) {
@@ -284,24 +297,17 @@ public class ChemicalUtil {
             return 0;
         }
         Capability<IChemicalHandler<CHEMICAL, STACK>> capability = getCapabilityForChemical(stack);
-        //Fake that we have one target given we know that no sides will overlap
-        // This allows us to have slightly better performance
-        ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack);
-        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
-            //Insert to access side
-            Direction accessSide = side.getOpposite();
-            //Collect cap
-            CapabilityUtils.getCapability(acceptor, capability, accessSide).ifPresent(handler -> {
+        ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, 6);
+        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
+            //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
+            CapabilityUtils.getCapability(acceptor, capability, side.getOpposite()).ifPresent(handler -> {
                 if (canInsert(handler, stack)) {
-                    target.addHandler(accessSide, handler);
+                    target.addHandler(handler);
                 }
             });
         });
-        int curHandlers = target.getHandlers().size();
-        if (curHandlers > 0) {
-            Set<ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>>> targets = new ObjectOpenHashSet<>();
-            targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), ChemicalUtil.copy(stack));
+        if (target.getHandlerCount() > 0) {
+            return EmitUtils.sendToAcceptors(target, stack.getAmount(), ChemicalUtil.copy(stack));
         }
         return 0;
     }

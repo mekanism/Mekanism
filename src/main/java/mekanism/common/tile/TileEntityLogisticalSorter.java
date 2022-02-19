@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -16,13 +15,16 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.SorterFilter;
-import mekanism.common.content.transporter.SorterItemStackFilter;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InternalInventorySlot;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.SidedBlockPos;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -43,33 +45,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<SorterFilter<?>>,
-      IHasSortableFilters {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISustainedData, ITileFilterHolder<SorterFilter<?>>, IHasSortableFilters {
 
     private HashList<SorterFilter<?>> filters = new HashList<>();
     private final Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
 
+    @SyntheticComputerMethod(getter = "getDefaultColor")
     public EnumColor color;
-    public boolean autoEject;
-    public boolean roundRobin;
-    public boolean singleItem;
-    public int rrIndex = 0;
+    private boolean autoEject;
+    private boolean roundRobin;
+    private boolean singleItem;
+    @Nullable
+    public SidedBlockPos rrTarget;
     private int delayTicks;
 
     public TileEntityLogisticalSorter() {
         super(MekanismBlocks.LOGISTICAL_SORTER);
         delaySupplier = () -> 3;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(InternalInventorySlot.create(this), RelativeSide.FRONT, RelativeSide.BACK);
+        builder.addSlot(InternalInventorySlot.create(this), RelativeSide.FRONT);
         return builder.build();
     }
 
@@ -82,24 +85,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         }
 
         if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-            TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-            TileEntity front = WorldUtils.getTileEntity(getWorld(), pos.offset(getDirection()));
+            Direction direction = getDirection();
+            TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
+            TileEntity front = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction));
             //If there is no tile to pull from or the push to, skip doing any checks
-            if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
+            if (InventoryUtils.isItemHandler(back, direction) && front != null) {
                 boolean sentItems = false;
-                int min = 0;
-
                 for (SorterFilter<?> filter : filters) {
-                    TransitRequest request = filter.mapInventory(back, getDirection(), singleItem);
+                    TransitRequest request = filter.mapInventory(back, direction, singleItem);
                     if (request.isEmpty()) {
                         continue;
                     }
-                    if (!singleItem && filter instanceof SorterItemStackFilter) {
-                        SorterItemStackFilter itemFilter = (SorterItemStackFilter) filter;
-                        if (itemFilter.sizeMode) {
-                            min = itemFilter.min;
-                        }
-                    }
+                    int min = singleItem ? 1 : filter.sizeMode ? filter.min : 0;
                     TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
                     if (!response.isEmpty()) {
                         response.useAll();
@@ -111,7 +108,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
 
                 if (!sentItems && autoEject) {
-                    TransitRequest request = TransitRequest.definedItem(back, getDirection(), singleItem ? 1 : 64, strictFinder);
+                    TransitRequest request = TransitRequest.definedItem(back, direction, singleItem ? 1 : 64, strictFinder);
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
                         response.useAll();
@@ -132,20 +129,25 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
             return transporter.insert(this, request, filterColor, true, min);
         }
-        return request.addToInventory(front, getDirection(), false);
+        return request.addToInventory(front, getDirection(), min, false);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        return getConfigurationData(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
+        if (rrTarget != null) {
+            nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
+        }
+        return nbtTags;
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
-        setConfigurationData(nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
+        if (nbtTags.contains(NBTConstants.ROUND_ROBIN_TARGET, NBT.TAG_COMPOUND)) {
+            rrTarget = SidedBlockPos.deserialize(nbtTags.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
+        }
     }
 
     @Override
@@ -160,6 +162,21 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         markDirty(false);
     }
 
+    @ComputerMethod(nameOverride = "getAutoMode")
+    public boolean getAutoEject() {
+        return autoEject;
+    }
+
+    @ComputerMethod(nameOverride = "isRoundRobin")
+    public boolean getRoundRobin() {
+        return roundRobin;
+    }
+
+    @ComputerMethod(nameOverride = "isSingle")
+    public boolean getSingleItem() {
+        return singleItem;
+    }
+
     public void toggleAutoEject() {
         autoEject = !autoEject;
         markDirty(false);
@@ -167,7 +184,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     public void toggleRoundRobin() {
         roundRobin = !roundRobin;
-        rrIndex = 0;
+        rrTarget = null;
         markDirty(false);
     }
 
@@ -177,24 +194,29 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public void changeColor(@Nullable EnumColor color) {
-        this.color = color;
-        markDirty(false);
+        if (this.color != color) {
+            this.color = color;
+            markDirty(false);
+        }
     }
 
     public boolean canSendHome(ItemStack stack) {
-        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-        return TransporterUtils.canInsert(back, null, stack, getOppositeDirection(), true);
+        Direction oppositeDirection = getOppositeDirection();
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));
+        return TransporterUtils.canInsert(back, null, stack, oppositeDirection, true);
     }
 
     public boolean hasConnectedInventory() {
-        TileEntity tile = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-        return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
+        Direction oppositeDirection = getOppositeDirection();
+        TileEntity tile = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));
+        return TransporterUtils.isValidAcceptorOnSide(tile, oppositeDirection);
     }
 
     @Nonnull
     public TransitResponse sendHome(TransitRequest request) {
-        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-        return request.addToInventory(back, getOppositeDirection(), true);
+        Direction oppositeDirection = getOppositeDirection();
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));
+        return request.addToInventory(back, oppositeDirection, 0, true);
     }
 
     @Override
@@ -203,36 +225,31 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
-        nbtTags.putBoolean(NBTConstants.EJECT, autoEject);
-        nbtTags.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
-        nbtTags.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
-        nbtTags.putInt(NBTConstants.INDEX, rrIndex);
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        data.putBoolean(NBTConstants.EJECT, autoEject);
+        data.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
+        data.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (SorterFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            nbtTags.put(NBTConstants.FILTERS, filterTags);
+            data.put(NBTConstants.FILTERS, filterTags);
         }
-        return nbtTags;
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
-        autoEject = nbtTags.getBoolean(NBTConstants.EJECT);
-        roundRobin = nbtTags.getBoolean(NBTConstants.ROUND_ROBIN);
-        singleItem = nbtTags.getBoolean(NBTConstants.SINGLE_ITEM);
-        rrIndex = nbtTags.getInt(NBTConstants.INDEX);
-        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        NBTUtils.setEnumIfPresent(data, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        autoEject = data.getBoolean(NBTConstants.EJECT);
+        roundRobin = data.getBoolean(NBTConstants.ROUND_ROBIN);
+        singleItem = data.getBoolean(NBTConstants.SINGLE_ITEM);
+        filters.clear();
+        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof SorterFilter) {
@@ -240,11 +257,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
             }
         }
-    }
-
-    @Override
-    public String getDataType() {
-        return getBlockType().getTranslationKey();
     }
 
     @Override
@@ -304,6 +316,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
+    @ComputerMethod
     public HashList<SorterFilter<?>> getFilters() {
         return filters;
     }
@@ -311,9 +324,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(() -> autoEject, value -> autoEject = value));
-        container.track(SyncableBoolean.create(() -> roundRobin, value -> roundRobin = value));
-        container.track(SyncableBoolean.create(() -> singleItem, value -> singleItem = value));
+        container.track(SyncableBoolean.create(this::getAutoEject, value -> autoEject = value));
+        container.track(SyncableBoolean.create(this::getRoundRobin, value -> roundRobin = value));
+        container.track(SyncableBoolean.create(this::getSingleItem, value -> singleItem = value));
         container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(color), value -> color = TransporterUtils.readColor(value)));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
             if (value instanceof HashList) {
@@ -323,4 +336,71 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
         }));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void setSingle(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (singleItem != value) {
+            toggleSingleItem();
+        }
+    }
+
+    @ComputerMethod
+    private void setRoundRobin(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (roundRobin != value) {
+            toggleRoundRobin();
+        }
+    }
+
+    @ComputerMethod
+    private void setAutoMode(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (autoEject != value) {
+            toggleAutoEject();
+        }
+    }
+
+    @ComputerMethod
+    private void clearDefaultColor() throws ComputerException {
+        validateSecurityIsPublic();
+        changeColor(null);
+    }
+
+    @ComputerMethod
+    private void incrementDefaultColor() throws ComputerException {
+        validateSecurityIsPublic();
+        color = TransporterUtils.increment(color);
+        markDirty(false);
+    }
+
+    @ComputerMethod
+    private void decrementDefaultColor() throws ComputerException {
+        validateSecurityIsPublic();
+        color = TransporterUtils.decrement(color);
+        markDirty(false);
+    }
+
+    @ComputerMethod
+    private void setDefaultColor(EnumColor color) throws ComputerException {
+        validateSecurityIsPublic();
+        if (!TransporterUtils.colors.contains(color)) {
+            throw new ComputerException("Color '%s' is not a supported transporter color.", color);
+        }
+        changeColor(color);
+    }
+
+    @ComputerMethod
+    private boolean addFilter(SorterFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.add(filter);
+    }
+
+    @ComputerMethod
+    private boolean removeFilter(SorterFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.remove(filter);
+    }
+    //End methods IComputerTile
 }

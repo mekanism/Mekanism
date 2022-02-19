@@ -11,8 +11,8 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.generators.client.gui.element.button.ReactorLogicButton;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
-import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
+import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
+import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -28,13 +28,13 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiElementHolder(this, 16, 31, 130, 90));
-        addButton(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
+        scrollBar = addButton(new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addButton(new ReactorLogicButton<>(this, guiLeft + 17, guiTop + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, type -> {
+            addButton(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, type -> {
                 if (type == null) {
                     return;
                 }
@@ -47,12 +47,12 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawTextScaledBound(matrix, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 16, 123, titleTextColor(), 144);
-        drawCenteredText(matrix, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, xSize, 136, titleTextColor());
+        drawCenteredText(matrix, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, imageWidth, 136, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
     }
 }

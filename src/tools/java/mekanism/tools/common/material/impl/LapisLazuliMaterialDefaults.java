@@ -12,62 +12,42 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 582;
+        return 224;
     }
 
     @Override
     public float getAxeDamage() {
-        return 6;
+        return 4;
     }
 
     @Override
     public float getAxeAtkSpeed() {
-        return -3.1F;
+        return -2.9F;
     }
 
     @Override
-    public float getPaxelDamage() {
-        return 6;
+    public int getUses() {
+        return 128;
     }
 
     @Override
-    public int getPaxelHarvestLevel() {
-        return 2;
+    public float getSpeed() {
+        return 9;
     }
 
     @Override
-    public int getPaxelMaxUses() {
-        return 250;
+    public float getAttackDamageBonus() {
+        return 1;
     }
 
     @Override
-    public float getPaxelEfficiency() {
-        return 6;
-    }
-
-    @Override
-    public int getMaxUses() {
-        return 200;
-    }
-
-    @Override
-    public float getEfficiency() {
-        return 5;
-    }
-
-    @Override
-    public float getAttackDamage() {
-        return 2;
-    }
-
-    @Override
-    public int getHarvestLevel() {
-        return 2;
+    public int getLevel() {
+        return 1;
     }
 
     @Override
     public int getCommonEnchantability() {
-        return 8;
+        return 32;
     }
 
     @Override
@@ -76,33 +56,39 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurability(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 169;
+                return 130;
             case LEGS:
-                return 195;
+                return 150;
             case CHEST:
-                return 208;
+                return 160;
             case HEAD:
-                return 143;
+                return 110;
         }
         return 0;
     }
 
     @Override
-    public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 2;
+                return 1;
             case LEGS:
-                return 6;
+                return 3;
             case CHEST:
-                return 5;
+                return 4;
             case HEAD:
-                return 2;
+                return 1;
         }
         return 0;
+    }
+
+    @Nonnull
+    @Override
+    public String getConfigCommentName() {
+        return "Lapis Lazuli";
     }
 
     @Nonnull
@@ -111,21 +97,16 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
         return "lapis_lazuli";
     }
 
-    @Override
-    public int getPaxelEnchantability() {
-        return 10;
-    }
-
     @Nonnull
     @Override
-    public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
+    public SoundEvent getEquipSound() {
+        return SoundEvents.ARMOR_EQUIP_DIAMOND;
     }
 
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromTag(Tags.Items.GEMS_LAPIS);
+        return Ingredient.of(Tags.Items.GEMS_LAPIS);
     }
 
     @Override

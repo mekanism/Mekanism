@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:pigment_mixing",
+  "leftInput": {
+    "amount": 1,
+    "pigment": "mekanism:green"
+  },
+  "rightInput": {
+    "amount": 1,
+    "pigment": "mekanism:white"
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 2
+  }
+}

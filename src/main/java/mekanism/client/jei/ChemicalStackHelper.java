@@ -26,9 +26,11 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
+import mezz.jei.api.helpers.IColorHelper;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -37,6 +39,13 @@ import net.minecraft.world.World;
 
 public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK>,
       IEmptyStackProvider<CHEMICAL, STACK> {
+
+    @Nullable
+    private IColorHelper colorHelper;
+
+    void setColorHelper(IColorHelper colorHelper) {
+        this.colorHelper = colorHelper;
+    }
 
     protected abstract String getType();
 
@@ -72,14 +81,15 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         return ingredient.getTypeRegistryName().getNamespace();
     }
 
-    /*@Override
+    @Override
     public Iterable<Integer> getColors(STACK ingredient) {
+        if (colorHelper == null) {
+            return IIngredientHelper.super.getColors(ingredient);
+        }
         CHEMICAL chemical = ingredient.getType();
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(chemical.getIcon());
-        int renderColor = chemical.getTint();
         //TODO: Does tint need alpha applied/factored in to getting the color, Either way this is waiting on https://github.com/mezz/JustEnoughItems/issues/1886
-        return ColorGetter.getColors(sprite, renderColor, 1);
-    }*/
+        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(chemical), chemical.getTint(), 1);
+    }
 
     @Override
     public String getResourceId(STACK ingredient) {
@@ -111,13 +121,15 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Nullable
-    protected abstract MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> getConversionRecipeType();
+    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> getConversionRecipeType() {
+        return null;
+    }
 
     public List<ItemStack> getStacksFor(@Nonnull CHEMICAL type, boolean displayConversions) {
         if (type.isEmptyType()) {
             return Collections.emptyList();
         }
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
         if (world == null) {
             return Collections.emptyList();
         }
@@ -126,10 +138,10 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         if (displayConversions) {
             //See if there are any chemical to item mappings
-            MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> recipeType = getConversionRecipeType();
+            MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> recipeType = getConversionRecipeType();
             if (recipeType != null) {
                 for (ItemStackToChemicalRecipe<CHEMICAL, STACK> recipe : recipeType.getRecipes(world)) {
-                    if (recipe.getOutputDefinition().isTypeEqual(type)) {
+                    if (recipe.getOutputDefinitionNew().stream().anyMatch(output -> output.isTypeEqual(type))) {
                         stacks.addAll(recipe.getInput().getRepresentations());
                     }
                 }
@@ -145,9 +157,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             return "Gas";
         }
 
-        @Nullable
         @Override
-        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Gas, GasStack>> getConversionRecipeType() {
+        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Gas, GasStack>, ?> getConversionRecipeType() {
             return MekanismRecipeType.GAS_CONVERSION;
         }
     }
@@ -159,9 +170,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             return "Infuse Type";
         }
 
-        @Nullable
         @Override
-        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>> getConversionRecipeType() {
+        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>, ?> getConversionRecipeType() {
             return MekanismRecipeType.INFUSION_CONVERSION;
         }
     }
@@ -172,12 +182,6 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         protected String getType() {
             return "Pigment";
         }
-
-        @Nullable
-        @Override
-        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Pigment, PigmentStack>> getConversionRecipeType() {
-            return null;
-        }
     }
 
     public static class SlurryStackHelper extends ChemicalStackHelper<Slurry, SlurryStack> implements IEmptySlurryProvider {
@@ -185,12 +189,6 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         @Override
         protected String getType() {
             return "Slurry";
-        }
-
-        @Nullable
-        @Override
-        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Slurry, SlurryStack>> getConversionRecipeType() {
-            return null;
         }
     }
 }

@@ -66,19 +66,32 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         super(type, world);
     }
 
-    public EntityFlame(PlayerEntity player) {
-        this(MekanismEntityTypes.FLAME.getEntityType(), player.world);
-        Pos3D playerPos = new Pos3D(player.getPosX(), player.getPosYEye() - 0.1, player.getPosZ());
+    @Nullable
+    public static EntityFlame create(PlayerEntity player) {
+        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(player.level);
+        if (flame == null) {
+            return null;
+        }
+        Pos3D playerPos = new Pos3D(player.getX(), player.getEyeY() - 0.1, player.getZ());
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
-        Vector3d lookVec = player.getLookVec();
-        flameVec = flameVec.multiply(lookVec).rotateYaw(6);
+        Vector3d lookVec = player.getLookAngle();
+        flameVec = flameVec.multiply(lookVec).yRot(6);
 
-        Pos3D mergedVec = playerPos.translate(flameVec);
-        setPosition(mergedVec.x, mergedVec.y, mergedVec.z);
-        setShooter(player);
-        mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
-        func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 0.5F, 1);
+        Vector3d mergedVec = playerPos.add(flameVec);
+        flame.setPos(mergedVec.x, mergedVec.y, mergedVec.z);
+        flame.setOwner(player);
+        ItemStack selected = player.inventory.getSelected();
+        flame.mode = ((ItemFlamethrower) selected.getItem()).getMode(selected);
+        flame.shootFromRotation(player, player.xRot, player.yRot, 0, 0.5F, 1);
+        //Attempt to ray trace the area between the player and where the flame would actually start
+        // if it hits a block instead just have the flame hit the block directly to avoid being able
+        // to shoot a flamethrower through one thick walls.
+        BlockRayTraceResult blockRayTrace = player.level.clip(new RayTraceContext(playerPos, mergedVec, BlockMode.OUTLINE, FluidMode.NONE, flame));
+        if (blockRayTrace.getType() != Type.MISS) {
+            flame.onHit(blockRayTrace);
+        }
+        return flame;
     }
 
     @Override
@@ -86,126 +99,126 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         if (!isAlive()) {
             return;
         }
-        ticksExisted++;
+        tickCount++;
 
-        prevPosX = getPosX();
-        prevPosY = getPosY();
-        prevPosZ = getPosZ();
+        xo = getX();
+        yo = getY();
+        zo = getZ();
 
-        prevRotationPitch = rotationPitch;
-        prevRotationYaw = rotationYaw;
+        xRotO = xRot;
+        yRotO = yRot;
 
-        Vector3d motion = getMotion();
-        setRawPosition(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
+        Vector3d motion = getDeltaMovement();
+        setPosRaw(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
 
-        setPosition(getPosX(), getPosY(), getPosZ());
+        setPos(getX(), getY(), getZ());
 
         calculateVector();
-        if (ticksExisted > LIFESPAN) {
+        if (tickCount > LIFESPAN) {
             remove();
         }
     }
 
     private void calculateVector() {
-        Vector3d localVec = new Vector3d(getPosX(), getPosY(), getPosZ());
-        Vector3d motion = getMotion();
-        Vector3d motionVec = new Vector3d(getPosX() + motion.getX() * 2, getPosY() + motion.getY() * 2, getPosZ() + motion.getZ() * 2);
-        BlockRayTraceResult blockRayTrace = world.rayTraceBlocks(new RayTraceContext(localVec, motionVec, BlockMode.OUTLINE, FluidMode.ANY, this));
-        localVec = new Vector3d(getPosX(), getPosY(), getPosZ());
-        motionVec = new Vector3d(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
+        Vector3d localVec = new Vector3d(getX(), getY(), getZ());
+        Vector3d motion = getDeltaMovement();
+        Vector3d motionVec = new Vector3d(getX() + motion.x() * 2, getY() + motion.y() * 2, getZ() + motion.z() * 2);
+        BlockRayTraceResult blockRayTrace = level.clip(new RayTraceContext(localVec, motionVec, BlockMode.OUTLINE, FluidMode.ANY, this));
+        localVec = new Vector3d(getX(), getY(), getZ());
+        motionVec = new Vector3d(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
         if (blockRayTrace.getType() != Type.MISS) {
-            motionVec = blockRayTrace.getHitVec();
+            motionVec = blockRayTrace.getLocation();
         }
-        EntityRayTraceResult entityResult = ProjectileHelper.rayTraceEntities(world, this, localVec, motionVec,
-              getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D), EntityPredicates.NOT_SPECTATING);
-        onImpact(entityResult == null ? blockRayTrace : entityResult);
+        EntityRayTraceResult entityResult = ProjectileHelper.getEntityHitResult(level, this, localVec, motionVec,
+              getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D), EntityPredicates.NO_SPECTATORS);
+        onHit(entityResult == null ? blockRayTrace : entityResult);
     }
 
     @Override
-    protected void onEntityHit(EntityRayTraceResult entityResult) {
+    protected void onHitEntity(EntityRayTraceResult entityResult) {
         Entity entity = entityResult.getEntity();
         if (entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity.getEntity();
-            Entity owner = func_234616_v_();
-            if (player.abilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
+            PlayerEntity player = (PlayerEntity) entity;
+            Entity owner = getOwner();
+            if (player.abilities.invulnerable || owner instanceof PlayerEntity && !((PlayerEntity) owner).canHarmPlayer(player)) {
                 return;
             }
         }
-        if (!entity.getEntity().isImmuneToFire()) {
-            if (entity.getEntity() instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
-                if (entity.getEntity().ticksExisted > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
-                    burn(entity.getEntity());
+        if (!entity.fireImmune()) {
+            if (entity instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
+                if (entity.tickCount > 100 && !smeltItem((ItemEntity) entity)) {
+                    burn(entity);
                 }
             } else {
-                burn(entity.getEntity());
+                burn(entity);
             }
         }
         remove();
     }
 
     @Override
-    protected void func_230299_a_(@Nonnull BlockRayTraceResult blockRayTrace) {
-        super.func_230299_a_(blockRayTrace);
-        BlockPos hitPos = blockRayTrace.getPos();
-        Direction hitSide = blockRayTrace.getFace();
-        BlockState hitState = world.getBlockState(hitPos);
+    protected void onHitBlock(@Nonnull BlockRayTraceResult blockRayTrace) {
+        super.onHitBlock(blockRayTrace);
+        BlockPos hitPos = blockRayTrace.getBlockPos();
+        Direction hitSide = blockRayTrace.getDirection();
+        BlockState hitState = level.getBlockState(hitPos);
         boolean hitFluid = !hitState.getFluidState().isEmpty();
-        if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
+        if (!level.isClientSide && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             if (mode == FlamethrowerMode.HEAT) {
-                Entity owner = func_234616_v_();
+                Entity owner = getOwner();
                 if (owner instanceof PlayerEntity) {
                     smeltBlock((PlayerEntity) owner, hitState, hitPos, hitSide);
                 }
             } else if (mode == FlamethrowerMode.INFERNO) {
-                Entity owner = func_234616_v_();
-                BlockPos sidePos = hitPos.offset(hitSide);
-                if (CampfireBlock.canBeLit(hitState)) {
-                    tryPlace(owner, hitPos, hitSide, hitState.with(BlockStateProperties.LIT, true));
-                } else if (AbstractFireBlock.canLightBlock(world, sidePos, hitSide)) {
-                    tryPlace(owner, sidePos, hitSide, AbstractFireBlock.getFireForPlacement(world, sidePos));
-                } else if (hitState.isFlammable(world, hitPos, hitSide)) {
+                Entity owner = getOwner();
+                BlockPos sidePos = hitPos.relative(hitSide);
+                if (CampfireBlock.canLight(hitState)) {
+                    tryPlace(owner, hitPos, hitSide, hitState.setValue(BlockStateProperties.LIT, true));
+                } else if (AbstractFireBlock.canBePlacedAt(level, sidePos, hitSide)) {
+                    tryPlace(owner, sidePos, hitSide, AbstractFireBlock.getState(level, sidePos));
+                } else if (hitState.isFlammable(level, hitPos, hitSide)) {
                     //TODO: Is there some event we should/can be firing here?
-                    hitState.catchFire(world, hitPos, hitSide, owner instanceof LivingEntity ? (LivingEntity) owner : null);
+                    hitState.catchFire(level, hitPos, hitSide, owner instanceof LivingEntity ? (LivingEntity) owner : null);
                     if (hitState.getBlock() instanceof TNTBlock) {
-                        world.removeBlock(hitPos, false);
+                        level.removeBlock(hitPos, false);
                     }
                 }
             }
         }
         if (hitFluid) {
-            spawnParticlesAt(getPosition());
-            playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
+            spawnParticlesAt(blockPosition());
+            playSound(SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);
         }
         remove();
     }
 
     private boolean tryPlace(@Nullable Entity shooter, BlockPos pos, Direction hitSide, BlockState newState) {
-        BlockSnapshot blockSnapshot = BlockSnapshot.create(world.getDimensionKey(), world, pos);
-        world.setBlockState(pos, newState);
+        BlockSnapshot blockSnapshot = BlockSnapshot.create(level.dimension(), level, pos);
+        level.setBlockAndUpdate(pos, newState);
         if (ForgeEventFactory.onBlockPlace(shooter, blockSnapshot, hitSide)) {
-            world.restoringBlockSnapshots = true;
+            level.restoringBlockSnapshots = true;
             blockSnapshot.restore(true, false);
-            world.restoringBlockSnapshots = false;
+            level.restoringBlockSnapshots = false;
             return false;
         }
         return true;
     }
 
     private boolean smeltItem(ItemEntity item) {
-        Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(item.getItem()), world);
+        Optional<FurnaceRecipe> recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(item.getItem()), level);
         if (recipe.isPresent()) {
-            ItemStack result = recipe.get().getRecipeOutput();
+            ItemStack result = recipe.get().getResultItem();
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
-            item.ticksExisted = 0;
-            spawnParticlesAt(item.getPosition());
-            playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
+            item.tickCount = 0;
+            spawnParticlesAt(item.blockPosition());
+            playSound(SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);
             return true;
         }
         return false;
     }
 
     private void smeltBlock(PlayerEntity shooter, BlockState hitState, BlockPos blockPos, Direction hitSide) {
-        if (hitState.isAir(world, blockPos)) {
+        if (hitState.isAir(level, blockPos)) {
             return;
         }
         ItemStack stack = new ItemStack(hitState.getBlock());
@@ -214,77 +227,80 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         }
         Optional<FurnaceRecipe> recipe;
         try {
-            recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world);
+            recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(stack), level);
         } catch (Exception e) {
             return;
         }
         if (recipe.isPresent()) {
-            if (!world.isRemote) {
-                if (MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, blockPos, hitState, shooter))) {
+            if (!level.isClientSide) {
+                if (MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, blockPos, hitState, shooter))) {
                     //We can't break the block exit
                     return;
                 }
-                ItemStack result = recipe.get().getRecipeOutput();
-                if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.getBlockFromItem(result.getItem()).getDefaultState())) {
-                    world.removeBlock(blockPos, false);
-                    ItemEntity item = new ItemEntity(world, blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
-                    item.setMotion(0, 0, 0);
-                    world.addEntity(item);
+                ItemStack result = recipe.get().getResultItem();
+                if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.byItem(result.getItem()).defaultBlockState())) {
+                    level.removeBlock(blockPos, false);
+                    ItemEntity item = new ItemEntity(level, blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
+                    item.setDeltaMovement(0, 0, 0);
+                    level.addFreshEntity(item);
                 }
-                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockPos, Block.getStateId(hitState));
-                spawnParticlesAt((ServerWorld) world, blockPos);
+                level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockPos, Block.getId(hitState));
+                spawnParticlesAt((ServerWorld) level, blockPos);
             }
         }
     }
 
     private void burn(Entity entity) {
-        entity.setFire(20);
-        entity.attackEntityFrom(DamageSource.causeThrownDamage(this, func_234616_v_()), DAMAGE);
+        if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
+            //Only actually burn the entity if it is not an item, or we allow destroying items
+            entity.setSecondsOnFire(20);
+            entity.hurt(DamageSource.thrown(this, getOwner()), DAMAGE);
+        }
     }
 
     private void spawnParticlesAt(BlockPos pos) {
         for (int i = 0; i < 10; i++) {
-            world.addParticle(ParticleTypes.SMOKE, pos.getX() + (rand.nextFloat() - 0.5), pos.getY() + (rand.nextFloat() - 0.5),
-                  pos.getZ() + (rand.nextFloat() - 0.5), 0, 0, 0);
+            level.addParticle(ParticleTypes.SMOKE, pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
+                  pos.getZ() + (random.nextFloat() - 0.5), 0, 0, 0);
         }
     }
 
     private void spawnParticlesAt(ServerWorld world, BlockPos pos) {
         for (int i = 0; i < 10; i++) {
-            world.spawnParticle(ParticleTypes.SMOKE, pos.getX() + (rand.nextFloat() - 0.5), pos.getY() + (rand.nextFloat() - 0.5),
-                  pos.getZ() + (rand.nextFloat() - 0.5), 3, 0, 0, 0, 0);
+            world.sendParticles(ParticleTypes.SMOKE, pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
+                  pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);
         }
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
     }
 
     @Override
-    public void readAdditional(@Nonnull CompoundNBT nbtTags) {
-        super.readAdditional(nbtTags);
+    public void readAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+        super.readAdditionalSaveData(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
     }
 
     @Override
-    public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
-        super.writeAdditional(nbtTags);
+    public void addAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+        super.addAdditionalSaveData(nbtTags);
         nbtTags.putInt(NBTConstants.MODE, mode.ordinal());
     }
 
     @Nonnull
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
     public void writeSpawnData(PacketBuffer dataStream) {
-        dataStream.writeEnumValue(mode);
+        dataStream.writeEnum(mode);
     }
 
     @Override
     public void readSpawnData(PacketBuffer dataStream) {
-        mode = dataStream.readEnumValue(FlamethrowerMode.class);
+        mode = dataStream.readEnum(FlamethrowerMode.class);
     }
 }

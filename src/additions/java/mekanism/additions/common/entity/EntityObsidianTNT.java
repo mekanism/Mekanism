@@ -21,31 +21,43 @@ public class EntityObsidianTNT extends TNTEntity {
     public EntityObsidianTNT(EntityType<EntityObsidianTNT> type, World world) {
         super(type, world);
         setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
-        preventEntitySpawning = true;
     }
 
-    public EntityObsidianTNT(World world, double x, double y, double z, @Nullable LivingEntity igniter) {
-        super(world, x, y, z, igniter);
-        setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
-        preventEntitySpawning = true;
+    @Nullable
+    public static EntityObsidianTNT create(World world, double x, double y, double z, @Nullable LivingEntity igniter) {
+        EntityObsidianTNT tnt = AdditionsEntityTypes.OBSIDIAN_TNT.get().create(world);
+        if (tnt == null) {
+            return null;
+        }
+        //From TNTEntity constructor
+        tnt.setPos(x, y, z);
+        double d0 = world.random.nextDouble() * (double) ((float) Math.PI * 2F);
+        tnt.setDeltaMovement(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
+        tnt.xo = x;
+        tnt.yo = y;
+        tnt.zo = z;
+        tnt.owner = igniter;
+        //End TNTEntity constructor
+        tnt.setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
+        return tnt;
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return true;
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (isAlive() && getFuse() > 0) {
-            world.addParticle(ParticleTypes.LAVA, getPosX(), getPosY() + 0.5, getPosZ(), 0, 0, 0);
+        if (isAlive() && getLife() > 0) {
+            level.addParticle(ParticleTypes.LAVA, getX(), getY() + 0.5, getZ(), 0, 0, 0);
         }
     }
 
     @Override
     protected void explode() {
-        world.createExplosion(this, getPosX(), getPosY() + (double) (getHeight() / 16.0F), getPosZ(), MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get(), Mode.BREAK);
+        level.explode(this, getX(), getY() + (double) (getBbHeight() / 16.0F), getZ(), MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get(), Mode.BREAK);
     }
 
     @Nonnull
@@ -56,7 +68,7 @@ public class EntityObsidianTNT extends TNTEntity {
 
     @Nonnull
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

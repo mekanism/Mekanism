@@ -18,6 +18,10 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -37,13 +41,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     /**
      * The tank this block is storing fuel in.
      */
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"})
     public FuelTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
     private FloatingLong generationRate = FloatingLong.ZERO;
     private double gasUsedLastTick;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
     private GasInventorySlot fuelSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator() {
@@ -127,6 +134,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         return generationRate;
     }
 
+    @ComputerMethod(nameOverride = "getBurnRate")
     public double getUsed() {
         return Math.round(gasUsedLastTick * 100) / 100D;
     }
@@ -148,6 +156,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         container.track(SyncableDouble.create(this::getUsed, value -> gasUsedLastTick = value));
         container.track(SyncableInt.create(this::getMaxBurnTicks, value -> maxBurnTicks = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FloatingLong getProductionRate() {
+        return getGenerationRate().multiply(getUsed()).multiply(getMaxBurnTicks());
+    }
+    //End methods IComputerTile
 
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator
     private class FuelTank extends BasicGasTank {

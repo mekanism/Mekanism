@@ -2,6 +2,7 @@ package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
@@ -12,16 +13,20 @@ import net.minecraft.util.text.ITextComponent;
  */
 public class MekanismButton extends GuiElement {
 
+    @Nullable
     private final IHoverable onHover;
+    @Nullable
     private final Runnable onLeftClick;
+    @Nullable
     private final Runnable onRightClick;
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text, Runnable onLeftClick, IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text, @Nullable Runnable onLeftClick, @Nullable IHoverable onHover) {
         this(gui, x, y, width, height, text, onLeftClick, onLeftClick, onHover);
         //TODO: Decide if default implementation for right clicking should be do nothing, or act as left click
     }
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text, Runnable onLeftClick, Runnable onRightClick, IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text, @Nullable Runnable onLeftClick, @Nullable Runnable onRightClick,
+          @Nullable IHoverable onHover) {
         super(gui, x, y, width, height, text);
         this.onHover = onHover;
         this.onLeftClick = onLeftClick;
@@ -46,16 +51,17 @@ public class MekanismButton extends GuiElement {
         //From AbstractButton
         if (this.active && this.visible && this.isFocused()) {
             if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
-                playDownSound(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundManager());
                 onLeftClick();
                 return true;
             }
         }
-        return false;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);
         }
@@ -68,8 +74,8 @@ public class MekanismButton extends GuiElement {
         }
         if (this.active && this.visible && isHovered()) {
             if (button == 1) {
-                //Right clicked
-                playDownSound(Minecraft.getInstance().getSoundHandler());
+                //Right-clicked
+                playDownSound(Minecraft.getInstance().getSoundManager());
                 onRightClick();
                 return true;
             }
@@ -83,5 +89,4 @@ public class MekanismButton extends GuiElement {
             onRightClick.run();
         }
     }
-
 }

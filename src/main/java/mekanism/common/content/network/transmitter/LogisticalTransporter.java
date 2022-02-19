@@ -12,6 +12,7 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.LogisticalTransporterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +26,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     private EnumColor color;
 
     public LogisticalTransporter(IBlockProvider blockProvider, TileEntityTransmitter tile) {
-        super(tile, Attribute.getTier(blockProvider.getBlock(), TransporterTier.class));
+        super(tile, Attribute.getTier(blockProvider, TransporterTier.class));
     }
 
     @Override
@@ -48,16 +49,14 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         PathfinderCache.onChanged(getTransmitterNetwork());
         getTransmitterTile().sendUpdatePacket();
         EnumColor color = getColor();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-              MekanismLang.TOGGLE_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.DUMMY_UUID);
+        player.sendMessage(MekanismUtils.logFormat(MekanismLang.TOGGLE_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.NIL_UUID);
         return ActionResultType.SUCCESS;
     }
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         EnumColor color = getColor();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-              MekanismLang.CURRENT_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.DUMMY_UUID);
+        player.sendMessage(MekanismUtils.logFormat(MekanismLang.CURRENT_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.NIL_UUID);
         return super.onRightClick(player, side);
     }
 

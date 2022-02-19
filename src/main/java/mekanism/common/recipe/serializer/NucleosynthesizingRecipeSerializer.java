@@ -27,17 +27,17 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement itemInput = JSONUtils.isArrayNode(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
+                                JSONUtils.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement gasInput = JSONUtils.isJsonArray(json, JsonConstants.GAS_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.GAS_INPUT) :
-                               JSONUtils.getJsonObject(json, JsonConstants.GAS_INPUT);
+        JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
+                               JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
         GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
 
         int duration;
         JsonElement ticks = json.get(JsonConstants.DURATION);
-        if (!JSONUtils.isNumber(ticks)) {
+        if (!JSONUtils.isNumberValue(ticks)) {
             throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
         }
         duration = ticks.getAsJsonPrimitive().getAsInt();
@@ -52,11 +52,11 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
             GasStackIngredient inputGas = GasStackIngredient.read(buffer);
-            ItemStack outputItem = buffer.readItemStack();
+            ItemStack outputItem = buffer.readItem();
             int duration = buffer.readVarInt();
             return this.factory.create(recipeId, inputSolid, inputGas, outputItem, duration);
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

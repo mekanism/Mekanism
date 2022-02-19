@@ -1,13 +1,15 @@
 package mekanism.client.gui.element.scroll;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiRelativeElement;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -20,10 +22,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiSlotScroll extends GuiRelativeElement {
+public class GuiSlotScroll extends GuiElement {
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
+    private static final DecimalFormat COUNT_FORMAT = new DecimalFormat("#.#");
+
+    static {
+        COUNT_FORMAT.setRoundingMode(RoundingMode.FLOOR);
+    }
 
     private final GuiScrollBar scrollBar;
 
@@ -37,14 +44,14 @@ public class GuiSlotScroll extends GuiRelativeElement {
         this.ySlots = ySlots;
         this.slotList = slotList;
         this.clickHandler = clickHandler;
-        addChild(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
+        scrollBar = addChild(new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
               () -> getSlotList() == null ? 0 : (int) Math.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
     }
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getSlotList() == null ? SLOTS_DARK : SLOTS);
+        minecraft.textureManager.bind(getSlotList() == null ? SLOTS_DARK : SLOTS);
         blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
@@ -65,7 +72,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        int xAxis = mouseX - guiObj.getLeft(), yAxis = mouseY - guiObj.getTop();
+        int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
@@ -77,10 +84,11 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int xAxis, int yAxis) {
-        IScrollableSlot slot = getSlot(xAxis, yAxis, relativeX, relativeY);
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
+        IScrollableSlot slot = getSlot(mouseX, mouseY, relativeX, relativeY);
         if (slot != null) {
-            renderSlotTooltip(matrix, slot, xAxis, yAxis);
+            renderSlotTooltip(matrix, slot, mouseX, mouseY);
         }
     }
 
@@ -91,9 +99,13 @@ public class GuiSlotScroll extends GuiRelativeElement {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (gui().currentlyQuickCrafting()) {
+            //If the player is currently quick crafting don't do any special handling for as if they clicked in the screen
+            return super.mouseReleased(mouseX, mouseY, button);
+        }
         super.mouseReleased(mouseX, mouseY, button);
         IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
-        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getItemStack());
+        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getCarried());
         return true;
     }
 
@@ -125,7 +137,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
         if (isSlotEmpty(slot)) {
             return;
         }
-        guiObj.renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
+        gui().renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1, "");
         if (slot.getCount() > 1) {
             renderSlotText(matrix, getCountText(slot.getCount()), slotX + 1, slotY + 1);
         }
@@ -139,10 +151,10 @@ public class GuiSlotScroll extends GuiRelativeElement {
         ItemStack stack = slot.getItem().getStack();
         long count = slot.getCount();
         if (count < 10_000) {
-            guiObj.renderItemTooltip(matrix, stack, slotX, slotY);
+            gui().renderItemTooltip(matrix, stack, slotX, slotY);
         } else {
-            //If the slot's displayed count is truncated, make sure we also add the the actual amount to the tooltip
-            guiObj.renderItemTooltipWithExtra(matrix, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
+            //If the slot's displayed count is truncated, make sure we also add the actual amount to the tooltip
+            gui().renderItemTooltipWithExtra(matrix, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
                   EnumColor.INDIGO, TextUtils.format(count))));
         }
     }
@@ -152,31 +164,33 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     private void renderSlotText(MatrixStack matrix, String text, int x, int y) {
-        matrix.push();
+        matrix.pushPose();
         MekanismRenderer.resetColor();
         float scale = 0.6F;
-        int width = getFont().getStringWidth(text);
+        int width = getFont().width(text);
         //If we need a lower scale due to having a lot of text, calculate it
         scale = Math.min(1, 16F / (width * scale)) * scale;
         float yAdd = 4 - (scale * 8) / 2F;
         matrix.translate(x + 16 - width * scale, y + 9 + yAdd, 200F);
         matrix.scale(scale, scale, scale);
 
-        getFont().drawStringWithShadow(matrix, text, 0, 0, 0xFFFFFF);
-        matrix.pop();
+        getFont().drawShadow(matrix, text, 0, 0, 0xFFFFFF);
+        matrix.popPose();
     }
 
     private String getCountText(long count) {
+        //Note: For cases like 9,999,999 we intentionally display as 9999.9K instead of 10M so that people
+        // do not think they have more stored than they actually have just because it is rounding up
         if (count <= 1) {
             return null;
         } else if (count < 10_000) {
             return Long.toString(count);
         } else if (count < 10_000_000) {
-            return Double.toString(Math.round(count / 1_000D)) + "K";
+            return COUNT_FORMAT.format(count / 1_000D) + "K";
         } else if (count < 10_000_000_000L) {
-            return Double.toString(Math.round(count / 1_000_000D)) + "M";
+            return COUNT_FORMAT.format(count / 1_000_000D) + "M";
         } else if (count < 10_000_000_000_000L) {
-            return Double.toString(Math.round(count / 1_000_000_000D)) + "B";
+            return COUNT_FORMAT.format(count / 1_000_000_000D) + "B";
         }
         return ">10T";
     }

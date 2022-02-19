@@ -52,11 +52,6 @@
           ],
           "name": "mekanism:oredictionificator"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -18,7 +18,6 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.DataGenJsonConstants;
@@ -36,6 +35,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
@@ -79,7 +79,7 @@ public abstract class BaseTagProvider implements IDataProvider {
     protected abstract void registerTags();
 
     @Override
-    public void act(@Nonnull DirectoryCache cache) {
+    public void run(@Nonnull DirectoryCache cache) {
         supportedTagTypes.values().forEach(Map::clear);
         registerTags();
         supportedTagTypes.forEach((tagType, tagTypeMap) -> act(cache, tagType, tagTypeMap));
@@ -90,22 +90,22 @@ public abstract class BaseTagProvider implements IDataProvider {
             //Create a dummy forge registry tags provider and pass all our collected data through to it
             new ForgeRegistryTagsProvider<TYPE>(gen, tagType.getRegistry(), modid, existingFileHelper) {
                 @Override
-                protected void registerTags() {
+                protected void addTags() {
                     //Add each tag builder to the wrapped provider's builder, but wrap the builder so that we
                     // make sure to first cleanup and remove excess/unused json components
                     // Note: We only override the methods used by the TagsProvider rather than proxying everything back to the original tag builder
-                    tagTypeMap.forEach((tag, tagBuilder) -> tagToBuilder.put(tag.getName(), new ITag.Builder() {
+                    tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.getName(), new ITag.Builder() {
                         @Nonnull
                         @Override
-                        public JsonObject serialize() {
-                            return cleanJsonTag(tagBuilder.serialize());
+                        public JsonObject serializeToJson() {
+                            return cleanJsonTag(tagBuilder.serializeToJson());
                         }
 
                         @Nonnull
                         @Override
-                        public <T> Stream<ITag.Proxy> getProxyTags(@Nonnull Function<ResourceLocation, ITag<T>> resourceTagFunction,
+                        public <T> Stream<ITag.Proxy> getUnresolvedEntries(@Nonnull Function<ResourceLocation, ITag<T>> resourceTagFunction,
                               @Nonnull Function<ResourceLocation, T> resourceElementFunction) {
-                            return tagBuilder.getProxyTags(resourceTagFunction, resourceElementFunction);
+                            return tagBuilder.getUnresolvedEntries(resourceTagFunction, resourceElementFunction);
                         }
                     }));
                 }
@@ -115,7 +115,7 @@ public abstract class BaseTagProvider implements IDataProvider {
                 public String getName() {
                     return tagType.getName() + " Tags: " + modid;
                 }
-            }.act(cache);
+            }.run(cache);
         }
     }
 
@@ -132,7 +132,7 @@ public abstract class BaseTagProvider implements IDataProvider {
 
     //Protected to allow for extensions to add retrieve their own supported types if they have any
     protected <TYPE extends IForgeRegistryEntry<TYPE>> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, INamedTag<TYPE> tag) {
-        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> ITag.Builder.create()), modid);
+        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> ITag.Builder.tag()), modid);
     }
 
     protected ForgeRegistryTagBuilder<Item> getItemBuilder(INamedTag<Item> tag) {
@@ -182,7 +182,7 @@ public abstract class BaseTagProvider implements IDataProvider {
     protected void addToTag(INamedTag<Item> tag, IItemProvider... itemProviders) {
         ForgeRegistryTagBuilder<Item> tagBuilder = getItemBuilder(tag);
         for (IItemProvider itemProvider : itemProviders) {
-            tagBuilder.add(itemProvider.getItem());
+            tagBuilder.add(itemProvider.asItem());
         }
     }
 

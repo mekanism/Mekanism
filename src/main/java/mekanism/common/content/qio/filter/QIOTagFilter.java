@@ -3,6 +3,7 @@ package mekanism.common.content.qio.filter;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
+import mekanism.common.lib.inventory.Finder;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -10,6 +11,11 @@ import net.minecraft.network.PacketBuffer;
 public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<QIOTagFilter> {
 
     private String tagName;
+
+    @Override
+    public Finder getFinder() {
+        return Finder.tag(tagName);
+    }
 
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
@@ -26,7 +32,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(tagName);
+        buffer.writeUtf(tagName);
     }
 
     @Override

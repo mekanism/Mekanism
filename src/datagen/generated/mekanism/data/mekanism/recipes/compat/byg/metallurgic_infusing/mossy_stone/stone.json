@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:stone"
+    }
+  },
+  "infusionInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
+  "output": {
+    "item": "byg:mossy_stone"
+  }
+}

@@ -18,9 +18,9 @@ public class LaserParticleData implements IParticleData {
     public static final IDeserializer<LaserParticleData> DESERIALIZER = new IDeserializer<LaserParticleData>() {
         @Nonnull
         @Override
-        public LaserParticleData deserialize(@Nonnull ParticleType<LaserParticleData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
+        public LaserParticleData fromCommand(@Nonnull ParticleType<LaserParticleData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
-            Direction direction = Direction.byIndex(reader.readInt());
+            Direction direction = Direction.from3DDataValue(reader.readInt());
             reader.expect(' ');
             double distance = reader.readDouble();
             reader.expect(' ');
@@ -28,9 +28,10 @@ public class LaserParticleData implements IParticleData {
             return new LaserParticleData(direction, distance, energyScale);
         }
 
+        @Nonnull
         @Override
-        public LaserParticleData read(@Nonnull ParticleType<LaserParticleData> type, PacketBuffer buf) {
-            return new LaserParticleData(buf.readEnumValue(Direction.class), buf.readDouble(), buf.readFloat());
+        public LaserParticleData fromNetwork(@Nonnull ParticleType<LaserParticleData> type, PacketBuffer buf) {
+            return new LaserParticleData(buf.readEnum(Direction.class), buf.readDouble(), buf.readFloat());
         }
     };
     public static final Codec<LaserParticleData> CODEC = RecordCodecBuilder.create(val -> val.group(
@@ -56,15 +57,15 @@ public class LaserParticleData implements IParticleData {
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer) {
-        buffer.writeEnumValue(direction);
+    public void writeToNetwork(@Nonnull PacketBuffer buffer) {
+        buffer.writeEnum(direction);
         buffer.writeDouble(distance);
         buffer.writeFloat(energyScale);
     }
 
     @Nonnull
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return String.format(Locale.ROOT, "%s %d %.2f %.2f", getType().getRegistryName(), direction.ordinal(), distance, energyScale);
     }
 }

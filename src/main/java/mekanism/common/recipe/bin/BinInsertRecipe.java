@@ -38,8 +38,8 @@ public class BinInsertRecipe extends BinRecipe {
     public boolean matches(CraftingInventory inv, World world) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack stackInSlot = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
                     if (!binStack.isEmpty()) {
@@ -63,16 +63,16 @@ public class BinInsertRecipe extends BinRecipe {
         BinInventorySlot slot = convertToSlot(binStack);
         ItemStack remaining = slot.insertItem(foundType, Action.SIMULATE, AutomationType.MANUAL);
         //Return that it doesn't match if our simulation claims we would not be able to accept any items into the bin
-        return !ItemStack.areItemStacksEqual(remaining, foundType);
+        return !ItemStack.matches(remaining, foundType);
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingInventory inv) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         List<ItemStack> foundItems = new ArrayList<>();
-        for (int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack stackInSlot = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
                     if (!binStack.isEmpty()) {
@@ -100,9 +100,9 @@ public class BinInsertRecipe extends BinRecipe {
         BinInventorySlot slot = convertToSlot(binStack);
         boolean hasInserted = false;
         for (ItemStack stack : foundItems) {
-            if (ItemStack.areItemStacksEqual(stack, slot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL))) {
+            if (ItemStack.matches(stack, slot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL))) {
                 if (hasInserted) {
-                    //If we can't insert anymore into the bin, and we did manage to insert some into it
+                    //If we can't insert any more items into the bin, and we did manage to insert some into it
                     // exit and return our stack
                     break;
                 }
@@ -117,12 +117,12 @@ public class BinInsertRecipe extends BinRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         IntList foundSlots = new IntArrayList();
-        for (int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack stackInSlot = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
                     if (!binStack.isEmpty()) {
@@ -150,7 +150,7 @@ public class BinInsertRecipe extends BinRecipe {
         BinInventorySlot slot = convertToSlot(binStack);
         for (int i = 0; i < foundSlots.size(); i++) {
             int index = foundSlots.getInt(i);
-            ItemStack stack = StackUtils.size(inv.getStackInSlot(index), 1);
+            ItemStack stack = StackUtils.size(inv.getItem(index), 1);
             ItemStack remaining = slot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
             remainingItems.set(index, remaining);
         }
@@ -158,7 +158,7 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         //Require at least two slots as we have to represent at least the bin and the stack we are adding to it
         return width * height >= 2;
     }
@@ -176,15 +176,15 @@ public class BinInsertRecipe extends BinRecipe {
             ItemStack storedStack = slot.getStack();
             if (!storedStack.isEmpty()) {
                 IInventory craftingMatrix = event.getInventory();
-                for (int i = 0; i < craftingMatrix.getSizeInventory(); ++i) {
-                    ItemStack stack = craftingMatrix.getStackInSlot(i);
+                for (int i = 0; i < craftingMatrix.getContainerSize(); ++i) {
+                    ItemStack stack = craftingMatrix.getItem(i);
                     //Check remaining items
                     stack = StackUtils.size(stack, stack.getCount() - 1);
                     if (!stack.isEmpty() && ItemHandlerHelper.canItemStacksStack(storedStack, stack)) {
                         ItemStack remaining = slot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
-                        craftingMatrix.setInventorySlotContents(i, remaining);
+                        craftingMatrix.setItem(i, remaining);
                     } else {
-                        craftingMatrix.setInventorySlotContents(i, ItemStack.EMPTY);
+                        craftingMatrix.setItem(i, ItemStack.EMPTY);
                     }
                 }
                 ItemDataUtils.removeData(storedStack, NBTConstants.FROM_RECIPE);

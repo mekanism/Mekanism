@@ -32,11 +32,6 @@
           ],
           "name": "mekanism:security_desk"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

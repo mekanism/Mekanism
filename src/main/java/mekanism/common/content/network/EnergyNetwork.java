@@ -1,12 +1,9 @@
 package mekanism.common.content.network;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +23,6 @@ import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
@@ -38,11 +34,6 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     private FloatingLong prevTransferAmount = FloatingLong.ZERO;
     private FloatingLong floatingLongCapacity = FloatingLong.ZERO;
 
-    public EnergyNetwork() {
-        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
-        energyContainers = Collections.singletonList(energyContainer);
-    }
-
     public EnergyNetwork(UUID networkID) {
         super(networkID);
         energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
@@ -50,7 +41,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     public EnergyNetwork(Collection<EnergyNetwork> networks) {
-        this();
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 
@@ -129,45 +120,31 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
-        int size = transmittersSize();
-        if (size > 0) {
-            //Just pretend we are always accessing it from the north
-            Direction side = Direction.NORTH;
-            Set<EnergyTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (UniversalCable transmitter : transmitters) {
-                EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
-                saveTarget.addHandler(side, transmitter);
-                saveTargets.add(saveTarget);
-            }
-            EmitUtils.sendToAcceptors(saveTargets, size, energyContainer.getEnergy().copy());
-            for (EnergyTransmitterSaveTarget saveTarget : saveTargets) {
-                saveTarget.saveShare(side);
-            }
+        if (!isEmpty()) {
+            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(transmitters);
+            EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
+            saveTarget.saveShare();
         }
     }
 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
-        Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
-        int totalHandlers = 0;
-        for (Entry<BlockPos, Map<Direction, LazyOptional<IStrictEnergyHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
-            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
-                if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
-                    target.addHandler(side, acceptor);
-                }
-            }));
-            int curHandlers = target.getHandlers().size();
-            if (curHandlers > 0) {
-                targets.add(target);
-                totalHandlers += curHandlers;
+        Collection<Map<Direction, LazyOptional<IStrictEnergyHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
+        EnergyAcceptorTarget target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
+        for (Map<Direction, LazyOptional<IStrictEnergyHandler>> acceptors : acceptorValues) {
+            for (LazyOptional<IStrictEnergyHandler> lazyAcceptor : acceptors.values()) {
+                lazyAcceptor.ifPresent(acceptor -> {
+                    if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
+                        target.addHandler(acceptor);
+                    }
+                });
             }
         }
-        return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend.copy());
+        return EmitUtils.sendToAcceptors(target, energyToSend.copy());
     }
 
     @Override
     public String toString() {
-        return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[EnergyNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -219,7 +196,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
     @Nonnull

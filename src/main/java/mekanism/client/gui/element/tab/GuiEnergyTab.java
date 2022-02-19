@@ -24,45 +24,46 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiEnergyTab extends GuiBiDirectionalTab {
 
+    private static final Map<EnergyType, ResourceLocation> ICONS = new EnumMap<>(EnergyType.class);
     private final IInfoHandler infoHandler;
-    private final Map<EnergyType, ResourceLocation> icons = new EnumMap<>(EnergyType.class);
 
-    public GuiEnergyTab(IInfoHandler handler, IGuiWrapper gui) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "energy_info.png"), gui, -26, 137, 26, 26);
+    public GuiEnergyTab(IGuiWrapper gui, IInfoHandler handler) {
+        super(MekanismUtils.getResource(ResourceType.GUI_TAB, "energy_info.png"), gui, -26, 137, 26, 26);
         infoHandler = handler;
     }
 
-    public GuiEnergyTab(MachineEnergyContainer<?> energyContainer, IGuiWrapper gui) {
-        this(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))), gui);
+    public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer) {
+        this(gui, () -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
         //TODO: Re-evaluate uses of this constructor at some point, as well as the isActive constructor
     }
 
-    public GuiEnergyTab(MachineEnergyContainer<?> energyContainer, FloatingLongSupplier lastEnergyUsed, IGuiWrapper gui) {
-        this(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))), gui);
+    public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, FloatingLongSupplier lastEnergyUsed) {
+        this(gui, () -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
     }
 
-    public GuiEnergyTab(MachineEnergyContainer<?> energyContainer, BooleanSupplier isActive, IGuiWrapper gui) {
-        this(() -> {
+    public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, BooleanSupplier isActive) {
+        this(gui, () -> {
             //Note: This isn't the most accurate using calculation as deactivation doesn't sync instantly
-            // to the client but it is close enough given a lot more things would have to be kept track of otherwise
+            // to the client, but it is close enough given a lot more things would have to be kept track of otherwise
             // which would lead to higher memory usage
             FloatingLong using = isActive.getAsBoolean() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
             return Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(using)),
                   MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded())));
-        }, gui);
+        });
     }
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
     }
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
         info.add(MekanismLang.UNIT.translate(MekanismConfig.general.energyUnit.get()));
         displayTooltips(matrix, info, mouseX, mouseY);
@@ -70,8 +71,8 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
 
     @Override
     protected ResourceLocation getResource() {
-        return icons.computeIfAbsent(MekanismConfig.general.energyUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI,
-              "tabs/energy_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
+        return ICONS.computeIfAbsent(MekanismConfig.general.energyUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
+              "energy_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
     }
 
     @Override

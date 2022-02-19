@@ -9,10 +9,21 @@ import net.minecraft.tags.ITag.INamedTag;
 
 public class GeneratorTags {
 
+    /**
+     * Call to force make sure this is all initialized
+     */
+    public static void init() {
+        Fluids.init();
+        Gases.init();
+    }
+
     private GeneratorTags() {
     }
 
     public static class Fluids {
+
+        private static void init() {
+        }
 
         private Fluids() {
         }
@@ -23,11 +34,14 @@ public class GeneratorTags {
         public static final INamedTag<Fluid> TRITIUM = forgeTag("tritium");
 
         private static INamedTag<Fluid> forgeTag(String name) {
-            return FluidTags.makeWrapperTag("forge:" + name);
+            return FluidTags.bind("forge:" + name);
         }
     }
 
     public static class Gases {
+
+        private static void init() {
+        }
 
         private Gases() {
         }

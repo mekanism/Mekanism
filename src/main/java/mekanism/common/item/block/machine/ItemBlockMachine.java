@@ -31,6 +31,7 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,11 +45,11 @@ import net.minecraftforge.fluids.FluidStack;
 public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockMachine(BlockTile<?, ?> block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
     public ItemBlockMachine(BlockTile<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(renderer));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setISTER(renderer));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
         //TODO: Make this support "multiple" tanks, and probably expose the tank via capabilities
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {
-            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
+            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
         if (Attribute.has(getBlock(), AttributeInventory.class)) {
             tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
@@ -86,7 +87,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
                 //If our block supports upgrades, make a more dynamically updating cache for our item's max energy
                 maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
             } else {
-                //Otherwise just return that the max is what the base max is
+                //Otherwise, just return that the max is what the base max is
                 maxEnergy = attributeEnergy::getStorage;
             }
             return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));

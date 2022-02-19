@@ -1,18 +1,20 @@
 package mekanism.client.lang;
 
 import com.google.common.collect.Table.Cell;
-import java.util.Locale;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.BlockOre;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageSource;
@@ -21,6 +23,9 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
+import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.OreType;
@@ -48,6 +53,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addPigments();
         addSlurries();
         addDamageSources();
+        addRobitSkins();
         addSubtitles();
         addMisc();
     }
@@ -64,6 +70,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.SALT, "Salt");
         add(MekanismItems.SUBSTRATE, "Substrate");
         add(MekanismItems.BIO_FUEL, "Bio Fuel");
+        add(MekanismItems.DYE_BASE, "Dye Base");
         add(MekanismItems.FLUORITE_GEM, "Fluorite");
         add(MekanismItems.YELLOW_CAKE_URANIUM, "Yellow Cake Uranium");
         add(MekanismItems.ANTIMATTER_PELLET, "Antimatter Pellet");
@@ -87,6 +94,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.FREE_RUNNERS, "Free Runners");
         add(MekanismItems.JETPACK, "Jetpack");
         add(MekanismItems.ARMORED_JETPACK, "Armored Jetpack");
+        add(MekanismItems.HDPE_REINFORCED_ELYTRA, "HDPE Reinforced Elytra");
         add(MekanismItems.GEIGER_COUNTER, "Geiger Counter");
         add(MekanismItems.DOSIMETER, "Dosimeter");
         add(MekanismItems.CANTEEN, "Canteen");
@@ -123,6 +131,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.MUFFLING_UPGRADE, "Muffling Upgrade");
         add(MekanismItems.GAS_UPGRADE, "Gas Upgrade");
         add(MekanismItems.ANCHOR_UPGRADE, "Anchor Upgrade");
+        add(MekanismItems.STONE_GENERATOR_UPGRADE, "Stone Generator Upgrade");
         //Alloys
         add(MekanismItems.INFUSED_ALLOY, "Infused Alloy");
         add(MekanismItems.REINFORCED_ALLOY, "Reinforced Alloy");
@@ -235,7 +244,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.METALLURGIC_INFUSER, "Metallurgic Infuser");
         add(MekanismBlocks.OREDICTIONIFICATOR, "Oredictionificator");
         add(MekanismBlocks.OSMIUM_COMPRESSOR, "Osmium Compressor");
+        add(MekanismBlocks.PAINTING_MACHINE, "Painting Machine");
         add(MekanismBlocks.PERSONAL_CHEST, "Personal Chest");
+        add(MekanismBlocks.PIGMENT_EXTRACTOR, "Pigment Extractor");
+        add(MekanismBlocks.PIGMENT_MIXER, "Pigment Mixer");
         add(MekanismBlocks.PRECISION_SAWMILL, "Precision Sawmill");
         add(MekanismBlocks.PRESSURE_DISPERSER, "Pressure Disperser");
         add(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, "Pressurized Reaction Chamber");
@@ -273,15 +285,19 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
         //Ores
-        for (OreType ore : EnumUtils.ORE_TYPES) {
-            add(MekanismBlocks.ORES.get(ore), formatAndCapitalize(ore.getResource().getRegistrySuffix()) + " Ore");
-        }
+        addOre(OreType.OSMIUM, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
+        addOre(OreType.COPPER, "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
+        addOre(OreType.TIN, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
+        addOre(OreType.FLUORITE, "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
+        addOre(OreType.URANIUM, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
+        addOre(OreType.LEAD, "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
         //Storage blocks
         add(MekanismBlocks.BRONZE_BLOCK, "Bronze Block");
         add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "Refined Obsidian");
         add(MekanismBlocks.CHARCOAL_BLOCK, "Charcoal Block");
         add(MekanismBlocks.REFINED_GLOWSTONE_BLOCK, "Refined Glowstone");
         add(MekanismBlocks.STEEL_BLOCK, "Steel Block");
+        add(MekanismBlocks.FLUORITE_BLOCK, "Fluorite Block");
         //Dynamic storage blocks
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             add(entry.getValue(), formatAndCapitalize(entry.getKey().getName()) + " Block");
@@ -297,7 +313,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Factories
         for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
             for (FactoryType type : EnumUtils.FACTORY_TYPES) {
-                add(MekanismBlocks.getFactory(tier, type), tier.getBaseTier().getSimpleName() + " " + capitalize(type.getRegistryNameComponent()) + " Factory");
+                add(MekanismBlocks.getFactory(tier, type), tier.getBaseTier().getSimpleName() + " " + type.getRegistryNameComponentCapitalized() + " Factory");
             }
         }
         //Transmitters
@@ -319,8 +335,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addFluid(MekanismFluids.SULFURIC_ACID, "Sulfuric Acid");
         addFluid(MekanismFluids.HYDROGEN_CHLORIDE, "Liquid Hydrogen Chloride");
         addFluid(MekanismFluids.HYDROFLUORIC_ACID, "Liquid Hydrofluoric Acid");
+        addFluid(MekanismFluids.URANIUM_OXIDE, "Liquid Uranium Oxide");
+        addFluid(MekanismFluids.URANIUM_HEXAFLUORIDE, "Liquid Uranium Hexafluoride");
         addFluid(MekanismFluids.ETHENE, "Liquid Ethylene");
         addFluid(MekanismFluids.SODIUM, "Liquid Sodium");
+        addFluid(MekanismFluids.SUPERHEATED_SODIUM, "Liquid Superheated Sodium");
         addFluid(MekanismFluids.BRINE, "Brine");
         addFluid(MekanismFluids.LITHIUM, "Liquid Lithium");
         addFluid(MekanismFluids.STEAM, "Liquid Steam");
@@ -375,6 +394,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addPigments() {
         add(MekanismAPI.EMPTY_PIGMENT, "Empty");
+        for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+            add(entry.getValue(), entry.getKey().getEnglishName() + " Pigment");
+        }
     }
 
     private void addSlurries() {
@@ -390,8 +412,20 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addDamageSources() {
-        add(MekanismDamageSource.LASER, "%s was incinerated.");
-        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.");
+        add(MekanismDamageSource.LASER, "%s was incinerated.", "%s was incinerated whilst trying to escape %s.");
+        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.", "%s was killed by radiation poisoning whilst trying to escape %s.");
+    }
+
+    private void add(MekanismDamageSource damageSource, String value, String valueEscaping) {
+        add(damageSource, value);
+        add(damageSource.getTranslationKey() + ".player", valueEscaping);
+    }
+
+    private void addRobitSkins() {
+        add(MekanismRobitSkins.BASE, "Default");
+        add(MekanismRobitSkins.LESBIAN, "Lesbian Pride");
+        add(MekanismRobitSkins.PRIDE, "Pride");
+        add(MekanismRobitSkins.TRANS, "Trans Pride");
     }
 
     private void addSubtitles() {
@@ -421,6 +455,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismSounds.NUTRITIONAL_LIQUIFIER, "Nutrients liquified");
         add(MekanismSounds.INDUSTRIAL_ALARM, "Alarm sounds");
         add(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, "Nucleosynthesizer hums");
+        add(MekanismSounds.PIGMENT_EXTRACTOR, "Pigment extractor extracts");
+        add(MekanismSounds.PIGMENT_MIXER, "Pigment mixer sloshes");
+        add(MekanismSounds.PAINTING_MACHINE, "Painting machine sprays");
         add(MekanismSounds.SPS, "SPS hums");
         //Gear
         add(MekanismSounds.FLAMETHROWER_IDLE, "Flamethrower hisses");
@@ -450,6 +487,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.UPGRADE_MUFFLING_DESCRIPTION, "Reduces noise generated by machinery.");
         add(APILang.UPGRADE_ANCHOR, "Anchor");
         add(APILang.UPGRADE_ANCHOR_DESCRIPTION, "Keeps a machine's chunk loaded.");
+        add(APILang.UPGRADE_STONE_GENERATOR, "Stone Generator");
+        add(APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, "Generates stone or cobblestone as needed.");
         //Transmission types
         add(MekanismLang.TRANSMISSION_TYPE_ENERGY, "Energy");
         add(MekanismLang.TRANSMISSION_TYPE_FLUID, "Fluids");
@@ -460,11 +499,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TRANSMISSION_TYPE_ITEM, "Items");
         add(MekanismLang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes
-        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s sV/h");
+        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s");
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %s");
-        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %s J/mB");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %s");
+        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS, " - Burn Time: %s t");
+        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY, " - Energy Density: %s");
         //Colors
-        for (EnumColor color : EnumColor.values()) {
+        for (EnumColor color : EnumUtils.COLORS) {
             add(color.getLangEntry(), color.getEnglishName());
         }
         add(MekanismLang.MEKANISM, Mekanism.MOD_NAME);
@@ -527,6 +568,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LIST_SORT, "Sort:");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
+        add(MekanismLang.JEI_INFO_HEAVY_WATER, "%s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");
+        add(MekanismLang.JEI_INFO_MODULE_INSTALLATION, "Using a Modification Station, modules can be installed on the various MekaSuit pieces and on the Meka-Tool.");
         //Key
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
         add(MekanismLang.KEY_HEAD_MODE, "Head Mode Switch");
@@ -551,6 +594,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %s!");
         //Generic
         add(APILang.GENERIC, "%s");
+        //Note: How translation text component is implemented requires a double percent sign to make it show up as a single percent sign
+        add(MekanismLang.GENERIC_PERCENT, "%s%%");
         add(MekanismLang.GENERIC_WITH_COMMA, "%s, %s");
         add(MekanismLang.GENERIC_STORED, "%s: %s");
         add(MekanismLang.GENERIC_STORED_MB, "%s: %s mB");
@@ -563,6 +608,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_FRACTION, "%s/%s");
         add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
+        add(MekanismLang.GENERIC_PER_MB, "%s/mB");
         add(MekanismLang.GENERIC_PRE_STORED, "%s %s: %s");
         add(MekanismLang.GENERIC_BLOCK_POS, "%s, %s, %s");
         add(MekanismLang.GENERIC_HEX, "#%s");
@@ -607,7 +653,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_RADIATION_ADD, "Added %s radiation at (%s) in %s.");
         add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation at (%s) in %s: %s");
         add(MekanismLang.COMMAND_RADIATION_CLEAR, "Cleared player radiation.");
-        add(MekanismLang.COMMAND_RADIATION_CLEAR_PLAYER, "Cleared player radiation for: %s.");
+        add(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY, "Cleared entity radiation for: %s.");
         add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");
         add(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED, "Queued chunk (%s) in %s for retrogen.");
         add(MekanismLang.COMMAND_ERROR_RETROGEN_DISABLED, "Retrogen is disabled, please enable it in the config.");
@@ -634,9 +680,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
         add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %s mB/t");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %s");
+        add(MekanismLang.DECAY_IMMUNE, "Will not decay inside a Radioactive Waste Barrel");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");
+        add(MekanismLang.CRAFTING_TAB, "Crafting (%s/%s)");
+        add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %s");
         add(MekanismLang.MIN, "Min: %s");
         add(MekanismLang.MAX, "Max: %s");
         add(MekanismLang.INFINITE, "Infinite");
@@ -686,6 +735,16 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.WARNING, "Warning");
         add(MekanismLang.DANGER, "Danger");
         add(MekanismLang.COMPASS, "Compass");
+        add(MekanismLang.RADIAL_SCREEN, "Radial Selector Screen");
+        //GUI Issues
+        add(MekanismLang.ISSUES, "Issues:");
+        add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY, " - Not enough energy to operate");
+        add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY_REDUCED_RATE, " - Not enough energy to run at maximum speed");
+        add(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT, " - Not enough room in output");
+        add(MekanismLang.ISSUE_NO_MATCHING_RECIPE, " - No matching recipe or not enough input");
+        add(MekanismLang.ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT, " - Input does not produce output");
+        add(MekanismLang.ISSUE_INVALID_OREDICTIONIFICATOR_FILTER, " - Filter is no longer valid or supported");
+        add(MekanismLang.ISSUE_FILTER_HAS_BLACKLISTED_ELEMENT, " - Filter contains at least one element that is blacklisted");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
@@ -707,10 +766,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Configuration
         add(MekanismLang.TRANSPORTER_CONFIG, "Transporter Config");
         add(MekanismLang.SIDE_CONFIG, "Side Config");
+        add(MekanismLang.SIDE_CONFIG_CLEAR, "Clear Side Config (sets all sides to none)");
         add(MekanismLang.STRICT_INPUT, "Strict Input");
         add(MekanismLang.STRICT_INPUT_ENABLED, "Strict Input (%s)");
         add(MekanismLang.CONFIG_TYPE, "%s Config");
         add(MekanismLang.NO_EJECT, "Can't Eject");
+        add(MekanismLang.CANT_EJECT_TOOLTIP, "Auto-eject is not supported, manual extraction may still be possible.");
         add(MekanismLang.SLOTS, "Slots");
         //Auto
         add(MekanismLang.AUTO_PULL, "Auto-pull");
@@ -820,6 +881,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.UPGRADES_SUPPORTED, "Supported:");
         add(MekanismLang.UPGRADE_COUNT, "Amount: %s/%s");
         add(MekanismLang.UPGRADE_TYPE, "%s Upgrade");
+        add(MekanismLang.UPGRADE_NOT_SUPPORTED, "%s (Not Supported)");
+        add(MekanismLang.UPGRADE_UNINSTALL, "Uninstall");
+        add(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP, "Uninstalls a single upgrade, hold shift to uninstall all.");
         //Filter
         add(MekanismLang.CREATE_FILTER_TITLE, "Create New Filter");
         add(MekanismLang.FILTERS, "Filters:");
@@ -828,8 +892,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FILTER, "Filter");
         add(MekanismLang.FILTER_NEW, "New: %s");
         add(MekanismLang.FILTER_EDIT, "Edit: %s");
-        add(MekanismLang.SIZE_MODE, "Size Mode");
-        add(MekanismLang.SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
+        add(MekanismLang.SORTER_SIZE_MODE, "Size Mode");
+        add(MekanismLang.SORTER_SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
         add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");
         add(MekanismLang.MATERIAL_FILTER, "Material Filter");
         add(MekanismLang.MATERIAL_FILTER_DETAILS, "Using material of:");
@@ -843,12 +907,17 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODID_FILTER_ID, "ID: %s");
         add(MekanismLang.ITEM_FILTER, "Item Filter");
         add(MekanismLang.ITEM_FILTER_NO_ITEM, "No item");
-        add(MekanismLang.ITEM_FILTER_SIZE_MODE, "%s!");
-        add(MekanismLang.ITEM_FILTER_MAX_LESS_THAN_MIN, "Max < min");
-        add(MekanismLang.ITEM_FILTER_OVER_SIZED, "Max > 64");
-        add(MekanismLang.ITEM_FILTER_SIZE_MISSING, "Max/min");
+        add(MekanismLang.SORTER_FILTER_SIZE_MODE, "%s!");
+        add(MekanismLang.SORTER_FILTER_MAX_LESS_THAN_MIN, "Max < min");
+        add(MekanismLang.SORTER_FILTER_OVER_SIZED, "Max > 64");
+        add(MekanismLang.SORTER_FILTER_SIZE_MISSING, "Max/min");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER, "Oredictionificator Filter");
-        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG, "Incompatible tag");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_NAMESPACE, "Invalid tag namespace");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_PATH, "Invalid tag path");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_UNSUPPORTED_TAG, "Unsupported tag");
+        //Radioactive Waste Barrel
+        add(MekanismLang.WASTE_BARREL_DECAY_RATE, "Decay Rate: %s mB/t");
+        add(MekanismLang.WASTE_BARREL_DECAY_RATE_ACTUAL, "Actual Decay Rate: %s mB / %s ticks");
         //Seismic Vibrator
         add(MekanismLang.CHUNK, "Chunk: %s, %s");
         add(MekanismLang.VIBRATING, "Vibrating");
@@ -973,7 +1042,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MINER_VISUALS, "Visuals: %s");
         add(MekanismLang.MINER_VISUALS_TOO_BIG, "Radius too big to display visuals");
         add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %s");
-        add(MekanismLang.MINER_IS_INVERSE, "I: %s");
+        add(MekanismLang.MINER_REQUIRE_REPLACE_INVERSE, "Inverse mode requires replacement: %s");
         add(MekanismLang.MINER_RADIUS, "Radi: %s");
         add(MekanismLang.MINER_IDLE, "Not ready");
         add(MekanismLang.MINER_SEARCHING, "Searching");
@@ -1064,7 +1133,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DISASSEMBLER_SLOW, "slow");
         add(MekanismLang.DISASSEMBLER_FAST, "fast");
         add(MekanismLang.DISASSEMBLER_VEIN, "vein");
-        add(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, "extended vein mining");
         add(MekanismLang.DISASSEMBLER_OFF, "off");
         //Flamethrower Modes
         add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %s");
@@ -1097,6 +1165,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ROBIT_TELEPORT, "Teleport back home");
         add(MekanismLang.ROBIT_TOGGLE_PICKUP, "Toggle 'drop pickup' mode");
         add(MekanismLang.ROBIT_RENAME, "Rename this Robit");
+        add(MekanismLang.ROBIT_SKIN, "Skin: %s");
+        add(MekanismLang.ROBIT_SKIN_SELECT, "Change this Robit's appearance");
         add(MekanismLang.ROBIT_TOGGLE_FOLLOW, "Toggle 'follow' mode");
         add(MekanismLang.ROBIT_GREETING, "Hi, I'm %s!");
         add(MekanismLang.ROBIT_OWNER, "Owner: %s");
@@ -1113,9 +1183,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_BIN, "A block used to store large quantities of a single type of item.");
         add(MekanismLang.DESCRIPTION_TELEPORTER_FRAME, "The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.");
         add(MekanismLang.DESCRIPTION_STEEL_CASING, "A sturdy, steel-based casing used as a foundation for machinery.");
-        add(MekanismLang.DESCRIPTION_DYNAMIC_TANK, "The casing used in the Dynamic Tank multiblock, a structure capable of storing great amounts of fluid.");
+        add(MekanismLang.DESCRIPTION_DYNAMIC_TANK, "The casing used in the Dynamic Tank multiblock, a structure capable of storing great amounts of fluid and chemicals.");
         add(MekanismLang.DESCRIPTION_STRUCTURAL_GLASS, "An advanced, reinforced material of glass that drops when broken and can be used in the structure of any applicable multiblock.");
-        add(MekanismLang.DESCRIPTION_DYNAMIC_VALVE, "A valve that can be placed on a Dynamic Tank multiblock, allowing for fluids to be inserted and extracted via external piping.");
+        add(MekanismLang.DESCRIPTION_DYNAMIC_VALVE, "A valve that can be placed on a Dynamic Tank multiblock, allowing for fluids and chemicals to be inserted and extracted via external piping.");
         add(MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER, "The controller for a Thermal Evaporation Plant, acting as the master block of the structure. Only one of these should be placed on a multiblock.");
         add(MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE, "A valve that can be placed on a Thermal Evaporation Plant multiblock, allowing for fluids to be inserted and extracted via external piping.");
         add(MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK, "A copper-alloyed casing used in the structure of a Thermal Evaporation Plant, using its advanced material to conduct the great amounts of heat necessary for processing.");
@@ -1168,7 +1238,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER, "A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.");
         add(MekanismLang.DESCRIPTION_NUTRITIONAL_LIQUIFIER, "A machine that is capable of processing any foods into non-dangerous, easily-digestible Nutritional Paste.");
         add(MekanismLang.DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER, "A machine which uses bits of antimatter and mass amounts of energy to atomically transmute various resources.");
-        add(MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL, "A barrel that can be used to 'safety' store radioactive waste. WARNING: breaking this barrel will release its contents into the atmosphere.");
+        add(MekanismLang.DESCRIPTION_PIGMENT_EXTRACTOR, "A machine used to extract pigments from blocks and items.");
+        add(MekanismLang.DESCRIPTION_PIGMENT_MIXER, "A sturdy machine capable of mixing two pigments together to produce a new pigment.");
+        add(MekanismLang.DESCRIPTION_PAINTING_MACHINE, "A machine used to color blocks and items via a careful application of a stored pigment.");
+        add(MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL, "A barrel that can be used to 'safely' store radioactive waste. WARNING: breaking this barrel will release its contents into the atmosphere.");
         add(MekanismLang.DESCRIPTION_INDUSTRIAL_ALARM, "Not just your everyday alarm... this is an 'industrial' alarm!");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_TANK, "A portable tank that lets you carry chemicals wherever you please.");
@@ -1202,66 +1275,56 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATION, "Gravitational Modulation");
+        add(MekanismLang.MODULE_MAGNETIC_ATTRACTION, "Magnetic Attraction");
         add(MekanismLang.MODULE_CHARGE_SUIT, "Charge Suit");
         add(MekanismLang.MODULE_CHARGE_INVENTORY, "Charge Inventory");
         add(MekanismLang.MODULE_SPEED_BOOST, "Speed Boost");
         add(MekanismLang.MODULE_VISION_ENHANCEMENT, "Vision Enhancement");
+        add(MekanismLang.MODULE_BREATHING_HELD, "Fill Held");
         add(MekanismLang.MODULE_PURIFICATION_BENEFICIAL, "Remove Beneficial");
         add(MekanismLang.MODULE_PURIFICATION_NEUTRAL, "Remove Neutral");
         add(MekanismLang.MODULE_PURIFICATION_HARMFUL, "Remove Harmful");
+        add(MekanismLang.MODULE_TELEPORT_REQUIRES_BLOCK, "Requires Block Target");
 
-        add(MekanismLang.MODULE_ENERGY_UNIT, "Energy Unit");
+        add(MekanismModules.ENERGY_UNIT, "Energy Unit", "Increases maximum energy capacity.");
+        add(MekanismModules.LASER_DISSIPATION_UNIT, "Laser Dissipation Unit",
+              "Refracts and safely dissipates lasers that hit any MekaSuit armor piece.");
+        add(MekanismModules.RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit",
+              "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
 
-        add(MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit");
-        add(MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit");
-        add(MekanismLang.MODULE_SILK_TOUCH_UNIT, "Silk Touch Unit");
-        add(MekanismLang.MODULE_VEIN_MINING_UNIT, "Vein Mining Unit");
-        add(MekanismLang.MODULE_FARMING_UNIT, "Farming Unit");
-        add(MekanismLang.MODULE_TELEPORTATION_UNIT, "Teleportation Unit");
+        add(MekanismModules.EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit", "Increases digging speed on any block.");
+        add(MekanismModules.ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit", "Amplifies melee attacks on players or mobs.");
+        add(MekanismModules.SILK_TOUCH_UNIT, "Silk Touch Unit", "Allows all mined blocks to drop as themselves.");
+        add(MekanismModules.VEIN_MINING_UNIT, "Vein Mining Unit", "Allows for quick mining of ore deposits and rapid felling of trees.");
+        add(MekanismModules.FARMING_UNIT, "Farming Unit", "Allows for soil tilling, log stripping, and soil flattening.");
+        add(MekanismModules.SHEARING_UNIT, "Shearing Unit", "Allows the creation of energy blades for precise cutting jobs. Does not add laser swords.");
+        add(MekanismModules.TELEPORTATION_UNIT, "Teleportation Unit", "Provides for quick travel to nearby blocks.");
 
-        add(MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit");
-        add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
-        add(MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit");
-        add(MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, "Solar Recharging Unit");
-        add(MekanismLang.MODULE_NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit");
-        add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
-        add(MekanismLang.MODULE_JETPACK_UNIT, "Jetpack Unit");
-        add(MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit");
-        add(MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit");
-        add(MekanismLang.MODULE_DOSIMETER_UNIT, "Dosimeter Unit");
-        add(MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit");
-        add(MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit");
-        add(MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit");
+        add(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit",
+              "Uses electrolysis to create breathable oxygen from water. Will also fill a jetpack module with hydrogen when necessary.");
+        add(MekanismModules.INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit",
+              "Applies a miniature electromagnetic field around the breathing apparatus, preventing selected potion effect types.");
+        add(MekanismModules.VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit",
+              "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.");
+        add(MekanismModules.SOLAR_RECHARGING_UNIT, "Solar Recharging Unit",
+              "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.");
+        add(MekanismModules.NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit", "Automatically feeds the player Nutritional Paste when hungry.");
+        add(MekanismModules.JETPACK_UNIT, "Jetpack Unit", "Applies a hydrogen-fueled jetpack to the MekaSuit.");
+        add(MekanismModules.GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit", "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
+        add(MekanismModules.ELYTRA_UNIT, "Elytra Unit", "Applies an HDPE Reinforced Elytra to the MekaSuit.");
+        add(MekanismModules.CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit", "Evenly distributes charge throughout all worn MekaSuit armor.");
+        add(MekanismModules.DOSIMETER_UNIT, "Dosimeter Unit", "Displays the user's current radiation dose in the HUD.");
+        add(MekanismModules.GEIGER_UNIT, "Geiger Unit", "Displays the ambient radiation level in the HUD.");
+        add(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit", "Increases the user's sprinting speed (and jumping distance).");
+        add(MekanismModules.HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit", "Allows the user to both step and jump higher.");
+        add(MekanismModules.MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit", "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
+        add(MekanismModules.FROST_WALKER_UNIT, "Frost Walker Unit", "Uses liquid hydrogen to freeze any water the player walks on. Install multiple for a greater range.");
+    }
 
-        add(MekanismLang.DESCRIPTION_ENERGY_UNIT, "Increases maximum energy capacity.");
-
-        add(MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, "Increases digging speed on any block.");
-        add(MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, "Amplifies melee attacks on players or mobs.");
-        add(MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, "Allows all mined blocks to drop as themselves.");
-        add(MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, "Allows for quick mining of ore deposits and rapid felling of trees.");
-        add(MekanismLang.DESCRIPTION_FARMING_UNIT, "Allows for soil tilling, log stripping, and soil flattening.");
-        add(MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, "Provides for quick travel to nearby blocks.");
-
-        add(MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, "Uses electrolysis to create breathable oxygen from water. Will also fill a jetpack module with hydrogen when necessary.");
-        add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing selected potion effect types.");
-        add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
-        add(MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.");
-        add(MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.");
-        add(MekanismLang.DESCRIPTION_NUTRITIONAL_INJECTION_UNIT, "Automatically feeds the player Nutritional Paste when hungry.");
-        add(MekanismLang.DESCRIPTION_JETPACK_UNIT, "Applies a hydrogen-fueled jetpack to the MekaSuit.");
-        add(MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
-        add(MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, "Evenly distributes charge throughout all worn MekaSuit armor.");
-        add(MekanismLang.DESCRIPTION_DOSIMETER_UNIT, "Displays the user's current radiation dose in the HUD.");
-        add(MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, "Increases the user's sprinting speed (and jumping distance).");
-        add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
-        add(MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
-
-        add("description.mekanism.osmium_ore", "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
-        add("description.mekanism.copper_ore", "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
-        add("description.mekanism.tin_ore", "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
-        add("description.mekanism.fluorite_ore", "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
-        add("description.mekanism.uranium_ore", "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
-        add("description.mekanism.lead_ore", "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
+    private void addOre(OreType type, String description) {
+        BlockRegistryObject<BlockOre, ?> oreRO = MekanismBlocks.ORES.get(type);
+        add(oreRO, formatAndCapitalize(type.getResource().getRegistrySuffix()) + " Ore");
+        add(oreRO.getBlock().getDescriptionTranslationKey(), description);
     }
 
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, String name) {
@@ -1274,9 +1337,5 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, IItemProvider creative, String name) {
         addTiered(basic, advanced, elite, ultimate, name);
         add(creative, "Creative " + name);
-    }
-
-    private String capitalize(String s) {
-        return s.substring(0, 1).toUpperCase(Locale.ROOT) + s.substring(1).toLowerCase(Locale.ROOT);
     }
 }

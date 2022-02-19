@@ -5,17 +5,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
@@ -25,24 +26,24 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.CommonWorldTickHandler;
+import mekanism.api.robit.IRobit;
+import mekanism.api.robit.RobitSkin;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
-import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -55,10 +56,15 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.MekanismUtils;
@@ -79,17 +85,20 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -98,6 +107,9 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
@@ -106,14 +118,21 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ISecurityObject, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
-      IMekanismStrictEnergyHandler {
+public class EntityRobit extends CreatureEntity implements IRobit, IMekanismInventory, ISustainedInventory, ISecurityObject, IMekanismStrictEnergyHandler,
+      ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+
+    public static final ModelProperty<ResourceLocation> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();
+
+    private static <T> DataParameter<T> define(IDataSerializer<T> dataSerializer) {
+        return EntityDataManager.defineId(EntityRobit.class, dataSerializer);
+    }
 
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
-    private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.getSerializer());
+    private static final DataParameter<String> OWNER_NAME = define(DataSerializers.STRING);
+    private static final DataParameter<Boolean> FOLLOW = define(DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DROP_PICKUP = define(DataSerializers.BOOLEAN);
+    private static final DataParameter<RobitSkin> SKIN = define(MekanismDataSerializers.<RobitSkin>getRegistryEntrySerializer());
     public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
     private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
@@ -121,7 +140,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final int ticksRequired = 100;
     private SecurityMode securityMode = SecurityMode.PUBLIC;
     public Coord4D homeLocation;
-    public boolean texTick;
+    private int lastTextureUpdate;
+    private int textureIndex;
     private int progress;
 
     /**
@@ -129,7 +149,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
      */
     private final Set<PlayerEntity> playersUsing = new ObjectOpenHashSet<>();
 
-    private CachedRecipe<ItemStackToItemStackRecipe> cachedRecipe = null;
+    private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe> recipeCacheLookupMonitor;
 
     private final IInputHandler<@NonNull ItemStack> inputHandler;
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -150,8 +170,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public EntityRobit(EntityType<EntityRobit> type, World world) {
         super(type, world);
-        getNavigator().setCanSwim(false);
+        getNavigation().setCanFloat(false);
         setCustomNameVisible(true);
+        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
 
         inventorySlots = new ArrayList<>();
@@ -163,8 +184,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 inventoryContainerSlots.add(slot);
             }
         }
-        inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getEntityWorld, this, 153, 17));
-        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 51, 35));
+        inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getCommandSenderWorld, this, 153, 17));
+        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
         inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(this, 116, 35));
@@ -176,12 +197,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot);
     }
 
-    public EntityRobit(World world, double x, double y, double z) {
-        this(MekanismEntityTypes.ROBIT.getEntityType(), world);
-        setPosition(x, y, z);
-        prevPosX = x;
-        prevPosY = y;
-        prevPosZ = z;
+    @Nullable
+    public static EntityRobit create(World world, double x, double y, double z) {
+        EntityRobit robit = MekanismEntityTypes.ROBIT.get().create(world);
+        if (robit == null) {
+            return null;
+        }
+        robit.setPos(x, y, z);
+        robit.xo = x;
+        robit.yo = y;
+        robit.zo = z;
+        return robit;
     }
 
     @Override
@@ -195,44 +221,46 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public static AttributeModifierMap.MutableAttribute getDefaultAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3F);
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
     @Override
-    public boolean canDespawn(double distanceToClosestPlayer) {
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        dataManager.register(OWNER_UUID, "");
-        dataManager.register(OWNER_NAME, "");
-        dataManager.register(FOLLOW, false);
-        dataManager.register(DROP_PICKUP, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        //Default before it has a brief chance to get set the owner to mekanism's fake player
+        entityData.define(OWNER_UUID, Mekanism.gameProfile.getId());
+        entityData.define(OWNER_NAME, "");
+        entityData.define(FOLLOW, false);
+        entityData.define(DROP_PICKUP, false);
+        entityData.define(SKIN, MekanismRobitSkins.BASE.get());
     }
 
     private FloatingLong getRoundedTravelEnergy() {
-        return DISTANCE_MULTIPLIER.multiply(Math.sqrt(getDistanceSq(prevPosX, prevPosY, prevPosZ)));
+        return DISTANCE_MULTIPLIER.multiply(Math.sqrt(distanceToSqr(xo, yo, zo)));
     }
 
     @Override
     public void onRemovedFromWorld() {
-        if (world != null && !world.isRemote && getFollowing() && getOwner() != null) {
+        if (level != null && !level.isClientSide && getFollowing() && getOwner() != null) {
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
-            ((ServerWorld) world).getChunkProvider().registerTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(getPosition()), 2, getEntityId());
+            ((ServerWorld) level).getChunkSource().addRegionTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(blockPosition()), 2, getId());
         }
         super.onRemovedFromWorld();
     }
 
     @Override
     public void baseTick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             if (getFollowing()) {
                 PlayerEntity owner = getOwner();
-                if (owner != null && getDistanceSq(owner) > 4 && !getNavigator().noPath() && !energyContainer.isEmpty()) {
+                if (owner != null && distanceToSqr(owner) > 4 && !getNavigation().isDone() && !energyContainer.isEmpty()) {
                     energyContainer.extract(getRoundedTravelEnergy(), Action.EXECUTE, AutomationType.INTERNAL);
                 }
             }
@@ -240,7 +268,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
         super.baseTick();
 
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             if (getDropPickup()) {
                 collectItems();
             }
@@ -249,8 +277,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 return;
             }
 
-            if (ticksExisted % 20 == 0) {
-                World serverWorld = ServerLifecycleHooks.getCurrentServer().getWorld(homeLocation.dimension);
+            if (tickCount % 20 == 0) {
+                World serverWorld = ServerLifecycleHooks.getCurrentServer().getLevel(homeLocation.dimension);
                 BlockPos homePos = homeLocation.getPos();
                 if (WorldUtils.isBlockLoaded(serverWorld, homePos) && WorldUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
                     drop();
@@ -263,41 +291,41 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             }
 
             energySlot.fillContainerOrConvert();
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
+            recipeCacheLookupMonitor.updateAndProcess();
         }
     }
 
+    public boolean isItemValid(ItemEntity item) {
+        return item.isAlive() && !item.hasPickUpDelay() && !(item.getItem().getItem() instanceof ItemRobit);
+    }
+
     private void collectItems() {
-        List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, getBoundingBox().grow(1.5, 1.5, 1.5));
+        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5));
         if (!items.isEmpty()) {
             for (ItemEntity item : items) {
-                if (item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || !item.isAlive()) {
-                    continue;
-                }
-                for (IInventorySlot slot : inventoryContainerSlots) {
-                    if (slot.isEmpty()) {
-                        slot.setStack(item.getItem());
-                        onItemPickup(item, item.getItem().getCount());
-                        item.remove();
-                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                        break;
-                    }
-                    ItemStack itemStack = slot.getStack();
-                    int maxSize = slot.getLimit(itemStack);
-                    if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
-                        int needed = maxSize - itemStack.getCount();
-                        int toAdd = Math.min(needed, item.getItem().getCount());
-                        MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
-                        item.getItem().shrink(toAdd);
-                        onItemPickup(item, toAdd);
-                        if (item.getItem().isEmpty()) {
+                if (isItemValid(item)) {
+                    for (IInventorySlot slot : inventoryContainerSlots) {
+                        if (slot.isEmpty()) {
+                            slot.setStack(item.getItem());
+                            take(item, item.getItem().getCount());
                             item.remove();
+                            playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            break;
                         }
-                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                        break;
+                        ItemStack itemStack = slot.getStack();
+                        int maxSize = slot.getLimit(itemStack);
+                        if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
+                            int needed = maxSize - itemStack.getCount();
+                            int toAdd = Math.min(needed, item.getItem().getCount());
+                            MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
+                            item.getItem().shrink(toAdd);
+                            take(item, toAdd);
+                            if (item.getItem().isEmpty()) {
+                                item.remove();
+                            }
+                            playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            break;
+                        }
                     }
                 }
             }
@@ -305,15 +333,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void goHome() {
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             return;
         }
         setFollowing(false);
-        if (world.getDimensionKey() == homeLocation.dimension) {
-            setMotion(0, 0, 0);
-            setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+        if (level.dimension() == homeLocation.dimension) {
+            setDeltaMovement(0, 0, 0);
+            teleportTo(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
         } else {
-            ServerWorld newWorld = ((ServerWorld) this.world).getServer().getWorld(homeLocation.dimension);
+            ServerWorld newWorld = ((ServerWorld) this.level).getServer().getLevel(homeLocation.dimension);
             if (newWorld != null) {
                 Vector3d destination = new Vector3d(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                 changeDimension(newWorld, new ITeleporter() {
@@ -324,7 +352,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
                     @Override
                     public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
-                        return new PortalInfo(destination, Vector3d.ZERO, entity.rotationYaw, entity.rotationPitch);
+                        return new PortalInfo(destination, Vector3d.ZERO, entity.yRot, entity.xRot);
+                    }
+
+                    @Override
+                    public boolean playTeleportSound(ServerPlayerEntity player, ServerWorld sourceWorld, ServerWorld destWorld) {
+                        return false;
                     }
                 });
             }
@@ -332,32 +365,35 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     private boolean isOnChargepad() {
-        return WorldUtils.getTileEntity(TileEntityChargepad.class, world, getPosition()) != null;
+        return WorldUtils.getTileEntity(TileEntityChargepad.class, level, blockPosition()) != null;
     }
 
     @Nonnull
     @Override
-    public ActionResultType applyPlayerInteraction(PlayerEntity player, @Nonnull Vector3d vec, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+    public ActionResultType interactAt(PlayerEntity player, @Nonnull Vector3d vec, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
-                if (!world.isRemote) {
+                if (!level.isClientSide) {
                     drop();
                 }
                 remove();
-                player.swingArm(hand);
+                player.swing(hand);
                 return ActionResultType.SUCCESS;
             }
         } else {
             if (!SecurityUtils.canAccess(player, this)) {
-                if (!world.isRemote) {
+                if (!level.isClientSide) {
                     SecurityUtils.displayNoAccess(player);
                 }
                 return ActionResultType.FAIL;
             }
-            if (!world.isRemote) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(MekanismLang.ROBIT, (i, inv, p) -> new MainRobitContainer(i, inv, this)),
-                      buf -> buf.writeVarInt(getEntityId()));
+            if (!level.isClientSide) {
+                INamedContainerProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
+                if (provider != null) {
+                    //Validate the provider isn't null, it shouldn't be but just in case
+                    NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> buf.writeVarInt(getId()));
+                }
             }
             return ActionResultType.SUCCESS;
         }
@@ -378,14 +414,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         item.setName(stack, getName());
         item.setOwnerUUID(stack, getOwnerUUID());
         item.setSecurity(stack, getSecurityMode());
+        item.setSkin(stack, getSkin());
         return stack;
     }
 
     public void drop() {
         //TODO: Move this to loot table?
-        ItemEntity entityItem = new ItemEntity(world, getPosX(), getPosY() + 0.3, getPosZ(), getItemVariant());
-        entityItem.setMotion(0, rand.nextGaussian() * 0.05F + 0.2F, 0);
-        world.addEntity(entityItem);
+        ItemEntity entityItem = new ItemEntity(level, getX(), getY() + 0.3, getZ(), getItemVariant());
+        entityItem.setDeltaMovement(0, random.nextGaussian() * 0.05F + 0.2F, 0);
+        level.addFreshEntity(entityItem);
     }
 
     public double getScaledProgress() {
@@ -402,9 +439,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
-        super.writeAdditional(nbtTags);
-        nbtTags.putUniqueId(NBTConstants.OWNER_UUID, getOwnerUUID());
+    public void addAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+        super.addAdditionalSaveData(nbtTags);
+        nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
         nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
@@ -414,11 +451,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
+        nbtTags.putString(NBTConstants.SKIN, getSkin().getRegistryName().toString());
     }
 
     @Override
-    public void readAdditional(@Nonnull CompoundNBT nbtTags) {
-        super.readAdditional(nbtTags);
+    public void readAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+        super.readAdditionalSaveData(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
@@ -427,6 +465,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
+        NBTUtils.setRegistryEntryIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistry(), skin -> setSkin(skin, null),
+              () -> setSkin(MekanismRobitSkins.BASE, null));
     }
 
     @Override
@@ -435,21 +475,23 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    protected void damageEntity(@Nonnull DamageSource damageSource, float amount) {
+    protected void actuallyHurt(@Nonnull DamageSource damageSource, float amount) {
         amount = ForgeHooks.onLivingHurt(this, damageSource, amount);
         if (amount <= 0) {
             return;
         }
-        amount = applyArmorCalculations(damageSource, amount);
-        amount = applyPotionDamageCalculations(damageSource, amount);
-        float j = getHealth();
-
+        amount = getDamageAfterArmorAbsorb(damageSource, amount);
+        amount = getDamageAfterMagicAbsorb(damageSource, amount);
+        if (damageSource == DamageSource.FALL) {
+            //Half the "potential" damage the Robit can take from falling
+            amount /= 2;
+        }
         energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
-        getCombatTracker().trackDamage(damageSource, j, amount);
+        getCombatTracker().recordDamage(damageSource, getHealth(), amount);
     }
 
     @Override
-    protected void onDeathUpdate() {
+    protected void tickDeath() {
     }
 
     public void setHome(Coord4D home) {
@@ -457,24 +499,24 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return !energyContainer.isEmpty();
     }
 
     public PlayerEntity getOwner() {
-        return world.getPlayerByUuid(getOwnerUUID());
+        return level.getPlayerByUUID(getOwnerUUID());
     }
 
     @Nonnull
     @Override
     public String getOwnerName() {
-        return dataManager.get(OWNER_NAME);
+        return entityData.get(OWNER_NAME);
     }
 
     @Nonnull
     @Override
     public UUID getOwnerUUID() {
-        return UUID.fromString(dataManager.get(OWNER_UUID));
+        return entityData.get(OWNER_UUID);
     }
 
     @Override
@@ -501,7 +543,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
                     if (!SecurityUtils.canAccess(player, this)) {
                         //and if they can't then boot them out
-                        player.closeScreen();
+                        player.closeContainer();
                     }
                 }
             }
@@ -517,24 +559,24 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void setOwnerUUID(UUID uuid) {
-        dataManager.set(OWNER_UUID, uuid.toString());
-        dataManager.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
+        entityData.set(OWNER_UUID, uuid);
+        entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
     }
 
     public boolean getFollowing() {
-        return dataManager.get(FOLLOW);
+        return entityData.get(FOLLOW);
     }
 
     public void setFollowing(boolean follow) {
-        dataManager.set(FOLLOW, follow);
+        entityData.set(FOLLOW, follow);
     }
 
     public boolean getDropPickup() {
-        return dataManager.get(DROP_PICKUP);
+        return entityData.get(DROP_PICKUP);
     }
 
     public void setDropPickup(boolean pickup) {
-        dataManager.set(DROP_PICKUP, pickup);
+        entityData.set(DROP_PICKUP, pickup);
     }
 
     @Override
@@ -581,30 +623,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Nonnull
-    public MekanismRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
-        return MekanismRecipeType.SMELTING;
-    }
-
-    public boolean containsRecipe(@Nonnull Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeType().contains(getEntityWorld(), matchCriteria);
-    }
-
-    @Nullable
-    public ItemStackToItemStackRecipe findFirstRecipe(@Nonnull Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeType().findFirst(getEntityWorld(), matchCriteria);
-    }
-
-    @Nullable
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
+    public MekanismRecipeType<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
+        return MekanismRecipeType.SMELTING;
     }
 
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+        return findFirstRecipe(inputHandler);
     }
 
     public IEnergyContainer getEnergyContainer() {
@@ -612,16 +639,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public boolean invalidateCache() {
-        return CommonWorldTickHandler.flushTagAndRecipeCaches;
-    }
-
-    @Override
     public ItemStack getPickedResult(RayTraceResult target) {
         return getItemVariant();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
@@ -632,7 +654,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
     }
 
-    public void addContainerTrackers(@Nonnull ContainerType<?> containerType, MekanismContainer container) {
+    public void addContainerTrackers(MekanismContainer container) {
+        ContainerType<?> containerType = container.getType();
         container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, this::getSecurityMode, this::setSecurityMode));
         if (containerType == MekanismContainerTypes.MAIN_ROBIT.getContainerType()) {
             container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
@@ -645,11 +668,75 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         return new IWorldPosCallable() {
             @Nonnull
             @Override
-            public <T> Optional<T> apply(@Nonnull BiFunction<World, BlockPos, T> worldBlockPosTBiFunction) {
+            public <T> Optional<T> evaluate(@Nonnull BiFunction<World, BlockPos, T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
-                return Optional.ofNullable(worldBlockPosTBiFunction.apply(getEntityWorld(), getPosition()));
+                return Optional.ofNullable(worldBlockPosTBiFunction.apply(getCommandSenderWorld(), blockPosition()));
             }
         };
+    }
+
+    @Nonnull
+    @Override
+    public RobitSkin getSkin() {
+        return entityData.get(SKIN);
+    }
+
+    @Override
+    public boolean setSkin(@Nonnull IRobitSkinProvider skinProvider, @Nullable PlayerEntity player) {
+        Objects.requireNonNull(skinProvider, "Robit skin cannot be null.");
+        RobitSkin skin = skinProvider.getSkin();
+        if (player != null) {
+            if (!SecurityUtils.canAccess(player, this) || !skin.isUnlocked(player)) {
+                return false;
+            }
+        }
+        entityData.set(SKIN, skin);
+        return true;
+    }
+
+    /**
+     * @apiNote Only call on the client.
+     */
+    public IModelData getModelData() {
+        //TODO: Eventually we might want to evaluate caching this model data object
+        return new ModelDataMap.Builder().withInitial(SKIN_TEXTURE_PROPERTY, getModelTexture()).build();
+    }
+
+    /**
+     * @apiNote Only call on the client.
+     */
+    private ResourceLocation getModelTexture() {
+        RobitSkin skin = getSkin();
+        List<ResourceLocation> textures = skin.getTextures();
+        if (textures.isEmpty()) {
+            textureIndex = 0;
+            Mekanism.logger.error("Robit Skin: {}, has no textures; resetting skin to base.", skin.getRegistryName());
+            setSkin(MekanismRobitSkins.BASE, null);
+            if (getSkin().getTextures().isEmpty()) {
+                //This should not happen but if it does throw a cleaner error than a stack overflow
+                throw new IllegalStateException("Base robit skin has no textures defined.");
+            }
+            return getModelTexture();
+        }
+        int textureCount = textures.size();
+        if (textureCount == 1) {
+            textureIndex = 0;
+        } else {
+            if (lastTextureUpdate < tickCount) {
+                //Only check for movement and if the texture index needs to update if we haven't already done so this tick
+                lastTextureUpdate = tickCount;
+                if (Math.abs(getX() - xo) + Math.abs(getZ() - zo) > 0.001) {
+                    //If the robit moved and the ticks are such that it should update, update the index
+                    if (tickCount % 3 == 0) {
+                        textureIndex++;
+                    }
+                }
+            }
+            if (textureIndex >= textureCount) {
+                textureIndex = textureIndex % textureCount;
+            }
+        }
+        return textures.get(textureIndex);
     }
 }

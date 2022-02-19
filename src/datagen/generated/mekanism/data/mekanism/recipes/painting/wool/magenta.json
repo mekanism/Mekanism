@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/wool"
+      },
+      "without": {
+        "item": "minecraft:magenta_wool"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:magenta"
+  },
+  "output": {
+    "item": "minecraft:magenta_wool"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:stairs/plastic/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:cyan_plastic_transparent_stairs"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:cyan"
+  },
+  "output": {
+    "item": "mekanismadditions:cyan_plastic_transparent_stairs"
+  }
+}

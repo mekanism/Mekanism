@@ -1,49 +1,66 @@
 package mekanism.common.item;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IGuiItem;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem {
+public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IItemSustainedInventory {
 
     public ItemPortableQIODashboard(Properties properties) {
-        super(properties.maxStackSize(1).rarity(Rarity.RARE));
+        super(properties.stacksTo(1).rarity(Rarity.RARE));
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
+        MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
+        super.appendHoverText(stack, world, tooltip, flag);
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         if (getOwnerUUID(stack) == null) {
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 SecurityUtils.claimItem(player, stack);
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
-            if (!world.isRemote) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, getContainerProvider(stack, hand), buf -> {
-                    buf.writeEnumValue(hand);
-                    buf.writeItemStack(stack);
-                });
+            if (!world.isClientSide) {
+                getContainerType().tryOpenGui((ServerPlayerEntity) player, hand, stack);
             }
         } else {
             SecurityUtils.displayNoAccess(player);
@@ -53,14 +70,19 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public INamedContainerProvider getContainerProvider(ItemStack stack, Hand hand) {
-        return new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableQIODashboardContainer(i, inv, hand, stack));
+    public ContainerTypeRegistryObject<PortableQIODashboardContainer> getContainerType() {
+        return MekanismContainerTypes.PORTABLE_QIO_DASHBOARD;
     }
 
     @Override
     public void setFrequency(ItemStack stack, Frequency frequency) {
         IFrequencyItem.super.setFrequency(stack, frequency);
         setColor(stack, frequency != null ? ((QIOFrequency) frequency).getColor() : null);
+    }
+
+    @Override
+    public FrequencyType<?> getFrequencyType() {
+        return FrequencyType.QIO;
     }
 
     public EnumColor getColor(ItemStack stack) {

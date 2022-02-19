@@ -2,6 +2,7 @@ package mekanism.common.block.attribute;
 
 import java.util.function.ToIntFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.WorldUtils;
@@ -14,9 +15,12 @@ import net.minecraft.world.IWorldReader;
 
 public class Attributes {
 
-    public static final Attribute ACTIVE = new AttributeStateActive();
+    public static final Attribute ACTIVE = new AttributeStateActive(0);
+    public static final Attribute ACTIVE_LIGHT = new AttributeStateActive(8);
+    public static final Attribute ACTIVE_FULL_LIGHT = new AttributeStateActive(15);
     public static final Attribute COMPARATOR = new AttributeComparator();
     public static final Attribute INVENTORY = new AttributeInventory();
+    //TODO - 1.18: Re-evaluate this attribute, it seems to be currently unused?
     public static final Attribute MULTIBLOCK = new AttributeMultiblock();
     public static final Attribute REDSTONE = new AttributeRedstone();
     public static final Attribute SECURITY = new AttributeSecurity();
@@ -45,6 +49,16 @@ public class Attributes {
         }
     }
 
+    /** If a block supports integration with computers. */
+    public static class AttributeComputerIntegration implements Attribute {
+
+        public final String name;
+
+        public AttributeComputerIntegration(String name) {
+            this.name = name;
+        }
+    }
+
     /** If a block has a redstone input configuration. */
     public static class AttributeRedstone implements Attribute {
 
@@ -61,21 +75,21 @@ public class Attributes {
         public static final AttributeMobSpawn WHEN_NOT_FORMED = new AttributeMobSpawn((state, reader, pos, entityType) -> {
             TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, reader, pos);
             if (tile != null) {
-                if (reader instanceof IWorldReader && ((IWorldReader) reader).isRemote()) {
+                if (reader instanceof IWorldReader && ((IWorldReader) reader).isClientSide()) {
                     //If we are on the client just check if we are formed as we don't sync structure information
                     // to the client. This way the client is at least relatively accurate with what values
                     // it returns for if mobs can spawn
                     if (tile.getMultiblock().isFormed()) {
                         return false;
                     }
-                } else if (tile.getMultiblock().isPositionInsideBounds(tile.getStructure(), pos.up())) {
+                } else if (tile.getMultiblock().isPositionInsideBounds(tile.getStructure(), pos.above())) {
                     //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
                     // don't allow spawning on it.
                     return false;
                 }
             }
             //Super implementation
-            return state.isSolidSide(reader, pos, Direction.UP) && state.getLightValue(reader, pos) < 14;
+            return state.isFaceSturdy(reader, pos, Direction.UP) && state.getLightValue(reader, pos) < 14;
         });
 
         private final IExtendedPositionPredicate<EntityType<?>> spawningPredicate;
@@ -86,7 +100,7 @@ public class Attributes {
 
         @Override
         public void adjustProperties(Properties props) {
-            props.setAllowsSpawn(spawningPredicate);
+            props.isValidSpawn(spawningPredicate);
         }
     }
 
@@ -137,7 +151,7 @@ public class Attributes {
 
         @Override
         public void adjustProperties(AbstractBlock.Properties props) {
-            props.setLightLevel(state -> light);
+            BlockStateHelper.applyLightLevelAdjustments(props, state -> light);
         }
     }
 }

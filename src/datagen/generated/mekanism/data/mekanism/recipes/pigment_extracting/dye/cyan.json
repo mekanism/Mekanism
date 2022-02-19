@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dyes/cyan"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:cyan",
+    "amount": 256
+  }
+}

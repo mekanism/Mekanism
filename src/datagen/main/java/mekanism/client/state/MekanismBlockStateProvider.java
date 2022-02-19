@@ -3,6 +3,7 @@ package mekanism.client.state;
 import java.util.Map;
 import mekanism.client.model.MekanismBlockModelProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockOre;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
@@ -40,7 +41,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
             }
             simpleBlock(entry.getValue().getBlock(), file);
         }
-        for (Map.Entry<OreType, BlockRegistryObject<?, ?>> entry : MekanismBlocks.ORES.entrySet()) {
+        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
             ModelFile file = models().withExistingParent("block/ore/" + entry.getKey().getResource().getRegistrySuffix(), basicCube)
                   .texture("all", modLoc("block/" + entry.getValue().getName()));
             simpleBlock(entry.getValue().getBlock(), file);
@@ -49,7 +50,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             models().withExistingParent("item/block_" + entry.getKey().getName(), modLoc("block/storage/" + entry.getKey().getName()));
         }
-        for (Map.Entry<OreType, BlockRegistryObject<?, ?>> entry : MekanismBlocks.ORES.entrySet()) {
+        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
             models().withExistingParent("item/" + entry.getKey().getResource().getRegistrySuffix() + "_ore", modLoc("block/ore/" + entry.getKey().getResource().getRegistrySuffix()));
         }
     }

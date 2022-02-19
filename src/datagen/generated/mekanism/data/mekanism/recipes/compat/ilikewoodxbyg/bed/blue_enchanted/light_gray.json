@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:light_gray_blue_enchanted_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:blue_enchanted_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:light_gray_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

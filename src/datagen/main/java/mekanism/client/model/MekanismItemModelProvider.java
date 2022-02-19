@@ -1,10 +1,7 @@
 package mekanism.client.model;
 
 import com.google.common.collect.Table.Cell;
-import java.util.Map;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.Modules.ModuleData;
-import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
@@ -23,9 +20,8 @@ public class MekanismItemModelProvider extends BaseItemModelProvider {
 
     @Override
     protected void registerModels() {
-        //Buckets
-        MekanismFluids.FLUIDS.getAllFluids().forEach(this::registerBucket);
-
+        registerBuckets(MekanismFluids.FLUIDS);
+        registerModules(MekanismItems.ITEMS);
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             ResourceLocation texture = itemTexture(item.getValue());
             if (textureExists(texture)) {
@@ -34,10 +30,6 @@ public class MekanismItemModelProvider extends BaseItemModelProvider {
                 //If the texture does not exist fallback to the default texture
                 resource(item.getValue(), item.getRowKey().getRegistryPrefix());
             }
-        }
-
-        for (Map.Entry<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> entry : MekanismItems.MODULES.entrySet()) {
-            generated(entry.getValue());
         }
     }
 }

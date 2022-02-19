@@ -22,11 +22,6 @@
           ],
           "name": "mekanism:basic_bin"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

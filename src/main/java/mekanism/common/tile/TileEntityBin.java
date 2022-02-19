@@ -10,6 +10,9 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -34,11 +37,12 @@ import net.minecraft.world.World;
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public int addTicks = 0;
-
+    public int removeTicks = 0;
     private int delayTicks;
 
     private BinTier tier;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored")
     private BinInventorySlot binSlot;
 
     public TileEntityBin(IBlockProvider blockProvider) {
@@ -48,6 +52,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), BinTier.class);
     }
 
@@ -75,17 +80,18 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     protected void onUpdateServer() {
         super.onUpdateServer();
         addTicks = Math.max(0, addTicks - 1);
+        removeTicks = Math.max(0, removeTicks - 1);
         delayTicks = Math.max(0, delayTicks - 1);
         if (delayTicks == 0) {
             if (getActive()) {
-                TileEntity tile = WorldUtils.getTileEntity(getWorld(), getPos().down());
+                TileEntity tile = WorldUtils.getTileEntity(getLevel(), getBlockPos().below());
                 TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
                 if (tile instanceof TileEntityLogisticalTransporterBase) {
                     response = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().insert(this, request, null, true, 0);
                 } else {
-                    response = request.addToInventory(tile, Direction.DOWN, false);
+                    response = request.addToInventory(tile, Direction.DOWN, 0, false);
                 }
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();
@@ -99,21 +105,11 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
-    }
-
-    @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         setActive(!getActive());
-        World world = getWorld();
+        World world = getLevel();
         if (world != null) {
-            world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+            world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
         }
         return ActionResultType.SUCCESS;
     }
@@ -143,7 +139,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (world != null && !isRemote()) {
+        if (level != null && !isRemote()) {
             sendUpdatePacket();
         }
     }
@@ -161,4 +157,11 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         super.handleUpdateTag(state, tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private int getCapacity() {
+        return binSlot.getLimit(binSlot.getStack());
+    }
+    //End methods IComputerTile
 }

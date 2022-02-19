@@ -13,7 +13,7 @@ public class SoundEventRegistryObject<SOUND extends SoundEvent> extends WrappedR
 
     public SoundEventRegistryObject(RegistryObject<SOUND> registryObject) {
         super(registryObject);
-        translationKey = Util.makeTranslationKey("sound_event", this.registryObject.getId());
+        translationKey = Util.makeDescriptionId("sound_event", this.registryObject.getId());
     }
 
     @Nonnull

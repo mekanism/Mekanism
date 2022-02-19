@@ -17,7 +17,7 @@ public class BlockPlastic extends Block implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlastic(EnumColor color, UnaryOperator<Properties> propertyModifier) {
-        super(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(AbstractBlock.Properties.create(PLASTIC, color.getMapColor())
+        super(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(AbstractBlock.Properties.of(PLASTIC, color.getMapColor())
               .harvestTool(ToolType.PICKAXE))));
         this.color = color;
     }

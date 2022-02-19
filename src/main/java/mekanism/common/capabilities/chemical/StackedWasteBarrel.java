@@ -40,8 +40,8 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
     public GasStack insert(GasStack stack, Action action, AutomationType automationType) {
         GasStack remainder = super.insert(stack, action, automationType);
         if (!remainder.isEmpty()) {
-            //If we have any left over check if we can send it to the tank that is above
-            TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getWorld(), tile.getPos().up());
+            //If we have any leftover check if we can send it to the tank that is above
+            TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getLevel(), tile.getBlockPos().above());
             if (tileAbove != null) {
                 //Note: We do external so that it is not limited by the internal rate limits
                 remainder = tileAbove.getGasTank().insert(remainder, action, AutomationType.EXTERNAL);
@@ -54,10 +54,10 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
     public long growStack(long amount, Action action) {
         long grownAmount = super.growStack(amount, action);
         if (amount > 0 && grownAmount < amount) {
-            //If we grew our stack less than we tried to and we were actually growing and not shrinking it
+            //If we grew our stack less than we tried to, and we were actually growing and not shrinking it
             // try inserting into above tiles
             if (!tile.getActive()) {
-                TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getWorld(), tile.getPos().up());
+                TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getLevel(), tile.getBlockPos().above());
                 if (tileAbove != null) {
                     long leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits

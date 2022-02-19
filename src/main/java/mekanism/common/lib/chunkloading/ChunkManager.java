@@ -23,13 +23,13 @@ import org.apache.logging.log4j.Logger;
  * @deprecated Exists to allow loading old data, but is no longer used otherwise as Forge's Chunk Manager does what we need
  */
 @Deprecated
-public class ChunkManager extends WorldSavedData {//TODO - 1.17: Remove this class as it mainly exists to transition the old data over to Forge's Chunk Manager
+public class ChunkManager extends WorldSavedData {//TODO - 1.18: Remove this class as it mainly exists to transition the old data over to Forge's Chunk Manager
 
     private static final String CHUNK_LIST_KEY = "chunks";
     private static final Logger LOGGER = LogManager.getLogger("Mekanism ChunkManager");
     private static final String SAVEDATA_KEY = "mekanism_force_chunks";
     /** Ticket type to keep the chunk loaded initially for a short time, so the Chunkloaders can register theirs */
-    private static final TicketType<ChunkPos> INITIAL_LOAD_TICKET_TYPE = TicketType.create("mekanism:initial_chunkload", Comparator.comparingLong(ChunkPos::asLong), 10);
+    private static final TicketType<ChunkPos> INITIAL_LOAD_TICKET_TYPE = TicketType.create("mekanism:initial_chunkload", Comparator.comparingLong(ChunkPos::toLong), 10);
 
     private ChunkMultimap chunks = new ChunkMultimap();
 
@@ -38,25 +38,25 @@ public class ChunkManager extends WorldSavedData {//TODO - 1.17: Remove this cla
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbt) {
+    public void load(@Nonnull CompoundNBT nbt) {
         this.chunks = new ChunkMultimap();
         this.chunks.deserializeNBT(nbt.getList(CHUNK_LIST_KEY, NBT.TAG_COMPOUND));
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT compound) {
+    public CompoundNBT save(@Nonnull CompoundNBT compound) {
         compound.put(CHUNK_LIST_KEY, this.chunks.serializeNBT());
         return compound;
     }
 
     public static void worldLoad(ServerWorld world) {
         //Only get, don't create as missing as we don't actually use this anymore
-        DimensionSavedDataManager savedDataManager = world.getSavedData();
+        DimensionSavedDataManager savedDataManager = world.getDataStorage();
         ChunkManager savedData = savedDataManager.get(ChunkManager::new, SAVEDATA_KEY);
         if (savedData != null) {
             int chunks = savedData.chunks.size();
-            ResourceLocation dimension = world.getDimensionKey().getLocation();
+            ResourceLocation dimension = world.dimension().location();
             if (chunks > 0) {
                 LOGGER.info("Loading {} chunks for dimension {}", chunks, dimension);
                 savedData.chunks.long2ObjectEntrySet().fastForEach(entry -> {
@@ -65,11 +65,11 @@ public class ChunkManager extends WorldSavedData {//TODO - 1.17: Remove this cla
                     // due to the multithreading of world loading and some potential thread locking that exists from querying the world during load.
                     // This gives enough time for our chunk loader to properly add and switch over to the new system
                     ChunkPos pos = new ChunkPos(entry.getLongKey());
-                    world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, 2, pos);
+                    world.getChunkSource().addRegionTicket(INITIAL_LOAD_TICKET_TYPE, pos, 2, pos);
                 });
                 //Now that we loaded it, clear all the old data so that we don't try to load it again on the next start
                 savedData.chunks.clear();
-                savedData.markDirty();
+                savedData.setDirty();
                 LOGGER.info("Loaded {} chunks for dimension {}. The {} data file for this dimension can now be safely removed as the data has been transferred to "
                             + "Forge's Chunk Manager.", chunks, dimension, SAVEDATA_KEY);
             } else {

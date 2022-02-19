@@ -54,7 +54,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
     }
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_BLOCK)) {
             return CasingType.FRAME;

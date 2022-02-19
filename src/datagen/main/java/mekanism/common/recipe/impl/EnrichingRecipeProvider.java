@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
@@ -14,6 +15,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 
@@ -61,7 +63,15 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         addEnrichingStoneConversionRecipes(consumer, basePath + "stone/");
         addEnrichingBlackstoneConversionRecipes(consumer, basePath + "blackstone/");
         addEnrichingQuartzRecipes(consumer, basePath + "quartz/");
+        addEnrichingGraniteRecipes(consumer, basePath + "granite/");
+        addEnrichingDioriteRecipes(consumer, basePath + "diorite/");
+        addEnrichingAndesiteRecipes(consumer, basePath + "andesite/");
         addEnrichingMossyConversionRecipes(consumer, basePath + "mossy/");
+        //Purpur Pillar -> Purpur Block
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.PURPUR_BLOCK),
+              new ItemStack(Blocks.PURPUR_PILLAR)
+        ).build(consumer, Mekanism.rl(basePath + "purpur_pillar_from_block"));
         //Gravel -> flint
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Tags.Items.GRAVEL),
@@ -145,15 +155,69 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
     }
 
+    private void addEnrichingGraniteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Granite -> Polished Granite
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.GRANITE),
+              new ItemStack(Blocks.POLISHED_GRANITE)
+        ).build(consumer, Mekanism.rl(basePath + "to_polished"));
+        //Granite Stairs -> Polished Granite Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.GRANITE_STAIRS),
+              new ItemStack(Blocks.POLISHED_GRANITE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_to_polished_stairs"));
+        //Granite Slab -> Polished Granite Slab
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.GRANITE_SLAB),
+              new ItemStack(Blocks.POLISHED_GRANITE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slab_to_polished_slab"));
+    }
+
+    private void addEnrichingDioriteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Diorite -> Polished Diorite
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.DIORITE),
+              new ItemStack(Blocks.POLISHED_DIORITE)
+        ).build(consumer, Mekanism.rl(basePath + "to_polished"));
+        //Diorite Stairs -> Polished Granite Diorite
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.DIORITE_STAIRS),
+              new ItemStack(Blocks.POLISHED_DIORITE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_to_polished_stairs"));
+        //Diorite Slab -> Polished Diorite Slab
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.DIORITE_SLAB),
+              new ItemStack(Blocks.POLISHED_DIORITE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slab_to_polished_slab"));
+    }
+
+    private void addEnrichingAndesiteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Andesite -> Polished Andesite
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.ANDESITE),
+              new ItemStack(Blocks.POLISHED_ANDESITE)
+        ).build(consumer, Mekanism.rl(basePath + "to_polished"));
+        //Polished Andesite Stairs -> Andesite Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.ANDESITE_STAIRS),
+              new ItemStack(Blocks.POLISHED_ANDESITE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_to_polished_stairs"));
+        //Polished Andesite Slab -> Andesite Slab
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.ANDESITE_SLAB),
+              new ItemStack(Blocks.POLISHED_ANDESITE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slab_to_polished_slab"));
+    }
+
     private void addEnrichingQuartzRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Quartz Block -> Quartz Item
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_QUARTZ),
-                    ItemStackIngredient.from(Blocks.QUARTZ_BRICKS),
-                    ItemStackIngredient.from(Blocks.CHISELED_QUARTZ_BLOCK),
-                    ItemStackIngredient.from(Blocks.QUARTZ_PILLAR)
-              ),
+              ItemStackIngredient.from(BaseRecipeProvider.createIngredient(
+                    Tags.Items.STORAGE_BLOCKS_QUARTZ,
+                    Blocks.QUARTZ_BRICKS,
+                    Blocks.CHISELED_QUARTZ_BLOCK,
+                    Blocks.QUARTZ_PILLAR
+              )),
               new ItemStack(Items.QUARTZ, 4)
         ).build(consumer, Mekanism.rl(basePath + "to_item"));
         //Smooth Quartz Block -> Quartz Block
@@ -211,30 +275,33 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addEnrichingDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        //Black
+        //Red
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.WITHER_ROSE),
-              new ItemStack(Items.BLACK_DYE, 2)
-        ).build(consumer, Mekanism.rl(basePath + "black"));
-        //Blue
+              ItemStackIngredient.from(Blocks.ROSE_BUSH),
+              new ItemStack(Items.RED_DYE, 4)
+        ).build(consumer, Mekanism.rl(basePath + "large_red"));
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.CORNFLOWER),
-              new ItemStack(Items.BLUE_DYE, 2)
-        ).build(consumer, Mekanism.rl(basePath + "blue"));
+              ItemStackIngredient.from(Ingredient.of(
+                    Items.BEETROOT,
+                    Blocks.POPPY,
+                    Blocks.RED_TULIP
+              )),
+              new ItemStack(Items.RED_DYE, 2)
+        ).build(consumer, Mekanism.rl(basePath + "small_red"));
         //Green
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Blocks.CACTUS),
               new ItemStack(Items.GREEN_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "green"));
-        //Magenta
+        //Light gray
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.LILAC),
-              new ItemStack(Items.MAGENTA_DYE, 4)
-        ).build(consumer, Mekanism.rl(basePath + "large_magenta"));
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.ALLIUM),
-              new ItemStack(Items.MAGENTA_DYE, 2)
-        ).build(consumer, Mekanism.rl(basePath + "small_magenta"));
+              ItemStackIngredient.from(Ingredient.of(
+                    Blocks.OXEYE_DAISY,
+                    Blocks.AZURE_BLUET,
+                    Blocks.WHITE_TULIP
+              )),
+              new ItemStack(Items.LIGHT_GRAY_DYE, 2)
+        ).build(consumer, Mekanism.rl(basePath + "light_gray"));
         //Pink
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Blocks.PEONY),
@@ -244,18 +311,11 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Blocks.PINK_TULIP),
               new ItemStack(Items.PINK_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_pink"));
-        //Red
+        //Lime
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.ROSE_BUSH),
-              new ItemStack(Items.RED_DYE, 4)
-        ).build(consumer, Mekanism.rl(basePath + "large_red"));
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Blocks.RED_TULIP),
-                    ItemStackIngredient.from(Blocks.POPPY)
-              ),
-              new ItemStack(Items.RED_DYE, 2)
-        ).build(consumer, Mekanism.rl(basePath + "small_red"));
+              ItemStackIngredient.from(Blocks.SEA_PICKLE),
+              new ItemStack(Items.LIME_DYE, 2)
+        ).build(consumer, Mekanism.rl(basePath + "lime"));
         //Yellow
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Blocks.SUNFLOWER),
@@ -270,23 +330,47 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Blocks.BLUE_ORCHID),
               new ItemStack(Items.LIGHT_BLUE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "light_blue"));
-        //Light gray
+        //Magenta
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Blocks.OXEYE_DAISY),
-                    ItemStackIngredient.from(Blocks.AZURE_BLUET),
-                    ItemStackIngredient.from(Blocks.WHITE_TULIP)
-              ),
-              new ItemStack(Items.LIGHT_GRAY_DYE, 2)
-        ).build(consumer, Mekanism.rl(basePath + "light_gray"));
+              ItemStackIngredient.from(Blocks.LILAC),
+              new ItemStack(Items.MAGENTA_DYE, 4)
+        ).build(consumer, Mekanism.rl(basePath + "large_magenta"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.ALLIUM),
+              new ItemStack(Items.MAGENTA_DYE, 2)
+        ).build(consumer, Mekanism.rl(basePath + "small_magenta"));
         //Orange
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Blocks.ORANGE_TULIP),
               new ItemStack(Items.ORANGE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "orange"));
+        //Blue
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Ingredient.of(
+                    Blocks.CORNFLOWER,
+                    Items.LAPIS_LAZULI
+              )),
+              new ItemStack(Items.BLUE_DYE, 2)
+        ).build(consumer, Mekanism.rl(basePath + "blue"));
+        //Brown
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Items.COCOA_BEANS),
+              new ItemStack(Items.BROWN_DYE, 2)
+        ).build(consumer, Mekanism.rl(basePath + "brown"));
+        //Black
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Ingredient.of(
+                    Items.INK_SAC,
+                    Blocks.WITHER_ROSE
+              )),
+              new ItemStack(Items.BLACK_DYE, 2)
+        ).build(consumer, Mekanism.rl(basePath + "black"));
         //White
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.LILY_OF_THE_VALLEY),
+              ItemStackIngredient.from(Ingredient.of(
+                    Items.BONE_MEAL,
+                    Blocks.LILY_OF_THE_VALLEY
+              )),
               new ItemStack(Items.WHITE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "white"));
     }

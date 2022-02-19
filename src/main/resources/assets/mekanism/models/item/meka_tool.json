@@ -1,21 +1,42 @@
 {
-    "parent": "mekanism:item/standard_item",
-    "loader": "forge:obj",
-    "model": "mekanism:models/entity/mekatool.obj",
-    "flip-v": "true",
-    "display": {
-        "firstperson_righthand": {
-            "rotation": [ 90, 0, -10 ],
-            "translation": [ 0, -3, 0 ]
+    "parent": "minecraft:item/generated",
+    "loader": "forge:separate-perspective",
+    "base": {
+        "loader": "forge:obj",
+        "model": "mekanism:models/entity/mekatool_right.obj",
+        "flip-v": "true",
+        "display": {
+            "firstperson_righthand": {
+                "rotation": [ 90, 0, -10 ],
+                "translation": [ 0, -3, 0 ]
+            },
+            "thirdperson_righthand": {
+                "rotation": [ 90, 0, 0 ],
+                "translation": [ 1, -10, -4 ]
+            },
+            "gui": {
+                "rotation": [ 90, 40, 90 ],
+                "translation": [ 6.5, -3.5, 0 ]
+            },
+            "ground": {
+                "translation": [ 1, 2, 7 ]
+            },
+            "head": {
+                "rotation": [ 270, 220, 90 ],
+                "translation": [ 0, 2, 0]
+            },
+            "fixed": {
+                "rotation": [ 270, 220, 90 ],
+                "translation": [ -6, -4, -1 ]
+            }
+        }
+    },
+    "perspectives": {
+        "first_person_left_hand": {
+            "parent": "mekanism:item/meka_tool_left"
         },
-        "thirdperson_righthand": {
-            "rotation": [ 90, 0, 0 ],
-            "translation": [ 1, -10, -4 ]
-        },
-        "gui": {
-            "rotation": [ 0, 90, 0 ],
-            "rotation": [ 0, 0, 135 ],
-            "translation": [ 1, 2, 0 ]
+        "third_person_left_hand": {
+            "parent": "mekanism:item/meka_tool_left"
         }
     }
 }

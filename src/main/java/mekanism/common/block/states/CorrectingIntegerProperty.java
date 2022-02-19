@@ -4,7 +4,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import net.minecraft.state.IntegerProperty;
 
-@Deprecated//TODO - 1.17: Remove this
+@Deprecated//TODO - 1.18: Remove this
 public class CorrectingIntegerProperty extends IntegerProperty {
 
     public static CorrectingIntegerProperty create(@Nonnull String name, int min, int max) {
@@ -17,13 +17,13 @@ public class CorrectingIntegerProperty extends IntegerProperty {
 
     @Nonnull
     @Override
-    public Optional<Integer> parseValue(String value) {
+    public Optional<Integer> getValue(String value) {
         //Handle loading the old "boolean" value data type
         if (value.equals("false")) {
             return Optional.of(0);
         } else if (value.equals("true")) {
             return Optional.of(1);
         }
-        return super.parseValue(value);
+        return super.getValue(value);
     }
 }

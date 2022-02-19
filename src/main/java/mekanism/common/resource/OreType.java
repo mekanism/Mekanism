@@ -16,8 +16,8 @@ public enum OreType implements IStringSerializable {
     FLUORITE(MiscResource.FLUORITE, 6, 12, 0, 0, 32, 1, 4),
     LEAD(PrimaryResource.LEAD, 8, 8, 0, 0, 48);
 
-    public static Codec<OreType> CODEC = IStringSerializable.createEnumCodec(OreType::values, OreType::byName);
-    private static final Map<String, OreType> NAME_LOOKUP = Arrays.stream(values()).collect(Collectors.toMap(OreType::getString, oreType -> oreType));
+    public static Codec<OreType> CODEC = IStringSerializable.fromEnum(OreType::values, OreType::byName);
+    private static final Map<String, OreType> NAME_LOOKUP = Arrays.stream(values()).collect(Collectors.toMap(OreType::getSerializedName, oreType -> oreType));
 
     private final IResource resource;
     private final int perChunk;
@@ -86,7 +86,7 @@ public enum OreType implements IStringSerializable {
 
     @Nonnull
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return resource.getRegistrySuffix();
     }
 

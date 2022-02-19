@@ -17,6 +17,11 @@ public enum RelativeSide implements IHasTranslationKey {
 
     private static final RelativeSide[] SIDES = values();
 
+    /**
+     * Gets a side by index.
+     *
+     * @param index Index of the side.
+     */
     public static RelativeSide byIndex(int index) {
         return MathUtils.getByIndexMod(SIDES, index);
     }
@@ -48,12 +53,12 @@ public enum RelativeSide implements IHasTranslationKey {
             if (facing == Direction.DOWN || facing == Direction.UP) {
                 return Direction.EAST;
             }
-            return facing.rotateY();
+            return facing.getClockWise();
         } else if (this == RIGHT) {
             if (facing == Direction.DOWN || facing == Direction.UP) {
                 return Direction.WEST;
             }
-            return facing.rotateYCCW();
+            return facing.getCounterClockWise();
         } else if (this == TOP) {
             if (facing == Direction.DOWN) {
                 return Direction.NORTH;
@@ -102,9 +107,9 @@ public enum RelativeSide implements IHasTranslationKey {
             return BOTTOM;
         } else if (side == Direction.UP) {
             return TOP;
-        } else if (side == facing.rotateYCCW()) {
+        } else if (side == facing.getCounterClockWise()) {
             return RIGHT;
-        } else if (side == facing.rotateY()) {
+        } else if (side == facing.getClockWise()) {
             return LEFT;
         }
         //Fall back to front, should never get here

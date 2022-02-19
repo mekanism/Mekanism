@@ -9,7 +9,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -34,8 +33,8 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     @Override
     protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.shouldRender && tile.getWorld() != null) {
-            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
+        if (tile.shouldRender && tile.getLevel() != null) {
+            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
                   MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
         }
     }
@@ -52,7 +51,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
         if (!cache.containsKey(direction)) {
             Model3D model = new Model3D();
-            model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+            model.setTexture(MekanismRenderer.teleporterPortal);
             cache.put(direction, model);
             if (direction == Direction.UP) {
                 model.minY = 1;
@@ -126,7 +125,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityTeleporter tile) {
-        return tile.shouldRender && tile.getWorld() != null;
+    public boolean shouldRenderOffScreen(TileEntityTeleporter tile) {
+        return tile.shouldRender && tile.getLevel() != null;
     }
 }

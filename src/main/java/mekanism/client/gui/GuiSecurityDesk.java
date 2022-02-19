@@ -1,9 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -22,13 +20,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
-import mekanism.common.network.PacketAddTrusted;
-import mekanism.common.network.PacketGuiInteract;
-import mekanism.common.network.PacketGuiInteract.GuiInteraction;
+import mekanism.common.network.to_server.PacketAddTrusted;
+import mekanism.common.network.to_server.PacketGuiInteract;
+import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -38,7 +37,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
-    private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private MekanismButton removeButton;
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -49,32 +47,28 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     public GuiSecurityDesk(MekanismTileContainer<TileEntitySecurityDesk> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 64;
-        playerInventoryTitleY = ySize - 94;
-        titleY = 4;
+        imageHeight += 64;
+        inventoryLabelY = imageHeight - 94;
+        titleLabelY = 4;
         dynamicSlots = true;
     }
 
     @Override
-    protected void initPreSlots() {
+    protected void addGuiElements() {
         addButton(new GuiElementHolder(this, 141, 13, 26, 37));
         addButton(new GuiElementHolder(this, 141, 54, 26, 34));
         addButton(new GuiElementHolder(this, 141, 92, 26, 37));
-    }
-
-    @Override
-    public void init() {
-        super.init();
+        super.addGuiElements();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addButton(new GuiSecurityLight(this, 144, 77, () -> {
             SecurityFrequency frequency = tile.getFreq();
-            return frequency == null || tile.ownerUUID == null || !tile.ownerUUID.equals(getMinecraft().player.getUniqueID()) ? 2 : frequency.isOverridden() ? 0 : 1;
+            return frequency == null || tile.ownerUUID == null || !tile.ownerUUID.equals(getMinecraft().player.getUUID()) ? 2 : frequency.isOverridden() ? 0 : 1;
         }));
         addButton(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addButton(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
-        addButton(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
-        addButton(removeButton = new TranslationButton(this, guiLeft + 13, guiTop + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
+        scrollList = addButton(new GuiTextScrollList(this, 13, 13, 122, 42));
+        removeButton = addButton(new TranslationButton(this, 13, 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
             if (tile.getFreq() != null && selection != -1) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, tile, selection));
@@ -82,28 +76,28 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                 updateButtons();
             }
         }));
-        addButton(trustedField = new GuiTextField(this, 35, 68, 99, 11));
+        trustedField = addButton(new GuiTextField(this, 35, 68, 99, 11));
         trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
         trustedField.setBackground(BackgroundType.INNER_SCREEN);
         trustedField.setEnterHandler(this::setTrusted);
-        trustedField.setInputValidator(c -> SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c));
+        trustedField.setInputValidator(InputValidator.USERNAME);
         trustedField.addCheckmarkButton(this::setTrusted);
-        addButton(publicButton = new MekanismImageButton(this, guiLeft + 13, guiTop + 113, 40, 16, 40, 16, getButtonLocation("public"),
+        publicButton = addButton(new MekanismImageButton(this, 13, 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PUBLIC.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PUBLIC_MODE)));
-        addButton(privateButton = new MekanismImageButton(this, guiLeft + 54, guiTop + 113, 40, 16, 40, 16, getButtonLocation("private"),
+        privateButton = addButton(new MekanismImageButton(this, 54, 113, 40, 16, 40, 16, getButtonLocation("private"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PRIVATE.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PRIVATE_MODE)));
-        addButton(trustedButton = new MekanismImageButton(this, guiLeft + 95, guiTop + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
+        trustedButton = addButton(new MekanismImageButton(this, 95, 113, 40, 16, 40, 16, getButtonLocation("trusted"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.TRUSTED.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.TRUSTED_MODE)));
-        addButton(overrideButton = new MekanismImageButton(this, guiLeft + 146, guiTop + 59, 16, 16, getButtonLocation("exclamation"),
+        overrideButton = addButton(new MekanismImageButton(this, 146, 59, 16, 16, getButtonLocation("exclamation"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
                   updateButtons();
@@ -118,7 +112,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void setTrusted() {
         SecurityFrequency freq = tile.getFreq();
-        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUniqueID())) {
+        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUUID())) {
             addTrusted(trustedField.getText());
             trustedField.setText("");
             updateButtons();
@@ -127,7 +121,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void addTrusted(String trusted) {
         if (PacketAddTrusted.validateNameLength(trusted.length())) {
-            Mekanism.packetHandler.sendToServer(new PacketAddTrusted(tile.getPos(), trusted));
+            Mekanism.packetHandler.sendToServer(new PacketAddTrusted(tile.getBlockPos(), trusted));
         }
     }
 
@@ -138,7 +132,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             removeButton.active = scrollList.hasSelection();
         }
 
-        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUniqueID())) {
+        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUUID())) {
             publicButton.active = freq.getSecurityMode() != SecurityMode.PUBLIC;
             privateButton.active = freq.getSecurityMode() != SecurityMode.PRIVATE;
             trustedButton.active = freq.getSecurityMode() != SecurityMode.TRUSTED;
@@ -167,8 +161,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         ITextComponent ownerComponent = OwnerDisplay.of(tile.ownerUUID, tile.clientOwner).getTextComponent();
-        drawString(matrix, ownerComponent, xSize - 7 - getStringWidth(ownerComponent), playerInventoryTitleY, titleTextColor());
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, ownerComponent, imageWidth - 7 - getStringWidth(ownerComponent), inventoryLabelY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         drawCenteredText(matrix, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());
         SecurityFrequency frequency = tile.getFreq();
         if (frequency != null) {

@@ -27,9 +27,9 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> ext
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
-                            JSONUtils.getJsonObject(json, JsonConstants.INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement input = JSONUtils.isArrayNode(json, JsonConstants.INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.INPUT) :
+                            JSONUtils.getAsJsonObject(json, JsonConstants.INPUT);
         FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
         GasStack leftGasOutput = SerializerHelper.getGasStack(json, JsonConstants.LEFT_GAS_OUTPUT);
         GasStack rightGasOutput = SerializerHelper.getGasStack(json, JsonConstants.RIGHT_GAS_OUTPUT);
@@ -47,7 +47,7 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> ext
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient input = FluidStackIngredient.read(buffer);
             FloatingLong energyMultiplier = FloatingLong.readFromBuffer(buffer);
@@ -61,7 +61,7 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> ext
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:melon"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:melon_slice",
+    "count": 9
+  }
+}

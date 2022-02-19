@@ -8,10 +8,9 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -29,24 +28,25 @@ import net.minecraft.item.ItemStack;
 
 public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackGasToItemStackRecipe> {
 
+    private final GuiBar<?> gasInput;
+    private final GuiSlot input;
+    private final GuiSlot extra;
+    private final GuiSlot output;
+
     public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
         super(helper, mekanismBlock, 28, 16, 144, 54);
+        input = addSlot(SlotType.INPUT, 64, 17);
+        extra = addSlot(SlotType.EXTRA, 64, 53);
+        output = addSlot(SlotType.OUTPUT, 116, 35);
+        addSlot(SlotType.POWER, 39, 35).with(SlotOverlay.POWER);
+        addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
+        gasInput = addElement(new GuiEmptyBar(this, 68, 36, 6, 12));
+        addSimpleProgress(ProgressType.BAR, 86, 38);
     }
 
     @Override
     public Class<? extends ItemStackGasToItemStackRecipe> getRecipeClass() {
         return ItemStackGasToItemStackRecipe.class;
-    }
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 63, 16));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 38, 34).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 63, 52));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiEmptyBar(this, 68, 36, 6, 12));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.BAR, this, 86, 38));
     }
 
     @Override
@@ -62,22 +62,17 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ItemStackGasToItemStackRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 35, 0);
-        itemStacks.init(1, false, 88, 19);
-        itemStacks.init(2, false, 35, 36);
-        itemStacks.set(0, recipe.getItemInput().getRepresentations());
-        itemStacks.set(1, recipe.getOutputDefinition());
-        GasStackIngredient gasInput = recipe.getChemicalInput();
+        initItem(itemStacks, 0, true, input, recipe.getItemInput().getRepresentations());
+        initItem(itemStacks, 1, false, output, recipe.getOutputDefinition());
         List<ItemStack> gasItemProviders = new ArrayList<>();
-        List<@NonNull GasStack> gasInputs = gasInput.getRepresentations();
         List<GasStack> scaledGases = new ArrayList<>();
-        for (GasStack gas : gasInputs) {
+        for (GasStack gas : recipe.getChemicalInput().getRepresentations()) {
             gasItemProviders.addAll(MekanismJEI.GAS_STACK_HELPER.getStacksFor(gas.getType(), true));
             //While we are already looping the gases ensure we scale it to get the average amount that will get used over all
             scaledGases.add(new GasStack(gas, gas.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED));
         }
-        itemStacks.set(2, gasItemProviders);
+        initItem(itemStacks, 2, true, extra, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, 41, 21, 6, 12, scaledGases, false);
+        initChemical(gasStacks, 0, true, gasInput, scaledGases);
     }
 }

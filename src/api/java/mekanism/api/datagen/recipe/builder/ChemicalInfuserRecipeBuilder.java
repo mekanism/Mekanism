@@ -1,33 +1,27 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.util.ResourceLocation;
 
-@FieldsAreNonnullByDefault
+//TODO - 1.18: Get rid of this class and move the helpers to ChemicalChemicalToChemicalRecipeBuilder
+@Deprecated
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<ChemicalInfuserRecipeBuilder> {
-
-    private final GasStackIngredient leftInput;
-    private final GasStackIngredient rightInput;
-    private final GasStack output;
+public class ChemicalInfuserRecipeBuilder extends ChemicalChemicalToChemicalRecipeBuilder<Gas, GasStack, GasStackIngredient> {
 
     protected ChemicalInfuserRecipeBuilder(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        super(mekSerializer("chemical_infusing"));
-        this.leftInput = leftInput;
-        this.rightInput = rightInput;
-        this.output = output;
+        super(mekSerializer("chemical_infusing"), leftInput, rightInput, output, ChemicalIngredientDeserializer.GAS);
     }
 
+    /**
+     * @deprecated Use {@link ChemicalChemicalToChemicalRecipeBuilder#chemicalInfusing(GasStackIngredient, GasStackIngredient, GasStack)} instead.
+     */
+    @Deprecated
     public static ChemicalInfuserRecipeBuilder chemicalInfusing(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This chemical infusing recipe requires a non empty gas output.");
@@ -40,17 +34,10 @@ public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<Chemical
         return new ChemicalInfuserRecipeResult(id);
     }
 
-    public class ChemicalInfuserRecipeResult extends RecipeResult {
+    public class ChemicalInfuserRecipeResult extends ChemicalChemicalToChemicalRecipeResult {
 
         protected ChemicalInfuserRecipeResult(ResourceLocation id) {
             super(id);
-        }
-
-        @Override
-        public void serialize(@Nonnull JsonObject json) {
-            json.add(JsonConstants.LEFT_INPUT, leftInput.serialize());
-            json.add(JsonConstants.RIGHT_INPUT, rightInput.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeGasStack(output));
         }
     }
 }

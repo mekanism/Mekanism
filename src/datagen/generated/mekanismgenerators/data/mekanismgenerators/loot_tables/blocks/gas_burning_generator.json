@@ -23,6 +23,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"
@@ -46,11 +51,6 @@
             }
           ],
           "name": "mekanismgenerators:gas_burning_generator"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

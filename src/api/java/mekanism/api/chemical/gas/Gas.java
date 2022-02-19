@@ -59,6 +59,6 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
 
     @Override
     protected String getDefaultTranslationKey() {
-        return Util.makeTranslationKey("gas", getRegistryName());
+        return Util.makeDescriptionId("gas", getRegistryName());
     }
 }

@@ -1,0 +1,8 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": ["mekanismadditions:block/plastic_block-ctm"]
+  }
+}

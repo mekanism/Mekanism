@@ -8,8 +8,8 @@ import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.network.PacketGuiInteract;
-import mekanism.common.network.PacketGuiInteract.GuiInteraction;
+import mekanism.common.network.to_server.PacketGuiInteract;
+import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.util.MekanismUtils;
@@ -28,9 +28,9 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     protected ResourceLocation getOverlay() {
-        if (dataSource.outputMode == RedstoneOutput.ENTITY_DETECTION) {
+        if (dataSource.getOutputMode() == RedstoneOutput.ENTITY_DETECTION) {
             return ENTITY;
-        } else if (dataSource.outputMode == RedstoneOutput.ENERGY_CONTENTS) {
+        } else if (dataSource.getOutputMode() == RedstoneOutput.ENERGY_CONTENTS) {
             return CONTENTS;
         }
         return super.getOverlay();
@@ -38,7 +38,8 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        displayTooltip(matrix, MekanismLang.REDSTONE_OUTPUT.translate(dataSource.outputMode), mouseX, mouseY);
+        super.renderToolTip(matrix, mouseX, mouseY);
+        displayTooltip(matrix, MekanismLang.REDSTONE_OUTPUT.translate(dataSource.getOutputMode()), mouseX, mouseY);
     }
 
     @Override

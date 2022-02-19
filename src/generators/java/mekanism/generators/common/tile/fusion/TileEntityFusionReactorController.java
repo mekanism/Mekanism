@@ -20,9 +20,10 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
     }
 
     @Override
-    protected void onUpdateServer(FusionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         setActive(multiblock.isFormed());
+        return needsPacket;
     }
 
     @Override
@@ -42,10 +43,5 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
             return false;
         }
         return super.handles(type);
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
     }
 }

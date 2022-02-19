@@ -172,7 +172,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         FloatingLong toAdd = amount.min(getRemainingInput()).min(getNeeded());
         if (toAdd.isZero()) {
             //Exit if we don't actually have anything to add, either due to how much we need
-            // or due to the our remaining rate limit
+            // or due to the remaining rate limit
             return amount;
         }
         if (action.execute()) {

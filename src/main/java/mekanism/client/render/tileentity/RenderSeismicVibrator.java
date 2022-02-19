@@ -26,7 +26,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     protected void render(TileEntitySeismicVibrator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         float actualRate = performTranslationsAndGetRate(tile, partialTick, matrix);
         model.render(matrix, renderer, light, overlayLight, actualRate, false);
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntitySeismicVibrator tile) {
+    public boolean shouldRenderOffScreen(TileEntitySeismicVibrator tile) {
         return true;
     }
 
@@ -44,18 +44,18 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
         if (tile instanceof TileEntitySeismicVibrator) {
             float actualRate = performTranslationsAndGetRate((TileEntitySeismicVibrator) tile, partialTick, matrix);
             model.renderWireFrame(matrix, buffer, actualRate, red, green, blue, alpha);
-            matrix.pop();
+            matrix.popPose();
         }
     }
 
     /**
-     * Make sure to call matrix.pop afterwards
+     * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
     private float performTranslationsAndGetRate(TileEntitySeismicVibrator tile, float partialTick, MatrixStack matrix) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
-        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
         return Math.max(0, (float) Math.sin((tile.clientPiston + (tile.getActive() ? partialTick : 0)) / 5F));
     }
 }

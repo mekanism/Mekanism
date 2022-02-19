@@ -28,7 +28,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         FluidStackIngredient fluidInputIngredient = null;
         GasStackIngredient gasInputIngredient = null;
         GasStack gasOutput = null;
@@ -36,8 +36,8 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
         boolean hasFluidToGas = false;
         boolean hasGasToFluid = false;
         if (json.has(JsonConstants.FLUID_INPUT) || json.has(JsonConstants.GAS_OUTPUT)) {
-            JsonElement fluidInput = JSONUtils.isJsonArray(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.FLUID_INPUT) :
-                                     JSONUtils.getJsonObject(json, JsonConstants.FLUID_INPUT);
+            JsonElement fluidInput = JSONUtils.isArrayNode(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
+                                     JSONUtils.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
             fluidInputIngredient = FluidStackIngredient.deserialize(fluidInput);
             gasOutput = SerializerHelper.getGasStack(json, JsonConstants.GAS_OUTPUT);
             hasFluidToGas = true;
@@ -46,8 +46,8 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
             }
         }
         if (json.has(JsonConstants.GAS_INPUT) || json.has(JsonConstants.FLUID_OUTPUT)) {
-            JsonElement gasInput = JSONUtils.isJsonArray(json, JsonConstants.GAS_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.GAS_INPUT) :
-                                   JSONUtils.getJsonObject(json, JsonConstants.GAS_INPUT);
+            JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
+                                   JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
             gasInputIngredient = GasStackIngredient.deserialize(gasInput);
             fluidOutput = SerializerHelper.getFluidStack(json, JsonConstants.FLUID_OUTPUT);
             hasGasToFluid = true;
@@ -66,7 +66,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient fluidInputIngredient = null;
             GasStackIngredient gasInputIngredient = null;
@@ -99,7 +99,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         if (recipe.hasFluidToGas() || recipe.hasGasToFluid()) {
             try {
                 recipe.write(buffer);

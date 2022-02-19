@@ -34,7 +34,7 @@ import net.minecraft.world.chunk.IChunk;
 public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, GeneratorsBlockTypes.FISSION_REACTOR_CASING)) {
             return CasingType.FRAME;
@@ -75,7 +75,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
                 // compute surface area
                 surfaceArea += 6;
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    if (fuelAssemblyCoords.contains(coord.offset(side))) {
+                    if (fuelAssemblyCoords.contains(coord.relative(side))) {
                         surfaceArea -= 2;
                     }
                 }

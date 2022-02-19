@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dyes/green"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:green",
+    "amount": 256
+  }
+}

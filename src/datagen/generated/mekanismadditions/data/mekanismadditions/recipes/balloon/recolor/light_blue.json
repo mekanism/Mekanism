@@ -5,7 +5,13 @@
   },
   "ingredients": [
     {
-      "tag": "mekanismadditions:balloons"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:balloons"
+      },
+      "without": {
+        "item": "mekanismadditions:light_blue_balloon"
+      }
     },
     {
       "tag": "forge:dyes/light_blue"

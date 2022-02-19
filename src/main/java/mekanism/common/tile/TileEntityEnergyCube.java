@@ -1,49 +1,44 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 
-public class TileEntityEnergyCube extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
+public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     /**
      * This Energy Cube's tier.
      */
     private EnergyCubeTier tier;
     private float prevScale;
-    public final TileComponentEjector ejectorComponent;
-    public final TileComponentConfig configComponent;
 
     private EnergyCubeEnergyContainer energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChargeItem")
     private EnergyInventorySlot chargeSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem")
     private EnergyInventorySlot dischargeSlot;
 
     /**
@@ -51,19 +46,16 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
      */
     public TileEntityEnergyCube(IBlockProvider blockProvider) {
         super(blockProvider);
-
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
-        configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true)
-              .setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, energyContainer, RelativeSide.FRONT)
-              .setEjecting(true);
-
-        ejectorComponent = new TileComponentEjector(this);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, RelativeSide.FRONT).setEjecting(true);
+        ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(type -> MekanismUtils.canFunction(this));
     }
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), EnergyCubeTier.class);
     }
 
@@ -79,7 +71,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(dischargeSlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 17, 35));
+        builder.addSlot(dischargeSlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 17, 35));
         builder.addSlot(chargeSlot = EnergyInventorySlot.drain(energyContainer, this, 143, 35));
         dischargeSlot.setSlotOverlay(SlotOverlay.MINUS);
         chargeSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -95,12 +87,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         super.onUpdateServer();
         chargeSlot.drainContainer();
         dischargeSlot.fillContainerOrConvert();
-        if (!energyContainer.isEmpty() && MekanismUtils.canFunction(this)) {
-            ConfigInfo info = configComponent.getConfig(TransmissionType.ENERGY);
-            if (info != null && info.isEjecting()) {
-                CableUtils.emit(info.getAllOutputtingSides(), energyContainer, this, tier.getOutput());
-            }
-        }
         float newScale = MekanismUtils.getScale(prevScale, energyContainer);
         if (newScale != prevScale) {
             prevScale = newScale;
@@ -111,21 +97,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
-    }
-
-    @Override
-    public TileComponentEjector getEjector() {
-        return ejectorComponent;
-    }
-
-    @Override
-    public TileComponentConfig getConfig() {
-        return configComponent;
-    }
-
-    @Override
-    public Direction getOrientation() {
-        return getDirection();
     }
 
     @Override

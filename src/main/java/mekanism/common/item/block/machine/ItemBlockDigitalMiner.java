@@ -20,14 +20,14 @@ public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSust
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getWorld();
-        BlockPos placePos = context.getPos();
+        World world = context.getLevel();
+        BlockPos placePos = context.getClickedPos();
         for (int xPos = -1; xPos <= 1; xPos++) {
             for (int yPos = 0; yPos <= 1; yPos++) {
                 for (int zPos = -1; zPos <= 1; zPos++) {
-                    BlockPos pos = placePos.add(xPos, yPos, zPos);
+                    BlockPos pos = placePos.offset(xPos, yPos, zPos);
                     if (!WorldUtils.isValidReplaceableBlock(world, pos)) {
-                        // If it won't fit then fail
+                        // If it doesn't fit then fail
                         return false;
                     }
                 }

@@ -30,16 +30,16 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
 
     @Override
     public void render(EntityBabyEnderman enderman, float entityYaw, float partialTicks, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int packedLightIn) {
-        ModelBabyEnderman model = getEntityModel();
-        model.isCarrying = enderman.getHeldBlockState() != null;
-        model.isAttacking = enderman.isScreaming();
+        ModelBabyEnderman model = getModel();
+        model.carrying = enderman.getCarriedBlock() != null;
+        model.creepy = enderman.isCreepy();
         super.render(enderman, entityYaw, partialTicks, matrix, renderer, packedLightIn);
     }
 
     @Nonnull
     @Override
     public Vector3d getRenderOffset(EntityBabyEnderman enderman, float partialTicks) {
-        if (enderman.isScreaming()) {
+        if (enderman.isCreepy()) {
             return new Vector3d(this.rnd.nextGaussian() * 0.02, 0, this.rnd.nextGaussian() * 0.02);
         }
         return super.getRenderOffset(enderman, partialTicks);
@@ -47,7 +47,7 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
 
     @Nonnull
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull EntityBabyEnderman enderman) {
+    public ResourceLocation getTextureLocation(@Nonnull EntityBabyEnderman enderman) {
         return ENDERMAN_TEXTURES;
     }
 }

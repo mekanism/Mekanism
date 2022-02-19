@@ -5,16 +5,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.recipe.BaseRecipeProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 @ParametersAreNonnullByDefault
 public class DefenseRecipeProvider extends BaseRecipeProvider {
 
-    public DefenseRecipeProvider(DataGenerator gen) {
-        super(gen, MekanismDefense.MODID);
+    public DefenseRecipeProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
+        super(gen, existingFileHelper, MekanismDefense.MODID);
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        super.registerRecipes(consumer);
+    protected void addRecipes(Consumer<IFinishedRecipe> consumer) {
     }
 }

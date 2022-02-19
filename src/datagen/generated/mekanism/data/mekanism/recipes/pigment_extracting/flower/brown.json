@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cocoa_beans"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:brown",
+    "amount": 768
+  }
+}

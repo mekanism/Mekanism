@@ -16,10 +16,10 @@ public abstract class BaseEntityLootTables extends EntityLootTables {
     protected abstract void addTables();
 
     @Override
-    protected void registerLootTable(@Nonnull EntityType<?> type, @Nonnull LootTable.Builder table) {
+    protected void add(@Nonnull EntityType<?> type, @Nonnull LootTable.Builder table) {
         //Overwrite the core register method to add to our list of known entity types
         //Note: This isn't the actual core method as that one takes a ResourceLocation, but all our things wil pass through this one
-        super.registerLootTable(type, table);
+        super.add(type, table);
         knownEntityTypes.add(type);
     }
 
@@ -29,7 +29,7 @@ public abstract class BaseEntityLootTables extends EntityLootTables {
         return knownEntityTypes;
     }
 
-    protected void registerLootTable(@Nonnull IEntityTypeProvider typeProvider, @Nonnull LootTable.Builder table) {
-        registerLootTable(typeProvider.getEntityType(), table);
+    protected void add(@Nonnull IEntityTypeProvider typeProvider, @Nonnull LootTable.Builder table) {
+        add(typeProvider.getEntityType(), table);
     }
 }

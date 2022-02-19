@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:slabs/plastic/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:brown_plastic_transparent_slab"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:brown"
+  },
+  "output": {
+    "item": "mekanismadditions:brown_plastic_transparent_slab"
+  }
+}

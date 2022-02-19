@@ -19,10 +19,10 @@ public class ResizableSphereReplaceFeature extends Feature<ResizableSphereReplac
     }
 
     @Override
-    public boolean generate(@Nonnull ISeedReader reader, @Nonnull ChunkGenerator generator, @Nonnull Random rand, @Nonnull BlockPos pos,
+    public boolean place(@Nonnull ISeedReader reader, @Nonnull ChunkGenerator generator, @Nonnull Random rand, @Nonnull BlockPos pos,
           @Nonnull ResizableSphereReplaceConfig config) {
         boolean flag = false;
-        if (reader.getFluidState(pos).isTagged(FluidTags.WATER)) {
+        if (reader.getFluidState(pos).is(FluidTags.WATER)) {
             int radius = config.getRadius(rand);
             int ySize = config.ySize.getAsInt();
             for (int j = pos.getX() - radius; j <= pos.getX() + radius; ++j) {
@@ -34,8 +34,8 @@ public class ResizableSphereReplaceFeature extends Feature<ResizableSphereReplac
                             BlockPos blockpos = new BlockPos(j, j1, k);
                             Block block = reader.getBlockState(blockpos).getBlock();
                             for (BlockState blockstate : config.targets) {
-                                if (blockstate.isIn(block)) {
-                                    reader.setBlockState(blockpos, config.state, 2);
+                                if (blockstate.is(block)) {
+                                    reader.setBlock(blockpos, config.state, 2);
                                     flag = true;
                                     break;
                                 }

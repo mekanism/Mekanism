@@ -8,10 +8,9 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiMergedChemicalBar;
 import mekanism.client.gui.element.button.GuiGasMode;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tier.ChemicalTankTier;
@@ -28,8 +27,10 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addButton(GuiSideHolder.armorHolder(this));
+        super.addGuiElements();
         addButton(new GuiMergedChemicalBar<>(this, tile, tile.getChemicalTank(), 42, 16, 116, 10, true));
         addButton(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
             List<ITextComponent> ret = new ArrayList<>();
@@ -50,9 +51,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             }
             return ret;
         }));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiGasMode(this, guiLeft + 159, guiTop + 72, true, () -> tile.dumping, tile.getPos(), 0));
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.dumping, tile.getBlockPos(), 0));
     }
 
     private void addStored(List<ITextComponent> ret, IChemicalTank<?, ?> tank, ILangEntry langKey) {
@@ -68,7 +67,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

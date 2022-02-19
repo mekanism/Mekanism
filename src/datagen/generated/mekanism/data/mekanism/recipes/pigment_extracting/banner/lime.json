@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:lime_banner"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 64
+  }
+}

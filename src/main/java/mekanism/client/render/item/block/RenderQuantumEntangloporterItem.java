@@ -14,13 +14,13 @@ public class RenderQuantumEntangloporterItem extends ItemStackTileEntityRenderer
     private static final ModelQuantumEntangloporter quantumEntangloporter = new ModelQuantumEntangloporter();
 
     @Override
-    public void func_239207_a_(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        matrix.push();
+    public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
-        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
         //TODO: Try to get the main part rendering based on the json model instead
-        quantumEntangloporter.render(matrix, renderer, light, overlayLight, true, stack.hasEffect());
-        matrix.pop();
+        quantumEntangloporter.render(matrix, renderer, light, overlayLight, true, stack.hasFoil());
+        matrix.popPose();
     }
 }

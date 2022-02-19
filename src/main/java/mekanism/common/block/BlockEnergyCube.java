@@ -45,54 +45,54 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
 
     static {
         VoxelShape frame = VoxelShapeUtils.combine(
-              makeCuboidShape(0, 0, 0, 3, 3, 16),
-              makeCuboidShape(0, 3, 0, 3, 16, 3),
-              makeCuboidShape(0, 3, 13, 3, 16, 16),
-              makeCuboidShape(0, 13, 3, 3, 16, 13),
-              makeCuboidShape(3, 0, 0, 16, 3, 3),
-              makeCuboidShape(3, 0, 13, 16, 3, 16),
-              makeCuboidShape(3, 13, 0, 16, 16, 3),
-              makeCuboidShape(3, 13, 13, 16, 16, 16),
-              makeCuboidShape(13, 0, 3, 16, 3, 13),
-              makeCuboidShape(13, 3, 0, 16, 13, 3),
-              makeCuboidShape(13, 3, 13, 16, 13, 16),
-              makeCuboidShape(13, 13, 3, 16, 16, 13),
-              makeCuboidShape(12.5, 14.9, 7.5, 13.5, 15.9, 8.5),//ledTop1
-              makeCuboidShape(2.5, 14.9, 7.5, 3.5, 15.9, 8.5),//ledTop2
-              makeCuboidShape(12.5, 7.5, 0.1, 13.5, 8.5, 1.1),//ledBack1
-              makeCuboidShape(2.5, 7.5, 0.1, 3.5, 8.5, 1.1),//ledBack2
-              makeCuboidShape(2.5, 0.1, 7.5, 3.5, 1.1, 8.5),//ledBottom2
-              makeCuboidShape(12.5, 0.1, 7.5, 13.5, 1.1, 8.5),//ledBottom1
-              makeCuboidShape(12.5, 7.5, 14.9, 13.5, 8.5, 15.9),//ledFront1
-              makeCuboidShape(2.5, 7.5, 14.9, 3.5, 8.5, 15.9),//ledFront2
-              makeCuboidShape(0.1, 7.5, 2.5, 1.1, 8.5, 3.5),//ledRight2
-              makeCuboidShape(0.1, 7.5, 12.5, 1.1, 8.5, 13.5),//ledRight1
-              makeCuboidShape(14.9, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
-              makeCuboidShape(14.9, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
+              box(0, 0, 0, 3, 3, 16),
+              box(0, 3, 0, 3, 16, 3),
+              box(0, 3, 13, 3, 16, 16),
+              box(0, 13, 3, 3, 16, 13),
+              box(3, 0, 0, 16, 3, 3),
+              box(3, 0, 13, 16, 3, 16),
+              box(3, 13, 0, 16, 16, 3),
+              box(3, 13, 13, 16, 16, 16),
+              box(13, 0, 3, 16, 3, 13),
+              box(13, 3, 0, 16, 13, 3),
+              box(13, 3, 13, 16, 13, 16),
+              box(13, 13, 3, 16, 16, 13),
+              box(12.5, 14.9, 7.5, 13.5, 15.9, 8.5),//ledTop1
+              box(2.5, 14.9, 7.5, 3.5, 15.9, 8.5),//ledTop2
+              box(12.5, 7.5, 0.1, 13.5, 8.5, 1.1),//ledBack1
+              box(2.5, 7.5, 0.1, 3.5, 8.5, 1.1),//ledBack2
+              box(2.5, 0.1, 7.5, 3.5, 1.1, 8.5),//ledBottom2
+              box(12.5, 0.1, 7.5, 13.5, 1.1, 8.5),//ledBottom1
+              box(12.5, 7.5, 14.9, 13.5, 8.5, 15.9),//ledFront1
+              box(2.5, 7.5, 14.9, 3.5, 8.5, 15.9),//ledFront2
+              box(0.1, 7.5, 2.5, 1.1, 8.5, 3.5),//ledRight2
+              box(0.1, 7.5, 12.5, 1.1, 8.5, 13.5),//ledRight1
+              box(14.9, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
+              box(14.9, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
         );
         VoxelShape frontPanel = VoxelShapeUtils.combine(
-              makeCuboidShape(3, 5, 14, 13, 11, 15),//connectorFrontToggle
-              makeCuboidShape(4, 4, 15, 12, 12, 16)//portFrontToggle
+              box(3, 5, 14, 13, 11, 15),//connectorFrontToggle
+              box(4, 4, 15, 12, 12, 16)//portFrontToggle
         );
         VoxelShape rightPanel = VoxelShapeUtils.combine(
-              makeCuboidShape(1, 5, 3, 2, 11, 13),//connectorRightToggle
-              makeCuboidShape(0, 4, 4, 1, 12, 12)//portRightToggle
+              box(1, 5, 3, 2, 11, 13),//connectorRightToggle
+              box(0, 4, 4, 1, 12, 12)//portRightToggle
         );
         VoxelShape leftPanel = VoxelShapeUtils.combine(
-              makeCuboidShape(14, 5, 3, 15, 11, 13),//connectorLeftToggle
-              makeCuboidShape(15, 4, 4, 16, 12, 12)//portLeftToggle
+              box(14, 5, 3, 15, 11, 13),//connectorLeftToggle
+              box(15, 4, 4, 16, 12, 12)//portLeftToggle
         );
         VoxelShape backPanel = VoxelShapeUtils.combine(
-              makeCuboidShape(3, 5, 1, 13, 11, 2),//connectorBackToggle
-              makeCuboidShape(4, 4, 0, 12, 12, 1)//portBackToggle
+              box(3, 5, 1, 13, 11, 2),//connectorBackToggle
+              box(4, 4, 0, 12, 12, 1)//portBackToggle
         );
         VoxelShape topPanel = VoxelShapeUtils.combine(
-              makeCuboidShape(3, 14, 5, 13, 15, 11),//connectorTopToggle
-              makeCuboidShape(4, 15, 4, 12, 16, 12)//portTopToggle
+              box(3, 14, 5, 13, 15, 11),//connectorTopToggle
+              box(4, 15, 4, 12, 16, 12)//portTopToggle
         );
         VoxelShape bottomPanel = VoxelShapeUtils.combine(
-              makeCuboidShape(3, 1, 5, 13, 2, 11),//connectorBottomToggle
-              makeCuboidShape(4, 0, 4, 12, 1, 12)//portBottomToggle
+              box(3, 1, 5, 13, 2, 11),//connectorBottomToggle
+              box(4, 0, 4, 12, 1, 12)//portBottomToggle
         );
         VoxelShape frameRotated = VoxelShapeUtils.rotate(frame, Rotation.CLOCKWISE_90);
         VoxelShape topRotated = VoxelShapeUtils.rotate(topPanel, Rotation.CLOCKWISE_90);
@@ -140,7 +140,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     public BlockEnergyCube(Machine<TileEntityEnergyCube> type) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
         // this may change based on what sides are enabled. Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(2, 2.4F).setRequiresTool().variableOpacity());
+        super(type, AbstractBlock.Properties.of(Material.METAL).strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape());
     }
 
     @Override
@@ -154,7 +154,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
                     if (capability.isPresent()) {
                         IStrictEnergyHandler energyHandlerItem = capability.get();
                         if (energyHandlerItem.getEnergyContainerCount() > 0) {
-                            //Validate something didn't go terribly wrong and we actually do have the container we expect to have
+                            //Validate something didn't go terribly wrong, and we actually do have the container we expect to have
                             energyConfig.fill(energyHandlerItem.getEnergy(0).isZero() ? DataType.INPUT : DataType.OUTPUT);
                         }
                     }

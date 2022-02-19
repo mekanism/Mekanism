@@ -63,7 +63,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default this returns {@link Long#MAX_VALUE} so as to not actually limit the tank's rate. By default this is also ignored for direct setting of the
+     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
      * stack/stack size
      */
     protected long getRate(@Nullable AutomationType automationType) {
@@ -79,7 +79,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     private void setStack(STACK stack, boolean validateStack) {
         if (stack.isEmpty()) {
             if (stored.isEmpty()) {
-                //If we are already empty just exit, so as to not fire onContentsChanged
+                //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
             stored = getEmptyStack();
@@ -96,7 +96,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     @Override
     public STACK insert(@Nonnull STACK stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getType(), automationType)) {
-            //"Fail quick" if the given stack is empty or we can never insert the chemical or currently are unable to insert it
+            //"Fail quick" if the given stack is empty, or we can never insert the chemical or currently are unable to insert it
             return stack;
         }
         long needed = Math.min(getRate(automationType), getNeeded());
@@ -173,7 +173,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             amount = maxStackSize;
         }
         if (getStored() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         stored.setAmount(amount);
@@ -263,7 +263,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public ChemicalAttributeValidator getAttributeValidator() {
-        return attributeValidator != null ? attributeValidator : IChemicalTank.super.getAttributeValidator();
+        return attributeValidator == null ? IChemicalTank.super.getAttributeValidator() : attributeValidator;
     }
 
     /**

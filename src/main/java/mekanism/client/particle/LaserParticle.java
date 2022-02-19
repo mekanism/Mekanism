@@ -30,20 +30,20 @@ public class LaserParticle extends SpriteTexturedParticle {
 
     private static final IParticleRenderType LASER_TYPE = new IParticleRenderType() {
         @Override
-        public void beginRender(BufferBuilder buffer, TextureManager manager) {
+        public void begin(BufferBuilder buffer, TextureManager manager) {
             //Copy of PARTICLE_SHEET_TRANSLUCENT but with cull disabled
             RenderSystem.depthMask(true);
-            manager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
+            manager.bind(AtlasTexture.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
             RenderSystem.disableCull();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE);
         }
 
         @Override
-        public void finishRender(Tessellator tesselator) {
-            tesselator.draw();
+        public void end(Tessellator tesselator) {
+            tesselator.end();
         }
 
         public String toString() {
@@ -57,43 +57,43 @@ public class LaserParticle extends SpriteTexturedParticle {
     private final Direction direction;
     private final float halfLength;
 
-    private LaserParticle(ClientWorld world, Pos3D start, Pos3D end, Direction dir, float energyScale) {
+    private LaserParticle(ClientWorld world, Vector3d start, Vector3d end, Direction dir, float energyScale) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
-        maxAge = 5;
-        particleRed = 1;
-        particleGreen = 0;
-        particleBlue = 0;
-        particleAlpha = 0.1F;
-        particleScale = energyScale;
-        halfLength = (float) (end.distance(start) / 2);
+        lifetime = 5;
+        rCol = 1;
+        gCol = 0;
+        bCol = 0;
+        alpha = 0.1F;
+        quadSize = energyScale;
+        halfLength = (float) (end.distanceTo(start) / 2);
         direction = dir;
         updateBoundingBox();
     }
 
     @Override
-    public void renderParticle(@Nonnull IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vector3d view = renderInfo.getProjectedView();
-        float newX = (float) (MathHelper.lerp(partialTicks, prevPosX, posX) - view.getX());
-        float newY = (float) (MathHelper.lerp(partialTicks, prevPosY, posY) - view.getY());
-        float newZ = (float) (MathHelper.lerp(partialTicks, prevPosZ, posZ) - view.getZ());
-        float uMin = getMinU();
-        float uMax = getMaxU();
-        float vMin = getMinV();
-        float vMax = getMaxV();
+    public void render(@Nonnull IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
+        Vector3d view = renderInfo.getPosition();
+        float newX = (float) (MathHelper.lerp(partialTicks, xo, x) - view.x());
+        float newY = (float) (MathHelper.lerp(partialTicks, yo, y) - view.y());
+        float newZ = (float) (MathHelper.lerp(partialTicks, zo, z) - view.z());
+        float uMin = getU0();
+        float uMax = getU1();
+        float vMin = getV0();
+        float vMax = getV1();
         Quaternion quaternion = direction.getRotation();
-        quaternion.multiply(Vector3f.YP.rotation(RADIAN_45));
+        quaternion.mul(Vector3f.YP.rotation(RADIAN_45));
         drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
         Quaternion quaternion2 = new Quaternion(quaternion);
-        quaternion2.multiply(Vector3f.YP.rotation(RADIAN_90));
+        quaternion2.mul(Vector3f.YP.rotation(RADIAN_90));
         drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
     }
 
     private Vector3f[] getResultVector(Quaternion quaternion, float newX, float newY, float newZ) {
         Vector3f[] resultVector = new Vector3f[]{
-              new Vector3f(-particleScale, -halfLength, 0),
-              new Vector3f(-particleScale, halfLength, 0),
-              new Vector3f(particleScale, halfLength, 0),
-              new Vector3f(particleScale, -halfLength, 0)
+              new Vector3f(-quadSize, -halfLength, 0),
+              new Vector3f(-quadSize, halfLength, 0),
+              new Vector3f(quadSize, halfLength, 0),
+              new Vector3f(quadSize, -halfLength, 0)
         };
         for (Vector3f vec : resultVector) {
             vec.transform(quaternion);
@@ -103,10 +103,10 @@ public class LaserParticle extends SpriteTexturedParticle {
     }
 
     private void drawComponent(IVertexBuilder vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax) {
-        vertexBuilder.pos(resultVector[0].getX(), resultVector[0].getY(), resultVector[0].getZ()).tex(uMax, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        vertexBuilder.pos(resultVector[1].getX(), resultVector[1].getY(), resultVector[1].getZ()).tex(uMax, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        vertexBuilder.pos(resultVector[2].getX(), resultVector[2].getY(), resultVector[2].getZ()).tex(uMin, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        vertexBuilder.pos(resultVector[3].getX(), resultVector[3].getY(), resultVector[3].getZ()).tex(uMin, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        vertexBuilder.vertex(resultVector[0].x(), resultVector[0].y(), resultVector[0].z()).uv(uMax, vMax).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
+        vertexBuilder.vertex(resultVector[1].x(), resultVector[1].y(), resultVector[1].z()).uv(uMax, vMin).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
+        vertexBuilder.vertex(resultVector[2].x(), resultVector[2].y(), resultVector[2].z()).uv(uMin, vMin).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
+        vertexBuilder.vertex(resultVector[3].x(), resultVector[3].y(), resultVector[3].z()).uv(uMin, vMax).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
     }
 
     @Nonnull
@@ -117,19 +117,19 @@ public class LaserParticle extends SpriteTexturedParticle {
 
     @Override
     protected void setSize(float particleWidth, float particleHeight) {
-        if (particleWidth != this.width || particleHeight != this.height) {
+        if (particleWidth != this.bbWidth || particleHeight != this.bbHeight) {
             //Note: We don't actually have width or height affect our bounding box
             //TODO: Eventually we maybe should have it affect it at least to an extent?
-            this.width = particleWidth;
-            this.height = particleHeight;
+            this.bbWidth = particleWidth;
+            this.bbHeight = particleHeight;
         }
     }
 
     @Override
-    public void setPosition(double x, double y, double z) {
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
+    public void setPos(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
         if (direction != null) {
             //Direction can be null when the super constructor is calling this method
             updateBoundingBox();
@@ -137,19 +137,19 @@ public class LaserParticle extends SpriteTexturedParticle {
     }
 
     private void updateBoundingBox() {
-        float halfDiameter = particleScale / 2;
+        float halfDiameter = quadSize / 2;
         switch (direction) {
             case DOWN:
             case UP:
-                setBoundingBox(new AxisAlignedBB(posX - halfDiameter, posY - halfLength, posZ - halfDiameter, posX + halfDiameter, posY + halfLength, posZ + halfDiameter));
+                setBoundingBox(new AxisAlignedBB(x - halfDiameter, y - halfLength, z - halfDiameter, x + halfDiameter, y + halfLength, z + halfDiameter));
                 break;
             case NORTH:
             case SOUTH:
-                setBoundingBox(new AxisAlignedBB(posX - halfDiameter, posY - halfDiameter, posZ - halfLength, posX + halfDiameter, posY + halfDiameter, posZ + halfLength));
+                setBoundingBox(new AxisAlignedBB(x - halfDiameter, y - halfDiameter, z - halfLength, x + halfDiameter, y + halfDiameter, z + halfLength));
                 break;
             case WEST:
             case EAST:
-                setBoundingBox(new AxisAlignedBB(posX - halfLength, posY - halfDiameter, posZ - halfDiameter, posX + halfLength, posY + halfDiameter, posZ + halfDiameter));
+                setBoundingBox(new AxisAlignedBB(x - halfLength, y - halfDiameter, z - halfDiameter, x + halfLength, y + halfDiameter, z + halfDiameter));
                 break;
         }
     }
@@ -163,11 +163,11 @@ public class LaserParticle extends SpriteTexturedParticle {
         }
 
         @Override
-        public LaserParticle makeParticle(LaserParticleData data, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public LaserParticle createParticle(LaserParticleData data, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             Pos3D start = new Pos3D(x, y, z);
             Pos3D end = start.translate(data.direction, data.distance);
             LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction, data.energyScale);
-            particleLaser.selectSpriteRandomly(this.spriteSet);
+            particleLaser.pickSprite(this.spriteSet);
             return particleLaser;
         }
     }

@@ -19,7 +19,6 @@ public class GuiGraph extends GuiTexturedElement {
     private static final int TEXTURE_WIDTH = 3;
     private static final int TEXTURE_HEIGHT = 2;
 
-    private final GuiInnerScreen innerScreen;
     private final LongList graphData = new LongArrayList();
     private final GraphDataHandler dataHandler;
 
@@ -28,7 +27,6 @@ public class GuiGraph extends GuiTexturedElement {
 
     public GuiGraph(IGuiWrapper gui, int x, int y, int width, int height, GraphDataHandler handler) {
         super(MekanismUtils.getResource(ResourceType.GUI, "graph.png"), gui, x, y, width, height);
-        innerScreen = new GuiInnerScreen(gui, x - 1, y - 1, width + 2, height + 2);
         dataHandler = handler;
     }
 
@@ -42,7 +40,7 @@ public class GuiGraph extends GuiTexturedElement {
     }
 
     public void addData(long data) {
-        if (graphData.size() == width) {
+        if (graphData.size() == width - 2) {
             graphData.removeLong(0);
         }
 
@@ -60,10 +58,13 @@ public class GuiGraph extends GuiTexturedElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw Black and border
-        innerScreen.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        minecraft.textureManager.bind(getResource());
         //Draw the graph
         int size = graphData.size();
+        int x = this.x + 1;
+        int y = this.y + 1;
+        int height = this.height - 2;
         for (int i = 0; i < size; i++) {
             long data = Math.min(currentScale, graphData.getLong(i));
             int relativeHeight = (int) (data * height / (double) currentScale);
@@ -93,6 +94,7 @@ public class GuiGraph extends GuiTexturedElement {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         int hoverIndex = mouseX - relativeX;
         if (hoverIndex >= 0 && hoverIndex < graphData.size()) {
             displayTooltip(matrix, dataHandler.getDataDisplay(graphData.getLong(hoverIndex)), mouseX, mouseY);

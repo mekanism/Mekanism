@@ -1,5 +1,6 @@
 package mekanism.common.content.blocktype;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
@@ -33,6 +34,11 @@ public enum FactoryType implements IHasTranslationKey {
 
     public String getRegistryNameComponent() {
         return registryNameComponent;
+    }
+
+    public String getRegistryNameComponentCapitalized() {
+        String name = getRegistryNameComponent();
+        return name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
     }
 
     public FactoryMachine<?> getBaseMachine() {

@@ -2,6 +2,7 @@ package mekanism.client.model;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.model.BlockModel;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -29,15 +30,26 @@ public class BaseModelCache {
     }
 
     protected OBJModelData registerOBJ(ResourceLocation rl) {
-        OBJModelData data = new OBJModelData(rl);
+        return register(rl, OBJModelData::new);
+    }
+
+    protected JSONModelData registerJSON(ResourceLocation rl) {
+        return register(rl, JSONModelData::new);
+    }
+
+    protected <DATA extends ModelData> DATA register(ResourceLocation rl, Function<ResourceLocation, DATA> creator) {
+        DATA data = creator.apply(rl);
         modelMap.put(rl, data);
         return data;
     }
 
-    protected JSONModelData registerJSON(ResourceLocation rl) {
-        JSONModelData data = new JSONModelData(rl);
-        modelMap.put(rl, data);
-        return data;
+    public static IBakedModel getBakedModel(ModelBakeEvent evt, ResourceLocation rl) {
+        IBakedModel bakedModel = evt.getModelRegistry().get(rl);
+        if (bakedModel == null) {
+            Mekanism.logger.error("Baked model doesn't exist: {}", rl.toString());
+            return evt.getModelManager().getMissingModel();
+        }
+        return bakedModel;
     }
 
     public static class ModelData {
@@ -69,7 +81,7 @@ public class BaseModelCache {
 
     public static class OBJModelData extends ModelData {
 
-        private OBJModelData(ResourceLocation rl) {
+        protected OBJModelData(ResourceLocation rl) {
             super(rl);
         }
 
@@ -91,12 +103,8 @@ public class BaseModelCache {
         @Override
         protected void reload(ModelBakeEvent evt) {
             super.reload(evt);
-            bakedModel = evt.getModelRegistry().get(rl);
-            if (bakedModel == null) {
-                Mekanism.logger.error("Baked model doesn't exist: {}", rl.toString());
-                bakedModel = evt.getModelManager().getMissingModel();
-            }
-            IUnbakedModel unbaked = evt.getModelLoader().getUnbakedModel(rl);
+            bakedModel = BaseModelCache.getBakedModel(evt, rl);
+            IUnbakedModel unbaked = evt.getModelLoader().getModel(rl);
             if (unbaked instanceof BlockModel) {
                 model = ((BlockModel) unbaked).customData.getCustomGeometry();
             }

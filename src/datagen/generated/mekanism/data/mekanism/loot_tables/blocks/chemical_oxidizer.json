@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:chemical_oxidizer"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

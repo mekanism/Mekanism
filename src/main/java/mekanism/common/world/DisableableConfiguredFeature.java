@@ -23,11 +23,11 @@ public class DisableableConfiguredFeature<FC extends IFeatureConfig, F extends F
     }
 
     @Override
-    public boolean generate(@Nonnull ISeedReader reader, @Nonnull ChunkGenerator chunkGenerator, @Nonnull Random rand, @Nonnull BlockPos pos) {
+    public boolean place(@Nonnull ISeedReader reader, @Nonnull ChunkGenerator chunkGenerator, @Nonnull Random rand, @Nonnull BlockPos pos) {
         if (enabledSupplier.getAsBoolean()) {
-            //If we are enabled and we are either not a retrogen feature or retrogen is enabled, generate
+            //If we are enabled, and we are either not a retrogen feature or retrogen is enabled, generate
             if (!retroGen || MekanismConfig.world.enableRegeneration.get()) {
-                return super.generate(reader, chunkGenerator, rand, pos);
+                return super.place(reader, chunkGenerator, rand, pos);
             }
         }
         return false;

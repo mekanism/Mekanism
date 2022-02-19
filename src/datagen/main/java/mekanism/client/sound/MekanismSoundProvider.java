@@ -12,7 +12,7 @@ public class MekanismSoundProvider extends BaseSoundProvider {
     }
 
     @Override
-    protected void addSoundEvents() {
+    public void registerSounds() {
         addTileSoundEvents();
         addItemSoundEvents();
         addHolidaySoundEvents();
@@ -44,8 +44,11 @@ public class MekanismSoundProvider extends BaseSoundProvider {
         addSoundEventWithSubtitle(MekanismSounds.ENERGIZED_SMELTER, Mekanism.rl(basePath + "energized_smelter"));
         addSoundEventWithSubtitle(MekanismSounds.ISOTOPIC_CENTRIFUGE, Mekanism.rl(basePath + "isotopic_centrifuge"));
         addSoundEventWithSubtitle(MekanismSounds.NUTRITIONAL_LIQUIFIER, Mekanism.rl(basePath + "nutritional_liquifier"));
-        addSoundEventWithSubtitle(MekanismSounds.INDUSTRIAL_ALARM, Mekanism.rl(basePath + "industrial_alarm"));
+        addSoundEventWithSubtitle(MekanismSounds.INDUSTRIAL_ALARM, Mekanism.rl(basePath + "industrial_alarm"), 128);
         addSoundEventWithSubtitle(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, Mekanism.rl(basePath + "antiprotonic_nucleosynthesizer"));
+        addSoundEventWithSubtitle(MekanismSounds.PAINTING_MACHINE, Mekanism.rl(basePath + "painting_machine"));
+        addSoundEventWithSubtitle(MekanismSounds.PIGMENT_EXTRACTOR, Mekanism.rl(basePath + "pigment_extractor"));
+        addSoundEventWithSubtitle(MekanismSounds.PIGMENT_MIXER, Mekanism.rl(basePath + "pigment_mixer"));
         addSoundEventWithSubtitle(MekanismSounds.SPS, Mekanism.rl(basePath + "sps"));
     }
 

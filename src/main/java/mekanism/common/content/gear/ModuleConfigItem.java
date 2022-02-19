@@ -1,52 +1,69 @@
 package mekanism.common.content.gear;
 
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import mekanism.api.math.MathUtils;
-import mekanism.api.text.IHasTextComponent;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.gear.config.IModuleConfigItem;
+import mekanism.api.gear.config.ModuleBooleanData;
+import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.text.ILangEntry;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
-public class ModuleConfigItem<TYPE> {
+public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
 
-    private final Module module;
+    private final Module<?> module;
     private final String name;
     private final ILangEntry description;
-    private final ConfigData<TYPE> data;
+    private final ModuleConfigData<TYPE> data;
 
-    public ModuleConfigItem(Module module, String name, ILangEntry description, ConfigData<TYPE> data, TYPE def) {
+    public ModuleConfigItem(Module<?> module, String name, ILangEntry description, ModuleConfigData<TYPE> data) {
         this.module = module;
         this.name = name;
         this.description = description;
         this.data = data;
-        data.set(def);
     }
 
-    public ILangEntry getDescription() {
-        return description;
+    public ITextComponent getDescription() {
+        return description.translate();
     }
 
-    public ConfigData<TYPE> getData() {
+    public ModuleConfigData<TYPE> getData() {
         return data;
     }
 
+    @Nonnull
+    @Override
     public TYPE get() {
         return data.get();
     }
 
-    public void set(TYPE type, Consumer<ItemStack> callback) {
-        data.set(type);
+    @Override
+    public void set(@Nonnull TYPE val) {
+        set(val, null);
+    }
+
+    public void set(@Nonnull TYPE val, @Nullable Runnable callback) {
+        Objects.requireNonNull(val, "Value cannot be null.");
+        data.set(val);
         // validity checks
-        for (Module m : Modules.loadAll(module.getContainer())) {
-            // disable other exclusive modules
-            if (name.equals(Module.ENABLED_KEY) && type == Boolean.TRUE && module.getData().isExclusive()) {
-                if (m.getData().isExclusive() && m.getData() != module.getData()) {
-                    m.setDisabledForce();
+        for (Module<?> m : ModuleHelper.INSTANCE.loadAll(module.getContainer())) {
+            boolean checkModeState;
+            if (name.equals(Module.ENABLED_KEY) && val == Boolean.TRUE) {
+                // disable other exclusive modules
+                if (module.getData().isExclusive()) {
+                    if (m.getData().isExclusive() && m.getData() != module.getData()) {
+                        m.setDisabledForce(callback != null);
+                    }
                 }
+                //If enabled state of the module changes, recheck about mode changes
+                checkModeState = true;
+            } else {
+                checkModeState = name.equals(Module.HANDLE_MODE_CHANGE_KEY) && val == Boolean.TRUE;
             }
             // turn off mode change handling for other modules
-            if (name.equals(Module.HANDLE_MODE_CHANGE_KEY) && type == Boolean.TRUE && module.handlesModeChange()) {
+            if (checkModeState && module.handlesModeChange()) {
                 if (m.handlesModeChange() && m.getData() != module.getData()) {
                     m.setModeHandlingDisabledForce();
                 }
@@ -66,30 +83,22 @@ public class ModuleConfigItem<TYPE> {
         data.write(name, tag);
     }
 
+    @Nonnull
+    @Override
     public String getName() {
         return name;
-    }
-
-    public interface ConfigData<TYPE> {
-
-        TYPE get();
-
-        void set(TYPE val);
-
-        void read(String name, CompoundNBT tag);
-
-        void write(String name, CompoundNBT tag);
     }
 
     public static class DisableableModuleConfigItem extends ModuleConfigItem<Boolean> {
 
         private final BooleanSupplier isConfigEnabled;
 
-        public DisableableModuleConfigItem(Module module, String name, ILangEntry description, boolean def, BooleanSupplier isConfigEnabled) {
-            super(module, name, description, new BooleanData(), def);
+        public DisableableModuleConfigItem(Module<?> module, String name, ILangEntry description, boolean def, BooleanSupplier isConfigEnabled) {
+            super(module, name, description, new ModuleBooleanData(def));
             this.isConfigEnabled = isConfigEnabled;
         }
 
+        @Nonnull
         @Override
         public Boolean get() {
             return isConfigEnabled() && super.get();
@@ -97,84 +106,6 @@ public class ModuleConfigItem<TYPE> {
 
         public boolean isConfigEnabled() {
             return isConfigEnabled.getAsBoolean();
-        }
-    }
-
-    public static class BooleanData implements ConfigData<Boolean> {
-
-        private boolean value;
-
-        public BooleanData() {
-            this(true);
-        }
-
-        public BooleanData(boolean def) {
-            value = def;
-        }
-
-        @Override
-        public Boolean get() {
-            return value;
-        }
-
-        @Override
-        public void set(Boolean val) {
-            value = val;
-        }
-
-        @Override
-        public void read(String name, CompoundNBT tag) {
-            value = tag.getBoolean(name);
-        }
-
-        @Override
-        public void write(String name, CompoundNBT tag) {
-            tag.putBoolean(name, value);
-        }
-    }
-
-    public static class EnumData<TYPE extends Enum<TYPE> & IHasTextComponent> implements ConfigData<TYPE> {
-
-        private final Class<TYPE> enumClass;
-        private final int selectableCount;
-        private TYPE value;
-
-        public EnumData(Class<TYPE> enumClass) {
-            this(enumClass, enumClass.getEnumConstants().length);
-        }
-
-        public EnumData(Class<TYPE> enumClass, int selectableCount) {
-            this.enumClass = enumClass;
-            this.selectableCount = selectableCount;
-        }
-
-        @Override
-        public TYPE get() {
-            return value;
-        }
-
-        @Override
-        public void set(TYPE val) {
-            value = val;
-        }
-
-        @Override
-        public void read(String name, CompoundNBT tag) {
-            int index = Math.min(tag.getInt(name), selectableCount - 1);
-            value = MathUtils.getByIndexMod(getEnums(), index);
-        }
-
-        @Override
-        public void write(String name, CompoundNBT tag) {
-            tag.putInt(name, value.ordinal());
-        }
-
-        public TYPE[] getEnums() {
-            return enumClass.getEnumConstants();
-        }
-
-        public int getSelectableCount() {
-            return selectableCount;
         }
     }
 }

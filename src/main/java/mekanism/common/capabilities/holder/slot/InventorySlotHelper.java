@@ -18,6 +18,10 @@ public class InventorySlotHelper {
         this.slotHolder = slotHolder;
     }
 
+    public static InventorySlotHelper readOnly() {
+        return new InventorySlotHelper(new ReadOnlyInventorySlotHolder());
+    }
+
     public static InventorySlotHelper forSide(Supplier<Direction> facingSupplier) {
         return forSide(facingSupplier, null, null);
     }
@@ -37,6 +41,8 @@ public class InventorySlotHelper {
         }
         if (slotHolder instanceof InventorySlotHolder) {
             ((InventorySlotHolder) slotHolder).addSlot(slot);
+        } else if (slotHolder instanceof ReadOnlyInventorySlotHolder) {
+            ((ReadOnlyInventorySlotHolder) slotHolder).addSlot(slot);
         } else if (slotHolder instanceof ConfigInventorySlotHolder) {
             ((ConfigInventorySlotHolder) slotHolder).addSlot(slot);
         } else {

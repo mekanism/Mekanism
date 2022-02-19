@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
-import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
@@ -22,25 +22,25 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "injecting/";
         //Brick -> clay ball
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Tags.Items.INGOTS_BRICK),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> clay
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Blocks.DIRT),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Blocks.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_clay"));
         //Gunpowder -> sulfur
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Tags.Items.GUNPOWDER),
               GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               MekanismItems.SULFUR_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
         //Terracotta -> clay
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Blocks.TERRACOTTA),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Blocks.CLAY)
@@ -69,7 +69,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addChemicalInjectorConcreteRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider powder, IItemProvider concrete, String name) {
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(powder),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(concrete)
@@ -95,7 +95,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addChemicalInjectorCoralRevivalRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider dead, IItemProvider living, int water) {
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(dead),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, water),
               new ItemStack(living)

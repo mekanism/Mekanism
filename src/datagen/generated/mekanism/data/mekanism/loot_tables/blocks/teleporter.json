@@ -13,6 +13,11 @@
               "source": "block_entity",
               "ops": [
                 {
+                  "source": "componentFrequency",
+                  "target": "mekData.componentFrequency",
+                  "op": "replace"
+                },
+                {
                   "source": "componentSecurity.owner",
                   "target": "mekData.owner",
                   "op": "replace"
@@ -46,11 +51,6 @@
             }
           ],
           "name": "mekanism:teleporter"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

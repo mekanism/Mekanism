@@ -38,7 +38,7 @@ public class ChemicalInfuserIRecipe extends ChemicalInfuserRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_INFUSER.getItemStack();
     }
 }

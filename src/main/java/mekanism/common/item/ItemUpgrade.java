@@ -4,8 +4,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
-import mekanism.client.MekKeyHandler;
-import mekanism.client.MekanismKeyHandler;
+import mekanism.client.key.MekKeyHandler;
+import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IUpgradeItem;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -29,17 +29,17 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     private final Upgrade upgrade;
 
     public ItemUpgrade(Upgrade type, Properties properties) {
-        super(properties.maxStackSize(type.getMax()).rarity(Rarity.UNCOMMON));
+        super(properties.stacksTo(type.getMax()).rarity(Rarity.UNCOMMON));
         upgrade = type;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(getUpgradeType(stack).getDescription());
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
+            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 
@@ -50,24 +50,26 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player != null && player.isSneaking()) {
-            World world = context.getWorld();
-            TileEntity tile = WorldUtils.getTileEntity(world, context.getPos());
+        if (player != null && player.isShiftKeyDown()) {
+            World world = context.getLevel();
+            TileEntity tile = WorldUtils.getTileEntity(world, context.getClickedPos());
             if (tile instanceof IUpgradeTile) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tile;
                 if (upgradeTile.supportsUpgrades()) {
                     TileComponentUpgrade component = upgradeTile.getComponent();
-                    ItemStack stack = context.getItem();
+                    ItemStack stack = context.getItemInHand();
                     Upgrade type = getUpgradeType(stack);
                     if (component.supports(type)) {
-                        if (!world.isRemote && component.getUpgrades(type) < type.getMax()) {
-                            component.addUpgrade(type);
-                            stack.shrink(1);
+                        if (!world.isClientSide) {
+                            int added = component.addUpgrades(type, stack.getCount());
+                            if (added > 0) {
+                                stack.shrink(added);
+                            }
                         }
+                        return ActionResultType.SUCCESS;
                     }
-                    return ActionResultType.SUCCESS;
                 }
             }
         }

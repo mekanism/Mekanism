@@ -37,7 +37,7 @@ public class CombinerIRecipe extends CombinerRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.COMBINER.getItemStack();
     }
 }

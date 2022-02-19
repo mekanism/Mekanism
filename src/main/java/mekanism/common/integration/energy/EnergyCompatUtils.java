@@ -61,7 +61,7 @@ public class EnergyCompatUtils {
     }
 
     private static boolean isTileValid(@Nullable TileEntity tile) {
-        return tile != null && !tile.isRemoved() && tile.hasWorld();
+        return tile != null && !tile.isRemoved() && tile.hasLevel();
     }
 
     public static boolean hasStrictEnergyHandler(@Nonnull ItemStack stack) {
@@ -132,11 +132,11 @@ public class EnergyCompatUtils {
     }
 
     /**
-     * Whether or not IC2 power should be used, taking into account whether or not it is installed or another mod is providing its API.
+     * Whether IC2 power should be used, taking into account whether it is installed or another mod is providing its API.
      *
      * @return if IC2 power should be used
      */
-    private static boolean useIC2() {
+    public static boolean useIC2() {
         //TODO: IC2
         return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.get();
     }

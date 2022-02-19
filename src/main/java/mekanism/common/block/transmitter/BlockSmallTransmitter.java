@@ -14,18 +14,18 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
     public static final VoxelShape center;
 
     static {
-        VoxelShapeUtils.setShape(makeCuboidShape(5, 0, 5, 11, 5, 11), SIDES, true);
+        VoxelShapeUtils.setShape(box(5, 0, 5, 11, 5, 11), SIDES, true);
         VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(5, 4, 5, 11, 5, 11),
-              makeCuboidShape(6, 2, 6, 10, 4, 10),
-              makeCuboidShape(4, 0, 4, 12, 2, 12)
+              box(5, 4, 5, 11, 5, 11),
+              box(6, 2, 6, 10, 4, 10),
+              box(4, 0, 4, 12, 2, 12)
         ), SIDES_PULL, true);
         VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(5, 3, 5, 11, 5, 11),
-              makeCuboidShape(6, 1, 6, 10, 3, 10),
-              makeCuboidShape(7, 0, 7, 9, 1, 9)
+              box(5, 3, 5, 11, 5, 11),
+              box(6, 1, 6, 10, 3, 10),
+              box(7, 0, 7, 9, 1, 9)
         ), SIDES_PUSH, true);
-        center = makeCuboidShape(5, 5, 5, 11, 11, 11);
+        center = box(5, 5, 5, 11, 11, 11);
     }
 
     public static VoxelShape getSideForType(ConnectionType type, Direction side) {

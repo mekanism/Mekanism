@@ -87,8 +87,15 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         return "an " + name;
     }
 
+    /**
+     * Reads a Chemical Stack Ingredient from a Packet Buffer.
+     *
+     * @param buffer Buffer to read from.
+     *
+     * @return Chemical Stack Ingredient.
+     */
     public final INGREDIENT read(PacketBuffer buffer) {
-        IngredientType type = buffer.readEnumValue(IngredientType.class);
+        IngredientType type = buffer.readEnum(IngredientType.class);
         if (type == IngredientType.SINGLE) {
             return stackToIngredient.apply(fromPacket.apply(buffer));
         } else if (type == IngredientType.TAGGED) {
@@ -101,6 +108,13 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         return createMulti(ingredients);
     }
 
+    /**
+     * Helper to deserialize a Json Object into a Chemical Stack Ingredient.
+     *
+     * @param json Json object to deserialize.
+     *
+     * @return chemical Stack Ingredient.
+     */
     public final INGREDIENT deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -135,15 +149,15 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
             }
             JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
-            if (!JSONUtils.isNumber(count)) {
+            if (!JSONUtils.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
             long amount = count.getAsJsonPrimitive().getAsLong();
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            ITag<CHEMICAL> tag = tags.getCollection().get(resourceLocation);
+            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(jsonObject, JsonConstants.TAG));
+            ITag<CHEMICAL> tag = tags.getCollection().getTag(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown " + name + " tag '" + resourceLocation + "'");
             }
@@ -152,10 +166,17 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or " + getNameWithPrefix() + ".");
     }
 
+    /**
+     * Combines multiple Chemical Stack Ingredients into a single Chemical Stack Ingredient.
+     *
+     * @param ingredients Ingredients to combine.
+     *
+     * @return Combined Chemical Stack Ingredient.
+     */
     @SafeVarargs
     public final INGREDIENT createMulti(INGREDIENT... ingredients) {
         if (ingredients.length == 0) {
-            //TODO: Throw error
+            throw new IllegalArgumentException("Cannot create a multi ingredient out of no ingredients.");
         } else if (ingredients.length == 1) {
             return ingredients[0];
         }
@@ -169,23 +190,30 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 cleanedIngredients.add(ingredient);
             }
         }
-        //There should be more than a single ingredient or we would have split out earlier
+        //There should be more than a single ingredient, or we would have split out earlier
         return multiCreator.apply(cleanedIngredients.toArray(arrayCreator.apply(0)));
     }
 
+    /**
+     * Helper to deserialize a Json Object into a Chemical Stack.
+     *
+     * @param json Json object to deserialize.
+     *
+     * @return Chemical Stack.
+     */
     public final STACK deserializeStack(@Nonnull JsonObject json) {
         if (!json.has(JsonConstants.AMOUNT)) {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
         JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!JSONUtils.isNumber(count)) {
+        if (!JSONUtils.isNumberValue(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
         long amount = count.getAsJsonPrimitive().getAsLong();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, info.getSerializationKey()));
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(json, info.getSerializationKey()));
         CHEMICAL chemical = fromRegistry.apply(resourceLocation);
         if (chemical.isEmptyType()) {
             throw new JsonSyntaxException("Invalid " + name + " type '" + resourceLocation + "'");
@@ -193,6 +221,13 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         return info.createStack(chemical, amount);
     }
 
+    /**
+     * Helper to serialize a Chemical Stack into a Json Object.
+     *
+     * @param stack Stack to serialize.
+     *
+     * @return Json representation.
+     */
     public final JsonObject serializeStack(STACK stack) {
         JsonObject json = new JsonObject();
         json.addProperty(info.getSerializationKey(), stack.getType().getRegistryName().toString());

@@ -15,18 +15,16 @@
       "type": "forge:and"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "ilikewood:jacaranda_post"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "ilikewood:stripped_jacaranda_post"
       }
-    }
-  ],
+    ]
+  },
   "mainOutput": {
     "item": "biomesoplenty:jacaranda_planks",
     "count": 3

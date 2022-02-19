@@ -19,21 +19,26 @@ public final class MultipartUtils {
 
     /* taken from MCMP */
     public static Pair<Vector3d, Vector3d> getRayTraceVectors(Entity entity) {
-        float pitch = entity.rotationPitch;
-        float yaw = entity.rotationYaw;
-        Vector3d start = new Vector3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
+        float pitch = entity.xRot;
+        float yaw = entity.yRot;
+        Vector3d start = new Vector3d(entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ());
         float f1 = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f3 = -MathHelper.cos(-pitch * 0.017453292F);
-        float f4 = MathHelper.sin(-pitch * 0.017453292F);
-        float f5 = f2 * f3;
-        float f6 = f1 * f3;
-        double d3 = 5.0D;
+        float lookY = MathHelper.sin(-pitch * 0.017453292F);
+        float lookX = f2 * f3;
+        float lookZ = f1 * f3;
+        double reach = 5.0D;
         if (entity instanceof PlayerEntity) {
-            d3 = ((PlayerEntity) entity).getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
+            reach = ((PlayerEntity) entity).getAttributeValue(ForgeMod.REACH_DISTANCE.get());
         }
-        Vector3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
+        Vector3d end = start.add(lookX * reach, lookY * reach, lookZ * reach);
         return Pair.of(start, end);
+    }
+
+    public static AdvancedRayTraceResult collisionRayTrace(Entity entity, BlockPos pos, Collection<VoxelShape> boxes) {
+        Pair<Vector3d, Vector3d> vecs = getRayTraceVectors(entity);
+        return collisionRayTrace(pos, vecs.getLeft(), vecs.getRight(), boxes);
     }
 
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vector3d start, Vector3d end, Collection<VoxelShape> boxes) {
@@ -42,7 +47,7 @@ public final class MultipartUtils {
         int i = -1;
         for (VoxelShape shape : boxes) {
             if (shape != null) {
-                BlockRayTraceResult result = shape.rayTrace(start, end, pos);
+                BlockRayTraceResult result = shape.clip(start, end, pos);
                 if (result != null) {
                     result.subHit = i;
                     result.hitInfo = null;
@@ -74,7 +79,7 @@ public final class MultipartUtils {
         }
 
         public double squareDistanceTo(Vector3d vec) {
-            return hit.getHitVec().squareDistanceTo(vec);
+            return hit.getLocation().distanceToSqr(vec);
         }
     }
 }

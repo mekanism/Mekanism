@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:glow_panels"
+      },
+      "without": {
+        "item": "mekanismadditions:purple_glow_panel"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:purple"
+  },
+  "output": {
+    "item": "mekanismadditions:purple_glow_panel"
+  }
+}

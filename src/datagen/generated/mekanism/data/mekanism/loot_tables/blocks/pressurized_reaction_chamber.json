@@ -67,11 +67,6 @@
           ],
           "name": "mekanism:pressurized_reaction_chamber"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

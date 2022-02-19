@@ -42,7 +42,7 @@ public class PressurizedReactionIRecipe extends PressurizedReactionRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.PRESSURIZED_REACTION_CHAMBER.getItemStack();
     }
 }

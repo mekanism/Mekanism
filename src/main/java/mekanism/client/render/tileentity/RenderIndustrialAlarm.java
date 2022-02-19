@@ -24,9 +24,9 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
     @Override
     protected void render(TileEntityIndustrialAlarm tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         performTranslations(tile, matrix);
-        float rotation = (tile.getWorld().getGameTime() + partialTick) * ROTATE_SPEED % 360;
+        float rotation = (tile.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360;
         model.render(matrix, renderer, light, overlayLight, Attribute.isActive(tile.getBlockState()), rotation, false, false);
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Override
@@ -35,36 +35,36 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityIndustrialAlarm tile) {
+    public boolean shouldRenderOffScreen(TileEntityIndustrialAlarm tile) {
         return true;
     }
 
     /**
-     * Make sure to call matrix.pop afterwards
+     * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
     private void performTranslations(TileEntityIndustrialAlarm tile, MatrixStack matrix) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(0.5, 0, 0.5);
         switch (tile.getDirection()) {
             case DOWN:
                 matrix.translate(0, 1, 0);
-                matrix.rotate(Vector3f.XP.rotationDegrees(180));
+                matrix.mulPose(Vector3f.XP.rotationDegrees(180));
                 break;
             case NORTH:
                 matrix.translate(0, 0.5, 0.5);
-                matrix.rotate(Vector3f.XN.rotationDegrees(90));
+                matrix.mulPose(Vector3f.XN.rotationDegrees(90));
                 break;
             case SOUTH:
                 matrix.translate(0, 0.5, -0.5);
-                matrix.rotate(Vector3f.XP.rotationDegrees(90));
+                matrix.mulPose(Vector3f.XP.rotationDegrees(90));
                 break;
             case EAST:
                 matrix.translate(-0.5, 0.5, 0);
-                matrix.rotate(Vector3f.ZN.rotationDegrees(90));
+                matrix.mulPose(Vector3f.ZN.rotationDegrees(90));
                 break;
             case WEST:
                 matrix.translate(0.5, 0.5, 0);
-                matrix.rotate(Vector3f.ZP.rotationDegrees(90));
+                matrix.mulPose(Vector3f.ZP.rotationDegrees(90));
                 break;
             default:
                 break;

@@ -29,7 +29,6 @@ public class TranslationButton extends MekanismButton {
             super.drawBackground(matrix, mouseX, mouseY, partialTicks);
             return;
         }
-
         MekanismRenderer.color(colorSupplier.get());
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         MekanismRenderer.resetColor();

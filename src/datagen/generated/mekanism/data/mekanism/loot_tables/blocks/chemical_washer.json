@@ -67,11 +67,6 @@
           ],
           "name": "mekanism:chemical_washer"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

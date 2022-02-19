@@ -52,7 +52,6 @@ public class ColorAtlas {
             loadColorAtlas(rl, count, ret);
         } catch (Exception e) {
             Mekanism.logger.error("Failed to load color atlas: {}", rl, e);
-            e.printStackTrace();
         }
         return ret;
     }

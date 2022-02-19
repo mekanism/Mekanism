@@ -58,6 +58,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "PigmentTanks",
+                  "target": "mekData.PigmentTanks",
+                  "op": "replace"
+                },
+                {
                   "source": "SlurryTanks",
                   "target": "mekData.SlurryTanks",
                   "op": "replace"
@@ -71,11 +76,6 @@
             }
           ],
           "name": "mekanism:chemical_dissolution_chamber"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

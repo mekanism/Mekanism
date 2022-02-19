@@ -5,7 +5,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.WrenchResult;
@@ -32,13 +31,14 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     }
 
     @Override
-    protected int getTileLight(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        int ambientLight = 0;
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+        int ambientLight = super.getLightValue(state, world, pos);
+        if (ambientLight == 15) {
+            //If we are already at the max light value don't bother looking up the tile to see if it has a fluid that gives off light
+            return ambientLight;
+        }
         TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
         if (tile != null) {
-            if (MekanismConfig.client.enableAmbientLighting.get() && tile.lightUpdate() && tile.getActive()) {
-                ambientLight = MekanismConfig.client.ambientLightingLevel.get();
-            }
             FluidStack fluid = tile.fluidTank.getFluid();
             if (!fluid.isEmpty()) {
                 FluidAttributes fluidAttributes = fluid.getFluid().getAttributes();
@@ -53,24 +53,22 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
         if (tile == null) {
             return ActionResultType.PASS;
-        }
-        if (world.isRemote) {
-            return genericClientActivated(player, hand, hit);
-        }
-        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        } else if (world.isClientSide) {
+            return genericClientActivated(player, hand);
+        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }
         //Handle filling fluid tank
-        if (!player.isSneaking()) {
+        if (!player.isShiftKeyDown()) {
             if (SecurityUtils.canAccess(player, tile)) {
-                ItemStack stack = player.getHeldItem(hand);
+                ItemStack stack = player.getItemInHand(hand);
                 if (!stack.isEmpty() && FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
-                    player.inventory.markDirty();
+                    player.inventory.setChanged();
                     return ActionResultType.SUCCESS;
                 }
             } else {

@@ -42,28 +42,28 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
     @Nonnull
     @Override
     default FluidState getFluid(@Nonnull BlockState state) {
-        if (state.get(BlockStateProperties.WATERLOGGED)) {
-            return Fluids.WATER.getDefaultState();
+        if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+            return Fluids.WATER.defaultFluidState();
         }
         return IStateFluidLoggable.super.getFluid(state);
     }
 
     @Override
-    default boolean canContainFluid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
-        return !state.get(BlockStateProperties.WATERLOGGED) && IStateFluidLoggable.super.canContainFluid(world, pos, state, fluid);
+    default boolean canPlaceLiquid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
+        return !state.getValue(BlockStateProperties.WATERLOGGED) && IStateFluidLoggable.super.canPlaceLiquid(world, pos, state, fluid);
     }
 
     @Override
-    default boolean receiveFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
-        Fluid fluid = fluidState.getFluid();
-        if (canContainFluid(world, pos, state, fluid)) {
-            if (!world.isRemote()) {
+    default boolean placeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
+        Fluid fluid = fluidState.getType();
+        if (canPlaceLiquid(world, pos, state, fluid)) {
+            if (!world.isClientSide()) {
                 if (fluid == Fluids.WATER) {
-                    world.setBlockState(pos, state.with(BlockStateProperties.WATERLOGGED, true), BlockFlags.DEFAULT);
+                    world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, true), BlockFlags.DEFAULT);
                 } else {
-                    world.setBlockState(pos, state.with(getFluidLoggedProperty(), getSupportedFluidPropertyIndex(fluid)), BlockFlags.DEFAULT);
+                    world.setBlock(pos, state.setValue(getFluidLoggedProperty(), getSupportedFluidPropertyIndex(fluid)), BlockFlags.DEFAULT);
                 }
-                world.getPendingFluidTicks().scheduleTick(pos, fluid, fluid.getTickRate(world));
+                world.getLiquidTicks().scheduleTick(pos, fluid, fluid.getTickDelay(world));
             }
             return true;
         }
@@ -72,11 +72,11 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
 
     @Nonnull
     @Override
-    default Fluid pickupFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
-        if (state.get(BlockStateProperties.WATERLOGGED)) {
-            world.setBlockState(pos, state.with(BlockStateProperties.WATERLOGGED, false), BlockFlags.DEFAULT);
+    default Fluid takeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+        if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+            world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, false), BlockFlags.DEFAULT);
             return Fluids.WATER;
         }
-        return IStateFluidLoggable.super.pickupFluid(world, pos, state);
+        return IStateFluidLoggable.super.takeLiquid(world, pos, state);
     }
 }

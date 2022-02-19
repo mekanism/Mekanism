@@ -15,6 +15,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea<GuiInnerScreen> {
 
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
+    public static int SCREEN_SIZE = 32;
 
     private Supplier<List<ITextComponent>> renderStrings;
     private Supplier<List<ITextComponent>> tooltipStrings;
@@ -26,7 +27,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     private float textScale = 1.0F;
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(SCREEN, gui, x, y, width, height, 32, 32);
+        super(SCREEN, gui, x, y, width, height, SCREEN_SIZE, SCREEN_SIZE);
     }
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<List<ITextComponent>> renderStrings) {
@@ -73,13 +74,13 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-
         if (renderStrings != null) {
             List<ITextComponent> list = renderStrings.get();
             float startY = relativeY + padding;
             if (centerY) {
-                int totalHeight = list.size() * 8 + spacing * (list.size() - 1);
-                startY = relativeY + getHeightRealms() / 2F - totalHeight / 2F;
+                int listSize = list.size();
+                int totalHeight = listSize * 8 + spacing * (listSize - 1);
+                startY = relativeY + (getHeight() - totalHeight) / 2F;
             }
             for (ITextComponent text : renderStrings.get()) {
                 drawText(matrix, text, relativeX + padding, startY);

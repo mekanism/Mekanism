@@ -28,21 +28,21 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     public GuiDictionary(DictionaryContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 5;
-        playerInventoryTitleY = ySize - 96;
-        titleY = 5;
+        imageHeight += 5;
+        inventoryLabelY = imageHeight - 96;
+        titleLabelY = 5;
         dynamicSlots = true;
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
-        addButton(scrollList = new GuiTextScrollList(this, 7, 29, 162, 42));
+        scrollList = addButton(new GuiTextScrollList(this, 7, 29, 162, 42));
         //TODO: Ideally we would eventually replace this with some sort of tab system as it would probably look better
         // and could then be limited to just the tags the target supports
         addButton(new GuiDropdown<>(this, 124, 73, 45, DictionaryTagType.class, () -> currentType, this::setCurrentType));
-        addButton(target = new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
+        target = addButton(new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
     }
 
     private void setCurrentType(DictionaryTagType type) {
@@ -59,19 +59,19 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismItems.DICTIONARY.getTextComponent(), titleY);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
-        drawTextScaledBound(matrix, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, playerInventoryTitleY, titleTextColor(), 45);
+        drawTitleText(matrix, MekanismItems.DICTIONARY.getTextComponent(), titleLabelY);
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawTextScaledBound(matrix, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, inventoryLabelY, titleTextColor(), 45);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && hasShiftDown() && !target.hasTarget()) {
-            for (int i = 0; i < container.inventorySlots.size(); i++) {
-                Slot slot = container.inventorySlots.get(i);
+            for (int i = 0; i < menu.slots.size(); i++) {
+                Slot slot = menu.slots.get(i);
                 if (isMouseOverSlot(slot, mouseX, mouseY)) {
-                    ItemStack stack = slot.getStack();
+                    ItemStack stack = slot.getItem();
                     if (stack.isEmpty()) {
                         break;
                     }

@@ -23,7 +23,7 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
      * Creates a capability resolver that strongly caches the result of the supplier. Persisting the calculated value through capability invalidation.
      */
     public static <T> BasicCapabilityResolver persistent(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
-        return create(supportedCapability, NonNullLazy.of(supplier));
+        return create(supportedCapability, supplier instanceof NonNullLazy ? supplier : NonNullLazy.of(supplier));
     }
 
     /**
@@ -50,7 +50,7 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
     @Override
     public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
         if (cachedCapability == null || !cachedCapability.isPresent()) {
-            //If the capability has not been retrieved yet or it is not valid then recreate it
+            //If the capability has not been retrieved yet, or it is not valid then recreate it
             cachedCapability = LazyOptional.of(supplier);
         }
         return cachedCapability.cast();

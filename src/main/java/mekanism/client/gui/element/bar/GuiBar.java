@@ -1,11 +1,14 @@
 package mekanism.client.gui.element.bar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -16,31 +19,67 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     public static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "base.png");
 
     private final INFO handler;
+    protected final boolean horizontal;
+    @Nullable
+    private BooleanSupplier warningSupplier;
 
-    public GuiBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height) {
+    public GuiBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height, boolean horizontal) {
         super(resource, gui, x, y, width + 2, height + 2);
         this.handler = handler;
+        this.horizontal = horizontal;
+    }
+
+    //TODO - WARNING SYSTEM: Hook up usage of warnings
+    public GuiBar<INFO> warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+        this.warningSupplier = gui().trackWarning(type, warningSupplier);
+        return this;
     }
 
     public INFO getHandler() {
         return handler;
     }
 
-    protected abstract void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks);
-
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         renderExtendedTexture(matrix, BAR, 2, 2);
+        boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
+        if (warning) {
+            //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
+            // we may as well show the background)
+            minecraft.textureManager.bind(GuiSlot.WARNING_BACKGROUND_TEXTURE);
+            blit(matrix, x + 1, y + 1, 0, 0, width - 2, height - 2, 256, 256);
+        }
+        //Render Contents
+        drawContentsChecked(matrix, mouseX, mouseY, partialTicks, handler.getLevel(), warning);
+    }
+
+    void drawContentsChecked(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         //If there are any contents render them
-        if (handler.getLevel() > 0) {
-            minecraft.textureManager.bindTexture(getResource());
-            renderBarOverlay(matrix, mouseX, mouseY, partialTicks);
+        if (handlerLevel > 0) {
+            minecraft.textureManager.bind(getResource());
+            renderBarOverlay(matrix, mouseX, mouseY, partialTicks, handlerLevel);
+            if (warning && handlerLevel == 1) {
+                //TODO - WARNING SYSTEM: Also decide if this should be using some check for when it is just close to max so that it is easily visible
+                minecraft.textureManager.bind(WARNING_TEXTURE);
+                //Note: We also start the drawing after half the dimension so that we are sure it will properly line up with
+                // the one drawn to the background if the contents of things are translucent
+                if (horizontal) {
+                    int halfHeight = (height - 2) / 2;
+                    blit(matrix, x + 1, y + 1 + halfHeight, 0, halfHeight, width - 2, halfHeight, 256, 256);
+                } else {//vertical
+                    int halfWidth = (width - 2) / 2;
+                    blit(matrix, x + 1 + halfWidth, y + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
+                }
+            }
         }
     }
 
+    protected abstract void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel);
+
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         ITextComponent tooltip = handler.getTooltip();
         if (tooltip != null) {
             displayTooltip(matrix, tooltip, mouseX, mouseY);

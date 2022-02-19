@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -57,6 +58,12 @@ public abstract class Frequency {
         return name;
     }
 
+    public final SecurityMode getSecurity() {
+        //TODO: Eventually we may want to allow for protected frequencies, at which point instead of
+        // storing a boolean publicFreq we would just store the security mode
+        return isPublic() ? SecurityMode.PUBLIC : SecurityMode.PRIVATE;
+    }
+
     public boolean isPublic() {
         return publicFreq;
     }
@@ -64,10 +71,6 @@ public abstract class Frequency {
     public Frequency setPublic(boolean isPublic) {
         publicFreq = isPublic;
         return this;
-    }
-
-    public boolean isPrivate() {
-        return !publicFreq;
     }
 
     public boolean isValid() {
@@ -95,12 +98,16 @@ public abstract class Frequency {
         return clientOwner;
     }
 
-    public void write(CompoundNBT nbtTags) {
+    public void writeComponentData(CompoundNBT nbtTags) {
         nbtTags.putString(NBTConstants.NAME, name);
         if (ownerUUID != null) {
-            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
         nbtTags.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
+    }
+
+    public void write(CompoundNBT nbtTags) {
+        writeComponentData(nbtTags);
     }
 
     protected void read(CompoundNBT nbtTags) {
@@ -111,21 +118,21 @@ public abstract class Frequency {
 
     public void write(PacketBuffer buffer) {
         getType().write(buffer);
-        buffer.writeString(name);
+        buffer.writeUtf(name);
         if (ownerUUID == null) {
             buffer.writeBoolean(false);
         } else {
             buffer.writeBoolean(true);
-            buffer.writeUniqueId(ownerUUID);
+            buffer.writeUUID(ownerUUID);
         }
-        buffer.writeString(MekanismUtils.getLastKnownUsername(ownerUUID));
+        buffer.writeUtf(MekanismUtils.getLastKnownUsername(ownerUUID));
         buffer.writeBoolean(publicFreq);
     }
 
     protected void read(PacketBuffer dataStream) {
         name = BasePacketHandler.readString(dataStream);
         if (dataStream.readBoolean()) {
-            ownerUUID = dataStream.readUniqueId();
+            ownerUUID = dataStream.readUUID();
         } else {
             ownerUUID = null;
         }
@@ -156,7 +163,7 @@ public abstract class Frequency {
     public boolean equals(Object obj) {
         if (obj instanceof Frequency) {
             Frequency other = (Frequency) obj;
-            return name.equals(other.name) && ownerUUID != null && ownerUUID.equals(other.ownerUUID) && publicFreq == other.publicFreq;
+            return publicFreq == other.publicFreq && ownerUUID != null && name.equals(other.name) && ownerUUID.equals(other.ownerUUID);
         }
         return false;
     }
@@ -172,6 +179,17 @@ public abstract class Frequency {
 
     public CompoundNBT serializeIdentity() {
         return frequencyType.getIdentitySerializer().serialize(getIdentity());
+    }
+
+    /**
+     * Like {@link #serializeIdentity()} except ensures the owner information is added if need be.
+     */
+    public CompoundNBT serializeIdentityWithOwner() {
+        CompoundNBT serializedIdentity = serializeIdentity();
+        if (!serializedIdentity.hasUUID(NBTConstants.OWNER_UUID) && ownerUUID != null) {
+            serializedIdentity.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
+        }
+        return serializedIdentity;
     }
 
     public static <FREQ extends Frequency> FREQ readFromPacket(PacketBuffer dataStream) {

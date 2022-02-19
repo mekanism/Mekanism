@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 
 public class TankCache extends MultiblockCache<TankMultiblockData> {
 
-    public ContainerEditMode editMode = ContainerEditMode.BOTH;
+    private ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     @Override
     public void merge(MultiblockCache<TankMultiblockData> mergeCache, List<ItemStack> rejectedItems) {

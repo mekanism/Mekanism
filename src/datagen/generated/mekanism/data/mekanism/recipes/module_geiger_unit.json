@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_geiger_unit"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:alloys/advanced"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "mekanism:geiger_counter"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    }
+  }
+}

@@ -1,31 +1,69 @@
 package mekanism.common.content.network.distribution;
 
+import java.util.Collection;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
-import net.minecraft.util.Direction;
 
-public class EnergySaveTarget extends Target<IEnergyContainer, FloatingLong, FloatingLong> {
+public class EnergySaveTarget extends Target<EnergySaveTarget.SaveHandler, FloatingLong, FloatingLong> {
 
-    private FloatingLong currentStored = FloatingLong.ZERO;
+    public EnergySaveTarget() {
+    }
 
-    @Override
-    protected void acceptAmount(IEnergyContainer container, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
-        amount = amount.min(container.getMaxEnergy().subtract(currentStored));
-        currentStored = currentStored.plusEqual(amount);
-        splitInfo.send(amount);
+    public EnergySaveTarget(Collection<EnergySaveTarget.SaveHandler> allHandlers) {
+        super(allHandlers);
+    }
+
+    public EnergySaveTarget(int expectedSize) {
+        super(expectedSize);
     }
 
     @Override
-    protected FloatingLong simulate(IEnergyContainer container, FloatingLong energyToSend) {
-        return energyToSend.copy().min(container.getMaxEnergy().subtract(currentStored));
+    protected void acceptAmount(EnergySaveTarget.SaveHandler handler, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
+        handler.acceptAmount(splitInfo, amount);
     }
 
-    public void save(Direction fakeDirection) {
-        IEnergyContainer container = handlers.get(fakeDirection);
-        if (container != null) {
-            container.setEnergy(currentStored);
+    @Override
+    protected FloatingLong simulate(EnergySaveTarget.SaveHandler handler, FloatingLong energyToSend) {
+        return handler.simulate(energyToSend);
+    }
+
+    public void save() {
+        for (SaveHandler handler : handlers) {
+            handler.save();
+        }
+    }
+
+    public void addDelegate(IEnergyContainer delegate) {
+        this.addHandler(new SaveHandler(delegate));
+    }
+
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    public static class SaveHandler {
+
+        private final IEnergyContainer delegate;
+        private FloatingLong currentStored = FloatingLong.ZERO;
+
+        public SaveHandler(IEnergyContainer delegate) {
+            this.delegate = delegate;
+        }
+
+        protected void acceptAmount(SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
+            amount = amount.min(delegate.getMaxEnergy().subtract(currentStored));
+            currentStored = currentStored.plusEqual(amount);
+            splitInfo.send(amount);
+        }
+
+        protected FloatingLong simulate(FloatingLong energyToSend) {
+            return energyToSend.copy().min(delegate.getMaxEnergy().subtract(currentStored));
+        }
+
+        protected void save() {
+            delegate.setEnergy(currentStored);
         }
     }
 }

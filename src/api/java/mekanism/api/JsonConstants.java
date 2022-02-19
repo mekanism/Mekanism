@@ -20,6 +20,8 @@ public class JsonConstants {
     public static final String PIGMENT = "pigment";
     public static final String SLURRY = "slurry";
     public static final String FLUID = "fluid";
+    public static final String BASE = "base";
+    public static final String WITHOUT = "without";
 
     //Recipes
     public static final String TYPE = "type";
@@ -34,6 +36,7 @@ public class JsonConstants {
     public static final String MAIN_INPUT = "mainInput";
     public static final String EXTRA_INPUT = "extraInput";
     public static final String ITEM_INPUT = "itemInput";
+    public static final String CHEMICAL_INPUT = "chemicalInput";
     public static final String INFUSION_INPUT = "infusionInput";
     public static final String GAS_INPUT = "gasInput";
     public static final String SLURRY_INPUT = "slurryInput";

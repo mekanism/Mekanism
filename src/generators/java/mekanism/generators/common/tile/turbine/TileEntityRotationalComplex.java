@@ -19,7 +19,7 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
         }
         super.setMultiblock(id);
         if (!isRemote()) {
-            TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), getPos().down());
+            TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getLevel(), getBlockPos().below());
             if (tile != null) {
                 tile.updateRotors();
             }

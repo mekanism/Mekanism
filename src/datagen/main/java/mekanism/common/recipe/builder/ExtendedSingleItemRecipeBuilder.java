@@ -26,7 +26,7 @@ public class ExtendedSingleItemRecipeBuilder extends BaseRecipeBuilder<ExtendedS
     }
 
     public static ExtendedSingleItemRecipeBuilder stonecutting(Ingredient ingredient, IItemProvider result, int count) {
-        return new ExtendedSingleItemRecipeBuilder(IRecipeSerializer.STONECUTTING, ingredient, result, count);
+        return new ExtendedSingleItemRecipeBuilder(IRecipeSerializer.STONECUTTER, ingredient, result, count);
     }
 
     @Override
@@ -41,9 +41,9 @@ public class ExtendedSingleItemRecipeBuilder extends BaseRecipeBuilder<ExtendedS
         }
 
         @Override
-        public void serialize(JsonObject json) {
-            super.serialize(json);
-            json.add(JsonConstants.INGREDIENT, ingredient.serialize());
+        public void serializeRecipeData(JsonObject json) {
+            super.serializeRecipeData(json);
+            json.add(JsonConstants.INGREDIENT, ingredient.toJson());
         }
 
         @Override

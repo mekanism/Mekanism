@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:redwood_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:redwood_planks",
+    "count": 5
+  }
+}

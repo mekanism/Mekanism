@@ -30,23 +30,23 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
      */
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null) {
             return ActionResultType.PASS;
         }
-        ItemStack stack = context.getItem();
+        ItemStack stack = context.getItemInHand();
         if (stack.isEmpty()) {
             return ActionResultType.FAIL;//WTF
         }
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         if (!WorldUtils.isValidReplaceableBlock(world, pos)) {
-            pos = pos.offset(context.getFace());
+            pos = pos.relative(context.getClickedFace());
         }
-        if (player.canPlayerEdit(pos, context.getFace(), stack)) {
+        if (player.mayUseItemAt(pos, context.getClickedFace(), stack)) {
             BlockItemUseContext blockItemUseContext = new BlockItemUseContext(context);
-            BlockState state = getStateForPlacement(blockItemUseContext);
+            BlockState state = getPlacementState(blockItemUseContext);
             if (state == null) {
                 return ActionResultType.FAIL;
             }
@@ -63,7 +63,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos())) {
+        if (WorldUtils.isValidReplaceableBlock(context.getLevel(), context.getClickedPos())) {
             return super.placeBlock(context, state);
         }
         return false;

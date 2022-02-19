@@ -40,6 +40,15 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         this.outputGas = outputGas;
     }
 
+    /**
+     * Creates a Pressurized Reaction recipe builder.
+     *
+     * @param inputSolid Item Input.
+     * @param inputFluid Fluid Input.
+     * @param inputGas   Gas Input.
+     * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+     * @param outputItem Item Output.
+     */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
           int duration, ItemStack outputItem) {
         if (outputItem.isEmpty()) {
@@ -49,6 +58,15 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, GasStack.EMPTY);
     }
 
+    /**
+     * Creates a Pressurized Reaction recipe builder.
+     *
+     * @param inputSolid Item Input.
+     * @param inputFluid Fluid Input.
+     * @param inputGas   Gas Input.
+     * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+     * @param outputGas  Gas Output.
+     */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
           GasStack outputGas) {
         if (outputGas.isEmpty()) {
@@ -58,6 +76,16 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, outputGas);
     }
 
+    /**
+     * Creates a Pressurized Reaction recipe builder.
+     *
+     * @param inputSolid Item Input.
+     * @param inputFluid Fluid Input.
+     * @param inputGas   Gas Input.
+     * @param duration   Base duration in ticks that this recipe takes to complete. Must be greater than zero.
+     * @param outputItem Item Output.
+     * @param outputGas  Gas Output.
+     */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
           ItemStack outputItem, GasStack outputGas) {
         if (outputItem.isEmpty() || outputGas.isEmpty()) {
@@ -73,6 +101,11 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         }
     }
 
+    /**
+     * Sets the "extra" energy required for this recipe.
+     *
+     * @param energyRequired How much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
+     */
     public PressurizedReactionRecipeBuilder energyRequired(FloatingLong energyRequired) {
         this.energyRequired = energyRequired;
         return this;
@@ -90,7 +123,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, inputSolid.serialize());
             json.add(JsonConstants.FLUID_INPUT, inputFluid.serialize());
             json.add(JsonConstants.GAS_INPUT, inputGas.serialize());

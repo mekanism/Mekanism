@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public interface IEnergyCompat {
 
     /**
-     * Whether or not this energy compat is actually enabled.
+     * Whether this energy compat is actually enabled.
      *
      * @return if this energy compat is enabled.
      */

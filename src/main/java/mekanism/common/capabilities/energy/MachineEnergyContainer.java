@@ -1,7 +1,6 @@
 package mekanism.common.capabilities.energy;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -13,6 +12,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 
@@ -33,7 +33,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
         Objects.requireNonNull(tile, "Tile cannot be null");
-        Block block = tile.getBlockType().getBlock();
+        Block block = tile.getBlockType();
         if (!Attribute.has(block, AttributeEnergy.class)) {
             throw new IllegalArgumentException("Block provider must be an electric block");
         }
@@ -89,15 +89,15 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     public void updateMaxEnergy() {
-        if (tile.supportsUpgrades() && tile.getSupportedUpgrade().contains(Upgrade.ENERGY)) {
+        if (tile.supportsUpgrade(Upgrade.ENERGY)) {
             setMaxEnergy(MekanismUtils.getMaxEnergy(tile, getBaseMaxEnergy()));
         }
     }
 
     public void updateEnergyPerTick() {
         if (tile.supportsUpgrades()) {
-            Set<Upgrade> supportedUpgrades = tile.getSupportedUpgrade();
-            if (supportedUpgrades.contains(Upgrade.ENERGY) || supportedUpgrades.contains(Upgrade.SPEED)) {
+            TileComponentUpgrade upgradeComponent = tile.getComponent();
+            if (upgradeComponent.supports(Upgrade.ENERGY) || upgradeComponent.supports(Upgrade.SPEED)) {
                 setEnergyPerTick(MekanismUtils.getEnergyPerTick(tile, getBaseEnergyPerTick()));
             }
         }

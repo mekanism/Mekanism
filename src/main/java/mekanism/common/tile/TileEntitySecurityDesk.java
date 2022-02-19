@@ -13,7 +13,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
-import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
@@ -25,8 +25,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -82,14 +83,14 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
      * Validates access for anyone who might be accessing a GUI that changed security modes
      */
     private void validateAccess() {
-        if (hasWorld()) {
+        if (hasLevel()) {
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
                 for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
-                    if (player.openContainer instanceof ISecurityContainer) {
-                        if (!SecurityUtils.canAccess(player, ((ISecurityContainer) player.openContainer).getSecurityObject())) {
+                    if (player.containerMenu instanceof ISecurityContainer) {
+                        if (!SecurityUtils.canAccess(player, ((ISecurityContainer) player.containerMenu).getSecurityObject())) {
                             //Boot any players out of the container if they no longer have access to viewing it
-                            player.closeScreen();
+                            player.closeContainer();
                         }
                     }
                 }
@@ -124,7 +125,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public void addTrusted(String name) {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
-            GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(name);
+            GameProfile profile = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(name);
             if (profile != null) {
                 frequency.addTrusted(profile.getId(), profile.getName());
                 markDirty(false);
@@ -133,39 +134,33 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         if (ownerUUID != null) {
-            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
         return nbtTags;
     }
 
     @Override
     public void onPlace() {
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        super.onPlace();
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
     }
 
     @Override
-    public void onBreak(BlockState oldState) {
-        World world = getWorld();
-        if (world != null) {
-            world.removeBlock(getPos().up(), false);
-            world.removeBlock(getPos(), false);
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null) {
+            level.removeBlock(getBlockPos().above(), false);
         }
-    }
-
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 2, 1));
     }
 
     @Nonnull
@@ -173,7 +168,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         if (ownerUUID != null) {
-            updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            updateTag.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
         }
         return updateTag;
@@ -188,5 +183,11 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public SecurityFrequency getFreq() {
         return getFrequency(FrequencyType.SECURITY);
+    }
+
+    @Override
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vector3i offset) {
+        //Don't allow proxying any capabilities by marking them all as disabled
+        return true;
     }
 }

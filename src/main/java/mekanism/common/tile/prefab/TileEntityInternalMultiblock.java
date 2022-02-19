@@ -31,7 +31,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         if (multiblockUUID != null) {
-            updateTag.putUniqueId(NBTConstants.INVENTORY_ID, multiblockUUID);
+            updateTag.putUUID(NBTConstants.INVENTORY_ID, multiblockUUID);
         }
         return updateTag;
     }

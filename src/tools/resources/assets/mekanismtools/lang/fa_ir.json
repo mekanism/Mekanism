@@ -1,1 +1,19 @@
-{}
+{
+  "item.mekanismtools.bronze_axe": "تبر برنزی",
+  "item.mekanismtools.bronze_boots": "کفش برنزی",
+  "item.mekanismtools.bronze_chestplate": "زره برنزی",
+  "item.mekanismtools.bronze_helmet": "کلاه برنزی",
+  "item.mekanismtools.bronze_hoe": "شخم برنزی",
+  "item.mekanismtools.bronze_leggings": "شلوار برنزی",
+  "item.mekanismtools.bronze_paxel": "وسیله چند کاره برنزی",
+  "item.mekanismtools.bronze_pickaxe": "کلنگ برنزی",
+  "item.mekanismtools.bronze_shield": "سپر برنزی",
+  "item.mekanismtools.bronze_shield.black": "سپر برنزی سیاه",
+  "item.mekanismtools.bronze_shield.blue": "سپر برنزی ابی",
+  "item.mekanismtools.bronze_shield.brown": "سپر برنزی قهوه ای",
+  "item.mekanismtools.bronze_shield.cyan": "سپر برنزی فیروزه ای",
+  "item.mekanismtools.bronze_shield.gray": "سپر برنزی خاکستری",
+  "item.mekanismtools.bronze_shield.green": "سپر برنزی سبز",
+  "item.mekanismtools.bronze_shield.light_blue": "سپر برنزی ابی روشن",
+  "item.mekanismtools.bronze_shield.light_gray": "سپر برنزی خاکستری روشن"
+}

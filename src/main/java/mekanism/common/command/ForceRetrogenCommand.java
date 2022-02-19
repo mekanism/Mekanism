@@ -25,17 +25,17 @@ public class ForceRetrogenCommand {
 
     static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("retrogen")
-              .requires(cs -> cs.hasPermissionLevel(2))
+              .requires(cs -> cs.hasPermission(2))
               .executes(ctx -> {
-                  ColumnPos pos = new ColumnPos(new BlockPos(ctx.getSource().getPos()));
+                  ColumnPos pos = new ColumnPos(new BlockPos(ctx.getSource().getPosition()));
                   return addChunksToRegen(ctx.getSource(), pos, pos);
               }).then(Commands.argument("from", ColumnPosArgument.columnPos())
                     .executes(ctx -> {
-                        ColumnPos from = ColumnPosArgument.fromBlockPos(ctx, "from");
+                        ColumnPos from = ColumnPosArgument.getColumnPos(ctx, "from");
                         return addChunksToRegen(ctx.getSource(), from, from);
                     }).then(Commands.argument("to", ColumnPosArgument.columnPos())
-                          .executes(ctx -> addChunksToRegen(ctx.getSource(), ColumnPosArgument.fromBlockPos(ctx, "from"),
-                                ColumnPosArgument.fromBlockPos(ctx, "to")))));
+                          .executes(ctx -> addChunksToRegen(ctx.getSource(), ColumnPosArgument.getColumnPos(ctx, "from"),
+                                ColumnPosArgument.getColumnPos(ctx, "to")))));
     }
 
     private static int addChunksToRegen(CommandSource source, ColumnPos start, ColumnPos end) throws CommandSyntaxException {
@@ -48,21 +48,21 @@ public class ForceRetrogenCommand {
         int zEnd = Math.max(start.z, end.z);
         //TODO: Switch this to something like !World.isValidXZPosition (issue is it is private)
         if (xStart < -30000000 || zStart < -30000000 || xEnd >= 30000000 || zEnd >= 30000000) {
-            throw BlockPosArgument.POS_OUT_OF_WORLD.create();
+            throw BlockPosArgument.ERROR_OUT_OF_WORLD.create();
         }
         int chunkXStart = xStart >> 4;
         int chunkXEnd = xEnd >> 4;
         int chunkZStart = zStart >> 4;
         int chunkZEnd = zEnd >> 4;
-        ServerWorld world = source.getWorld();
-        RegistryKey<World> registryKey = world.getDimensionKey();
+        ServerWorld world = source.getLevel();
+        RegistryKey<World> registryKey = world.dimension();
         boolean hasChunks = false;
         for (int chunkX = chunkXStart; chunkX <= chunkXEnd; chunkX++) {
             for (int chunkZ = chunkZStart; chunkZ <= chunkZEnd; chunkZ++) {
-                if (world.chunkExists(chunkX, chunkZ)) {
+                if (world.hasChunk(chunkX, chunkZ)) {
                     Mekanism.worldTickHandler.addRegenChunk(registryKey, new ChunkPos(chunkX, chunkZ));
-                    source.sendFeedback(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                          MekanismLang.GENERIC_WITH_COMMA.translate(chunkX, chunkZ), EnumColor.INDIGO, registryKey.getLocation()), true);
+                    source.sendSuccess(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                          MekanismLang.GENERIC_WITH_COMMA.translate(chunkX, chunkZ), EnumColor.INDIGO, registryKey.location()), true);
                     hasChunks = true;
                 }
             }

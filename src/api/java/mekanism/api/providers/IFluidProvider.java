@@ -8,14 +8,23 @@ import net.minecraftforge.fluids.FluidStack;
 
 public interface IFluidProvider extends IBaseProvider {
 
+    /**
+     * Gets the fluid this provider represents.
+     */
     @Nonnull
     Fluid getFluid();
 
     //Note: Uses FluidStack in case we want to check NBT or something
+    @Deprecated//TODO - 1.18: Remove this as we don't actually use this
     default boolean fluidMatches(FluidStack other) {
         return getFluid() == other.getFluid();
     }
 
+    /**
+     * Creates a fluid stack of the given size using the fluid this provider represents.
+     *
+     * @param size Size of the stack.
+     */
     @Nonnull
     default FluidStack getFluidStack(int size) {
         return new FluidStack(getFluid(), size);

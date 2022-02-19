@@ -26,10 +26,10 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     protected void render(TileEntityBoilerCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             BoilerMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null && multiblock.upperRenderLocation != null) {
-                BlockPos pos = tile.getPos();
+                BlockPos pos = tile.getBlockPos();
                 IVertexBuilder buffer = null;
                 if (!multiblock.waterTank.isEmpty()) {
                     int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
@@ -40,12 +40,12 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         data.length = multiblock.length();
                         data.width = multiblock.width();
                         int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
-                        matrix.push();
+                        matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                        buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
+                        buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
                         Model3D model = ModelRenderer.getModel(data, multiblock.prevWaterScale);
                         MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevWaterScale), glow, overlayLight, getFaceDisplay(data, model));
-                        matrix.pop();
+                        matrix.popPose();
                         MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
                     }
                 }
@@ -58,15 +58,15 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         data.length = multiblock.length();
                         data.width = multiblock.width();
                         if (buffer == null) {
-                            buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
+                            buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
                         }
                         int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
-                        matrix.push();
+                        matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D gasModel = ModelRenderer.getModel(data, 1);
                         MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight,
                               getFaceDisplay(data, gasModel));
-                        matrix.pop();
+                        matrix.popPose();
                     }
                 }
             }
@@ -79,8 +79,8 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityBoilerCasing tile) {
-        if (tile.isMaster) {
+    public boolean shouldRenderOffScreen(TileEntityBoilerCasing tile) {
+        if (tile.isMaster()) {
             BoilerMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && multiblock.renderLocation != null && multiblock.upperRenderLocation != null;
         }

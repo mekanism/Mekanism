@@ -6,12 +6,12 @@ import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.render.lib.QuadTransformation;
@@ -47,13 +47,13 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Nonnull
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
         return original.getQuads(state, side, rand);
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return original.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return original.useAmbientOcclusion();
     }
 
     @Override
@@ -62,20 +62,20 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
-        return original.isSideLit();
+    public boolean usesBlockLight() {
+        return original.usesBlockLight();
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return original.isBuiltInRenderer();
+    public boolean isCustomRenderer() {
+        return original.isCustomRenderer();
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public TextureAtlasSprite getParticleTexture() {
-        return original.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return original.getParticleIcon();
     }
 
     @Nonnull
@@ -92,8 +92,8 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Nonnull
     @Override
     @Deprecated
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return original.getItemCameraTransforms();
+    public ItemCameraTransforms getTransforms() {
+        return original.getTransforms();
     }
 
     @Override
@@ -101,6 +101,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         return original.doesHandlePerspectives();
     }
 
+    @Nullable
     protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
         return key;
     }
@@ -133,13 +134,8 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Override
     public List<Pair<IBakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
         //Cache the remappings so then the inner wrapped ones can cache their quads
-        return cachedLayerRedirects.computeIfAbsent(original.getLayerModels(stack, fabulous), originalLayerModels -> {
-            List<Pair<IBakedModel, RenderType>> layerModels = new ArrayList<>();
-            for (Pair<IBakedModel, RenderType> layerModel : originalLayerModels) {
-                layerModels.add(Pair.of(wrapModel(layerModel.getFirst()), layerModel.getSecond()));
-            }
-            return layerModels;
-        });
+        return cachedLayerRedirects.computeIfAbsent(original.getLayerModels(stack, fabulous), originalLayerModels ->
+              originalLayerModels.stream().map(layerModel -> layerModel.<IBakedModel>mapFirst(this::wrapModel)).collect(Collectors.toList()));
     }
 
     protected ExtensionBakedModel<T> wrapModel(IBakedModel model) {
@@ -182,6 +178,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             return this;
         }
 
+        @Nullable
         @Override
         protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
             return key.transform(transform);
@@ -195,7 +192,9 @@ public class ExtensionBakedModel<T> implements IBakedModel {
 
     public static class QuadsKey<T> {
 
+        @Nullable
         private final BlockState state;
+        @Nullable
         private final Direction side;
         private final Random random;
         private final RenderType layer;
@@ -206,7 +205,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         private int dataHash;
         private BiPredicate<T, T> equality;
 
-        public QuadsKey(BlockState state, Direction side, Random random, RenderType layer, List<BakedQuad> quads) {
+        public QuadsKey(@Nullable BlockState state, @Nullable Direction side, Random random, RenderType layer, List<BakedQuad> quads) {
             this.state = state;
             this.side = side;
             this.random = random;
@@ -226,10 +225,12 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             return this;
         }
 
+        @Nullable
         public BlockState getBlockState() {
             return state;
         }
 
+        @Nullable
         public Direction getSide() {
             return side;
         }
@@ -268,7 +269,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
                 return false;
             }
             QuadsKey<?> other = (QuadsKey<?>) obj;
-            if (side != other.side || !state.equals(other.state) || layer != other.layer) {
+            if (side != other.side || !Objects.equals(state, other.state) || layer != other.layer) {
                 return false;
             }
             if (transformation != null && !transformation.equals(other.transformation)) {

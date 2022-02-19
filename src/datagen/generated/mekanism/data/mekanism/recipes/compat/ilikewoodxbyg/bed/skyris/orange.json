@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:orange_skyris_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:skyris_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:orange_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

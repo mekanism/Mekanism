@@ -60,8 +60,8 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
         prevLidAngle = lidAngle;
         float increment = 0.1F;
         if (!playersUsing.isEmpty() && lidAngle == 0.0F) {
-            world.playSound(null, getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F,
-                  SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat() * 0.1F) + 0.9F);
+            level.playSound(null, getBlockPos().getX() + 0.5F, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5F,
+                  SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (level.random.nextFloat() * 0.1F) + 0.9F);
         }
 
         if ((playersUsing.isEmpty() && lidAngle > 0.0F) || (!playersUsing.isEmpty() && lidAngle < 1.0F)) {
@@ -76,8 +76,8 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
             }
             float split = 0.5F;
             if (lidAngle < split && angle >= split) {
-                world.playSound(null, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D,
-                      SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat() * 0.1F) + 0.9F);
+                level.playSound(null, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D,
+                      SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, (level.random.nextFloat() * 0.1F) + 0.9F);
             }
             if (lidAngle < 0.0F) {
                 lidAngle = 0.0F;

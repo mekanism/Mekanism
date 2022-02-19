@@ -34,7 +34,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
 
     @Override
     protected int getRate(@Nullable AutomationType automationType) {
-        //Only limit the internal rate so as to change the speed at which this can be filled from an item
+        //Only limit the internal rate to change the speed at which this can be filled from an item
         return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getRate(automationType);
     }
 
@@ -53,8 +53,8 @@ public class FluidTankFluidTank extends BasicFluidTank {
             remainder = super.insert(stack, action.combine(!isCreative), automationType);
         }
         if (!remainder.isEmpty()) {
-            //If we have any left over check if we can send it to the tank that is above
-            TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
+            //If we have any leftover check if we can send it to the tank that is above
+            TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getLevel(), this.tile.getBlockPos().above());
             if (tileAbove != null) {
                 //Note: We do external so that it is not limited by the internal rate limits
                 remainder = tileAbove.fluidTank.insert(remainder, action, AutomationType.EXTERNAL);
@@ -67,10 +67,10 @@ public class FluidTankFluidTank extends BasicFluidTank {
     public int growStack(int amount, Action action) {
         int grownAmount = super.growStack(amount, action);
         if (amount > 0 && grownAmount < amount) {
-            //If we grew our stack less than we tried to and we were actually growing and not shrinking it
+            //If we grew our stack less than we tried to, and we were actually growing and not shrinking it
             // try inserting into above tiles
             if (!tile.getActive()) {
-                TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
+                TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getLevel(), this.tile.getBlockPos().above());
                 if (tileAbove != null) {
                     int leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits

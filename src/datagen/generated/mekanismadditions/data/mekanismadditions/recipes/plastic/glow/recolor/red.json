@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "mekanismadditions:plastic_blocks/glow"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/glow"
+      },
+      "without": {
+        "item": "mekanismadditions:red_plastic_glow"
+      }
     },
     "D": {
       "tag": "forge:dyes/red"

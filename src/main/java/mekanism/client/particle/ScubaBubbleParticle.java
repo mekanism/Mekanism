@@ -14,7 +14,7 @@ public class ScubaBubbleParticle extends BubbleParticle {
 
     private ScubaBubbleParticle(ClientWorld world, double posX, double posY, double posZ, double velX, double velY, double velZ) {
         super(world, posX, posY, posZ, velX, velY, velZ);
-        maxAge *= 2;
+        lifetime *= 2;
     }
 
     @Override
@@ -24,9 +24,9 @@ public class ScubaBubbleParticle extends BubbleParticle {
     }
 
     @Override
-    public void renderParticle(@Nonnull IVertexBuilder vertexBuilder, @Nonnull ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(@Nonnull IVertexBuilder vertexBuilder, @Nonnull ActiveRenderInfo renderInfo, float partialTicks) {
         if (age > 0) {
-            super.renderParticle(vertexBuilder, renderInfo, partialTicks);
+            super.render(vertexBuilder, renderInfo, partialTicks);
         }
     }
 
@@ -39,9 +39,9 @@ public class ScubaBubbleParticle extends BubbleParticle {
         }
 
         @Override
-        public Particle makeParticle(@Nonnull BasicParticleType type, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(@Nonnull BasicParticleType type, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ScubaBubbleParticle particle = new ScubaBubbleParticle(world, x, y, z, xSpeed, ySpeed, zSpeed);
-            particle.selectSpriteRandomly(this.spriteSet);
+            particle.pickSprite(this.spriteSet);
             return particle;
         }
     }

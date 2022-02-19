@@ -23,6 +23,6 @@ public enum ShieldTextures {
     }
 
     private static RenderMaterial material(String path) {
-        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, MekanismTools.rl(path));
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, MekanismTools.rl(path));
     }
 }

@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:blue_enchanted_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:blue_enchanted_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "byg:blue_enchanted_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

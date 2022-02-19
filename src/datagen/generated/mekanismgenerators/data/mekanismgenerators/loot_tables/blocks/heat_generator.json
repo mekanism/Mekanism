@@ -23,6 +23,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"
@@ -51,11 +56,6 @@
             }
           ],
           "name": "mekanismgenerators:heat_generator"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

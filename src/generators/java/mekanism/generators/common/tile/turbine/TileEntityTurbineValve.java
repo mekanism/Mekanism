@@ -30,11 +30,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     }
 
     @Override
-    protected void onUpdateServer(TurbineMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(TurbineMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
-            CableUtils.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.energyContainer, this);
+            CableUtils.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.energyContainer, this);
         }
+        return needsPacket;
     }
 
     @Override

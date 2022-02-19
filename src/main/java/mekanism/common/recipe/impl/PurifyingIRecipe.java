@@ -38,7 +38,7 @@ public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.PURIFICATION_CHAMBER.getItemStack();
     }
 }

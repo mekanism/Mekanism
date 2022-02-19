@@ -18,7 +18,7 @@ import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
-import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -33,7 +33,7 @@ public final class SecurityUtils {
     }
 
     /**
-     * Whether or not a given PlayerEntity is considered an Op.
+     * Whether a given PlayerEntity is considered an Op.
      *
      * @param p - player to check
      *
@@ -42,7 +42,7 @@ public final class SecurityUtils {
     public static boolean isOp(PlayerEntity p) {
         if (p instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) p;
-            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
+            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().isOp(player.getGameProfile());
         }
         return false;
     }
@@ -58,7 +58,7 @@ public final class SecurityUtils {
                     return true;
                 }
                 UUID owner = ((IOwnerItem) stack.getItem()).getOwnerUUID(stack);
-                return owner == null || owner.equals(player.getUniqueID());
+                return owner == null || owner.equals(player.getUUID());
             }
             security = wrapSecurityItem(stack);
         } else if (object instanceof ISecurityObject) {
@@ -75,7 +75,7 @@ public final class SecurityUtils {
             //If protection is disabled or the player is an op and bypass restrictions are enabled, access is always granted
             return true;
         }
-        if (owner == null || player.getUniqueID().equals(owner)) {
+        if (owner == null || player.getUUID().equals(owner)) {
             return true;
         }
         SecurityFrequency freq = getFrequency(owner);
@@ -88,17 +88,18 @@ public final class SecurityUtils {
         if (mode == SecurityMode.PUBLIC) {
             return true;
         } else if (mode == SecurityMode.TRUSTED) {
-            return freq.getTrustedUUIDs().contains(player.getUniqueID());
+            return freq.getTrustedUUIDs().contains(player.getUUID());
         }
         return false;
     }
 
-    public static SecurityFrequency getFrequency(UUID uuid) {
+    @Nullable
+    public static SecurityFrequency getFrequency(@Nullable UUID uuid) {
         return uuid == null ? null : FrequencyType.SECURITY.getManager(null).getFrequency(uuid);
     }
 
     public static void displayNoAccess(PlayerEntity player) {
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NO_ACCESS), Util.DUMMY_UUID);
+        player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS), Util.NIL_UUID);
     }
 
     public static SecurityMode getSecurity(ISecurityObject security, Dist side) {
@@ -138,10 +139,9 @@ public final class SecurityUtils {
 
     public static void claimItem(PlayerEntity player, ItemStack stack) {
         if (stack.getItem() instanceof IOwnerItem) {
-            ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUniqueID());
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN),
-                  Util.DUMMY_UUID);
+            ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUUID());
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
+            player.sendMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN), Util.NIL_UUID);
         }
     }
 

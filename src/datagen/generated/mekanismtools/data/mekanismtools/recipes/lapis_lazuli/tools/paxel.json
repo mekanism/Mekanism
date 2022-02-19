@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "mekanismtools:paxel",
   "result": {
     "item": "mekanismtools:lapis_lazuli_paxel"
   },

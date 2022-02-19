@@ -8,10 +8,12 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
-import mekanism.common.network.PacketKey;
+import mekanism.common.network.to_server.PacketKey;
+import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,9 +31,13 @@ public class MekanismClient {
     public static long ticksPassed = 0;
 
     public static void updateKey(KeyBinding key, int type) {
-        boolean down = Minecraft.getInstance().currentScreen == null && key.isKeyDown();
+        updateKey(key.isDown(), type);
+    }
+
+    public static void updateKey(boolean pressed, int type) {
         if (Minecraft.getInstance().player != null) {
-            UUID playerUUID = Minecraft.getInstance().player.getUniqueID();
+            UUID playerUUID = Minecraft.getInstance().player.getUUID();
+            boolean down = Minecraft.getInstance().screen == null && pressed;
             if (down != Mekanism.keyMap.has(playerUUID, type)) {
                 Mekanism.packetHandler.sendToServer(new PacketKey(type, down));
                 Mekanism.keyMap.update(playerUUID, type, down);
@@ -44,31 +50,31 @@ public class MekanismClient {
         clientUUIDMap.clear();
 
         ClientTickHandler.portableTeleports.clear();
-        ClientTickHandler.firstTick = true;
         ClientTickHandler.visionEnhancement = false;
 
         Mekanism.playerState.clear(true);
         Mekanism.activeVibrators.clear();
-        Mekanism.radiationManager.resetClient();
+        RadiationManager.INSTANCE.resetClient();
         SoundHandler.radiationSoundMap.clear();
         RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();
         RenderTickHandler.prevRadiation = 0;
+        MekanismRecipeType.clearCache();
 
-        for (IModule module : Mekanism.modulesLoaded) {
+        for (IModModule module : Mekanism.modulesLoaded) {
             module.resetClient();
         }
     }
 
     public static void launchClient() {
-        for (IModule module : Mekanism.modulesLoaded) {
+        for (IModModule module : Mekanism.modulesLoaded) {
             module.launchClient();
         }
     }
 
     @Nullable
     public static World tryGetClientWorld() {
-        return Minecraft.getInstance().world;
+        return Minecraft.getInstance().level;
     }
 
     @Nullable

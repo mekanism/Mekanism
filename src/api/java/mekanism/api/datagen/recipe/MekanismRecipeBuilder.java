@@ -24,7 +24,9 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
+/**
+ * Base recipe builder that declares various common methods between our different builders.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -35,46 +37,87 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     }
 
     protected final List<ICondition> conditions = new ArrayList<>();
-    protected final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+    protected final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     protected final ResourceLocation serializerName;
 
     protected MekanismRecipeBuilder(ResourceLocation serializerName) {
         this.serializerName = serializerName;
+        //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
     }
 
+    /**
+     * Adds a criterion to this recipe.
+     *
+     * @param criterion Criterion to add.
+     */
     public BUILDER addCriterion(RecipeCriterion criterion) {
         return addCriterion(criterion.name, criterion.criterion);
     }
 
+    /**
+     * Adds a criterion to this recipe.
+     *
+     * @param name      Name of the criterion.
+     * @param criterion Criterion to add.
+     */
     public BUILDER addCriterion(String name, ICriterionInstance criterion) {
-        advancementBuilder.withCriterion(name, criterion);
+        advancementBuilder.addCriterion(name, criterion);
         return (BUILDER) this;
     }
 
+    /**
+     * Adds a condition to this recipe.
+     *
+     * @param condition Condition to add.
+     */
     public BUILDER addCondition(ICondition condition) {
         conditions.add(condition);
         return (BUILDER) this;
     }
 
+    /**
+     * Checks if this recipe has any criteria.
+     *
+     * @return {@code true} if this recipe has any criteria.
+     */
     protected boolean hasCriteria() {
         return !advancementBuilder.getCriteria().isEmpty();
     }
 
+    /**
+     * Gets a recipe result object.
+     *
+     * @param id ID of the recipe being built.
+     */
     protected abstract RecipeResult getResult(ResourceLocation id);
 
+    /**
+     * Performs any extra validation.
+     *
+     * @param id ID of the recipe validation is being performed on.
+     */
     protected void validate(ResourceLocation id) {
     }
 
+    /**
+     * Builds this recipe.
+     *
+     * @param consumer Finished Recipe Consumer.
+     * @param id       Name of the recipe being built.
+     */
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         validate(id);
         if (hasCriteria()) {
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
-            advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id))
-                  .withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
+            advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+                  .rewards(AdvancementRewards.Builder.recipe(id)).requirements(IRequirementsStrategy.OR);
         }
         consumer.accept(getResult(id));
     }
 
+    /**
+     * Base recipe result.
+     */
     protected abstract class RecipeResult implements IFinishedRecipe {
 
         private final ResourceLocation id;
@@ -84,7 +127,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         }
 
         @Override
-        public JsonObject getRecipeJson() {
+        public JsonObject serializeRecipe() {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty(JsonConstants.TYPE, serializerName.toString());
             if (!conditions.isEmpty()) {
@@ -94,34 +137,34 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
                 }
                 jsonObject.add(JsonConstants.CONDITIONS, conditionsArray);
             }
-            this.serialize(jsonObject);
+            this.serializeRecipeData(jsonObject);
             return jsonObject;
         }
 
         @Nonnull
         @Override
-        public IRecipeSerializer<?> getSerializer() {
-            //Note: This may be null if something is screwed up but this method isn't actually used so it shouldn't matter
+        public IRecipeSerializer<?> getType() {
+            //Note: This may be null if something is screwed up but this method isn't actually used, so it shouldn't matter
             // and in fact it will probably be null if only the API is included. But again, as we manually just use
-            // the serializer's name this should not effect us
+            // the serializer's name this should not affect us
             return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
         }
 
         @Nonnull
         @Override
-        public ResourceLocation getID() {
+        public ResourceLocation getId() {
             return this.id;
         }
 
         @Nullable
         @Override
-        public JsonObject getAdvancementJson() {
-            return hasCriteria() ? advancementBuilder.serialize() : null;
+        public JsonObject serializeAdvancement() {
+            return hasCriteria() ? advancementBuilder.serializeToJson() : null;
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation getAdvancementId() {
             return new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath());
         }
     }

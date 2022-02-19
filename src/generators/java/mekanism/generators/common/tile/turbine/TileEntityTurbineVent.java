@@ -21,11 +21,12 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     }
 
     @Override
-    protected void onUpdateServer(TurbineMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(TurbineMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
-            FluidUtils.emit(multiblock.ventTank, this);
+            FluidUtils.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.ventTank, this);
         }
+        return needsPacket;
     }
 
     @Override

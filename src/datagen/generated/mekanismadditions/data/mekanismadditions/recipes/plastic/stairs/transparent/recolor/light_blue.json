@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:stairs/plastic/transparent"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:stairs/plastic/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:light_blue_plastic_transparent_stairs"
+      }
     },
     "D": {
       "tag": "forge:dyes/light_blue"

@@ -15,7 +15,7 @@ import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
@@ -51,7 +51,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
                 //Note: we mark all infusion items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
                 return true;
             }
-            //Allow infusion conversion of items that have a infusion that is valid
+            //Allow infusion conversion of items that have an infusion that is valid
             InfusionStack conversion = getPotentialConversion(worldSupplier.get(), stack);
             return !conversion.isEmpty() && infusionTank.isValid(conversion);
         }, listener, x, y);
@@ -70,7 +70,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
 
     @Nullable
     @Override
-    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>> getConversionRecipeType() {
-        return MekanismRecipeType.INFUSION_CONVERSION;
+    protected ItemStackToInfuseTypeRecipe getConversionRecipe(@Nullable World world, ItemStack stack) {
+        return MekanismRecipeType.INFUSION_CONVERSION.getInputCache().findFirstRecipe(world, stack);
     }
 }

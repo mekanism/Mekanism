@@ -37,11 +37,6 @@
           ],
           "name": "mekanism:creative_fluid_tank"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

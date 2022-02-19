@@ -89,7 +89,7 @@ public final class StackUtils {
      */
     @Nullable
     public static BlockState getStateForPlacement(ItemStack stack, BlockPos pos, PlayerEntity player) {
-        return Block.getBlockFromItem(stack.getItem()).getStateForPlacement(new BlockItemUseContext(new ItemUseContext(player, Hand.MAIN_HAND,
+        return Block.byItem(stack.getItem()).getStateForPlacement(new BlockItemUseContext(new ItemUseContext(player, Hand.MAIN_HAND,
               new BlockRayTraceResult(Vector3d.ZERO, Direction.UP, pos, false))));
     }
 }

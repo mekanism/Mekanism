@@ -7,6 +7,7 @@ import mekanism.additions.client.voice.VoiceClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
 
 public class AdditionsClient {
 
@@ -16,7 +17,7 @@ public class AdditionsClient {
     private static VoiceClient voiceClient;
 
     public static void reset() {
-        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get() && voiceClient != null) {
+        if (voiceClient != null) {
             voiceClient.disconnect();
             voiceClient = null;
         }
@@ -24,7 +25,8 @@ public class AdditionsClient {
 
     public static void launch() {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
-            SocketAddress address = Minecraft.getInstance().getConnection().getNetworkManager().getRemoteAddress();
+            ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
+            SocketAddress address = connection == null ? null : connection.getConnection().getRemoteAddress();
             //local connection
             if (address instanceof LocalAddress) {
                 voiceClient = new VoiceClient("127.0.0.1");

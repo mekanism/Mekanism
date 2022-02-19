@@ -18,14 +18,12 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     private double heatLost;
     private double heatTransferred;
 
-    public HeatNetwork() {
-    }
-
     public HeatNetwork(UUID networkID) {
         super(networkID);
     }
 
     public HeatNetwork(Collection<HeatNetwork> networks) {
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 
@@ -38,9 +36,11 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     public ITextComponent getFlowInfo() {
         ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN, false);
         ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
-        return heatTransferred + heatLost == 0 ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
-                                               : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
-                                                     (Math.round(heatTransferred / (heatTransferred + heatLost) * 10_000) / 100F) + "%");
+        if (heatTransferred + heatLost == 0) {
+            return MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost);
+        }
+        return MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
+              MekanismLang.GENERIC_PERCENT.translate(Math.round(heatTransferred / (heatTransferred + heatLost) * 10_000) / 100F));
     }
 
     @Override
@@ -48,25 +48,29 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
         super.onUpdate();
         double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
         for (ThermodynamicConductor transmitter : transmitters) {
-            // change this when we re-integrate with multipart
             HeatTransfer transfer = transmitter.simulate();
-            transmitter.updateHeatCapacitors(null);
             newHeatTransferred += transfer.getAdjacentTransfer();
             newHeatLost += transfer.getEnvironmentTransfer();
+        }
+        //After we updated the heat values of all the transmitters, we need to update the temperatures
+        // we do this after instead of when iterating initially so that if heat is transferred from one
+        // conductor to one we already updated then we want it to have the proper total temperature
+        for (ThermodynamicConductor transmitter : transmitters) {
+            transmitter.updateHeatCapacitors(null);
             newSumTemp += transmitter.getTotalTemperature();
         }
         heatLost = newHeatLost;
         heatTransferred = newHeatTransferred;
-        meanTemp = newSumTemp / transmitters.size();
+        meanTemp = newSumTemp / transmittersSize();
     }
 
     @Override
     public String toString() {
-        return "[HeatNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[HeatNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.HEAT_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.HEAT_NETWORK, transmittersSize(), getAcceptorCount());
     }
 }

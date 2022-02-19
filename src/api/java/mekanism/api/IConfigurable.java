@@ -5,11 +5,11 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 
 /**
- * Implement this in your TileEntity class if your block can be modified by a Configurator.
+ * Expose this as a capability on your TileEntity to allow if your block to be modified by a Configurator.
  *
  * @author aidancbrady
  */
-public interface IConfigurable {
+public interface IConfigurable {//TODO - 1.18: Make the capability instance handle what side we interact with these from and remove the side from the methods
 
     /**
      * Called when a player shift-right clicks this block with a Configurator.
@@ -24,7 +24,7 @@ public interface IConfigurable {
     ActionResultType onSneakRightClick(PlayerEntity player, Direction side);
 
     /**
-     * Called when a player right clicks this block with a Configurator.
+     * Called when a player right-clicks this block with a Configurator.
      *
      * @param player - the player who clicked the block
      * @param side   - the side the block was clicked on

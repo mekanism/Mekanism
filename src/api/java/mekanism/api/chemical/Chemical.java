@@ -1,8 +1,10 @@
 package mekanism.api.chemical;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -10,11 +12,11 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.TextComponentUtil;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -34,12 +36,14 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
 
     protected Chemical(ChemicalBuilder<CHEMICAL, ?> builder, ChemicalTags<CHEMICAL> chemicalTags) {
         reverseTags = new ReverseTagWrapper<>(getChemical(), chemicalTags::getCollection);
-        this.attributeMap = builder.getAttributeMap();
+        //Copy the map to support addAttribute
+        this.attributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
         this.tint = builder.getColor();
         this.hidden = builder.isHidden();
     }
 
+    @Nonnull
     @Override
     public CHEMICAL getChemical() {
         return (CHEMICAL) this;
@@ -113,11 +117,14 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
      */
     public abstract CompoundNBT write(CompoundNBT nbtTags);
 
+    /**
+     * Gets the default translation key for this chemical.
+     */
     protected abstract String getDefaultTranslationKey();
 
     @Override
     public ITextComponent getTextComponent() {
-        return new TranslationTextComponent(getTranslationKey());
+        return TextComponentUtil.translate(getTranslationKey());
     }
 
     /**
@@ -139,7 +146,16 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     }
 
     /**
-     * Whether or not this chemical is hidden.
+     * Get the color representation used for displaying in things like durability bars of chemical tanks.
+     *
+     * @return int representation of color in 0xRRGGBB format
+     */
+    public int getColorRepresentation() {
+        return getTint();
+    }
+
+    /**
+     * Whether this chemical is hidden.
      *
      * @return if this chemical is hidden
      */
@@ -147,13 +163,30 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
         return hidden;
     }
 
+    /**
+     * Checks if this chemical is in a given tag.
+     *
+     * @param tag The tag to check.
+     *
+     * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
+     */
     public boolean isIn(ITag<CHEMICAL> tag) {
         return tag.contains(getChemical());
     }
 
+    /**
+     * Gets the tags that this chemical is a part of.
+     *
+     * @return All the tags this chemical is a part of.
+     */
     public Set<ResourceLocation> getTags() {
         return reverseTags.getTagNames();
     }
 
+    /**
+     * Gets whether this chemical is the empty instance.
+     *
+     * @return {@code true} if this chemical is the empty instance, {@code false} otherwise.
+     */
     public abstract boolean isEmptyType();
 }

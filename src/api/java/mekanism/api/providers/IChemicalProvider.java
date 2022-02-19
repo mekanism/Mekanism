@@ -8,9 +8,17 @@ import net.minecraft.util.text.ITextComponent;
 
 public interface IChemicalProvider<CHEMICAL extends Chemical<CHEMICAL>> extends IBaseProvider {
 
+    /**
+     * Gets the chemical this provider represents.
+     */
     @Nonnull
     CHEMICAL getChemical();
 
+    /**
+     * Creates a chemical stack of the given size using the chemical this provider represents.
+     *
+     * @param size Size of the stack.
+     */
     @Nonnull
     ChemicalStack<CHEMICAL> getStack(long size);
 

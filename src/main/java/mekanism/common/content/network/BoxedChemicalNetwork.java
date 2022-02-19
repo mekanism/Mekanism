@@ -1,17 +1,14 @@
 package mekanism.common.content.network;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -44,7 +41,6 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
@@ -64,10 +60,6 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     public BoxedChemical lastChemical = BoxedChemical.EMPTY;
     private long prevTransferAmount;
 
-    public BoxedChemicalNetwork() {
-        this(UUID.randomUUID());
-    }
-
     public BoxedChemicalNetwork(UUID networkID) {
         super(networkID);
         chemicalTank = MergedChemicalTank.create(
@@ -83,7 +75,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     public BoxedChemicalNetwork(Collection<BoxedChemicalNetwork> networks) {
-        this();
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 
@@ -226,29 +218,20 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     @Override
     protected void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
-        int size = transmittersSize();
-        if (size > 0) {
-            updateSaveShares(triggerTransmitter, size, getCurrentTankWithFallback().getStack());
+        if (!isEmpty()) {
+            updateSaveShares(triggerTransmitter, getCurrentTankWithFallback().getStack());
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter, int size,
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter,
           STACK chemical) {
         STACK empty = ChemicalUtil.getEmptyStack(chemical);
-        Direction side = Direction.NORTH;
-        Set<BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>> saveTargets = new ObjectOpenHashSet<>(size);
-        for (BoxedPressurizedTube transmitter : transmitters) {
-            BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical);
-            saveTarget.addHandler(side, transmitter);
-            saveTargets.add(saveTarget);
-        }
-        long sent = EmitUtils.sendToAcceptors(saveTargets, size, chemical.getAmount(), chemical);
+        BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical, transmitters);
+        long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.getAmount(), chemical);
         if (triggerTransmitter != null && sent < chemical.getAmount()) {
             disperse(triggerTransmitter, ChemicalUtil.copyWithAmount(chemical, chemical.getAmount() - sent));
         }
-        for (BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget : saveTargets) {
-            saveTarget.saveShare(side);
-        }
+        saveTarget.saveShare();
     }
 
     @Override
@@ -260,34 +243,27 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@Nonnull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
-        if (chemical instanceof GasStack) {
-            if (chemical.has(GasAttributes.Radiation.class)) {
-                // Handle radiation leakage
-                double radioactivity = chemical.get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(new Coord4D(triggerTransmitter.getTilePos(), triggerTransmitter.getTileWorld()), chemical.getAmount() * radioactivity);
-            }
+        if (chemical instanceof GasStack && chemical.has(GasAttributes.Radiation.class)) {
+            // Handle radiation leakage
+            MekanismAPI.getRadiationManager().dumpRadiation(triggerTransmitter.getTileCoord(), (GasStack) chemical);
         }
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long tickEmit(@Nonnull STACK stack) {
         ChemicalType chemicalType = ChemicalType.getTypeFor(stack);
-        Set<ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>>> availableAcceptors = new ObjectOpenHashSet<>();
-        int totalHandlers = 0;
-        for (Entry<BlockPos, Map<Direction, LazyOptional<BoxedChemicalHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
-            ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack);
-            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
-                IChemicalHandler<CHEMICAL, STACK> handler = acceptor.getHandlerFor(chemicalType);
-                if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
-                    target.addHandler(side, handler);
-                }
-            }));
-            int curHandlers = target.getHandlers().size();
-            if (curHandlers > 0) {
-                availableAcceptors.add(target);
-                totalHandlers += curHandlers;
+        Collection<Map<Direction, LazyOptional<BoxedChemicalHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
+        ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, acceptorValues.size() * 2);
+        for (Map<Direction, LazyOptional<BoxedChemicalHandler>> acceptors : acceptorValues) {
+            for (LazyOptional<BoxedChemicalHandler> lazyAcceptor : acceptors.values()) {
+                lazyAcceptor.ifPresent(acceptor -> {
+                    IChemicalHandler<CHEMICAL, STACK> handler = acceptor.getHandlerFor(chemicalType);
+                    if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
+                        target.addHandler(handler);
+                    }
+                });
             }
         }
-        return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.getAmount(), stack);
+        return EmitUtils.sendToAcceptors(target, stack.getAmount(), stack);
     }
 
     @Override
@@ -357,25 +333,13 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     @Override
-    public boolean compatibleWithBuffer(@Nonnull BoxedChemicalStack buffer) {
-        if (super.compatibleWithBuffer(buffer)) {
-            Current current = chemicalTank.getCurrent();
-            if (current == Current.EMPTY || buffer.isEmpty()) {
-                return true;
-            }
-            return ChemicalUtil.compareTypes(buffer.getChemicalType(), current) && chemicalTank.getTankFromCurrent(current).getType() == buffer.getChemicalStack().getType();
-        }
-        return false;
-    }
-
-    @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.CHEMICAL_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.CHEMICAL_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
     @Override
     public String toString() {
-        return "[ChemicalNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[ChemicalNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override

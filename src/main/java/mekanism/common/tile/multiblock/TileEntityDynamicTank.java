@@ -29,11 +29,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (!player.isSneaking()) {
+        if (!player.isShiftKeyDown()) {
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 if (manageInventory(multiblock, player, hand, stack)) {
-                    player.inventory.markDirty();
+                    player.inventory.setChanged();
                     return ActionResultType.SUCCESS;
                 }
                 return openGui(player);
@@ -61,7 +61,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     @Override
     public void nextMode() {
         TankMultiblockData multiblock = getMultiblock();
-        multiblock.editMode = multiblock.editMode.getNext();
+        multiblock.setContainerEditMode(multiblock.editMode.getNext());
     }
 
     private boolean manageInventory(TankMultiblockData multiblock, PlayerEntity player, Hand hand, ItemStack itemStack) {

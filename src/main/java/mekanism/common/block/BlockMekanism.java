@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,20 +20,22 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ISustainedInventory;
+import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -44,7 +47,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -58,7 +60,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -75,20 +76,20 @@ public abstract class BlockMekanism extends Block {
 
     protected BlockMekanism(AbstractBlock.Properties properties) {
         super(BlockStateHelper.applyLightLevelAdjustments(properties));
-        setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
+        registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public PushReaction getPushReaction(@Nonnull BlockState state) {
+    public PushReaction getPistonPushReaction(@Nonnull BlockState state) {
         if (hasTileEntity(state)) {
             //Protect against mods like Quark that allow blocks with TEs to be moved
             //TODO: Eventually it would be nice to go through this and maybe even allow some TEs to be moved if they don't strongly
             // care about the world, but for now it is safer to just block them from being moved
             return PushReaction.BLOCK;
         }
-        return super.getPushReaction(state);
+        return super.getPistonPushReaction(state);
     }
 
     @Nonnull
@@ -99,7 +100,12 @@ public abstract class BlockMekanism extends Block {
         if (tile == null) {
             return itemStack;
         }
+        //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
+        // the server doesn't bother syncing the data to the client. For example with what frequencies there are
         Item item = itemStack.getItem();
+        if (tile.getFrequencyComponent().hasCustomFrequencies()) {
+            tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(itemStack));
+        }
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
             securityItem.setOwnerUUID(itemStack, tile.getOwnerUUID());
@@ -168,7 +174,7 @@ public abstract class BlockMekanism extends Block {
                                     //If the list is now empty remove it
                                     ItemDataUtils.removeData(drop, NBTConstants.GAS_TANKS);
                                 } else {
-                                    //Otherwise update the list
+                                    //Otherwise, update the list
                                     ItemDataUtils.setList(drop, NBTConstants.GAS_TANKS, newGasTankList);
                                 }
                             }
@@ -194,8 +200,8 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
@@ -218,22 +224,23 @@ public abstract class BlockMekanism extends Block {
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updatePostPlacement(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
+    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
           @Nonnull BlockPos facingPos) {
         if (state.getBlock() instanceof IStateFluidLoggable) {
             ((IStateFluidLoggable) state.getBlock()).updateFluids(state, world, currentPos);
         }
-        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Override
-    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
+    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return;
         }
         if (tile.supportsRedstone()) {
-            tile.redstone = world.isBlockPowered(pos);
+            tile.redstone = world.hasNeighborSignal(pos);
         }
 
         tile.onPlace();
@@ -242,8 +249,14 @@ public abstract class BlockMekanism extends Block {
         Item item = stack.getItem();
         setTileData(world, pos, state, placer, stack, tile);
 
+        //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
+        // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
+        // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
+        if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
+            tile.getFrequencyComponent().read(ItemDataUtils.getDataMap(stack));
+        }
         if (tile instanceof TileEntitySecurityDesk && placer != null) {
-            tile.getSecurity().setOwnerUUID(placer.getUniqueID());
+            tile.getSecurity().setOwnerUUID(placer.getUUID());
         }
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
@@ -252,10 +265,10 @@ public abstract class BlockMekanism extends Block {
             if (ownerUUID != null) {
                 tile.getSecurity().setOwnerUUID(ownerUUID);
             } else if (placer != null) {
-                tile.getSecurity().setOwnerUUID(placer.getUniqueID());
-                if (!world.isRemote) {
+                tile.getSecurity().setOwnerUUID(placer.getUUID());
+                if (!world.isClientSide) {
                     //If the machine doesn't already have an owner, make sure we portray this
-                    Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUniqueID(), null));
+                    Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUUID(), null));
                 }
             }
         }
@@ -310,40 +323,28 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public void onBlockAdded(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
         if (state.hasTileEntity() && oldState.getBlock() != state.getBlock()) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
                 tile.onAdded();
             }
         }
-        super.onBlockAdded(state, world, pos, oldState, isMoving);
+        super.onPlace(state, world, pos, oldState, isMoving);
     }
 
     @Override
     @Deprecated
-    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-        if (state.hasTileEntity() && (!state.isIn(newState.getBlock()) || !newState.hasTileEntity())) {
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (tile instanceof IBoundingBlock) {
-                ((IBoundingBlock) tile).onBreak(state);
-            }
-        }
-        super.onReplaced(state, world, pos, newState, isMoving);
-    }
-
-    @Override
-    @Deprecated
-    public boolean hasComparatorInputOverride(@Nonnull BlockState blockState) {
+    public boolean hasAnalogOutputSignal(@Nonnull BlockState blockState) {
         return Attribute.has(this, AttributeComparator.class);
     }
 
     @Override
     @Deprecated
-    public int getComparatorInputOverride(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos) {
-        if (hasComparatorInputOverride(blockState)) {
+    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos) {
+        if (hasAnalogOutputSignal(blockState)) {
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            //Double check the tile actually has comparator support
+            //Double-check the tile actually has comparator support
             if (tile instanceof IComparatorSupport) {
                 IComparatorSupport comparatorTile = (IComparatorSupport) tile;
                 if (comparatorTile.supportsComparator()) {
@@ -356,24 +357,48 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return getPlayerRelativeBlockHardness(state, player, world, pos, hasTileEntity(state) ? WorldUtils.getTileEntity(world, pos) : null);
+    public float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+        return getDestroyProgress(state, player, world, pos, hasTileEntity(state) ? WorldUtils.getTileEntity(world, pos) : null);
     }
 
     /**
-     * Like {@link AbstractBlock#getPlayerRelativeBlockHardness(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile so as to only have to get
-     * it once.
+     * Like {@link AbstractBlock#getDestroyProgress(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile to only have to get it once.
      */
-    protected float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
+    protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
           @Nullable TileEntity tile) {
-        return super.getPlayerRelativeBlockHardness(state, player, world, pos);
+        //Call super variant of player relative hardness to get default
+        float speed = super.getDestroyProgress(state, player, world, pos);
+        if (tile instanceof ITileRadioactive && ((ITileRadioactive) tile).getRadiationScale() > 0) {
+            //Our tile has some radioactive substance in it; slow down breaking it
+            return speed / 5F;
+        }
+        return speed;
+    }
+
+    @Override
+    public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
+        super.animateTick(state, world, pos, random);
+        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        if (tile instanceof ITileRadioactive) {
+            int count = ((ITileRadioactive) tile).getRadiationParticleCount();
+            if (count > 0) {
+                //Update count to be randomized but store it instead of calculating our max number each time we loop
+                count = random.nextInt(count);
+                for (int i = 0; i < count; i++) {
+                    double randX = pos.getX() - 0.1 + random.nextDouble() * 1.2;
+                    double randY = pos.getY() - 0.1 + random.nextDouble() * 1.2;
+                    double randZ = pos.getZ() - 0.1 + random.nextDouble() * 1.2;
+                    world.addParticle(MekanismParticleTypes.RADIATION.getParticleType(), randX, randY, randZ, 0, 0, 0);
+                }
+            }
+        }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
         //Copy of ParticleManager#addBlockDestroyEffects, but removes the minimum number of particles each voxel shape produces
-        state.getShape(world, pos).forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
+        state.getShape(world, pos).forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
             double xDif = Math.min(1, maxX - minX);
             double yDif = Math.min(1, maxY - minY);
             double zDif = Math.min(1, maxZ - minZ);
@@ -391,8 +416,8 @@ public abstract class BlockMekanism extends Block {
                             double d7 = d4 * xDif + minX;
                             double d8 = d5 * yDif + minY;
                             double d9 = d6 * zDif + minZ;
-                            manager.addEffect(new DiggingParticle((ClientWorld) world, pos.getX() + d7, pos.getY() + d8,
-                                  pos.getZ() + d9, d4 - 0.5, d5 - 0.5, d6 - 0.5, state).setBlockPos(pos));
+                            manager.add(new DiggingParticle((ClientWorld) world, pos.getX() + d7, pos.getY() + d8,
+                                  pos.getZ() + d9, d4 - 0.5, d5 - 0.5, d6 - 0.5, state).init(pos));
                         }
                     }
                 }
@@ -401,11 +426,10 @@ public abstract class BlockMekanism extends Block {
         return true;
     }
 
-    protected ActionResultType genericClientActivated(@Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace() && !Attribute.has(this, AttributeGui.class)) {
-            return ActionResultType.PASS;
+    protected ActionResultType genericClientActivated(@Nonnull PlayerEntity player, @Nonnull Hand hand) {
+        if (Attribute.has(this, AttributeGui.class) || MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
+            return ActionResultType.SUCCESS;
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.PASS;
     }
 }

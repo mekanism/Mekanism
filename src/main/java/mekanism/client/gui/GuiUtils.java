@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -153,18 +154,18 @@ public class GuiUtils {
     }
 
     public static void drawSprite(MatrixStack matrix, int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {
-        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS);
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
-        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
+        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuilder();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
-        vertexBuffer.pos(matrix4f, x, y + height, zLevel).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
-        vertexBuffer.pos(matrix4f, x + width, y + height, zLevel).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
-        vertexBuffer.pos(matrix4f, x + width, y, zLevel).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
-        vertexBuffer.pos(matrix4f, x, y, zLevel).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
-        vertexBuffer.finishDrawing();
-        WorldVertexBufferUploader.draw(vertexBuffer);
+        Matrix4f matrix4f = matrix.last().pose();
+        vertexBuffer.vertex(matrix4f, x, y + height, zLevel).uv(sprite.getU0(), sprite.getV1()).endVertex();
+        vertexBuffer.vertex(matrix4f, x + width, y + height, zLevel).uv(sprite.getU1(), sprite.getV1()).endVertex();
+        vertexBuffer.vertex(matrix4f, x + width, y, zLevel).uv(sprite.getU1(), sprite.getV0()).endVertex();
+        vertexBuffer.vertex(matrix4f, x, y, zLevel).uv(sprite.getU0(), sprite.getV0()).endVertex();
+        vertexBuffer.end();
+        WorldVertexBufferUploader.end(vertexBuffer);
         RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
     }
@@ -179,25 +180,25 @@ public class GuiUtils {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
         }
-        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS);
         int xTileCount = desiredWidth / textureWidth;
         int xRemainder = desiredWidth - (xTileCount * textureWidth);
         int yTileCount = desiredHeight / textureHeight;
         int yRemainder = desiredHeight - (yTileCount * textureHeight);
         int yStart = yPosition + yOffset;
-        float uMin = sprite.getMinU();
-        float uMax = sprite.getMaxU();
-        float vMin = sprite.getMinV();
-        float vMax = sprite.getMaxV();
+        float uMin = sprite.getU0();
+        float uMax = sprite.getU1();
+        float vMin = sprite.getV0();
+        float vMax = sprite.getV1();
         float uDif = uMax - uMin;
         float vDif = vMax - vMin;
         if (blendAlpha) {
             RenderSystem.enableBlend();
             RenderSystem.enableAlphaTest();
         }
-        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
+        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuilder();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        Matrix4f matrix4f = matrix.last().pose();
         for (int xTile = 0; xTile <= xTileCount; xTile++) {
             int width = (xTile == xTileCount) ? xRemainder : textureWidth;
             if (width == 0) {
@@ -235,14 +236,14 @@ public class GuiUtils {
                     vLocalMin = vMin + vLocalDif;
                     vLocalMax = vMax;
                 }
-                vertexBuffer.pos(matrix4f, x, y + textureHeight, zLevel).tex(uLocalMin, vLocalMax).endVertex();
-                vertexBuffer.pos(matrix4f, shiftedX, y + textureHeight, zLevel).tex(uLocalMax, vLocalMax).endVertex();
-                vertexBuffer.pos(matrix4f, shiftedX, y + maskTop, zLevel).tex(uLocalMax, vLocalMin).endVertex();
-                vertexBuffer.pos(matrix4f, x, y + maskTop, zLevel).tex(uLocalMin, vLocalMin).endVertex();
+                vertexBuffer.vertex(matrix4f, x, y + textureHeight, zLevel).uv(uLocalMin, vLocalMax).endVertex();
+                vertexBuffer.vertex(matrix4f, shiftedX, y + textureHeight, zLevel).uv(uLocalMax, vLocalMax).endVertex();
+                vertexBuffer.vertex(matrix4f, shiftedX, y + maskTop, zLevel).uv(uLocalMax, vLocalMin).endVertex();
+                vertexBuffer.vertex(matrix4f, x, y + maskTop, zLevel).uv(uLocalMin, vLocalMin).endVertex();
             }
         }
-        vertexBuffer.finishDrawing();
-        WorldVertexBufferUploader.draw(vertexBuffer);
+        vertexBuffer.end();
+        WorldVertexBufferUploader.end(vertexBuffer);
         if (blendAlpha) {
             RenderSystem.disableAlphaTest();
             RenderSystem.disableBlend();
@@ -261,28 +262,32 @@ public class GuiUtils {
     }
 
     public static void renderItem(MatrixStack matrix, ItemRenderer renderer, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, FontRenderer font,
-          String text, boolean overlay) {
+          @Nullable String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
-                matrix.push();
+                matrix.pushPose();
                 RenderSystem.enableDepthTest();
-                RenderHelper.enableStandardItemLighting();
+                RenderHelper.turnBackOn();
                 if (scale != 1) {
+                    //Translate before scaling, and then set xAxis and yAxis to zero so that we don't translate a second time
+                    matrix.translate(xAxis, yAxis, 0);
                     matrix.scale(scale, scale, scale);
+                    xAxis = 0;
+                    yAxis = 0;
                 }
                 //Apply our matrix stack to the render system and pass an unmodified one to the render methods
                 // Vanilla still renders the items using render system transformations so this is required to
                 // have things render in the correct order
                 RenderSystem.pushMatrix();
-                RenderSystem.multMatrix(matrix.getLast().getMatrix());
-                renderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                RenderSystem.multMatrix(matrix.last().pose());
+                renderer.renderAndDecorateItem(stack, xAxis, yAxis);
                 if (overlay) {
-                    renderer.renderItemOverlayIntoGUI(font, stack, xAxis, yAxis, text);
+                    renderer.renderGuiItemDecorations(font, stack, xAxis, yAxis, text);
                 }
                 RenderSystem.popMatrix();
-                RenderHelper.disableStandardItemLighting();
+                RenderHelper.turnOff();
                 RenderSystem.disableDepthTest();
-                matrix.pop();
+                matrix.popPose();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);
             }

@@ -19,7 +19,11 @@ import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.content.evaporation.EvaporationMultiblockData;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
@@ -37,12 +41,13 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineMultiblockData extends MultiblockData {
 
-    public static final long GAS_PER_TANK = TankMultiblockData.FLUID_PER_TANK;
+    public static final long GAS_PER_TANK = EvaporationMultiblockData.FLUID_PER_TANK;
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
     public IGasTank gasTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;
@@ -50,23 +55,34 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     public IEnergyContainer energyContainer;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getDumpingMode")
     public GasMode dumpMode = GasMode.IDLE;
     private FloatingLong energyCapacity = FloatingLong.ZERO;
 
     @ContainerSync
-    public int blades, vents, coils, condensers;
+    @SyntheticComputerMethod(getter = "getBlades")
+    public int blades;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getVents")
+    public int vents;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getCoils")
+    public int coils;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getCondensers")
+    public int condensers;
     @ContainerSync
     public int lowerVolume;
 
     public BlockPos complex;
 
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getLastSteamInputRate")
     public long lastSteamInput;
     public long newSteamInput;
 
-    @ContainerSync(getter = "getDispersers")
-    public int clientDispersers;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getFlowRate")
     public long clientFlow;
 
     public float clientRotation;
@@ -77,7 +93,7 @@ public class TurbineMultiblockData extends MultiblockData {
         gasTanks.add(gasTank = new TurbineGasTank(this, tile));
         ventTank = VariableCapacityFluidTank.create(() -> !isFormed() ? 1_000 : condensers * MekanismGeneratorsConfig.generators.condenserRate.get(),
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), BasicFluidTank.internalOnly,
-              fluid -> fluid.getFluid().isIn(FluidTags.WATER), null);
+              fluid -> fluid.getFluid().is(FluidTags.WATER), null);
         ventTanks = Collections.singletonList(ventTank);
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity,
               automationType -> automationType != AutomationType.EXTERNAL || isFormed(), BasicEnergyContainer.internalOnly, null);
@@ -105,15 +121,13 @@ public class TurbineMultiblockData extends MultiblockData {
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = rate;
                 rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
-
-                flowRate = rate / origRate;
-                energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
-
-                if (!gasTank.isEmpty()) {
-                    gasTank.shrinkStack((long) rate, Action.EXECUTE);
+                clientFlow = MathUtils.clampToLong(rate);
+                if (clientFlow > 0) {
+                    flowRate = rate / origRate;
+                    energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
+                    gasTank.shrinkStack(clientFlow, Action.EXECUTE);
+                    ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }
-                clientFlow = (long) rate;
-                ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
             }
         } else {
             clientFlow = 0;
@@ -125,7 +139,7 @@ public class TurbineMultiblockData extends MultiblockData {
                 gasTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
             } else {//DUMPING_EXCESS
                 //Don't allow dumping more than the configured amount
-                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismGeneratorsConfig.generators.turbineDumpExcessKeepRatio.get());
+                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
                 if (targetLevel < amount) {
                     gasTank.shrinkStack(Math.min(amount - targetLevel, getDumpingAmount(amount)), Action.EXECUTE);
                 }
@@ -173,6 +187,7 @@ public class TurbineMultiblockData extends MultiblockData {
         tag.putFloat(NBTConstants.ROTATION, clientRotation);
     }
 
+    @ComputerMethod
     public int getDispersers() {
         return (length() - 2) * (width() - 2) - 1;
     }
@@ -196,4 +211,52 @@ public class TurbineMultiblockData extends MultiblockData {
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
     }
+
+    @ComputerMethod
+    public FloatingLong getProductionRate() {
+        FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
+              .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+        return energyMultiplier.multiply(clientFlow);
+    }
+
+    @ComputerMethod
+    public FloatingLong getMaxProduction() {
+        FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
+              .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+        double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+        return energyMultiplier.multiply(rate);
+    }
+
+    @ComputerMethod
+    public long getMaxFlowRate() {
+        double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+        return MathUtils.clampToLong(rate);
+    }
+
+    @ComputerMethod
+    public long getMaxWaterOutput() {
+        return (long) condensers * MekanismGeneratorsConfig.generators.condenserRate.get();
+    }
+
+    @ComputerMethod(nameOverride = "setDumpingMode")
+    public void setDumpMode(GasMode mode) {
+        if (dumpMode != mode) {
+            dumpMode = mode;
+            markDirty();
+        }
+    }
+
+    //Computer related methods
+    @ComputerMethod
+    private void incrementDumpingMode() {
+        setDumpMode(dumpMode.getNext());
+    }
+
+    @ComputerMethod
+    private void decrementDumpingMode() {
+        setDumpMode(dumpMode.getPrevious());
+    }
+    //End computer related methods
 }

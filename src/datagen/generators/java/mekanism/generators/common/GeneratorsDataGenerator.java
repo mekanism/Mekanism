@@ -36,7 +36,7 @@ public class GeneratorsDataGenerator {
             //Server side data generators
             gen.addProvider(new GeneratorsTagProvider(gen, existingFileHelper));
             gen.addProvider(new GeneratorsLootProvider(gen));
-            gen.addProvider(new GeneratorsRecipeProvider(gen));
+            gen.addProvider(new GeneratorsRecipeProvider(gen, existingFileHelper));
         }
         gen.addProvider(new GeneratorsBookProvider(gen));
     }

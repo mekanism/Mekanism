@@ -14,11 +14,10 @@ public class VoiceInput extends Thread {
     private TargetDataLine targetLine;
 
     public VoiceInput(VoiceClient client) {
+        super("VoiceServer Client Input Thread");
         voiceClient = client;
         microphone = new DataLine.Info(TargetDataLine.class, voiceClient.getAudioFormat(), 2_200);
-
         setDaemon(true);
-        setName("VoiceServer Client Input Thread");
     }
 
     @Override
@@ -34,17 +33,14 @@ public class VoiceInput extends Thread {
             AudioInputStream audioInput = new AudioInputStream(targetLine);
 
             boolean doFlush = false;
-
             while (voiceClient.isRunning()) {
-                if (AdditionsKeyHandler.voiceKey.isPressed()) {
+                if (AdditionsKeyHandler.voiceKey.isDown()) {
                     targetLine.flush();
-
-                    while (voiceClient.isRunning() && AdditionsKeyHandler.voiceKey.isPressed()) {
+                    while (voiceClient.isRunning() && AdditionsKeyHandler.voiceKey.isDown()) {
                         try {
                             int availableBytes = audioInput.available();
                             byte[] audioData = new byte[Math.min(availableBytes, 2_200)];
                             int bytesRead = audioInput.read(audioData, 0, audioData.length);
-
                             if (bytesRead > 0) {
                                 voiceClient.getOutputStream().writeShort(audioData.length);
                                 voiceClient.getOutputStream().write(audioData);
@@ -52,28 +48,23 @@ public class VoiceInput extends Thread {
                         } catch (Exception ignored) {
                         }
                     }
-
                     try {
                         Thread.sleep(200L);
-                    } catch (Exception ignored) {
+                    } catch (InterruptedException ignored) {
                     }
-
                     doFlush = true;
                 } else if (doFlush) {
                     try {
                         voiceClient.getOutputStream().flush();
                     } catch (Exception ignored) {
                     }
-
                     doFlush = false;
                 }
-
                 try {
                     Thread.sleep(20L);
-                } catch (Exception ignored) {
+                } catch (InterruptedException ignored) {
                 }
             }
-
             audioInput.close();
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while running client input thread.", e);

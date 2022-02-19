@@ -23,7 +23,7 @@ import net.minecraft.world.chunk.IChunk;
 public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockData> {
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, MekanismBlockTypes.BOILER_CASING)) {
             return CasingType.FRAME;
@@ -66,16 +66,16 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         //Find a single disperser contained within this multiblock
         final BlockPos initDisperser = dispersers.iterator().next();
 
-        //Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
-        BlockPos pos = new BlockPos(structure.renderLocation.getX(), initDisperser.getY(), structure.renderLocation.getZ());
+        //Ensure that a full horizontal plane of dispersers exists, surrounding the found disperser
+        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
         for (int x = 1; x < structure.length() - 1; x++) {
             for (int z = 1; z < structure.width() - 1; z++) {
-                BlockPos shifted = pos.add(x, 0, z);
-                TileEntityPressureDisperser tile = WorldUtils.getTileEntity(TileEntityPressureDisperser.class, world, chunkMap, shifted);
+                mutablePos.set(structure.renderLocation.getX() + x, initDisperser.getY(), structure.renderLocation.getZ() + z);
+                TileEntityPressureDisperser tile = WorldUtils.getTileEntity(TileEntityPressureDisperser.class, world, chunkMap, mutablePos);
                 if (tile == null) {
-                    return FormationResult.fail(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, shifted);
+                    return FormationResult.fail(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, mutablePos);
                 }
-                dispersers.remove(shifted);
+                dispersers.remove(mutablePos);
             }
         }
 
@@ -92,15 +92,16 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         }
 
         BlockPos initAir = null;
+        BlockPos.Mutable mutableAir = new BlockPos.Mutable();
         int totalAir = 0;
 
         //Find the first available block in the structure for water storage (including casings)
         for (int x = structure.renderLocation.getX(); x < structure.renderLocation.getX() + structure.length(); x++) {
             for (int y = structure.renderLocation.getY(); y < initDisperser.getY(); y++) {
                 for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.width(); z++) {
-                    BlockPos airPos = new BlockPos(x, y, z);
-                    if (isAirOrFrame(chunkMap, airPos)) {
-                        initAir = airPos;
+                    mutableAir.set(x, y, z);
+                    if (isAirOrFrame(chunkMap, mutableAir)) {
+                        initAir = mutableAir.immutable();
                         totalAir++;
                     }
                 }

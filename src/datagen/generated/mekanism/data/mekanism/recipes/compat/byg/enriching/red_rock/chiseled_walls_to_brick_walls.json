@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:mossy_red_rock_brick_wall"
+    }
+  },
+  "output": {
+    "item": "byg:red_rock_brick_wall"
+  }
+}

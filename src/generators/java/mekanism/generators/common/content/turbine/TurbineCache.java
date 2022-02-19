@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 
 public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
 
-    public GasMode dumpMode = GasMode.IDLE;
+    private GasMode dumpMode = GasMode.IDLE;
 
     @Override
     public void merge(MultiblockCache<TurbineMultiblockData> mergeCache, List<ItemStack> rejectedItems) {

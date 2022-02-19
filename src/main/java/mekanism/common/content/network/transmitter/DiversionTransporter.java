@@ -12,6 +12,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,7 +39,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         byte current = getAllCurrentConnections();
         refreshConnections();
         if (current != getAllCurrentConnections()) {
-            //Has to be markDirtyTransmitters instead of notify tile change
+            //Has to be markDirtyTransmitters instead of notify tile change,
             // or it will not properly tell the neighboring connections that
             // it is no longer valid
             markDirtyTransmitters();
@@ -84,16 +85,22 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         readModes(tag);
     }
 
+    public void updateMode(Direction side, DiversionControl mode) {
+        int ordinal = side.ordinal();
+        if (modes[ordinal] != mode) {
+            modes[ordinal] = mode;
+            refreshConnections();
+            notifyTileChange();
+            getTransmitterTile().sendUpdatePacket();
+        }
+    }
+
     @Override
-    public ActionResultType onConfigure(PlayerEntity player, Direction side) {
-        int index = side.ordinal();
-        DiversionControl newMode = modes[index].getNext();
-        modes[index] = newMode;
-        refreshConnections();
-        notifyTileChange();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-              MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.DUMMY_UUID);
-        getTransmitterTile().sendUpdatePacket();
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        side = getTransmitterTile().getSideLookingAt(player, side);
+        DiversionControl newMode = modes[side.ordinal()].getNext();
+        updateMode(side, newMode);
+        player.sendMessage(MekanismUtils.logFormat(MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.NIL_UUID);
         return ActionResultType.SUCCESS;
     }
 

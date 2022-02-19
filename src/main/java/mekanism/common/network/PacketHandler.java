@@ -1,8 +1,44 @@
 package mekanism.common.network;
 
 import mekanism.common.Mekanism;
-import mekanism.common.network.container.PacketUpdateContainer;
-import mekanism.common.network.container.PacketUpdateContainerBatch;
+import mekanism.common.network.to_client.PacketFlyingSync;
+import mekanism.common.network.to_client.PacketLaserHitBlock;
+import mekanism.common.network.to_client.PacketLightningRender;
+import mekanism.common.network.to_client.PacketPlayerData;
+import mekanism.common.network.to_client.PacketPortalFX;
+import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
+import mekanism.common.network.to_client.PacketRadiationData;
+import mekanism.common.network.to_client.PacketResetPlayerClient;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketStepHeightSync;
+import mekanism.common.network.to_client.PacketTransmitterUpdate;
+import mekanism.common.network.to_client.PacketTransporterUpdate;
+import mekanism.common.network.to_client.PacketUpdateTile;
+import mekanism.common.network.to_client.container.PacketUpdateContainer;
+import mekanism.common.network.to_server.PacketAddTrusted;
+import mekanism.common.network.to_server.PacketConfigurationUpdate;
+import mekanism.common.network.to_server.PacketDropperUse;
+import mekanism.common.network.to_server.PacketEditFilter;
+import mekanism.common.network.to_server.PacketGearStateUpdate;
+import mekanism.common.network.to_server.PacketGuiButtonPress;
+import mekanism.common.network.to_server.PacketGuiInteract;
+import mekanism.common.network.to_server.PacketGuiItemDataRequest;
+import mekanism.common.network.to_server.PacketGuiSetEnergy;
+import mekanism.common.network.to_server.PacketGuiSetFrequency;
+import mekanism.common.network.to_server.PacketGuiSetFrequencyColor;
+import mekanism.common.network.to_server.PacketKey;
+import mekanism.common.network.to_server.PacketModeChange;
+import mekanism.common.network.to_server.PacketNewFilter;
+import mekanism.common.network.to_server.PacketOpenGui;
+import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
+import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
+import mekanism.common.network.to_server.PacketQIOItemViewerSlotInteract;
+import mekanism.common.network.to_server.PacketRadialModeChange;
+import mekanism.common.network.to_server.PacketRemoveModule;
+import mekanism.common.network.to_server.PacketRobit;
+import mekanism.common.network.to_server.PacketSecurityMode;
+import mekanism.common.network.to_server.PacketUpdateModuleSettings;
+import mekanism.common.network.to_server.PacketWindowSelect;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class PacketHandler extends BasePacketHandler {
@@ -17,52 +53,45 @@ public class PacketHandler extends BasePacketHandler {
     @Override
     public void initialize() {
         //Client to server messages
-        registerClientToServer(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
-        registerClientToServer(PacketModeChange.class, PacketModeChange::encode, PacketModeChange::decode, PacketModeChange::handle);
-        registerClientToServer(PacketRadialModeChange.class, PacketRadialModeChange::encode, PacketRadialModeChange::decode, PacketRadialModeChange::handle);
-        registerClientToServer(PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
-        registerClientToServer(PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
-        registerClientToServer(PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
-        registerClientToServer(PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
-        registerClientToServer(PacketDropperUse.class, PacketDropperUse::encode, PacketDropperUse::decode, PacketDropperUse::handle);
-        registerClientToServer(PacketGearStateUpdate.class, PacketGearStateUpdate::encode, PacketGearStateUpdate::decode, PacketGearStateUpdate::handle);
-        registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
-        registerClientToServer(PacketGuiInteract.class, PacketGuiInteract::encode, PacketGuiInteract::decode, PacketGuiInteract::handle);
-        registerClientToServer(PacketGuiSetEnergy.class, PacketGuiSetEnergy::encode, PacketGuiSetEnergy::decode, PacketGuiSetEnergy::handle);
-        registerClientToServer(PacketGuiSetFrequency.class, PacketGuiSetFrequency::encode, PacketGuiSetFrequency::decode, PacketGuiSetFrequency::handle);
-        registerClientToServer(PacketAddTrusted.class, PacketAddTrusted::encode, PacketAddTrusted::decode, PacketAddTrusted::handle);
-        registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
-        registerClientToServer(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
-        registerClientToServer(PacketOpenGui.class, PacketOpenGui::encode, PacketOpenGui::decode, PacketOpenGui::handle);
-        registerClientToServer(PacketRemoveModule.class, PacketRemoveModule::encode, PacketRemoveModule::decode, PacketRemoveModule::handle);
-        registerClientToServer(PacketUpdateInventorySlot.class, PacketUpdateInventorySlot::encode, PacketUpdateInventorySlot::decode, PacketUpdateInventorySlot::handle);
-        registerClientToServer(PacketPortableTeleporterGui.class, PacketPortableTeleporterGui::encode, PacketPortableTeleporterGui::decode, PacketPortableTeleporterGui::handle);
-        registerClientToServer(PacketQIOItemViewerSlotInteract.class, PacketQIOItemViewerSlotInteract::encode, PacketQIOItemViewerSlotInteract::decode, PacketQIOItemViewerSlotInteract::handle);
-        registerClientToServer(PacketGuiItemDataRequest.class, PacketGuiItemDataRequest::encode, PacketGuiItemDataRequest::decode, PacketGuiItemDataRequest::handle);
-        registerClientToServer(PacketQIOSetColor.class, PacketQIOSetColor::encode, PacketQIOSetColor::decode, PacketQIOSetColor::handle);
-        registerClientToServer(PacketTeleporterSetColor.class, PacketTeleporterSetColor::encode, PacketTeleporterSetColor::decode, PacketTeleporterSetColor::handle);
+        registerClientToServer(PacketAddTrusted.class, PacketAddTrusted::decode);
+        registerClientToServer(PacketConfigurationUpdate.class, PacketConfigurationUpdate::decode);
+        registerClientToServer(PacketDropperUse.class, PacketDropperUse::decode);
+        registerClientToServer(PacketEditFilter.class, PacketEditFilter::decode);
+        registerClientToServer(PacketGearStateUpdate.class, PacketGearStateUpdate::decode);
+        registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::decode);
+        registerClientToServer(PacketGuiInteract.class, PacketGuiInteract::decode);
+        registerClientToServer(PacketGuiItemDataRequest.class, PacketGuiItemDataRequest::decode);
+        registerClientToServer(PacketGuiSetEnergy.class, PacketGuiSetEnergy::decode);
+        registerClientToServer(PacketGuiSetFrequency.class, PacketGuiSetFrequency::decode);
+        registerClientToServer(PacketGuiSetFrequencyColor.class, PacketGuiSetFrequencyColor::decode);
+        registerClientToServer(PacketKey.class, PacketKey::decode);
+        registerClientToServer(PacketModeChange.class, PacketModeChange::decode);
+        registerClientToServer(PacketNewFilter.class, PacketNewFilter::decode);
+        registerClientToServer(PacketOpenGui.class, PacketOpenGui::decode);
+        registerClientToServer(PacketPortableTeleporterTeleport.class, PacketPortableTeleporterTeleport::decode);
+        registerClientToServer(PacketQIOFillCraftingWindow.class, PacketQIOFillCraftingWindow::decode);
+        registerClientToServer(PacketQIOItemViewerSlotInteract.class, PacketQIOItemViewerSlotInteract::decode);
+        registerClientToServer(PacketRadialModeChange.class, PacketRadialModeChange::decode);
+        registerClientToServer(PacketRemoveModule.class, PacketRemoveModule::decode);
+        registerClientToServer(PacketRobit.class, PacketRobit::decode);
+        registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::decode);
+        registerClientToServer(PacketUpdateModuleSettings.class, PacketUpdateModuleSettings::decode);
+        registerClientToServer(PacketWindowSelect.class, PacketWindowSelect::decode);
 
         //Server to client messages
-        registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
-        registerServerToClient(PacketTransporterUpdate.class, PacketTransporterUpdate::encode, PacketTransporterUpdate::decode, PacketTransporterUpdate::handle);
-        registerServerToClient(PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
-        registerServerToClient(PacketLaserHitBlock.class, PacketLaserHitBlock::encode, PacketLaserHitBlock::decode, PacketLaserHitBlock::handle);
-        registerServerToClient(PacketLightningRender.class, PacketLightningRender::encode, PacketLightningRender::decode, PacketLightningRender::handle);
-        registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::encode, PacketUpdateTile::decode, PacketUpdateTile::handle);
-        registerServerToClient(PacketPlayerData.class, PacketPlayerData::encode, PacketPlayerData::decode, PacketPlayerData::handle);
-        registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
-        registerServerToClient(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
-        registerServerToClient(PacketRadiationData.class, PacketRadiationData::encode, PacketRadiationData::decode, PacketRadiationData::handle);
-        registerServerToClient(PacketResetPlayerClient.class, PacketResetPlayerClient::encode, PacketResetPlayerClient::decode, PacketResetPlayerClient::handle);
-        registerServerToClient(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
-        registerServerToClient(PacketFrequencyItemGuiUpdate.class, PacketFrequencyItemGuiUpdate::encode, PacketFrequencyItemGuiUpdate::decode, PacketFrequencyItemGuiUpdate::handle);
-        registerServerToClient(PacketQIOItemViewerGuiSync.class, PacketQIOItemViewerGuiSync::encode, PacketQIOItemViewerGuiSync::decode, PacketQIOItemViewerGuiSync::handle);
-        registerServerToClient(PacketFlyingSync.class, PacketFlyingSync::encode, PacketFlyingSync::decode, PacketFlyingSync::handle);
-        registerServerToClient(PacketStepHeightSync.class, PacketStepHeightSync::encode, PacketStepHeightSync::decode, PacketStepHeightSync::handle);
-
-        //Register container sync packet
-        registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::encode, PacketUpdateContainer::decode, PacketUpdateContainer::handle);
-        //Container sync packet that batches multiple changes into one packet
-        registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
+        registerServerToClient(PacketFlyingSync.class, PacketFlyingSync::decode);
+        registerServerToClient(PacketLaserHitBlock.class, PacketLaserHitBlock::decode);
+        registerServerToClient(PacketLightningRender.class, PacketLightningRender::decode);
+        registerServerToClient(PacketPlayerData.class, PacketPlayerData::decode);
+        registerServerToClient(PacketPortalFX.class, PacketPortalFX::decode);
+        registerServerToClient(PacketQIOItemViewerGuiSync.class, PacketQIOItemViewerGuiSync::decode);
+        registerServerToClient(PacketRadiationData.class, PacketRadiationData::decode);
+        registerServerToClient(PacketResetPlayerClient.class, PacketResetPlayerClient::decode);
+        registerServerToClient(PacketSecurityUpdate.class, PacketSecurityUpdate::decode);
+        registerServerToClient(PacketStepHeightSync.class, PacketStepHeightSync::decode);
+        registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::decode);
+        registerServerToClient(PacketTransporterUpdate.class, PacketTransporterUpdate::decode);
+        registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::decode);
+        registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::decode);
     }
 }

@@ -67,11 +67,6 @@
           ],
           "name": "mekanism:logistical_sorter"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

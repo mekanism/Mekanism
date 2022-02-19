@@ -55,11 +55,11 @@ public class AttributeStateFacing implements AttributeState {
     }
 
     public Direction getDirection(BlockState state) {
-        return state.get(getFacingProperty());
+        return state.getValue(getFacingProperty());
     }
 
     public BlockState setDirection(@Nonnull BlockState state, Direction newDirection) {
-        return supportsDirection(newDirection) ? state.with(getFacingProperty(), newDirection) : state;
+        return supportsDirection(newDirection) ? state.setValue(getFacingProperty(), newDirection) : state;
     }
 
     @Nonnull
@@ -73,7 +73,7 @@ public class AttributeStateFacing implements AttributeState {
     }
 
     public Collection<Direction> getSupportedDirections() {
-        return getFacingProperty().getAllowedValues();
+        return getFacingProperty().getPossibleValues();
     }
 
     public boolean supportsDirection(Direction direction) {
@@ -87,9 +87,9 @@ public class AttributeStateFacing implements AttributeState {
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
-        if (Attribute.has(newState.getBlock(), AttributeStateFacing.class)) {
-            DirectionProperty oldFacingProperty = Attribute.get(oldState.getBlock(), AttributeStateFacing.class).getFacingProperty();
-            newState = newState.with(Attribute.get(newState.getBlock(), AttributeStateFacing.class).getFacingProperty(), oldState.get(oldFacingProperty));
+        if (Attribute.has(newState, AttributeStateFacing.class)) {
+            DirectionProperty oldFacingProperty = Attribute.get(oldState, AttributeStateFacing.class).getFacingProperty();
+            newState = newState.setValue(Attribute.get(newState, AttributeStateFacing.class).getFacingProperty(), oldState.getValue(oldFacingProperty));
         }
         return newState;
     }
@@ -106,7 +106,7 @@ public class AttributeStateFacing implements AttributeState {
         if (blockFacing.getPlacementType() == FacePlacementType.PLAYER_LOCATION) {
             //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
             if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
-                float rotationPitch = player == null ? 0 : player.rotationPitch;
+                float rotationPitch = player == null ? 0 : player.xRot;
                 int height = Math.round(rotationPitch);
                 if (height >= 65) {
                     newDirection = Direction.UP;
@@ -116,7 +116,7 @@ public class AttributeStateFacing implements AttributeState {
             }
             if (newDirection != Direction.DOWN && newDirection != Direction.UP) {
                 //TODO: Can this just use newDirection = context.getPlacementHorizontalFacing().getOpposite(); or is that not accurate
-                float placementYaw = player == null ? 0 : player.rotationYaw;
+                float placementYaw = player == null ? 0 : player.yRot;
                 int side = MathHelper.floor((placementYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 switch (side) {
                     case 0:
@@ -163,14 +163,14 @@ public class AttributeStateFacing implements AttributeState {
             AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
             if (blockFacing.canRotate()) {
                 DirectionProperty property = blockFacing.getFacingProperty();
-                return rotate(blockFacing, property, state, mirror.toRotation(state.get(property)));
+                return rotate(blockFacing, property, state, mirror.getRotation(state.getValue(property)));
             }
         }
         return state;
     }
 
     private static BlockState rotate(AttributeStateFacing blockFacing, DirectionProperty property, BlockState state, Rotation rotation) {
-        return blockFacing.setDirection(state, rotation.rotate(state.get(property)));
+        return blockFacing.setDirection(state, rotation.rotate(state.getValue(property)));
     }
 
     public enum FacePlacementType {

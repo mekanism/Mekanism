@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/terracotta"
+      },
+      "without": {
+        "item": "minecraft:orange_terracotta"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:orange"
+  },
+  "output": {
+    "item": "minecraft:orange_terracotta"
+  }
+}

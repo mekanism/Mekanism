@@ -14,7 +14,7 @@ public enum AdditionsLang implements ILangEntry {
     private final String key;
 
     AdditionsLang(String type, String path) {
-        this(Util.makeTranslationKey(type, MekanismAdditions.rl(path)));
+        this(Util.makeDescriptionId(type, MekanismAdditions.rl(path)));
     }
 
     AdditionsLang(String key) {

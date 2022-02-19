@@ -14,9 +14,7 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -57,11 +55,5 @@ public class SlurryInventorySlot extends ChemicalInventorySlot<Slurry, SlurrySta
     @Override
     protected IChemicalHandler<Slurry, SlurryStack> getCapability() {
         return getCapability(current);
-    }
-
-    @Nullable
-    @Override
-    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Slurry, SlurryStack>> getConversionRecipeType() {
-        return null;
     }
 }

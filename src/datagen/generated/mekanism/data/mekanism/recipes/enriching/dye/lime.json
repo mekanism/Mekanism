@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:sea_pickle"
+    }
+  },
+  "output": {
+    "item": "minecraft:lime_dye",
+    "count": 2
+  }
+}

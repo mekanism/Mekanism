@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "mekanismadditions:plastic_blocks/slick"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/slick"
+      },
+      "without": {
+        "item": "mekanismadditions:blue_slick_plastic"
+      }
     },
     "D": {
       "tag": "forge:dyes/blue"

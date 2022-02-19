@@ -33,8 +33,13 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> input(MULTIBLOCK multiblock,
           TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
+        return input(multiblock, tile, capacity, validator, null);
+    }
+
+    public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> input(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
+          IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
         return create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(),
-              (stack, automationType) -> multiblock.isFormed(), validator, null);
+              (stack, automationType) -> multiblock.isFormed(), validator, listener);
     }
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> output(MULTIBLOCK multiblock,
@@ -43,9 +48,9 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
               (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(), validator, null);
     }
 
-    public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity,
-          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator,
-          @Nullable IContentsListener listener) {
+    public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
+          IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert,
+          Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Tile cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
@@ -70,9 +75,9 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (tile.hasWorld() && !tile.getWorld().isRemote()) {
+        if (tile.hasLevel() && !tile.getLevel().isClientSide()) {
             tile.markDirty(false);
-            multiblock.markDirtyComparator(tile.getWorld());
+            multiblock.markDirtyComparator(tile.getLevel());
         }
     }
 }

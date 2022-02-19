@@ -21,8 +21,8 @@ public class VoiceClient extends Thread {
     private Socket socket;
     private final String ip;
 
-    public VoiceClient(String s) {
-        ip = s;
+    public VoiceClient(String ip) {
+        this.ip = ip;
     }
 
     @Override

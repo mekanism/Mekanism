@@ -25,45 +25,56 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     private final int y;
     private final int z;
     public final RegistryKey<World> dimension;
+    private final int hashCode;
 
     /**
      * Creates a Coord4D from an entity's position, rounded down.
      *
-     * @param entity - entity to create the Coord4D from
+     * @param entity Entity to create the Coord4D from
      */
     public Coord4D(Entity entity) {
-        BlockPos entityPosition = entity.getPosition();
-        this.x = entityPosition.getX();
-        this.y = entityPosition.getY();
-        this.z = entityPosition.getZ();
-        this.dimension = entity.world.getDimensionKey();
+        this(entity.blockPosition(), entity.level);
     }
 
     /**
      * Creates a Coord4D from the defined x, y, z, and dimension values.
      *
-     * @param x         - x coordinate
-     * @param y         - y coordinate
-     * @param z         - z coordinate
-     * @param dimension - dimension ID
+     * @param x         X coordinate
+     * @param y         Y coordinate
+     * @param z         Z coordinate
+     * @param dimension Dimension ID
      */
     public Coord4D(double x, double y, double z, RegistryKey<World> dimension) {
         this.x = MathHelper.floor(x);
         this.y = MathHelper.floor(y);
         this.z = MathHelper.floor(z);
         this.dimension = dimension;
+        this.hashCode = initHashCode();
     }
 
-    public Coord4D(BlockPos pos, World world) {
-        this(pos, world.getDimensionKey());
+    /**
+     * Creates a Coord4D from the defined position, and world values.
+     *
+     * @param pos   Position (x, y, z)
+     * @param world World
+     */
+    public Coord4D(BlockPos pos, World world) {//TODO - 1.18: Switch this to taking Vector3i as position
+        this(pos, world.dimension());
     }
 
-    public Coord4D(BlockPos pos, RegistryKey<World> dimension) {
+    /**
+     * Creates a Coord4D from the defined position, and dimension values.
+     *
+     * @param pos       Position (x, y, z)
+     * @param dimension Dimension ID
+     */
+    public Coord4D(BlockPos pos, RegistryKey<World> dimension) {//TODO - 1.18: Switch this to taking Vector3i as position
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
-    public Coord4D(BlockRayTraceResult mop, World world) {
-        this(mop.getPos(), world);
+    @Deprecated
+    public Coord4D(BlockRayTraceResult mop, World world) {//TODO - 1.18: Remove this
+        this(mop.getBlockPos(), world);
     }
 
     /**
@@ -73,8 +84,8 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      *
      * @return the Coord4D object from the TileEntity
      */
-    public static Coord4D get(TileEntity tile) {
-        return new Coord4D(tile.getPos(), tile.getWorld());
+    public static Coord4D get(TileEntity tile) {//TODO - 1.18: Move this to a constructor or move the other helper constructors to a get method
+        return new Coord4D(tile.getBlockPos(), tile.getLevel());
     }
 
     /**
@@ -86,7 +97,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      */
     public static Coord4D read(CompoundNBT tag) {
         return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
-              RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
+              RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
     }
 
     /**
@@ -97,7 +108,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @return the Coord4D from the data input
      */
     public static Coord4D read(PacketBuffer dataStream) {
-        return new Coord4D(dataStream.readBlockPos(), RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dataStream.readResourceLocation()));
+        return new Coord4D(dataStream.readBlockPos(), RegistryKey.create(Registry.DIMENSION_REGISTRY, dataStream.readResourceLocation()));
     }
 
     /**
@@ -136,7 +147,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
         nbtTags.putInt(NBTConstants.X, x);
         nbtTags.putInt(NBTConstants.Y, y);
         nbtTags.putInt(NBTConstants.Z, z);
-        nbtTags.putString(NBTConstants.DIMENSION, dimension.getLocation().toString());
+        nbtTags.putString(NBTConstants.DIMENSION, dimension.location().toString());
         return nbtTags;
     }
 
@@ -148,7 +159,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     public void write(PacketBuffer dataStream) {
         //Note: We write the position as a block pos over the network so that it can be packed more efficiently
         dataStream.writeBlockPos(getPos());
-        dataStream.writeResourceLocation(dimension.getLocation());
+        dataStream.writeResourceLocation(dimension.location());
     }
 
     /**
@@ -187,7 +198,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
         if (side == null || amount == 0) {
             return this;
         }
-        return new Coord4D(x + (side.getXOffset() * amount), y + (side.getYOffset() * amount), z + (side.getZOffset() * amount), dimension);
+        return new Coord4D(x + (side.getStepX() * amount), y + (side.getStepY() * amount), z + (side.getStepZ() * amount), dimension);
     }
 
     /**
@@ -198,15 +209,26 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @return the distance to the defined Coord4D
      */
     public double distanceTo(Coord4D obj) {
+        return MathHelper.sqrt(distanceToSquared(obj));
+    }
+
+    /**
+     * Gets the distance to a defined Coord4D squared.
+     *
+     * @param obj the Coord4D to find the distance to
+     *
+     * @return the squared distance to the defined Coord4D
+     */
+    public double distanceToSquared(Coord4D obj) {
         int subX = x - obj.x;
         int subY = y - obj.y;
         int subZ = z - obj.z;
-        return MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
+        return subX * subX + subY * subY + subZ * subZ;
     }
 
     @Override
     public String toString() {
-        return "[Coord4D: " + x + ", " + y + ", " + z + ", dim=" + dimension.getLocation() + "]";
+        return "[Coord4D: " + x + ", " + y + ", " + z + ", dim=" + dimension.location() + "]";
     }
 
     @Override
@@ -216,11 +238,14 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
 
     @Override
     public int hashCode() {
+        return hashCode;
+    }
+
+    private int initHashCode() {
         int code = 1;
         code = 31 * code + x;
         code = 31 * code + y;
         code = 31 * code + z;
-        code = 31 * code + dimension.hashCode();
-        return code;
+        return 31 * code + dimension.hashCode();
     }
 }

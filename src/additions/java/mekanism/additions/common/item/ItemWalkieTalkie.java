@@ -6,9 +6,9 @@ import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,12 +26,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemWalkieTalkie extends Item implements IModeItem {
 
     public ItemWalkieTalkie(Item.Properties properties) {
-        super(properties.maxStackSize(1));
+        super(properties.stacksTo(1));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(OnOff.of(getOn(stack), true).getTextComponent());
         tooltip.add(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, getChannel(stack)));
         if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
@@ -41,9 +41,9 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack itemStack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
             setOn(itemStack, !getOn(itemStack));
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         }
@@ -52,7 +52,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged) {
-        return !ItemStack.areItemsEqual(oldStack, newStack);
+        return !ItemStack.isSame(oldStack, newStack);
     }
 
     public void setOn(ItemStack itemStack, boolean on) {
@@ -84,8 +84,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
             if (channel != newChannel) {
                 setChannel(stack, newChannel);
                 if (displayChangeMessage) {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                          AdditionsLang.CHANNEL_CHANGE.translate(newChannel)), Util.DUMMY_UUID);
+                    player.sendMessage(MekanismUtils.logFormat(AdditionsLang.CHANNEL_CHANGE.translate(newChannel)), Util.NIL_UUID);
                 }
             }
         }

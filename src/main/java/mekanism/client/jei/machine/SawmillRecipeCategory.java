@@ -8,12 +8,12 @@ import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -22,18 +22,17 @@ import mezz.jei.api.ingredients.IIngredients;
 
 public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
 
+    private final GuiSlot input;
+    private final GuiSlot output;
+
     public SawmillRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
         super(helper, mekanismBlock, 28, 16, 144, 54);
-    }
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(new GuiUpArrow(this, 60, 38));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 55, 16));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 55, 52).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.BAR, this, 78, 38));
+        addElement(new GuiUpArrow(this, 60, 38));
+        input = addSlot(SlotType.INPUT, 56, 17);
+        addSlot(SlotType.POWER, 56, 53).with(SlotOverlay.POWER);
+        output = addSlot(SlotType.OUTPUT_WIDE, 112, 31);
+        addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
+        addSimpleProgress(ProgressType.BAR, 78, 38);
     }
 
     @Override
@@ -50,12 +49,9 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, SawmillRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 27, 0);
-        itemStacks.init(1, false, 87, 18);
-        itemStacks.init(2, false, 103, 18);
-        itemStacks.set(0, recipe.getInput().getRepresentations());
-        itemStacks.set(1, recipe.getMainOutputDefinition());
-        itemStacks.set(2, recipe.getSecondaryOutputDefinition());
+        initItem(itemStacks, 0, true, input, recipe.getInput().getRepresentations());
+        initItem(itemStacks, 1, false, output.getRelativeX() + 4, output.getRelativeY() + 4, recipe.getMainOutputDefinition());
+        initItem(itemStacks, 2, false, output.getRelativeX() + 20, output.getRelativeY() + 4, recipe.getSecondaryOutputDefinition());
     }
 
     @Override
@@ -63,7 +59,7 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
         super.draw(recipe, matrix, mouseX, mouseY);
         double secondaryChance = recipe.getSecondaryChance();
         if (secondaryChance > 0) {
-            getFont().drawString(matrix, Math.round(secondaryChance * 100) + "%", 104, 41, SpecialColors.TEXT_TITLE.argb());
+            getFont().draw(matrix, TextUtils.getPercent(secondaryChance), 104, 41, SpecialColors.TEXT_TITLE.argb());
         }
     }
 }

@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -15,6 +15,11 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -42,6 +47,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
 
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
     public FluidTankFluidTank fluidTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -56,7 +62,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     private boolean needsPacket;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private FluidInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
 
     private boolean updateClientLight = false;
@@ -64,10 +72,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), FluidTankTier.class);
     }
 
@@ -94,7 +104,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     protected void onUpdateClient() {
         super.onUpdateClient();
         if (updateClientLight) {
-            WorldUtils.recheckLighting(world, pos);
+            WorldUtils.recheckLighting(level, worldPosition);
             updateClientLight = false;
         }
     }
@@ -115,16 +125,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
-                //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
-                //TODO: Do we even need this on the sever side of things
-                WorldUtils.recheckLighting(world, pos);
+                WorldUtils.recheckLighting(level, worldPosition);
             }
             prevScale = scale;
             needsPacket = true;
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
-            FluidUtils.emit(EnumSet.of(Direction.DOWN), fluidTank, this, tier.getOutput());
+            FluidUtils.emit(Collections.singleton(Direction.DOWN), fluidTank, this, tier.getOutput());
         }
         if (needsPacket) {
             sendUpdatePacket();
@@ -132,18 +140,16 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
-        return nbtTags;
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        NBTUtils.setEnumIfPresent(data, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
     @Override
@@ -166,22 +172,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
-    }
-
-    @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             setActive(!getActive());
-            World world = getWorld();
+            World world = getLevel();
             if (world != null) {
-                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
             }
         }
         return ActionResultType.SUCCESS;
@@ -193,6 +189,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
+    @ComputerMethod
     public ContainerEditMode getContainerEditMode() {
         return editMode;
     }
@@ -247,9 +244,39 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         super.handleUpdateTag(state, tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
-        //Set the client's light to update just in case the value changed
-        //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
-        updateClientLight = true;
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> {
+            if (prevScale != scale) {
+                if (prevScale == 0 || scale == 0) {
+                    //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
+                    // as the fluid may have changed and have a light value, mark that the client should update the light value
+                    updateClientLight = true;
+                }
+                prevScale = scale;
+            }
+        });
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void setContainerEditMode(ContainerEditMode mode) throws ComputerException {
+        validateSecurityIsPublic();
+        if (editMode != mode) {
+            editMode = mode;
+            markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private void incrementContainerEditMode() throws ComputerException {
+        validateSecurityIsPublic();
+        nextMode();
+    }
+
+    @ComputerMethod
+    private void decrementContainerEditMode() throws ComputerException {
+        validateSecurityIsPublic();
+        editMode = editMode.getPrevious();
+        markDirty(false);
+    }
+    //End methods IComputerTile
 }

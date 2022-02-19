@@ -31,6 +31,13 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
         this.output = BoxedChemicalStack.box(output);
     }
 
+    /**
+     * Creates a Chemical Dissolution recipe builder.
+     *
+     * @param itemInput Item Input.
+     * @param gasInput  Gas Input.
+     * @param output    Output.
+     */
     public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty chemical output.");
@@ -50,7 +57,7 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
             json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeBoxedChemicalStack(output));

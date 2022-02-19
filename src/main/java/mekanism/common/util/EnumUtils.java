@@ -3,8 +3,8 @@ package mekanism.common.util;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalType;
+import mekanism.api.text.EnumColor;
 import mekanism.common.content.blocktype.FactoryType;
-import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
@@ -37,6 +37,11 @@ public class EnumUtils {
      */
     public static final EquipmentSlotType[] ARMOR_SLOTS = new EquipmentSlotType[]{EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
                                                                                   EquipmentSlotType.FEET};
+
+    /**
+     * Cached collection of hand slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
+     */
+    public static final EquipmentSlotType[] HAND_SLOTS = new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND};
 
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
@@ -146,11 +151,6 @@ public class EnumUtils {
     public static final SubstanceType[] SUBSTANCES = SubstanceType.values();
 
     /**
-     * Cached value of {@link CacheSubstance#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final CacheSubstance[] CACHE_SUBSTANCES = CacheSubstance.values();
-
-    /**
      * Cached value of {@link OreType#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final OreType[] ORE_TYPES = OreType.values();
@@ -174,4 +174,9 @@ public class EnumUtils {
      * Cached value of {@link ChemicalType#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final ChemicalType[] CHEMICAL_TYPES = ChemicalType.values();
+
+    /**
+     * Cached value of {@link EnumColor#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final EnumColor[] COLORS = EnumColor.values();
 }

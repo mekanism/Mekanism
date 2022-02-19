@@ -7,11 +7,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
-import mekanism.client.MekKeyHandler;
-import mekanism.client.MekanismKeyHandler;
+import mekanism.client.key.MekKeyHandler;
+import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.item.DictionaryContainer;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
@@ -38,41 +37,39 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemDictionary extends Item {
 
     public ItemDictionary(Properties properties) {
-        super(properties.maxStackSize(1).rarity(Rarity.UNCOMMON));
+        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.descriptionKey)) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltip.add(MekanismLang.DESCRIPTION_DICTIONARY.translate());
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.func_238171_j_()));
+            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
         }
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player != null) {
-            World world = context.getWorld();
-            BlockPos pos = context.getPos();
+            World world = context.getLevel();
+            BlockPos pos = context.getClickedPos();
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (tile != null || !player.isSneaking()) {
+            if (tile != null || !player.isShiftKeyDown()) {
                 //If there is a tile at the position or the player is not sneaking
                 // grab the tags of the block and the tile
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     Set<ResourceLocation> blockTags = world.getBlockState(pos).getBlock().getTags();
                     Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : tile.getType().getTags();
                     if (blockTags.isEmpty() && tileTags.isEmpty()) {
-                        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
-                              Util.DUMMY_UUID);
+                        player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
                     } else {
                         //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
@@ -87,9 +84,9 @@ public class ItemDictionary extends Item {
 
     @Nonnull
     @Override
-    public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
-        if (!player.isSneaking()) {
-            if (!player.world.isRemote) {
+    public ActionResultType interactLivingEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
+        if (!player.isShiftKeyDown()) {
+            if (!player.level.isClientSide) {
                 sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, entity.getType().getTags());
             }
             return ActionResultType.SUCCESS;
@@ -99,23 +96,19 @@ public class ItemDictionary extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
-            if (!world.isRemote()) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new DictionaryContainer(i, inv, hand, stack)),
-                      buf -> {
-                          buf.writeEnumValue(hand);
-                          buf.writeItemStack(stack);
-                      });
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            if (!world.isClientSide()) {
+                MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayerEntity) player, hand, stack);
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         } else {
             BlockRayTraceResult result = MekanismUtils.rayTrace(player, FluidMode.ANY);
             if (result.getType() != Type.MISS) {
-                Block block = world.getBlockState(result.getPos()).getBlock();
+                Block block = world.getBlockState(result.getBlockPos()).getBlock();
                 if (block instanceof FlowingFluidBlock) {
-                    if (!world.isRemote()) {
+                    if (!world.isClientSide()) {
                         sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, ((FlowingFluidBlock) block).getFluid().getTags());
                     }
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -127,8 +120,7 @@ public class ItemDictionary extends Item {
 
     private void sendTagsOrEmptyToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (tags.isEmpty()) {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
-                  Util.DUMMY_UUID);
+            player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
         } else {
             sendTagsToPlayer(player, tagsFoundEntry, tags);
         }
@@ -136,9 +128,9 @@ public class ItemDictionary extends Item {
 
     private void sendTagsToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (!tags.isEmpty()) {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, tagsFoundEntry), Util.DUMMY_UUID);
+            player.sendMessage(MekanismUtils.logFormat(tagsFoundEntry), Util.NIL_UUID);
             for (ResourceLocation tag : tags) {
-                player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), Util.DUMMY_UUID);
+                player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), Util.NIL_UUID);
             }
         }
     }

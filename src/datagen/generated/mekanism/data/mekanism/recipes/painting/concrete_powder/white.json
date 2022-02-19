@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/concrete_powder"
+      },
+      "without": {
+        "item": "minecraft:white_concrete_powder"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:white"
+  },
+  "output": {
+    "item": "minecraft:white_concrete_powder"
+  }
+}

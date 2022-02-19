@@ -1,5 +1,6 @@
 package mekanism.common.block.prefab;
 
+import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.BlockMekanism;
@@ -25,8 +26,8 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     protected final TYPE type;
 
-    public BlockBase(TYPE type) {
-        this(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 9).setRequiresTool());
+    public BlockBase(TYPE type, UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+        this(type, propertyModifier.apply(AbstractBlock.Properties.of(Material.METAL).requiresCorrectToolForDrops()));
     }
 
     public BlockBase(TYPE type, AbstractBlock.Properties properties) {
@@ -62,10 +63,10 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @Override
     @Deprecated
-    public boolean allowsMovement(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType pathType) {
+    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType pathType) {
         //If we have a custom shape which means we are not a full block then mark that movement is not
-        // allowed through this block it is not a full block. Otherwise use the normal handling for if movement is allowed
-        return !type.has(AttributeCustomShape.class) && super.allowsMovement(state, world, pos, pathType);
+        // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
+        return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, world, pos, pathType);
     }
 
     @Nonnull
@@ -82,8 +83,8 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     public static class BlockBaseModel<BLOCK extends BlockType> extends BlockBase<BLOCK> implements IStateFluidLoggable {
 
-        public BlockBaseModel(BLOCK blockType) {
-            super(blockType);
+        public BlockBaseModel(BLOCK blockType, UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+            super(blockType, propertyModifier);
         }
 
         public BlockBaseModel(BLOCK blockType, AbstractBlock.Properties properties) {
