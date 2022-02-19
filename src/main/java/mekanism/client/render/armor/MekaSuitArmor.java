@@ -346,7 +346,7 @@ public class MekaSuitArmor implements ICustomArmor {
 
         if (!modules.isEmpty()) {
             Map<ModelData, Set<String>> allMatchedParts = new Object2ObjectOpenHashMap<>();
-            for (ModuleOBJModelData modelData : MekanismModelCache.INSTANCE.MEKA_SUIT_MODULES) {
+            for (ModuleOBJModelData modelData : MekanismModelCache.INSTANCE.MEKASUIT_MODULES) {
                 Set<String> matchedParts = allMatchedParts.computeIfAbsent(modelData, d -> new HashSet<>());
                 for (Object2BooleanMap.Entry<ModuleModelSpec> entry : modules.object2BooleanEntrySet()) {
                     ModuleModelSpec spec = entry.getKey();
@@ -422,7 +422,7 @@ public class MekaSuitArmor implements ICustomArmor {
         Map<ModelPos, List<BakedQuad>> opaqueMap = new EnumMap<>(ModelPos.class);
         Map<ModelPos, List<BakedQuad>> transparentMap = new EnumMap<>(ModelPos.class);
         for (ModelPos pos : ModelPos.VALUES) {
-            for (ModelData modelData : MekanismModelCache.INSTANCE.MEKA_SUIT_MODULES) {
+            for (ModelData modelData : MekanismModelCache.INSTANCE.MEKASUIT_MODULES) {
                 parseTransparency(modelData, pos, opaqueMap, transparentMap, specialQuadsToRender.getOrDefault(modelData, Collections.emptyMap()),
                       specialLEDQuadsToRender.getOrDefault(modelData, Collections.emptyMap()));
             }

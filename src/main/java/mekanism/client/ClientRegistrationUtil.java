@@ -1,8 +1,10 @@
 package mekanism.client;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
@@ -29,6 +31,7 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -72,9 +75,34 @@ public class ClientRegistrationUtil {
     @SafeVarargs
     public static <T extends BlockEntity> void bindTileEntityRenderer(EntityRenderersEvent.RegisterRenderers event, BlockEntityRendererProvider<T> rendererProvider,
           TileEntityTypeRegistryObject<? extends T>... tileEntityTypeROs) {
-        //TODO - 1.18: Evaluate how we batch this to try and only create one renderer per batch?
-        for (TileEntityTypeRegistryObject<? extends T> tileTypeRO : tileEntityTypeROs) {
-            event.registerBlockEntityRenderer(tileTypeRO.get(), rendererProvider);
+        if (tileEntityTypeROs.length == 0) {
+            throw new IllegalArgumentException("No renderers provided.");
+        } else if (tileEntityTypeROs.length == 1) {
+            event.registerBlockEntityRenderer(tileEntityTypeROs[0].get(), rendererProvider);
+        } else {
+            BlockEntityRendererProvider<T> provider = new BlockEntityRendererProvider<>() {
+                @Nullable
+                private WeakReference<Context> cachedContext;
+                @Nullable
+                private WeakReference<BlockEntityRenderer<T>> cachedRenderer;
+
+                @Nonnull
+                @Override
+                public BlockEntityRenderer<T> create(@Nonnull Context context) {
+                    //If there is a cached context and renderer make use of it, otherwise create one and cache it
+                    // this allows us to reduce the number of renderer classes we create
+                    BlockEntityRenderer<T> renderer = cachedRenderer == null ? null : cachedRenderer.get();
+                    if (cachedContext == null || cachedContext.get() != context || renderer == null) {
+                        renderer = rendererProvider.create(context);
+                        cachedContext = new WeakReference<>(context);
+                        cachedRenderer = new WeakReference<>(renderer);
+                    }
+                    return renderer;
+                }
+            };
+            for (TileEntityTypeRegistryObject<? extends T> tileTypeRO : tileEntityTypeROs) {
+                event.registerBlockEntityRenderer(tileTypeRO.get(), provider);
+            }
         }
     }
 
@@ -88,7 +116,7 @@ public class ClientRegistrationUtil {
         Minecraft.getInstance().particleEngine.register(particleTypeRO.get(), factory);
     }
 
-    public static <C extends AbstractContainerMenu, U extends Screen & MenuAccess < C >> void registerScreen(ContainerTypeRegistryObject < C > type, ScreenConstructor < C, U > factory) {
+    public static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
         MenuScreens.register(type.get(), factory);
     }
 
