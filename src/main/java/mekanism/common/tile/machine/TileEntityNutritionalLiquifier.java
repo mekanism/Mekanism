@@ -79,7 +79,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     private MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
     private InputInventorySlot inputSlot;
-    //TODO - 1.18: Add this method to the CC google spreadsheet
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerFillItem")
     private FluidInventorySlot containerFillSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")

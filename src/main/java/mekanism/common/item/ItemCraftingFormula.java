@@ -63,7 +63,6 @@ public class ItemCraftingFormula extends Item {
             if (!world.isClientSide) {
                 setInventory(stack, null);
                 setInvalid(stack, false);
-                player.containerMenu.sendAllDataToRemote();
             }
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }

@@ -72,8 +72,6 @@ public class ItemGaugeDropper extends Item {
                 clearChemicalTanks(stack, InfusionStack.EMPTY);
                 clearChemicalTanks(stack, PigmentStack.EMPTY);
                 clearChemicalTanks(stack, SlurryStack.EMPTY);
-                //TODO - 1.18: Re-evaluate usages of this and if we have to override this method in any of our containers
-                player.containerMenu.sendAllDataToRemote();
             }
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }

@@ -181,7 +181,7 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                    player.containerMenu.sendAllDataToRemote();
+                    player.containerMenu.synchronizeCarriedToRemote();
                 }
             }
         }
@@ -199,7 +199,7 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (!extractedFluid.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                    player.containerMenu.sendAllDataToRemote();
+                    player.containerMenu.synchronizeCarriedToRemote();
                 }
             }
         }

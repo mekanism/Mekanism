@@ -52,7 +52,6 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
                     } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
                         curStack.grow(ret.getCount());
                     }
-                    //TODO - 1.18: Test
                     player.connection.send(new ClientboundContainerSetSlotPacket(-1, container.incrementStateId(), -1, player.containerMenu.getCarried()));
                 } else if (type == Type.SHIFT_TAKE) {
                     HashedItem itemType = freq.getTypeByUUID(typeUUID);
@@ -72,7 +71,6 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
                         ItemStack newStack = StackUtils.size(curStack, curStack.getCount() - (count - rejects.getCount()));
                         player.containerMenu.setCarried(newStack);
                     }
-                    //TODO - 1.18: Test
                     player.connection.send(new ClientboundContainerSetSlotPacket(-1, container.incrementStateId(), -1, player.containerMenu.getCarried()));
                 }
             }
