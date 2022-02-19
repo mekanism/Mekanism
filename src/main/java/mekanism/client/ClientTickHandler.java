@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -318,14 +319,13 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onFog(EntityViewRenderEvent.RenderFogEvent event) {
         if (visionEnhancement) {
-            float fog = 0.1F;
+            float fog = 384;
             IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(minecraft.player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
             if (module != null) {
-                fog -= module.getInstalledCount() * 0.022F;
+                fog *= Math.pow(module.getInstalledCount(), 1.25) / (float) MekanismModules.VISION_ENHANCEMENT_UNIT.getModuleData().getMaxStackSize();
             }
-            //TODO - 1.18: Figure out how to handle the fog EntityViewRenderEvent.FogDensity ???
-            //RenderSystem.fogDensity(fog);
-            //RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
+            RenderSystem.setShaderFogStart(-8.0F);
+            RenderSystem.setShaderFogEnd(fog * 0.5F);
         }
     }
 
