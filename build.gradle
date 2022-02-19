@@ -18,7 +18,7 @@ buildscript {
       maven {
           name = "jitpack"
           url = "https://jitpack.io/"
-    }
+      }
     }
     dependencies {
         classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
