@@ -472,8 +472,6 @@ dependencies {
     datagentoolsCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
-}
-
 if (project.hasProperty('UPDATE_MAPPINGS')) {
     //If the project has the update mappings property, configure it to be able to target all our extra sourceSets as well
     // so that whenever we need to update mappings it is quick and easy to do so.
