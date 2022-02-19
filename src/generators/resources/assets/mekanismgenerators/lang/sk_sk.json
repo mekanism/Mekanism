@@ -132,6 +132,7 @@
   "sound_event.mekanismgenerators.tile.generator.wind": "Zvuky veternej turbíny",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Bzučanie šiepného reaktoru",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Bzučanie fúzneho reaktora",
+  "turbine.mekanismgenerators.industrial_turbine": "Priemyselná Turbína",
   "turbine.mekanismgenerators.invalid_bad_complex": "Nemožno vytvoriť, našiel sa nesprávne položený Rotačný Komplex na %s. Komplex musí byť centrovaný nad Turbínovými Rotormi.",
   "turbine.mekanismgenerators.invalid_bad_rotor": "Nemožno vytvoriť, našiel sa neplatný Turbínový Rotor na %s. Turbínové Rotory musia byť centrované pod Rotačným Komplexom.",
   "turbine.mekanismgenerators.invalid_bad_rotors": "Nemožno vytvoriť, neplatné usporiadanie Turbínových Rotorov.",
