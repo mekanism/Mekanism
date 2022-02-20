@@ -117,6 +117,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public GasMode dumpRight = GasMode.IDLE;
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
     private FloatingLong recipeEnergyMultiplier = FloatingLong.ONE;
+    private int baselineMaxOperations = 1;
+
     private final IOutputHandler<@NonNull ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
@@ -298,8 +300,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setOnFinish(this::markForSave)
-              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
+              .setBaselineMaxOperations(() -> baselineMaxOperations)
+              .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            baselineMaxOperations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+        }
     }
 
     public ElectrolyticSeparatorEnergyContainer getEnergyContainer() {

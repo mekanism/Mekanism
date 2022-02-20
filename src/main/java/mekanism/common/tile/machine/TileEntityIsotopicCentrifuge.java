@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -70,6 +71,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     public IGasTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
@@ -168,7 +170,15 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
               .setActive(this::setActive)
               .setOnFinish(this::markForSave)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
+              .setBaselineMaxOperations(() -> baselineMaxOperations);
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            baselineMaxOperations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+        }
     }
 
     public MachineEnergyContainer<TileEntityIsotopicCentrifuge> getEnergyContainer() {

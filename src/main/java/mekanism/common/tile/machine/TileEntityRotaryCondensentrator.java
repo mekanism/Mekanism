@@ -9,13 +9,13 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -99,6 +99,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private int baselineMaxOperations = 1;
 
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemInput")
@@ -266,20 +267,16 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setOnFinish(this::markForSave)
-              .setPostProcessOperations(tracker -> {
-                  //Calculate number of operations based on available space and available inputs (this produces no errors)
-                  if (mode) {//Fluid to gas
-                      tracker.updateOperations(Math.min(fluidTank.getFluidAmount(), MathUtils.clampToInt(gasTank.getNeeded())));
-                  } else {//Gas to fluid
-                      tracker.updateOperations(Math.min(MathUtils.clampToInt(gasTank.getStored()), fluidTank.getNeeded()));
-                  }
-                  if (tracker.shouldContinueChecking()) {
-                      //If we should continue processing, and we have space for multiple operations, check if the number of speed upgrades
-                      // limits our processing amount (and if so apply any errors that should be applied
-                      MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent);
-                  }
-              });
+              .setBaselineMaxOperations(() -> baselineMaxOperations)
+              .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            baselineMaxOperations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.slurry.ISlurryTank;
@@ -82,6 +83,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     public ISlurryTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NonNull SlurryStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
@@ -188,8 +190,16 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setOnFinish(this::markForSave)
-              .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
+              .setBaselineMaxOperations(() -> baselineMaxOperations)
+              .setOnFinish(this::markForSave);
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            baselineMaxOperations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+        }
     }
 
     @Override

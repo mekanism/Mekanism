@@ -91,11 +91,18 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     };
 
     /**
+     * Gets the baseline maximum number of operations that can be performed if everything is working properly. The returned value should be at least one.
+     *
+     * @implNote Defaults to only performing one "operation" each tick.
+     */
+    private IntSupplier baselineMaxOperations = () -> 1;
+    /**
      * Function to allow for post-processing {@link #calculateOperationsThisTick(OperationTracker)}.
      *
-     * @implNote Defaults to capping the number of operations to one operation per tick.
+     * @implNote Defaults to doing nothing.
      */
-    private Consumer<OperationTracker> postProcessOperations = tracker -> tracker.updateOperations(1);
+    private Consumer<OperationTracker> postProcessOperations = tracker -> {
+    };
     /**
      * Called when the errors for this cached recipe changes.
      *
@@ -213,6 +220,20 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     /**
+     * Sets the supplier that supplies the baseline maximum number of operations that can be performed each tick if everything is working properly.
+     *
+     * @param baselineMaxOperations Supplies the baseline max number of operations per tick.
+     *
+     * @apiNote {@code baselineMaxOperations} should return a value of at least one.
+     * <br>
+     * If this method is not used, the {@code baselineMaxOperations} of this {@link CachedRecipe} defaults to returning one.
+     */
+    public CachedRecipe<RECIPE> setBaselineMaxOperations(IntSupplier baselineMaxOperations) {
+        this.baselineMaxOperations = Objects.requireNonNull(baselineMaxOperations, "Baseline max operations cannot be null.");
+        return this;
+    }
+
+    /**
      * Sets the callback used to post-process the number of operations this {@link CachedRecipe} calculated it can perform in {@link
      * #calculateOperationsThisTick(OperationTracker)} and to add any {@link RecipeError}s that occur during post-processing.
      *
@@ -220,7 +241,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      *
      * @param postProcessOperations Function that applies post-processing to the result of {@link #calculateOperationsThisTick(OperationTracker)}.
      *
-     * @apiNote If this method is not used, {@code postProcessOperations} for this {@link CachedRecipe} defaults to capping the number of operations at one.
+     * @apiNote If this method is not used, {@code postProcessOperations} for this {@link CachedRecipe} defaults to doing nothing as the baseline already has the maximum
+     * amount of operations we can actually perform.
      */
     public CachedRecipe<RECIPE> setPostProcessOperations(Consumer<OperationTracker> postProcessOperations) {
         this.postProcessOperations = Objects.requireNonNull(postProcessOperations, "Post processing of the operation count cannot be null.");
@@ -270,10 +292,17 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         int operations;
         if (canHolderFunction.getAsBoolean()) {
             setupVariableValues();
-            OperationTracker tracker = new OperationTracker(errors, recheckAllErrors.getAsBoolean());
+            OperationTracker tracker = new OperationTracker(errors, recheckAllErrors.getAsBoolean(), baselineMaxOperations.getAsInt());
             calculateOperationsThisTick(tracker);
             if (tracker.shouldContinueChecking()) {
                 postProcessOperations.accept(tracker);
+                //If we should continue checking try to cap the max at the max amount we have for energy that we didn't cap it at earlier
+                // Note: We don't have to always try and cap it as if we shouldn't continue checking that means we are already stopped.
+                if (tracker.shouldContinueChecking() && tracker.capAtMaxForEnergy()) {
+                    //If we lowered the maximum number of operations due to our available energy, then we add an error that we don't have
+                    // enough energy to run at our maximum rate
+                    tracker.addError(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE);
+                }
             }
             operations = tracker.currentMax;
             if (tracker.hasErrorsToCopy()) {
@@ -361,6 +390,9 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * RecipeError} using {@link OperationTracker#addError(RecipeError)}.
      *
      * @param tracker Tracker of current errors and max operations.
+     *
+     * @implNote While max operations per energy is tracked here, it only is incorporated into the max number of operations if none can be performed. Otherwise, it gets
+     * incorporated after this method is called.
      */
     protected void calculateOperationsThisTick(OperationTracker tracker) {
         if (tracker.shouldContinueChecking()) {
@@ -370,8 +402,12 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
                 //Make sure we don't have any integer overflow in calculating how much we have room for
                 //TODO: Evaluate moving this check to after checking if inputs are empty, as those may be a cheaper check
                 int operations = storedEnergy.get().divideToInt(energyPerTick);
-                tracker.updateOperations(operations);
+                //Update the max amount we can perform from our energy (we apply this at the end so that we can see if we have a reduced
+                // operation count due to energy
+                tracker.maxForEnergy = operations;
                 if (operations == 0) {
+                    //If we have no operations we can perform however, just update it immediately
+                    tracker.updateOperations(operations);
                     tracker.addError(RecipeError.NOT_ENOUGH_ENERGY);
                 }
             }
@@ -438,19 +474,25 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
          * @implNote Starts at {@code true} as {@link #lastErrors} will always contain the contents of an empty set (the default for new {@link #errors}).
          */
         private boolean checkedErrors = true;
-        //TODO: Should this be passing Integer.MAX_VALUE or get the value from somewhere else. Some sort of thing the tile passes as a supplier
         /**
          * The current maximum number of operations that the {@link CachedRecipe} can perform this tick.
          */
-        private int currentMax = Integer.MAX_VALUE;
+        private int currentMax;
+        /**
+         * The current maximum number of operations that the {@link CachedRecipe} can perform this tick due to available energy.
+         */
+        private int maxForEnergy;
 
         /**
-         * @param lastErrors Set of the last errors the {@link CachedRecipe} had.
-         * @param checkAll   {@code true} if this tracker should try and check for all existing errors.
+         * @param lastErrors  Set of the last errors the {@link CachedRecipe} had.
+         * @param checkAll    {@code true} if this tracker should try and check for all existing errors.
+         * @param startingMax Starting maximum number of operations that the {@link CachedRecipe} can perform this tick.
          */
-        private OperationTracker(Set<RecipeError> lastErrors, boolean checkAll) {
+        private OperationTracker(Set<RecipeError> lastErrors, boolean checkAll, int startingMax) {
             this.lastErrors = lastErrors;
             this.checkAll = checkAll;
+            this.currentMax = startingMax;
+            this.maxForEnergy = currentMax;
         }
 
         /**
@@ -527,6 +569,17 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
                 return true;
             }
             return false;
+        }
+
+        /**
+         * Updates the maximum number of operations the {@link CachedRecipe} can currently perform to the maximum number that was calculated based on available energy.
+         *
+         * @return {@code true} if the maximum number of operations decreased as a result of this method call.
+         *
+         * @apiNote This method can only reduce the maximum number of operations, it cannot increase it.
+         */
+        private boolean capAtMaxForEnergy() {
+            return updateOperations(maxForEnergy);
         }
 
         /**

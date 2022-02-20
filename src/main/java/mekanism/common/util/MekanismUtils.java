@@ -32,8 +32,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
-import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -53,7 +51,6 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -262,24 +259,6 @@ public final class MekanismUtils {
             return 0;
         }
         return prevScale;
-    }
-
-    /**
-     * Applies a post-processing of capping operations at 2^installed speed upgrades. If it reduces the number of operations, it adds a not enough energy reduced rate
-     * error.
-     */
-    public static void postProcessExponentialRecipeSpeed(OperationTracker tracker, TileComponentUpgrade upgradeComponent) {
-        postProcessExponentialRecipeSpeed(tracker, upgradeComponent, RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE);
-    }
-
-    /**
-     * Applies a post-processing of capping operations at 2^installed speed upgrades. If it reduces the number of operations, it adds the given error.
-     */
-    public static void postProcessExponentialRecipeSpeed(OperationTracker tracker, TileComponentUpgrade upgradeComponent, RecipeError error) {
-        int operations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-        if (tracker.updateOperations(operations)) {
-            tracker.addError(error);
-        }
     }
 
     public static long getBaseUsage(IUpgradeTile tile, int def) {
