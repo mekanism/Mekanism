@@ -126,6 +126,7 @@
   "reactor.mekanismgenerators.logic.excess_waste": "Nadbytočný Odpad",
   "reactor.mekanismgenerators.logic.powered": "Napájané",
   "reactor.mekanismgenerators.logic.ready": "Pripravené na Zapálenie",
+  "reactor.mekanismgenerators.logic.redstone_output_mode": "Režim redstonu: %s",
   "reactor.mekanismgenerators.logic.temperature": "Vysoká Teplota",
   "reactor.mekanismgenerators.stats": "Štatistiky",
   "reactor.mekanismgenerators.stats.active": "Chladené Vodou",
