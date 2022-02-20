@@ -1,12 +1,9 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import javax.annotation.Nonnull;
@@ -18,7 +15,6 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -30,18 +26,13 @@ public class LaserParticle extends TextureSheetParticle {
     private static final ParticleRenderType LASER_TYPE = new ParticleRenderType() {
         @Override
         public void begin(@Nonnull BufferBuilder buffer, @Nonnull TextureManager manager) {
-            //Copy of PARTICLE_SHEET_TRANSLUCENT but with cull disabled
-            RenderSystem.depthMask(true);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.disableCull();
-            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+            ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT.begin(buffer, manager);
         }
 
         @Override
-        public void end(Tesselator tesselator) {
-            tesselator.end();
+        public void end(@Nonnull Tesselator tesselator) {
+            ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT.end(tesselator);
         }
 
         public String toString() {
@@ -61,7 +52,9 @@ public class LaserParticle extends TextureSheetParticle {
         rCol = 1;
         gCol = 0;
         bCol = 0;
-        alpha = 0.1F;
+        //Note: Vanilla discards pieces from particles that are under the alpha of 0.1, due to floating point differences
+        // of float and double if we set this to 0.1F, then it ends up getting discarded, so we just set this to 0.11F
+        alpha = 0.11F;
         quadSize = energyScale;
         halfLength = (float) (end.distanceTo(start) / 2);
         direction = dir;
