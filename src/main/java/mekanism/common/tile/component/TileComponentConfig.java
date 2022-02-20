@@ -95,7 +95,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             case ITEM -> tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
             case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
         }
-        tile.markDirty(false);
+        tile.markForSave();
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
         for (Consumer<Direction> listener : configChangeListeners.getOrDefault(transmissionType, Collections.emptyList())) {
             listener.accept(direction);
@@ -410,7 +410,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
         if (config.isEjecting() != ejecting) {
             config.setEjecting(ejecting);
-            tile.markDirty(false);
+            tile.markForSave();
         }
     }
 

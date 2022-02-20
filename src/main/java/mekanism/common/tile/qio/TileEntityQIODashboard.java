@@ -2,6 +2,7 @@ package mekanism.common.tile.qio;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -33,13 +34,16 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
         super.presetVariables();
         craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
         for (byte tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
+            //Note: We don't bother passing a special listener as:
+            // a. We don't support comparators
+            // b. If we did it would be of items which this would already be
             craftingWindows[tableIndex] = new QIOCraftingWindow(this, tableIndex);
         }
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         //TODO - 1.18: Re-evaluate/make an improved performance ItemHandlerManager that uses this method
         // that is for read only slots instead of actually exposing slots to various sides
         InventorySlotHelper builder = InventorySlotHelper.readOnly();

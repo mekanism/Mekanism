@@ -8,11 +8,11 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
@@ -95,7 +95,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     @Override
     public void onContentsChanged() {
-        getTransmitterTile().markDirty(false);
+        getTransmitterTile().setChanged();
     }
 
     @Nullable

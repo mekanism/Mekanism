@@ -3,6 +3,7 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
@@ -53,6 +54,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
@@ -119,27 +121,28 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     protected void presetVariables() {
         super.presetVariables();
+        IContentsListener saveOnlyListener = this::markForSave;
         outputTank = MergedChemicalTank.create(
-              ChemicalTankBuilder.GAS.output(MAX_CHEMICAL, this),
-              ChemicalTankBuilder.INFUSION.output(MAX_CHEMICAL, this),
-              ChemicalTankBuilder.PIGMENT.output(MAX_CHEMICAL, this),
-              ChemicalTankBuilder.SLURRY.output(MAX_CHEMICAL, this)
+              ChemicalTankBuilder.GAS.output(MAX_CHEMICAL, getListener(SubstanceType.GAS, saveOnlyListener)),
+              ChemicalTankBuilder.INFUSION.output(MAX_CHEMICAL, getListener(SubstanceType.INFUSION, saveOnlyListener)),
+              ChemicalTankBuilder.PIGMENT.output(MAX_CHEMICAL, getListener(SubstanceType.PIGMENT, saveOnlyListener)),
+              ChemicalTankBuilder.SLURRY.output(MAX_CHEMICAL, getListener(SubstanceType.SLURRY, saveOnlyListener))
         );
     }
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB,
-              recipeCacheLookupMonitor));
+              recipeCacheListener));
         builder.addTank(outputTank.getGasTank());
         return builder.build();
     }
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
         builder.addTank(outputTank.getInfusionTank());
         return builder.build();
@@ -147,7 +150,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
         builder.addTank(outputTank.getPigmentTank());
         return builder.build();
@@ -155,7 +158,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
         builder.addTank(outputTank.getSlurryTank());
         return builder.build();
@@ -163,21 +166,21 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getLevel, this, 8, 65));
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, injectTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 28, 36))
+        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getLevel, listener, 8, 65));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, injectTank.getStack()), this::containsRecipeA, recipeCacheListener, 28, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
-        builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, this, 152, 55));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 14));
+        builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, listener, 152, 55));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 14));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
@@ -213,7 +216,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 

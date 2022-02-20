@@ -2,6 +2,7 @@ package mekanism.common.tile.multiblock;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IConfigurable;
+import mekanism.api.IContentsListener;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
@@ -27,7 +28,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         //Don't allow inserting if we are on output mode, or extracting if we are on input mode
         return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(), side -> getMultiblock().getEnergyContainers(side));
     }

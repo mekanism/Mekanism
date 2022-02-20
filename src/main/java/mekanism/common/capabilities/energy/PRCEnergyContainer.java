@@ -1,7 +1,9 @@
 package mekanism.common.capabilities.energy;
 
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -15,14 +17,14 @@ import mekanism.common.tile.machine.TileEntityPressurizedReactionChamber;
 @MethodsReturnNonnullByDefault
 public class PRCEnergyContainer extends MachineEnergyContainer<TileEntityPressurizedReactionChamber> {
 
-    public static PRCEnergyContainer input(TileEntityPressurizedReactionChamber tile) {
+    public static PRCEnergyContainer input(TileEntityPressurizedReactionChamber tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new PRCEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
+        return new PRCEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
     }
 
     private PRCEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
-          Predicate<@NonNull AutomationType> canInsert, TileEntityPressurizedReactionChamber tile) {
-        super(maxEnergy, energyPerTick, canExtract, canInsert, tile);
+          Predicate<@NonNull AutomationType> canInsert, TileEntityPressurizedReactionChamber tile, @Nullable IContentsListener listener) {
+        super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
     }
 
     @Override

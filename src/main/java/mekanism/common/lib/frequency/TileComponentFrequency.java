@@ -54,7 +54,9 @@ public class TileComponentFrequency implements ITileComponent {
             needsNotify = false;
         }
         if (needsSave) {
-            tile.markDirty(false);
+            //Mark the entire tile as dirty as maybe the frequency having changed means we need to update
+            // comparators if the comparators are based on data stored in the frequency
+            tile.setChanged();
             needsSave = false;
         }
     }

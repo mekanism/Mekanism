@@ -117,7 +117,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                     //Send an update packet to the client to update the number of muffling upgrades installed
                     tile.sendUpdatePacket();
                 }
-                tile.markDirty(false);
+                tile.markForSave();
                 return toAdd;
             }
         }

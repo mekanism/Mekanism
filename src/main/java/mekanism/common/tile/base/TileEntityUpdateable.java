@@ -64,25 +64,20 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void setChanged() {
-        markDirty(true);
+    public final void setChanged() {
+        setChanged(true);
     }
 
-    //TODO - 1.18: Create a version of this that doesn't mark the comparator as dirty if nothing changed that would effect the comparator level?
-    // Better solution probably would be to have it take an enum for what data got dirty, for purposes of then checking in our mark dirty comparator
-    // if the type of data (say items vs energy) even changed for what our comparator level is relating to. That way machines using energy won't
-    // cause their entire inventory to be scanned for checking if the comparator redstone level changed when nothing about the machine changed that
-    // would cause the level to change.
-    public void markDirty(boolean recheckBlockState) {
+    public final void markForSave() {
+        setChanged(false);
+    }
+
+    protected void setChanged(boolean updateComparator) {
         //Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
         // and if our block supports having a comparator signal, instead of always doing it
         if (level != null) {
-            if (recheckBlockState) {
-                //TODO - 1.18: Re-evaluate this as I don't think the super one rechecks blockstate anymore
-                setBlockState(level.getBlockState(worldPosition));
-            }
             WorldUtils.markChunkDirty(level, worldPosition);
-            if (!isRemote()) {
+            if (updateComparator && !isRemote()) {
                 markDirtyComparator();
             }
         }

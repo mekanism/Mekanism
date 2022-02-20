@@ -58,7 +58,7 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
         private final FloatingLongSupplier rate;
 
         private RateLimitEnergyContainer(FloatingLongSupplier rate, FloatingLongSupplier capacity, Predicate<@NonNull AutomationType> canExtract,
-              Predicate<@NonNull AutomationType> canInsert, IContentsListener listener) {
+              Predicate<@NonNull AutomationType> canInsert, @Nullable IContentsListener listener) {
             super(capacity, canExtract, canInsert, listener);
             this.rate = rate;
         }
@@ -74,7 +74,7 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
 
         private final boolean isCreative;
 
-        private EnergyCubeRateLimitEnergyContainer(EnergyCubeTier tier, IContentsListener listener) {
+        private EnergyCubeRateLimitEnergyContainer(EnergyCubeTier tier, @Nullable IContentsListener listener) {
             super(tier::getOutput, tier::getMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, listener);
             isCreative = tier == EnergyCubeTier.CREATIVE;
         }

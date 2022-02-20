@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
@@ -56,6 +57,7 @@ import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLooku
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -175,37 +177,37 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Nonnull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks() {
+    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(fluidTank = BasicFluidTank.input(24_000, this::containsRecipe, recipeCacheLookupMonitor));
+        builder.addTank(fluidTank = BasicFluidTank.input(24_000, this::containsRecipe, recipeCacheListener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
-        builder.addTank(rightTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
+        builder.addTank(leftTank = ChemicalTankBuilder.GAS.output(MAX_GAS, listener));
+        builder.addTank(rightTank = ChemicalTankBuilder.GAS.output(MAX_GAS, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = ElectrolyticSeparatorEnergyContainer.input(this));
+        builder.addContainer(energyContainer = ElectrolyticSeparatorEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 26, 35));
-        builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52));
-        builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 143, 35));
+        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, listener, 26, 35));
+        builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, listener, 59, 52));
+        builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, listener, 101, 52));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 143, 35));
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         leftOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
         rightOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -296,7 +298,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
     }
 
@@ -308,10 +310,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public void nextMode(int tank) {
         if (tank == 0) {
             dumpLeft = dumpLeft.getNext();
-            markDirty(false);
+            markForSave();
         } else if (tank == 1) {
             dumpRight = dumpRight.getNext();
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -355,6 +357,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.FLUID;
+    }
+
+    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
@@ -368,7 +375,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         validateSecurityIsPublic();
         if (dumpLeft != mode) {
             dumpLeft = mode;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -382,7 +389,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private void decrementLeftOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumpLeft = dumpLeft.getPrevious();
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod
@@ -390,7 +397,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         validateSecurityIsPublic();
         if (dumpRight != mode) {
             dumpRight = mode;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -404,7 +411,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private void decrementRightOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumpRight = dumpRight.getPrevious();
-        markDirty(false);
+        markForSave();
     }
     //End methods IComputerTile
 }

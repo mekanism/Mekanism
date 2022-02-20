@@ -104,21 +104,21 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
         builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
-              this::onContentsChangedUpdateSortingAndCache));
+              markAllMonitorsChanged(listener)));
         return builder.build();
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
-        super.addSlots(builder, updateSortingListener);
+    protected void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener) {
+        super.addSlots(builder, listener, updateSortingListener);
         //Note: We care about the gas tank not the slot when it comes to recipes and updating sorting
-        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, this, 7, 57));
+        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, listener, 7, 57));
     }
 
     public IGasTank getGasTank() {
@@ -196,7 +196,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
 

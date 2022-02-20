@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -16,17 +17,17 @@ import net.minecraftforge.fluids.FluidStack;
 @MethodsReturnNonnullByDefault
 public class FluidTankFluidTank extends BasicFluidTank {
 
-    public static FluidTankFluidTank create(TileEntityFluidTank tile) {
+    public static FluidTankFluidTank create(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Fluid tank tile entity cannot be null");
-        return new FluidTankFluidTank(tile);
+        return new FluidTankFluidTank(tile, listener);
     }
 
     private final TileEntityFluidTank tile;
     private final boolean isCreative;
     private final IntSupplier rate;
 
-    private FluidTankFluidTank(TileEntityFluidTank tile) {
-        super(tile.tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tile);
+    private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
+        super(tile.tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
         this.tile = tile;
         rate = tile.tier::getOutput;
         isCreative = tile.tier == FluidTankTier.CREATIVE;

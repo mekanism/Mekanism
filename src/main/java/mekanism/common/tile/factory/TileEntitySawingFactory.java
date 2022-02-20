@@ -56,7 +56,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
+    protected void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener) {
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
         processInfoSlots = new ProcessInfo[tier.processes];
@@ -66,6 +66,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
             int xPos = baseX + (i * baseXMult);
             OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 57);
             OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 77);
+            //Note: As we are an item factory that has comparator's based on items we can just use the monitor as a listener directly
             FactoryInputInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, recipeCacheLookupMonitors[i], xPos, 13);
             int index = i;
             builder.addSlot(inputSlot).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT, index)));
@@ -134,7 +135,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
 

@@ -14,8 +14,8 @@ public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> exte
     }
 
     @Override
-    public void onContentsChanged() {
-        super.onContentsChanged();
+    public void onChange() {
+        super.onChange();
         //Mark that sorting is needed
         setSortingNeeded.run();
     }
@@ -24,11 +24,6 @@ public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> exte
         cachedRecipe = createNewCachedRecipe(recipe, cacheIndex);
         //Note: While this is probably not strictly needed we clear our cache of knowing we have no recipe
         // so that we can properly re-enter the lookup cycle if needed
-        hasNoRecipe = false;
-    }
-
-    public void markMayHaveRecipe() {
-        //Mark that we may have a recipe again
         hasNoRecipe = false;
     }
 }

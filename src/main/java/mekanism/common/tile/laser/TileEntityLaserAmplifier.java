@@ -1,6 +1,8 @@
 package mekanism.common.tile.laser;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
@@ -20,6 +22,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -43,8 +46,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void addInitialEnergyContainers(EnergyContainerHelper builder) {
-        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.internalOnly, this));
+    protected void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener) {
+        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.internalOnly, this, listener));
     }
 
     @Override
@@ -84,6 +87,11 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.ENERGY;
+    }
+
+    @Override
     protected void notifyComparatorChange() {
         //Notify neighbors instead of just comparators as we also allow for direct redstone levels
         level.updateNeighborsAt(getBlockPos(), getBlockType());
@@ -93,14 +101,14 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         delay = Math.max(0, delay);
         if (this.delay != delay) {
             this.delay = delay;
-            markDirty(false);
+            markForSave();
         }
     }
 
     @Override
     public void nextMode() {
         outputMode = outputMode.getNext();
-        markDirty(false);
+        setChanged();
     }
 
     public void setMinThresholdFromPacket(FloatingLong floatingLong) {
@@ -108,7 +116,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         FloatingLong threshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
         if (!minThreshold.equals(threshold)) {
             minThreshold = threshold;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -117,7 +125,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         FloatingLong threshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
         if (!maxThreshold.equals(threshold)) {
             maxThreshold = threshold;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -179,7 +187,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         validateSecurityIsPublic();
         if (outputMode != mode) {
             outputMode = mode;
-            markDirty(false);
+            setChanged();
         }
     }
 

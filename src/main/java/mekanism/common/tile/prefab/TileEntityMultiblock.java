@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -27,6 +28,7 @@ import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
@@ -136,7 +138,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                     }
                     if (multiblock.isDirty()) {
                         //If the multiblock is dirty mark the chunk as dirty to ensure that we save and then reset the fact the multiblock is dirty
-                        markDirty(false);
+                        markForSave();
                         multiblock.resetDirty();
                     }
                 }
@@ -201,6 +203,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             // this will only perform neighbor updates if the block supports comparators
             markDirtyComparator();
         }
+    }
+
+    @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        //Comparators are handled via the multiblock, no special listeners are needed
+        return false;
     }
 
     @Override
@@ -370,7 +378,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         return side -> getMultiblock().getInventorySlots(side);
     }
 

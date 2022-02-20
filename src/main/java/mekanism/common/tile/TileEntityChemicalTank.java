@@ -3,7 +3,9 @@ package mekanism.common.tile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -47,6 +49,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -100,7 +103,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(getGasTank());
         return builder.build();
@@ -108,7 +111,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
         builder.addTank(getInfusionTank());
         return builder.build();
@@ -116,7 +119,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
         builder.addTank(getPigmentTank());
         return builder.build();
@@ -124,7 +127,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener) {
         ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
         builder.addTank(getSlurryTank());
         return builder.build();
@@ -132,10 +135,10 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(drainSlot = MergedChemicalInventorySlot.drain(chemicalTank, this, 16, 16));
-        builder.addSlot(fillSlot = MergedChemicalInventorySlot.fill(chemicalTank, this, 16, 48));
+        builder.addSlot(drainSlot = MergedChemicalInventorySlot.drain(chemicalTank, listener, 16, 16));
+        builder.addSlot(fillSlot = MergedChemicalInventorySlot.fill(chemicalTank, listener, 16, 48));
         drainSlot.setSlotType(ContainerSlotType.OUTPUT);
         drainSlot.setSlotOverlay(SlotOverlay.PLUS);
         fillSlot.setSlotType(ContainerSlotType.INPUT);
@@ -184,7 +187,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     public void nextMode(int tank) {
         if (tank == 0) {
             dumping = dumping.getNext();
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -209,6 +212,11 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     public int getRedstoneLevel() {
         IChemicalTank<?, ?> currentTank = getCurrentTank();
         return MekanismUtils.redstoneLevelFromContents(currentTank.getStored(), currentTank.getCapacity());
+    }
+
+    @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.GAS || type == SubstanceType.INFUSION || type == SubstanceType.PIGMENT || type == SubstanceType.SLURRY;
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
@@ -297,7 +305,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         validateSecurityIsPublic();
         if (dumping != mode) {
             dumping = mode;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -311,7 +319,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     private void decrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumping = dumping.getPrevious();
-        markDirty(false);
+        markForSave();
     }
     //End methods IComputerTile
 

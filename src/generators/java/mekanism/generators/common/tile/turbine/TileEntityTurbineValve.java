@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -21,13 +22,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         return side -> getMultiblock().getGasTanks(side);
     }
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         return side -> getMultiblock().getEnergyContainers(side);
     }
 

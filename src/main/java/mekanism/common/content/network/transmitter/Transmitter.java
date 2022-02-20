@@ -556,7 +556,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
             markDirtyTransmitters();
         }
-        getTransmitterTile().markDirty(false);
+        getTransmitterTile().setChanged();
     }
 
     public void onNeighborTileChange(Direction side) {

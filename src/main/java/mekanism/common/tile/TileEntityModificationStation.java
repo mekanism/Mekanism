@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -56,9 +57,9 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this), RelativeSide.BACK);
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK);
         return builder.build();
     }
 
@@ -68,14 +69,14 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, this, 35, 118));
-        builder.addSlot(containerSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleContainerItem, this, 125, 118));
+        builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, listener, 35, 118));
+        builder.addSlot(containerSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleContainerItem, listener, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
         moduleSlot.setSlotOverlay(SlotOverlay.MODULE);
         containerSlot.setSlotType(ContainerSlotType.NORMAL);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 149, 21));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 149, 21));
         return builder.build();
     }
 

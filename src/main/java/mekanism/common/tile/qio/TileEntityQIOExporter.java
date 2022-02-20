@@ -114,7 +114,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     public void toggleExportWithoutFilter() {
         exportWithoutFilter = !exportWithoutFilter;
-        markDirty(false);
+        markForSave();
     }
 
     @Override

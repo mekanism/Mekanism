@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
@@ -26,6 +27,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
@@ -84,18 +86,18 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Nonnull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks() {
+    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(fluidTank = FluidTankFluidTank.create(this));
+        builder.addTank(fluidTank = FluidTankFluidTank.create(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, this, 146, 19));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 146, 51));
+        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, listener, 146, 19));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 146, 51));
         inputSlot.setSlotOverlay(SlotOverlay.INPUT);
         outputSlot.setSlotOverlay(SlotOverlay.OUTPUT);
         return builder.build();
@@ -158,6 +160,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 
+    @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.FLUID;
+    }
+
     @Nonnull
     @Override
     public FluidStack insertFluid(int tank, @Nonnull FluidStack stack, @Nullable Direction side, @Nonnull Action action) {
@@ -198,7 +205,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void nextMode() {
         editMode = editMode.getNext();
-        markDirty(false);
+        markForSave();
     }
 
     @Override
@@ -262,7 +269,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         validateSecurityIsPublic();
         if (editMode != mode) {
             editMode = mode;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -276,7 +283,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private void decrementContainerEditMode() throws ComputerException {
         validateSecurityIsPublic();
         editMode = editMode.getPrevious();
-        markDirty(false);
+        markForSave();
     }
     //End methods IComputerTile
 }

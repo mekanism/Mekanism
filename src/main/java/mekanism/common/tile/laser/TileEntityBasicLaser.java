@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.AutomationType;
 import mekanism.api.lasers.ILaserDissipation;
@@ -70,13 +71,13 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        addInitialEnergyContainers(builder);
+        addInitialEnergyContainers(builder, listener);
         return builder.build();
     }
 
-    protected abstract void addInitialEnergyContainers(EnergyContainerHelper builder);
+    protected abstract void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener);
 
     @Override
     protected void onUpdateServer() {

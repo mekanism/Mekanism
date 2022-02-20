@@ -2,6 +2,7 @@ package mekanism.generators.common.tile.turbine;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.FluidUtils;
@@ -18,7 +19,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
 
     @Nonnull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks() {
+    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return side -> !getMultiblock().isFormed() ? Collections.emptyList() : getMultiblock().ventTanks;
     }
 

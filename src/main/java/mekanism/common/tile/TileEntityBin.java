@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
@@ -59,9 +60,9 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(binSlot = BinInventorySlot.create(this, tier));
+        builder.addSlot(binSlot = BinInventorySlot.create(listener, tier));
         return builder.build();
     }
 

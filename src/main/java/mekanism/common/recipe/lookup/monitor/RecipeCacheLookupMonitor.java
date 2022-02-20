@@ -33,8 +33,12 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     }
 
     @Override
-    public void onContentsChanged() {
+    public final void onContentsChanged() {
         handler.onContentsChanged();
+        onChange();
+    }
+
+    public void onChange() {
         //Mark that we may have a recipe again
         hasNoRecipe = false;
     }

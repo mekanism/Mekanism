@@ -29,7 +29,7 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
+    protected void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener) {
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
         processInfoSlots = new ProcessInfo[tier.processes];
@@ -38,6 +38,7 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
         for (int i = 0; i < tier.processes; i++) {
             int xPos = baseX + (i * baseXMult);
             OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 57);
+            //Note: As we are an item factory that has comparator's based on items we can just use the monitor as a listener directly
             FactoryInputInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, recipeCacheLookupMonitors[i], xPos, 13);
             int index = i;
             builder.addSlot(inputSlot).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT, index)));

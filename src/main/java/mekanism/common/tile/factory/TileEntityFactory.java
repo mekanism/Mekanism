@@ -151,24 +151,17 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     /**
-     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the normal {@link
-     * #onContentsChanged()} to not cause sorting to happen again just because the energy level of the factory changed.
+     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again and recipes as needing to be rechecked. This combines with the
+     * passed in listener to allow for abstracting the comparator type checks up to the base level.
      */
-    private void onContentsChangedUpdateSorting() {
-        onContentsChanged();
-        //Mark sorting as being needed again
-        sortingNeeded = true;
-    }
-
-    /**
-     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the other {@link
-     * #onContentsChangedUpdateSorting()} to not cause recipe lookups to rerun when an output is removed as the raw recipe lookup ignores outputs.
-     */
-    protected void onContentsChangedUpdateSortingAndCache() {
-        onContentsChangedUpdateSorting();
-        for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
-            cacheLookupMonitor.markMayHaveRecipe();
-        }
+    protected IContentsListener markAllMonitorsChanged(IContentsListener listener) {
+        return () -> {
+            listener.onContentsChanged();
+            //Note: Updating sorting is handled by the onChange calls
+            for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
+                cacheLookupMonitor.onChange();
+            }
+        };
     }
 
     @Override
@@ -184,25 +177,29 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        addSlots(builder, this::onContentsChangedUpdateSorting);
+        addSlots(builder, listener, () -> {
+            listener.onContentsChanged();
+            //Mark sorting as being needed again
+            sortingNeeded = true;
+        });
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
         //Note: We can just pass ourselves as the listener instead of the listener that updates sorting as well,
         // as changes to it won't change anything about the sorting of the recipe
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 7, 13));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 7, 13));
         return builder.build();
     }
 
-    protected abstract void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener);
+    protected abstract void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener);
 
     @Nullable
     protected IInventorySlot getExtraSlot() {
@@ -354,7 +351,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     public void toggleSorting() {
         sorting = !isSorting();
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod(nameOverride = "isAutoSortEnabled")
@@ -488,7 +485,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         validateSecurityIsPublic();
         if (sorting != enabled) {
             sorting = enabled;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -714,7 +711,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
     }
 
-    public record ProcessInfo(int process, @Nonnull FactoryInputInventorySlot inputSlot, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    public record ProcessInfo(int process, @Nonnull FactoryInputInventorySlot inputSlot, @Nonnull IInventorySlot outputSlot,
+                              @Nullable IInventorySlot secondaryOutputSlot) {
     }
 
     private static class RecipeProcessInfo {

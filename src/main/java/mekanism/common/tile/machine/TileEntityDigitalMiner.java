@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
@@ -159,15 +160,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        builder.addContainer(energyContainer = MinerEnergyContainer.input(this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM);
+        builder.addContainer(energyContainer = MinerEnergyContainer.input(this, listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM);
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         mainSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
@@ -176,12 +177,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceTarget(stack.getItem());
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, this, 8 + slotX * 18, 92 + slotY * 18);
+                BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, listener, 8 + slotX * 18, 92 + slotY * 18);
                 builder.addSlot(slot, RelativeSide.BACK, RelativeSide.TOP);
                 mainSlots.add(slot);
             }
         }
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 20));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 20));
         return builder.build();
     }
 
@@ -266,7 +267,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         this.oresToMine = oresToMine;
         cachedToMine = found;
         updateTargetChunk(null);
-        markDirty(false);
+        markForSave();
     }
 
     public int getDelay() {
@@ -318,34 +319,34 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public void toggleSilkTouch() {
         setSilkTouch(!getSilkTouch());
-        markDirty(false);
+        markForSave();
     }
 
     public void toggleInverse() {
         inverse = !inverse;
-        markDirty(false);
+        markForSave();
     }
 
     public void toggleInverseRequiresReplacement() {
         inverseRequiresReplacement = !inverseRequiresReplacement;
-        markDirty(false);
+        markForSave();
     }
 
     public void setInverseReplaceTarget(Item target) {
         if (target != inverseReplaceTarget) {
             inverseReplaceTarget = target;
-            markDirty(false);
+            markForSave();
         }
     }
 
     public void toggleAutoEject() {
         doEject = !doEject;
-        markDirty(false);
+        markForSave();
     }
 
     public void toggleAutoPull() {
         doPull = !doPull;
-        markDirty(false);
+        markForSave();
     }
 
     public void setRadiusFromPacket(int newRadius) {
@@ -353,7 +354,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         //Send a packet to update the visual renderer
         //TODO: Only do this if the renderer is actually active
         sendUpdatePacket();
-        markDirty(false);
+        markForSave();
     }
 
     private void setRadius(int newRadius) {
@@ -372,7 +373,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -390,7 +391,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -405,13 +406,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void moveUp(int filterIndex) {
         filters.swap(filterIndex, filterIndex - 1);
-        markDirty(false);
+        markForSave();
     }
 
     @Override
     public void moveDown(int filterIndex) {
         filters.swap(filterIndex, filterIndex + 1);
-        markDirty(false);
+        markForSave();
     }
 
     private void tryMineBlock() {
@@ -669,7 +670,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             searcher.start();
         }
         running = true;
-        markDirty(false);
+        markForSave();
     }
 
     public void stop() {
@@ -678,7 +679,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             reset();
         } else if (searcher.state == State.FINISHED) {
             running = false;
-            markDirty(false);
+            markForSave();
             //Reset the target chunk, so it isn't loaded as we might don't want to let the user just have two chunks loaded
             // eternally (or until server restart) by intentionally stopping the miner
             updateTargetChunk(null);
@@ -694,7 +695,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         missingStack = ItemStack.EMPTY;
         setActive(false);
         updateTargetChunk(null);
-        markDirty(false);
+        markForSave();
     }
 
     public boolean isReplaceTarget(Item target) {

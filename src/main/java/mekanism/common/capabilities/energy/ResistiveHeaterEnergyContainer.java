@@ -1,7 +1,9 @@
 package mekanism.common.capabilities.energy;
 
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -18,14 +20,14 @@ import net.minecraft.nbt.CompoundTag;
 @MethodsReturnNonnullByDefault
 public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileEntityResistiveHeater> {
 
-    public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile) {
+    public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
+        return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
     }
 
     private ResistiveHeaterEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
-          Predicate<@NonNull AutomationType> canInsert, TileEntityResistiveHeater tile) {
-        super(maxEnergy, energyPerTick, canExtract, canInsert, tile);
+          Predicate<@NonNull AutomationType> canInsert, TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
+        super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
     }
 
     @Override

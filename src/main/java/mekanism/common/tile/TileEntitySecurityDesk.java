@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -19,7 +20,6 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -48,10 +48,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(() -> ownerUUID, this, 146, 18));
-        builder.addSlot(lockSlot = SecurityInventorySlot.lock(this, 146, 97));
+        builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(() -> ownerUUID, listener, 146, 18));
+        builder.addSlot(lockSlot = SecurityInventorySlot.lock(listener, 146, 97));
         return builder.build();
     }
 
@@ -72,7 +72,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
             frequency.setOverridden(!frequency.isOverridden());
-            markDirty(false);
+            markForSave();
             // send the security update to other players; this change will be visible on machine security tabs
             Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
             validateAccess();
@@ -100,7 +100,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
             frequency.removeTrusted(index);
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -110,7 +110,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             SecurityMode old = frequency.getSecurityMode();
             if (old != mode) {
                 frequency.setSecurityMode(mode);
-                markDirty(false);
+                markForSave();
                 // send the security update to other players; this change will be visible on machine security tabs
                 Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
                 if (old == SecurityMode.PUBLIC || (old == SecurityMode.TRUSTED && mode == SecurityMode.PRIVATE)) {
@@ -125,7 +125,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (frequency != null) {
             ServerLifecycleHooks.getCurrentServer().getProfileCache().get(name).ifPresent(profile -> {
                 frequency.addTrusted(profile.getId(), profile.getName());
-                markDirty(false);
+                markForSave();
             });
         }
     }

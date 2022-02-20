@@ -144,7 +144,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
                 getTransmitterTile().sendUpdatePacket();
             }
         }
-        getTransmitterTile().markDirty(false);
+        getTransmitterTile().setChanged();
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
@@ -106,23 +107,23 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @Nonnull
     @Override
-    public IFluidTankHolder getInitialFluidTanks() {
+    public IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(fluidTank = BasicFluidTank.output(MAX_FLUID, this));
+        builder.addTank(fluidTank = BasicFluidTank.output(MAX_FLUID, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
                   Item item = stack.getItem();
@@ -132,11 +133,11 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
                       return food != null && food.getNutrition() > 0;
                   }
                   return false;
-              }, recipeCacheLookupMonitor, 26, 36)
+              }, recipeCacheListener, 26, 36)
         ).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
-        builder.addSlot(containerFillSlot = FluidInventorySlot.drain(fluidTank, this, 155, 25));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 155, 56));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
+        builder.addSlot(containerFillSlot = FluidInventorySlot.drain(fluidTank, listener, 155, 25));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 155, 56));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 155, 5));
         containerFillSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
@@ -203,7 +204,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 

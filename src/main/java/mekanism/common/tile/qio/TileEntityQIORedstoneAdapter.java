@@ -57,13 +57,13 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     public void handleStackChange(ItemStack stack) {
         itemType = stack.isEmpty() ? null : HashedItem.create(stack);
-        markDirty(false);
+        markForSave();
     }
 
     public void handleCountChange(long count) {
         if (this.count != count) {
             this.count = count;
-            markDirty(false);
+            markForSave();
         }
     }
 

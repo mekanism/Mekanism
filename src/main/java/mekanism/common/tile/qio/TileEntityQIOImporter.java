@@ -116,7 +116,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
     public void toggleImportWithoutFilter() {
         importWithoutFilter = !importWithoutFilter;
-        markDirty(false);
+        markForSave();
     }
 
     @Override

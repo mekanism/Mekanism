@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -43,13 +44,13 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         final int xSize = 176;
         driveSlots = new ArrayList<>();
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 6; x++) {
-                QIODriveSlot slot = new QIODriveSlot(this, y * 6 + x, xSize / 2 - (6 * 18 / 2) + x * 18, 70 + y * 18);
+                QIODriveSlot slot = new QIODriveSlot(this, y * 6 + x, listener, xSize / 2 - (6 * 18 / 2) + x * 18, 70 + y * 18);
                 driveSlots.add(slot);
                 builder.addSlot(slot);
             }
@@ -127,7 +128,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @Override
     public void onDataUpdate() {
-        markDirty(false);
+        markForSave();
     }
 
     @Override

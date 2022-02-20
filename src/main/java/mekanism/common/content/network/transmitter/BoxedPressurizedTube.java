@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -23,7 +24,6 @@ import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.chemical.BoxedChemicalHandler;
@@ -371,7 +371,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
 
     @Override
     public void onContentsChanged() {
-        getTransmitterTile().markDirty(false);
+        getTransmitterTile().setChanged();
     }
 
     @Override

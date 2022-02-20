@@ -3,6 +3,7 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -132,32 +133,32 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
         builder.addTank(leftInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> containsRecipe(pigment, rightInputTank.getStack()),
-              this::containsRecipe, recipeCacheLookupMonitor));
+              this::containsRecipe, recipeCacheListener));
         builder.addTank(rightInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> containsRecipe(pigment, leftInputTank.getStack()),
-              this::containsRecipe, recipeCacheLookupMonitor));
-        builder.addTank(outputTank = ChemicalTankBuilder.PIGMENT.output(2_000, this));
+              this::containsRecipe, recipeCacheListener));
+        builder.addTank(outputTank = ChemicalTankBuilder.PIGMENT.output(2_000, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(leftInputSlot = PigmentInventorySlot.fill(leftInputTank, this, 6, 56));
-        builder.addSlot(rightInputSlot = PigmentInventorySlot.fill(rightInputTank, this, 154, 56));
-        builder.addSlot(outputSlot = PigmentInventorySlot.drain(outputTank, this, 80, 65));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 154, 14));
+        builder.addSlot(leftInputSlot = PigmentInventorySlot.fill(leftInputTank, listener, 6, 56));
+        builder.addSlot(rightInputSlot = PigmentInventorySlot.fill(rightInputTank, listener, 154, 56));
+        builder.addSlot(outputSlot = PigmentInventorySlot.drain(outputTank, listener, 80, 65));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 154, 14));
         leftInputSlot.setSlotType(ContainerSlotType.INPUT);
         leftInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         rightInputSlot.setSlotType(ContainerSlotType.INPUT);
@@ -203,7 +204,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setPostProcessOperations(tracker -> MekanismUtils.postProcessExponentialRecipeSpeed(tracker, upgradeComponent));
     }
 

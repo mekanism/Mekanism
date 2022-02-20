@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -29,6 +30,7 @@ import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ISustainedData;
@@ -71,9 +73,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(InternalInventorySlot.create(this), RelativeSide.FRONT);
+        builder.addSlot(InternalInventorySlot.create(listener), RelativeSide.FRONT);
         return builder.build();
     }
 
@@ -152,13 +154,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public void moveUp(int filterIndex) {
         filters.swap(filterIndex, filterIndex - 1);
-        markDirty(false);
+        markForSave();
     }
 
     @Override
     public void moveDown(int filterIndex) {
         filters.swap(filterIndex, filterIndex + 1);
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod(nameOverride = "getAutoMode")
@@ -178,24 +180,24 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     public void toggleAutoEject() {
         autoEject = !autoEject;
-        markDirty(false);
+        markForSave();
     }
 
     public void toggleRoundRobin() {
         roundRobin = !roundRobin;
         rrTarget = null;
-        markDirty(false);
+        markForSave();
     }
 
     public void toggleSingleItem() {
         singleItem = !singleItem;
-        markDirty(false);
+        markForSave();
     }
 
     public void changeColor(@Nullable EnumColor color) {
         if (this.color != color) {
             this.color = color;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -309,6 +311,11 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return false;
+    }
+
+    @Override
     public int getCurrentRedstoneLevel() {
         //We don't cache the redstone level for the logistical sorter
         return getRedstoneLevel();
@@ -371,14 +378,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     private void incrementDefaultColor() throws ComputerException {
         validateSecurityIsPublic();
         color = TransporterUtils.increment(color);
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod
     private void decrementDefaultColor() throws ComputerException {
         validateSecurityIsPublic();
         color = TransporterUtils.decrement(color);
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod

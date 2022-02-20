@@ -88,7 +88,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     public void setLogicTypeFromPacket(FissionReactorLogic logicType) {
         if (this.logicType != logicType) {
             this.logicType = logicType;
-            markDirty(false);
+            markForSave();
         }
     }
 

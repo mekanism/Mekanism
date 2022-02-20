@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -266,15 +267,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         Block block = this.blockProvider.getBlock();
         setSupportedTypes(block);
         presetVariables();
-        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager());
-        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager());
-        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager());
-        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager());
-        capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
-        capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
-        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(), this));
+        IContentsListener saveOnlyListener = this::markForSave;
+        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager(getListener(SubstanceType.GAS, saveOnlyListener)));
+        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager(getListener(SubstanceType.INFUSION, saveOnlyListener)));
+        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager(getListener(SubstanceType.PIGMENT, saveOnlyListener)));
+        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager(getListener(SubstanceType.SLURRY, saveOnlyListener)));
+        capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(getListener(SubstanceType.FLUID, saveOnlyListener)), this));
+        capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(getListener(SubstanceType.ENERGY, saveOnlyListener)), this));
+        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(getListener(null, saveOnlyListener)), this));
         CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
-        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(ambientTemperature), this));
+        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(getListener(SubstanceType.HEAT, saveOnlyListener), ambientTemperature), this));
         this.ambientTemperature = canHandleHeat() ? ambientTemperature : null;
         addCapabilityResolvers(capabilityHandlerManagers);
         frequencyComponent = new TileComponentFrequency(this);
@@ -629,15 +631,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    //TODO - 1.18: Validate the setBlockState change covers this
-    /*@Override
-    public void clearCache() {
-        super.clearCache();
-        if (isDirectional()) {
-            cachedDirection = null;
-        }
-    }*/
-
     @Override
     public void load(@Nonnull CompoundTag nbt) {
         super.load(nbt);
@@ -870,7 +863,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void setControlType(@Nonnull RedstoneControl type) {
         if (supportsRedstone()) {
             controlType = Objects.requireNonNull(type);
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -903,6 +896,24 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             //TODO: Do we want some other defaults as well?
         }
         return 0;
+    }
+
+    /**
+     * @param type Type or {@code null} for items.
+     * @implNote It can be assumed {@link #supportsComparator()} is true before this is called.
+     */
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        //Assume that items make it dirty unless otherwise overridden, as we use this before we can call hasInventory
+        // and if we aren't using an inventory as our comparator thing we will be overriding this method anyway
+        // and if we don't have an inventory we can't assign this listener to anything as adding slots and assigning it
+        // is what binds the listener to the main tile
+        return type == null;
+    }
+
+    protected final IContentsListener getListener(@Nullable SubstanceType type, IContentsListener saveOnlyListener) {
+        //If we don't support comparators we can just skip having a special one that only marks for save as our
+        // setChanged won't actually do anything so there is no reason to bother creating a save only listener
+        return !supportsComparator() || makesComparatorDirty(type) ? this : saveOnlyListener;
     }
 
     @Override
@@ -948,7 +959,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing ITileContainer
     @Nullable
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         return null;
     }
 
@@ -960,7 +971,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void onContentsChanged() {
-        markDirty(false);
+        setChanged();
     }
 
     @Override
@@ -1039,7 +1050,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable
-    protected IFluidTankHolder getInitialFluidTanks() {
+    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return null;
     }
 
@@ -1052,7 +1063,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IMekanismStrictEnergyHandler
     @Nullable
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         return null;
     }
 
@@ -1087,7 +1098,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IInWorldHeatHandler
     @Nullable
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return null;
     }
 
@@ -1143,7 +1154,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void configurationDataSet() {
-        markDirty(false);
+        setChanged();
         invalidateCachedCapabilities();
         sendUpdatePacket();
         WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getTilePos());

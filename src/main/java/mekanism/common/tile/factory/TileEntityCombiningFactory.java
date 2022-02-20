@@ -52,9 +52,9 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
-        super.addSlots(builder, updateSortingListener);
-        builder.addSlot(extraSlot = InputInventorySlot.at(this::containsRecipeB, this::onContentsChangedUpdateSortingAndCache, 7, 57));
+    protected void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener) {
+        super.addSlots(builder, listener, updateSortingListener);
+        builder.addSlot(extraSlot = InputInventorySlot.at(this::containsRecipeB, markAllMonitorsChanged(listener), 7, 57));
         extraSlot.setSlotType(ContainerSlotType.EXTRA);
     }
 
@@ -113,7 +113,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
 

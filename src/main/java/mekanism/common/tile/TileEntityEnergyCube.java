@@ -1,6 +1,8 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
@@ -16,6 +18,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.EnergyCubeTier;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -62,18 +65,18 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = EnergyCubeEnergyContainer.create(tier, this));
+        builder.addContainer(energyContainer = EnergyCubeEnergyContainer.create(tier, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(dischargeSlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 17, 35));
-        builder.addSlot(chargeSlot = EnergyInventorySlot.drain(energyContainer, this, 143, 35));
+        builder.addSlot(dischargeSlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 17, 35));
+        builder.addSlot(chargeSlot = EnergyInventorySlot.drain(energyContainer, listener, 143, 35));
         dischargeSlot.setSlotOverlay(SlotOverlay.MINUS);
         chargeSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
@@ -98,6 +101,11 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
+    }
+
+    @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.ENERGY;
     }
 
     @Override

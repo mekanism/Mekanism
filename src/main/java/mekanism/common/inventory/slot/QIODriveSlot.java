@@ -1,6 +1,8 @@
 package mekanism.common.inventory.slot;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -22,8 +24,8 @@ public class QIODriveSlot extends BasicInventorySlot {
     private final IQIODriveHolder driveHolder;
     private final QIODriveKey key;
 
-    public <TILE extends IMekanismInventory & IQIODriveHolder> QIODriveSlot(TILE inventory, int slot, int x, int y) {
-        super(notExternal, notExternal, stack -> stack.getItem() instanceof IQIODriveItem, inventory, x, y);
+    public <TILE extends IMekanismInventory & IQIODriveHolder> QIODriveSlot(TILE inventory, int slot, @Nullable IContentsListener listener, int x, int y) {
+        super(notExternal, notExternal, stack -> stack.getItem() instanceof IQIODriveItem, listener, x, y);
         key = new QIODriveKey(inventory, slot);
         driveHolder = inventory;
     }

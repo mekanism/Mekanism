@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
@@ -30,17 +31,17 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     }
 
     @Override
-    protected void addInitialEnergyContainers(EnergyContainerHelper builder) {
-        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.notExternal, BasicEnergyContainer.internalOnly, this));
+    protected void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener) {
+        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.notExternal, BasicEnergyContainer.internalOnly, this, listener));
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         for (int slotX = 0; slotX < 9; slotX++) {
             for (int slotY = 0; slotY < 3; slotY++) {
-                OutputInventorySlot slot = OutputInventorySlot.at(this, 8 + slotX * 18, 16 + slotY * 18);
+                OutputInventorySlot slot = OutputInventorySlot.at(listener, 8 + slotX * 18, 16 + slotY * 18);
                 builder.addSlot(slot);
                 slot.setSlotType(ContainerSlotType.NORMAL);
             }

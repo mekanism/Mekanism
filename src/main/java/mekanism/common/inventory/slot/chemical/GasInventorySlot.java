@@ -7,7 +7,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -16,10 +15,10 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -43,22 +42,22 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     /**
      * Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static GasInventorySlot rotaryDrain(IGasTank gasTank, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot rotaryDrain(IGasTank gasTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(gasTank, GasInventorySlot::getCapability).and(stack -> modeSupplier.getAsBoolean());
-        return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), inventory, x, y);
+        return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), listener, x, y);
     }
 
     /**
      * Fills the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static GasInventorySlot rotaryFill(IGasTank gasTank, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static GasInventorySlot rotaryFill(IGasTank gasTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new GasInventorySlot(gasTank, getFillExtractPredicate(gasTank, GasInventorySlot::getCapability),
               stack -> !modeSupplier.getAsBoolean() && fillInsertCheck(gasTank, getCapability(stack)),
-              stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), inventory, x, y);
+              stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), listener, x, y);
     }
 
     /**

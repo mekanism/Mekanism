@@ -1,5 +1,6 @@
 package mekanism.common.tile.laser;
 
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -17,8 +18,8 @@ public class TileEntityLaser extends TileEntityBasicLaser {
     }
 
     @Override
-    protected void addInitialEnergyContainers(EnergyContainerHelper builder) {
-        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue, this), RelativeSide.BACK);
+    protected void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener) {
+        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue, this, listener), RelativeSide.BACK);
     }
 
     @Override

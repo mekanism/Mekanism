@@ -5,17 +5,17 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.AutomationType;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,7 +38,7 @@ public abstract class MultiblockChemicalTank<CHEMICAL extends Chemical<CHEMICAL>
     public void onContentsChanged() {
         super.onContentsChanged();
         if (tile.hasLevel() && !tile.isRemote()) {
-            tile.markDirty(false);
+            tile.markForSave();
             multiblock.markDirtyComparator(tile.getLevel());
         }
     }

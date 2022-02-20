@@ -1,6 +1,7 @@
 package mekanism.common.tile.multiblock;
 
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -25,9 +26,9 @@ public class TileEntityInductionCell extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        builder.addContainer(energyContainer = MachineEnergyContainer.internal(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.internal(this, listener));
         return builder.build();
     }
 

@@ -2,6 +2,7 @@ package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
@@ -20,15 +21,15 @@ public interface ISlurryTile extends ISlurryTracker {
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default SlurryHandlerManager getInitialSlurryManager() {
-        return new SlurryHandlerManager(getInitialSlurryTanks(), new DynamicSlurryHandler(this::getSlurryTanks, this::extractSlurryCheck, this::insertSlurryCheck, this));
+    default SlurryHandlerManager getInitialSlurryManager(IContentsListener listener) {
+        return new SlurryHandlerManager(getInitialSlurryTanks(listener), new DynamicSlurryHandler(this::getSlurryTanks, this::extractSlurryCheck, this::insertSlurryCheck, listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+    default IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener) {
         return null;
     }
 

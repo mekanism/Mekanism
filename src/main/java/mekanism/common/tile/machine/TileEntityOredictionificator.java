@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.common.CommonWorldTickHandler;
@@ -72,11 +73,11 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Only allow inserting items with tags that match filters, but mark all items that have any filterable tags as valid
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(), this::hasFilterableTags, this, 26, 115));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 134, 115));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(), this::hasFilterableTags, listener, 26, 115));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 134, 115));
         return builder.build();
     }
 
@@ -102,7 +103,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                     outputSlot.growStack(1, Action.EXECUTE);
                     didProcess = true;
                 }
-                markDirty(false);
             }
         }
     }

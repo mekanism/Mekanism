@@ -40,7 +40,7 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
         FusionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
             multiblock.setInjectionRate(Math.min(FusionReactorMultiblockData.MAX_INJECTION, Math.max(0, rate - (rate % 2))));
-            markDirty(false);
+            markForSave();
         }
     }
 

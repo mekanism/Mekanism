@@ -1,6 +1,7 @@
 package mekanism.common.tile.machine;
 
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -43,17 +44,17 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(stack -> ForgeHooks.getBurnTime(stack, null), this, 15, 29));
+        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(stack -> ForgeHooks.getBurnTime(stack, null), listener, 15, 29));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 10, ambientTemperature, this));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 10, ambientTemperature, listener));
         return builder.build();
     }
 

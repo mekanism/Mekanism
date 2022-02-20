@@ -111,13 +111,13 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     @Override
     public void moveUp(int filterIndex) {
         filters.swap(filterIndex, filterIndex - 1);
-        markDirty(false);
+        markForSave();
     }
 
     @Override
     public void moveDown(int filterIndex) {
         filters.swap(filterIndex, filterIndex + 1);
-        markDirty(false);
+        markForSave();
     }
 
     protected int getMaxTransitCount() {

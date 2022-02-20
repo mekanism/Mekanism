@@ -51,7 +51,7 @@ public class EnergyTransmitterSaveTarget extends Target<EnergyTransmitterSaveTar
         protected void saveShare() {
             if (!currentStored.isZero() || !transmitter.lastWrite.isZero()) {
                 transmitter.lastWrite = currentStored;
-                transmitter.getTransmitterTile().markDirty(false);
+                transmitter.getTransmitterTile().markForSave();
             }
         }
     }

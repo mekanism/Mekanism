@@ -3,6 +3,7 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -92,31 +93,31 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
         builder.addTank(pigmentTank = ChemicalTankBuilder.PIGMENT.input(15_000, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
-              this::containsRecipeB, recipeCacheLookupMonitor));
+              this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(pigmentInputSlot = PigmentInventorySlot.fill(pigmentTank, this, 6, 56));
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, pigmentTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 45, 35))
+        builder.addSlot(pigmentInputSlot = PigmentInventorySlot.fill(pigmentTank, listener, 6, 56));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, pigmentTank.getStack()), this::containsRecipeA, recipeCacheListener, 45, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35))
+        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 116, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 144, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 144, 35));
         pigmentInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
     }
@@ -150,7 +151,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 

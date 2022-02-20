@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -37,6 +38,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
@@ -95,22 +97,22 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         builder.addTank(inputTank = ChemicalTankBuilder.GAS.create(MAX_GAS,
               (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.isEmpty() && type.has(GasAttributes.Radiation.class)),
-              ChemicalTankBuilder.GAS.alwaysTrueBi, this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheLookupMonitor));
-        builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
+              ChemicalTankBuilder.GAS.alwaysTrueBi, this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
+        builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 5, 56));
-        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56));
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, listener, 5, 56));
+        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, listener, 155, 56));
         inputSlot.setSlotType(ContainerSlotType.INPUT);
         inputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -193,7 +195,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
-              .setOnFinish(() -> markDirty(false))
+              .setOnFinish(this::markForSave)
               //Edge case handling, this should almost always end up being 1
               .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? (int) Math.ceil(1 / productionRate) : 1)
               .setPostProcessOperations(tracker -> {
@@ -211,5 +213,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
+    }
+
+    @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.GAS;
     }
 }

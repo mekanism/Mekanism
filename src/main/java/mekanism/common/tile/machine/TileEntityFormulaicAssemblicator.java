@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.AutomationType;
@@ -107,20 +108,20 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         craftingGridSlots = new ArrayList<>();
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(formulaSlot = FormulaInventorySlot.at(this, 6, 26));
+        builder.addSlot(formulaSlot = FormulaInventorySlot.at(listener, 6, 26));
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 int index = slotY * 9 + slotX;
@@ -138,27 +139,27 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         return ItemHandlerHelper.canItemStacksStack(stockItem.getStack(), stack);
                     }
                     return false;
-                }, item -> true, this, 8 + slotX * 18, 98 + slotY * 18);
+                }, item -> true, listener, 8 + slotX * 18, 98 + slotY * 18);
                 builder.addSlot(inputSlot);
                 inputSlots.add(inputSlot);
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
-                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, this, 26 + slotX * 18, 17 + slotY * 18);
+                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, listener, 26 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(craftingSlot);
                 craftingGridSlots.add(craftingSlot);
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
-                OutputInventorySlot outputSlot = OutputInventorySlot.at(this, 116 + slotX * 18, 17 + slotY * 18);
+                OutputInventorySlot outputSlot = OutputInventorySlot.at(listener, 116 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(outputSlot);
                 outputSlots.add(outputSlot);
             }
         }
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 76));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
         return builder.build();
     }
 
@@ -267,9 +268,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void markDirty(boolean recheckBlockState) {
-        super.markDirty(recheckBlockState);
-        //TODO: Should this be changed to being in onContentsChanged instead of markDirty?
+    protected void setChanged(boolean updateComparator) {
+        super.setChanged(updateComparator);
+        //TODO: Should this be changed to being in onContentsChanged instead of setChanged?
         recalculateRecipe();
     }
 
@@ -329,7 +330,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             if (formula != null) {
                 moveItemsToGrid();
             }
-            markDirty(false);
+            markForSave();
             return true;
         }
         return false;
@@ -367,7 +368,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         if (formula.isIngredientInPos(level, stockStack, i)) {
                             recipeSlot.setStack(StackUtils.size(stockStack, 1));
                             MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
-                            markDirty(false);
+                            markForSave();
                             found = true;
                             break;
                         }
@@ -379,7 +380,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             } else {
                 //Update recipeStack as well, so we can check if it is empty without having to get it again
                 recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
-                markDirty(false);
+                markForSave();
                 if (!recipeStack.isEmpty()) {
                     ret = false;
                 }
@@ -409,7 +410,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 recipeSlot.setStack(tryMoveToInput(recipeStack));
             }
         }
-        markDirty(false);
+        markForSave();
     }
 
     @Override
@@ -417,11 +418,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (autoMode) {
             operatingTicks = 0;
             autoMode = false;
-            markDirty(false);
+            markForSave();
         } else if (formula != null) {
             moveItemsToInput(false);
             autoMode = true;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -604,7 +605,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 RecipeFormula formula = new RecipeFormula(level, craftingGridSlots);
                 if (formula.isValidFormula()) {
                     item.setInventory(formulaStack, formula.input);
-                    markDirty(false);
+                    markForSave();
                 }
             }
         }

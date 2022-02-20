@@ -2,6 +2,7 @@ package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -20,15 +21,16 @@ public interface IInfusionTile extends IInfusionTracker {
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default InfusionHandlerManager getInitialInfusionManager() {
-        return new InfusionHandlerManager(getInitialInfusionTanks(), new DynamicInfusionHandler(this::getInfusionTanks, this::extractInfusionCheck, this::insertInfusionCheck, this));
+    default InfusionHandlerManager getInitialInfusionManager(IContentsListener listener) {
+        return new InfusionHandlerManager(getInitialInfusionTanks(listener), new DynamicInfusionHandler(this::getInfusionTanks, this::extractInfusionCheck,
+              this::insertInfusionCheck, listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+    default IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
         return null;
     }
 

@@ -65,7 +65,7 @@ public class TileComponentSecurity implements ITileComponent {
         if (securityMode != mode) {
             SecurityMode old = securityMode;
             securityMode = mode;
-            tile.markDirty(false);
+            tile.markForSave();
             tile.onSecurityChanged(old, securityMode);
         }
     }

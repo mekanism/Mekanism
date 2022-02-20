@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.AutomationType;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -57,7 +58,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism implements LidBl
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //Note: We always allow manual interaction (even for insertion), as if a player has the GUI open we treat that as they are allowed to interact with it
         // and if the security mode changes we then boot any players who can't interact with it anymore out of the GUI
@@ -67,7 +68,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism implements LidBl
             for (int slotX = 0; slotX < 9; slotX++) {
                 //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
                 // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
-                builder.addSlot(BasicInventorySlot.at(canInteract, canInteract, this, 8 + slotX * 18, 18 + slotY * 18));
+                builder.addSlot(BasicInventorySlot.at(canInteract, canInteract, listener, 8 + slotX * 18, 18 + slotY * 18));
             }
         }
         return builder.build();

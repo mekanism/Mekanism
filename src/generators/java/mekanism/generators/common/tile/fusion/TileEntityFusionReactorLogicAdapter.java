@@ -89,7 +89,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void nextMode() {
         activeCooled = !activeCooled;
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod(nameOverride = "isActiveCooledLogic")
@@ -112,7 +112,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     public void setLogicTypeFromPacket(FusionReactorLogic logicType) {
         if (this.logicType != logicType) {
             this.logicType = logicType;
-            markDirty(false);
+            markForSave();
         }
     }
 

@@ -1,6 +1,8 @@
 package mekanism.common.capabilities.energy;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.math.FloatingLong;
@@ -14,15 +16,15 @@ import net.minecraft.world.level.Level;
 @MethodsReturnNonnullByDefault
 public class MinerEnergyContainer extends MachineEnergyContainer<TileEntityDigitalMiner> {
 
-    public static MinerEnergyContainer input(TileEntityDigitalMiner tile) {
+    public static MinerEnergyContainer input(TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile);
+        return new MinerEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), tile, listener);
     }
 
     private FloatingLong minerEnergyPerTick;
 
-    private MinerEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, TileEntityDigitalMiner tile) {
-        super(maxEnergy, energyPerTick, notExternal, alwaysTrue, tile);
+    private MinerEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, TileEntityDigitalMiner tile, @Nullable IContentsListener listener) {
+        super(maxEnergy, energyPerTick, notExternal, alwaysTrue, tile, listener);
         this.minerEnergyPerTick = getBaseEnergyPerTick();
     }
 

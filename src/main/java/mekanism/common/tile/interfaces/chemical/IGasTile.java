@@ -2,6 +2,7 @@ package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -20,15 +21,15 @@ public interface IGasTile extends IGasTracker {
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default GasHandlerManager getInitialGasManager() {
-        return new GasHandlerManager(getInitialGasTanks(), new DynamicGasHandler(this::getGasTanks, this::extractGasCheck, this::insertGasCheck, this));
+    default GasHandlerManager getInitialGasManager(IContentsListener listener) {
+        return new GasHandlerManager(getInitialGasTanks(listener), new DynamicGasHandler(this::getGasTanks, this::extractGasCheck, this::insertGasCheck, listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    default IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         return null;
     }
 

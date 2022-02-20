@@ -1,7 +1,9 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.AutomationType;
@@ -17,6 +19,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorTags;
@@ -47,21 +50,21 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks() {
+    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(bioFuelTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> fluidStack.getFluid().is(GeneratorTags.Fluids.BIOETHANOL), this),
+        builder.addTank(bioFuelTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> fluidStack.getFluid().is(GeneratorTags.Fluids.BIOETHANOL), listener),
               RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, stack -> MekanismTags.Items.FUELS_BIO.contains(stack.getItem()) ? 200 : 0,
-                    GeneratorsFluids.BIOETHANOL::getFluidStack, this, 17, 35),
-              RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35), RelativeSide.RIGHT);
+                    GeneratorsFluids.BIOETHANOL::getFluidStack, listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
+              RelativeSide.BOTTOM);
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
 
@@ -97,6 +100,16 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     public void handleUpdateTag(@Nonnull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> bioFuelTank.deserializeNBT(nbt));
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(bioFuelTank.getFluidAmount(), bioFuelTank.getCapacity());
+    }
+
+    @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.FLUID;
     }
 
     //Methods relating to IComputerTile
