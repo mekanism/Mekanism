@@ -198,10 +198,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
               .setOnFinish(this::markForSave)
               //Edge case handling, this should almost always end up being 1
               .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? (int) Math.ceil(1 / productionRate) : 1)
-              .setPostProcessOperations(tracker -> {
-                  //Update based on production rate (no recipe errors)
-                  tracker.updateOperations(productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);
-              });
+              .setBaselineMaxOperations(() -> productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);
     }
 
     @Nonnull

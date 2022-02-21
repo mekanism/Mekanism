@@ -239,10 +239,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
                   }
               })
               .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? (int) Math.ceil(1 / tempMultiplier) : 1)
-              .setPostProcessOperations(tracker -> {
-                  //Update based on temperature (no recipe errors)
-                  tracker.updateOperations(tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
-              });
+              .setBaselineMaxOperations(() -> tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
     }
 
     public boolean hasWarning(RecipeError error) {
