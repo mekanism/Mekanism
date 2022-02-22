@@ -26,14 +26,15 @@ public class MekanismRPCMethod implements RPCMethod {
         this.method = method;
         this.methodHandle = methodHandle;
         this.name = name;
-        this.returnType = methodHandle.returnType();
+        this.returnType = OC2ArgumentWrapper.wrapType(methodHandle.returnType());
         List<Class<?>> parameterTypes = methodHandle.parameterTypes();
         List<String> parameterNames = methodHandle.paramNames();
         int parameterNameCount = parameterNames.size();
         int params = parameterTypes.size();
         RPCParameter[] parameters = new RPCParameter[params];
         for (int i = 0; i < params; i++) {
-            parameters[i] = new MekanismRPCParameter(parameterTypes.get(i), i < parameterNameCount ? parameterNames.get(i) : null);
+            Class<?> parameterType = OC2ArgumentWrapper.wrapType(parameterTypes.get(i));
+            parameters[i] = new MekanismRPCParameter(parameterType, i < parameterNameCount ? parameterNames.get(i) : null);
         }
         this.parameters = parameters;
     }

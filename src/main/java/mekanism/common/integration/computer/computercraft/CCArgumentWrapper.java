@@ -162,6 +162,11 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 if (rl != null) {
                     return rl;
                 }
+            } else if (expectedType == FloatingLong.class) {
+                try {
+                    return FloatingLong.parseFloatingLong((String) argument);
+                } catch (NumberFormatException ignored) {
+                }
             } else if (expectedType.isEnum()) {
                 Object sanitized = sanitizeStringToEnum((Class<? extends Enum<?>>) expectedType, (String) argument);
                 if (sanitized != null) {
