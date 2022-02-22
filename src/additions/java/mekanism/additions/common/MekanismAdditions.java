@@ -20,6 +20,7 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
@@ -106,9 +107,13 @@ public class MekanismAdditions implements IModModule {
                 @Override
                 protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
                     BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-                    BlockObsidianTNT.createAndAddEntity(source.getLevel(), blockpos, null);
-                    stack.shrink(1);
-                    return stack;
+                    if (BlockObsidianTNT.createAndAddEntity(source.getLevel(), blockpos, null)) {
+                        source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
+                        stack.shrink(1);
+                        return stack;
+                    }
+                    //Otherwise, if something went very wrong, eject it as a normal item
+                    return super.execute(source, stack);
                 }
             });
         });

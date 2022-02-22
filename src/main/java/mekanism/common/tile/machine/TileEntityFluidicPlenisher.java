@@ -55,6 +55,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -140,6 +141,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                         BlockPos below = getBlockPos().below();
                         if (canReplace(below, false, false) && canExtractBucket() &&
                             WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidTank.getFluid(), null)) {
+                            level.gameEvent(GameEvent.FLUID_PLACE, below);
                             energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                             fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                         }
@@ -178,6 +180,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             if (WorldUtils.isBlockLoaded(level, nodePos)) {
                 if (canReplace(nodePos, true, false) && canExtractBucket() &&
                     WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidTank.getFluid(), null)) {
+                    level.gameEvent(GameEvent.FLUID_PLACE, nodePos);
                     fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                 }
                 for (Direction dir : dirs) {

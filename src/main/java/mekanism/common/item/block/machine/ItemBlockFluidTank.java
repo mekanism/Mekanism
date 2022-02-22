@@ -57,6 +57,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -225,6 +226,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 }
                                 //Play the bucket fill sound
                                 WorldUtils.playFillSound(player, world, pos, fluidStack, sound.orElse(null));
+                                world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
                                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
                             }
                             return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
@@ -238,6 +240,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                             if (!player.isCreative()) {
                                 MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
                             }
+                            world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
                             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
                         }
                     }
@@ -370,12 +373,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         }
                         //Play the bucket fill sound
                         WorldUtils.playFillSound(null, world, pos, fluidStack, sound.orElse(null));
+                        world.gameEvent(GameEvent.FLUID_PICKUP, pos);
                         //Success, don't dispense anything just return our resulting stack
                         return stack;
                     }
                 } else if (fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() >= FluidAttributes.BUCKET_VOLUME) {
                     if (WorldUtils.tryPlaceContainedLiquid(null, world, pos, fluidTank.getFluid(), null)) {
                         MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
+                        world.gameEvent(GameEvent.FLUID_PLACE, pos);
                         //Success, don't dispense anything just return our resulting stack
                         return stack;
                     }

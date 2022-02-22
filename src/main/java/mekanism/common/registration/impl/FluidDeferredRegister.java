@@ -14,6 +14,7 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +46,7 @@ public class FluidDeferredRegister {
         @Override
         public ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
             Level world = source.getLevel();
-            BucketItem bucket = (BucketItem) stack.getItem();
+            DispensibleContainerItem bucket = (DispensibleContainerItem) stack.getItem();
             BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
             if (bucket.emptyContents(null, world, pos, null)) {
                 bucket.checkExtraContent(null, world, stack, pos);

@@ -17,16 +17,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.base.MekFakePlayer;
@@ -100,6 +101,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
@@ -517,27 +519,32 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (stack.isEmpty()) {
             if (replaceTarget == Items.AIR || (filter == null && !inverseRequiresReplacement) || (filter != null && !filter.requiresReplacement)) {
                 level.removeBlock(pos, false);
+                level.gameEvent(GameEvent.BLOCK_DESTROY, pos);
                 return true;
             }
             missingStack = new ItemStack(replaceTarget);
             return false;
         }
-        BlockState newState = MekFakePlayer.withFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer ->
-              StackUtils.getStateForPlacement(stack, pos, fakePlayer)
-        );
+        BlockState newState = withFakePlayer(fakePlayer -> StackUtils.getStateForPlacement(stack, pos, fakePlayer));
         if (newState == null || !newState.canSurvive(level, pos)) {
             //If the spot is not a valid position for the block, then we return that we were unsuccessful
             return false;
         }
+        //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
+        level.gameEvent(GameEvent.BLOCK_DESTROY, pos);
         level.setBlockAndUpdate(pos, newState);
+        level.gameEvent(GameEvent.BLOCK_PLACE, pos);
         return true;
     }
 
     private boolean canMine(BlockState state, BlockPos pos) {
+        return withFakePlayer(dummy -> !MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)));
+    }
+
+    private <R> R withFakePlayer(Function<MekFakePlayer, R> fakePlayerConsumer) {
         return MekFakePlayer.withFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), dummy -> {
             dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
-            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, state, dummy);
-            return !MinecraftForge.EVENT_BUS.post(event);
+            return fakePlayerConsumer.apply(dummy);
         });
     }
 
@@ -1163,16 +1170,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (getSilkTouch()) {
             stack.enchant(Enchantments.SILK_TOUCH, 1);
         }
-        return MekFakePlayer.withFakePlayer((ServerLevel) getWorldNN(), this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer -> {
-            fakePlayer.setEmulatingUUID(getOwnerUUID());
-            LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerLevel) getWorldNN())
-                  .withRandom(getWorldNN().random)
-                  .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                  .withParameter(LootContextParams.TOOL, stack)
-                  .withOptionalParameter(LootContextParams.THIS_ENTITY, fakePlayer)
-                  .withOptionalParameter(LootContextParams.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos));
-            return state.getDrops(lootContextBuilder);
-        });
+        return withFakePlayer(fakePlayer -> state.getDrops(new LootContext.Builder((ServerLevel) getWorldNN())
+              .withRandom(getWorldNN().random)
+              .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+              .withParameter(LootContextParams.TOOL, stack)
+              .withOptionalParameter(LootContextParams.THIS_ENTITY, fakePlayer)
+              .withOptionalParameter(LootContextParams.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos))));
     }
 
     //Methods relating to IComputerTile

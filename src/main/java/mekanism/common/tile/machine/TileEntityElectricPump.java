@@ -62,6 +62,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -256,6 +257,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             recurringNodes.add(pos);
         }
         fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL);
+        level.gameEvent(GameEvent.FLUID_PICKUP, pos);
     }
 
     private boolean validFluid(@Nonnull FluidStack fluidStack, boolean recheckSize) {

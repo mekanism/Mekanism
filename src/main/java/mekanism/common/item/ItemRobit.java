@@ -36,6 +36,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory, ISecurityItem {
 
@@ -92,6 +93,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     robit.setSecurityMode(getSecurity(stack));
                     robit.setSkin(getRobitSkin(stack), player);
                     world.addFreshEntity(robit);
+                    world.gameEvent(player, GameEvent.ENTITY_PLACE, robit);
                     stack.shrink(1);
                 }
                 return InteractionResult.SUCCESS;

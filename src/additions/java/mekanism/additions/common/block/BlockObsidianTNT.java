@@ -6,27 +6,28 @@ import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.util.VoxelShapeUtils;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.TntBlock;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
 
 public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
@@ -80,8 +81,8 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
     @Override
     public void onCaughtFire(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
-        if (!world.isClientSide) {
-            createAndAddEntity(world, pos, igniter);
+        if (!world.isClientSide && createAndAddEntity(world, pos, igniter)) {
+            world.gameEvent(igniter, GameEvent.PRIME_FUSE, pos);
         }
     }
 
@@ -125,11 +126,13 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
-    public static void createAndAddEntity(@Nonnull Level world, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
+    public static boolean createAndAddEntity(@Nonnull Level world, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
         PrimedTnt tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
         if (tnt != null) {
             world.addFreshEntity(tnt);
             world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
+            return true;
         }
+        return false;
     }
 }

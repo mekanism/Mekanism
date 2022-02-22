@@ -43,7 +43,6 @@ import net.minecraft.world.level.block.CarvedPumpkinBlock;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
@@ -100,6 +99,8 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @Nonnull
     @Override
     public Collection<ToolAction> getProvidedToolActions(IModule<ModuleShearingUnit> module) {
+        //TODO - 1.18: Switch this to canPerform similar to the base one, that way we can cut down on required
+        // calculations regarding energy if that isn't even affecting the current query
         ItemStack container = module.getContainer();
         if (container.getItem() instanceof ItemMekaTool mekaTool) {
             //If we are installed on a Meka-Tool only provide the disarm action if we have enough energy to break the block
@@ -183,7 +184,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         if (target.isShearable(stack, world, pos)) {
             if (!world.isClientSide) {
                 List<ItemStack> drops = target.onSheared(player, stack, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
-                entity.gameEvent(GameEvent.SHEAR, player);
+                //Note: Shear game event is handled by the target in onSheared
                 for (ItemStack drop : drops) {
                     ItemEntity ent = entity.spawnAtLocation(drop, 1.0F);
                     if (ent != null) {

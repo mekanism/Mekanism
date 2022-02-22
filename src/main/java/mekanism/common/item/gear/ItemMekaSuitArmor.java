@@ -65,6 +65,7 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
@@ -292,10 +293,16 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
         //Note: As canElytraFly is checked just before this we don't bother validating ahead of time we have the energy
         // or that we are the correct slot
-        if (!entity.level.isClientSide && (flightTicks + 1) % 20 == 0) {
-            IModule<?> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
-            if (module != null && module.isEnabled()) {
-                module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
+        if (!entity.level.isClientSide) {
+            int nextFlightTicks = flightTicks + 1;
+            if (nextFlightTicks % 10 == 0) {
+                if (nextFlightTicks % 20 == 0) {
+                    IModule<?> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
+                    if (module != null && module.isEnabled()) {
+                        module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
+                    }
+                }
+                entity.gameEvent(GameEvent.ELYTRA_FREE_FALL);
             }
         }
         return true;

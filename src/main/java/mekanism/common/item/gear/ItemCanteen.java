@@ -28,6 +28,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -77,6 +78,7 @@ public class ItemCanteen extends Item {
                 player.getFoodData().eat(needed, needed * MekanismConfig.general.nutritionalPasteSaturation.get());
                 FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(),
                       FluidAction.EXECUTE));
+                world.gameEvent(entityLiving, GameEvent.DRINKING_FINISH, entityLiving.eyeBlockPosition());
             }
         }
         return stack;
