@@ -15,7 +15,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -64,9 +63,9 @@ public class ItemCraftingFormula extends Item {
                 setInventory(stack, null);
                 setInvalid(stack, false);
             }
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+        return InteractionResultHolder.pass(stack);
     }
 
     @Override

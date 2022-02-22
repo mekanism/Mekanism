@@ -274,12 +274,12 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                     if (isValidDestinationBlock(world, pos.above()) && isValidDestinationBlock(world, pos.above(2))) {
                         double distance = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
                         if (distance < 5) {
-                            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+                            return InteractionResultHolder.pass(stack);
                         }
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                         FloatingLong energyNeeded = MekanismConfig.gear.mekaToolEnergyUsageTeleport.get().multiply(distance / 10D);
                         if (energyContainer == null || energyContainer.getEnergy().smallerThan(energyNeeded)) {
-                            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                            return InteractionResultHolder.fail(stack);
                         }
                         energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
                         if (player.isPassenger()) {
@@ -289,12 +289,12 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         player.fallDistance = 0.0F;
                         Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
                         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+                        return InteractionResultHolder.success(stack);
                     }
                 }
             }
         }
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+        return InteractionResultHolder.pass(stack);
     }
 
     private boolean isValidDestinationBlock(Level world, BlockPos pos) {

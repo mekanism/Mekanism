@@ -83,7 +83,7 @@ public class ItemNetworkReader extends ItemEnergized {
                         displayConnectedNetworks(player, world, pos);
                     }
                 }
-                return InteractionResult.SUCCESS;
+                return InteractionResult.CONSUME;
             } else if (player.isShiftKeyDown() && MekanismAPI.debug) {
                 displayBorder(player, MekanismLang.DEBUG_TITLE, true);
                 for (Component component : TransmitterNetworkRegistry.getInstance().toComponents()) {

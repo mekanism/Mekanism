@@ -415,7 +415,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                     NetworkHooks.openGui((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
                 }
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return InteractionResult.PASS;
     }

@@ -24,7 +24,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -67,9 +66,9 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
             }
         } else {
             SecurityUtils.displayNoAccess(player);
-            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+            return InteractionResultHolder.fail(stack);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
     }
 
     @Override

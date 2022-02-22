@@ -508,7 +508,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public InteractionResult openGui(Player player) {
-        //Everything that calls this has isRemote being false but add the check just in case anyways
+        //Everything that calls this has isRemote being false but add the check just in case anyway
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
@@ -529,7 +529,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
 
             NetworkHooks.openGui((ServerPlayer) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(isRemote());
         }
         return InteractionResult.PASS;
     }

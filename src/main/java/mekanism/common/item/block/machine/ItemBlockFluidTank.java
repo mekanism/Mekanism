@@ -139,15 +139,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
     @Nonnull
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Player player = context.getPlayer();
-        if (player == null) {
-            return InteractionResult.PASS;
-        }
-        ItemStack stack = context.getItemInHand();
-        if (getBucketMode(stack)) {
-            return InteractionResult.PASS;
-        }
-        return super.useOn(context);
+        return context.getPlayer() == null || getBucketMode(context.getItemInHand()) ? InteractionResult.PASS : super.useOn(context);
     }
 
     @Nonnull
@@ -159,7 +151,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 if (!world.isClientSide) {
                     SecurityUtils.claimItem(player, stack);
                 }
-                return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+                return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
             } else if (SecurityUtils.canAccess(player, stack)) {
                 //TODO: At some point maybe try to reduce the duplicate code between this and the dispense behavior
                 BlockHitResult result = getPlayerPOVHitResult(world, player, !player.isShiftKeyDown() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
@@ -167,16 +159,16 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 if (result.getType() == Type.BLOCK) {
                     BlockPos pos = result.getBlockPos();
                     if (!world.mayInteract(player, pos)) {
-                        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                        return InteractionResultHolder.fail(stack);
                     }
                     IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
                     if (fluidTank == null) {
                         //If something went wrong, and we don't have a fluid tank fail
-                        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                        return InteractionResultHolder.fail(stack);
                     }
                     if (!player.isShiftKeyDown()) {
                         if (!player.mayUseItemAt(pos, result.getDirection(), stack)) {
-                            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                            return InteractionResultHolder.fail(stack);
                         }
                         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
                         BlockState blockState = world.getBlockState(pos);
@@ -192,7 +184,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 fluidStack = fluidBlock.drain(world, pos, FluidAction.SIMULATE);
                                 if (!validFluid(fluidTank, fluidStack)) {
                                     //If the fluid is not valid, pass on doing anything
-                                    return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+                                    return InteractionResultHolder.pass(stack);
                                 }
                                 //Actually drain it
                                 fluidStack = fluidBlock.drain(world, pos, FluidAction.EXECUTE);
@@ -202,7 +194,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 ItemStack pickedUpStack = bucketPickup.pickupBlock(world, pos, blockState);
                                 if (pickedUpStack.isEmpty()) {
                                     //If the fluid can't be picked up, pass on doing anything
-                                    return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+                                    return InteractionResultHolder.pass(stack);
                                 } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
                                     //This isn't the best validation check given it may not return a bucket, but it is good enough for now
                                     fluid = bucket.getFluid();
@@ -212,7 +204,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                     if (!validFluid(fluidTank, fluidStack)) {
                                         Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
                                               fluidState.getType().getRegistryName(), pos, world.dimension().location(), fluid.getRegistryName());
-                                        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                                        return InteractionResultHolder.fail(stack);
                                     }
                                 }
                                 sound = bucketPickup.getPickupSound(blockState);
@@ -227,21 +219,21 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 //Play the bucket fill sound
                                 WorldUtils.playFillSound(player, world, pos, fluidStack, sound.orElse(null));
                                 world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
-                                return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+                                return InteractionResultHolder.success(stack);
                             }
-                            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                            return InteractionResultHolder.fail(stack);
                         }
                     } else {
                         if (fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() < FluidAttributes.BUCKET_VOLUME
                             || !player.mayUseItemAt(pos.relative(result.getDirection()), result.getDirection(), stack)) {
-                            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                            return InteractionResultHolder.fail(stack);
                         }
                         if (WorldUtils.tryPlaceContainedLiquid(player, world, pos, fluidTank.getFluid(), result.getDirection())) {
                             if (!player.isCreative()) {
                                 MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
                             }
                             world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
-                            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+                            return InteractionResultHolder.success(stack);
                         }
                     }
                 }
@@ -249,10 +241,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 if (!world.isClientSide) {
                     SecurityUtils.displayNoAccess(player);
                 }
-                return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                return InteractionResultHolder.fail(stack);
             }
         }
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+        return InteractionResultHolder.pass(stack);
     }
 
     private static boolean validFluid(@Nonnull IExtendedFluidTank fluidTank, @Nonnull FluidStack fluidStack) {

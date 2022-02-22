@@ -152,7 +152,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 world.setBlock(pos, clickedState.setValue(CampfireBlock.LIT, Boolean.FALSE), Block.UPDATE_ALL_IMMEDIATE);
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return InteractionResult.PASS;
     }
@@ -218,7 +218,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.CONSUME;
     }
 
     private InteractionResult flattenAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, Player player, ItemStack stack) {
@@ -294,7 +294,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.CONSUME;
     }
 
     private interface IToolAOEData {

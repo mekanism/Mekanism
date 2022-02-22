@@ -100,7 +100,7 @@ public class ItemTierInstaller extends Item {
                             if (!player.isCreative()) {
                                 context.getItemInHand().shrink(1);
                             }
-                            return InteractionResult.SUCCESS;
+                            return InteractionResult.sidedSuccess(world.isClientSide);
                         }
                     }
                 }

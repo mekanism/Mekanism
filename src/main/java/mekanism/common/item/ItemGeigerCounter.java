@@ -9,7 +9,6 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -33,8 +32,8 @@ public class ItemGeigerCounter extends Item {
                 player.sendMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY,
                       RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), Util.NIL_UUID);
             }
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+        return InteractionResultHolder.pass(stack);
     }
 }

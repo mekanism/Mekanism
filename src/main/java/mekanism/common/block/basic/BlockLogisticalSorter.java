@@ -76,10 +76,10 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
                 }
                 tile.setFacing(change);
                 world.updateNeighborsAt(pos, this);
-            } else {
-                SecurityUtils.displayNoAccess(player);
+                return InteractionResult.SUCCESS;
             }
-            return InteractionResult.SUCCESS;
+            SecurityUtils.displayNoAccess(player);
+            return InteractionResult.FAIL;
         }
         return tile.openGui(player);
     }

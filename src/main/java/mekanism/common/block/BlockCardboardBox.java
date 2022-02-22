@@ -65,7 +65,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
             }
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(world.isClientSide);
     }
 
     private static boolean canReplace(Level world, Player player, BlockPos pos, BlockState state) {

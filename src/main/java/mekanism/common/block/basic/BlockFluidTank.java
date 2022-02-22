@@ -73,7 +73,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
                 }
             } else {
                 SecurityUtils.displayNoAccess(player);
-                return InteractionResult.SUCCESS;
+                return InteractionResult.FAIL;
             }
         }
         return tile.openGui(player);

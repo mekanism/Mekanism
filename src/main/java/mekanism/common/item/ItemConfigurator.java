@@ -117,6 +117,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                             }
                         } else {
                             SecurityUtils.displayNoAccess(player);
+                            return InteractionResult.FAIL;
                         }
                     }
                     return InteractionResult.SUCCESS;
@@ -132,7 +133,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                     }
                 } else {
                     SecurityUtils.displayNoAccess(player);
-                    return InteractionResult.SUCCESS;
+                    return InteractionResult.FAIL;
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
@@ -174,6 +175,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                         }
                     } else {
                         SecurityUtils.displayNoAccess(player);
+                        return InteractionResult.FAIL;
                     }
                 }
                 return InteractionResult.SUCCESS;

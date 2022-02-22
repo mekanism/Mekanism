@@ -33,7 +33,7 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 multiblock.setPlasmaTemp(1_000_000_000);
-                return InteractionResult.SUCCESS;
+                return InteractionResult.sidedSuccess(isRemote());
             }
         }
         return super.onRightClick(player);

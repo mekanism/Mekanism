@@ -73,7 +73,7 @@ public class ItemDictionary extends Item {
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags);
                     }
                 }
-                return InteractionResult.SUCCESS;
+                return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
         return InteractionResult.PASS;
@@ -86,7 +86,7 @@ public class ItemDictionary extends Item {
             if (!player.level.isClientSide) {
                 sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, entity.getType().getTags());
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(player.level.isClientSide);
         }
         return InteractionResult.PASS;
     }
@@ -99,7 +99,7 @@ public class ItemDictionary extends Item {
             if (!world.isClientSide()) {
                 MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayer) player, hand, stack);
             }
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         } else {
             BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
             if (result.getType() != Type.MISS) {
@@ -108,11 +108,11 @@ public class ItemDictionary extends Item {
                     if (!world.isClientSide()) {
                         sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, liquidBlock.getFluid().getTags());
                     }
-                    return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+                    return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
                 }
             }
         }
-        return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+        return InteractionResultHolder.pass(stack);
     }
 
     private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {

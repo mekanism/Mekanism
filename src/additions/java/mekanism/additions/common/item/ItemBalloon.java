@@ -51,14 +51,14 @@ public class ItemBalloon extends Item {
             Vec3 pos = new Pos3D(rightHand ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
             EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
             if (balloon == null) {
-                return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                return InteractionResultHolder.fail(stack);
             }
             world.addFreshEntity(balloon);
         }
         if (!player.isCreative()) {
             stack.shrink(1);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        return InteractionResultHolder.success(stack);
     }
 
     @Nonnull

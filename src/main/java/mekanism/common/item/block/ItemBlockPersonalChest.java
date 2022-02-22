@@ -55,9 +55,9 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockPersonalChest>
             if (!world.isClientSide) {
                 SecurityUtils.displayNoAccess(player);
             }
-            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+            return InteractionResultHolder.fail(stack);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
     }
 
     @Nonnull

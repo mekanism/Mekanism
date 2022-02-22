@@ -631,16 +631,16 @@ public final class MekanismUtils {
      */
     @SafeVarargs
     public static InteractionResult performActions(InteractionResult firstAction, Supplier<InteractionResult>... secondaryActions) {
-        if (firstAction == InteractionResult.SUCCESS) {
-            return InteractionResult.SUCCESS;
+        if (firstAction.consumesAction()) {
+            return firstAction;
         }
         InteractionResult result = firstAction;
         boolean hasFailed = result == InteractionResult.FAIL;
         for (Supplier<InteractionResult> secondaryAction : secondaryActions) {
             result = secondaryAction.get();
-            if (result == InteractionResult.SUCCESS) {
+            if (result.consumesAction()) {
                 //If we were successful
-                return InteractionResult.SUCCESS;
+                return result;
             }
             hasFailed &= result == InteractionResult.FAIL;
         }

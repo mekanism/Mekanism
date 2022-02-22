@@ -50,9 +50,10 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
                     NetworkHooks.openGui((ServerPlayer) player, Attribute.get(this, AttributeGui.class).getProvider(tile), pos);
                 } else {
                     SecurityUtils.displayNoAccess(player);
+                    return InteractionResult.FAIL;
                 }
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return InteractionResult.PASS;
     }

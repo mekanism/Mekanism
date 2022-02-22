@@ -13,7 +13,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -42,9 +41,9 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         ItemStack itemStack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             setOn(itemStack, !getOn(itemStack));
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
+            return InteractionResultHolder.sidedSuccess(itemStack, world.isClientSide);
         }
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemStack);
+        return InteractionResultHolder.pass(itemStack);
     }
 
     @Override

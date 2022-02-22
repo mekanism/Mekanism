@@ -200,11 +200,14 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         if (!isRemote()) {
             Direction hitSide = getSideLookingAt(player);
             if (hitSide == null) {
-                if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE && onConfigure(player, side) == InteractionResult.SUCCESS) {
-                    //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
-                    getTransmitter().refreshConnections();
-                    getTransmitter().notifyTileChange();
-                    return InteractionResult.SUCCESS;
+                if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE) {
+                    InteractionResult result = onConfigure(player, side);
+                    if (result.consumesAction()) {
+                        //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
+                        getTransmitter().refreshConnections();
+                        getTransmitter().notifyTileChange();
+                        return result;
+                    }
                 }
                 hitSide = side;
             }

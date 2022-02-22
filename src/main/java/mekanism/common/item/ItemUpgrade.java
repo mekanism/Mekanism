@@ -64,7 +64,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
                                 stack.shrink(added);
                             }
                         }
-                        return InteractionResult.SUCCESS;
+                        return InteractionResult.sidedSuccess(world.isClientSide);
                     }
                 }
             }

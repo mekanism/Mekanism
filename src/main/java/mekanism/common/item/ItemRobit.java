@@ -67,37 +67,35 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         TileEntityMekanism chargepad = WorldUtils.getTileEntity(TileEntityChargepad.class, world, pos);
-        if (chargepad != null) {
-            if (!chargepad.getActive()) {
-                if (!world.isClientSide) {
-                    ItemStack stack = context.getItemInHand();
-                    EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
-                    if (robit == null) {
-                        return InteractionResult.FAIL;
-                    }
-                    robit.setHome(chargepad.getTileCoord());
-                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                    if (energyContainer != null) {
-                        robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
-                    }
-                    UUID ownerUUID = getOwnerUUID(stack);
-                    if (ownerUUID == null) {
-                        robit.setOwnerUUID(player.getUUID());
-                        //If the robit doesn't already have an owner, make sure we portray this
-                        Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
-                    } else {
-                        robit.setOwnerUUID(ownerUUID);
-                    }
-                    robit.setInventory(getInventory(stack));
-                    robit.setCustomName(getRobitName(stack));
-                    robit.setSecurityMode(getSecurity(stack));
-                    robit.setSkin(getRobitSkin(stack), player);
-                    world.addFreshEntity(robit);
-                    world.gameEvent(player, GameEvent.ENTITY_PLACE, robit);
-                    stack.shrink(1);
+        if (chargepad != null && !chargepad.getActive()) {
+            if (!world.isClientSide) {
+                ItemStack stack = context.getItemInHand();
+                EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
+                if (robit == null) {
+                    return InteractionResult.FAIL;
                 }
-                return InteractionResult.SUCCESS;
+                robit.setHome(chargepad.getTileCoord());
+                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                if (energyContainer != null) {
+                    robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
+                }
+                UUID ownerUUID = getOwnerUUID(stack);
+                if (ownerUUID == null) {
+                    robit.setOwnerUUID(player.getUUID());
+                    //If the robit doesn't already have an owner, make sure we portray this
+                    Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
+                } else {
+                    robit.setOwnerUUID(ownerUUID);
+                }
+                robit.setInventory(getInventory(stack));
+                robit.setCustomName(getRobitName(stack));
+                robit.setSecurityMode(getSecurity(stack));
+                robit.setSkin(getRobitSkin(stack), player);
+                world.addFreshEntity(robit);
+                world.gameEvent(player, GameEvent.ENTITY_PLACE, robit);
+                stack.shrink(1);
             }
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return InteractionResult.PASS;
     }
