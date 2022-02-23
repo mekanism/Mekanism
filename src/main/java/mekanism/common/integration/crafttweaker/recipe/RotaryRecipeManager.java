@@ -81,14 +81,14 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
                 RotaryRecipe recipe = getRecipe();
                 StringBuilder builder = new StringBuilder();
                 if (recipe.hasFluidToGas()) {
-                    builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), MCFluidStack::new))
+                    builder.append(CrTUtils.describeOutputs(recipe.getGasOutputDefinition(), CrTGasStack::new))
                           .append(" for fluid to gas");
                 }
                 if (recipe.hasGasToFluid()) {
                     if (recipe.hasFluidToGas()) {
                         builder.append(" and ");
                     }
-                    builder.append(CrTUtils.describeOutputs(recipe.getGasOutputDefinition(), CrTGasStack::new))
+                    builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), MCFluidStack::new))
                           .append(" for gas to fluid");
                 }
                 return builder.toString();
