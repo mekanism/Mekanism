@@ -41,6 +41,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.world.World;
 
 @ParametersAreNonnullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
@@ -50,12 +51,10 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static SpriteInfo torchOffIcon;
     private static SpriteInfo torchOnIcon;
     private final ModelTransporterBox modelBox = new ModelTransporterBox();
-    private final ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
-    private final EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
+    private final LazyItemRenderer itemRenderer = new LazyItemRenderer();
 
     public RenderLogisticalTransporter(TileEntityRendererDispatcher renderer) {
         super(renderer);
-        entityItem.setExtendedLifetime();
     }
 
     public static void onStitch(AtlasTexture map) {
@@ -73,20 +72,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         BlockPos pos = tile.getBlockPos();
         if (!inTransit.isEmpty()) {
             matrix.pushPose();
-            entityItem.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-            entityItem.level = tile.getLevel();
-            //Reset entity age to fix issues with mods like ItemPhysic
-            entityItem.age = 0;
+            itemRenderer.init(tile.getLevel(), pos);
 
             float partial = partialTick * transporter.tier.getSpeed();
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
             for (TransporterStack stack : reducedTransit) {
-                entityItem.setItem(stack.itemStack);
                 float[] stackPos = TransporterUtils.getStackPosition(transporter, stack, partial);
                 matrix.pushPose();
                 matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
                 matrix.scale(0.75F, 0.75F, 0.75F);
-                this.renderer.render(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
+                itemRenderer.renderAsStack(matrix, renderer, stack.itemStack);
                 matrix.popPose();
                 if (stack.color != null) {
                     modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
@@ -195,6 +190,35 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 return progress == other.progress && color == other.color && item.equals(other.item);
             }
             return false;
+        }
+    }
+
+    private static class LazyItemRenderer {
+
+        @Nullable
+        private ItemEntity entityItem;
+        @Nullable
+        private EntityRenderer<? super ItemEntity> renderer;
+
+        public void init(World world, BlockPos pos) {
+            if (entityItem == null) {
+                entityItem = new ItemEntity(EntityType.ITEM, world);
+            } else {
+                entityItem.level = world;
+            }
+            entityItem.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+            //Reset entity age to fix issues with mods like ItemPhysic
+            entityItem.age = 0;
+        }
+
+        private void renderAsStack(MatrixStack matrix, IRenderTypeBuffer buffer, ItemStack stack) {
+            if (entityItem != null) {
+                if (renderer == null) {
+                    renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
+                }
+                entityItem.setItem(stack);
+                renderer.render(entityItem, 0, 0, matrix, buffer, MekanismRenderer.FULL_LIGHT);
+            }
         }
     }
 }
