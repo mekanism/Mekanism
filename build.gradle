@@ -343,13 +343,6 @@ repositories {
         }
     }
     maven {
-        name 'ComputerCraft'
-        url "https://squiddev.cc/maven/"
-        content {
-            includeGroup 'org.squiddev'
-        }
-    }
-    maven {
         name 'CurseMaven'
         url 'https://www.cursemaven.com'
         content {
@@ -375,7 +368,6 @@ repositories {
                         excludeGroup 'mcjty.theoneprobe'
                         excludeGroup 'team.chisel.ctm'
                         excludeGroup 'appeng'
-                        excludeGroup 'org.squiddev'
                         excludeGroup 'com.blamejared.crafttweaker'
                         excludeGroup 'com.blamejared.jeitweaker'
                         excludeGroup 'top.theillusivec4.curios'
@@ -423,9 +415,10 @@ dependencies {
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
+    def cc = fg.deobf("curse.maven:cc-tweaked-282001:${cc_tweaked_id}")
+    compileOnly cc
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
-    testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
+    testRuntimeOnly cc
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}") {
