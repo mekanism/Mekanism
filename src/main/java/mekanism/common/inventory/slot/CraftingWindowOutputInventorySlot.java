@@ -18,7 +18,7 @@ public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySl
     }
 
     private CraftingWindowOutputInventorySlot(QIOCraftingWindow window) {
-        super(manualOnly, internalOnly, window, null);
+        super(manualOnly, internalOnly, window, null, null);
     }
 
     @Nonnull
