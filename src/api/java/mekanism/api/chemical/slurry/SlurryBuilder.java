@@ -47,7 +47,7 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      *
      * @return A builder for creating a {@link Slurry}.
      *
-     * @apiNote The texture will be automatically stitched.
+     * @apiNote The texture will be automatically stitched to the block texture atlas.
      * <br>
      * It is recommended to override {@link Slurry#getColorRepresentation()} if this builder method is not used in combination with {@link #color(int)} due to the texture
      * not needing tinting.

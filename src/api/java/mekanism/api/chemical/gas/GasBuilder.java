@@ -31,7 +31,7 @@ public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {
      *
      * @return A builder for creating a {@link Gas}.
      *
-     * @apiNote The texture will be automatically stitched.
+     * @apiNote The texture will be automatically stitched to the block texture atlas.
      * <br>
      * It is recommended to override {@link Gas#getColorRepresentation()} if this builder method is not used in combination with {@link #color(int)} due to the texture
      * not needing tinting.
