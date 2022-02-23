@@ -37,7 +37,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.3.3'
+    gradleVersion = '7.4'
     distributionType = Wrapper.DistributionType.ALL
 }
 

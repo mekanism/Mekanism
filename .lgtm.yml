@@ -6,4 +6,4 @@ extraction:
     index:
       java_version: 17
       gradle:
-        version: 7.3.3
+        version: 7.4
