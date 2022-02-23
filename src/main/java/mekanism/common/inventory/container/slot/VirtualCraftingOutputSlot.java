@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -52,6 +53,9 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     @Nonnull
     @Override
     public ItemStack remove(int amount) {
+        if (amount == 0) {
+            return ItemStack.EMPTY;
+        }
         //Simulate extraction to not actually modify the slot
         // Note: In theory even though we are "simulating" here instead of actually changing how much is
         // in the slot, this shouldn't be a problem or be a risk of duplication, as there are slots like
@@ -59,7 +63,10 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         // by taking it and then just setting the contents again, but effectively it is just returning
         // a copy so if mods cause any duplication glitches because of how we handle this, then in theory
         // they probably also cause duplication glitches with some of vanilla's slots as well.
-        ItemStack extracted = getInventorySlot().extractItem(amount, Action.SIMULATE, AutomationType.MANUAL);
+        // Note: We use the slot's actual amount instead of the passed in one, so that we ensure we properly
+        // craft everything from the output stack instead of only producing part of the output
+        IInventorySlot slot = getInventorySlot();
+        ItemStack extracted = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.MANUAL);
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.getCount();
         return extracted;

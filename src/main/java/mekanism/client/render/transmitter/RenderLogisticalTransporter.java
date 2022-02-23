@@ -39,9 +39,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.common.util.Lazy;
 
 @ParametersAreNonnullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
@@ -51,14 +51,11 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static SpriteInfo torchOffIcon;
     private static SpriteInfo torchOnIcon;
     private final ModelTransporterBox modelBox;
-    private final ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
-    //Needs to be lazy as block entity renders are initialized before entity renderers
-    private final Lazy<EntityRenderer<? super ItemEntity>> renderer = Lazy.of(() -> Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem));
+    private final LazyItemRenderer itemRenderer = new LazyItemRenderer();
 
     public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context) {
         super(context);
         modelBox = new ModelTransporterBox(context.getModelSet());
-        entityItem.setExtendedLifetime();
     }
 
     public static void onStitch(TextureAtlas map) {
@@ -76,21 +73,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         BlockPos pos = tile.getBlockPos();
         if (!inTransit.isEmpty()) {
             matrix.pushPose();
-            entityItem.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-            entityItem.level = tile.getLevel();
-            //Reset entity age to fix issues with mods like ItemPhysic
-            entityItem.age = 0;
-            EntityRenderer<? super ItemEntity> itemRenderer = this.renderer.get();
+            itemRenderer.init(tile.getLevel(), pos);
 
             float partial = partialTick * transporter.tier.getSpeed();
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
             for (TransporterStack stack : reducedTransit) {
-                entityItem.setItem(stack.itemStack);
                 float[] stackPos = TransporterUtils.getStackPosition(transporter, stack, partial);
                 matrix.pushPose();
                 matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
                 matrix.scale(0.75F, 0.75F, 0.75F);
-                itemRenderer.render(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
+                itemRenderer.renderAsStack(matrix, renderer, stack.itemStack);
                 matrix.popPose();
                 if (stack.color != null) {
                     modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
@@ -188,6 +180,35 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 return true;
             }
             return obj instanceof TransportInformation other && progress == other.progress && color == other.color && item.equals(other.item);
+        }
+    }
+
+    private static class LazyItemRenderer {
+
+        @Nullable
+        private ItemEntity entityItem;
+        @Nullable
+        private EntityRenderer<? super ItemEntity> renderer;
+
+        public void init(Level world, BlockPos pos) {
+            if (entityItem == null) {
+                entityItem = new ItemEntity(EntityType.ITEM, world);
+            } else {
+                entityItem.level = world;
+            }
+            entityItem.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+            //Reset entity age to fix issues with mods like ItemPhysic
+            entityItem.age = 0;
+        }
+
+        private void renderAsStack(PoseStack matrix, MultiBufferSource buffer, ItemStack stack) {
+            if (entityItem != null) {
+                if (renderer == null) {
+                    renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
+                }
+                entityItem.setItem(stack);
+                renderer.render(entityItem, 0, 0, matrix, buffer, MekanismRenderer.FULL_LIGHT);
+            }
         }
     }
 }

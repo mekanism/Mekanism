@@ -344,14 +344,6 @@ repositories {
             includeGroup 'team.chisel.ctm'
         }
     }
-    //TODO - 1.18: If this maven stops being down reinstate using it, otherwise just switch to curse maven
-    /*maven {
-        name 'ComputerCraft'
-        url "https://squiddev.cc/maven/"
-        content {
-            includeGroup 'org.squiddev'
-        }
-    }*/
     maven {
         name 'CurseMaven'
         url 'https://www.cursemaven.com'
@@ -381,7 +373,6 @@ repositories {
                         excludeGroup 'mcjty.theoneprobe'
                         excludeGroup 'team.chisel.ctm'
                         excludeGroup 'appeng'
-                        excludeGroup 'org.squiddev'
                         excludeGroup 'com.blamejared.crafttweaker'
                         excludeGroup 'com.blamejared.jeitweaker'
                         excludeGroup 'top.theillusivec4.curios'
@@ -435,9 +426,7 @@ dependencies {
     //compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
-    //TODO - 1.18: Switch back if CC fixes their maven
-    //def cc = fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
-    def cc = fg.deobf("curse.maven:cc-tweaked-282001:3606346")
+    def cc = fg.deobf("curse.maven:cc-tweaked-282001:${cc_tweaked_id}")
     compileOnly cc
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
     testRuntimeOnly cc

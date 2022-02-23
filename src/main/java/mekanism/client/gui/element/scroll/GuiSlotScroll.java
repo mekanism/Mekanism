@@ -8,10 +8,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.ISlotClickHandler;
@@ -23,7 +25,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class GuiSlotScroll extends GuiElement {
+public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
@@ -198,5 +200,12 @@ public class GuiSlotScroll extends GuiElement {
 
     private List<IScrollableSlot> getSlotList() {
         return slotList.get();
+    }
+
+    @Nullable
+    @Override
+    public Object getIngredient(double mouseX, double mouseY) {
+        IScrollableSlot slot = getSlot(mouseX, mouseY);
+        return slot == null ? null : slot.getItem().getStack();
     }
 }
