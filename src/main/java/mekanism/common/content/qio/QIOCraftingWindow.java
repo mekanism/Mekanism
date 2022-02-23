@@ -77,7 +77,7 @@ public class QIOCraftingWindow implements IContentsListener {
         this.holder = holder;
         this.windowData = WINDOWS[windowIndex];
         for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
-            inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this);
+            inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this, this.holder);
         }
         outputSlot = CraftingWindowOutputInventorySlot.create(this);
         craftingInventory = new QIOCraftingInventory();
@@ -111,9 +111,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
     @Override
     public void onContentsChanged() {
-        //Mark the contents as having changed in the holder to make sure it properly persists
-        holder.onContentsChanged();
-        //Update the output slot
+        //Note: We don't need to mark the holder as the contents have changed as that is done via the save listener
         if (isCrafting) {
             //If we are currently crafting mark that we changed while crafting
             changedWhileCrafting = true;
@@ -150,12 +148,13 @@ public class QIOCraftingWindow implements IContentsListener {
                     outputSlot.setEmpty();
                 }
             } else if (lastRecipe != null && lastRecipe.matches(craftingInventory, world)) {
-                //If the recipe matches, and the output slot is empty
-                if (outputSlot.isEmpty()) {
-                    //Set the slot to the recipe result, this fixes it not properly updating when
-                    // we remove a single item recipe such as for buttons, and put it back in
-                    outputSlot.setStack(lastRecipe.assemble(craftingInventory));
-                }
+                //If the recipe matches make sure we update the output anyway, as the output may have changed based on NBT
+                // If the output slot was empty, then setting the slot to the recipe result fixes it not properly updating
+                // when we remove a single item recipe such as for buttons, and put it back in;
+                // and otherwise we update so that cases like bin upgrade recipes that the inputs match the recipe but the
+                // output is dependent on the specific inputs gets updated properly
+                //Note: We make sure to only call updateOutputSlot if we believe our inputs have changed type
+                outputSlot.setStack(lastRecipe.assemble(craftingInventory));
             } else {
                 //If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents, lookup the recipe
                 CraftingRecipe recipe = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world).orElse(null);

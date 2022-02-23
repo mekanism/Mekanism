@@ -117,7 +117,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         return getTank().isEmpty() ? null : getTank().getFluid();
     }
 }

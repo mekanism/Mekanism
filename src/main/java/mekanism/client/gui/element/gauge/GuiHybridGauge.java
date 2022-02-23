@@ -56,8 +56,9 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
 
     @Nullable
     @Override
-    public Object getIngredient() {
-        return gasGauge.getIngredient() == null ? fluidGauge.getIngredient() : gasGauge.getIngredient();
+    public Object getIngredient(double mouseX, double mouseY) {
+        Object gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
+        return gasIngredient == null ? fluidGauge.getIngredient(mouseX, mouseY) : gasIngredient;
     }
 
     @Override

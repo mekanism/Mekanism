@@ -70,7 +70,7 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         //Note: We can get away with just using the stack to render
         return virtualSlot == null ? null : virtualSlot.getStackToRender();
     }

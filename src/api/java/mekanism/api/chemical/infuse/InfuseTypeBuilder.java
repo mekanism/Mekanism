@@ -31,7 +31,7 @@ public class InfuseTypeBuilder extends ChemicalBuilder<InfuseType, InfuseTypeBui
      *
      * @return A builder for creating an {@link InfuseType}.
      *
-     * @apiNote The texture will be automatically stitched.
+     * @apiNote The texture will be automatically stitched to the block texture atlas.
      * <br>
      * It is recommended to override {@link InfuseType#getColorRepresentation()} if this builder method is not used in combination with {@link #color(int)} due to the
      * texture not needing tinting.

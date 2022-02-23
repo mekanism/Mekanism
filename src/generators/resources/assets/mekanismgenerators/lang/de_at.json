@@ -6,7 +6,7 @@
   "block.mekanismgenerators.deuterium": "Flüssiges Deuterium",
   "block.mekanismgenerators.electromagnetic_coil": "Elektromagnetische Spule",
   "block.mekanismgenerators.fission_fuel_assembly": "Kernbrennstoffbaugruppe",
-  "block.mekanismgenerators.fission_reactor_casing": "Fission Reaktor Gehäuse",
+  "block.mekanismgenerators.fission_reactor_casing": "Kernreaktorgehäuse",
   "block.mekanismgenerators.fission_reactor_logic_adapter": "Fission Reaktor Logik Adapter",
   "block.mekanismgenerators.fission_reactor_port": "Fission Reaktor Port",
   "block.mekanismgenerators.fusion_fuel": "Flüssiges D-T Fuel",

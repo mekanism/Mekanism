@@ -101,7 +101,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         STACK stack = getHandler().getStack();
         return isEmpty(stack) ? null : stack;
     }

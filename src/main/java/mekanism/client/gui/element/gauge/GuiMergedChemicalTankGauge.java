@@ -80,9 +80,9 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
-        return currentGauge == null ? null : currentGauge.getIngredient();
+        return currentGauge == null ? null : currentGauge.getIngredient(mouseX, mouseY);
     }
 
     @Override
