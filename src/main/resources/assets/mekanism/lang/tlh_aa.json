@@ -1,4 +1,8 @@
 {
+  "assemblicator.mekanism.craft_available": "'ach rInmoHlaH pagh",
+  "block.mekanism.basic_bin": "yatQo'",
+  "boolean.mekanism.no": "Qo'",
+  "boolean.mekanism.yes": "HIja'",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details"
 }
