@@ -92,7 +92,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                 }
             }
             if (child instanceof IJEIIngredientHelper && child.isMouseOver(mouseX, mouseY)) {
-                return ((IJEIIngredientHelper) child).getIngredient();
+                return ((IJEIIngredientHelper) child).getIngredient(mouseX, mouseY);
             }
         }
         return null;

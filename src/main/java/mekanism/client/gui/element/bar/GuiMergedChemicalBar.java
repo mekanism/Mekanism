@@ -117,9 +117,9 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
-        return currentBar == null ? null : currentBar.getIngredient();
+        return currentBar == null ? null : currentBar.getIngredient(mouseX, mouseY);
     }
 
     @Nullable
