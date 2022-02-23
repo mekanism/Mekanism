@@ -44,6 +44,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
         super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE));
     }
 
+    @Override
     public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
         InventoryUtils.dropItemContents(item, damageSource);
     }

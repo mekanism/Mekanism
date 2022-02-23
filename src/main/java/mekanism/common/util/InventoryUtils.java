@@ -38,7 +38,6 @@ public final class InventoryUtils {
      * Helper to drop the contents of an inventory when it is destroyed if it is public or the cause of the destruction has access to the inventory.
      */
     public static void dropItemContents(ItemEntity entity, DamageSource source) {
-        //TODO - 1.18: Add override annotations to all places that call this and also test that this works
         ItemStack stack = entity.getItem();
         if (!entity.level.isClientSide && !stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
             boolean shouldDrop;

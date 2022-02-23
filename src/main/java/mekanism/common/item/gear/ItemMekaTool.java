@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -96,11 +95,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
             return true;
         }
-        return getModules(stack).stream().anyMatch(module -> module.isEnabled() && getProvidedToolActions(module).contains(action));
+        return getModules(stack).stream().anyMatch(module -> module.isEnabled() && canPerformAction(module, action));
     }
 
-    private <MODULE extends ICustomModule<MODULE>> Collection<ToolAction> getProvidedToolActions(IModule<MODULE> module) {
-        return module.getCustomInstance().getProvidedToolActions(module);
+    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, ToolAction action) {
+        return module.getCustomInstance().canPerformAction(module, action);
     }
 
     @Override

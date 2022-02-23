@@ -1,10 +1,7 @@
 package mekanism.common.content.gear.mekatool;
 
 import com.mojang.datafixers.util.Pair;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -99,13 +96,9 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         );
     }
 
-    @Nonnull
     @Override
-    public Collection<ToolAction> getProvidedToolActions(IModule<ModuleFarmingUnit> module) {
-        Set<ToolAction> actions = new HashSet<>(ToolActions.DEFAULT_AXE_ACTIONS);
-        actions.addAll(ToolActions.DEFAULT_SHOVEL_ACTIONS);
-        actions.addAll(ToolActions.DEFAULT_HOE_ACTIONS);
-        return actions;
+    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, ToolAction action) {
+        return ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action) || ToolActions.DEFAULT_HOE_ACTIONS.contains(action);
     }
 
     public enum FarmingRadius implements IHasTextComponent {

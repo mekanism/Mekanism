@@ -40,6 +40,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
         super(properties.stacksTo(1).rarity(Rarity.RARE));
     }
 
+    @Override
     public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
         InventoryUtils.dropItemContents(item, damageSource);
     }

@@ -30,6 +30,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         this.hasDetails = hasDetails;
     }
 
+    @Override
     public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
         //Try to drop the inventory contents if we are a block item that persists our inventory
         InventoryUtils.dropItemContents(item, damageSource);

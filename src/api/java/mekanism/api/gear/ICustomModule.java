@@ -1,7 +1,5 @@
 package mekanism.api.gear;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -159,15 +157,13 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to determine what {@link ToolAction}s this module allows the Meka-Tool to perform.
+     * Called to check if this module allows the Meka-Tool to perform a specific {@link ToolAction}.
      *
      * @param module Module instance.
-     *
-     * @return {@link ToolAction}s provided by this module.
+     * @param action Tool action to check.
      */
-    @Nonnull
-    default Collection<ToolAction> getProvidedToolActions(IModule<MODULE> module) {
-        return Collections.emptyList();
+    default boolean canPerformAction(IModule<MODULE> module, ToolAction action) {
+        return false;
     }
 
     /**
