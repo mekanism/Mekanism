@@ -3,7 +3,7 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "item": "mekanism:dust_gold"
+      "tag": "forge:dusts/gold"
     }
   },
   "extraInput": {

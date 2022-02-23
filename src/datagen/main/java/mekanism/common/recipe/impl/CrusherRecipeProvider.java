@@ -252,7 +252,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
-    private void addCrusherPrismarineRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherPrismarineRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {//TODO: Fix
         //Prismarine -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.PRISMARINE),
@@ -264,9 +264,10 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.PRISMARINE_SHARD, 2)
         ).build(consumer, Mekanism.rl(basePath + "shard_from_slabs"));
         //Prismarine Stairs -> Prismarine Shards
+        // Note: Uses 1 -> 4 as he stone cutter allows for one prismarine block to one step
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.PRISMARINE_STAIRS),
-              new ItemStack(Items.PRISMARINE_SHARD, 6)
+              new ItemStack(Items.PRISMARINE_SHARD, 4)
         ).build(consumer, Mekanism.rl(basePath + "shard_from_stairs"));
         //Prismarine Wall -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -284,9 +285,10 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.PRISMARINE_SHARD, 9)
         ).build(consumer, Mekanism.rl(basePath + "shard_from_brick_slabs"));
         //Prismarine Brick Stairs -> Prismarine Shards
+        // Note: Uses 1 -> 9 as the stone cutter allows for one brick to one step
         ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Blocks.PRISMARINE_BRICK_STAIRS, 2),
-              new ItemStack(Items.PRISMARINE_SHARD, 27)
+              ItemStackIngredient.from(Blocks.PRISMARINE_BRICK_STAIRS),
+              new ItemStack(Items.PRISMARINE_SHARD, 9)
         ).build(consumer, Mekanism.rl(basePath + "shard_from_brick_stairs"));
     }
 

@@ -52,7 +52,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         }
         //Gold Dust plus netherrack to nether gold ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 8),
+              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 8),
               ItemStackIngredient.from(Tags.Items.NETHERRACK),
               new ItemStack(Blocks.NETHER_GOLD_ORE)
         ).build(consumer, Mekanism.rl(basePath + "gold/ore/nether_from_dust"));
