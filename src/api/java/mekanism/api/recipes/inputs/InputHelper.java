@@ -34,7 +34,7 @@ public class InputHelper {
     public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
-        return new IInputHandler<@NonNull ItemStack>() {
+        return new IInputHandler<>() {
 
             @Override
             public ItemStack getInput() {
@@ -94,57 +94,22 @@ public class InputHelper {
     public static <STACK extends ChemicalStack<?>> ILongInputHandler<@NonNull STACK> getInputHandler(IChemicalTank<?, STACK> tank, RecipeError notEnoughError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
-        return new ILongInputHandler<@NonNull STACK>() {
+        return new ChemicalInputHandler<>(tank, notEnoughError);
+    }
 
-            @Nonnull
+    /**
+     * Wrap a chemical tank for constant usage into an {@link ILongInputHandler}.
+     *
+     * @param tank Tank to wrap.
+     */
+    public static <STACK extends ChemicalStack<?>> ILongInputHandler<@NonNull STACK> getConstantInputHandler(IChemicalTank<?, STACK> tank) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
+        return new ChemicalInputHandler<>(tank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT) {
             @Override
-            public STACK getInput() {
-                return tank.getStack();
-            }
-
-            @Nonnull
-            @Override
-            public STACK getRecipeInput(InputIngredient<@NonNull STACK> recipeIngredient) {
-                STACK input = getInput();
-                if (input.isEmpty()) {
-                    //All recipes currently require that we have an input. If we don't then return that we failed
-                    return tank.getEmptyStack();
-                }
-                return recipeIngredient.getMatchingInstance(input);
-            }
-
-            @Override
-            public void use(STACK recipeInput, long operations) {
-                if (operations == 0 || recipeInput.isEmpty()) {
-                    //Just exit if we are somehow here at zero operations
-                    // or if something went wrong, this if should never really be true if we got to finishProcessing
-                    return;
-                }
-                STACK inputGas = getInput();
-                if (!inputGas.isEmpty()) {
-                    long amount = recipeInput.getAmount() * operations;
-                    logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
-                }
-            }
-
-            @Override
-            public void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, long usageMultiplier) {
-                //Only calculate if we need to use anything
-                if (usageMultiplier > 0) {
-                    //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
-                    // Note: If we can't, we treat it as we just don't have enough of the input to better support cases
-                    // where we may want to allow not having the input be required for recipe matching
-                    if (!recipeInput.isEmpty()) {
-                        //TODO: Simulate the drain?
-                        int operations = MathUtils.clampToInt(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier));
-                        if (operations > 0) {
-                            tracker.updateOperations(operations);
-                            return;
-                        }
-                    }
-                    // Not enough input to match the recipe, reset the progress
-                    tracker.resetProgress(notEnoughError);
-                }
+            protected void resetProgress(OperationTracker tracker) {
+                //Don't reset progress just because we have no output if we have constant usage
+                // instead just pause the recipe
+                tracker.updateOperations(0);
             }
         };
     }
@@ -158,7 +123,7 @@ public class InputHelper {
     public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank tank, RecipeError notEnoughError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
-        return new IInputHandler<@NonNull FluidStack>() {
+        return new IInputHandler<>() {
 
             @Nonnull
             @Override
@@ -216,6 +181,72 @@ public class InputHelper {
     private static void logMismatchedStackSize(long actual, long expected) {
         if (expected != actual) {
             MekanismAPI.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected, new Exception());
+        }
+    }
+
+    private static class ChemicalInputHandler<STACK extends ChemicalStack<?>> implements ILongInputHandler<@NonNull STACK> {
+
+        private final IChemicalTank<?, STACK> tank;
+        private final RecipeError notEnoughError;
+
+        private ChemicalInputHandler(IChemicalTank<?, STACK> tank, RecipeError notEnoughError) {
+            this.tank = tank;
+            this.notEnoughError = notEnoughError;
+        }
+
+        @Nonnull
+        @Override
+        public STACK getInput() {
+            return tank.getStack();
+        }
+
+        @Nonnull
+        @Override
+        public STACK getRecipeInput(InputIngredient<@NonNull STACK> recipeIngredient) {
+            STACK input = getInput();
+            if (input.isEmpty()) {
+                //All recipes currently require that we have an input. If we don't then return that we failed
+                return tank.getEmptyStack();
+            }
+            return recipeIngredient.getMatchingInstance(input);
+        }
+
+        @Override
+        public void use(STACK recipeInput, long operations) {
+            if (operations == 0 || recipeInput.isEmpty()) {
+                //Just exit if we are somehow here at zero operations
+                // or if something went wrong, this if should never really be true if we got to finishProcessing
+                return;
+            }
+            STACK inputGas = getInput();
+            if (!inputGas.isEmpty()) {
+                long amount = recipeInput.getAmount() * operations;
+                logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
+            }
+        }
+
+        @Override
+        public void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, long usageMultiplier) {
+            //Only calculate if we need to use anything
+            if (usageMultiplier > 0) {
+                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+                // Note: If we can't, we treat it as we just don't have enough of the input to better support cases
+                // where we may want to allow not having the input be required for recipe matching
+                if (!recipeInput.isEmpty()) {
+                    //TODO: Simulate the drain?
+                    int operations = MathUtils.clampToInt(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier));
+                    if (operations > 0) {
+                        tracker.updateOperations(operations);
+                        return;
+                    }
+                }
+                // Not enough input to match the recipe, reset the progress
+                resetProgress(tracker);
+            }
+        }
+
+        protected void resetProgress(OperationTracker tracker) {
+            tracker.resetProgress(notEnoughError);
         }
     }
 }

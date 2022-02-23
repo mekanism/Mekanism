@@ -114,7 +114,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
               TransmissionType.SLURRY);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
-        gasInputHandler = InputHelper.getInputHandler(injectTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
+        gasInputHandler = InputHelper.getConstantInputHandler(injectTank);
         outputHandler = new BoxedChemicalOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 

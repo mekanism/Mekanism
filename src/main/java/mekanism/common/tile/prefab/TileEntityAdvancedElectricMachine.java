@@ -102,7 +102,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
-        gasInputHandler = InputHelper.getInputHandler(gasTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
+        gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         baseTotalUsage = baseTicksRequired;
         if (useStatisticalMechanics()) {

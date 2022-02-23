@@ -77,7 +77,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
-        gasInputHandler = InputHelper.getInputHandler(gasTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
+        gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
         baseTotalUsage = BASE_TICKS_REQUIRED;
