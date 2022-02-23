@@ -294,12 +294,14 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             } else if (relativeLocation.isWall()) {
                 //If we are in the wall check if we are really an inner position. For example evap towers
                 MultiblockManager<T> manager = (MultiblockManager<T>) structure.getManager();
-                IStructureValidator<T> validator = manager.createValidator();
-                if (validator instanceof CuboidStructureValidator) {
-                    CuboidStructureValidator<T> cuboidValidator = (CuboidStructureValidator<T>) validator;
-                    validator.init(getWorld(), manager, structure);
-                    cuboidValidator.loadCuboid(getBounds());
-                    return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;
+                if (manager != null) {
+                    IStructureValidator<T> validator = manager.createValidator();
+                    if (validator instanceof CuboidStructureValidator) {
+                        CuboidStructureValidator<T> cuboidValidator = (CuboidStructureValidator<T>) validator;
+                        validator.init(getWorld(), manager, structure);
+                        cuboidValidator.loadCuboid(getBounds());
+                        return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;
+                    }
                 }
             }
         }
