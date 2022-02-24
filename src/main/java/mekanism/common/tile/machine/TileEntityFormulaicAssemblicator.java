@@ -7,13 +7,15 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.AutomationType;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
@@ -30,11 +32,12 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.FormulaInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -44,6 +47,9 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
@@ -63,6 +69,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
+    private static final Predicate<@NonNull ItemStack> formulaSlotValidator = stack -> stack.getItem() instanceof ItemCraftingFormula;
 
     private static final int BASE_TICKS_REQUIRED = 40;
 
@@ -92,7 +99,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem")
-    private FormulaInventorySlot formulaSlot;
+    private BasicInventorySlot formulaSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
@@ -100,8 +107,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlots, outputSlots, energySlot, false);
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            //Expose formula slot via extra
+            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, formulaSlot));
+            itemConfig.setDefaults();
+        }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
-
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
@@ -121,7 +133,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(formulaSlot = FormulaInventorySlot.at(listener, 6, 26));
+        builder.addSlot(formulaSlot = BasicInventorySlot.at(formulaSlotValidator, listener, 6, 26))
+              .setSlotOverlay(SlotOverlay.FORMULA);
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 int index = slotY * 9 + slotX;
@@ -163,7 +176,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return builder.build();
     }
 
-    public FormulaInventorySlot getFormulaSlot() {
+    public BasicInventorySlot getFormulaSlot() {
         return formulaSlot;
     }
 
