@@ -55,11 +55,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
@@ -73,7 +69,6 @@ public class MekanismRenderer {
     public static final int FULL_LIGHT = 0xF000F0;
     public static final int FULL_SKY_LIGHT = LightTexture.pack(0, 15);
 
-    public static OBJModel contentsModel;
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
@@ -368,15 +363,6 @@ public class MekanismRenderer {
             case SOUTH -> matrix.mulPose(Vector3f.YP.rotationDegrees(south));
             case WEST -> matrix.mulPose(Vector3f.YP.rotationDegrees(west));
             case EAST -> matrix.mulPose(Vector3f.YP.rotationDegrees(east));
-        }
-    }
-
-    @SubscribeEvent
-    public static void onModelBake(ModelBakeEvent event) {
-        try {//TODO - 1.18: Evaluating moving this to our model cache (ObjModelData)
-            contentsModel = OBJLoader.INSTANCE.loadModel(new ModelSettings(RenderTransmitterBase.MODEL_LOCATION, true, false, true, true, null));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 

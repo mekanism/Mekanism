@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
@@ -48,9 +49,11 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
 
     private static List<BakedQuad> getBakedQuads(List<String> visible, TextureAtlasSprite icon, Level world) {
         return contentModelCache.computeIfAbsent(new ContentsModelData(visible, icon), modelData -> {
-            List<BakedQuad> bakedQuads = MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible),
-                  ForgeModelBakery.instance(), material -> modelData.icon, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION
-            ).getQuads(null, null, world.getRandom(), EmptyModelData.INSTANCE);
+            //Note: We get model and then bake as we use different parameters and are caching after modifying
+            List<BakedQuad> bakedQuads = MekanismModelCache.INSTANCE.TRANSMITTER_CONTENTS.getModel()
+                  .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), ForgeModelBakery.instance(), material -> modelData.icon,
+                        BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION)
+                  .getQuads(null, null, world.getRandom(), EmptyModelData.INSTANCE);
             List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);
             for (Quad unpackedQuad : unpackedQuads) {
                 for (Vertex vertex : unpackedQuad.getVertices()) {

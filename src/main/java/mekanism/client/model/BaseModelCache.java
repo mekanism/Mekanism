@@ -15,6 +15,7 @@ import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 
 public class BaseModelCache {
@@ -88,7 +89,16 @@ public class BaseModelCache {
         @Override
         protected void reload(ModelBakeEvent evt) {
             super.reload(evt);
-            model = OBJLoader.INSTANCE.loadModel(new ModelSettings(rl, true, true, true, true, null));
+            model = OBJLoader.INSTANCE.loadModel(new ModelSettings(rl, true, useDiffuseLighting(), true, true, null));
+        }
+
+        @Override
+        public OBJModel getModel() {
+            return (OBJModel) super.getModel();
+        }
+
+        protected boolean useDiffuseLighting() {
+            return true;
         }
     }
 
