@@ -4,11 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBigLight;
-import mekanism.client.gui.element.GuiGraph;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -16,6 +14,7 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiHybridGauge;
+import mekanism.client.gui.element.graph.GuiDoubleGraph;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -41,7 +40,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     private TranslationButton activateButton;
     private TranslationButton scramButton;
 
-    private GuiGraph heatGraph;
+    private GuiDoubleGraph heatGraph;
 
     public GuiFissionReactor(MekanismTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -115,7 +114,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                 return Math.min(1, tile.getMultiblock().heatCapacitor.getTemperature() / FissionReactorMultiblockData.MAX_DAMAGE_TEMPERATURE);
             }
         }, 5, 102, imageWidth - 12));
-        heatGraph = addRenderableWidget(new GuiGraph(this, 5, 123, imageWidth - 10, 38,
+        heatGraph = addRenderableWidget(new GuiDoubleGraph(this, 5, 123, imageWidth - 10, 38,
               temp -> MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.KELVIN, true)));
         heatGraph.setMinScale(1_600);
         updateButtons();
@@ -140,6 +139,6 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     @Override
     public void containerTick() {
         super.containerTick();
-        heatGraph.addData(MathUtils.clampToLong(tile.getMultiblock().heatCapacitor.getTemperature()));
+        heatGraph.addData(tile.getMultiblock().heatCapacitor.getTemperature());
     }
 }

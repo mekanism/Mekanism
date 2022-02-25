@@ -1,56 +1,34 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.graph;
 
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
+import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.element.graph.GuiGraph.GraphDataHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 
-public class GuiGraph extends GuiTexturedElement {
+public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends GraphDataHandler> extends GuiTexturedElement {
 
     private static final int TEXTURE_WIDTH = 3;
     private static final int TEXTURE_HEIGHT = 2;
 
-    private final LongList graphData = new LongArrayList();
-    private final GraphDataHandler dataHandler;
+    protected final COLLECTION graphData;
+    protected final HANDLER dataHandler;
 
-    private long currentScale = 10;
-    private boolean fixedScale = false;
+    protected boolean fixedScale = false;
 
-    public GuiGraph(IGuiWrapper gui, int x, int y, int width, int height, GraphDataHandler handler) {
+    protected GuiGraph(IGuiWrapper gui, int x, int y, int width, int height, COLLECTION graphData, HANDLER handler) {
         super(MekanismUtils.getResource(ResourceType.GUI, "graph.png"), gui, x, y, width, height);
-        dataHandler = handler;
-    }
-
-    public void enableFixedScale(long scale) {
-        fixedScale = true;
-        currentScale = scale;
-    }
-
-    public void setMinScale(long minScale) {
-        currentScale = minScale;
-    }
-
-    public void addData(long data) {
-        if (graphData.size() == width - 2) {
-            graphData.removeLong(0);
-        }
-
-        graphData.add(data);
-        if (!fixedScale) {
-            for (long i : graphData) {
-                if (i > currentScale) {
-                    currentScale = i;
-                }
-            }
-        }
+        this.graphData = graphData;
+        this.dataHandler = handler;
     }
 
     @Override
@@ -65,8 +43,7 @@ public class GuiGraph extends GuiTexturedElement {
         int y = this.y + 1;
         int height = this.height - 2;
         for (int i = 0; i < size; i++) {
-            long data = Math.min(currentScale, graphData.getLong(i));
-            int relativeHeight = (int) (data * height / (double) currentScale);
+            int relativeHeight = getRelativeHeight(i, height);
             blit(matrix, x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             RenderSystem.enableBlend();
@@ -88,17 +65,19 @@ public class GuiGraph extends GuiTexturedElement {
         }
     }
 
+    protected abstract int getRelativeHeight(int index, int height);
+
+    protected abstract Component getDataDisplay(int hoverIndex);
+
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         int hoverIndex = mouseX - x;
         if (hoverIndex >= 0 && hoverIndex < graphData.size()) {
-            displayTooltips(matrix, mouseX, mouseY, dataHandler.getDataDisplay(graphData.getLong(hoverIndex)));
+            displayTooltips(matrix, mouseX, mouseY, getDataDisplay(hoverIndex));
         }
     }
 
     public interface GraphDataHandler {
-
-        Component getDataDisplay(long data);
     }
 }

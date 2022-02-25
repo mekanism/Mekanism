@@ -3,7 +3,8 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import mekanism.client.gui.element.GuiGraph;
+import mekanism.api.math.MathUtils;
+import mekanism.client.gui.element.graph.GuiLongGraph;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
@@ -21,8 +22,8 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, EmptyTileContainer<TileEntityBoilerCasing>> {
 
-    private GuiGraph boilGraph;
-    private GuiGraph maxGraph;
+    private GuiLongGraph boilGraph;
+    private GuiLongGraph maxGraph;
 
     public GuiBoilerStats(EmptyTileContainer<TileEntityBoilerCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -36,9 +37,9 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
-        boilGraph = addRenderableWidget(new GuiGraph(this, 7, 82, 162, 38, MekanismLang.BOIL_RATE::translate));
-        maxGraph = addRenderableWidget(new GuiGraph(this, 7, 121, 162, 38, MekanismLang.MAX_BOIL_RATE::translate));
-        maxGraph.enableFixedScale((long) ((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements) / HeatUtils.getWaterThermalEnthalpy()));
+        boilGraph = addRenderableWidget(new GuiLongGraph(this, 7, 82, 162, 38, MekanismLang.BOIL_RATE::translate));
+        maxGraph = addRenderableWidget(new GuiLongGraph(this, 7, 121, 162, 38, MekanismLang.MAX_BOIL_RATE::translate));
+        maxGraph.enableFixedScale(MathUtils.clampToLong((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements) / HeatUtils.getWaterThermalEnthalpy()));
     }
 
     @Override
