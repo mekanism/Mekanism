@@ -129,10 +129,7 @@ public class MekanismBlockTypes {
     private MekanismBlockTypes() {
     }
 
-    //TODO: Name these a lot better
-    private static final FloatingLong LARGE_LASER = FloatingLong.createConst(5_000_000_000L);
-    private static final FloatingLong TELEPORTER_USAGE = FloatingLong.createConst(12_500);
-    private static final FloatingLong HUNDRED = FloatingLong.createConst(100);
+    private static final FloatingLong RESISTIVE_HEATER_BASE_USAGE = FloatingLong.createConst(100);
 
     private static final Table<FactoryTier, FactoryType, Factory<?>> FACTORIES = HashBasedTable.create();
 
@@ -349,7 +346,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.TELEPORTER, MekanismLang.DESCRIPTION_TELEPORTER)
           .withGui(() -> MekanismContainerTypes.TELEPORTER)
-          .withEnergyConfig(() -> TELEPORTER_USAGE, MekanismConfig.storage.teleporter)
+          .withEnergyConfig(MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
           .withLight(10)
@@ -375,7 +372,8 @@ public class MekanismBlockTypes {
           .build();
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
-          .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> LARGE_LASER)
+          .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER)
+          .withEnergyConfig(MekanismConfig.storage.laserAmplifier)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE),
                 new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
@@ -385,7 +383,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
           .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
-          .withEnergyConfig(null, () -> LARGE_LASER)
+          .withEnergyConfig(MekanismConfig.storage.laserTractorBeam)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .withComputerSupport("laserTractorBeam")
@@ -394,7 +392,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
-          .withEnergyConfig(() -> HUNDRED, null)
+          .withEnergyConfig(() -> RESISTIVE_HEATER_BASE_USAGE, null)
           .without(AttributeComparator.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)
@@ -438,7 +436,6 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
           .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
-          .withEnergyConfig(null, null)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .with(new AttributeStateFacing(BlockStateProperties.FACING))
           .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
@@ -691,7 +688,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.SPS_PORT, MekanismLang.DESCRIPTION_SPS_PORT)
           .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
-          .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
+          .withEnergyConfig(MekanismConfig.storage.spsPort)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.ACTIVE)
           .withComputerSupport("spsPort")
           .build();

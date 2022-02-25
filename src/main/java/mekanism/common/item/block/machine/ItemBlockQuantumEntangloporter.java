@@ -14,11 +14,9 @@ import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 
@@ -41,7 +39,6 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTile<?
     @Override
     protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         SecurityUtils.addSecurityTooltip(stack, tooltip);
-        tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(StorageUtils.getStoredEnergyFromNBT(stack))));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         MekanismUtils.addUpgradesToTooltip(stack, tooltip);
     }

@@ -32,6 +32,8 @@ public class StorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue pressurizedReactionBase;
     public final CachedFloatingLongValue fluidicPlenisher;
     public final CachedFloatingLongValue laser;
+    public final CachedFloatingLongValue laserAmplifier;
+    public final CachedFloatingLongValue laserTractorBeam;
     public final CachedFloatingLongValue formulaicAssemblicator;
     public final CachedFloatingLongValue teleporter;
     public final CachedFloatingLongValue modificationStation;
@@ -92,6 +94,10 @@ public class StorageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(40_000));
         laser = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "laser",
               FloatingLong.createConst(2_000_000));
+        laserAmplifier = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "laserAmplifier",
+              FloatingLong.createConst(5_000_000_000L));
+        laserTractorBeam = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "laserTractorBeam",
+              FloatingLong.createConst(5_000_000_000L));
         formulaicAssemblicator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "formulaicAssemblicator",
               FloatingLong.createConst(40_000));
         teleporter = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "teleporter",

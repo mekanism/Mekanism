@@ -15,6 +15,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -32,9 +33,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
-    private static final FloatingLong MAX = FloatingLong.createConst(5_000_000_000L);
     private FloatingLong minThreshold = FloatingLong.ZERO;
-    private FloatingLong maxThreshold = MAX;
+    private FloatingLong maxThreshold = MekanismConfig.storage.laserAmplifier.get();
     private int ticks = 0;
     private int delay = 0;
     private boolean emittingRedstone;
@@ -111,29 +111,55 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         setChanged();
     }
 
-    public void setMinThresholdFromPacket(FloatingLong floatingLong) {
-        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
-        FloatingLong threshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
-        if (!minThreshold.equals(threshold)) {
-            minThreshold = threshold;
+    public void setMinThresholdFromPacket(FloatingLong target) {
+        if (updateMinThreshold(target)) {
             markForSave();
         }
     }
 
-    public void setMaxThresholdFromPacket(FloatingLong floatingLong) {
-        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
-        FloatingLong threshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
-        if (!maxThreshold.equals(threshold)) {
-            maxThreshold = threshold;
+    public void setMaxThresholdFromPacket(FloatingLong target) {
+        if (updateMaxThreshold(target)) {
             markForSave();
         }
+    }
+
+    private boolean updateMinThreshold(FloatingLong target) {
+        FloatingLong threshold = getThreshold(target);
+        if (!minThreshold.equals(threshold)) {
+            minThreshold = threshold;
+            //If the min threshold is greater than the max threshold, update max threshold
+            if (minThreshold.greaterThan(maxThreshold)) {
+                maxThreshold = minThreshold;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateMaxThreshold(FloatingLong target) {
+        //Cap threshold at max energy capacity
+        FloatingLong threshold = getThreshold(target);
+        if (!maxThreshold.equals(threshold)) {
+            maxThreshold = threshold;
+            //If the max threshold is smaller than the min threshold, update min threshold
+            if (maxThreshold.smallerThan(minThreshold)) {
+                minThreshold = maxThreshold;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private FloatingLong getThreshold(FloatingLong target) {
+        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
+        return target.smallerOrEqual(maxEnergy) ? target : maxEnergy.copyAsConst();
     }
 
     @Override
     protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
-        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, value -> minThreshold = value);
-        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, value -> maxThreshold = value);
+        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, this::updateMinThreshold);
+        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, this::updateMaxThreshold);
         NBTUtils.setIntIfPresent(data, NBTConstants.TIME, value -> delay = value);
         NBTUtils.setEnumIfPresent(data, NBTConstants.OUTPUT_MODE, RedstoneOutput::byIndexStatic, mode -> outputMode = mode);
     }

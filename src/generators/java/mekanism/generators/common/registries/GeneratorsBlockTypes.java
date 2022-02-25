@@ -2,7 +2,6 @@ package mekanism.generators.common.registries;
 
 import java.util.EnumSet;
 import mekanism.api.Upgrade;
-import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.Attributes;
@@ -14,6 +13,7 @@ import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.blocktype.BlockShapes;
 import mekanism.generators.common.content.blocktype.Generator;
 import mekanism.generators.common.content.blocktype.Generator.GeneratorBuilder;
@@ -49,16 +49,11 @@ public class GeneratorsBlockTypes {
     private GeneratorsBlockTypes() {
     }
 
-    //TODO: Do this in a cleaner way
-    private static final FloatingLong STORAGE = FloatingLong.createConst(160_000);
-    private static final FloatingLong STORAGE2 = FloatingLong.createConst(200_000);
-    private static final FloatingLong SOLAR_STORAGE = FloatingLong.createConst(96_000);
-
     // Heat Generator
     public static final Generator<TileEntityHeatGenerator> HEAT_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.HEAT_GENERATOR, GeneratorsLang.DESCRIPTION_HEAT_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.HEAT_GENERATOR)
-          .withEnergyConfig(() -> STORAGE)
+          .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.heatGenerator)
           .withCustomShape(BlockShapes.HEAT_GENERATOR)
           .withSound(GeneratorsSounds.HEAT_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
@@ -71,7 +66,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityBioGenerator> BIO_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.BIO_GENERATOR, GeneratorsLang.DESCRIPTION_BIO_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.BIO_GENERATOR)
-          .withEnergyConfig(() -> STORAGE)
+          .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.bioGenerator)
           .withCustomShape(BlockShapes.BIO_GENERATOR)
           .withSound(GeneratorsSounds.BIO_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
@@ -83,7 +78,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntitySolarGenerator> SOLAR_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.SOLAR_GENERATOR, GeneratorsLang.DESCRIPTION_SOLAR_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.SOLAR_GENERATOR)
-          .withEnergyConfig(() -> SOLAR_STORAGE)
+          .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.solarGenerator)
           .withCustomShape(BlockShapes.SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
@@ -94,7 +89,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityWindGenerator> WIND_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.WIND_GENERATOR, GeneratorsLang.DESCRIPTION_WIND_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.WIND_GENERATOR)
-          .withEnergyConfig(() -> STORAGE2)
+          .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.windGenerator)
           .withCustomShape(BlockShapes.WIND_GENERATOR)
           .with(AttributeCustomSelectionBox.JAVA)
           .withSound(GeneratorsSounds.WIND_GENERATOR)
@@ -121,7 +116,7 @@ public class GeneratorsBlockTypes {
     public static final Generator<TileEntityAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = GeneratorBuilder
           .createGenerator(() -> GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR, GeneratorsLang.DESCRIPTION_ADVANCED_SOLAR_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.ADVANCED_SOLAR_GENERATOR)
-          .withEnergyConfig(() -> STORAGE2)
+          .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.advancedSolarGenerator)
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
@@ -230,7 +225,6 @@ public class GeneratorsBlockTypes {
     // Fusion Reactor Frame
     public static final BlockTypeTile<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_FRAME, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_FRAME)
-          .withEnergyConfig(null, null)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Fusion Reactor Logic Adapter
