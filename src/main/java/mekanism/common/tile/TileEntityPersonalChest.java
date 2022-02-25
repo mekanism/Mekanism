@@ -16,6 +16,9 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -114,5 +117,15 @@ public class TileEntityPersonalChest extends TileEntityMekanism implements LidBl
     @Override
     public float getOpenNess(float partialTicks) {
         return chestLidController.getOpenness(partialTicks);
+    }
+
+    @Override
+    public InteractionResult openGui(Player player) {
+        InteractionResult result = super.openGui(player);
+        if (result.consumesAction() && !isRemote()) {
+            player.awardStat(Stats.CUSTOM.get(Stats.OPEN_CHEST));
+            PiglinAi.angerNearbyPiglins(player, true);
+        }
+        return result;
     }
 }

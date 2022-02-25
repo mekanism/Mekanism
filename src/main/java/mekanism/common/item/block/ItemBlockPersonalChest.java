@@ -16,6 +16,7 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -50,6 +51,7 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockPersonalChest>
         } else if (SecurityUtils.canAccess(player, stack)) {
             if (!world.isClientSide) {
                 getContainerType().tryOpenGui((ServerPlayer) player, hand, stack);
+                player.awardStat(Stats.CUSTOM.get(Stats.OPEN_CHEST));
             }
         } else {
             if (!world.isClientSide) {
