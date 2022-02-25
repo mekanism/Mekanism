@@ -3,13 +3,13 @@ package mekanism.common.capabilities.energy;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.IContentsListener;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.tier.EnergyCubeTier;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

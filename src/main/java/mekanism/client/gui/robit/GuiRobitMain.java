@@ -23,8 +23,8 @@ import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedEntityButto
 import mekanism.common.network.to_server.PacketRobit;
 import mekanism.common.network.to_server.PacketRobit.RobitPacketType;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 

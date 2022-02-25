@@ -5,8 +5,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.gear.IHUDElement;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class HUDElement implements IHUDElement {
 

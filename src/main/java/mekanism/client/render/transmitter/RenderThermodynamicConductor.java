@@ -7,8 +7,8 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.util.HeatUtils;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 

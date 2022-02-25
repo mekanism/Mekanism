@@ -1,12 +1,12 @@
 package mekanism.common.recipe.bin;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.inventory.slot.BinInventorySlot;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.resources.ResourceLocation;
 
 //Note: We don't bother checking anywhere to ensure the bin's item stack size is one, as we only allow bins
 // to be in stacks of one anyway. If this changes at some point, then we will need to adjust this recipe

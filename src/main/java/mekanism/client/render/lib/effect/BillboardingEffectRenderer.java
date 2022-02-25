@@ -2,17 +2,17 @@ package mekanism.client.render.lib.effect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mekanism.client.render.MekanismRenderType;
-import mekanism.common.lib.effect.CustomEffect;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector3f;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.common.lib.effect.CustomEffect;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 public class BillboardingEffectRenderer {
 

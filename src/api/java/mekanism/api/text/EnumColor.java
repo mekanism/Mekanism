@@ -4,14 +4,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.tags.Tag;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.Tags;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.material.MaterialColor;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.

@@ -3,10 +3,10 @@ package mekanism.common.tile.interfaces;
 import java.util.Map;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface ITileNeighborCache extends ITileWrapper {
 

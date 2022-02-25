@@ -12,8 +12,6 @@ import mekanism.common.network.to_client.container.property.LongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.chemical.PigmentStackPropertyData;
 
-import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
-
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling pigment stacks
  */

@@ -120,8 +120,8 @@ import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class MekanismBlockTypes {

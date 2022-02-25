@@ -2,8 +2,8 @@ package mekanism.common.capabilities.resolver.manager;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 @MethodsReturnNonnullByDefault

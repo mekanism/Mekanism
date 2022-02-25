@@ -12,9 +12,9 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

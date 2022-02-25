@@ -4,8 +4,8 @@ import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.generators.common.GeneratorsChemicalConstants;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 

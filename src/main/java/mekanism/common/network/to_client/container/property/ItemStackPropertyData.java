@@ -2,8 +2,8 @@ package mekanism.common.network.to_client.container.property;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemStackPropertyData extends PropertyData {
 

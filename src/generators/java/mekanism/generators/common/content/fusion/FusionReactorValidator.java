@@ -15,9 +15,9 @@ import mekanism.common.lib.multiblock.Structure.Axis;
 import mekanism.common.lib.multiblock.StructureHelper;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.BlockPos;
 
 public class FusionReactorValidator extends CuboidStructureValidator<FusionReactorMultiblockData> {
 

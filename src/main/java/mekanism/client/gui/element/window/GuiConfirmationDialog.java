@@ -9,8 +9,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import net.minecraft.network.chat.Component;
 
-import mekanism.client.render.IFancyFontRenderer.WrappedTextRenderer;
-
 public class GuiConfirmationDialog extends GuiWindow {
 
     private final WrappedTextRenderer wrappedTextRenderer;

@@ -3,8 +3,8 @@ package mekanism.api.chemical.gas;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import net.minecraft.tags.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 
 public final class EmptyGas extends Gas {
 

@@ -15,8 +15,8 @@ import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 
 public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
 

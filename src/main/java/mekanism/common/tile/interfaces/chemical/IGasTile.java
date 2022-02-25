@@ -3,7 +3,6 @@ package mekanism.common.tile.interfaces.chemical;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -11,6 +10,7 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 @MethodsReturnNonnullByDefault

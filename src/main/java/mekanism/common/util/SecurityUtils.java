@@ -20,11 +20,11 @@ import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 
 public final class SecurityUtils {

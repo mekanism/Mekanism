@@ -3,8 +3,8 @@ package mekanism.common.item.interfaces;
 import mekanism.api.NBTConstants;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
 
 public interface IItemSustainedInventory extends ISustainedInventory {
 

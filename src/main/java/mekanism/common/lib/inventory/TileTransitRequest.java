@@ -8,9 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraftforge.items.IItemHandler;
 
 public class TileTransitRequest extends TransitRequest {

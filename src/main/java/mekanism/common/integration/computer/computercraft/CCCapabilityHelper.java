@@ -12,7 +12,7 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class CCCapabilityHelper {
 
-    private static final Capability<IPeripheral> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    private static final Capability<IPeripheral> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getComputerCraftCapability(TILE tile) {
         if (tile.isComputerCapabilityPersistent()) {

@@ -1,12 +1,12 @@
 package mekanism.client.render.obj;
 
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 import javax.annotation.Nonnull;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Transformation;
 import net.minecraft.world.phys.Vec3;
-import com.mojang.math.Vector3f;
 
 public class TransmitterModelTransform implements ModelState {
 

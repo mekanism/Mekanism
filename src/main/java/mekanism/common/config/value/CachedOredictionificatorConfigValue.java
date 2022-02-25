@@ -8,8 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.ResourceLocationException;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 

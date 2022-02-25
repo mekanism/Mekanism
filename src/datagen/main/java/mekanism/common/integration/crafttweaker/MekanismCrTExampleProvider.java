@@ -512,7 +512,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
     }
 
     private record JEIHidingComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>(
-          CrTImportsComponent imports, IChemicalProvider<CHEMICAL> chemicalProvider, Function<STACK, CommandStringDisplayable> describer) implements ICrTExampleComponent {
+          CrTImportsComponent imports, IChemicalProvider<CHEMICAL> chemicalProvider,
+          Function<STACK, CommandStringDisplayable> describer) implements ICrTExampleComponent {
 
         @Nonnull
         @Override

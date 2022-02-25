@@ -6,13 +6,13 @@ import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.sounds.SoundEventListener;
-import net.minecraft.client.sounds.WeighedSoundEvents;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.client.sounds.SoundEventListener;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 
 public abstract class PlayerSound extends AbstractTickableSoundInstance {
 

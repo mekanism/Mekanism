@@ -2,10 +2,10 @@ package mekanism.api.energy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongTransferUtils;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 /**

@@ -1,15 +1,15 @@
 package mekanism.client.key;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.KeyMapping;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;

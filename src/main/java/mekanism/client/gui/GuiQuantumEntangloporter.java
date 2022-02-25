@@ -16,8 +16,8 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuantumEntangloporter, MekanismTileContainer<TileEntityQuantumEntangloporter>>
       implements IGuiFrequencySelector<InventoryFrequency>, ITileGuiFrequencySelector<InventoryFrequency, TileEntityQuantumEntangloporter> {

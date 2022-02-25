@@ -1,9 +1,9 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.common.registries.MekanismContainerTypes;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
 
 public class DictionaryContainer extends MekanismItemContainer {
 

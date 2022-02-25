@@ -6,10 +6,10 @@ import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.MenuType;
 
 public class CraftingRobitContainer extends CraftingMenu implements IEntityContainer<EntityRobit>, ISecurityContainer {
 

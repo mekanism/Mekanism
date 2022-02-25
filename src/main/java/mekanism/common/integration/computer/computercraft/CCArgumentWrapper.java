@@ -799,8 +799,9 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         // Note: It is not possible for it to be an *empty* list here as our base check is for INBT
                         // which would cause us to end up with an empty CompoundNBT instead
                         searchClass = CollectionTag.class;
-                    } else
+                    } else {
                         searchClass = elementClass;
+                    }
                 } else if (element instanceof CollectionTag) {
                     //Arrays
                     searchClass = CollectionTag.class;

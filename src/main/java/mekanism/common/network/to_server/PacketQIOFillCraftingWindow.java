@@ -11,11 +11,11 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemS
 import mekanism.common.content.qio.QIOServerCraftingTransferHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PacketQIOFillCraftingWindow implements IMekanismPacket {

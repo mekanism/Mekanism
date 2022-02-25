@@ -126,8 +126,8 @@ public class CrTGasStackIngredient {
     }
 
     /**
-     * Gets a list of valid instances for this {@link GasStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the
-     * internal version is mostly used for JEI display purposes.
+     * Gets a list of valid instances for this {@link GasStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the internal
+     * version is mostly used for JEI display purposes.
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")

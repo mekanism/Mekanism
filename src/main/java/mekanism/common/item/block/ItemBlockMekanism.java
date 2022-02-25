@@ -4,11 +4,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
 
 public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 

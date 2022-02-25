@@ -13,8 +13,8 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalOxidizer, MekanismTileContainer<TileEntityChemicalOxidizer>> {
 

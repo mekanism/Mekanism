@@ -7,11 +7,11 @@ import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.Level;
 
 public class RecipeFormula {

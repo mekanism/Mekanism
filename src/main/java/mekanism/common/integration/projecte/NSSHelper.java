@@ -5,8 +5,8 @@ import mekanism.common.integration.MekanismHooks;
 import moze_intel.projecte.api.imc.IMCMethods;
 import moze_intel.projecte.api.imc.NSSCreatorInfo;
 import moze_intel.projecte.api.nss.NSSCreator;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.ResourceLocationException;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.InterModComms;
 
 //TODO: Convert various things ingredient representation to being able to also do it via tags?

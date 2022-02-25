@@ -1,8 +1,8 @@
 package mekanism.tools.client;
 
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.Material;
 
 public enum ShieldTextures {
     BRONZE("bronze"),

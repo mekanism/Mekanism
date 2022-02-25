@@ -12,8 +12,8 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiElectricMachine<TILE extends TileEntityElectricMachine, CONTAINER extends MekanismTileContainer<TILE>> extends GuiConfigurableTile<TILE, CONTAINER> {
 

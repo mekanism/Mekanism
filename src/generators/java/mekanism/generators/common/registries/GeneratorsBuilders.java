@@ -3,10 +3,10 @@ package mekanism.generators.common.registries;
 import mekanism.common.command.builders.StructureBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public class GeneratorsBuilders {
 

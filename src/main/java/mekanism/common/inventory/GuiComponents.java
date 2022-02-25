@@ -1,7 +1,7 @@
 package mekanism.common.inventory;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiComponents {
 

@@ -12,10 +12,10 @@ import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketOpenGui.GuiType;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 

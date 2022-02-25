@@ -6,8 +6,8 @@ import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<EvaporationMultiblockData> {

@@ -34,13 +34,13 @@ import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
@@ -265,7 +265,7 @@ public class QIOServerCraftingTransferHandler {
             //If our stack can't stack with the item we already are going to put in the slot, fail "gracefully"
             //Note: debug level because this may happen due to not knowing all NBT
             Mekanism.logger.debug("Received transfer request from: {}, for: {}, but found items for target slot: {} cannot stack. "
-                                 + "Attempting to continue by skipping the additional stack.", player, recipeID, targetSlot);
+                                  + "Attempting to continue by skipping the additional stack.", player, recipeID, targetSlot);
             return 0;
         } else {
             int max = currentRecipeTarget.getMaxStackSize();

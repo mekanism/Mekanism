@@ -3,8 +3,8 @@ package mekanism.common.recipe.serializer;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PaintingRecipe;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 
 public class PaintingRecipeSerializer<RECIPE extends PaintingRecipe> extends
       ItemStackChemicalToItemStackRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> {

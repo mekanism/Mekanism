@@ -255,154 +255,154 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
     private void addDecorativeQuartzCrushingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Certus Quartz Block -> Chiseled Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_BLOCK),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_BLOCK)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_BLOCK),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_BLOCK)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "block_to_chiseled_block"));
         //Certus Quartz Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_SLAB),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_SLAB)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_SLAB),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_SLAB)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "slab_to_chiseled_slab"));
         //Certus Quartz Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_STAIRS),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_STAIRS)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_STAIRS),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_STAIRS)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "stairs_to_chiseled_stairs"));
         //Certus Quartz Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_WALL),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_WALL)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_WALL),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_WALL)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "wall_to_chiseled_wall"));
 
         //Chiseled Certus Quartz Block -> Certus Quartz Pillar Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_BLOCK),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_BLOCK),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_block_to_pillar"));
         //Chiseled Certus Quartz Slab -> Certus Quartz Pillar Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_SLAB),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR_SLAB)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_SLAB),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR_SLAB)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_slab_to_pillar_slab"));
         //Chiseled Certus Quartz Stairs -> Certus Quartz Pillar Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_STAIRS),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR_STAIRS)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_STAIRS),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR_STAIRS)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_stairs_to_pillar_stairs"));
         //Chiseled Certus Quartz Wall -> Certus Quartz Pillar Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_WALL),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR_WALL)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_WALL),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR_WALL)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_wall_to_pillar_wall"));
 
         //Certus Quartz Pillar Block -> Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR),
-              new ItemStack(AEBlocks.QUARTZ_BLOCK)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR),
+                    new ItemStack(AEBlocks.QUARTZ_BLOCK)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_to_block"));
         //Certus Quartz Pillar Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_SLAB),
-              new ItemStack(AEBlocks.QUARTZ_SLAB)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_SLAB),
+                    new ItemStack(AEBlocks.QUARTZ_SLAB)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_slab_to_slab"));
         //Certus Quartz Pillar Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_STAIRS),
-              new ItemStack(AEBlocks.QUARTZ_STAIRS)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_STAIRS),
+                    new ItemStack(AEBlocks.QUARTZ_STAIRS)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_stairs_to_stairs"));
         //Certus Quartz Pillar Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_WALL),
-              new ItemStack(AEBlocks.QUARTZ_WALL)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_WALL),
+                    new ItemStack(AEBlocks.QUARTZ_WALL)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_wall_to_wall"));
     }
 
     private void addDecorativeQuartzEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Chiseled Certus Quartz Block -> Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_BLOCK),
-              new ItemStack(AEBlocks.QUARTZ_BLOCK)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_BLOCK),
+                    new ItemStack(AEBlocks.QUARTZ_BLOCK)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_block_to_block"));
         //Chiseled Certus Quartz Slab -> Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_SLAB),
-              new ItemStack(AEBlocks.QUARTZ_SLAB)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_SLAB),
+                    new ItemStack(AEBlocks.QUARTZ_SLAB)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_slab_to_slab"));
         //Chiseled Certus Quartz Stairs -> Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_STAIRS),
-              new ItemStack(AEBlocks.QUARTZ_STAIRS)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_STAIRS),
+                    new ItemStack(AEBlocks.QUARTZ_STAIRS)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_stairs_to_stairs"));
         //Chiseled Certus Quartz Wall -> Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_WALL),
-              new ItemStack(AEBlocks.QUARTZ_WALL)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_WALL),
+                    new ItemStack(AEBlocks.QUARTZ_WALL)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "chiseled_wall_to_wall"));
 
         //Certus Quartz Pillar Block -> Chiseled Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_BLOCK)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_BLOCK)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_to_chiseled_block"));
         //Certus Quartz Pillar Slab -> Chiseled Certus Quartz Slab
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_SLAB),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_SLAB)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_SLAB),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_SLAB)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_slab_to_chiseled_slab"));
         //Certus Quartz Pillar Stairs -> Chiseled Certus Quartz Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_STAIRS),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_STAIRS)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_STAIRS),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_STAIRS)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_stairs_to_chiseled_stairs"));
         //Certus Quartz Pillar Wall -> Chiseled Certus Quartz Wall
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_WALL),
-              new ItemStack(AEBlocks.CHISELED_QUARTZ_WALL)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_PILLAR_WALL),
+                    new ItemStack(AEBlocks.CHISELED_QUARTZ_WALL)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pillar_wall_to_chiseled_wall"));
 
         //Certus Quartz Block -> Certus Quartz Pillar Block
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_BLOCK),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_BLOCK),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "block_to_pillar"));
         //Certus Quartz Slab -> Certus Quartz Pillar Slab
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_SLAB),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR_SLAB)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_SLAB),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR_SLAB)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "slab_to_pillar_slab"));
         //Certus Quartz Stairs -> Certus Quartz Pillar Stairs
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_STAIRS),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR_STAIRS)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_STAIRS),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR_STAIRS)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "stairs_to_pillar_stairs"));
         //Certus Quartz Wall -> Certus Quartz Pillar Wall
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_WALL),
-              new ItemStack(AEBlocks.QUARTZ_PILLAR_WALL)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_WALL),
+                    new ItemStack(AEBlocks.QUARTZ_PILLAR_WALL)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "wall_to_pillar_wall"));
     }
 }

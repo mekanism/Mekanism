@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 public class PathfinderCache {
 

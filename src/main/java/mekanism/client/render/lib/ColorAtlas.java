@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 
 public class ColorAtlas {
 

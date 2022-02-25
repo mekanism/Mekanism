@@ -2,8 +2,8 @@ package mekanism.common.recipe.condition;
 
 import com.google.gson.JsonObject;
 import mekanism.common.Mekanism;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.ModList;

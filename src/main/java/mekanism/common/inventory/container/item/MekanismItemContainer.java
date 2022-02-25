@@ -4,9 +4,9 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.SecurityUtils;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
 
 public abstract class MekanismItemContainer extends MekanismContainer {
 

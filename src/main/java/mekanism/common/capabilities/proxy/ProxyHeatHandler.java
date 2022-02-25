@@ -2,11 +2,11 @@ package mekanism.common.capabilities.proxy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.ISidedHeatHandler;
 import mekanism.common.capabilities.holder.IHolder;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 @FieldsAreNonnullByDefault

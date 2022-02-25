@@ -1,8 +1,8 @@
 package mekanism.common.recipe.builder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.ItemLike;
 
 @ParametersAreNonnullByDefault

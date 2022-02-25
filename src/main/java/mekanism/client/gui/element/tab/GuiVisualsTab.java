@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.tab;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;

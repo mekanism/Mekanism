@@ -4,10 +4,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.FeatureDeferredRegister;
 import mekanism.common.registration.impl.FeatureRegistryObject;
 import mekanism.common.world.OreRetrogenFeature;
-import mekanism.common.world.ResizableOreFeature;
-import mekanism.common.world.ResizableOreFeatureConfig;
 import mekanism.common.world.ResizableDiskConfig;
 import mekanism.common.world.ResizableDiskReplaceFeature;
+import mekanism.common.world.ResizableOreFeature;
+import mekanism.common.world.ResizableOreFeatureConfig;
 
 public class MekanismFeatures {
 

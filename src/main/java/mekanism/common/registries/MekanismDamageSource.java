@@ -2,9 +2,9 @@ package mekanism.common.registries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.phys.Vec3;
 

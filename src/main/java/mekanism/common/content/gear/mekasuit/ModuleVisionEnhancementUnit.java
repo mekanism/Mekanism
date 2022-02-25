@@ -10,9 +10,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEnhancementUnit> {

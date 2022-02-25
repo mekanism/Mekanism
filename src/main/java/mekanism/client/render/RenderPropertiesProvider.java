@@ -1,8 +1,8 @@
 package mekanism.client.render;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.FreeRunnerArmor;
+import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.armor.MekaSuitArmor;

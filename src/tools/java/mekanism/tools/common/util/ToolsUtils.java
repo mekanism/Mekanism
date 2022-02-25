@@ -4,8 +4,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.config.MekanismToolsConfig;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class ToolsUtils {
 

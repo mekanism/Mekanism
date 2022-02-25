@@ -1,9 +1,9 @@
 package mekanism.client.render.lib;
 
-import mekanism.common.lib.Color;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
+import mekanism.common.lib.Color;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.phys.Vec3;
 
 public class Vertex {

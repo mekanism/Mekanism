@@ -16,8 +16,8 @@ import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorT
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiFusionReactorStats extends GuiFusionReactorInfo {
 

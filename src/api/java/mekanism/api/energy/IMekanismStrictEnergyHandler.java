@@ -3,11 +3,11 @@ package mekanism.api.energy;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.IContentsListener;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.math.FloatingLong;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 @ParametersAreNonnullByDefault

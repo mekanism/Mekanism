@@ -3,8 +3,8 @@ package mekanism.common.registration;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryObject;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

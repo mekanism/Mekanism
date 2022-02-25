@@ -19,8 +19,8 @@ import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> implements IItemGuiFrequencySelector<TeleporterFrequency, PortableTeleporterContainer>,
       IGuiColorFrequencySelector<TeleporterFrequency> {

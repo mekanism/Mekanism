@@ -2,10 +2,10 @@ package mekanism.common.network;
 
 import java.util.Optional;
 import java.util.function.Function;
-import mekanism.common.lib.math.Range3D;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Version;
+import mekanism.common.lib.math.Range3D;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

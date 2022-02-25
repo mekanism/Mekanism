@@ -16,11 +16,11 @@ import mekanism.client.render.data.RenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDynamicTank> {

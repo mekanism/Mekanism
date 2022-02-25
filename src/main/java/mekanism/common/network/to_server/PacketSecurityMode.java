@@ -3,10 +3,10 @@ package mekanism.common.network.to_server;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PacketSecurityMode implements IMekanismPacket {

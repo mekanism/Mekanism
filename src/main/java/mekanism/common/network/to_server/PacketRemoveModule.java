@@ -4,9 +4,9 @@ import mekanism.api.gear.ModuleData;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRemoveModule implements IMekanismPacket {

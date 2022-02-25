@@ -21,11 +21,11 @@ import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.core.Direction;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault

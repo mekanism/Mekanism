@@ -1,8 +1,8 @@
 package mekanism.api.radiation.capability;
 
 import javax.annotation.Nonnull;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**

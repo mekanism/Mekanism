@@ -7,8 +7,8 @@ import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {

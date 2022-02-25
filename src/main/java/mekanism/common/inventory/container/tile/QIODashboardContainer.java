@@ -6,8 +6,8 @@ import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 public class QIODashboardContainer extends QIOItemViewerContainer {
 

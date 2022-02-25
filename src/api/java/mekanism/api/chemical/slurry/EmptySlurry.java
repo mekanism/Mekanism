@@ -3,8 +3,8 @@ package mekanism.api.chemical.slurry;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import net.minecraft.tags.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 
 public final class EmptySlurry extends Slurry {
 

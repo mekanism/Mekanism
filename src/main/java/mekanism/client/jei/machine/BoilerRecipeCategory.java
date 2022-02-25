@@ -130,6 +130,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         return recipes;
     }
 
-    public record BoilerJEIRecipe(@Nullable GasStackIngredient superHeatedCoolant, FluidStackIngredient water, GasStack steam, GasStack cooledCoolant, double temperature) {
+    public record BoilerJEIRecipe(@Nullable GasStackIngredient superHeatedCoolant, FluidStackIngredient water, GasStack steam, GasStack cooledCoolant,
+                                  double temperature) {
     }
 }

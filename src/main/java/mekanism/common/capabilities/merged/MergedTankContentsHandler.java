@@ -3,7 +3,6 @@ package mekanism.common.capabilities.merged;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasTank;
@@ -20,8 +19,9 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicSlurryHandler;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**

@@ -6,8 +6,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.MekanismEntityContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 
 public class RobitContainer extends MekanismEntityContainer<EntityRobit> {

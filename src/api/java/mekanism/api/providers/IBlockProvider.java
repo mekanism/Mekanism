@@ -1,8 +1,8 @@
 package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 public interface IBlockProvider extends IItemProvider {
 

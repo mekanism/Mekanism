@@ -4,17 +4,15 @@ import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.DynamicHandler;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
-
-import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

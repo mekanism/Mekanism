@@ -8,9 +8,6 @@ import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import mekanism.client.gui.element.GuiElement.ButtonBackground;
-import mekanism.client.gui.element.GuiElement.IHoverable;
-
 /**
  * Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
  */

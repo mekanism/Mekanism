@@ -2,11 +2,11 @@ package mekanism.common.integration.energy.forgeenergy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.energy.IEnergyStorage;
 
 @ParametersAreNonnullByDefault

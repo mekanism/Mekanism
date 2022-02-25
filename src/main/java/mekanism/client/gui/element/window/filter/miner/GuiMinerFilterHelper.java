@@ -17,8 +17,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
 
 public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalMiner> {
 

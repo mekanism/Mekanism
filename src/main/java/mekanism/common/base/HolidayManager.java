@@ -10,9 +10,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.Util;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
 
 public final class HolidayManager {
 

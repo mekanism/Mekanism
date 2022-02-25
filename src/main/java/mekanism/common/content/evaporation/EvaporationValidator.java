@@ -16,9 +16,9 @@ import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.StructureHelper;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class EvaporationValidator extends CuboidStructureValidator<EvaporationMultiblockData> {

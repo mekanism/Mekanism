@@ -2,8 +2,8 @@ package mekanism.client.render.data;
 
 import javax.annotation.Nonnull;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ValveRenderData extends FluidRenderData {

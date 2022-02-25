@@ -2,8 +2,8 @@ package mekanism.common.network.to_client.container.property;
 
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class BlockPosPropertyData extends PropertyData {
 

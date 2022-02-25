@@ -5,8 +5,8 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.machine.TileEntityIsotopicCentrifuge;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemBlockIsotopicCentrifuge extends ItemBlockMachine {
 

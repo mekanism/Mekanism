@@ -1,9 +1,9 @@
 package mekanism.tools.common.recipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.ItemLike;
 
 @ParametersAreNonnullByDefault

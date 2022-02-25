@@ -18,7 +18,7 @@ public class InputValidator {
     public static final CharPredicate LETTER_OR_DIGIT = LETTER.or(DIGIT);
     public static final CharPredicate USERNAME = InputValidator.LETTER_OR_DIGIT.or(c -> c == '_');
     public static final CharPredicate RL_NAMESPACE = DIGIT.or(c -> c >= 'a' && c <= 'z').or(from('_', '.', '-'));
-    public static final CharPredicate RL_PATH =  ResourceLocation::validPathChar;
+    public static final CharPredicate RL_PATH = ResourceLocation::validPathChar;
     public static final CharPredicate RESOURCE_LOCATION = RL_PATH.or(from(':'));
     public static final CharPredicate DECIMAL = DIGIT.or(from('.'));
     public static final CharPredicate SCI_NOTATION = DECIMAL.or(from('E'));

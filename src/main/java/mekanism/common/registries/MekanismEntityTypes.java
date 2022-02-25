@@ -5,8 +5,8 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 
 public class MekanismEntityTypes {
 

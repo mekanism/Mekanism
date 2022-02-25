@@ -8,8 +8,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 
-import mekanism.client.gui.element.GuiElement.IHoverable;
-
 public class TranslationButton extends MekanismButton {
 
     private final Supplier<EnumColor> colorSupplier;

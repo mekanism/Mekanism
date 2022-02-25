@@ -1,6 +1,7 @@
 package mekanism.client.gui.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -27,10 +28,9 @@ import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.network.chat.Component;
 
 public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEntityAntiprotonicNucleosynthesizer,
       MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {

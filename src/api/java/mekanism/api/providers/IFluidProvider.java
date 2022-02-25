@@ -1,9 +1,9 @@
 package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface IFluidProvider extends IBaseProvider {

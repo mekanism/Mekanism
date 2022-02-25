@@ -2,8 +2,8 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiTexturedElement extends GuiElement {
 

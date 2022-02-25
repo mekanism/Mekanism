@@ -35,9 +35,9 @@ import mekanism.common.network.to_client.container.property.chemical.InfusionSta
 import mekanism.common.network.to_client.container.property.chemical.PigmentStackPropertyData;
 import mekanism.common.network.to_client.container.property.chemical.SlurryStackPropertyData;
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 

@@ -23,31 +23,31 @@ public class Capabilities {
     private Capabilities() {
     }
 
-    public static final Capability<IGasHandler> GAS_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IGasHandler> GAS_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IPigmentHandler> PIGMENT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IPigmentHandler> PIGMENT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<ISlurryHandler> SLURRY_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<ISlurryHandler> SLURRY_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IHeatHandler> HEAT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IHeatHandler> HEAT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IStrictEnergyHandler> STRICT_ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IStrictEnergyHandler> STRICT_ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IConfigurable> CONFIGURABLE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IConfigurable> CONFIGURABLE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<ILaserDissipation> LASER_DISSIPATION_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<ILaserDissipation> LASER_DISSIPATION_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 }

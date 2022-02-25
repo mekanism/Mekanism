@@ -9,8 +9,8 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 

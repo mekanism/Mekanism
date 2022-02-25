@@ -1,8 +1,8 @@
 package mekanism.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.Util;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy-pasted all over the place

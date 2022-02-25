@@ -8,11 +8,11 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.core.Direction;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner> {

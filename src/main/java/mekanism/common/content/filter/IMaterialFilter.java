@@ -1,9 +1,9 @@
 package mekanism.common.content.filter;
 
 import javax.annotation.Nonnull;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.item.ItemStack;
 
 public interface IMaterialFilter<FILTER extends IMaterialFilter<FILTER>> extends IFilter<FILTER> {
 

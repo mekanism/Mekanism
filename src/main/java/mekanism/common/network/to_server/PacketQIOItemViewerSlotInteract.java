@@ -8,10 +8,10 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {

@@ -53,8 +53,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
     }
 
     /**
-     * Copy of {@link #getOffsetCapability(Capability, Direction, Vec3i)} but checks for if the capability is disabled before being called. Docs copied for
-     * convenience
+     * Copy of {@link #getOffsetCapability(Capability, Direction, Vec3i)} but checks for if the capability is disabled before being called. Docs copied for convenience
      *
      * Retrieves the handler for the capability requested on the specific side with a given offset.
      * <ul>

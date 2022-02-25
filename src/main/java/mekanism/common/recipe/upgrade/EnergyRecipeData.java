@@ -19,11 +19,11 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.core.Direction;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

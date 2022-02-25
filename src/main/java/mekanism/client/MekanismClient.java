@@ -14,8 +14,8 @@ import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 

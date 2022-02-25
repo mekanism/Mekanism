@@ -11,7 +11,7 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class OC2CapabilityHelper {
 
-    private static final Capability<Device> CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    private static final Capability<Device> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getOpenComputers2Capability(TILE tile) {
         if (tile.isComputerCapabilityPersistent()) {

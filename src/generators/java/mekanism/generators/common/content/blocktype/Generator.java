@@ -8,8 +8,6 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 
-import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
-
 public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
 
     public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {

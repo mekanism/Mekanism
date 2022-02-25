@@ -4,8 +4,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.world.item.Item;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 
 public enum PrimaryResource implements IResource {

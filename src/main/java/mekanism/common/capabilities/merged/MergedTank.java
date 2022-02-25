@@ -3,7 +3,6 @@ package mekanism.common.capabilities.merged;
 import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.IChemicalTank;
@@ -15,6 +14,7 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 
 @FieldsAreNonnullByDefault

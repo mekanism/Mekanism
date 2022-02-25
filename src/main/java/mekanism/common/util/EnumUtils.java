@@ -6,9 +6,9 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
+import mekanism.common.resource.ore.OreType;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ChemicalTankTier;
@@ -24,8 +24,8 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class EnumUtils {
 
@@ -36,7 +36,7 @@ public class EnumUtils {
      * Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
      */
     public static final EquipmentSlot[] ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
-                                                                                  EquipmentSlot.FEET};
+                                                                          EquipmentSlot.FEET};
 
     /**
      * Cached collection of hand slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.

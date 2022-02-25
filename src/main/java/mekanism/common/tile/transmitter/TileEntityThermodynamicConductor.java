@@ -17,8 +17,8 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
 

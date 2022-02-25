@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
 
 public class RobitAIPickup extends RobitAIBase {

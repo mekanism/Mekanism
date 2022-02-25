@@ -8,8 +8,8 @@ import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, MekanismTileContainer<TileEntityQIODriveArray>> {
 

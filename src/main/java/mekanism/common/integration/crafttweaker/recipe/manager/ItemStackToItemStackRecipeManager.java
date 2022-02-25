@@ -11,8 +11,8 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.CrushingIRecipe;
 import mekanism.common.recipe.impl.EnrichingIRecipe;
 import mekanism.common.recipe.impl.SmeltingIRecipe;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister

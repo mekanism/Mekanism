@@ -2,19 +2,19 @@ package mekanism.common.inventory.slot;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.IContentsListener;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

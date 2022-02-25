@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.ResourceLocation;
 
 public class RobitSpriteUploader extends TextureAtlasHolder {

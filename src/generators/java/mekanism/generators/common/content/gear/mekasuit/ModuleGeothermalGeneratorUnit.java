@@ -5,20 +5,20 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 
 @ParametersAreNonnullByDefault
 public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothermalGeneratorUnit> {

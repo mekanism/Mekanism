@@ -2,9 +2,9 @@ package mekanism.common;
 
 import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismItems;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
 
 public class CreativeTabMekanism extends CreativeModeTab {
 

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -12,9 +11,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.DynamicHandler;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-
-import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

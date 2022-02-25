@@ -30,11 +30,11 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.Tag;
-import net.minecraft.network.chat.Component;
 
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 

@@ -3,12 +3,12 @@ package mekanism.common.capabilities.energy;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IContentsListener;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.Level;
 
 @FieldsAreNonnullByDefault

@@ -10,10 +10,10 @@ import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemBlockModificationStation extends ItemBlockMachine {
 

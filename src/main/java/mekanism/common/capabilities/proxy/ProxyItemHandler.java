@@ -2,13 +2,13 @@ package mekanism.common.capabilities.proxy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.ISidedItemHandler;
 import mekanism.common.capabilities.holder.IHolder;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 @FieldsAreNonnullByDefault

@@ -3,11 +3,11 @@ package mekanism.common.capabilities.fluid;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.AutomationType;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 

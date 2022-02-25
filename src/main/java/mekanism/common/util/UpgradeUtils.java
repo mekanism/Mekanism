@@ -8,9 +8,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.interfaces.IUpgradeTile;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.network.chat.Component;
 
 public class UpgradeUtils {
 

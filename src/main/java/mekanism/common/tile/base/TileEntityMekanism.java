@@ -12,6 +12,7 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
@@ -28,7 +29,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
@@ -467,8 +467,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     /**
-     * This should return false if naming it would be pointless, in order to save
-     * on NBT data on both the tile entity and the block item.
+     * This should return false if naming it would be pointless, in order to save on NBT data on both the tile entity and the block item.
+     *
      * @return if the tile entity can be named
      */
     public boolean isNameable() {
@@ -900,6 +900,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     /**
      * @param type Type or {@code null} for items.
+     *
      * @implNote It can be assumed {@link #supportsComparator()} is true before this is called.
      */
     protected boolean makesComparatorDirty(@Nullable SubstanceType type) {

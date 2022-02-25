@@ -6,8 +6,8 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRadiationData implements IMekanismPacket {

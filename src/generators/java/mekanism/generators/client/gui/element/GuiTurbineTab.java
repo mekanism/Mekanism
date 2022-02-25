@@ -15,8 +15,8 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, TurbineTab> {
 

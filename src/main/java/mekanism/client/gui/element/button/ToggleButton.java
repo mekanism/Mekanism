@@ -6,8 +6,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
 
-import mekanism.client.gui.element.GuiElement.IHoverable;
-
 public class ToggleButton extends MekanismImageButton {
 
     private static final ResourceLocation TOGGLE = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "toggle.png");

@@ -2,13 +2,13 @@ package mekanism.common.entity.ai;
 
 import java.util.EnumSet;
 import mekanism.common.entity.EntityRobit;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 
 public abstract class RobitAIBase extends Goal {
 

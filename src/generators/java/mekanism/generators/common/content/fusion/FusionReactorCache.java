@@ -3,8 +3,8 @@ package mekanism.generators.common.content.fusion;
 import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockData> {
 

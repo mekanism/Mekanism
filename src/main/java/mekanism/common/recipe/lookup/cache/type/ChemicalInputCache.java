@@ -5,8 +5,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 
 public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe>
       extends BaseInputCache<CHEMICAL, STACK, ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE> {

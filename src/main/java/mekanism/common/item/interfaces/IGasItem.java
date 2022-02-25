@@ -3,11 +3,11 @@ package mekanism.common.item.interfaces;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.world.item.ItemStack;
 

@@ -61,7 +61,8 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return !tile.mode;
             }
         }, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategories(condensentrating))
-              .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));;
+              .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
+        ;
         addRenderableWidget(new GuiProgress(new IBooleanProgressInfoHandler() {
             @Override
             public boolean fillProgressBar() {

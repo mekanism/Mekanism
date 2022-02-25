@@ -25,11 +25,11 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
     private ItemStack output = ItemStack.EMPTY;
 
     /**
-     * @param recipe        Recipe.
+     * @param recipe           Recipe.
      * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
      *                         do this every tick or if there is no one viewing recipes.
-     * @param inputHandler  Input handler.
-     * @param outputHandler Output handler.
+     * @param inputHandler     Input handler.
+     * @param outputHandler    Output handler.
      */
     public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BooleanSupplier recheckAllErrors, BoxedChemicalInputHandler inputHandler,
           IOutputHandler<@NonNull ItemStack> outputHandler) {

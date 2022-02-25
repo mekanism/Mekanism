@@ -11,8 +11,8 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.TileEntityTeleporter;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, MekanismTileContainer<TileEntityTeleporter>>
       implements ITileGuiFrequencySelector<TeleporterFrequency, TileEntityTeleporter>, IGuiColorFrequencySelector<TeleporterFrequency> {

@@ -1,8 +1,8 @@
 package mekanism.api.text;
 
 import mekanism.api.MekanismAPI;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Lang entries declared in the API and provided by Mekanism.

@@ -35,8 +35,8 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
 
     /**
      * @param recipe            Recipe.
-     * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
-     *                         do this every tick or if there is no one viewing recipes.
+     * @param recheckAllErrors  Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+     *                          do this every tick or if there is no one viewing recipes.
      * @param itemInputHandler  Item input handler.
      * @param fluidInputHandler Fluid input handler.
      * @param gasInputHandler   Gas input handler.

@@ -1,9 +1,9 @@
 package mekanism.common.tag;
 
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Named;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Named;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 //Based off of TagsProvider.Builder but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations

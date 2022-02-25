@@ -3,7 +3,6 @@ package mekanism.common.tile.interfaces.chemical;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -11,6 +10,7 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 @MethodsReturnNonnullByDefault

@@ -5,11 +5,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
 
 //TODO: Do we want an interface for getting the block easier with the correct type
 public class ItemBlockColoredName extends BlockItem {

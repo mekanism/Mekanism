@@ -11,8 +11,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 
 @ParametersAreNonnullByDefault
 public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttackAmplificationUnit> {

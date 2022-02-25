@@ -4,10 +4,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.Color;
 
-//TODO: Try to make this more generic at some point?
-import mekanism.client.gui.element.GuiElement.ButtonBackground;
-import mekanism.client.gui.element.GuiElement.IHoverable;
-
 public class DigitalButton extends TranslationButton {
 
     public DigitalButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, Runnable onPress, IHoverable onHover) {

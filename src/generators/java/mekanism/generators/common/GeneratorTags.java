@@ -3,9 +3,9 @@ package mekanism.generators.common;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.common.Mekanism;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.level.material.Fluid;
 
 public class GeneratorTags {
 

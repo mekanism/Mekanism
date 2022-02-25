@@ -3,11 +3,11 @@ package mekanism.common.content.oredictionificator;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.FilterType;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagCollection;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.tags.TagCollection;
-import net.minecraft.tags.ItemTags;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 

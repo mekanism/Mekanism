@@ -29,8 +29,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import mekanism.common.lib.transmitter.DynamicBufferedNetwork.TransferEvent;
-
 public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
 
     private final List<IExtendedFluidTank> fluidTanks;
