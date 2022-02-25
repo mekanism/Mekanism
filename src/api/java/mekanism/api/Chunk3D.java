@@ -18,13 +18,23 @@ public class Chunk3D extends ChunkPos {
     /**
      * Creates a Chunk3D from the defined chunk x, chunk z, and dimension values.
      *
+     * @param dimension Dimension ID
      * @param x         Chunk X coordinate
      * @param z         Chunk Z coordinate
-     * @param dimension Dimension ID
      */
-    public Chunk3D(int x, int z, ResourceKey<Level> dimension) {
+    public Chunk3D(ResourceKey<Level> dimension, int x, int z) {
         super(x, z);
         this.dimension = dimension;
+    }
+
+    /**
+     * Creates a Chunk3D from the defined chunk position, and dimension values.
+     *
+     * @param dimension Dimension ID
+     * @param chunkPos  Chunk position
+     */
+    public Chunk3D(ResourceKey<Level> dimension, ChunkPos chunkPos) {
+        this(dimension, chunkPos.x, chunkPos.z);
     }
 
     /**
@@ -33,7 +43,7 @@ public class Chunk3D extends ChunkPos {
      * @param coord Coordinate
      */
     public Chunk3D(Coord4D coord) {
-        this(coord.getX() >> 4, coord.getZ() >> 4, coord.dimension);
+        this(coord.dimension, coord.getX() >> 4, coord.getZ() >> 4);
     }
 
     /**
@@ -52,7 +62,7 @@ public class Chunk3D extends ChunkPos {
         Set<Chunk3D> ret = new HashSet<>();
         for (int i = x - chunkRadius; i <= x + chunkRadius; i++) {
             for (int j = z - chunkRadius; j <= z + chunkRadius; j++) {
-                ret.add(new Chunk3D(i, j, dimension));
+                ret.add(new Chunk3D(dimension, i, j));
             }
         }
         return ret;

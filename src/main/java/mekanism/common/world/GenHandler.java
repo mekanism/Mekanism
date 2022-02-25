@@ -17,7 +17,6 @@ import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.WorldUtils;
 import mekanism.common.world.height.ConfigurableHeightProvider;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -31,10 +30,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.RandomSupport;
@@ -99,7 +100,6 @@ public class GenHandler {
             }
             SALT_FEATURE = new MekFeature(
                   getSaltFeature(PlacementUtils.HEIGHTMAP_TOP_SOLID, false),
-                  //TODO - 1.18: Test that this vanilla placement works fine
                   getSaltFeature(PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, true)
             );
         }
@@ -171,56 +171,34 @@ public class GenHandler {
     }
 
     /**
-     * @return True if some retro-generation happened, false otherwise
+     * @return {@code true} if some retro-generation happened.
+     *
+     * @apiNote Only call this method if the chunk at the given position is loaded.
+     * @implNote Adapted from {@link ChunkGenerator#applyBiomeDecoration(WorldGenLevel, ChunkAccess, StructureFeatureManager)}.
      */
     public static boolean generate(ServerLevel world, ChunkPos chunkPos) {
         boolean generated = false;
-        //Ensure the chunk actually exists before trying to retrogen it
-        //TODO - 1.18: Re-evaluate if this should use WorldUtils#isChunkLoaded or World#hasChunk
-        if (!SharedConstants.debugVoidTerrain(chunkPos) && WorldUtils.isChunkLoaded(world, chunkPos)) {
+        if (!SharedConstants.debugVoidTerrain(chunkPos)) {
             SectionPos sectionPos = SectionPos.of(chunkPos, world.getMinSection());
             BlockPos blockPos = sectionPos.origin();
             ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();
             WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.seedUniquifier()));
             long decorationSeed = random.setDecorationSeed(world.getSeed(), blockPos.getX(), blockPos.getZ());
-
-            //TODO - 1.18: Re-evaluate this is runtimeBiomeSource vs biomeSource
-            BiomeSource biomeSource = chunkGenerator.getBiomeSource();//chunkGenerator.biomeSource
-            //TODO - 1.18: Figure this out as I don't think we necessarily go across biomes correctly
-            /*Set<Biome> set = new ObjectArraySet<>();
-            if (chunkGenerator instanceof FlatLevelSource) {
-                set.addAll(biomeSource.possibleBiomes());
-            } else {
-                ChunkPos.rangeClosed(sectionPos.chunk(), 1).forEach(chunk -> {
-                    ChunkAccess chunkaccess = world.getChunk(chunk.x, chunk.z);
-                    for (LevelChunkSection levelchunksection : chunkaccess.getSections()) {
-                        levelchunksection.getBiomes().getAll(set::add);
-                    }
-                });
-                set.retainAll(biomeSource.possibleBiomes());
-            }*/
-
             int decorationStep = GenerationStep.Decoration.UNDERGROUND_ORES.ordinal() - 1;
-            List<BiomeSource.StepFeatureData> list = biomeSource.featuresPerStep();
-
             ToIntFunction<PlacedFeature> featureIndex;
+            //Note: We use the runtime biome source instead of the actual biome source as that is all we have access to
+            // and the only case in vanilla where it actually seems like it might make a difference is for super-flat
+            // worlds which don't really have any generation to begin with. If this ends up causing issues in any modded
+            // dimensions, then it might be worth ATing to access the actual biomeSource variable
+            BiomeSource biomeSource = chunkGenerator.getBiomeSource();
+            List<BiomeSource.StepFeatureData> list = biomeSource.featuresPerStep();
             if (decorationStep < list.size()) {
-                //TODO - 1.18: Figure this out as I don't think we necessarily go across biomes correctly
-                /*IntSet intset = new IntArraySet();
-                for(Biome biome : set) {
-                    List<List<Supplier<PlacedFeature>>> list2 = biome.getGenerationSettings().features();
-                    if (decorationStep < list2.size()) {
-                        List<Supplier<PlacedFeature>> list1 = list2.get(decorationStep);
-                        BiomeSource.StepFeatureData stepFeatureData = list.get(decorationStep);
-                        list1.stream().map(Supplier::get).forEach(feature -> intset.add(stepFeatureData.indexMapping().applyAsInt(feature)));
-                    }
-                }
-                int j1 = intset.size();
-                int[] aint = intset.toIntArray();
-                Arrays.sort(aint);*/
-
-                List<PlacedFeature> features = list.get(decorationStep).features();
-                featureIndex = features::indexOf;
+                //Use the feature index lookup mapping. We can skip a lot of vanilla's logic here that is needed
+                // for purposes of getting all the features we want to be doing, as we know which features we want
+                // to generate and only lookup those. We also don't need to worry about if the biome can actually
+                // support our feature as that is validated via the placement context and allows us to drastically
+                // cut down on calculating it here
+                featureIndex = list.get(decorationStep).indexMapping();
             } else {
                 featureIndex = feature -> -1;
             }

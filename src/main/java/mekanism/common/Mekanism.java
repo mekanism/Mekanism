@@ -15,7 +15,6 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
-import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
@@ -109,7 +108,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -121,7 +119,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -203,8 +200,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onChemicalTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
-        MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
-        MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
@@ -337,7 +332,7 @@ public class Mekanism {
         //Clear all cache data, wait until server stopper though so that we make sure saving can use any data it needs
         playerState.clear(false);
         activeVibrators.clear();
-        worldTickHandler.resetRegenChunks();
+        worldTickHandler.resetChunkData();
         FrequencyType.clear();
         BoilerMultiblockData.hotMap.clear();
 
@@ -447,21 +442,6 @@ public class Mekanism {
 
     private void onLiquidTransferred(FluidTransferEvent event) {
         packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.fluidType), event.network);
-    }
-
-    private void chunkSave(ChunkDataEvent.Save event) {
-        if (event.getWorld() != null && !event.getWorld().isClientSide()) {
-            event.getData().putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
-        }
-    }
-
-    private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
-        LevelAccessor world = event.getWorld();
-        if (world instanceof Level level && !world.isClientSide() && MekanismConfig.world.enableRegeneration.get()) {
-            if (event.getData().getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
-                worldTickHandler.addRegenChunk(level.dimension(), event.getChunk().getPos());
-            }
-        }
     }
 
     private void onConfigLoad(ModConfigEvent configEvent) {

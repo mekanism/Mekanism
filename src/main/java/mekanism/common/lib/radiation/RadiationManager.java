@@ -171,13 +171,10 @@ public class RadiationManager implements IRadiationManager {
         Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
         double level = BASELINE;
         for (Chunk3D chunk : checkChunks) {
-            Map<Coord4D, RadiationSource> row = radiationTable.row(chunk);
-            if (row != null) {
-                for (Map.Entry<Coord4D, RadiationSource> entry : row.entrySet()) {
-                    // we only compute exposure when within the MAX_RANGE bounds
-                    if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
-                        level += computeExposure(coord, entry.getValue());
-                    }
+            for (Map.Entry<Coord4D, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
+                // we only compute exposure when within the MAX_RANGE bounds
+                if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
+                    level += computeExposure(coord, entry.getValue());
                 }
             }
         }
