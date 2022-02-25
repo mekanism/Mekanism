@@ -25,6 +25,10 @@ public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport,
         return 0;
     }
 
+    default boolean triggerBoundingEvent(Vec3i offset, int id, int param) {
+        return false;
+    }
+
     @Override
     default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
         //By default, only allow proxying the config card capability to bounding blocks

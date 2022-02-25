@@ -88,6 +88,13 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return main.getOffsetCapability(capability, side, worldPosition.subtract(getMainPos()));
     }
 
+    @Override
+    public boolean triggerEvent(int id, int param) {
+        boolean handled = super.triggerEvent(id, param);
+        IBoundingBlock main = getMain();
+        return main != null && main.triggerBoundingEvent(worldPosition.subtract(getMainPos()), id, param) || handled;
+    }
+
     public void onNeighborChange(Block block, BlockPos neighborPos) {
         if (!isRemote()) {
             int power = level.getBestNeighborSignal(getBlockPos());

@@ -254,7 +254,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Deprecated
     public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
         super.triggerEvent(state, level, pos, id, param);
-        //TODO - 1.18: Should this forward to the main pos?
         return triggerBlockEntityEvent(state, level, pos, id, param);
     }
 
