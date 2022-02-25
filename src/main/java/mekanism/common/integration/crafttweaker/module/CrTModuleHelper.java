@@ -75,6 +75,7 @@ public class CrTModuleHelper {
      * @return List of modules on an item, or an empty list if the item doesn't support modules.
      */
     @ZenCodeType.Method
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static List<IModule> loadAll(ItemStack container) {
         //ZenCode does not like ? extends IModule<?> so we need to just cast it to a type without any generics specified
         return (List) MekanismAPI.getModuleHelper().loadAll(container);

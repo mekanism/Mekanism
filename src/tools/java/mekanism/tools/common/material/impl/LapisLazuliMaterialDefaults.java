@@ -61,32 +61,24 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 130;
-            case LEGS:
-                return 150;
-            case CHEST:
-                return 160;
-            case HEAD:
-                return 110;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 130;
+            case LEGS -> 150;
+            case CHEST -> 160;
+            case HEAD -> 110;
+            default -> 0;
+        };
     }
 
     @Override
     public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 1;
-            case LEGS:
-                return 3;
-            case CHEST:
-                return 4;
-            case HEAD:
-                return 1;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 1;
+            case LEGS -> 3;
+            case CHEST -> 4;
+            case HEAD -> 1;
+            default -> 0;
+        };
     }
 
     @Nonnull

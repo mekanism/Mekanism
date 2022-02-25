@@ -76,7 +76,6 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
             case QIO_ITEMSTACK_FILTER -> new QIOItemStackFilter();
             case QIO_MODID_FILTER -> new QIOModIDFilter();
             case QIO_TAG_FILTER -> new QIOTagFilter();
-            default -> null;
         };
     }
 }

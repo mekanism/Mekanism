@@ -61,32 +61,24 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 260;
-            case LEGS:
-                return 300;
-            case CHEST:
-                return 320;
-            case HEAD:
-                return 220;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 260;
+            case LEGS -> 300;
+            case CHEST -> 320;
+            case HEAD -> 220;
+            default -> 0;
+        };
     }
 
     @Override
     public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 3;
-            case LEGS:
-                return 6;
-            case CHEST:
-                return 8;
-            case HEAD:
-                return 3;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 3;
+            case LEGS -> 6;
+            case CHEST -> 8;
+            case HEAD -> 3;
+            default -> 0;
+        };
     }
 
     @Nonnull

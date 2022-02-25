@@ -61,32 +61,24 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 221;
-            case LEGS:
-                return 255;
-            case CHEST:
-                return 272;
-            case HEAD:
-                return 187;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 221;
+            case LEGS -> 255;
+            case CHEST -> 272;
+            case HEAD -> 187;
+            default -> 0;
+        };
     }
 
     @Override
     public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 3;
-            case LEGS:
-                return 6;
-            case CHEST:
-                return 8;
-            case HEAD:
-                return 3;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 3;
+            case LEGS -> 6;
+            case CHEST -> 8;
+            case HEAD -> 3;
+            default -> 0;
+        };
     }
 
     @Nonnull

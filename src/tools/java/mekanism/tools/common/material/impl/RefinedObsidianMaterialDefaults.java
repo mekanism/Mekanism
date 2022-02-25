@@ -66,32 +66,24 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 975;
-            case LEGS:
-                return 1_125;
-            case CHEST:
-                return 1_200;
-            case HEAD:
-                return 825;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 975;
+            case LEGS -> 1_125;
+            case CHEST -> 1_200;
+            case HEAD -> 825;
+            default -> 0;
+        };
     }
 
     @Override
     public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 5;
-            case LEGS:
-                return 8;
-            case CHEST:
-                return 12;
-            case HEAD:
-                return 6;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 5;
+            case LEGS -> 8;
+            case CHEST -> 12;
+            case HEAD -> 6;
+            default -> 0;
+        };
     }
 
     @Nonnull

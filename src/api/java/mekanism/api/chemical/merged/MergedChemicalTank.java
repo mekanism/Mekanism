@@ -188,7 +188,8 @@ public class MergedChemicalTank {
         TANK create(MergedChemicalTank mergedTank, TANK tank, BooleanSupplier insertCheck);
     }
 
-    private static class ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
+    private record ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>(
+          String type, IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper, Predicate<IChemicalTank<?, ?>> tankValidator) {
 
         private static final List<ChemicalTankType<?, ?, ?>> TYPES = new ArrayList<>();
         private static final ChemicalTankType<Gas, GasStack, IGasTank> GAS = new ChemicalTankType<>("gas", GasTankWrapper::new, tank -> tank instanceof IGasTank);
@@ -196,14 +197,7 @@ public class MergedChemicalTank {
         private static final ChemicalTankType<Pigment, PigmentStack, IPigmentTank> PIGMENT = new ChemicalTankType<>("pigment", PigmentTankWrapper::new, tank -> tank instanceof IPigmentTank);
         private static final ChemicalTankType<Slurry, SlurryStack, ISlurryTank> SLURRY = new ChemicalTankType<>("slurry", SlurryTankWrapper::new, tank -> tank instanceof ISlurryTank);
 
-        private final IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper;
-        private final Predicate<IChemicalTank<?, ?>> tankValidator;
-        private final String type;
-
-        ChemicalTankType(String type, IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper, Predicate<IChemicalTank<?, ?>> tankValidator) {
-            this.type = type;
-            this.tankWrapper = tankWrapper;
-            this.tankValidator = tankValidator;
+        private ChemicalTankType {
             //Add to known types
             TYPES.add(this);
         }

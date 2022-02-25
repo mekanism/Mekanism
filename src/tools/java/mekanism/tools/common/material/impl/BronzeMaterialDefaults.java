@@ -61,32 +61,24 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 234;
-            case LEGS:
-                return 270;
-            case CHEST:
-                return 288;
-            case HEAD:
-                return 198;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 234;
+            case LEGS -> 270;
+            case CHEST -> 288;
+            case HEAD -> 198;
+            default -> 0;
+        };
     }
 
     @Override
     public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 2;
-            case LEGS:
-                return 6;
-            case CHEST:
-                return 7;
-            case HEAD:
-                return 3;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 2;
+            case LEGS -> 6;
+            case CHEST -> 7;
+            case HEAD -> 3;
+            default -> 0;
+        };
     }
 
     @Nonnull

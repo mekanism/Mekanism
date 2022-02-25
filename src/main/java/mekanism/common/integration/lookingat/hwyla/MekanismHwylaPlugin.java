@@ -28,6 +28,7 @@ public class MekanismHwylaPlugin implements IWailaPlugin {
     private static final ResourceLocation FORGE_FLUID = new ResourceLocation("fluid");
 
     @Override
+    @SuppressWarnings("UnstableApiUsage")//No need for limiting what version of jade we support. Unstable instead of deprecated because of how they annotated it
     public void register(IRegistrar registrar) {
         registrar.registerBlockDataProvider(HwylaDataProvider.INSTANCE, BlockEntity.class);
         registrar.registerEntityDataProvider(HwylaEntityDataProvider.INSTANCE, EntityRobit.class);

@@ -82,11 +82,11 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         return ChemicalType.getTypeFor(a) == ChemicalType.getTypeFor(b) && ingredientConflicts(a, (ChemicalStackIngredient<CHEMICAL, STACK>) b);
     }
 
-    protected String buildCommandString(IRecipeManager manager, RECIPE recipe, Object... params) {
+    protected String buildCommandString(IRecipeManager<?> manager, RECIPE recipe, Object... params) {
         return buildCommandString(manager, "addRecipe", recipe, params);
     }
 
-    protected String buildCommandString(IRecipeManager manager, String method, RECIPE recipe, Object... params) {
+    protected String buildCommandString(IRecipeManager<?> manager, String method, RECIPE recipe, Object... params) {
         StringBuilder commandString = new StringBuilder(manager.getCommandString())
               .append('.')
               .append(method)

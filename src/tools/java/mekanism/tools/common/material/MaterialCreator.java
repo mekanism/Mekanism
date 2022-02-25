@@ -244,32 +244,24 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     @Override
     public int getDurabilityForSlot(EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return bootDurability.get();
-            case LEGS:
-                return leggingDurability.get();
-            case CHEST:
-                return chestplateDurability.get();
-            case HEAD:
-                return helmetDurability.get();
-        }
-        return fallBack.getDurabilityForSlot(slotType);
+        return switch (slotType) {
+            case FEET -> bootDurability.get();
+            case LEGS -> leggingDurability.get();
+            case CHEST -> chestplateDurability.get();
+            case HEAD -> helmetDurability.get();
+            default -> fallBack.getDurabilityForSlot(slotType);
+        };
     }
 
     @Override
     public int getDefenseForSlot(EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return bootArmor.get();
-            case LEGS:
-                return leggingArmor.get();
-            case CHEST:
-                return chestplateArmor.get();
-            case HEAD:
-                return helmetArmor.get();
-        }
-        return fallBack.getDefenseForSlot(slotType);
+        return switch (slotType) {
+            case FEET -> bootArmor.get();
+            case LEGS -> leggingArmor.get();
+            case CHEST -> chestplateArmor.get();
+            case HEAD -> helmetArmor.get();
+            default -> fallBack.getDefenseForSlot(slotType);
+        };
     }
 
     @Override

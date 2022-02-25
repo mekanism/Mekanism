@@ -63,32 +63,24 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 390;
-            case LEGS:
-                return 450;
-            case CHEST:
-                return 480;
-            case HEAD:
-                return 330;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 390;
+            case LEGS -> 450;
+            case CHEST -> 480;
+            case HEAD -> 330;
+            default -> 0;
+        };
     }
 
     @Override
     public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
-        switch (slotType) {
-            case FEET:
-                return 3;
-            case LEGS:
-                return 6;
-            case CHEST:
-                return 8;
-            case HEAD:
-                return 4;
-        }
-        return 0;
+        return switch (slotType) {
+            case FEET -> 3;
+            case LEGS -> 6;
+            case CHEST -> 8;
+            case HEAD -> 4;
+            default -> 0;
+        };
     }
 
     @Nonnull
