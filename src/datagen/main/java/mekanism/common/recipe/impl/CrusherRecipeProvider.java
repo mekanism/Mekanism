@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -10,9 +11,12 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraftforge.common.Tags;
@@ -23,13 +27,20 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "crushing/";
         addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
+        addCrusherDewaxingRecipes(consumer, basePath + "dewax/");
         addCrusherStoneRecipes(consumer, basePath + "stone/");
+        addCrusherDeepslateRecipes(consumer, basePath + "deepslate/");
         addCrusherBlackstoneRecipes(consumer, basePath + "blackstone/");
         addCrusherQuartzRecipes(consumer, basePath + "quartz/");
         addCrusherGraniteRecipes(consumer, basePath + "granite/");
         addCrusherDioriteRecipes(consumer, basePath + "diorite/");
         addCrusherAndesiteRecipes(consumer, basePath + "andesite/");
         addCrusherPrismarineRecipes(consumer, basePath + "prismarine/");
+        //Dripstone Block -> Pointed Dripstone
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DRIPSTONE_BLOCK),
+              new ItemStack(Items.POINTED_DRIPSTONE, 4)
+        ).build(consumer, Mekanism.rl(basePath + "pointed_dripstone_from_block"));
         //Purpur Block -> Purpur Pillar
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.PURPUR_PILLAR),
@@ -72,11 +83,14 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.SOUL_SOIL),
               new ItemStack(Blocks.SOUL_SAND)
         ).build(consumer, Mekanism.rl(basePath + "soul_soil_to_soul_sand"));
-        //Polished Basalt -> Basalt
+        //Polished or Smooth Basalt -> Basalt
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Blocks.POLISHED_BASALT),
+              IngredientCreatorAccess.item().from(Ingredient.of(
+                    Blocks.POLISHED_BASALT,
+                    Blocks.SMOOTH_BASALT
+              )),
               new ItemStack(Blocks.BASALT)
-        ).build(consumer, Mekanism.rl(basePath + "polished_basalt_to_basalt"));
+        ).build(consumer, Mekanism.rl(basePath + "polished_or_smooth_basalt_to_basalt"));
         //Chiseled Nether Bricks -> Nether Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.CHISELED_NETHER_BRICKS),
@@ -120,6 +134,95 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.CRACKED_STONE_BRICKS),
               new ItemStack(Blocks.STONE)
         ).build(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
+    }
+
+    private void addCrusherDeepslateRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+        //Deepslate -> Cobbled Deepslate
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE),
+              new ItemStack(Blocks.COBBLED_DEEPSLATE)
+        ).build(consumer, Mekanism.rl(basePath + "to_cobbled"));
+
+        //Polished Deepslate -> Deepslate Bricks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE),
+              new ItemStack(Blocks.DEEPSLATE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "polished_to_bricks"));
+        //Polished Deepslate Stairs -> Deepslate Brick Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE_STAIRS),
+              new ItemStack(Blocks.DEEPSLATE_BRICK_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "polished_stairs_to_brick"));
+        //Polished Deepslate Slabs -> Deepslate Brick Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE_SLAB),
+              new ItemStack(Blocks.DEEPSLATE_BRICK_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "polished_slabs_to_brick"));
+        //Polished Deepslate Wall -> Deepslate Brick Wall
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE_WALL),
+              new ItemStack(Blocks.DEEPSLATE_BRICK_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "polished_wall_to_brick"));
+
+        //Deepslate Bricks -> Cracked Deepslate Bricks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_BRICKS),
+              new ItemStack(Blocks.CRACKED_DEEPSLATE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "bricks_to_cracked_bricks"));
+        //Cracked Deepslate Bricks -> Deepslate Tiles
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.CRACKED_DEEPSLATE_BRICKS),
+              new ItemStack(Blocks.DEEPSLATE_TILES)
+        ).build(consumer, Mekanism.rl(basePath + "cracked_bricks_to_tile"));
+
+        //Deepslate Brick Stairs -> Deepslate Tile Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_BRICK_STAIRS),
+              new ItemStack(Blocks.DEEPSLATE_TILE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "brick_stairs_to_tile"));
+        //Deepslate Brick Slabs -> Deepslate Tile Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_BRICK_SLAB),
+              new ItemStack(Blocks.DEEPSLATE_TILE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "brick_slabs_to_tile"));
+        //Deepslate Brick Wall -> Deepslate Tile Wall
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_BRICK_WALL),
+              new ItemStack(Blocks.DEEPSLATE_TILE_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "brick_wall_to_tile"));
+
+        //Deepslate Tiles -> Cracked Deepslate Tiles
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILES),
+              new ItemStack(Blocks.CRACKED_DEEPSLATE_TILES)
+        ).build(consumer, Mekanism.rl(basePath + "tile_to_cracked_tile"));
+        //Cracked Deepslate Tiles -> Chiseled Deepslate
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.CRACKED_DEEPSLATE_TILES),
+              new ItemStack(Blocks.CHISELED_DEEPSLATE)
+        ).build(consumer, Mekanism.rl(basePath + "cracked_tile_to_chiseled"));
+
+        //Deepslate Tile Stairs -> Cobbled Deepslate Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILE_STAIRS),
+              new ItemStack(Blocks.COBBLED_DEEPSLATE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "tile_stairs_to_cobbled"));
+        //Deepslate Tile Slabs -> Cobbled Deepslate Slabs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILE_SLAB),
+              new ItemStack(Blocks.COBBLED_DEEPSLATE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "tile_slabs_to_cobbled"));
+        //Deepslate Tile Wall -> Cobbled Deepslate Wall
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILE_WALL),
+              new ItemStack(Blocks.COBBLED_DEEPSLATE_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "tile_wall_to_cobbled"));
+
+        //Chiseled Deepslate -> Deepslate
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.CHISELED_DEEPSLATE),
+              new ItemStack(Blocks.DEEPSLATE)
+        ).build(consumer, Mekanism.rl(basePath + "from_chiseled"));
     }
 
     private void addCrusherBlackstoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
@@ -292,13 +395,25 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "shard_from_brick_stairs"));
     }
 
+    private void addCrusherDewaxingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+        //Generate baseline recipes from de-waxing recipe set
+        for (Map.Entry<Block, Block> entry : HoneycombItem.WAX_OFF_BY_BLOCK.get().entrySet()) {
+            Block result = entry.getValue();
+            ItemStackToItemStackRecipeBuilder.crushing(
+                  IngredientCreatorAccess.item().from(entry.getKey()),
+                  new ItemStack(result)
+            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+        }
+    }
+
     private void addCrusherBioFuelRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Generate baseline recipes from Composter recipe set
-        for (Entry<ItemLike> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
+        for (Object2FloatMap.Entry<ItemLike> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
+            ItemLike input = chance.getKey();
             ItemStackToItemStackRecipeBuilder.crushing(
-                  IngredientCreatorAccess.item().from(chance.getKey().asItem()),
+                  IngredientCreatorAccess.item().from(input),
                   MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))
-            ).build(consumer, Mekanism.rl(basePath + chance.getKey().asItem()));
+            ).build(consumer, Mekanism.rl(basePath + input.asItem()));
         }
     }
 }

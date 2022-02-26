@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cobbled_deepslate_wall"
+    }
+  },
+  "output": {
+    "item": "minecraft:polished_deepslate_wall"
+  }
+}

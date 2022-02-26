@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:polished_basalt"
+      },
+      {
+        "item": "minecraft:smooth_basalt"
+      }
+    ]
+  },
+  "output": {
+    "item": "minecraft:basalt"
+  }
+}

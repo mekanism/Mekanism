@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:waxed_oxidized_cut_copper_stairs"
+    }
+  },
+  "output": {
+    "item": "minecraft:oxidized_cut_copper_stairs"
+  }
+}

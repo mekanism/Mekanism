@@ -466,7 +466,7 @@
   "description.mekanism.chemical_oxidizer": "A machine capable of oxidizing solid materials into gas phase.",
   "description.mekanism.chemical_tank": "A portable tank that lets you carry chemicals wherever you please.",
   "description.mekanism.chemical_washer": "An ultimate machine that cleans unprocessed slurry and prepares it for crystallization.",
-  "description.mekanism.combiner": "A machine used to combine items together. For example, dusts and cobblestone to form their ore counterparts.",
+  "description.mekanism.combiner": "A machine used to combine items together. For example, raw ores and cobblestone to form their ore counterparts.",
   "description.mekanism.crusher": "A machine used to crush ingots into their dust counterparts, as well as perform many other operations.",
   "description.mekanism.dictionary": "A tool used for viewing the tags of various components such as: items, blocks, and fluids.",
   "description.mekanism.digital_miner": "A highly-advanced, filter-based, auto-miner that can mine whatever block you tell it to within a 32 block (max) radius.",

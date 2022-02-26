@@ -1,7 +1,9 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -12,7 +14,9 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraftforge.common.Tags;
 
 class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
@@ -46,6 +50,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
         addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
         addChemicalInjectorCoralRevivalRecipes(consumer, basePath + "coral/");
+        addChemicalInjectorOxidizingRecipe(consumer, basePath + "oxidizing/");
     }
 
     private void addChemicalInjectorConcreteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
@@ -99,5 +104,18 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, water),
               new ItemStack(living)
         ).build(consumer, Mekanism.rl(basePath + living.asItem().getRegistryName().getPath()));
+    }
+
+    private void addChemicalInjectorOxidizingRecipe(Consumer<FinishedRecipe> consumer, String basePath) {
+        //Generate baseline recipes from weathering recipe set
+        GasStackIngredient oxygen = IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1);
+        for (Map.Entry<Block, Block> entry : WeatheringCopper.NEXT_BY_BLOCK.get().entrySet()) {
+            Block result = entry.getValue();
+            ItemStackChemicalToItemStackRecipeBuilder.injecting(
+                  IngredientCreatorAccess.item().from(entry.getKey()),
+                  oxygen,
+                  new ItemStack(result)
+            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+        }
     }
 }

@@ -174,6 +174,7 @@ public class MekanismTags {
         public static final Named<Item> COLORABLE_GLASS = tag("colorable/glass");
         public static final Named<Item> COLORABLE_GLASS_PANES = tag("colorable/glass_panes");
         public static final Named<Item> COLORABLE_TERRACOTTA = tag("colorable/terracotta");
+        public static final Named<Item> COLORABLE_CANDLE = tag("colorable/candle");
         public static final Named<Item> COLORABLE_CONCRETE = tag("colorable/concrete");
         public static final Named<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
         public static final Named<Item> COLORABLE_BANNERS = tag("colorable/banners");

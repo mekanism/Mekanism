@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:deepslate_bricks"
+    }
+  },
+  "output": {
+    "item": "minecraft:cracked_deepslate_bricks"
+  }
+}

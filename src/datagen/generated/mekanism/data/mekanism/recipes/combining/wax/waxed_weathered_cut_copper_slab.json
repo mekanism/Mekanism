@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "ingredient": {
+      "item": "minecraft:weathered_cut_copper_slab"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "item": "minecraft:honeycomb"
+    }
+  },
+  "output": {
+    "item": "minecraft:waxed_weathered_cut_copper_slab"
+  }
+}

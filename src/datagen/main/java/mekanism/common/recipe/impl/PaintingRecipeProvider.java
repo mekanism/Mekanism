@@ -67,6 +67,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL, oneAtATime, PigmentExtractingRecipeProvider.WOOL, basePath + "wool/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CARPETS, eightAtATime, PigmentExtractingRecipeProvider.CARPETS, basePath + "carpet/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BEDS, oneAtATime, BEDS, basePath + "bed/");
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CANDLE, oneAtATime, PigmentExtractingRecipeProvider.CANDLES, basePath + "candle/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLASS, eightAtATime, STAINED_GLASS, basePath + "glass/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_GLASS_PANES, eightAtATime, STAINED_GLASS_PANES, basePath + "glass_pane/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_TERRACOTTA, eightAtATime, PigmentExtractingRecipeProvider.TERRACOTTA, basePath + "terracotta/");

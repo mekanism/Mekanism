@@ -28,6 +28,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     public static final long DYE_RATE = 256;
     private static final long BANNER_RATE = DYE_RATE / 4;//64
     private static final long CONCRETE_POWDER_RATE = DYE_RATE / 8;//32
+    private static final long CANDLE_RATE = DYE_RATE * 7 / 8;//224
     //Concrete shares a rate with terracotta
     private static final long CONCRETE_RATE = CONCRETE_POWDER_RATE * 3 / 4;//24
     private static final long STAINED_GLASS_RATE = DYE_RATE / 16;//16
@@ -35,6 +36,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     private static final long WOOL_RATE = DYE_RATE * 3 / 4;//192
     private static final long CARPET_RATE = WOOL_RATE * 2 / 3;//128
 
+    static final Map<EnumColor, ItemLike> CANDLES = new EnumMap<>(EnumColor.class);
     static final Map<EnumColor, ItemLike> CONCRETE = new EnumMap<>(EnumColor.class);
     static final Map<EnumColor, ItemLike> CONCRETE_POWDER = new EnumMap<>(EnumColor.class);
     static final Map<EnumColor, ItemLike> CARPETS = new EnumMap<>(EnumColor.class);
@@ -44,42 +46,43 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     static final Map<EnumColor, ItemLike> WOOL = new EnumMap<>(EnumColor.class);
 
     static {
-        addTypes(EnumColor.WHITE, Blocks.WHITE_CONCRETE, Blocks.WHITE_CONCRETE_POWDER, Blocks.WHITE_CARPET, Blocks.WHITE_TERRACOTTA, Tags.Items.GLASS_WHITE,
-              Tags.Items.GLASS_PANES_WHITE, Blocks.WHITE_WOOL);
-        addTypes(EnumColor.ORANGE, Blocks.ORANGE_CONCRETE, Blocks.ORANGE_CONCRETE_POWDER, Blocks.ORANGE_CARPET, Blocks.ORANGE_TERRACOTTA, Tags.Items.GLASS_ORANGE,
-              Tags.Items.GLASS_PANES_ORANGE, Blocks.ORANGE_WOOL);
-        addTypes(EnumColor.PINK, Blocks.MAGENTA_CONCRETE, Blocks.MAGENTA_CONCRETE_POWDER, Blocks.MAGENTA_CARPET, Blocks.MAGENTA_TERRACOTTA, Tags.Items.GLASS_MAGENTA,
-              Tags.Items.GLASS_PANES_MAGENTA, Blocks.MAGENTA_WOOL);
-        addTypes(EnumColor.INDIGO, Blocks.LIGHT_BLUE_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.LIGHT_BLUE_CARPET, Blocks.LIGHT_BLUE_TERRACOTTA,
-              Tags.Items.GLASS_LIGHT_BLUE, Tags.Items.GLASS_PANES_LIGHT_BLUE, Blocks.LIGHT_BLUE_WOOL);
-        addTypes(EnumColor.YELLOW, Blocks.YELLOW_CONCRETE, Blocks.YELLOW_CONCRETE_POWDER, Blocks.YELLOW_CARPET, Blocks.YELLOW_TERRACOTTA, Tags.Items.GLASS_YELLOW,
-              Tags.Items.GLASS_PANES_YELLOW, Blocks.YELLOW_WOOL);
-        addTypes(EnumColor.BRIGHT_GREEN, Blocks.LIME_CONCRETE, Blocks.LIME_CONCRETE_POWDER, Blocks.LIME_CARPET, Blocks.LIME_TERRACOTTA, Tags.Items.GLASS_LIME,
-              Tags.Items.GLASS_PANES_LIME, Blocks.LIME_WOOL);
-        addTypes(EnumColor.BRIGHT_PINK, Blocks.PINK_CONCRETE, Blocks.PINK_CONCRETE_POWDER, Blocks.PINK_CARPET, Blocks.PINK_TERRACOTTA, Tags.Items.GLASS_PINK,
-              Tags.Items.GLASS_PANES_PINK, Blocks.PINK_WOOL);
-        addTypes(EnumColor.DARK_GRAY, Blocks.GRAY_CONCRETE, Blocks.GRAY_CONCRETE_POWDER, Blocks.GRAY_CARPET, Blocks.GRAY_TERRACOTTA, Tags.Items.GLASS_GRAY,
-              Tags.Items.GLASS_PANES_GRAY, Blocks.GRAY_WOOL);
-        addTypes(EnumColor.GRAY, Blocks.LIGHT_GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CARPET, Blocks.LIGHT_GRAY_TERRACOTTA,
-              Tags.Items.GLASS_LIGHT_GRAY, Tags.Items.GLASS_PANES_LIGHT_GRAY, Blocks.LIGHT_GRAY_WOOL);
-        addTypes(EnumColor.DARK_AQUA, Blocks.CYAN_CONCRETE, Blocks.CYAN_CONCRETE_POWDER, Blocks.CYAN_CARPET, Blocks.CYAN_TERRACOTTA, Tags.Items.GLASS_CYAN,
-              Tags.Items.GLASS_PANES_CYAN, Blocks.CYAN_WOOL);
-        addTypes(EnumColor.PURPLE, Blocks.PURPLE_CONCRETE, Blocks.PURPLE_CONCRETE_POWDER, Blocks.PURPLE_CARPET, Blocks.PURPLE_TERRACOTTA, Tags.Items.GLASS_PURPLE,
-              Tags.Items.GLASS_PANES_PURPLE, Blocks.PURPLE_WOOL);
-        addTypes(EnumColor.DARK_BLUE, Blocks.BLUE_CONCRETE, Blocks.BLUE_CONCRETE_POWDER, Blocks.BLUE_CARPET, Blocks.BLUE_TERRACOTTA, Tags.Items.GLASS_BLUE,
-              Tags.Items.GLASS_PANES_BLUE, Blocks.BLUE_WOOL);
-        addTypes(EnumColor.BROWN, Blocks.BROWN_CONCRETE, Blocks.BROWN_CONCRETE_POWDER, Blocks.BROWN_CARPET, Blocks.BROWN_TERRACOTTA, Tags.Items.GLASS_BROWN,
-              Tags.Items.GLASS_PANES_BROWN, Blocks.BROWN_WOOL);
-        addTypes(EnumColor.DARK_GREEN, Blocks.GREEN_CONCRETE, Blocks.GREEN_CONCRETE_POWDER, Blocks.GREEN_CARPET, Blocks.GREEN_TERRACOTTA, Tags.Items.GLASS_GREEN,
-              Tags.Items.GLASS_PANES_GREEN, Blocks.GREEN_WOOL);
-        addTypes(EnumColor.RED, Blocks.RED_CONCRETE, Blocks.RED_CONCRETE_POWDER, Blocks.RED_CARPET, Blocks.RED_TERRACOTTA, Tags.Items.GLASS_RED,
+        addTypes(EnumColor.WHITE, Blocks.WHITE_CANDLE, Blocks.WHITE_CONCRETE, Blocks.WHITE_CONCRETE_POWDER, Blocks.WHITE_CARPET, Blocks.WHITE_TERRACOTTA,
+              Tags.Items.GLASS_WHITE, Tags.Items.GLASS_PANES_WHITE, Blocks.WHITE_WOOL);
+        addTypes(EnumColor.ORANGE, Blocks.ORANGE_CANDLE, Blocks.ORANGE_CONCRETE, Blocks.ORANGE_CONCRETE_POWDER, Blocks.ORANGE_CARPET, Blocks.ORANGE_TERRACOTTA,
+              Tags.Items.GLASS_ORANGE, Tags.Items.GLASS_PANES_ORANGE, Blocks.ORANGE_WOOL);
+        addTypes(EnumColor.PINK, Blocks.MAGENTA_CANDLE, Blocks.MAGENTA_CONCRETE, Blocks.MAGENTA_CONCRETE_POWDER, Blocks.MAGENTA_CARPET, Blocks.MAGENTA_TERRACOTTA,
+              Tags.Items.GLASS_MAGENTA, Tags.Items.GLASS_PANES_MAGENTA, Blocks.MAGENTA_WOOL);
+        addTypes(EnumColor.INDIGO, Blocks.LIGHT_BLUE_CANDLE, Blocks.LIGHT_BLUE_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.LIGHT_BLUE_CARPET,
+              Blocks.LIGHT_BLUE_TERRACOTTA, Tags.Items.GLASS_LIGHT_BLUE, Tags.Items.GLASS_PANES_LIGHT_BLUE, Blocks.LIGHT_BLUE_WOOL);
+        addTypes(EnumColor.YELLOW, Blocks.YELLOW_CANDLE, Blocks.YELLOW_CONCRETE, Blocks.YELLOW_CONCRETE_POWDER, Blocks.YELLOW_CARPET, Blocks.YELLOW_TERRACOTTA,
+              Tags.Items.GLASS_YELLOW, Tags.Items.GLASS_PANES_YELLOW, Blocks.YELLOW_WOOL);
+        addTypes(EnumColor.BRIGHT_GREEN, Blocks.LIME_CANDLE, Blocks.LIME_CONCRETE, Blocks.LIME_CONCRETE_POWDER, Blocks.LIME_CARPET, Blocks.LIME_TERRACOTTA,
+              Tags.Items.GLASS_LIME, Tags.Items.GLASS_PANES_LIME, Blocks.LIME_WOOL);
+        addTypes(EnumColor.BRIGHT_PINK, Blocks.PINK_CANDLE, Blocks.PINK_CONCRETE, Blocks.PINK_CONCRETE_POWDER, Blocks.PINK_CARPET, Blocks.PINK_TERRACOTTA,
+              Tags.Items.GLASS_PINK, Tags.Items.GLASS_PANES_PINK, Blocks.PINK_WOOL);
+        addTypes(EnumColor.DARK_GRAY, Blocks.GRAY_CANDLE, Blocks.GRAY_CONCRETE, Blocks.GRAY_CONCRETE_POWDER, Blocks.GRAY_CARPET, Blocks.GRAY_TERRACOTTA,
+              Tags.Items.GLASS_GRAY, Tags.Items.GLASS_PANES_GRAY, Blocks.GRAY_WOOL);
+        addTypes(EnumColor.GRAY, Blocks.LIGHT_GRAY_CANDLE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CARPET,
+              Blocks.LIGHT_GRAY_TERRACOTTA, Tags.Items.GLASS_LIGHT_GRAY, Tags.Items.GLASS_PANES_LIGHT_GRAY, Blocks.LIGHT_GRAY_WOOL);
+        addTypes(EnumColor.DARK_AQUA, Blocks.CYAN_CANDLE, Blocks.CYAN_CONCRETE, Blocks.CYAN_CONCRETE_POWDER, Blocks.CYAN_CARPET, Blocks.CYAN_TERRACOTTA,
+              Tags.Items.GLASS_CYAN, Tags.Items.GLASS_PANES_CYAN, Blocks.CYAN_WOOL);
+        addTypes(EnumColor.PURPLE, Blocks.PURPLE_CANDLE, Blocks.PURPLE_CONCRETE, Blocks.PURPLE_CONCRETE_POWDER, Blocks.PURPLE_CARPET, Blocks.PURPLE_TERRACOTTA,
+              Tags.Items.GLASS_PURPLE, Tags.Items.GLASS_PANES_PURPLE, Blocks.PURPLE_WOOL);
+        addTypes(EnumColor.DARK_BLUE, Blocks.BLUE_CANDLE, Blocks.BLUE_CONCRETE, Blocks.BLUE_CONCRETE_POWDER, Blocks.BLUE_CARPET, Blocks.BLUE_TERRACOTTA,
+              Tags.Items.GLASS_BLUE, Tags.Items.GLASS_PANES_BLUE, Blocks.BLUE_WOOL);
+        addTypes(EnumColor.BROWN, Blocks.BROWN_CANDLE, Blocks.BROWN_CONCRETE, Blocks.BROWN_CONCRETE_POWDER, Blocks.BROWN_CARPET, Blocks.BROWN_TERRACOTTA,
+              Tags.Items.GLASS_BROWN, Tags.Items.GLASS_PANES_BROWN, Blocks.BROWN_WOOL);
+        addTypes(EnumColor.DARK_GREEN, Blocks.GREEN_CANDLE, Blocks.GREEN_CONCRETE, Blocks.GREEN_CONCRETE_POWDER, Blocks.GREEN_CARPET, Blocks.GREEN_TERRACOTTA,
+              Tags.Items.GLASS_GREEN, Tags.Items.GLASS_PANES_GREEN, Blocks.GREEN_WOOL);
+        addTypes(EnumColor.RED, Blocks.RED_CANDLE, Blocks.RED_CONCRETE, Blocks.RED_CONCRETE_POWDER, Blocks.RED_CARPET, Blocks.RED_TERRACOTTA, Tags.Items.GLASS_RED,
               Tags.Items.GLASS_PANES_RED, Blocks.RED_WOOL);
-        addTypes(EnumColor.BLACK, Blocks.BLACK_CONCRETE, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLACK_CARPET, Blocks.BLACK_TERRACOTTA, Tags.Items.GLASS_BLACK,
-              Tags.Items.GLASS_PANES_BLACK, Blocks.BLACK_WOOL);
+        addTypes(EnumColor.BLACK, Blocks.BLACK_CANDLE, Blocks.BLACK_CONCRETE, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLACK_CARPET, Blocks.BLACK_TERRACOTTA,
+              Tags.Items.GLASS_BLACK, Tags.Items.GLASS_PANES_BLACK, Blocks.BLACK_WOOL);
     }
 
-    private static void addTypes(EnumColor color, ItemLike concrete, ItemLike concretePowder, ItemLike carpet, ItemLike terracotta,
+    private static void addTypes(EnumColor color, ItemLike candle, ItemLike concrete, ItemLike concretePowder, ItemLike carpet, ItemLike terracotta,
           Tag<Item> stainedGlass, Tag<Item> stainedGlassPane, ItemLike wool) {
+        CANDLES.put(color, candle);
         CONCRETE.put(color, concrete);
         CONCRETE_POWDER.put(color, concretePowder);
         CARPETS.put(color, carpet);
@@ -220,6 +223,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                       IngredientCreatorAccess.item().from(BannerBlock.byColor(dye)),
                       pigment.getStack(BANNER_RATE)
                 ).build(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
+                addExtractionRecipe(consumer, color, CANDLES, pigment, CANDLE_RATE, basePath + "candle/");
                 addExtractionRecipe(consumer, color, CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
                 addExtractionRecipe(consumer, color, CONCRETE_POWDER, pigment, CONCRETE_POWDER_RATE, basePath + "concrete_powder/");
                 addExtractionRecipe(consumer, color, CARPETS, pigment, CARPET_RATE, basePath + "carpet/");

@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -16,7 +17,9 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraftforge.common.Tags;
 
 class EnrichingRecipeProvider implements ISubRecipeProvider {
@@ -25,6 +28,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "enriching/";
         addEnrichingConversionRecipes(consumer, basePath + "conversion/");
+        addEnrichingDeoxidizingRecipes(consumer, basePath + "deoxidizing/");
         addEnrichingDyeRecipes(consumer, basePath + "dye/");
         addEnrichingEnrichedRecipes(consumer, basePath + "enriched/");
         //Charcoal
@@ -62,6 +66,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     private void addEnrichingConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addEnrichingStoneConversionRecipes(consumer, basePath + "stone/");
         addEnrichingBlackstoneConversionRecipes(consumer, basePath + "blackstone/");
+        addEnrichingDeepslateConversionRecipes(consumer, basePath + "deepslate/");
         addEnrichingQuartzRecipes(consumer, basePath + "quartz/");
         addEnrichingGraniteRecipes(consumer, basePath + "granite/");
         addEnrichingDioriteRecipes(consumer, basePath + "diorite/");
@@ -102,11 +107,14 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Tags.Items.OBSIDIAN),
               MekanismItems.OBSIDIAN_DUST.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "obsidian_to_obsidian_dust"));
-        //Basalt -> polished basalt
+        //Basalt or Smooth -> polished basalt
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(Blocks.BASALT),
+              IngredientCreatorAccess.item().from(Ingredient.of(
+                    Blocks.BASALT,
+                    Blocks.SMOOTH_BASALT
+              )),
               new ItemStack(Blocks.POLISHED_BASALT)
-        ).build(consumer, Mekanism.rl(basePath + "basalt_to_polished_basalt"));
+        ).build(consumer, Mekanism.rl(basePath + "basalt_or_smooth_to_polished_basalt"));
         //Cracked nether bricks -> nether bricks
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.CRACKED_NETHER_BRICKS),
@@ -135,6 +143,92 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.STONE_BRICKS),
               new ItemStack(Blocks.CHISELED_STONE_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
+    }
+
+    private void addEnrichingDeepslateConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+        //Cobbled Deepslate -> Deepslate
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
+              new ItemStack(Blocks.DEEPSLATE)
+        ).build(consumer, Mekanism.rl(basePath + "from_cobbled"));
+        //Cobbled Deepslate Stairs -> Polished Deepslate Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.COBBLED_DEEPSLATE_STAIRS),
+              new ItemStack(Blocks.POLISHED_DEEPSLATE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "cobbled_stairs_to_polished"));
+        //Cobbled Deepslate Slabs -> Polished Deepslate Slabs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.COBBLED_DEEPSLATE_SLAB),
+              new ItemStack(Blocks.POLISHED_DEEPSLATE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "cobbled_slabs_to_polished"));
+        //Cobbled Deepslate Wall -> Polished Deepslate Wall
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.COBBLED_DEEPSLATE_WALL),
+              new ItemStack(Blocks.POLISHED_DEEPSLATE_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "cobbled_wall_to_polished"));
+
+        //Deepslate -> Polished Deepslate
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE),
+              new ItemStack(Blocks.POLISHED_DEEPSLATE)
+        ).build(consumer, Mekanism.rl(basePath + "to_polished"));
+        //Polished Deepslate -> Chiseled Deepslate
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE),
+              new ItemStack(Blocks.CHISELED_DEEPSLATE)
+        ).build(consumer, Mekanism.rl(basePath + "polished_chiseled"));
+        //Chiseled Deepslate -> Cracked Deepslate Tiles
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.CHISELED_DEEPSLATE),
+              new ItemStack(Blocks.CRACKED_DEEPSLATE_TILES)
+        ).build(consumer, Mekanism.rl(basePath + "chiseled_to_cracked_tile"));
+        //Cracked Deepslate Tiles -> Deepslate Tiles
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.CRACKED_DEEPSLATE_TILES),
+              new ItemStack(Blocks.DEEPSLATE_TILES)
+        ).build(consumer, Mekanism.rl(basePath + "cracked_tile_to_tile"));
+        //Deepslate Tiles -> Cracked Deepslate Bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILES),
+              new ItemStack(Blocks.CRACKED_DEEPSLATE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "tiles_to_cracked_bricks"));
+        //Cracked Deepslate Bricks -> Deepslate Bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.CRACKED_DEEPSLATE_BRICKS),
+              new ItemStack(Blocks.DEEPSLATE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "cracked_bricks_to_bricks"));
+
+        //Deepslate Tile Stairs -> Deepslate Brick Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILE_STAIRS),
+              new ItemStack(Blocks.DEEPSLATE_BRICK_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "tile_stairs_to_brick"));
+        //Deepslate Tile Slabs -> Deepslate Brick Slabs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILE_SLAB),
+              new ItemStack(Blocks.DEEPSLATE_BRICK_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "tile_slabs_to_brick"));
+        //Deepslate Tile Wall -> Deepslate Brick Wall
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.DEEPSLATE_TILE_WALL),
+              new ItemStack(Blocks.DEEPSLATE_BRICK_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "tile_wall_to_brick"));
+
+        //Polished Deepslate Stairs -> Deepslate Tile Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE_STAIRS),
+              new ItemStack(Blocks.DEEPSLATE_TILE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "polished_stairs_to_tile"));
+        //Polished Deepslate Slabs -> Deepslate Tile Slabs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE_SLAB),
+              new ItemStack(Blocks.DEEPSLATE_TILE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "polished_slabs_to_tile"));
+        //Polished Deepslate Wall -> Deepslate Tile Wall
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.POLISHED_DEEPSLATE_WALL),
+              new ItemStack(Blocks.DEEPSLATE_TILE_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "polished_wall_to_tile"));
     }
 
     private void addEnrichingBlackstoneConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
@@ -272,6 +366,17 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.MOSSY_COBBLESTONE_WALL),
               new ItemStack(Blocks.COBBLESTONE_WALL)
         ).build(consumer, Mekanism.rl(basePath + "cobblestone_walls"));
+    }
+
+    private void addEnrichingDeoxidizingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+        //Generate baseline recipes from weathering recipe set
+        for (Map.Entry<Block, Block> entry : WeatheringCopper.PREVIOUS_BY_BLOCK.get().entrySet()) {
+            Block result = entry.getValue();
+            ItemStackToItemStackRecipeBuilder.enriching(
+                  IngredientCreatorAccess.item().from(entry.getKey()),
+                  new ItemStack(result)
+            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+        }
     }
 
     private void addEnrichingDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

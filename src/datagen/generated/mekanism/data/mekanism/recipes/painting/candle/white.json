@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/candle"
+      },
+      "without": {
+        "item": "minecraft:white_candle"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:white"
+  },
+  "output": {
+    "item": "minecraft:white_candle"
+  }
+}

@@ -2,10 +2,10 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "item": "minecraft:basalt"
+      "item": "minecraft:weathered_copper"
     }
   },
   "output": {
-    "item": "minecraft:polished_basalt"
+    "item": "minecraft:exposed_copper"
   }
 }
