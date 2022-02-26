@@ -421,7 +421,6 @@
   "description.mekanism.chemical_oxidizer": "En maskin som kan oxidera fasta material i gasfas.",
   "description.mekanism.chemical_tank": "En bärbar tank som låter dig bära kemikalier var du vill.",
   "description.mekanism.chemical_washer": "En ultimat maskin som rengör obearbetad flytgödsel och förbereder den för kristallisering.",
-  "description.mekanism.combiner": "En maskin som kombinerar items t.ex. powder och cobblestone för att forma deras ore variationer.",
   "description.mekanism.crusher": "En maskin som används för att krossa göt till sina damm motsvarigheter, samt utföra många andra operationer.",
   "description.mekanism.digital_miner": "En högt avancerad, filterbaserad, auto-gruvarbetare som kan bryta vilket block du än säger till det inom en 32 block (max) radie.",
   "description.mekanism.diversion": "- Kontrollerbar med rödsten",
