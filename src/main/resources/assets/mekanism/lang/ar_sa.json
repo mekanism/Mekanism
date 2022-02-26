@@ -401,7 +401,6 @@
   "description.mekanism.chemical_injection_chamber": "ماكينة نخبة قادرة على معالجة الخامات في أربعة أجزاء، تعمل كمرحلة أولية من تجهيز 400٪ من الخام.",
   "description.mekanism.chemical_oxidizer": "آلة قادرة على أكسدة المواد الصلبة إلى مرحلة الغاز.",
   "description.mekanism.chemical_washer": "آلة أخيرة تنظف الرماد غير المعالج وتجهزه للتبلور.",
-  "description.mekanism.combiner": "آلة تستخدم للجمع بين العناصر معا. على سبيل المثال، الطين والحجر لتكوين نظرائهم من الركاز.",
   "description.mekanism.crusher": "آلة تستخدم لسحق النباتات في نظرائها الغبار، كما تقوم بعمليات أخرى كثيرة.",
   "description.mekanism.digital_miner": "عامل تعدين تلقائي متقدم جداً، قائم على عوامل التصفية يمكنه تعدين أي كتلة تخبرها داخل قطر 32 كتلة (الحد الأقصى).",
   "description.mekanism.diversion": "- قابلة للتحكم بواسطة الحجر الأحمر",
