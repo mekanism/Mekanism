@@ -438,7 +438,6 @@
   "description.mekanism.chemical_oxidizer": "Uma máquina capaz de oxidar materiais sólidos na fase gasosa.",
   "description.mekanism.chemical_tank": "Um tanque portátil que nos permite transportar produtos químicos onde quisermos.",
   "description.mekanism.chemical_washer": "Uma máquina final que limpa o estrume não processado e o prepara para a cristalização.",
-  "description.mekanism.combiner": "Uma máquina usada para combinar itens. Como por exemplo, pós e pedregulho para formar os seus minérios repetivos.",
   "description.mekanism.crusher": "Uma máquina usada para esmagar lingotes em seus colegas de poeira, bem como executar muitas outras operações.",
   "description.mekanism.dictionary": "Uma ferramenta usada para visualizar as tags de vários componentes como: itens, blocos e fluidos.",
   "description.mekanism.digital_miner": "Um minerador autominerador altamente avançado, baseado em filtros, que pode minerar qualquer bloco que você indicar a ele dentro de um raio de 32 blocos (máximo).",
