@@ -331,7 +331,6 @@
   "description.mekanism.chemical_infuser": "מכונה שמייצרת גז חדש על ידי החדרת שני אחרים.",
   "description.mekanism.chemical_injection_chamber": "מכונת עלית המסוגלת לעבד עפרות לארבעה שברים, המשמשת כשלב ההתחלתי לעיבוד 400% של עפרות.",
   "description.mekanism.chemical_washer": "מכונה אולטימטיבית המנקה תערובות בלתי מעובדות ומכינה אותן להפיכה לקריסטלים.",
-  "description.mekanism.combiner": "מכונה המשמשת לשילוב פריטים יחד. לדוגמה, אבק ואבן מרוסקת על מנת ליצור את העפרה של האבק.",
   "description.mekanism.metallurgic_infuser": "מכונה המשמשת להחדרת מגוון חומרים ל (בדרך כלל) מתכות על מנת ליצור סגסוגות מתכות ותשלובות אחרות.",
   "description.mekanism.superheating_element": "רדיאטור מודולרי, מסוכן במידה מסוימת, המסוגל לפלוט כמויות אדירות של חום לסביבתו.",
   "direction.mekanism.down": "למטה",
