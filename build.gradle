@@ -926,10 +926,12 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+        languageVersion = "1.6"
     }
 }
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+        languageVersion = "1.6"
     }
 }
