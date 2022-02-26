@@ -63,6 +63,5 @@
   "item.mekanismtools.steel_shovel": "Stålspade",
   "item.mekanismtools.steel_sword": "Stålsværd",
   "item.mekanismtools.stone_paxel": "Sten-paxel",
-  "item.mekanismtools.wood_paxel": "Træ-paxel",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "item.mekanismtools.wood_paxel": "Træ-paxel"
 }
