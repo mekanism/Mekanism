@@ -86,11 +86,7 @@
   "item.mekanismadditions.pink_balloon": "Flying Ball o' Pink",
   "item.mekanismadditions.purple_balloon": "Flying Ball o' Purple",
   "item.mekanismadditions.red_balloon": "Flying Ball o' Red",
-  "item.mekanismadditions.walkie_talkie": "Walkie-Talkie",
   "item.mekanismadditions.white_balloon": "Flying Ball o' White",
   "item.mekanismadditions.yellow_balloon": "Flying Ball o' Yellow",
-  "key.mekanismadditions.voice": "Voice",
-  "walkie.mekanismadditions.channel": "Channel: %s",
-  "walkie.mekanismadditions.channel.change": "Channel changed t': %s",
-  "walkie.mekanismadditions.disabled": "Voice server disabled."
+  "walkie.mekanismadditions.channel.change": "Channel changed t': %s"
 }
