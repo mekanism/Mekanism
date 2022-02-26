@@ -26,7 +26,6 @@
   "fission.mekanismgenerators.port_mode_input": "samo vhod",
   "fission.mekanismgenerators.port_mode_output_coolant": "izhod za hladilo",
   "fission.mekanismgenerators.port_mode_output_waste": "izhod za odpadke",
-  "fission.mekanismgenerators.scram": "SCRAM",
   "fission.mekanismgenerators.waste_tank": "Rezervoar Odpadkov",
   "reactor.mekanismgenerators.fusion_reactor": "Fuzijski Reaktor",
   "reactor.mekanismgenerators.logic.activation": "Aktivacija",
