@@ -350,7 +350,6 @@
   "description.mekanism.chemical_injection_chamber": "Eeliittilaite, joka kykenee jalostamaan malmeja neljään osaan, ja joka toimii alkuosana 400% malminkäsittelyssä.",
   "description.mekanism.chemical_oxidizer": "Laite, joka kykenee hapettamaan kiinteitä materiaaleja kaasumaiseisiin versiohin.",
   "description.mekanism.chemical_washer": "Ensiluokkainen laite, joka puhdistaa käsittelemätöntä malmilietettä ja valmistaa sen kiteytymiseen.",
-  "description.mekanism.combiner": "Laite, jota käytetään esineiden yhdistämiseen. Esimerkiksi jauhetta ja mukulakiveä muovaamaan malmivastineita.",
   "description.mekanism.crusher": "Laite jolla murkataan harkkoja niiden jauho vastineiksi sekä tehdä monia muita toimintoja.",
   "description.mekanism.digital_miner": "Kovin edistynyt laite, joka voi automaattisesti kaivaa malmeja maasta. Voit kertoa sille mitä malmia kaivata. Toimii 32:n (max.) kuution aluessa.",
   "description.mekanism.diversion": "- Hallittavissa redstone:illä",
