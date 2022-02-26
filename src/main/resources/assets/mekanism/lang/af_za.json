@@ -1,7 +1,4 @@
 {
   "key.mekanism.description": "Show description",
-  "key.mekanism.details": "Show details",
-  "matrix.mekanism.input_amount": "Input: %s",
-  "matrix.mekanism.output_amount": "Output: %s",
-  "miner.mekanism.to_mine": "To mine: %s"
+  "key.mekanism.details": "Show details"
 }
