@@ -466,7 +466,7 @@
   "description.mekanism.chemical_oxidizer": "Maszyna służąca do utleniania materiałów stałych do stanu gazowego.",
   "description.mekanism.chemical_tank": "Przenośny zbiornik, który pozwala ci na przenoszenie chemikaliów gdziekolwiek zechcesz.",
   "description.mekanism.chemical_washer": "Maszyna służąca do oczyszczania nieprzetworzonej zawiesiny przygotowując ją do krystalizacji.",
-  "description.mekanism.combiner": "Maszyna używana do łączenie przedmiotów. Na przykład, pył i bruk można uformować w rudę.",
+  "description.mekanism.combiner": "Maszyna używana do łączenia ze sobą przedmiotów. Na przykład, ruda metalu i bruk stworzą złoże tego metalu.",
   "description.mekanism.crusher": "Maszyna służąca do kruszenia sztabek metali w pyły i wielu innych czynności.",
   "description.mekanism.dictionary": "Narzędzie wykorzystywane do wyświetlania tagów różnych komponentów, takich jak: przedmioty, bloki i płyny.",
   "description.mekanism.digital_miner": "Zaawansowana maszyna wydobywcza z filtrem wydobywania o max promieniu 32 bloków.",
