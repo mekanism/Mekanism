@@ -124,6 +124,7 @@
   "item.mekanismgenerators.tritium_bucket": "Sceau de tritium liquide",
   "item.mekanismgenerators.turbine_blade": "Pale de Turbine",
   "module.mekanismgenerators.geothermal_generator_unit": "Unité de Générateur Géothermique",
+  "module.mekanismgenerators.solar_recharging_unit": "Unité de recharge solaire",
   "reactor.mekanismgenerators.configurator.port_eject": "Mode d'éjection du port du réacteur basculé sur: %s.",
   "reactor.mekanismgenerators.fuel": "Carburant",
   "reactor.mekanismgenerators.fuel.edit_rate": "Éditer le taux:",
