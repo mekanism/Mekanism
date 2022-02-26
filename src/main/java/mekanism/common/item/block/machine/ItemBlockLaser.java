@@ -16,6 +16,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -26,7 +27,7 @@ public class ItemBlockLaser extends ItemBlockTooltip<BlockTileModel<?, ?>> imple
     }
 
     @Override
-    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         StorageUtils.addStoredEnergy(stack, tooltip, true);
     }

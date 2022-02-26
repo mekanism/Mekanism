@@ -11,6 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 public class ItemBlockLogisticalSorter extends ItemBlockTooltip<BlockLogisticalSorter> implements IItemSustainedInventory, ISecurityItem {
@@ -20,7 +21,7 @@ public class ItemBlockLogisticalSorter extends ItemBlockTooltip<BlockLogisticalS
     }
 
     @Override
-    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
+    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addUpgradesToTooltip(stack, tooltip);
     }
