@@ -466,7 +466,6 @@
   "description.mekanism.chemical_oxidizer": "Eine Maschine die Feststoffe in ihre Gasform verdampft.",
   "description.mekanism.chemical_tank": "Ein tragbarer Tank mit dem man Chemikalien überall hin transportieren kann.",
   "description.mekanism.chemical_washer": "Eine ultimative Maschine, die unverarbeiteten Schlamm säubert und für die Kristallisierung vorbereitet.",
-  "description.mekanism.combiner": "Eine Maschine die Materialien kombiniert. Wird verwendet um aus Metallstaub und Bruchstein Erze zu erzeugen.",
   "description.mekanism.crusher": "Eine Maschine die Barren in ihre entsprechenden Stäube zu zerkleinern sowie viele andere Operationen auszuführen.",
   "description.mekanism.dictionary": "Ein Werkzeug um die Tags verschiedener Komponenten anzuzeigen, wie z.B.: Gegenstände, Blöcke und Flüssigkeiten.",
   "description.mekanism.digital_miner": "Ein hochfortgeschrittener, filterbasierter, automatischer steinbruch, der alles innerhalb eines 32-Block Radius abbauen kann.",
