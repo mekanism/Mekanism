@@ -384,7 +384,6 @@
   "description.mekanism.chemical_injection_chamber": "Mesin tingkat akhir yang dapat mengolah bijih menjadi 4 belingan, berguna sebagai tingkat awal dari pengolahan bijih 400%.",
   "description.mekanism.chemical_oxidizer": "Mesin yang dapat mengoksidasi material padat menjadi bentuk gas.",
   "description.mekanism.chemical_washer": "Mesin tingkat akhir yang membersihkan bubur yang belum terproses dan mempersiapkannya untuk kristalisasi.",
-  "description.mekanism.combiner": "Mesin untuk menggabungkan item. Contohnya, debu dan batu kasar untuk membentuk bentuk bijihnya.",
   "description.mekanism.crusher": "Sebuah mesin yang digunakan untuk menggilas batang logam kedalam bentuk debunya, dan juga dapat melakukan operasi lain-lainnya.",
   "description.mekanism.digital_miner": "Penambang otomatis, tingkat tinggi, dan berbasis filter yang bisa menambang blok apapun yang diperintahkan dalam radius 32 blok (maks).",
   "description.mekanism.diversion": "- Dapat dikendalikan dengan batu merah",
