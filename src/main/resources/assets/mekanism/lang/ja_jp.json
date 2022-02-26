@@ -466,7 +466,6 @@
   "description.mekanism.chemical_oxidizer": "物質を酸化させてガス状にする機械です。",
   "description.mekanism.chemical_tank": "どこにでも化学物質を運ぶことができるポータブルタンクです。",
   "description.mekanism.chemical_washer": "結晶化の準備として懸濁液を洗浄する、究極的な機械です。",
-  "description.mekanism.combiner": "アイテムを組み合わせる機械です。 例えば、粉と丸石を組み合わせて対応する鉱石に加工します。",
   "description.mekanism.crusher": "インゴットを砕いて粉にする機械です。 その他の処理も行います。",
   "description.mekanism.dictionary": "アイテムやブロック、流体など様々な素材のタグを表示するのに使用するツールです。",
   "description.mekanism.digital_miner": "高度に発展したフィルターベースの自動掘削機です。 最大半径32ブロック以内のあらゆるブロックも採掘することが出来ます。",
