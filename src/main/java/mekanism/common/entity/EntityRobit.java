@@ -502,7 +502,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         }
         amount = getDamageAfterArmorAbsorb(damageSource, amount);
         amount = getDamageAfterMagicAbsorb(damageSource, amount);
-        if (damageSource == DamageSource.FALL) {
+        if (damageSource.isFall()) {
             //Half the "potential" damage the Robit can take from falling
             amount /= 2;
         }

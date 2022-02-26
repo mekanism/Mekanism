@@ -36,7 +36,6 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -264,7 +263,7 @@ public class CommonPlayerTickHandler {
         }
         //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
         // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
-        if (event.getSource() == DamageSource.FALL) {
+        if (event.getSource().isFall()) {
             //Free runner checks
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
             if (info != null && tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost)) {
@@ -293,7 +292,7 @@ public class CommonPlayerTickHandler {
             // other mods may not be firing the event manually even when the entity is dead
             return;
         }
-        if (event.getSource() == DamageSource.FALL) {
+        if (event.getSource().isFall()) {
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
             if (info != null && handleDamage(event, info.container, info.damageRatio, info.energyCost)) {
                 return;

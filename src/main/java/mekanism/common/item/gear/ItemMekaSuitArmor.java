@@ -78,7 +78,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
           DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRY_OUT,
           DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
           DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
-          DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
+          DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER, DamageSource.FREEZE, DamageSource.FALLING_STALACTITE,
+          DamageSource.STALAGMITE));
 
     public static Set<DamageSource> getSupportedSources() {
         return Collections.unmodifiableSet(ALWAYS_SUPPORTED_SOURCES);
