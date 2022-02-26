@@ -466,7 +466,6 @@
   "description.mekanism.chemical_oxidizer": "Une machine capable d'oxyder des matériaux solides en phase gazeuse.",
   "description.mekanism.chemical_tank": "Un réservoir portable qui vous permet de transporter des produits chimiques où que vous soyez.",
   "description.mekanism.chemical_washer": "Une machine ultime qui nettoie le lisier non traité et le prépare pour la cristallisation.",
-  "description.mekanism.combiner": "Une machine utilisée pour combiner des objets ensemble. Par exemple, poussières et pierre taillée pour former leurs équivalents de minerai.",
   "description.mekanism.crusher": "Une machine utilisée pour broyer les lingots en leurs équivalents de poussière, ainsi que pour effectuer de nombreuses autres opérations.",
   "description.mekanism.dictionary": "Un outil utilisé pour voir les balises de divers composant comme les objets, blocs et fluides.",
   "description.mekanism.digital_miner": "Une machine à extraction automatique hautement perfectionnée, à base de filtres, qui peut extraire n'importe quel bloc dans un rayon de 32 blocs (maximum).",
