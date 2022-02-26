@@ -63,8 +63,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
-        //TODO - 1.18: Figure this out
+    public void updateNarration(@Nonnull NarrationElementOutput output) {
+        //TODO: See GuiMekanism#addRenderableWidget for more details, and also figure out how to make this properly support nested narratables
+        // as some of our GuiElements have sub GuiElements and those are the ones we actually would want to narrate
     }
 
     public int getRelativeX() {

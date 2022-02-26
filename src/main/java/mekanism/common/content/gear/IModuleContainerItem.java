@@ -111,13 +111,13 @@ public interface IModuleContainerItem extends IItemHUDProvider {
 
     static boolean hasOtherEnchants(ItemStack stack) {
         MatchedEnchants enchants = new MatchedEnchants(stack);
-        IModuleContainerItem.forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++);
+        forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++);
         return enchants.enchantments == null || enchants.matchedCount < enchants.enchantments.size();
     }
 
     default void filterTooltips(ItemStack stack, List<Component> tooltips) {
         List<Component> enchantsToRemove = new ArrayList<>();
-        IModuleContainerItem.forMatchingEnchants(stack, new MatchedEnchants(stack),
+        forMatchingEnchants(stack, new MatchedEnchants(stack),
               (e, module) -> enchantsToRemove.add(module.getCustomInstance().getEnchantment().getFullname(module.getInstalledCount())));
         tooltips.removeAll(enchantsToRemove);
     }

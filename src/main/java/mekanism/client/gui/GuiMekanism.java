@@ -120,6 +120,23 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
+    /**
+     * Like {@link #addRenderableWidget(GuiEventListener)}, except doesn't add the element as narratable.
+     */
+    protected <T extends GuiElement> T addElement(T element) {
+        renderables.add(element);
+        ((List<GuiEventListener>) children()).add(element);
+        return element;
+    }
+
+    protected <T extends GuiElement> T addRenderableWidget(T element) {
+        //TODO: At some point we want to replace calls of this to directly call addElement, and then add in better support
+        // for the narrator and what is currently focused and implement in some gui elements updateNarration rather than
+        // just have it NO-OP. We currently redirect this to our version that doesn't add it as narratable so that we don't
+        // have hitting tab with the narrator on just list indices
+        return addElement(element);
+    }
+
     @Override
     public void containerTick() {
         super.containerTick();
