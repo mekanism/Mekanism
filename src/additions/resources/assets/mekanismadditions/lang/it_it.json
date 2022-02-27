@@ -305,7 +305,5 @@
   "item.mekanismadditions.yellow_balloon": "Palloncino Giallo",
   "key.mekanismadditions.voice": "Voce",
   "sound_event.mekanismadditions.entity.balloon.pop": "Palloncino esploso",
-  "walkie.mekanismadditions.channel": "Canale: %s",
-  "walkie.mekanismadditions.channel.change": "Canale Modificato in: %s",
   "walkie.mekanismadditions.disabled": "Server vocale disattivato."
 }
