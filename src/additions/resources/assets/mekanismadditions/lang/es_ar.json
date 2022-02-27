@@ -300,11 +300,10 @@
   "item.mekanismadditions.pink_balloon": "Rosa claro Globo",
   "item.mekanismadditions.purple_balloon": "Purpura Globo",
   "item.mekanismadditions.red_balloon": "Rojo Globo",
+  "item.mekanismadditions.walkie_talkie": "Walkie-Talkie",
   "item.mekanismadditions.white_balloon": "Blanco Globo",
   "item.mekanismadditions.yellow_balloon": "Amarillo Globo",
   "key.mekanismadditions.voice": "Voz",
   "sound_event.mekanismadditions.entity.balloon.pop": "Globo reventó",
-  "walkie.mekanismadditions.channel": "Canal: %s",
-  "walkie.mekanismadditions.channel.change": "Canal cambiado a: %s",
   "walkie.mekanismadditions.disabled": "Sevidor de voz desactivado."
 }
