@@ -305,5 +305,7 @@
   "item.mekanismadditions.yellow_balloon": "Sarı Balon",
   "key.mekanismadditions.voice": "Ses",
   "sound_event.mekanismadditions.entity.balloon.pop": "Balon patladı",
+  "walkie.mekanismadditions.channel": "Kanal: %1$s",
+  "walkie.mekanismadditions.channel.change": "Kanal değiştirildi: %1$s",
   "walkie.mekanismadditions.disabled": "Ses sunucusu devre dışı bırakıldı."
 }
