@@ -215,7 +215,5 @@
   "item.mekanismadditions.yellow_balloon": "Žlutý Balón",
   "key.mekanismadditions.voice": "Hlas",
   "sound_event.mekanismadditions.entity.balloon.pop": "Balónek prasknul",
-  "walkie.mekanismadditions.channel": "Kanál: %s",
-  "walkie.mekanismadditions.channel.change": "Kanál změněn na: %s",
   "walkie.mekanismadditions.disabled": "Hlasový server je zakázán."
 }
