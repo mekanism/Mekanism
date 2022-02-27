@@ -167,7 +167,5 @@
   "item.mekanismadditions.white_balloon": "Balon Putih",
   "item.mekanismadditions.yellow_balloon": "Balon Kuning",
   "key.mekanismadditions.voice": "Suara",
-  "walkie.mekanismadditions.channel": "Saluran: %s",
-  "walkie.mekanismadditions.channel.change": "Saluran diganti ke: %s",
   "walkie.mekanismadditions.disabled": "Server suara nonaktif."
 }
