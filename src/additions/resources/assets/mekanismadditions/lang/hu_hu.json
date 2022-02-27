@@ -83,7 +83,5 @@
   "item.mekanismadditions.white_balloon": "Fehér Lufi",
   "item.mekanismadditions.yellow_balloon": "Sárga Lufi",
   "key.mekanismadditions.voice": "Hang",
-  "walkie.mekanismadditions.channel": "Csatorna: %s",
-  "walkie.mekanismadditions.channel.change": "Csatorna változtatva erre: %s",
   "walkie.mekanismadditions.disabled": "Hang csatorna kikapcsolva."
 }
