@@ -166,6 +166,5 @@
   "item.mekanismtools.steel_shovel": "Pala d'Acciaio",
   "item.mekanismtools.steel_sword": "Spada d'Acciaio",
   "item.mekanismtools.stone_paxel": "Paxel di Pietra",
-  "item.mekanismtools.wood_paxel": "Paxel di Legno",
-  "tooltip.mekanismtools.hp": "Punti Ferita: %s"
+  "item.mekanismtools.wood_paxel": "Paxel di Legno"
 }
