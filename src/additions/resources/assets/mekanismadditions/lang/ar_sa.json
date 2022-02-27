@@ -193,7 +193,5 @@
   "item.mekanismadditions.white_balloon": "البالونات البيضاء",
   "item.mekanismadditions.yellow_balloon": "بالون الأصفر",
   "key.mekanismadditions.voice": "صوت",
-  "walkie.mekanismadditions.channel": "القناة: %s",
-  "walkie.mekanismadditions.channel.change": "تم تغيير القناة إلى: %s",
   "walkie.mekanismadditions.disabled": "تم تعطيل خادم الصوت."
 }
