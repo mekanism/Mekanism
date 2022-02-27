@@ -305,7 +305,5 @@
   "item.mekanismadditions.yellow_balloon": "Ballon jaune",
   "key.mekanismadditions.voice": "Voix",
   "sound_event.mekanismadditions.entity.balloon.pop": "Éclatement d'un ballon",
-  "walkie.mekanismadditions.channel": "Canal: %s",
-  "walkie.mekanismadditions.channel.change": "Canal changé sur: %s",
   "walkie.mekanismadditions.disabled": "Serveur vocal désactivé."
 }
