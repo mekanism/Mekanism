@@ -450,6 +450,7 @@
   "description.mekanism.chemical_oxidizer": "고체 물질을 기체 형태로 산화시키는 기계입니다.",
   "description.mekanism.chemical_tank": "어디든지 화학 물질을 운반할 수 있는 휴대용 탱크입니다.",
   "description.mekanism.chemical_washer": "현탁액을 세척해 결정으로 만들 수 있도록 준비하여 주는 궁극의 기계입니다.",
+  "description.mekanism.combiner": "아이템들을 결합시키는 기계입니다. 예를 들어, 광석 가루와 조약돌을 결합해 광석으로 만들 수 있습니다.",
   "description.mekanism.crusher": "주괴를 부수어 가루로 만드는 기계로, 그 외에도 여러 가지 기능이 있습니다!",
   "description.mekanism.dictionary": "아이템, 블록, 액체와 같은 다양한 요소들의 태그를 보여주는 도구입니다.",
   "description.mekanism.digital_miner": "기술 발전의 결정체 중 하나로, 필터 기반의 자동 채굴기입니다. 최대 반경 32블록 이내의 설정한 모든 블록을 채굴할 수 있습니다.",
