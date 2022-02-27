@@ -305,7 +305,5 @@
   "item.mekanismadditions.yellow_balloon": "Amarelo Balão",
   "key.mekanismadditions.voice": "Voz",
   "sound_event.mekanismadditions.entity.balloon.pop": "Caixas de Balão",
-  "walkie.mekanismadditions.channel": "Canal: %s",
-  "walkie.mekanismadditions.channel.change": "Canal alterado para: %s",
   "walkie.mekanismadditions.disabled": "Servidor de voz desativado."
 }
