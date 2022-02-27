@@ -32,6 +32,5 @@
   "item.mekanismadditions.walkie_talkie": "Пераносная рацыя",
   "item.mekanismadditions.white_balloon": "Белы паветраны шарык",
   "item.mekanismadditions.yellow_balloon": "Жоўты паветраны шарык",
-  "key.mekanismadditions.voice": "Голас",
-  "walkie.mekanismadditions.channel": "Канал: %s"
+  "key.mekanismadditions.voice": "Голас"
 }
