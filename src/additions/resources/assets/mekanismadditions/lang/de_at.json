@@ -272,6 +272,8 @@
   "block.mekanismadditions.yellow_slick_plastic": "Gelb Glatter Plastikblock",
   "description.mekanismadditions.glow_panel": "Eine moderne, beständige Lichtquelle. Jetzt in vielen Farben!",
   "description.mekanismadditions.obsidian_tnt": "Ein extrem mächtiger, mit Obsidian infusierter TNT-Block. Verwendung auf eigene Gefahr.",
+  "entity.mekanismadditions.baby_creeper": "Baby Creeper",
+  "entity.mekanismadditions.baby_enderman": "Baby Enderman",
   "entity.mekanismadditions.baby_skeleton": "Baby-Skelett",
   "entity.mekanismadditions.baby_stray": "Baby-Eiswanderer",
   "entity.mekanismadditions.baby_wither_skeleton": "Baby Wither Skelett",
@@ -303,7 +305,5 @@
   "item.mekanismadditions.yellow_balloon": "Gelber Ballon",
   "key.mekanismadditions.voice": "Stimme",
   "sound_event.mekanismadditions.entity.balloon.pop": "Ballon platzt",
-  "walkie.mekanismadditions.channel": "Kanal: %s",
-  "walkie.mekanismadditions.channel.change": "Kanal geändert zu: %s",
   "walkie.mekanismadditions.disabled": "Sprachserver deaktiviert."
 }
