@@ -33,15 +33,10 @@
   "reactor.mekanismgenerators.logic.disabled": "Nonaktif",
   "reactor.mekanismgenerators.logic.outputting": "Mengeluarkan",
   "reactor.mekanismgenerators.logic.ready": "Siap untuk pembakaran",
-  "reactor.mekanismgenerators.logic.redstone_output_mode": "Mode batu merah: %s",
   "reactor.mekanismgenerators.stats.active": "Pendinginan Air",
-  "reactor.mekanismgenerators.stats.ignition": "Suhu Pembakaran: %s",
-  "reactor.mekanismgenerators.stats.max_casing": "Suhu Bingkai Maksimal: %s",
-  "reactor.mekanismgenerators.stats.max_plasma": "Suhu Plasma Maksimal: %s",
   "reactor.mekanismgenerators.stats.passive": "Pendinginan Udara",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Suara Reaktor Nuklir",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Suara Reaktor fusi",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Bahan Bakar Tidak Cukup",
-  "turbine.mekanismgenerators.industrial_turbine": "Turbin Industri",
-  "turbine.mekanismgenerators.production_amount": "Produksi: %s"
+  "turbine.mekanismgenerators.industrial_turbine": "Turbin Industri"
 }
