@@ -27,8 +27,6 @@
   "description.mekanismgenerators.rotational_complex": "A connector that be placed on th' highest Turbine Rotor o' an Industrial Turbine t' carry kinetic energy into its Electromagnetic Coils.",
   "description.mekanismgenerators.solar_generator": "A generator that uses th' power o' th' sun t' produce energy.",
   "fluid.mekanismgenerators.bioethanol": "Plant Rum",
-  "gui.mekanismgenerators.bio_generator.bio_fuel": "PlantFuel: %s",
-  "gui.mekanismgenerators.producing.amount": "Producin': %s/t",
   "item.mekanismgenerators.bioethanol_bucket": "Bucket o' Plant Rum",
   "item.mekanismgenerators.solar_panel": "Sun Collector",
   "reactor.mekanismgenerators.heat": "Hotness",
@@ -42,8 +40,6 @@
   "turbine.mekanismgenerators.stats": "Turbin'e Information",
   "turbine.mekanismgenerators.stats.production": "Pr'duction",
   "turbine.mekanismgenerators.stats.steam_flow": "Water Smoke Flow",
-  "turbine.mekanismgenerators.stats.tank_volume": "Barrel Volume: %s",
-  "turbine.mekanismgenerators.steam_input": "Water Smoke Input: %s mB/t",
   "wind_generator.mekanismgenerators.no_wind": "Where be the wind, matey?",
   "wind_generator.mekanismgenerators.sky_blocked": "Arr, I can't seem to find the sky"
 }
