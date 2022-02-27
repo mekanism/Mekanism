@@ -166,6 +166,5 @@
   "item.mekanismtools.steel_shovel": "Pala de Acero",
   "item.mekanismtools.steel_sword": "Espada de Acero",
   "item.mekanismtools.stone_paxel": "Paxel de Acero",
-  "item.mekanismtools.wood_paxel": "Paxel de Madera",
-  "tooltip.mekanismtools.hp": "Vida: %s"
+  "item.mekanismtools.wood_paxel": "Paxel de Madera"
 }
