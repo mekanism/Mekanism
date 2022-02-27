@@ -305,7 +305,5 @@
   "item.mekanismadditions.yellow_balloon": "노란색 풍선",
   "key.mekanismadditions.voice": "음성",
   "sound_event.mekanismadditions.entity.balloon.pop": "풍선이 터짐",
-  "walkie.mekanismadditions.channel": "채널: %s",
-  "walkie.mekanismadditions.channel.change": "채널이 다음으로 변경됨: %s",
   "walkie.mekanismadditions.disabled": "음성 서버가 비활성 상태입니다."
 }
