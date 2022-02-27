@@ -396,8 +396,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addDamageSources() {
-        add(MekanismDamageSource.LASER, "%s was incinerated.", "%s was incinerated whilst trying to escape %s.");
-        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.", "%s was killed by radiation poisoning whilst trying to escape %s.");
+        add(MekanismDamageSource.LASER, "%1$s was incinerated.", "%1$s was incinerated whilst trying to escape %2$s.");
+        add(MekanismDamageSource.RADIATION, "%1$s was killed by radiation poisoning.", "%1$s was killed by radiation poisoning whilst trying to escape %2$s.");
     }
 
     private void add(MekanismDamageSource damageSource, String value, String valueEscaping) {
@@ -483,22 +483,22 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TRANSMISSION_TYPE_ITEM, "Items");
         add(MekanismLang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes
-        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s");
-        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %s");
-        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %s");
-        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS, " - Burn Time: %s t");
-        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY, " - Energy Density: %s");
+        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %1$s");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %1$s");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %1$s");
+        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS, " - Burn Time: %1$s t");
+        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY, " - Energy Density: %1$s");
         //Colors
         for (EnumColor color : EnumUtils.COLORS) {
             add(color.getLangEntry(), color.getEnglishName());
         }
         add(MekanismLang.MEKANISM, Mekanism.MOD_NAME);
         add(MekanismLang.DEBUG_TITLE, Mekanism.MOD_NAME + " Debug");
-        add(MekanismLang.LOG_FORMAT, "[%s] %s");
+        add(MekanismLang.LOG_FORMAT, "[%1$s] %2$s");
         add(MekanismLang.FORGE, "MinecraftForge");
         add(MekanismLang.IC2, "IndustrialCraft");
         add(MekanismLang.ERROR, "Error");
-        add(MekanismLang.ALPHA_WARNING, "Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %s.");
+        add(MekanismLang.ALPHA_WARNING, "Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %1$s.");
         add(MekanismLang.ALPHA_WARNING_HERE, "here");
         //Equipment
         add(MekanismLang.HEAD, "Head");
@@ -508,19 +508,19 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MAINHAND, "Hand 1");
         add(MekanismLang.OFFHAND, "Hand 2");
         //Multiblock
-        add(MekanismLang.MULTIBLOCK_INVALID_FRAME, "Couldn't create frame, invalid block at %s.");
-        add(MekanismLang.MULTIBLOCK_INVALID_INNER, "Couldn't validate center, found invalid block at %s.");
-        add(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, "Controller conflict: found extra controller at %s.");
+        add(MekanismLang.MULTIBLOCK_INVALID_FRAME, "Couldn't create frame, invalid block at %1$s.");
+        add(MekanismLang.MULTIBLOCK_INVALID_INNER, "Couldn't validate center, found invalid block at %1$s.");
+        add(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, "Controller conflict: found extra controller at %1$s.");
         add(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER, "Couldn't form, no controller found.");
         //SPS
         add(MekanismLang.SPS, "Supercritical Phase Shifter");
         add(MekanismLang.SPS_INVALID_DISCONNECTED_COIL, "Couldn't form, found a coil without a connection to an SPS Port.");
-        add(MekanismLang.SPS_PORT_MODE, "Toggled SPS Port mode to: %s.");
-        add(MekanismLang.SPS_ENERGY_INPUT, "Energy Input: %s/t");
+        add(MekanismLang.SPS_PORT_MODE, "Toggled SPS Port mode to: %1$s.");
+        add(MekanismLang.SPS_ENERGY_INPUT, "Energy Input: %1$s/t");
         //Boiler
         add(MekanismLang.BOILER_INVALID_AIR_POCKETS, "Couldn't form, found disconnected interior air pockets.");
         add(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER, "Couldn't form, found invalid Pressure Dispersers.");
-        add(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, "Couldn't form, expected but didn't find Pressure Disperser at %s.");
+        add(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, "Couldn't form, expected but didn't find Pressure Disperser at %1$s.");
         add(MekanismLang.BOILER_INVALID_NO_DISPERSER, "Couldn't form, no Pressure Disperser layer found.");
         add(MekanismLang.BOILER_INVALID_SUPERHEATING, "Couldn't form, invalid Superheating Element arrangement.");
         //Conversion
@@ -530,12 +530,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //QIO stuff
         add(MekanismLang.SET_FREQUENCY, "Set Frequency");
         add(MekanismLang.QIO_FREQUENCY_SELECT, "QIO Frequency Select");
-        add(MekanismLang.QIO_ITEMS_DETAIL, "Items: %s / %s");
-        add(MekanismLang.QIO_TYPES_DETAIL, "Types: %s / %s");
+        add(MekanismLang.QIO_ITEMS_DETAIL, "Items: %1$s / %2$s");
+        add(MekanismLang.QIO_TYPES_DETAIL, "Types: %1$s / %2$s");
         add(MekanismLang.QIO_ITEMS, "Items");
         add(MekanismLang.QIO_TYPES, "Types");
-        add(MekanismLang.QIO_TRIGGER_COUNT, "Trigger count: %s");
-        add(MekanismLang.QIO_STORED_COUNT, "Stored count: %s");
+        add(MekanismLang.QIO_TRIGGER_COUNT, "Trigger count: %1$s");
+        add(MekanismLang.QIO_STORED_COUNT, "Stored count: %1$s");
         add(MekanismLang.QIO_ITEM_TYPE_UNDEFINED, "Item type undefined");
         add(MekanismLang.QIO_IMPORT_WITHOUT_FILTER, "Import Without Filter:");
         add(MekanismLang.QIO_EXPORT_WITHOUT_FILTER, "Export Without Filter:");
@@ -551,8 +551,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LIST_SEARCH, "Search:");
         add(MekanismLang.LIST_SORT, "Sort:");
         //JEI
-        add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
-        add(MekanismLang.JEI_INFO_HEAVY_WATER, "%s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");
+        add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%1$s / %2$s mB");
+        add(MekanismLang.JEI_INFO_HEAVY_WATER, "%1$s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");
         add(MekanismLang.JEI_INFO_MODULE_INSTALLATION, "Using a Modification Station, modules can be installed on the various MekaSuit pieces and on the Meka-Tool.");
         //Key
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
@@ -566,35 +566,35 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.KEY_MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.KEY_HUD, "Show HUD");
         //Holiday
-        add(MekanismLang.HOLIDAY_BORDER, "%s%s%1$s");
+        add(MekanismLang.HOLIDAY_BORDER, "%1$s%2$s%1$s");
         add(MekanismLang.HOLIDAY_SIGNATURE, "-aidancbrady");
-        add(MekanismLang.CHRISTMAS_LINE_ONE, "Merry Christmas, %s!");
+        add(MekanismLang.CHRISTMAS_LINE_ONE, "Merry Christmas, %1$s!");
         add(MekanismLang.CHRISTMAS_LINE_TWO, "May you have plenty of Christmas cheer");
         add(MekanismLang.CHRISTMAS_LINE_THREE, "and have a relaxing holiday with your");
         add(MekanismLang.CHRISTMAS_LINE_FOUR, "family :)");
-        add(MekanismLang.NEW_YEAR_LINE_ONE, "Happy New Year, %s!");
+        add(MekanismLang.NEW_YEAR_LINE_ONE, "Happy New Year, %1$s!");
         add(MekanismLang.NEW_YEAR_LINE_TWO, "Best wishes to you as we enter this");
-        add(MekanismLang.NEW_YEAR_LINE_THREE, "new and exciting year of %s! :)");
-        add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %s!");
+        add(MekanismLang.NEW_YEAR_LINE_THREE, "new and exciting year of %1$s! :)");
+        add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %1$s!");
         //Generic
         //Note: How translation text component is implemented requires a double percent sign to make it show up as a single percent sign
-        add(MekanismLang.GENERIC_PERCENT, "%s%%");
-        add(MekanismLang.GENERIC_WITH_COMMA, "%s, %s");
-        add(MekanismLang.GENERIC_STORED, "%s: %s");
-        add(MekanismLang.GENERIC_STORED_MB, "%s: %s mB");
-        add(MekanismLang.GENERIC_MB, "%s mB");
-        add(MekanismLang.GENERIC_PRE_COLON, "%s:");
-        add(MekanismLang.GENERIC_SQUARE_BRACKET, "[%s]");
-        add(MekanismLang.GENERIC_PARENTHESIS, "(%s)");
-        add(MekanismLang.GENERIC_WITH_PARENTHESIS, "%s (%s)");
-        add(MekanismLang.GENERIC_WITH_TWO_PARENTHESIS, "%s (%s) (%s)");
-        add(MekanismLang.GENERIC_FRACTION, "%s/%s");
-        add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
-        add(MekanismLang.GENERIC_PER_TICK, "%s/t");
-        add(MekanismLang.GENERIC_PER_MB, "%s/mB");
-        add(MekanismLang.GENERIC_PRE_STORED, "%s %s: %s");
-        add(MekanismLang.GENERIC_BLOCK_POS, "%s, %s, %s");
-        add(MekanismLang.GENERIC_HEX, "#%s");
+        add(MekanismLang.GENERIC_PERCENT, "%1$s%%");
+        add(MekanismLang.GENERIC_WITH_COMMA, "%1$s, %2$s");
+        add(MekanismLang.GENERIC_STORED, "%1$s: %2$s");
+        add(MekanismLang.GENERIC_STORED_MB, "%1$s: %2$s mB");
+        add(MekanismLang.GENERIC_MB, "%1$s mB");
+        add(MekanismLang.GENERIC_PRE_COLON, "%1$s:");
+        add(MekanismLang.GENERIC_SQUARE_BRACKET, "[%1$s]");
+        add(MekanismLang.GENERIC_PARENTHESIS, "(%1$s)");
+        add(MekanismLang.GENERIC_WITH_PARENTHESIS, "%1$s (%2$s)");
+        add(MekanismLang.GENERIC_WITH_TWO_PARENTHESIS, "%1$s (%2$s) (%3$s)");
+        add(MekanismLang.GENERIC_FRACTION, "%1$s/%2$s");
+        add(MekanismLang.GENERIC_TRANSFER, "- %1$s (%2$s)");
+        add(MekanismLang.GENERIC_PER_TICK, "%1$s/t");
+        add(MekanismLang.GENERIC_PER_MB, "%1$s/mB");
+        add(MekanismLang.GENERIC_PRE_STORED, "%1$s %2$s: %3$s");
+        add(MekanismLang.GENERIC_BLOCK_POS, "%1$s, %2$s, %3$s");
+        add(MekanismLang.GENERIC_HEX, "#%1$s");
         //Directions
         add(APILang.DOWN, "Down");
         add(APILang.UP, "Up");
@@ -614,91 +614,91 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.TOP, "Top");
         add(APILang.BOTTOM, "Bottom");
         //Hold for
-        add(MekanismLang.HOLD_FOR_DETAILS, "Hold %s for details.");
-        add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s for a description.");
-        add(MekanismLang.HOLD_FOR_MODULES, "Hold %s for installed modules.");
-        add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %s for supporting items.");
+        add(MekanismLang.HOLD_FOR_DETAILS, "Hold %1$s for details.");
+        add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %1$s for a description.");
+        add(MekanismLang.HOLD_FOR_MODULES, "Hold %1$s for installed modules.");
+        add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %1$s for supporting items.");
         //Commands
-        add(MekanismLang.COMMAND_CHUNK_WATCH, "Chunk (%s) added to watch list.");
-        add(MekanismLang.COMMAND_CHUNK_UNWATCH, "Chunk (%s) removed from watch list.");
-        add(MekanismLang.COMMAND_CHUNK_CLEAR, "%s chunks removed from watch list.");
-        add(MekanismLang.COMMAND_CHUNK_FLUSH, "%s chunks unloaded.");
-        add(MekanismLang.COMMAND_CHUNK_LOADED, "Loaded chunk (%s).");
-        add(MekanismLang.COMMAND_CHUNK_UNLOADED, "Unloaded chunk (%s).");
-        add(MekanismLang.COMMAND_DEBUG, "Toggled debug mode: %s.");
+        add(MekanismLang.COMMAND_CHUNK_WATCH, "Chunk (%1$s) added to watch list.");
+        add(MekanismLang.COMMAND_CHUNK_UNWATCH, "Chunk (%1$s) removed from watch list.");
+        add(MekanismLang.COMMAND_CHUNK_CLEAR, "%1$s chunks removed from watch list.");
+        add(MekanismLang.COMMAND_CHUNK_FLUSH, "%1$s chunks unloaded.");
+        add(MekanismLang.COMMAND_CHUNK_LOADED, "Loaded chunk (%1$s).");
+        add(MekanismLang.COMMAND_CHUNK_UNLOADED, "Unloaded chunk (%1$s).");
+        add(MekanismLang.COMMAND_DEBUG, "Toggled debug mode: %1$s.");
         add(MekanismLang.COMMAND_TEST_RULES, "Enabled keepInventory, and disabled doMobSpawning, doDaylightCycle, doWeatherCycle and mobGriefing!");
-        add(MekanismLang.COMMAND_TP, "Teleported to (%s) - saved last position on stack.");
-        add(MekanismLang.COMMAND_TPOP, "Returned to (%s); %s positions on stack.");
+        add(MekanismLang.COMMAND_TP, "Teleported to (%1$s) - saved last position on stack.");
+        add(MekanismLang.COMMAND_TPOP, "Returned to (%1$s); %2$s positions on stack.");
         add(MekanismLang.COMMAND_ERROR_TPOP_EMPTY, "No positions on stack.");
         add(MekanismLang.COMMAND_BUILD_REMOVED, "Build successfully removed.");
-        add(MekanismLang.COMMAND_BUILD_BUILT, "Finished building: %s.");
+        add(MekanismLang.COMMAND_BUILD_BUILT, "Finished building: %1$s.");
         add(MekanismLang.COMMAND_ERROR_BUILD_MISS, "No valid target found.");
-        add(MekanismLang.COMMAND_RADIATION_ADD, "Added %s radiation at (%s) in %s.");
-        add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation at (%s) in %s: %s");
+        add(MekanismLang.COMMAND_RADIATION_ADD, "Added %1$s radiation at (%2$s) in %3$s.");
+        add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation at (%1$s) in %2$s: %3$s");
         add(MekanismLang.COMMAND_RADIATION_CLEAR, "Cleared player radiation.");
-        add(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY, "Cleared entity radiation for: %s.");
+        add(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY, "Cleared entity radiation for: %1$s.");
         add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");
-        add(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED, "Queued chunk (%s) in %s for retrogen.");
+        add(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED, "Queued chunk (%1$s) in %2$s for retrogen.");
         add(MekanismLang.COMMAND_ERROR_RETROGEN_DISABLED, "Retrogen is disabled, please enable it in the config.");
         add(MekanismLang.COMMAND_ERROR_RETROGEN_FAILURE, "Failed to queue any chunks for retrogen.");
         //Tooltip stuff
-        add(MekanismLang.MODE, "Mode: %s");
-        add(MekanismLang.FIRE_MODE, "Fire Mode: %s");
-        add(MekanismLang.BUCKET_MODE, "Bucket Mode: %s");
-        add(MekanismLang.STORED_ENERGY, "Stored energy: %s");
-        add(MekanismLang.STORED, "Stored %s: %s");
-        add(MekanismLang.STORED_MB_PERCENTAGE, "Stored %s: %s mB (%s)");
-        add(MekanismLang.ITEM_AMOUNT, "Item amount: %s");
-        add(MekanismLang.FLOWING, "Flowing: %s");
+        add(MekanismLang.MODE, "Mode: %1$s");
+        add(MekanismLang.FIRE_MODE, "Fire Mode: %1$s");
+        add(MekanismLang.BUCKET_MODE, "Bucket Mode: %1$s");
+        add(MekanismLang.STORED_ENERGY, "Stored energy: %1$s");
+        add(MekanismLang.STORED, "Stored %1$s: %2$s");
+        add(MekanismLang.STORED_MB_PERCENTAGE, "Stored %1$s: %2$s mB (%3$s)");
+        add(MekanismLang.ITEM_AMOUNT, "Item amount: %1$s");
+        add(MekanismLang.FLOWING, "Flowing: %1$s");
         add(MekanismLang.INVALID, "(Invalid)");
-        add(MekanismLang.HAS_INVENTORY, "Inventory: %s");
+        add(MekanismLang.HAS_INVENTORY, "Inventory: %1$s");
         add(MekanismLang.NO_GAS, "No gas stored.");
         add(MekanismLang.NO_FLUID_TOOLTIP, "No fluid stored.");
-        add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %s");
-        add(MekanismLang.JETPACK_MODE, "Jetpack Mode: %s");
-        add(MekanismLang.SCUBA_TANK_MODE, "Scuba Tank: %s");
-        add(MekanismLang.FREE_RUNNERS_STORED, "Runners Energy: %s");
-        add(MekanismLang.FLAMETHROWER_STORED, "Flamethrower: %s");
-        add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %s");
-        add(MekanismLang.PROGRESS, "Progress: %s");
-        add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
-        add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %s mB/t");
-        add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %s");
+        add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %1$s");
+        add(MekanismLang.JETPACK_MODE, "Jetpack Mode: %1$s");
+        add(MekanismLang.SCUBA_TANK_MODE, "Scuba Tank: %1$s");
+        add(MekanismLang.FREE_RUNNERS_STORED, "Runners Energy: %1$s");
+        add(MekanismLang.FLAMETHROWER_STORED, "Flamethrower: %1$s");
+        add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %1$s");
+        add(MekanismLang.PROGRESS, "Progress: %1$s");
+        add(MekanismLang.PROCESS_RATE, "Process Rate: %1$s");
+        add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %1$s mB/t");
+        add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %1$s");
         add(MekanismLang.DECAY_IMMUNE, "Will not decay inside a Radioactive Waste Barrel");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");
-        add(MekanismLang.CRAFTING_TAB, "Crafting (%s/%s)");
-        add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %s");
-        add(MekanismLang.MIN, "Min: %s");
-        add(MekanismLang.MAX, "Max: %s");
+        add(MekanismLang.CRAFTING_TAB, "Crafting (%1$s/%2$s)");
+        add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %1$s");
+        add(MekanismLang.MIN, "Min: %1$s");
+        add(MekanismLang.MAX, "Max: %1$s");
         add(MekanismLang.INFINITE, "Infinite");
         add(MekanismLang.NONE, "None");
         add(MekanismLang.EMPTY, "Empty");
-        add(MekanismLang.MAX_OUTPUT, "Max Output: %s/t");
-        add(MekanismLang.STORING, "Storing: %s");
-        add(MekanismLang.DISSIPATED_RATE, "Dissipated: %s/t");
-        add(MekanismLang.TRANSFERRED_RATE, "Transferred: %s/t");
-        add(MekanismLang.FUEL, "Fuel: %s");
-        add(MekanismLang.VOLUME, "Volume: %s");
+        add(MekanismLang.MAX_OUTPUT, "Max Output: %1$s/t");
+        add(MekanismLang.STORING, "Storing: %1$s");
+        add(MekanismLang.DISSIPATED_RATE, "Dissipated: %1$s/t");
+        add(MekanismLang.TRANSFERRED_RATE, "Transferred: %1$s/t");
+        add(MekanismLang.FUEL, "Fuel: %1$s");
+        add(MekanismLang.VOLUME, "Volume: %1$s");
         add(MekanismLang.NO_FLUID, "No fluid");
-        add(MekanismLang.CHEMICAL, "Chemical: %s");
-        add(MekanismLang.GAS, "Gas: %s");
-        add(MekanismLang.INFUSE_TYPE, "Infuse Type: %s");
-        add(MekanismLang.PIGMENT, "Pigment: %s");
-        add(MekanismLang.SLURRY, "Slurry: %s");
-        add(MekanismLang.LIQUID, "Liquid: %s");
-        add(MekanismLang.UNIT, "Unit: %s");
-        add(MekanismLang.USING, "Using: %s/t");
-        add(MekanismLang.NEEDED, "Needed: %s");
-        add(MekanismLang.NEEDED_PER_TICK, "Needed: %s/t");
-        add(MekanismLang.FINISHED, "Finished: %s");
+        add(MekanismLang.CHEMICAL, "Chemical: %1$s");
+        add(MekanismLang.GAS, "Gas: %1$s");
+        add(MekanismLang.INFUSE_TYPE, "Infuse Type: %1$s");
+        add(MekanismLang.PIGMENT, "Pigment: %1$s");
+        add(MekanismLang.SLURRY, "Slurry: %1$s");
+        add(MekanismLang.LIQUID, "Liquid: %1$s");
+        add(MekanismLang.UNIT, "Unit: %1$s");
+        add(MekanismLang.USING, "Using: %1$s/t");
+        add(MekanismLang.NEEDED, "Needed: %1$s");
+        add(MekanismLang.NEEDED_PER_TICK, "Needed: %1$s/t");
+        add(MekanismLang.FINISHED, "Finished: %1$s");
         add(MekanismLang.NO_RECIPE, "(No recipe)");
-        add(MekanismLang.EJECT, "Eject: %s");
+        add(MekanismLang.EJECT, "Eject: %1$s");
         add(MekanismLang.NO_DELAY, "No Delay");
-        add(MekanismLang.DELAY, "Delay: %st");
-        add(MekanismLang.ENERGY, "Energy: %s");
-        add(MekanismLang.RESISTIVE_HEATER_USAGE, "Usage: %s/t");
+        add(MekanismLang.DELAY, "Delay: %1$st");
+        add(MekanismLang.ENERGY, "Energy: %1$s");
+        add(MekanismLang.RESISTIVE_HEATER_USAGE, "Usage: %1$s/t");
         add(MekanismLang.DYNAMIC_TANK, "Dynamic Tank");
         add(MekanismLang.MOVE_UP, "Move Up");
         add(MekanismLang.MOVE_DOWN, "Move Down");
@@ -706,8 +706,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TRUE, "True");
         add(MekanismLang.FALSE, "False");
         add(MekanismLang.CLOSE, "Close");
-        add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %s");
-        add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %s");
+        add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %1$s");
+        add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %1$s");
         add(MekanismLang.RGB, "RGB:");
         add(MekanismLang.COLOR_PICKER, "Color Picker");
         add(MekanismLang.HELMET_OPTIONS, "Helmet Options");
@@ -730,28 +730,28 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
-        add(MekanismLang.REDSTONE_OUTPUT, "Redstone Output: %s");
+        add(MekanismLang.REDSTONE_OUTPUT, "Redstone Output: %1$s");
         //Frequency
-        add(MekanismLang.FREQUENCY, "Frequency: %s");
+        add(MekanismLang.FREQUENCY, "Frequency: %1$s");
         add(MekanismLang.NO_FREQUENCY, "No frequency");
         add(MekanismLang.FREQUENCY_DELETE_CONFIRM, "Are you sure you want to delete this frequency? This can't be undone.");
         //Owner
         add(MekanismLang.NOW_OWN, "You now own this item.");
-        add(MekanismLang.OWNER, "Owner: %s");
+        add(MekanismLang.OWNER, "Owner: %1$s");
         add(MekanismLang.NO_OWNER, "No Owner");
         //Tab
         add(MekanismLang.MAIN_TAB, "Main");
         //Evaporation
-        add(MekanismLang.EVAPORATION_HEIGHT, "Height: %s");
-        add(MekanismLang.FLUID_PRODUCTION, "Production: %s mB/t");
+        add(MekanismLang.EVAPORATION_HEIGHT, "Height: %1$s");
+        add(MekanismLang.FLUID_PRODUCTION, "Production: %1$s mB/t");
         add(MekanismLang.EVAPORATION_PLANT, "Thermal Evaporation Plant");
         //Configuration
         add(MekanismLang.TRANSPORTER_CONFIG, "Transporter Config");
         add(MekanismLang.SIDE_CONFIG, "Side Config");
         add(MekanismLang.SIDE_CONFIG_CLEAR, "Clear Side Config (sets all sides to none)");
         add(MekanismLang.STRICT_INPUT, "Strict Input");
-        add(MekanismLang.STRICT_INPUT_ENABLED, "Strict Input (%s)");
-        add(MekanismLang.CONFIG_TYPE, "%s Config");
+        add(MekanismLang.STRICT_INPUT_ENABLED, "Strict Input (%1$s)");
+        add(MekanismLang.CONFIG_TYPE, "%1$s Config");
         add(MekanismLang.NO_EJECT, "Can't Eject");
         add(MekanismLang.CANT_EJECT_TOOLTIP, "Auto-eject is not supported, manual extraction may still be possible.");
         add(MekanismLang.SLOTS, "Slots");
@@ -764,7 +764,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DUMPING_EXCESS, "Dumping Excess");
         add(MekanismLang.DUMPING, "Dumping");
         //Dictionary
-        add(MekanismLang.DICTIONARY_KEY, " - %s");
+        add(MekanismLang.DICTIONARY_KEY, " - %1$s");
         add(MekanismLang.DICTIONARY_NO_KEY, "No key.");
         add(MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, "Block Tag(s) found:");
         add(MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, "Fluid Tag(s) found:");
@@ -799,7 +799,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LAST_ITEM, "Last Item");
         add(MekanismLang.NEXT_ITEM, "Next Item");
         //Status
-        add(MekanismLang.STATUS, "Status: %s");
+        add(MekanismLang.STATUS, "Status: %1$s");
         add(MekanismLang.STATUS_OK, "All OK");
         //Fluid container
         add(MekanismLang.FLUID_CONTAINER_BOTH, "Both");
@@ -817,15 +817,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ON_CAPS, "ON");
         add(MekanismLang.OFF_CAPS, "OFF");
         //Capacity
-        add(MekanismLang.CAPACITY, "Capacity: %s");
-        add(MekanismLang.CAPACITY_ITEMS, "Capacity: %s Items");
-        add(MekanismLang.CAPACITY_MB, "Capacity: %s mB");
-        add(MekanismLang.CAPACITY_PER_TICK, "Capacity: %s/t");
-        add(MekanismLang.CAPACITY_MB_PER_TICK, "Capacity: %s mB/t");
+        add(MekanismLang.CAPACITY, "Capacity: %1$s");
+        add(MekanismLang.CAPACITY_ITEMS, "Capacity: %1$s Items");
+        add(MekanismLang.CAPACITY_MB, "Capacity: %1$s mB");
+        add(MekanismLang.CAPACITY_PER_TICK, "Capacity: %1$s/t");
+        add(MekanismLang.CAPACITY_MB_PER_TICK, "Capacity: %1$s mB/t");
         //Cardboard box
-        add(MekanismLang.BLOCK_DATA, "Block data: %s");
-        add(MekanismLang.BLOCK, "Block: %s");
-        add(MekanismLang.BLOCK_ENTITY, "Block Entity: %s");
+        add(MekanismLang.BLOCK_DATA, "Block data: %1$s");
+        add(MekanismLang.BLOCK, "Block: %1$s");
+        add(MekanismLang.BLOCK_ENTITY, "Block Entity: %1$s");
         //Crafting Formula
         add(MekanismLang.INGREDIENTS, "Ingredients:");
         add(MekanismLang.ENCODED, "(Encoded)");
@@ -836,46 +836,46 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MULTIBLOCK_FORMED_CHAT, "Multiblock Formed");
         //Transmitter tooltips
         add(MekanismLang.UNIVERSAL, "universal");
-        add(MekanismLang.ITEMS, "- Items (%s)");
-        add(MekanismLang.BLOCKS, "- Blocks (%s)");
-        add(MekanismLang.FLUIDS, "- Fluids (%s)");
-        add(MekanismLang.GASES, "- Gases (%s)");
-        add(MekanismLang.HEAT, "- Heat (%s)");
-        add(MekanismLang.CONDUCTION, "Conduction: %s");
-        add(MekanismLang.INSULATION, "Insulation: %s");
-        add(MekanismLang.HEAT_CAPACITY, "Heat Capacity: %s");
+        add(MekanismLang.ITEMS, "- Items (%1$s)");
+        add(MekanismLang.BLOCKS, "- Blocks (%1$s)");
+        add(MekanismLang.FLUIDS, "- Fluids (%1$s)");
+        add(MekanismLang.GASES, "- Gases (%1$s)");
+        add(MekanismLang.HEAT, "- Heat (%1$s)");
+        add(MekanismLang.CONDUCTION, "Conduction: %1$s");
+        add(MekanismLang.INSULATION, "Insulation: %1$s");
+        add(MekanismLang.HEAT_CAPACITY, "Heat Capacity: %1$s");
         add(MekanismLang.CAPABLE_OF_TRANSFERRING, "Capable of transferring:");
         add(MekanismLang.DIVERSION_CONTROL_DISABLED, "Always active");
         add(MekanismLang.DIVERSION_CONTROL_HIGH, "Active with signal");
         add(MekanismLang.DIVERSION_CONTROL_LOW, "Active without signal");
-        add(MekanismLang.TOGGLE_DIVERTER, "Diverter mode changed to: %s");
-        add(MekanismLang.PUMP_RATE, "Pump Rate: %s/s");
-        add(MekanismLang.PUMP_RATE_MB, "Pump Rate: %s mB/t");
-        add(MekanismLang.SPEED, "Speed: %s m/s");
+        add(MekanismLang.TOGGLE_DIVERTER, "Diverter mode changed to: %1$s");
+        add(MekanismLang.PUMP_RATE, "Pump Rate: %1$s/s");
+        add(MekanismLang.PUMP_RATE_MB, "Pump Rate: %1$s mB/t");
+        add(MekanismLang.SPEED, "Speed: %1$s m/s");
         //Condensentrator
         add(MekanismLang.CONDENSENTRATOR_TOGGLE, "Toggle operation");
         add(MekanismLang.CONDENSENTRATING, "Condensentrating");
         add(MekanismLang.DECONDENSENTRATING, "Decondensentrating");
         //Upgrades
-        add(MekanismLang.UPGRADE_DISPLAY, "- %s");
-        add(MekanismLang.UPGRADE_DISPLAY_LEVEL, "- %s: x%s");
-        add(MekanismLang.UPGRADES_EFFECT, "Effect: %sx");
+        add(MekanismLang.UPGRADE_DISPLAY, "- %1$s");
+        add(MekanismLang.UPGRADE_DISPLAY_LEVEL, "- %1$s: x%2$s");
+        add(MekanismLang.UPGRADES_EFFECT, "Effect: %1$sx");
         add(MekanismLang.UPGRADES, "Upgrades");
         add(MekanismLang.UPGRADE_NO_SELECTION, "No selection.");
         add(MekanismLang.UPGRADES_SUPPORTED, "Supported:");
-        add(MekanismLang.UPGRADE_COUNT, "Amount: %s/%s");
-        add(MekanismLang.UPGRADE_TYPE, "%s Upgrade");
-        add(MekanismLang.UPGRADE_NOT_SUPPORTED, "%s (Not Supported)");
+        add(MekanismLang.UPGRADE_COUNT, "Amount: %1$s/%2$s");
+        add(MekanismLang.UPGRADE_TYPE, "%1$s Upgrade");
+        add(MekanismLang.UPGRADE_NOT_SUPPORTED, "%1$s (Not Supported)");
         add(MekanismLang.UPGRADE_UNINSTALL, "Uninstall");
         add(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP, "Uninstalls a single upgrade, hold shift to uninstall all.");
         //Filter
         add(MekanismLang.CREATE_FILTER_TITLE, "Create New Filter");
         add(MekanismLang.FILTERS, "Filters:");
-        add(MekanismLang.FILTER_COUNT, "T: %s");
+        add(MekanismLang.FILTER_COUNT, "T: %1$s");
         add(MekanismLang.FILTER_ALLOW_DEFAULT, "Allow Default");
         add(MekanismLang.FILTER, "Filter");
-        add(MekanismLang.FILTER_NEW, "New: %s");
-        add(MekanismLang.FILTER_EDIT, "Edit: %s");
+        add(MekanismLang.FILTER_NEW, "New: %1$s");
+        add(MekanismLang.FILTER_EDIT, "Edit: %1$s");
         add(MekanismLang.SORTER_SIZE_MODE, "Size Mode");
         add(MekanismLang.SORTER_SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
         add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");
@@ -885,14 +885,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TAG_FILTER, "Tag Filter");
         add(MekanismLang.TAG_FILTER_NO_TAG, "No tag");
         add(MekanismLang.TAG_FILTER_SAME_TAG, "Same tag");
-        add(MekanismLang.TAG_FILTER_TAG, "Tag: %s");
+        add(MekanismLang.TAG_FILTER_TAG, "Tag: %1$s");
         add(MekanismLang.MODID_FILTER, "Mod ID Filter");
         add(MekanismLang.MODID_FILTER_NO_ID, "No ID");
         add(MekanismLang.MODID_FILTER_SAME_ID, "Same ID");
-        add(MekanismLang.MODID_FILTER_ID, "ID: %s");
+        add(MekanismLang.MODID_FILTER_ID, "ID: %1$s");
         add(MekanismLang.ITEM_FILTER, "Item Filter");
         add(MekanismLang.ITEM_FILTER_NO_ITEM, "No item");
-        add(MekanismLang.SORTER_FILTER_SIZE_MODE, "%s!");
+        add(MekanismLang.SORTER_FILTER_SIZE_MODE, "%1$s!");
         add(MekanismLang.SORTER_FILTER_MAX_LESS_THAN_MIN, "Max < min");
         add(MekanismLang.SORTER_FILTER_OVER_SIZED, "Max > 64");
         add(MekanismLang.SORTER_FILTER_SIZE_MISSING, "Max/min");
@@ -901,26 +901,26 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_PATH, "Invalid tag path");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER_UNSUPPORTED_TAG, "Unsupported tag");
         //Radioactive Waste Barrel
-        add(MekanismLang.WASTE_BARREL_DECAY_RATE, "Decay Rate: %s mB/t");
-        add(MekanismLang.WASTE_BARREL_DECAY_RATE_ACTUAL, "Actual Decay Rate: %s mB / %s ticks");
+        add(MekanismLang.WASTE_BARREL_DECAY_RATE, "Decay Rate: %1$s mB/t");
+        add(MekanismLang.WASTE_BARREL_DECAY_RATE_ACTUAL, "Actual Decay Rate: %1$s mB / %2$s ticks");
         //Seismic Vibrator
-        add(MekanismLang.CHUNK, "Chunk: %s, %s");
+        add(MekanismLang.CHUNK, "Chunk: %1$s, %2$s");
         add(MekanismLang.VIBRATING, "Vibrating");
         //Seismic Reader
         add(MekanismLang.NEEDS_ENERGY, "Not enough energy to interpret vibration");
         add(MekanismLang.NO_VIBRATIONS, "Unable to discover any vibrations");
-        add(MekanismLang.ABUNDANCY, "Abundancy: %s");
+        add(MekanismLang.ABUNDANCY, "Abundancy: %1$s");
         //Redstone Control
         add(MekanismLang.REDSTONE_CONTROL_DISABLED, "Redstone Detection: IGNORED");
         add(MekanismLang.REDSTONE_CONTROL_HIGH, "Redstone Detection: NORMAL");
         add(MekanismLang.REDSTONE_CONTROL_LOW, "Redstone Detection: INVERTED");
         add(MekanismLang.REDSTONE_CONTROL_PULSE, "Redstone Detection: PULSE");
         //Security
-        add(MekanismLang.SECURITY, "Security: %s");
+        add(MekanismLang.SECURITY, "Security: %1$s");
         add(MekanismLang.SECURITY_OVERRIDDEN, "(Overridden)");
         add(MekanismLang.SECURITY_OFFLINE, "Security Offline");
         add(MekanismLang.SECURITY_ADD, "Add:");
-        add(MekanismLang.SECURITY_OVERRIDE, "Security Override: %s");
+        add(MekanismLang.SECURITY_OVERRIDE, "Security Override: %1$s");
         add(MekanismLang.NO_ACCESS, "You don't have access.");
         add(MekanismLang.TRUSTED_PLAYERS, "Trusted Players");
         add(MekanismLang.PUBLIC, "Public");
@@ -934,10 +934,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CRAFT_SINGLE, "Craft Single Item");
         add(MekanismLang.CRAFT_AVAILABLE, "Craft Available Items");
         add(MekanismLang.FILL_EMPTY, "Fill/Empty Grid");
-        add(MekanismLang.STOCK_CONTROL, "Stock Control: %s");
-        add(MekanismLang.AUTO_MODE, "Auto-Mode: %s");
+        add(MekanismLang.STOCK_CONTROL, "Stock Control: %1$s");
+        add(MekanismLang.AUTO_MODE, "Auto-Mode: %1$s");
         //Factory Type
-        add(MekanismLang.FACTORY_TYPE, "Recipe type: %s");
+        add(MekanismLang.FACTORY_TYPE, "Recipe type: %1$s");
         add(MekanismLang.SMELTING, "Smelting");
         add(MekanismLang.ENRICHING, "Enriching");
         add(MekanismLang.CRUSHING, "Crushing");
@@ -948,19 +948,19 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.INFUSING, "Infusing");
         add(MekanismLang.SAWING, "Sawing");
         //Transmitter Networks
-        add(MekanismLang.NETWORK_DESCRIPTION, "[%s] %s transmitters, %s acceptors.");
+        add(MekanismLang.NETWORK_DESCRIPTION, "[%1$s] %2$s transmitters, %3$s acceptors.");
         add(MekanismLang.INVENTORY_NETWORK, "InventoryNetwork");
         add(MekanismLang.FLUID_NETWORK, "FluidNetwork");
         add(MekanismLang.CHEMICAL_NETWORK, "ChemicalNetwork");
         add(MekanismLang.HEAT_NETWORK, "HeatNetwork");
         add(MekanismLang.ENERGY_NETWORK, "EnergyNetwork");
         add(MekanismLang.NO_NETWORK, "No Network");
-        add(MekanismLang.HEAT_NETWORK_STORED, "%s above ambient");
-        add(MekanismLang.HEAT_NETWORK_FLOW, "%s transferred to acceptors, %s lost to environment.");
-        add(MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY, "%s transferred to acceptors, %s lost to environment, %s efficiency.");
-        add(MekanismLang.FLUID_NETWORK_NEEDED, "%s buckets");
-        add(MekanismLang.NETWORK_MB_PER_TICK, "%s mB/t");
-        add(MekanismLang.NETWORK_MB_STORED, "%s (%s mB)");
+        add(MekanismLang.HEAT_NETWORK_STORED, "%1$s above ambient");
+        add(MekanismLang.HEAT_NETWORK_FLOW, "%1$s transferred to acceptors, %2$s lost to environment.");
+        add(MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY, "%1$s transferred to acceptors, %2$s lost to environment, %3$s efficiency.");
+        add(MekanismLang.FLUID_NETWORK_NEEDED, "%1$s buckets");
+        add(MekanismLang.NETWORK_MB_PER_TICK, "%1$s mB/t");
+        add(MekanismLang.NETWORK_MB_STORED, "%1$s (%2$s mB)");
         //Button
         add(MekanismLang.BUTTON_CONFIRM, "Confirm");
         add(MekanismLang.BUTTON_START, "Start");
@@ -979,10 +979,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BUTTON_MATERIAL_FILTER, "Material");
         add(MekanismLang.BUTTON_MODID_FILTER, "Mod ID");
         //Configuration Card
-        add(MekanismLang.CONFIG_CARD_GOT, "Retrieved configuration data from %s");
-        add(MekanismLang.CONFIG_CARD_SET, "Injected configuration data of type %s");
+        add(MekanismLang.CONFIG_CARD_GOT, "Retrieved configuration data from %1$s");
+        add(MekanismLang.CONFIG_CARD_SET, "Injected configuration data of type %1$s");
         add(MekanismLang.CONFIG_CARD_UNEQUAL, "Unequal configuration data formats.");
-        add(MekanismLang.CONFIG_CARD_HAS_DATA, "Data: %s");
+        add(MekanismLang.CONFIG_CARD_HAS_DATA, "Data: %1$s");
         //Connection Type
         add(MekanismLang.CONNECTION_NORMAL, "Normal");
         add(MekanismLang.CONNECTION_PUSH, "Push");
@@ -995,39 +995,39 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TELEPORTER_NEEDS_ENERGY, "Needs energy");
         //Matrix
         add(MekanismLang.MATRIX, "Induction Matrix");
-        add(MekanismLang.MATRIX_RECEIVING_RATE, "Receiving: %s/t");
-        add(MekanismLang.MATRIX_OUTPUT_AMOUNT, "Output: %s");
-        add(MekanismLang.MATRIX_OUTPUT_RATE, "Output: %s/t");
-        add(MekanismLang.MATRIX_OUTPUTTING_RATE, "Outputting: %s/t");
-        add(MekanismLang.MATRIX_INPUT_AMOUNT, "Input: %s");
-        add(MekanismLang.MATRIX_INPUT_RATE, "Input: %s/t");
+        add(MekanismLang.MATRIX_RECEIVING_RATE, "Receiving: %1$s/t");
+        add(MekanismLang.MATRIX_OUTPUT_AMOUNT, "Output: %1$s");
+        add(MekanismLang.MATRIX_OUTPUT_RATE, "Output: %1$s/t");
+        add(MekanismLang.MATRIX_OUTPUTTING_RATE, "Outputting: %1$s/t");
+        add(MekanismLang.MATRIX_INPUT_AMOUNT, "Input: %1$s");
+        add(MekanismLang.MATRIX_INPUT_RATE, "Input: %1$s/t");
         add(MekanismLang.MATRIX_CONSTITUENTS, "Constituents:");
         add(MekanismLang.MATRIX_DIMENSIONS, "Dimensions:");
-        add(MekanismLang.MATRIX_DIMENSION_REPRESENTATION, "%s x %s x %s");
+        add(MekanismLang.MATRIX_DIMENSION_REPRESENTATION, "%1$s x %2$s x %3$s");
         add(MekanismLang.MATRIX_STATS, "Matrix Statistics");
-        add(MekanismLang.MATRIX_CELLS, "%s cells");
-        add(MekanismLang.MATRIX_PROVIDERS, "%s providers");
-        add(MekanismLang.INDUCTION_PORT_MODE, "Toggled Induction Port transfer mode to %s.");
-        add(MekanismLang.INDUCTION_PORT_OUTPUT_RATE, "Output Rate: %s");
+        add(MekanismLang.MATRIX_CELLS, "%1$s cells");
+        add(MekanismLang.MATRIX_PROVIDERS, "%1$s providers");
+        add(MekanismLang.INDUCTION_PORT_MODE, "Toggled Induction Port transfer mode to %1$s.");
+        add(MekanismLang.INDUCTION_PORT_OUTPUT_RATE, "Output Rate: %1$s");
         //Miner
-        add(MekanismLang.MINER_BUFFER_FREE, "Free Buffer: %s");
-        add(MekanismLang.MINER_TO_MINE, "To mine: %s");
-        add(MekanismLang.MINER_SILK_ENABLED, "Silk: %s");
-        add(MekanismLang.MINER_AUTO_PULL, "Pull: %s");
+        add(MekanismLang.MINER_BUFFER_FREE, "Free Buffer: %1$s");
+        add(MekanismLang.MINER_TO_MINE, "To mine: %1$s");
+        add(MekanismLang.MINER_SILK_ENABLED, "Silk: %1$s");
+        add(MekanismLang.MINER_AUTO_PULL, "Pull: %1$s");
         add(MekanismLang.MINER_RUNNING, "Running");
         add(MekanismLang.MINER_LOW_POWER, "Low Power");
-        add(MekanismLang.MINER_ENERGY_CAPACITY, "Energy Capacity: %s");
+        add(MekanismLang.MINER_ENERGY_CAPACITY, "Energy Capacity: %1$s");
         add(MekanismLang.MINER_MISSING_BLOCK, "Missing block");
         add(MekanismLang.MINER_WELL, "All is well!");
         add(MekanismLang.MINER_CONFIG, "Digital Miner Config");
         add(MekanismLang.MINER_SILK, "Silk touch");
         add(MekanismLang.MINER_RESET, "Reset");
         add(MekanismLang.MINER_INVERSE, "Inverse mode");
-        add(MekanismLang.MINER_VISUALS, "Visuals: %s");
+        add(MekanismLang.MINER_VISUALS, "Visuals: %1$s");
         add(MekanismLang.MINER_VISUALS_TOO_BIG, "Radius too big to display visuals");
-        add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %s");
-        add(MekanismLang.MINER_REQUIRE_REPLACE_INVERSE, "Inverse mode requires replacement: %s");
-        add(MekanismLang.MINER_RADIUS, "Radi: %s");
+        add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %1$s");
+        add(MekanismLang.MINER_REQUIRE_REPLACE_INVERSE, "Inverse mode requires replacement: %1$s");
+        add(MekanismLang.MINER_RADIUS, "Radi: %1$s");
         add(MekanismLang.MINER_IDLE, "Not ready");
         add(MekanismLang.MINER_SEARCHING, "Searching");
         add(MekanismLang.MINER_PAUSED, "Paused");
@@ -1035,14 +1035,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Boiler
         add(MekanismLang.BOILER, "Thermoelectric Boiler");
         add(MekanismLang.BOILER_STATS, "Boiler Statistics");
-        add(MekanismLang.BOILER_MAX_WATER, "Max Water: %s mB");
-        add(MekanismLang.BOILER_MAX_STEAM, "Max Steam: %s mB");
+        add(MekanismLang.BOILER_MAX_WATER, "Max Water: %1$s mB");
+        add(MekanismLang.BOILER_MAX_STEAM, "Max Steam: %1$s mB");
         add(MekanismLang.BOILER_HEAT_TRANSFER, "Heat Transfer");
-        add(MekanismLang.BOILER_HEATERS, "Superheaters: %s");
-        add(MekanismLang.BOILER_CAPACITY, "Boil Capacity: %s mB/t");
-        add(MekanismLang.BOIL_RATE, "Boil Rate: %s mB/t");
-        add(MekanismLang.MAX_BOIL_RATE, "Max Boil: %s mB/t");
-        add(MekanismLang.BOILER_VALVE_MODE_CHANGE, "Valve mode changed to: %s");
+        add(MekanismLang.BOILER_HEATERS, "Superheaters: %1$s");
+        add(MekanismLang.BOILER_CAPACITY, "Boil Capacity: %1$s mB/t");
+        add(MekanismLang.BOIL_RATE, "Boil Rate: %1$s mB/t");
+        add(MekanismLang.MAX_BOIL_RATE, "Max Boil: %1$s mB/t");
+        add(MekanismLang.BOILER_VALVE_MODE_CHANGE, "Valve mode changed to: %1$s");
         add(MekanismLang.BOILER_VALVE_MODE_INPUT, "input only");
         add(MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, "output coolant");
         add(MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, "output steam");
@@ -1051,8 +1051,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_HEATED_COOLANT_TANK, "Heated Coolant Tank");
         add(MekanismLang.BOILER_COOLANT_TANK, "Coolant Tank");
         //Temperature
-        add(MekanismLang.TEMPERATURE, "Temp: %s");
-        add(MekanismLang.TEMPERATURE_LONG, "Temperature: %s");
+        add(MekanismLang.TEMPERATURE, "Temp: %1$s");
+        add(MekanismLang.TEMPERATURE_LONG, "Temperature: %1$s");
         add(MekanismLang.TEMPERATURE_KELVIN, "Kelvin");
         add(MekanismLang.TEMPERATURE_KELVIN_SHORT, "K");
         add(MekanismLang.TEMPERATURE_CELSIUS, "Celsius");
@@ -1073,15 +1073,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ENERGY_EU_PLURAL, "Electrical Units");
         add(MekanismLang.ENERGY_EU_SHORT, "EU");
         //Network Reader
-        add(MekanismLang.NETWORK_READER_BORDER, "%s %s %1$s");
-        add(MekanismLang.NETWORK_READER_TEMPERATURE, " *Temperature: %s");
-        add(MekanismLang.NETWORK_READER_TRANSMITTERS, " *Transmitters: %s");
-        add(MekanismLang.NETWORK_READER_ACCEPTORS, " *Acceptors: %s");
-        add(MekanismLang.NETWORK_READER_NEEDED, " *Needed: %s");
-        add(MekanismLang.NETWORK_READER_BUFFER, " *Buffer: %s");
-        add(MekanismLang.NETWORK_READER_THROUGHPUT, " *Throughput: %s");
-        add(MekanismLang.NETWORK_READER_CAPACITY, " *Capacity: %s");
-        add(MekanismLang.NETWORK_READER_CONNECTED_SIDES, " *Connected sides: %s");
+        add(MekanismLang.NETWORK_READER_BORDER, "%1$s %2$s %1$s");
+        add(MekanismLang.NETWORK_READER_TEMPERATURE, " *Temperature: %1$s");
+        add(MekanismLang.NETWORK_READER_TRANSMITTERS, " *Transmitters: %1$s");
+        add(MekanismLang.NETWORK_READER_ACCEPTORS, " *Acceptors: %1$s");
+        add(MekanismLang.NETWORK_READER_NEEDED, " *Needed: %1$s");
+        add(MekanismLang.NETWORK_READER_BUFFER, " *Buffer: %1$s");
+        add(MekanismLang.NETWORK_READER_THROUGHPUT, " *Throughput: %1$s");
+        add(MekanismLang.NETWORK_READER_CAPACITY, " *Capacity: %1$s");
+        add(MekanismLang.NETWORK_READER_CONNECTED_SIDES, " *Connected sides: %1$s");
         //Sorter
         add(MekanismLang.SORTER_DEFAULT, "Default:");
         add(MekanismLang.SORTER_SINGLE_ITEM, "Single:");
@@ -1102,46 +1102,46 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SIDE_DATA_ENERGY, "Energy");
         add(MekanismLang.SIDE_DATA_EXTRA, "Extra");
         //Free runner modes
-        add(MekanismLang.FREE_RUNNER_MODE_CHANGE, "Free runner mode changed to: %s");
+        add(MekanismLang.FREE_RUNNER_MODE_CHANGE, "Free runner mode changed to: %1$s");
         add(MekanismLang.FREE_RUNNER_NORMAL, "Regular");
         add(MekanismLang.FREE_RUNNER_DISABLED, "Disabled");
         //Jetpack Modes
-        add(MekanismLang.JETPACK_MODE_CHANGE, "Jetpack mode changed to: %s");
+        add(MekanismLang.JETPACK_MODE_CHANGE, "Jetpack mode changed to: %1$s");
         add(MekanismLang.JETPACK_NORMAL, "Regular");
         add(MekanismLang.JETPACK_HOVER, "Hover");
         add(MekanismLang.JETPACK_DISABLED, "Disabled");
         //Disassembler Mode
-        add(MekanismLang.DISASSEMBLER_MODE_CHANGE, "Mode toggled to: %s (%s)");
-        add(MekanismLang.DISASSEMBLER_EFFICIENCY, "Efficiency: %s");
+        add(MekanismLang.DISASSEMBLER_MODE_CHANGE, "Mode toggled to: %1$s (%2$s)");
+        add(MekanismLang.DISASSEMBLER_EFFICIENCY, "Efficiency: %1$s");
         add(MekanismLang.DISASSEMBLER_NORMAL, "normal");
         add(MekanismLang.DISASSEMBLER_SLOW, "slow");
         add(MekanismLang.DISASSEMBLER_FAST, "fast");
         add(MekanismLang.DISASSEMBLER_VEIN, "vein");
         add(MekanismLang.DISASSEMBLER_OFF, "off");
         //Flamethrower Modes
-        add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %s");
+        add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %1$s");
         add(MekanismLang.FLAMETHROWER_COMBAT, "Combat");
         add(MekanismLang.FLAMETHROWER_HEAT, "Heat");
         add(MekanismLang.FLAMETHROWER_INFERNO, "Inferno");
         //Configurator
-        add(MekanismLang.CONFIGURE_STATE, "Configure State: %s");
-        add(MekanismLang.STATE, "State: %s");
-        add(MekanismLang.TOGGLE_COLOR, "Color bumped to: %s");
-        add(MekanismLang.CURRENT_COLOR, "Current color: %s");
+        add(MekanismLang.CONFIGURE_STATE, "Configure State: %1$s");
+        add(MekanismLang.STATE, "State: %1$s");
+        add(MekanismLang.TOGGLE_COLOR, "Color bumped to: %1$s");
+        add(MekanismLang.CURRENT_COLOR, "Current color: %1$s");
         add(MekanismLang.PUMP_RESET, "Reset Electric Pump calculation");
         add(MekanismLang.PLENISHER_RESET, "Reset Fluidic Plenisher calculation");
-        add(MekanismLang.REDSTONE_SENSITIVITY, "Redstone sensitivity turned: %s");
-        add(MekanismLang.CONNECTION_TYPE, "Connection type changed to: %s");
+        add(MekanismLang.REDSTONE_SENSITIVITY, "Redstone sensitivity turned: %1$s");
+        add(MekanismLang.CONNECTION_TYPE, "Connection type changed to: %1$s");
         //Configurator Modes
-        add(MekanismLang.CONFIGURATOR_VIEW_MODE, "Current %s behavior: %s (%s)");
-        add(MekanismLang.CONFIGURATOR_TOGGLE_MODE, "%s behavior bumped to: %s (%s)");
-        add(MekanismLang.CONFIGURATOR_CONFIGURATE, "Configurate (%s)");
+        add(MekanismLang.CONFIGURATOR_VIEW_MODE, "Current %1$s behavior: %2$s (%3$s)");
+        add(MekanismLang.CONFIGURATOR_TOGGLE_MODE, "%1$s behavior bumped to: %2$s (%3$s)");
+        add(MekanismLang.CONFIGURATOR_CONFIGURATE, "Configurate (%1$s)");
         add(MekanismLang.CONFIGURATOR_EMPTY, "Empty");
         add(MekanismLang.CONFIGURATOR_ROTATE, "Rotate");
         add(MekanismLang.CONFIGURATOR_WRENCH, "Wrench");
         //Robit
         add(MekanismLang.ROBIT, "Robit");
-        add(MekanismLang.ROBIT_NAME, "Name: %s");
+        add(MekanismLang.ROBIT_NAME, "Name: %1$s");
         add(MekanismLang.ROBIT_SMELTING, "Robit Smelting");
         add(MekanismLang.ROBIT_CRAFTING, "Robit Crafting");
         add(MekanismLang.ROBIT_INVENTORY, "Robit Inventory");
@@ -1149,13 +1149,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ROBIT_TELEPORT, "Teleport back home");
         add(MekanismLang.ROBIT_TOGGLE_PICKUP, "Toggle 'drop pickup' mode");
         add(MekanismLang.ROBIT_RENAME, "Rename this Robit");
-        add(MekanismLang.ROBIT_SKIN, "Skin: %s");
+        add(MekanismLang.ROBIT_SKIN, "Skin: %1$s");
         add(MekanismLang.ROBIT_SKIN_SELECT, "Change this Robit's appearance");
         add(MekanismLang.ROBIT_TOGGLE_FOLLOW, "Toggle 'follow' mode");
-        add(MekanismLang.ROBIT_GREETING, "Hi, I'm %s!");
-        add(MekanismLang.ROBIT_OWNER, "Owner: %s");
-        add(MekanismLang.ROBIT_FOLLOWING, "Following: %s");
-        add(MekanismLang.ROBIT_DROP_PICKUP, "Drop pickup: %s");
+        add(MekanismLang.ROBIT_GREETING, "Hi, I'm %1$s!");
+        add(MekanismLang.ROBIT_OWNER, "Owner: %1$s");
+        add(MekanismLang.ROBIT_FOLLOWING, "Following: %1$s");
+        add(MekanismLang.ROBIT_DROP_PICKUP, "Drop pickup: %1$s");
         //Descriptions
         add(MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY, "The foundation of any Quantum Item Orchestration system. QIO Drives are stored here.");
         add(MekanismLang.DESCRIPTION_QIO_DASHBOARD, "A placeable monitor used to access an Quantum Item Orchestration system's contents.");
@@ -1238,10 +1238,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
         add(MekanismLang.MODULE_DISABLED_LOWER, "disabled");
-        add(MekanismLang.MODULE_DAMAGE, "Damage: %s");
+        add(MekanismLang.MODULE_DAMAGE, "Damage: %1$s");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
-        add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
-        add(MekanismLang.MODULE_STACKABLE, "Stackable: %s");
+        add(MekanismLang.MODULE_INSTALLED, "Installed: %1$s");
+        add(MekanismLang.MODULE_STACKABLE, "Stackable: %1$s");
         add(MekanismLang.MODULE_EXCLUSIVE, "(Exclusive Module)");
         add(MekanismLang.MODULE_HANDLE_MODE_CHANGE, "Handle Mode Key");
         add(MekanismLang.MODULE_RENDER_HUD, "Show in HUD");
@@ -1253,10 +1253,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_RANGE, "Range");
         add(MekanismLang.MODULE_SPRINT_BOOST, "Sprint Boost");
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
-        add(MekanismLang.MODULE_EXTENDED_ENABLED, "Extended Vein Mining: %s");
+        add(MekanismLang.MODULE_EXTENDED_ENABLED, "Extended Vein Mining: %1$s");
         add(MekanismLang.MODULE_EXCAVATION_RANGE, "Excavation Range");
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
-        add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");
+        add(MekanismLang.MODULE_MODE_CHANGE, "%1$s bumped to: %2$s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATION, "Gravitational Modulation");
         add(MekanismLang.MODULE_MAGNETIC_ATTRACTION, "Magnetic Attraction");
