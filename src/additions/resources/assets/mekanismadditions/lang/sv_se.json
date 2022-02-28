@@ -186,5 +186,7 @@
   "item.mekanismadditions.white_balloon": "Vit ballong",
   "item.mekanismadditions.yellow_balloon": "Gul ballong",
   "key.mekanismadditions.voice": "Röst",
+  "walkie.mekanismadditions.channel": "Kanal: %1$s",
+  "walkie.mekanismadditions.channel.change": "Kanalen ändrad till: %1$s",
   "walkie.mekanismadditions.disabled": "Röstservern inaktiverad."
 }
