@@ -185,5 +185,7 @@
   "item.mekanismadditions.white_balloon": "Hvit ballong",
   "item.mekanismadditions.yellow_balloon": "Gul ballong",
   "key.mekanismadditions.voice": "Stemme",
+  "walkie.mekanismadditions.channel": "Kanal: %1$s",
+  "walkie.mekanismadditions.channel.change": "Kanal endret til: %1$s",
   "walkie.mekanismadditions.disabled": "Taleserver deaktivert."
 }
