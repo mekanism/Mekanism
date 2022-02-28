@@ -166,5 +166,6 @@
   "item.mekanismtools.steel_shovel": "Сталева лопата",
   "item.mekanismtools.steel_sword": "Сталевий меч",
   "item.mekanismtools.stone_paxel": "Кам'яний паксель",
-  "item.mekanismtools.wood_paxel": "Дерев’яний паксель"
+  "item.mekanismtools.wood_paxel": "Дерев’яний паксель",
+  "tooltip.mekanismtools.hp": "ОЗ: %1$s"
 }
