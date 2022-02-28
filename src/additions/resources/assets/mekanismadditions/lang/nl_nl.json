@@ -183,5 +183,7 @@
   "item.mekanismadditions.white_balloon": "Witte Ballon",
   "item.mekanismadditions.yellow_balloon": "Gele Ballon",
   "key.mekanismadditions.voice": "Stem",
+  "walkie.mekanismadditions.channel": "Kanaal: %1$s",
+  "walkie.mekanismadditions.channel.change": "Kanaal gewijzigd in: %1$s",
   "walkie.mekanismadditions.disabled": "Spraakserver uitgeschakeld."
 }
