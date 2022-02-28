@@ -305,5 +305,7 @@
   "item.mekanismadditions.yellow_balloon": "Жёлтый воздушный шар",
   "key.mekanismadditions.voice": "Голос",
   "sound_event.mekanismadditions.entity.balloon.pop": "Лопающийся воздушный шар",
+  "walkie.mekanismadditions.channel": "Канал: %1$s",
+  "walkie.mekanismadditions.channel.change": "Канал изменен на: %1$s",
   "walkie.mekanismadditions.disabled": "Голосовой сервер отключен."
 }
