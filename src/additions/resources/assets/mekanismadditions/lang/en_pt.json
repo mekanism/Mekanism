@@ -87,5 +87,7 @@
   "item.mekanismadditions.purple_balloon": "Flying Ball o' Purple",
   "item.mekanismadditions.red_balloon": "Flying Ball o' Red",
   "item.mekanismadditions.white_balloon": "Flying Ball o' White",
-  "item.mekanismadditions.yellow_balloon": "Flying Ball o' Yellow"
+  "item.mekanismadditions.yellow_balloon": "Flying Ball o' Yellow",
+  "walkie.mekanismadditions.channel": "Channel: %1$s",
+  "walkie.mekanismadditions.channel.change": "Channel changed t': %1$s"
 }
