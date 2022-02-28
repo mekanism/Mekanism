@@ -266,5 +266,7 @@
   "item.mekanismadditions.yellow_balloon": "Balon galben",
   "key.mekanismadditions.voice": "Voce",
   "sound_event.mekanismadditions.entity.balloon.pop": "Balon se sparge",
+  "walkie.mekanismadditions.channel": "Canal: %1$s",
+  "walkie.mekanismadditions.channel.change": "Canal schimbat în: %1$s",
   "walkie.mekanismadditions.disabled": "Server de voce dezactivat."
 }
