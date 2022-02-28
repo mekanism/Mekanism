@@ -162,5 +162,6 @@
   "item.mekanismadditions.purple_balloon": "Lilla Ballon",
   "item.mekanismadditions.red_balloon": "Rød Ballon",
   "item.mekanismadditions.white_balloon": "Hvid Ballon",
-  "item.mekanismadditions.yellow_balloon": "Gul Ballon"
+  "item.mekanismadditions.yellow_balloon": "Gul Ballon",
+  "walkie.mekanismadditions.channel": "Kanal: %1$s"
 }
