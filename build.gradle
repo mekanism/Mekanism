@@ -2,24 +2,11 @@ defaultTasks 'fullBuild'
 
 buildscript {
   repositories {
-      maven { url = "https://maven.thorfusion.com/artifactory/maven/" }
       maven {
-          name = "forge"
-          url = "https://maven.thorfusion.com/artifactory/forge/"
+          name = "central"
+          url = "https://maven.thorfusion.com/artifactory/central/"
       }
-      maven {
-          name = "covers"
-          url = "https://maven.thorfusion.com/artifactory/covers1624/"
-      }
-      maven {
-          name = "sonatype"
-          url = "https://maven.thorfusion.com/artifactory/sonatype/"
-      }
-      maven {
-          name = "jitpack"
-          url = "https://maven.thorfusion.com/artifactory/jitpack/"
-      }
-    }
+  }
     dependencies {
         classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
             changing = true
@@ -29,12 +16,10 @@ buildscript {
 
 repositories {
     maven {
-        name 'ForgeFS'
-        url 'https://maven.thorfusion.com/artifactory/forge/'
+        name 'central'
+        url 'https://maven.thorfusion.com/artifactory/central/'
     }
-    flatDir {
-        dirs 'libs'
-    }
+
 }
 
 apply plugin: 'idea'
