@@ -2,22 +2,22 @@ defaultTasks 'fullBuild'
 
 buildscript {
   repositories {
-      maven { url = "https://repo1.maven.org/maven2/" }
+      maven { url = "https://maven.thorfusion.com/artifactory/maven/" }
       maven {
           name = "forge"
-          url = "https://maven.minecraftforge.net"
+          url = "https://maven.thorfusion.com/artifactory/forge/"
       }
       maven {
           name = "covers"
-          url = "https://nexus.covers1624.net/repository/maven-hosted/"
+          url = "https://maven.thorfusion.com/artifactory/covers1624/"
       }
       maven {
           name = "sonatype"
-          url = "https://oss.sonatype.org/content/repositories/snapshots/"
+          url = "https://maven.thorfusion.com/artifactory/sonatype/"
       }
       maven {
           name = "jitpack"
-          url = "https://jitpack.io/"
+          url = "https://maven.thorfusion.com/artifactory/jitpack/"
       }
     }
     dependencies {
@@ -29,30 +29,14 @@ buildscript {
 
 repositories {
     maven {
-        name 'CB Maven FS'
-        url "https://chickenbones.net/maven/"
-    }
-    maven {
         name 'ForgeFS'
-        url 'https://maven.minecraftforge.net/'
+        url 'https://maven.thorfusion.com/artifactory/forge/'
     }
     flatDir {
         dirs 'libs'
     }
 }
-/*
-allprojects {
-    repositories {
-        all { ArtifactRepository repo ->
-            if (repo instanceof MavenArtifactRepository) {
-                if (repo.url.toString().startsWith("http://repo1.maven.org/maven2")) {
-                    repo.url = repo.url.toString().replace("http://", "https://")
-                }
-            }
-        }
-    }
-}
-*/
+
 apply plugin: 'idea'
 
 idea {
