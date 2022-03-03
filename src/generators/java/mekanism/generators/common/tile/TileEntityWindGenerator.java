@@ -87,8 +87,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             BlockPos top = getBlockPos().above(4);
             if (level.getFluidState(top).isEmpty() && level.canSeeSky(top)) {
                 //Validate it isn't fluid logged to help try and prevent https://github.com/mekanism/Mekanism/issues/7344
-                int minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
-                int maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
+                //Clamp the height limits as the logical bounds of the world
+                int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), level.getMinBuildHeight());
+                int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), level.dimensionType().logicalHeight());
                 float clampedY = Math.min(maxY, Math.max(minY, top.getY()));
                 FloatingLong minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
                 FloatingLong maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
