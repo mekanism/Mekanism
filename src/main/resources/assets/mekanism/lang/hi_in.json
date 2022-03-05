@@ -1,4 +1,5 @@
 {
+  "assemblicator.mekanism.auto_mode_toggle": "स्वचालित: %1$s",
   "assemblicator.mekanism.craft_available": "उपलब्ध चीज़ें बनाइए",
   "assemblicator.mekanism.craft_single": "एक चीज़ बनाइए",
   "key.mekanism.description": "Show description",
