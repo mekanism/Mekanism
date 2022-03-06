@@ -95,6 +95,7 @@
   "fission.mekanismgenerators.port_mode_output_coolant": "saída de refrigeração",
   "fission.mekanismgenerators.port_mode_output_waste": "saída de resíduos",
   "fission.mekanismgenerators.rate_limit": "Taxa Limite: %1$s mB/t",
+  "fission.mekanismgenerators.scram": "Desl. Emerg.",
   "fission.mekanismgenerators.set_rate_limit": "Configurar Taxa Limite:",
   "fission.mekanismgenerators.stats": "Estatísticas do Reator da Fissão",
   "fission.mekanismgenerators.surface_area": "Área de Superfície do Combustível: %1$s m2",
