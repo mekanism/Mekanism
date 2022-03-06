@@ -1042,7 +1042,7 @@
   "logistical_sorter.mekanism.auto_eject": "Automático:",
   "logistical_sorter.mekanism.auto_eject.description": "Ejeta itens não filtrados automaticamente para inventário conectados, usando a configuração padrão.",
   "logistical_sorter.mekanism.default": "Padrão:",
-  "logistical_sorter.mekanism.round_robin": "RR: ",
+  "logistical_sorter.mekanism.round_robin": "RR:",
   "logistical_sorter.mekanism.round_robin.description": "Rotaciona entre todos os inventários conectados quando envia itens.",
   "logistical_sorter.mekanism.single_item": "Singular:",
   "logistical_sorter.mekanism.single_item.description": "Envia um único item em vez de uma pilha inteira por vez (sobrepõe os filtros mín. e máx. colocados na PilhaItem).",
