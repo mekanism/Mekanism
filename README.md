@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.com/mekanism/Mekanism.svg?branch=1.16.x)](https://travis-ci.com/mekanism/Mekanism)
+[![Build Status](https://travis-ci.com/mekanism/Mekanism.svg?branch=1.16.x)](https://app.travis-ci.com/github/mekanism/Mekanism)
 
 ![Mekanism Logo](logo.png)
 
