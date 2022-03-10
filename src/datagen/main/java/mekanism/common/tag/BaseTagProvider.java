@@ -31,11 +31,8 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.Tag.Named;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -60,9 +57,6 @@ public abstract class BaseTagProvider implements DataProvider {
         addTagType(TagType.BLOCK);
         addTagType(TagType.ENTITY_TYPE);
         addTagType(TagType.FLUID);
-        addTagType(TagType.ENCHANTMENT);
-        addTagType(TagType.POTION);
-        addTagType(TagType.MOB_EFFECTS);
         addTagType(TagType.BLOCK_ENTITY_TYPE);
         addTagType(TagType.GAS);
         addTagType(TagType.INFUSE_TYPE);
@@ -132,7 +126,7 @@ public abstract class BaseTagProvider implements DataProvider {
                 @Nonnull
                 @Override
                 public String getName() {
-                    return tagType.getName() + " Tags: " + modid;
+                    return tagType.name() + " Tags: " + modid;
                 }
             }.run(cache);
         }
@@ -170,18 +164,6 @@ public abstract class BaseTagProvider implements DataProvider {
         return getBuilder(TagType.FLUID, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Enchantment> getEnchantmentBuilder(Named<Enchantment> tag) {
-        return getBuilder(TagType.ENCHANTMENT, tag);
-    }
-
-    protected ForgeRegistryTagBuilder<Potion> getPotionBuilder(Named<Potion> tag) {
-        return getBuilder(TagType.POTION, tag);
-    }
-
-    protected ForgeRegistryTagBuilder<MobEffect> getMobEffectBuilder(Named<MobEffect> tag) {
-        return getBuilder(TagType.MOB_EFFECTS, tag);
-    }
-
     protected ForgeRegistryTagBuilder<BlockEntityType<?>> getTileEntityTypeBuilder(Named<BlockEntityType<?>> tag) {
         return getBuilder(TagType.BLOCK_ENTITY_TYPE, tag);
     }
@@ -203,17 +185,11 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected void addToTag(Named<Item> tag, ItemLike... itemProviders) {
-        ForgeRegistryTagBuilder<Item> tagBuilder = getItemBuilder(tag);
-        for (ItemLike itemProvider : itemProviders) {
-            tagBuilder.add(itemProvider.asItem());
-        }
+        getItemBuilder(tag).addTyped(ItemLike::asItem, itemProviders);
     }
 
     protected void addToTag(Named<Block> tag, IBlockProvider... blockProviders) {
-        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
-        for (IBlockProvider blockProvider : blockProviders) {
-            tagBuilder.add(blockProvider.getBlock());
-        }
+        getBlockBuilder(tag).addTyped(IBlockProvider::getBlock, blockProviders);
     }
 
     @SafeVarargs
@@ -257,10 +233,7 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected void addToTag(Named<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
-        ForgeRegistryTagBuilder<EntityType<?>> tagBuilder = getEntityTypeBuilder(tag);
-        for (IEntityTypeProvider entityTypeProvider : entityTypeProviders) {
-            tagBuilder.add(entityTypeProvider.getEntityType());
-        }
+        getEntityTypeBuilder(tag).addTyped(IEntityTypeProvider::getEntityType, entityTypeProviders);
     }
 
     protected void addToTag(Named<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
@@ -271,10 +244,7 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected void addToTag(Named<BlockEntityType<?>> tag, TileEntityTypeRegistryObject<?>... tileEntityTypeRegistryObjects) {
-        ForgeRegistryTagBuilder<BlockEntityType<?>> tagBuilder = getTileEntityTypeBuilder(tag);
-        for (TileEntityTypeRegistryObject<?> tileEntityTypeRO : tileEntityTypeRegistryObjects) {
-            tagBuilder.add(tileEntityTypeRO.get());
-        }
+        getTileEntityTypeBuilder(tag).add(tileEntityTypeRegistryObjects);
     }
 
     protected void addToTag(Named<Gas> tag, IGasProvider... gasProviders) {
@@ -295,8 +265,6 @@ public abstract class BaseTagProvider implements DataProvider {
 
     @SafeVarargs
     protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(ForgeRegistryTagBuilder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
-        for (IChemicalProvider<CHEMICAL> provider : providers) {
-            tagBuilder.add(provider.getChemical());
-        }
+        tagBuilder.addTyped(IChemicalProvider::getChemical, providers);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.tag;
 
+import biomesoplenty.api.entity.BOPEntities;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import potionstudios.byg.common.entity.BYGEntities;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
@@ -126,6 +128,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               EntityType.HOPPER_MINECART,
               EntityType.SPAWNER_MINECART,
               EntityType.TNT_MINECART
+        ).addOptional(
+              BOPEntities.BOAT,
+              BYGEntities.BOAT
         );
     }
 
@@ -433,10 +438,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER, Blocks.LIME_CONCRETE_POWDER, Blocks.PINK_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER,
               Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER,
               Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
-        ForgeRegistryTagBuilder<Item> bannerBuilder = getItemBuilder(MekanismTags.Items.COLORABLE_BANNERS);
-        for (DyeColor color : DyeColor.values()) {
-            bannerBuilder.add(BannerBlock.byColor(color).asItem());
-        }
+        getItemBuilder(MekanismTags.Items.COLORABLE_BANNERS).addTyped(color -> BannerBlock.byColor(color).asItem(), DyeColor.values());
     }
 
     private void addFluids() {

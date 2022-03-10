@@ -7,6 +7,14 @@
     "minecraft:furnace_minecart",
     "minecraft:hopper_minecart",
     "minecraft:spawner_minecart",
-    "minecraft:tnt_minecart"
+    "minecraft:tnt_minecart",
+    {
+      "id": "biomesoplenty:boat",
+      "required": false
+    },
+    {
+      "id": "byg:boat",
+      "required": false
+    }
   ]
 }
