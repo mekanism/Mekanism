@@ -905,6 +905,7 @@
   "miner.mekanism.visuals.too_big": "Радиус слишком велик для визуализации",
   "miner.mekanism.well": "Всё хорошо!",
   "module.mekanism.attack_amplification_unit": "Модуль: Урон",
+  "module.mekanism.bonus_attack_damage": "Дополнительный урон от атаки",
   "module.mekanism.breathing.held": "Наполнять предмет в руках",
   "module.mekanism.charge_distribution_unit": "Модуль: Распределение энергии",
   "module.mekanism.charge_inventory": "Зарядка инвентаря",
