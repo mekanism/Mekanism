@@ -18,9 +18,11 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,6 +38,7 @@ public class MekanismTags {
     public static void init() {
         Items.init();
         Blocks.init();
+        Entities.init();
         Fluids.init();
         Gases.init();
         InfuseTypes.init();
@@ -235,6 +238,21 @@ public class MekanismTags {
 
         private static Named<Block> tag(String name) {
             return BlockTags.bind(Mekanism.rl(name).toString());
+        }
+    }
+
+    public static class Entities {
+
+        private static void init() {
+        }
+
+        private Entities() {
+        }
+
+        public static final Named<EntityType<?>> HURTABLE_VEHICLES = tag("hurtable_vehicles");
+
+        private static Named<EntityType<?>> tag(String name) {
+            return EntityTypeTags.bind(Mekanism.rl(name).toString());
         }
     }
 

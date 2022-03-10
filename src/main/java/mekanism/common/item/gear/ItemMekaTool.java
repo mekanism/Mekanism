@@ -42,6 +42,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -172,6 +173,25 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
+    public boolean onLeftClickEntity(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull Entity target) {
+        //If it is a vehicle that we want to damage
+        if (target.getType().is(MekanismTags.Entities.HURTABLE_VEHICLES)) {
+            if (target.isAttackable() && !target.skipAttackInteraction(player)) {
+                int maxDamage = MekanismConfig.gear.mekaToolBaseDamage.get();
+                IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
+                if (attackAmplificationUnit != null && attackAmplificationUnit.isEnabled()) {
+                    maxDamage += attackAmplificationUnit.getCustomInstance().getDamage();
+                }
+                //Always apply max damage to vehicles that can be hurt regardless of energy and don't actually
+                target.hurt(DamageSource.playerAttack(player), maxDamage);
+                //Note: We fall through and call super regardless so any other processing that may need to happen, happens,
+                // this is similar to how we return super from hurtEnemy
+            }
+        }
+        return super.onLeftClickEntity(stack, player, target);
+    }
+
+    @Override
     public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity target, @Nonnull LivingEntity attacker) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
@@ -179,7 +199,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         int minDamage = MekanismConfig.gear.mekaToolBaseDamage.get(), maxDamage = minDamage;
         IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
         if (attackAmplificationUnit != null && attackAmplificationUnit.isEnabled()) {
-            maxDamage = attackAmplificationUnit.getCustomInstance().getDamage();
+            maxDamage += attackAmplificationUnit.getCustomInstance().getDamage();
             if (maxDamage > minDamage) {
                 energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply((maxDamage - minDamage) / 4F);
             }
@@ -200,7 +220,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         if (energyContainer != null && !energy.isZero()) {
             energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
         }
-        return false;
+        return super.hurtEnemy(stack, target, attacker);
     }
 
     @Override

@@ -1246,7 +1246,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_HANDLE_MODE_CHANGE, "Handle Mode Key");
         add(MekanismLang.MODULE_RENDER_HUD, "Show in HUD");
         add(MekanismLang.MODULE_MODE, "Mode");
-        add(MekanismLang.MODULE_ATTACK_DAMAGE, "Attack Damage");
+        add(MekanismLang.MODULE_BONUS_ATTACK_DAMAGE, "Bonus Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_JUMP_BOOST, "Jump Boost");
         add(MekanismLang.MODULE_STEP_ASSIST, "Step Assist");

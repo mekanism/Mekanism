@@ -271,7 +271,7 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageTeleport", FloatingLong.createConst(1_000));
         mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the Meka-Tool.")
               .define("maxTeleportReach", 100));
-        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Damage applied by Meka-Tool without using any energy.")
+        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base damage applied by the Meka-Tool without using any energy.")
               .define("baseDamage", 4));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the Meka-Tool with energy but without any upgrades.")
               .define("baseEfficiency", 4D));

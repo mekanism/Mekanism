@@ -46,6 +46,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -106,6 +107,20 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
+    public boolean onLeftClickEntity(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull Entity target) {
+        //If it is a vehicle that we want to damage
+        if (target.getType().is(MekanismTags.Entities.HURTABLE_VEHICLES)) {
+            if (target.isAttackable() && !target.skipAttackInteraction(player)) {
+                //Always apply max damage to vehicles that can be hurt regardless of energy and don't actually
+                target.hurt(DamageSource.playerAttack(player), MekanismConfig.gear.disassemblerMaxDamage.get());
+                //Note: We fall through and call super regardless so any other processing that may need to happen, happens,
+                // this is similar to how we return super from hurtEnemy
+            }
+        }
+        return super.onLeftClickEntity(stack, player, target);
+    }
+
+    @Override
     public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity target, @Nonnull LivingEntity attacker) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
@@ -126,7 +141,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         if (energyContainer != null && !energy.isZero()) {
             energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
         }
-        return false;
+        return super.hurtEnemy(stack, target, attacker);
     }
 
     @Override

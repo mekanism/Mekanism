@@ -1084,7 +1084,7 @@
   "miner.mekanism.visuals.too_big": "Radius too big to display visuals",
   "miner.mekanism.well": "All is well!",
   "module.mekanism.attack_amplification_unit": "Attack Amplification Unit",
-  "module.mekanism.attack_damage": "Attack Damage",
+  "module.mekanism.bonus_attack_damage": "Bonus Attack Damage",
   "module.mekanism.breathing.held": "Fill Held",
   "module.mekanism.charge_distribution_unit": "Charge Distribution Unit",
   "module.mekanism.charge_inventory": "Charge Inventory",

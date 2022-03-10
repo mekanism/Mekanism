@@ -117,6 +117,16 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS, MekanismEntityTypes.ROBIT);
         addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
         addToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
+        getBuilder(TagType.ENTITY_TYPE, MekanismTags.Entities.HURTABLE_VEHICLES).add(
+              EntityType.BOAT,
+              EntityType.MINECART,
+              EntityType.CHEST_MINECART,
+              EntityType.COMMAND_BLOCK_MINECART,
+              EntityType.FURNACE_MINECART,
+              EntityType.HOPPER_MINECART,
+              EntityType.SPAWNER_MINECART,
+              EntityType.TNT_MINECART
+        );
     }
 
     private void addProcessedResources() {
