@@ -1084,6 +1084,7 @@
   "miner.mekanism.visuals.too_big": "範囲を可視化するには半径が大きすぎます",
   "miner.mekanism.well": "順調です！",
   "module.mekanism.attack_amplification_unit": "攻撃力増強ユニット",
+  "module.mekanism.bonus_attack_damage": "攻撃力ボーナス",
   "module.mekanism.breathing.held": "満充填しました",
   "module.mekanism.charge_distribution_unit": "電力分配ユニット",
   "module.mekanism.charge_inventory": "インベントリへの充電",
