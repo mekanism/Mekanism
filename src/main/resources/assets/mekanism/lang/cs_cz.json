@@ -347,7 +347,6 @@
   "key.mekanism.module_tweaker": "Ladič modulů",
   "logistical_sorter.mekanism.auto_eject.description": "Automaticky vyprazdňuje nefiltrované položky do připojených inventářů pomocí výchozí konfigurace.",
   "module.mekanism.attack_amplification_unit": "Jednotka Násobení Útoku",
-  "module.mekanism.attack_damage": "Síla útoku",
   "module.mekanism.charge_distribution_unit": "Jednotka Rozložení Nabití",
   "module.mekanism.charge_inventory": "Nabít Věci v inventáři",
   "module.mekanism.charge_suit": "Nabít oblek",
