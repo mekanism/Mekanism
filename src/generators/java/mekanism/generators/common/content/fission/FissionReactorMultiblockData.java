@@ -33,6 +33,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -44,7 +45,6 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -129,7 +129,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
-              fluid -> fluid.getFluid().is(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
+              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()) && gasCoolantTank.isEmpty(), null);
         fluidTanks.add(fluidCoolantTank);
         gasCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> (long) getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),

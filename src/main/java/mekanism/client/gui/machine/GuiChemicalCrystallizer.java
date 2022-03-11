@@ -89,7 +89,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
             if (prevSlurry != inputSlurry) {
                 prevSlurry = inputSlurry;
                 iterStacks.clear();
-                if (!prevSlurry.isEmptyType() && !prevSlurry.is(MekanismTags.Slurries.DIRTY)) {
+                if (!prevSlurry.isEmptyType() && !MekanismTags.Slurries.DIRTY_LOOKUP.contains(prevSlurry)) {
                     TagKey<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
                         for (Item ore : TagUtils.tag(ForgeRegistries.ITEMS, oreTag)) {

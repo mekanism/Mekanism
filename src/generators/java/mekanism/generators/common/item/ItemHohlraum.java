@@ -84,6 +84,6 @@ public class ItemHohlraum extends Item {
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(MekanismGeneratorsConfig.generators.hohlraumFillRate,
               MekanismGeneratorsConfig.generators.hohlraumMaxGas, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL)));
+              GeneratorTags.Gases.FUSION_FUEL_LOOKUP::contains));
     }
 }

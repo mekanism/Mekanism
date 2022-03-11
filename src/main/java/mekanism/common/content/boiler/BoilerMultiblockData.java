@@ -27,6 +27,7 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -34,7 +35,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
@@ -107,7 +107,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> superheatedCoolantCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
               gas -> gas.has(HeatedCoolant.class));
-        waterTank = MultiblockFluidTank.input(this, tile, () -> waterTankCapacity, fluid -> fluid.getFluid().is(FluidTags.WATER));
+        waterTank = MultiblockFluidTank.input(this, tile, () -> waterTankCapacity, fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()));
         fluidTanks.add(waterTank);
         steamTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> steamTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,

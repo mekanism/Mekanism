@@ -26,6 +26,7 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -34,7 +35,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
@@ -93,7 +93,7 @@ public class TurbineMultiblockData extends MultiblockData {
         gasTanks.add(gasTank = new TurbineGasTank(this, tile));
         ventTank = VariableCapacityFluidTank.create(() -> !isFormed() ? 1_000 : condensers * MekanismGeneratorsConfig.generators.condenserRate.get(),
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), BasicFluidTank.internalOnly,
-              fluid -> fluid.getFluid().is(FluidTags.WATER), null);
+              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), null);
         ventTanks = Collections.singletonList(ventTank);
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity,
               automationType -> automationType != AutomationType.EXTERNAL || isFormed(), BasicEnergyContainer.internalOnly, null);

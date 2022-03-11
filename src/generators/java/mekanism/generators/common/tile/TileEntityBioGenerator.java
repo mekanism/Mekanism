@@ -52,7 +52,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(bioFuelTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> fluidStack.getFluid().is(GeneratorTags.Fluids.BIOETHANOL), listener),
+        builder.addTank(bioFuelTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> GeneratorTags.Fluids.BIOETHANOL_LOOKUP.contains(fluidStack.getFluid()), listener),
               RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }

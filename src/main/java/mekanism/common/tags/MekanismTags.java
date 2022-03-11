@@ -281,6 +281,9 @@ public class MekanismTags {
         public static final TagKey<Fluid> SULFURIC_ACID = forgeTag("sulfuric_acid");
         public static final TagKey<Fluid> HYDROFLUORIC_ACID = forgeTag("hydrofluoric_acid");
 
+        public static final LazyTagLookup<Fluid> WATER_LOOKUP = LazyTagLookup.create(ForgeRegistries.FLUIDS, FluidTags.WATER);
+        public static final LazyTagLookup<Fluid> LAVA_LOOKUP = LazyTagLookup.create(ForgeRegistries.FLUIDS, FluidTags.LAVA);
+
         private static TagKey<Fluid> forgeTag(String name) {
             return FluidTags.create(new ResourceLocation("forge", name));
         }
@@ -296,6 +299,7 @@ public class MekanismTags {
 
         public static final TagKey<Gas> WATER_VAPOR = tag("water_vapor");
         public static final TagKey<Gas> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
+        public static final LazyTagLookup<Gas> WASTE_BARREL_DECAY_LOOKUP = LazyTagLookup.create(ChemicalTags.GAS, WASTE_BARREL_DECAY_BLACKLIST);
 
         private static TagKey<Gas> tag(String name) {
             return ChemicalTags.GAS.tag(Mekanism.rl(name));
@@ -333,6 +337,7 @@ public class MekanismTags {
         }
 
         public static final TagKey<Slurry> DIRTY = tag("dirty");
+        public static final LazyTagLookup<Slurry> DIRTY_LOOKUP = LazyTagLookup.create(ChemicalTags.SLURRY, DIRTY);
         public static final TagKey<Slurry> CLEAN = tag("clean");
 
         private static TagKey<Slurry> tag(String name) {

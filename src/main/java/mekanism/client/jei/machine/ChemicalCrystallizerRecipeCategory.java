@@ -102,7 +102,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
             Set<ITag<Item>> tags = new HashSet<>();
             for (SlurryStack slurryStack : ingredient.getRepresentations()) {
                 Slurry slurry = slurryStack.getType();
-                if (!slurry.is(MekanismTags.Slurries.DIRTY)) {
+                if (!MekanismTags.Slurries.DIRTY_LOOKUP.contains(slurry)) {
                     TagKey<Item> oreTag = slurry.getOreTag();
                     if (oreTag != null) {
                         tags.add(TagUtils.tag(ForgeRegistries.ITEMS, oreTag));

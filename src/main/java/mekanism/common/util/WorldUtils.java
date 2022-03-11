@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -444,7 +445,7 @@ public class WorldUtils {
     private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack) {
         SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound(world, pos);
         if (soundevent == null) {
-            soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
+            soundevent = MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         }
         world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
