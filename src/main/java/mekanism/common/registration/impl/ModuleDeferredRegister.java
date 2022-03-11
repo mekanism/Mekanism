@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.UnaryOperator;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ModuleDataBuilder;
@@ -11,7 +12,7 @@ import net.minecraftforge.common.util.NonNullSupplier;
 public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?>> {
 
     public ModuleDeferredRegister(String modid) {
-        super(modid, ModuleData.getClassWithGeneric());
+        super(modid, MekanismAPI.moduleRegistryName());
     }
 
     public ModuleRegistryObject<?> registerMarker(String name, IItemProvider itemProvider, UnaryOperator<ModuleDataBuilder<?>> builderModifier) {

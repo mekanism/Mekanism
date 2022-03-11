@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
@@ -10,7 +11,7 @@ import mekanism.common.registration.WrappedDeferredRegister;
 public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
 
     public GasDeferredRegister(String modid) {
-        super(modid, Gas.class);
+        super(modid, MekanismAPI.gasRegistryName());
     }
 
     public GasRegistryObject<Gas> register(IChemicalConstant constants, ChemicalAttribute... attributes) {

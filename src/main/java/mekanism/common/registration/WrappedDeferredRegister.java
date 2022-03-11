@@ -3,6 +3,8 @@ package mekanism.common.registration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -21,8 +23,8 @@ public class WrappedDeferredRegister<T extends IForgeRegistryEntry<T>> {
     /**
      * @apiNote For use with custom registries
      */
-    protected WrappedDeferredRegister(String modid, Class<T> base) {
-        internal = DeferredRegister.create(base, modid);
+    protected WrappedDeferredRegister(String modid, ResourceKey<? extends Registry<T>> registryName) {
+        internal = DeferredRegister.create(registryName, modid);
     }
 
     protected <I extends T, W extends WrappedRegistryObject<I>> W register(String name, Supplier<? extends I> sup, Function<RegistryObject<I>, W> objectWrapper) {
@@ -32,15 +34,15 @@ public class WrappedDeferredRegister<T extends IForgeRegistryEntry<T>> {
     /**
      * Only call this from mekanism and for custom registries
      */
-    public void createAndRegister(IEventBus bus, String name) {
-        createAndRegister(bus, name, UnaryOperator.identity());
+    public void createAndRegister(IEventBus bus, Class<T> type) {
+        createAndRegister(bus, type, UnaryOperator.identity());
     }
 
     /**
      * Only call this from mekanism and for custom registries
      */
-    public void createAndRegister(IEventBus bus, String name, UnaryOperator<RegistryBuilder<T>> builder) {
-        internal.makeRegistry(name, () -> builder.apply(new RegistryBuilder<>()));
+    public void createAndRegister(IEventBus bus, Class<T> type, UnaryOperator<RegistryBuilder<T>> builder) {
+        internal.makeRegistry(type, () -> builder.apply(new RegistryBuilder<>()));
         register(bus);
     }
 

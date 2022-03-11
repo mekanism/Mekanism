@@ -12,25 +12,22 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.ITagManager;
 
 public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
-    public static final ChemicalTags<Gas> GAS = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "gas"), MekanismAPI::gasRegistry);
-    public static final ChemicalTags<InfuseType> INFUSE_TYPE = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type"), MekanismAPI::infuseTypeRegistry);
-    public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment"), MekanismAPI::pigmentRegistry);
-    public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "slurry"), MekanismAPI::slurryRegistry);
+    public static final ChemicalTags<Gas> GAS = new ChemicalTags<>(MekanismAPI::gasRegistryName, MekanismAPI::gasRegistry);
+    public static final ChemicalTags<InfuseType> INFUSE_TYPE = new ChemicalTags<>(MekanismAPI::infuseTypeRegistryName, MekanismAPI::infuseTypeRegistry);
+    public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>(MekanismAPI::pigmentRegistryName, MekanismAPI::pigmentRegistry);
+    public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>(MekanismAPI::slurryRegistryName, MekanismAPI::slurryRegistry);
 
     private final Supplier<IForgeRegistry<CHEMICAL>> registrySupplier;
-    private final Lazy<ResourceKey<? extends Registry<CHEMICAL>>> registryKey;
-    private final ResourceLocation registryName;
+    private final Supplier<ResourceKey<? extends Registry<CHEMICAL>>> registryKeySupplier;
 
-    private ChemicalTags(ResourceLocation registryName, Supplier<IForgeRegistry<CHEMICAL>> registrySupplier) {
+    private ChemicalTags(Supplier<ResourceKey<? extends Registry<CHEMICAL>>> registryKeySupplier, Supplier<IForgeRegistry<CHEMICAL>> registrySupplier) {
         this.registrySupplier = registrySupplier;
-        this.registryName = registryName;
-        this.registryKey = Lazy.of(() -> ResourceKey.createRegistryKey(this.registryName));
+        this.registryKeySupplier = registryKeySupplier;
     }
 
     /**
@@ -44,7 +41,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
      */
     public TagKey<CHEMICAL> tag(ResourceLocation name) {
         return getManager().map(manager -> manager.createTagKey(name))
-              .orElseGet(() -> TagKey.create(registryKey.get(), name));
+              .orElseGet(() -> TagKey.create(registryKeySupplier.get(), name));
     }
 
     /**

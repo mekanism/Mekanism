@@ -9,11 +9,12 @@ import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraftforge.registries.DataSerializerEntry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class DataSerializerDeferredRegister extends WrappedDeferredRegister<DataSerializerEntry> {
 
     public DataSerializerDeferredRegister(String modid) {
-        super(modid, DataSerializerEntry.class);
+        super(modid, ForgeRegistries.Keys.DATA_SERIALIZERS);
     }
 
     public <T> DataSerializerRegistryObject<T> registerSimple(String name, BiConsumer<FriendlyByteBuf, T> writer, Function<FriendlyByteBuf, T> reader) {

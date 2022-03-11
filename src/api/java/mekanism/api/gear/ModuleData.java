@@ -21,15 +21,6 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 @MethodsReturnNonnullByDefault
 public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegistryEntry<ModuleData<?>> implements IHasTranslationKey, IModuleDataProvider<MODULE> {
 
-    /**
-     * Helper method to get the Class "with" the generic for use in passing to {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} as just using
-     * {@code ModuleData.class} doesn't "work" as it doesn't have the generic that is expected based on what is passed as the forge registry entry.
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Class<ModuleData<?>> getClassWithGeneric() {
-        return (Class) ModuleData.class;
-    }
-
     private final NonNullSupplier<MODULE> supplier;
     private final IItemProvider itemProvider;
     private final int maxStackSize;

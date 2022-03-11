@@ -24,6 +24,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
@@ -226,12 +227,13 @@ public class Mekanism {
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
-        MekanismGases.GASES.createAndRegister(modEventBus, "gas", builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type", builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment", builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry", builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, "robit_skin", builder -> builder.setDefaultKey(rl("robit")));
-        MekanismModules.MODULES.createAndRegister(modEventBus, "module");
+        MekanismGases.GASES.createAndRegister(modEventBus, Gas.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
+        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, InfuseType.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
+        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, Pigment.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
+        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, Slurry.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
+        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, RobitSkin.class, builder -> builder.setDefaultKey(rl("robit")));
+        //noinspection rawtypes,unchecked
+        MekanismModules.MODULES.createAndRegister(modEventBus, (Class) ModuleData.class);
         modEventBus.addGenericListener(Gas.class, this::registerGases);
         modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
         modEventBus.addGenericListener(Pigment.class, this::registerPigments);
