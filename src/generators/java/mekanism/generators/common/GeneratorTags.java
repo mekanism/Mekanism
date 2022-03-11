@@ -3,8 +3,9 @@ package mekanism.generators.common;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.common.Mekanism;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
 public class GeneratorTags {
@@ -28,13 +29,13 @@ public class GeneratorTags {
         private Fluids() {
         }
 
-        public static final Named<Fluid> BIOETHANOL = forgeTag("bioethanol");
-        public static final Named<Fluid> DEUTERIUM = forgeTag("deuterium");
-        public static final Named<Fluid> FUSION_FUEL = forgeTag("fusion_fuel");
-        public static final Named<Fluid> TRITIUM = forgeTag("tritium");
+        public static final TagKey<Fluid> BIOETHANOL = forgeTag("bioethanol");
+        public static final TagKey<Fluid> DEUTERIUM = forgeTag("deuterium");
+        public static final TagKey<Fluid> FUSION_FUEL = forgeTag("fusion_fuel");
+        public static final TagKey<Fluid> TRITIUM = forgeTag("tritium");
 
-        private static Named<Fluid> forgeTag(String name) {
-            return FluidTags.bind("forge:" + name);
+        private static TagKey<Fluid> forgeTag(String name) {
+            return FluidTags.create(new ResourceLocation("forge", name));
         }
     }
 
@@ -46,11 +47,11 @@ public class GeneratorTags {
         private Gases() {
         }
 
-        public static final Named<Gas> DEUTERIUM = tag("deuterium");
-        public static final Named<Gas> TRITIUM = tag("tritium");
-        public static final Named<Gas> FUSION_FUEL = tag("fusion_fuel");
+        public static final TagKey<Gas> DEUTERIUM = tag("deuterium");
+        public static final TagKey<Gas> TRITIUM = tag("tritium");
+        public static final TagKey<Gas> FUSION_FUEL = tag("fusion_fuel");
 
-        private static Named<Gas> tag(String name) {
+        private static TagKey<Gas> tag(String name) {
             return ChemicalTags.GAS.tag(Mekanism.rl(name));
         }
     }

@@ -552,12 +552,10 @@ public final class MekanismUtils {
     public static boolean canUseAsWrench(ItemStack stack) {
         if (stack.isEmpty()) {
             return false;
-        }
-        Item item = stack.getItem();
-        if (item instanceof ItemConfigurator configurator) {
+        } else if (stack.getItem() instanceof ItemConfigurator configurator) {
             return configurator.getMode(stack) == ConfiguratorMode.WRENCH;
         }
-        return MekanismTags.Items.CONFIGURATORS.contains(item);
+        return stack.is(MekanismTags.Items.CONFIGURATORS);
     }
 
     @Nonnull
@@ -733,7 +731,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing(net.minecraft.tags.Tag, double)} except calculates if a given
+     * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing(net.minecraft.tags.TagKey, double)} except calculates if a given
      * portion of the player is in the fluids.
      */
     public static Map<Fluid, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {

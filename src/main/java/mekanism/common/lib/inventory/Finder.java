@@ -27,7 +27,7 @@ public interface Finder {
     }
 
     static Finder tag(String tagName) {
-        return stack -> !stack.isEmpty() && stack.getItem().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
+        return stack -> !stack.isEmpty() && stack.getTags().anyMatch(tag -> WildcardMatcher.matches(tagName, tag));
     }
 
     static Finder modID(String modID) {

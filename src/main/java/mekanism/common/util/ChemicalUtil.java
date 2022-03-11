@@ -260,7 +260,7 @@ public class ChemicalUtil {
     public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical<?> chemical, boolean advanced) {
         if (!chemical.isEmptyType()) {
             addAttributeTooltips(tooltips, chemical);
-            if (chemical instanceof Gas gas && gas.isIn(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST)) {
+            if (chemical instanceof Gas gas && gas.is(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST)) {
                 tooltips.add(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
             }
             if (advanced) {

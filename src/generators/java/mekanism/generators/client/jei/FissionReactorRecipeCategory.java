@@ -24,6 +24,7 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -40,6 +41,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIRecipe> {
 
@@ -66,7 +68,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
 
     private List<FluidStack> getWaterInput(FissionJEIRecipe recipe) {
         int amount = MathUtils.clampToInt(recipe.outputCoolant.getAmount());
-        return FluidTags.WATER.getValues().stream().map(fluid -> new FluidStack(fluid, amount)).toList();
+        return TagUtils.tag(ForgeRegistries.FLUIDS, FluidTags.WATER).stream().map(fluid -> new FluidStack(fluid, amount)).toList();
     }
 
     @Nonnull

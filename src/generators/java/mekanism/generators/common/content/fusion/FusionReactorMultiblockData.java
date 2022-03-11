@@ -126,9 +126,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
         plasmaTemperature = biomeAmbientTemp;
-        gasTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM)));
-        gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM)));
-        gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
+        gasTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.is(GeneratorTags.Gases.DEUTERIUM)));
+        gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.is(GeneratorTags.Gases.TRITIUM)));
+        gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL)));
         gasTanks.add(steamTank = MultiblockChemicalTankBuilder.GAS.output(this, tile, this::getMaxSteam, gas -> gas == MekanismGases.STEAM.getChemical()));
         fluidTanks.add(waterTank = MultiblockFluidTank.input(this, tile, this::getMaxWater, fluid -> fluid.getFluid().is(FluidTags.WATER)));
         energyContainers.add(energyContainer = BasicEnergyContainer.output(MAX_ENERGY, this));

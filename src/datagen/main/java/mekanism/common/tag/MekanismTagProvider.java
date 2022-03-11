@@ -30,12 +30,14 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tags.TagUtils;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -46,12 +48,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import potionstudios.byg.common.entity.BYGEntities;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
-    public static final Named<EntityType<?>> PVI_COMPAT = EntityTypeTags.bind("per-viam-invenire:replace_vanilla_navigator");
-    public static final Named<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.bind("create:no_infinite_draining");
+    public static final TagKey<EntityType<?>> PVI_COMPAT = TagUtils.createKey(ForgeRegistries.ENTITIES, new ResourceLocation("per-viam-invenire", "replace_vanilla_navigator"));
+    public static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(new ResourceLocation("create", "no_infinite_draining"));
 
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
         super(gen, Mekanism.MODID, existingFileHelper);
@@ -136,7 +139,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addProcessedResources() {
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            Named<Item> tag = addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
+            TagKey<Item> tag = addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
             switch (item.getRowKey()) {
                 case SHARD -> getItemBuilder(MekanismTags.Items.SHARDS).add(tag);
                 case CRYSTAL -> getItemBuilder(MekanismTags.Items.CRYSTALS).add(tag);
@@ -150,8 +153,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         }
     }
 
-    private Named<Item> addToTag(ResourceType type, PrimaryResource resource, IItemProvider... items) {
-        Named<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(type, resource);
+    private TagKey<Item> addToTag(ResourceType type, PrimaryResource resource, IItemProvider... items) {
+        TagKey<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(type, resource);
         addToTag(tag, items);
         return tag;
     }
@@ -310,8 +313,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
             OreType type = entry.getKey();
             OreBlockType oreBlockType = entry.getValue();
-            Named<Item> itemTag = MekanismTags.Items.ORES.get(type);
-            Named<Block> blockTag = MekanismTags.Blocks.ORES.get(type);
+            TagKey<Item> itemTag = MekanismTags.Items.ORES.get(type);
+            TagKey<Block> blockTag = MekanismTags.Blocks.ORES.get(type);
             addToTags(itemTag, blockTag, oreBlockType.stone(), oreBlockType.deepslate());
             getItemBuilder(Tags.Items.ORES).add(itemTag);
             getBlockBuilder(Tags.Blocks.ORES).add(blockTag);
@@ -340,8 +343,8 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Blocks.STORAGE_BLOCKS_FLUORITE);
         // Dynamic storage blocks
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            Named<Item> itemTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey());
-            Named<Block> blockTag = MekanismTags.Blocks.RESOURCE_STORAGE_BLOCKS.get(entry.getKey());
+            TagKey<Item> itemTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey());
+            TagKey<Block> blockTag = MekanismTags.Blocks.RESOURCE_STORAGE_BLOCKS.get(entry.getKey());
             addToTags(itemTag, blockTag, entry.getValue());
             getItemBuilder(Tags.Items.STORAGE_BLOCKS).add(itemTag);
             getBlockBuilder(Tags.Blocks.STORAGE_BLOCKS).add(blockTag);

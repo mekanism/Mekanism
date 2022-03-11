@@ -19,7 +19,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 
@@ -32,7 +32,7 @@ class FactoryRecipeProvider implements ISubRecipeProvider {
         String advancedPath = basePath + "advanced/";
         String elitePath = basePath + "elite/";
         String ultimatePath = basePath + "ultimate/";
-        Tag<Item> osmiumIngot = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM);
+        TagKey<Item> osmiumIngot = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM);
         for (FactoryType type : EnumUtils.FACTORY_TYPES) {
             BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> basicFactory = MekanismBlocks.getFactory(FactoryTier.BASIC, type);
             BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> advancedFactory = MekanismBlocks.getFactory(FactoryTier.ADVANCED, type);
@@ -45,7 +45,7 @@ class FactoryRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addFactoryRecipe(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory<?>, ?> factory, IItemProvider toUpgrade,
-          Tag<Item> ingotTag, Tag<Item> alloyTag, Tag<Item> circuitTag) {
+          TagKey<Item> ingotTag, TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
         MekDataShapedRecipeBuilder.shapedRecipe(factory)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
               .key(Pattern.PREVIOUS, toUpgrade)

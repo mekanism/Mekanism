@@ -125,7 +125,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         if (world == null) {
             return;
         }
-        Biome b = world.getBiomeManager().getBiome(getBlockPos());
+        Biome b = world.getBiomeManager().getBiome(getBlockPos()).value();
         needsRainCheck = b.getPrecipitation() != Precipitation.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler

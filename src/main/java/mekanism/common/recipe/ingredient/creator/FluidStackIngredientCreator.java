@@ -19,16 +19,18 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
+import mekanism.common.tags.TagUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.tags.ITagManager;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -50,7 +52,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     }
 
     @Override
-    public FluidStackIngredient from(Tag<Fluid> tag, int amount) {
+    public FluidStackIngredient from(TagKey<Fluid> tag, int amount) {
         Objects.requireNonNull(tag, "FluidStackIngredients cannot be created from a null tag.");
         if (amount <= 0) {
             throw new IllegalArgumentException("FluidStackIngredients must have an amount of at least one. Received size was: " + amount);
@@ -65,7 +67,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         if (type == IngredientType.SINGLE) {
             return from(FluidStack.readFromPacket(buffer));
         } else if (type == IngredientType.TAGGED) {
-            return from(FluidTags.bind(buffer.readResourceLocation().toString()), buffer.readVarInt());
+            return from(FluidTags.create(buffer.readResourceLocation()), buffer.readVarInt());
         }
         FluidStackIngredient[] ingredients = new FluidStackIngredient[buffer.readVarInt()];
         for (int i = 0; i < ingredients.length; i++) {
@@ -120,11 +122,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, JsonConstants.TAG));
-            Tag<Fluid> tag = SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY).getTag(resourceLocation);
-            if (tag == null) {
-                throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'.");
-            }
-            return from(tag, amount);
+            ITagManager<Fluid> tagManager = TagUtils.manager(ForgeRegistries.FLUIDS);
+            TagKey<Fluid> key = tagManager.createTagKey(resourceLocation);
+            return from(key, amount);
         }
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a fluid.");
     }
@@ -217,10 +217,14 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
         @Nonnull
-        private final Tag<Fluid> tag;
+        private final ITag<Fluid> tag;
         private final int amount;
 
-        private TaggedFluidStackIngredient(Tag<Fluid> tag, int amount) {
+        private TaggedFluidStackIngredient(TagKey<Fluid> tag, int amount) {
+            this(TagUtils.tag(ForgeRegistries.FLUIDS, tag), amount);
+        }
+
+        private TaggedFluidStackIngredient(ITag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -232,7 +236,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
-            return Objects.requireNonNull(fluidStack).getFluid().is(tag);
+            return tag.contains(Objects.requireNonNull(fluidStack).getFluid());
         }
 
         @Override
@@ -253,7 +257,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public List<@NonNull FluidStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NonNull FluidStack> representations = new ArrayList<>();
-            for (Fluid fluid : tag.getValues()) {
+            for (Fluid fluid : tag) {
                 representations.add(new FluidStack(fluid, amount));
             }
             return representations;
@@ -262,14 +266,14 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         /**
          * For use in recipe input caching.
          */
-        public List<Fluid> getRawInput() {
-            return tag.getValues();
+        public Iterable<Fluid> getRawInput() {
+            return tag;
         }
 
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.TAGGED);
-            buffer.writeResourceLocation(getTagId());
+            buffer.writeResourceLocation(tag.getKey().location());
             buffer.writeVarInt(amount);
         }
 
@@ -277,12 +281,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.TAG, getTagId().toString());
+            json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
             return json;
-        }
-
-        private ResourceLocation getTagId() {
-            return SerializationTags.getInstance().getIdOrThrow(Registry.FLUID_REGISTRY, tag, () -> new IllegalStateException("Unrecognized tag"));
         }
     }
 

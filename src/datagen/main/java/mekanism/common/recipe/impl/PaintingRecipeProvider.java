@@ -15,7 +15,7 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -106,7 +106,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
-    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, Tag<Item> input, long rate, Function<DyeColor, ItemLike> output, String basePath) {
+    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, TagKey<Item> input, long rate, Function<DyeColor, ItemLike> output, String basePath) {
         for (EnumColor color : EnumUtils.COLORS) {
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
@@ -115,13 +115,13 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, Tag<Item> input, long rate, Map<EnumColor, ItemLike> outputs, String basePath) {
+    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, TagKey<Item> input, long rate, Map<EnumColor, ItemLike> outputs, String basePath) {
         for (Map.Entry<EnumColor, ItemLike> entry : outputs.entrySet()) {
             addRecoloringRecipe(consumer, entry.getKey(), input, entry.getValue(), rate, basePath);
         }
     }
 
-    private static void addRecoloringRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Tag<Item> input, ItemLike result, long rate, String basePath) {
+    private static void addRecoloringRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, TagKey<Item> input, ItemLike result, long rate, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(IngredientWithout.create(input, result)),
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), rate),

@@ -27,7 +27,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
             BlockPos pos = new BlockPos(player.getX(), player.getEyeY() + 0.2, player.getZ());
             //Based on how TileEntitySolarGenerator and the rest of our solar things do energy calculations
             if (WorldUtils.canSeeSun(player.level, pos)) {
-                Biome b = player.level.getBiomeManager().getBiome(pos);
+                Biome b = player.level.getBiomeManager().getBiome(pos).value();
                 boolean needsRainCheck = b.getPrecipitation() != Precipitation.NONE;
                 // Consider the best temperature to be 0.8; biomes that are higher than that
                 // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler

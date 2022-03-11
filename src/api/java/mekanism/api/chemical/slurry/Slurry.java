@@ -12,7 +12,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 /**
@@ -23,7 +23,7 @@ import net.minecraft.world.item.Item;
 public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
 
     @Nullable
-    private final Tag<Item> oreTag;
+    private final TagKey<Item> oreTag;
 
     public Slurry(SlurryBuilder builder) {
         super(builder, ChemicalTags.SLURRY);
@@ -65,7 +65,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
      * @return The tag for the item the slurry goes with. May be null.
      */
     @Nullable
-    public Tag<Item> getOreTag() {
+    public TagKey<Item> getOreTag() {
         return oreTag;
     }
 }

@@ -17,7 +17,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 class ChemicalTankRecipeProvider implements ISubRecipeProvider {
@@ -45,7 +45,7 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredChemicalTank(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> tank, IItemProvider previousTank,
-          Tag<Item> alloyTag) {
+          TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(tank.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(CHEMICAL_TANK_PATTERN)

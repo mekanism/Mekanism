@@ -8,7 +8,7 @@ import mekanism.api.chemical.ChemicalBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 @ParametersAreNonnullByDefault
@@ -16,7 +16,7 @@ import net.minecraft.world.item.Item;
 public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
 
     @Nullable
-    private Tag<Item> oreTag;
+    private TagKey<Item> oreTag;
 
     protected SlurryBuilder(ResourceLocation texture) {
         super(texture);
@@ -62,7 +62,7 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
      */
     public SlurryBuilder ore(ResourceLocation oreTagLocation) {
-        return ore(ItemTags.bind(Objects.requireNonNull(oreTagLocation).toString()));
+        return ore(ItemTags.create(Objects.requireNonNull(oreTagLocation)));
     }
 
     /**
@@ -70,7 +70,7 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      *
      * @param oreTag Tag representing the ore.
      */
-    public SlurryBuilder ore(Tag<Item> oreTag) {
+    public SlurryBuilder ore(TagKey<Item> oreTag) {
         this.oreTag = Objects.requireNonNull(oreTag);
         return this;
     }
@@ -79,7 +79,7 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      * Gets the item tag that represents the ore that goes with this {@link Slurry}.
      */
     @Nullable
-    public Tag<Item> getOreTag() {
+    public TagKey<Item> getOreTag() {
         return oreTag;
     }
 }

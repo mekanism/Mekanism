@@ -109,6 +109,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -225,10 +226,10 @@ public class Mekanism {
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
-        MekanismGases.GASES.createAndRegister(modEventBus, "gas", builder -> builder.tagFolder("gases").setDefaultKey(rl("empty_gas")));
-        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type", builder -> builder.tagFolder("infuse_types").setDefaultKey(rl("empty_infuse_type")));
-        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment", builder -> builder.tagFolder("pigments").setDefaultKey(rl("empty_pigment")));
-        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry", builder -> builder.tagFolder("slurries").setDefaultKey(rl("empty_slurry")));
+        MekanismGases.GASES.createAndRegister(modEventBus, "gas", builder -> builder.hasTags().setDefaultKey(rl("empty")));
+        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type", builder -> builder.hasTags().setDefaultKey(rl("empty")));
+        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment", builder -> builder.hasTags().setDefaultKey(rl("empty")));
+        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry", builder -> builder.hasTags().setDefaultKey(rl("empty")));
         MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, "robit_skin", builder -> builder.setDefaultKey(rl("robit")));
         MekanismModules.MODULES.createAndRegister(modEventBus, "module");
         modEventBus.addGenericListener(Gas.class, this::registerGases);
@@ -236,6 +237,7 @@ public class Mekanism {
         modEventBus.addGenericListener(Pigment.class, this::registerPigments);
         modEventBus.addGenericListener(Slurry.class, this::registerSlurries);
         modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
+        modEventBus.addGenericListener(Feature.class, EventPriority.LOW, this::registerWorldGenFeatures);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
         packetHandler = new PacketHandler();
@@ -292,6 +294,12 @@ public class Mekanism {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
         CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
         CraftingHelper.register(IngredientWithout.ID, IngredientWithout.Serializer.INSTANCE);
+    }
+
+    private void registerWorldGenFeatures(RegistryEvent.Register<Feature<?>> event) {
+        //Register the mod's world generators. We do this from the feature event at a low priority to ensure we run after
+        // our features get registered but while registries are not frozen
+        GenHandler.setupWorldGenFeatures();
     }
 
     public static ResourceLocation rl(String path) {
@@ -393,8 +401,6 @@ public class Mekanism {
         event.enqueueWork(() -> {
             //Ensure our tags are all initialized
             MekanismTags.init();
-            //Register the mod's world generators
-            GenHandler.setupWorldGenFeatures();
             //Collect annotation scan data
             MekAnnotationScanner.collectScanData();
             //Add chunk loading callbacks

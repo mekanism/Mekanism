@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
@@ -11,6 +12,7 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
@@ -18,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,11 +33,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDictionary extends Item {
 
@@ -63,13 +67,17 @@ public class ItemDictionary extends Item {
                 //If there is a tile at the position or the player is not sneaking
                 // grab the tags of the block and the tile
                 if (!world.isClientSide) {
-                    Set<ResourceLocation> blockTags = world.getBlockState(pos).getBlock().getTags();
-                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : tile.getType().getTags();
-                    if (blockTags.isEmpty() && tileTags.isEmpty()) {
+                    BlockState blockState = world.getBlockState(pos);
+                    FluidState fluidState = blockState.getFluidState();
+                    Set<ResourceLocation> blockTags = TagUtils.tagNames(blockState.getTags());
+                    Set<ResourceLocation> fluidTags = fluidState.isEmpty() ? Collections.emptySet() : TagUtils.tagNames(fluidState.getTags());
+                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : TagUtils.tagNames(ForgeRegistries.BLOCK_ENTITIES, tile.getType());
+                    if (blockTags.isEmpty() && fluidTags.isEmpty() && tileTags.isEmpty()) {
                         player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
                     } else {
                         //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
+                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidTags);
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags);
                     }
                 }
@@ -103,16 +111,20 @@ public class ItemDictionary extends Item {
         } else {
             BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
             if (result.getType() != Type.MISS) {
-                Block block = world.getBlockState(result.getBlockPos()).getBlock();
-                if (block instanceof LiquidBlock liquidBlock) {
+                FluidState fluidState = world.getFluidState(result.getBlockPos());
+                if (!fluidState.isEmpty()) {
                     if (!world.isClientSide()) {
-                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, liquidBlock.getFluid().getTags());
+                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.getTags());
                     }
                     return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
                 }
             }
         }
         return InteractionResultHolder.pass(stack);
+    }
+
+    private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<? extends TagKey<?>> tags) {
+        sendTagsOrEmptyToPlayer(player, tagsFoundEntry, TagUtils.tagNames(tags));
     }
 
     private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {

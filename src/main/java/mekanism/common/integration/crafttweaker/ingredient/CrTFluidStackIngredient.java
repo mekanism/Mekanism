@@ -14,7 +14,7 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.openzen.zencode.java.ZenCodeType;
@@ -68,7 +68,7 @@ public class CrTFluidStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static FluidStackIngredient from(MCTag<Fluid> fluidTag, int amount) {
-        Tag<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
+        TagKey<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
         return IngredientCreatorAccess.fluid().from(tag, amount);
     }
 

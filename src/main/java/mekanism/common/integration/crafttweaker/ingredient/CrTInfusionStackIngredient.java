@@ -15,7 +15,7 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -62,7 +62,7 @@ public class CrTInfusionStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(MCTag<InfuseType> infuseTypeTag, long amount) {
-        Tag<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, CrTInfuseTypeTagManager.INSTANCE::getInternal, "InfusionStackIngredients");
+        TagKey<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, CrTInfuseTypeTagManager.INSTANCE::getInternal, "InfusionStackIngredients");
         return IngredientCreatorAccess.infusion().from(tag, amount);
     }
 

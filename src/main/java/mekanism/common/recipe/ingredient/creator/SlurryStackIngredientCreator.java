@@ -2,6 +2,7 @@ package mekanism.common.recipe.ingredient.creator;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.IChemicalProvider;
@@ -11,7 +12,7 @@ import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -37,7 +38,7 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     }
 
     @Override
-    public SlurryStackIngredient from(Tag<Slurry> tag, long amount) {
+    public SlurryStackIngredient from(TagKey<Slurry> tag, long amount) {
         Objects.requireNonNull(tag, "SlurryStackIngredients cannot be created from a null tag.");
         assertPositiveAmount(amount);
         return new TaggedSlurryStackIngredient(tag, amount);
@@ -57,8 +58,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
 
     public static class TaggedSlurryStackIngredient extends TaggedChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
-        private TaggedSlurryStackIngredient(Tag<Slurry> tag, long amount) {
-            super(tag, amount);
+        private TaggedSlurryStackIngredient(TagKey<Slurry> tag, long amount) {
+            super(ChemicalTags.SLURRY, tag, amount);
         }
 
         @Override

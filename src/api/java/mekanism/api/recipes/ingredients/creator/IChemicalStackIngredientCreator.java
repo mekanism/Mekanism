@@ -7,7 +7,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -37,7 +37,7 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
     INGREDIENT from(IChemicalProvider<CHEMICAL> provider, long amount);
 
     @Override
-    default INGREDIENT from(Tag<CHEMICAL> tag, int amount) {
+    default INGREDIENT from(TagKey<CHEMICAL> tag, int amount) {
         return from(tag, (long) amount);
     }
 
@@ -50,5 +50,5 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    INGREDIENT from(Tag<CHEMICAL> tag, long amount);
+    INGREDIENT from(TagKey<CHEMICAL> tag, long amount);
 }

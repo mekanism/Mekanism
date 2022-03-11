@@ -28,7 +28,7 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     @Override
     public boolean canFilter(BlockState state) {
-        return state.getBlock().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
+        return state.getTags().anyMatch(tag -> WildcardMatcher.matches(tagName, tag));
     }
 
     @Override

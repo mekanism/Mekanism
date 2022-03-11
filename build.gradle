@@ -361,6 +361,7 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    mavenLocal() //TODO - 1.18: Remove once forge updates
 
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
         if (it instanceof MavenArtifactRepository) {
@@ -405,7 +406,8 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    runtimeOnly fg.deobf("team.chisel.ctm:CTM:1.18-${ctm_version}")
+    //TODO - 1.18: Re-enable once updated
+    //runtimeOnly fg.deobf("team.chisel.ctm:CTM:1.18-${ctm_version}")
 
     //TODO - 1.18: Switch back to the proper maven once TOP is on it again
     implementation fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
@@ -415,8 +417,9 @@ dependencies {
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
+    //TODO - 1.18: Make these use the mc version as a var again
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.1:${crafttweaker_version}")
+    compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-1.18.1:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling

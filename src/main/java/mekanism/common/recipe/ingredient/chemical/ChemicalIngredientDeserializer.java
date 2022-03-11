@@ -8,6 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import javax.annotation.Nonnull;
@@ -40,8 +41,9 @@ import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.M
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
+import net.minecraftforge.registries.tags.ITagManager;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -171,11 +173,13 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, JsonConstants.TAG));
-            Tag<CHEMICAL> tag = tags.getCollection().getTag(resourceLocation);
-            if (tag == null) {
-                throw new JsonSyntaxException("Unknown " + name + " tag '" + resourceLocation + "'.");
+            Optional<ITagManager<CHEMICAL>> manager = tags.getManager();
+            if (manager.isEmpty()) {
+                throw new JsonSyntaxException("Unexpected error trying to retrieve the chemical tag manager.");
             }
-            return ingredientCreator.from(tag, amount);
+            ITagManager<CHEMICAL> tagManager = manager.get();
+            TagKey<CHEMICAL> key = tagManager.createTagKey(resourceLocation);
+            return ingredientCreator.from(key, amount);
         }
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or " + getNameWithPrefix() + ".");
     }

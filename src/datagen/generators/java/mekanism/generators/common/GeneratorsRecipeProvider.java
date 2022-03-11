@@ -32,7 +32,7 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
@@ -86,7 +86,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addRotaryCondensentratorRecipe(Consumer<FinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput,
-          Tag<Fluid> fluidInput, Tag<Gas> gasInput) {
+          TagKey<Fluid> fluidInput, TagKey<Gas> gasInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
               IngredientCreatorAccess.gas().from(gasInput, 1),

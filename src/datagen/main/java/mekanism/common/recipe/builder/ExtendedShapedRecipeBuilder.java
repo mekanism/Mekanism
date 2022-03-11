@@ -13,7 +13,7 @@ import mekanism.common.DataGenJsonConstants;
 import mekanism.common.recipe.pattern.RecipePattern;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -56,7 +56,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, Tag<Item> tag) {
+    public ExtendedShapedRecipeBuilder key(char symbol, TagKey<Item> tag) {
         return key(symbol, Ingredient.of(tag));
     }
 

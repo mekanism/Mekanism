@@ -13,7 +13,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -47,7 +47,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         }, FluidTags.WATER);
     }
 
-    private void addRotaryCondensentratorRecipe(Consumer<FinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, Tag<Fluid> fluidInput) {
+    private void addRotaryCondensentratorRecipe(Consumer<FinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, TagKey<Fluid> fluidInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
               IngredientCreatorAccess.gas().from(gas, 1),

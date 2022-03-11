@@ -2,6 +2,7 @@ package mekanism.common.recipe.ingredient.creator;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IChemicalProvider;
@@ -11,7 +12,7 @@ import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -37,7 +38,7 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     }
 
     @Override
-    public PigmentStackIngredient from(Tag<Pigment> tag, long amount) {
+    public PigmentStackIngredient from(TagKey<Pigment> tag, long amount) {
         Objects.requireNonNull(tag, "PigmentStackIngredients cannot be created from a null tag.");
         assertPositiveAmount(amount);
         return new TaggedPigmentStackIngredient(tag, amount);
@@ -57,8 +58,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
 
     public static class TaggedPigmentStackIngredient extends TaggedChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
-        private TaggedPigmentStackIngredient(Tag<Pigment> tag, long amount) {
-            super(tag, amount);
+        private TaggedPigmentStackIngredient(TagKey<Pigment> tag, long amount) {
+            super(ChemicalTags.PIGMENT, tag, amount);
         }
 
         @Override

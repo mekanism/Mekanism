@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 
@@ -19,20 +19,21 @@ public enum PrimaryResource implements IResource {
 
     private final String name;
     private final int tint;
-    private final Supplier<Tag<Item>> oreTag;
+    //Note: This is a supplier because of the chicken and egg of referencing OreType and OreType referencing PrimaryResource
+    private final Supplier<TagKey<Item>> oreTag;
     private final boolean isVanilla;
     private final BlockResourceInfo resourceBlockInfo;
     private final BlockResourceInfo rawResourceBlockInfo;
 
-    PrimaryResource(String name, int tint, Tag<Item> oreTag) {
+    PrimaryResource(String name, int tint, TagKey<Item> oreTag) {
         this(name, tint, () -> oreTag, true, null, null);
     }
 
-    PrimaryResource(String name, int tint, Supplier<Tag<Item>> oreTag, BlockResourceInfo resourceBlockInfo, BlockResourceInfo rawResourceBlockInfo) {
+    PrimaryResource(String name, int tint, Supplier<TagKey<Item>> oreTag, BlockResourceInfo resourceBlockInfo, BlockResourceInfo rawResourceBlockInfo) {
         this(name, tint, oreTag, false, resourceBlockInfo, rawResourceBlockInfo);
     }
 
-    PrimaryResource(String name, int tint, Supplier<Tag<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo, BlockResourceInfo rawResourceBlockInfo) {
+    PrimaryResource(String name, int tint, Supplier<TagKey<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo, BlockResourceInfo rawResourceBlockInfo) {
         this.name = name;
         this.tint = tint;
         this.oreTag = oreTag;
@@ -50,7 +51,7 @@ public enum PrimaryResource implements IResource {
         return tint;
     }
 
-    public Tag<Item> getOreTag() {
+    public TagKey<Item> getOreTag() {
         return oreTag.get();
     }
 

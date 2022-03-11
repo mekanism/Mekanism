@@ -13,7 +13,7 @@ import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,12 +46,12 @@ public class RecipeProviderUtil {
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          ItemLike door, ItemLike fenceGate, Tag<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name) {
+          ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, log, pressurePlate, trapdoor, name, null);
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          ItemLike door, ItemLike fenceGate, Tag<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name, @Nullable ICondition condition) {
+          ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name, @Nullable ICondition condition) {
         if (boat != null) {
             //Boat
             build(consumer, SawmillRecipeBuilder.sawing(

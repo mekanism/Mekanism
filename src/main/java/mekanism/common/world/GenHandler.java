@@ -20,9 +20,10 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.world.height.ConfigurableHeightProvider;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -53,6 +54,7 @@ import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.fml.ModLoader;
@@ -64,11 +66,11 @@ public class GenHandler {
 
     private static final Map<OreType, List<TargetBlockState>> ORE_STONE_TARGETS = new EnumMap<>(OreType.class);
 
-    //TODO - 1.18: Move these to a better place?
     //TODO - 1.18: Do we want to name salt stuff like configurable uniform more accurately for them being hardcoded
     public static IntProviderType<ConfigurableConstantInt> CONFIGURABLE_CONSTANT;
     public static IntProviderType<ConfigurableUniformInt> CONFIGURABLE_UNIFORM;
     public static HeightProviderType<ConfigurableHeightProvider> CONFIGURABLE_HEIGHT_PROVIDER;
+    public static PlacementModifierType<DisableableFeaturePlacement> DISABLEABLE_PLACEMENT;
 
     private static final Map<OreType, MekFeature[]> ORES = new EnumMap<>(OreType.class);
     private static MekFeature SALT_FEATURE;
@@ -79,6 +81,7 @@ public class GenHandler {
             // and our placed features to the placed features registry
             registerIntProviderTypes();
             CONFIGURABLE_HEIGHT_PROVIDER = Registry.register(Registry.HEIGHT_PROVIDER_TYPES, Mekanism.rl("configurable"), () -> ConfigurableHeightProvider.CODEC);
+            DISABLEABLE_PLACEMENT = Registry.register(Registry.PLACEMENT_MODIFIERS, Mekanism.rl("disableable"), () -> DisableableFeaturePlacement.CODEC);
             for (OreType type : EnumUtils.ORE_TYPES) {
                 List<TargetBlockState> targetStates = ORE_STONE_TARGETS.computeIfAbsent(type, oreType -> {
                     OreBlockType oreBlockType = MekanismBlocks.ORES.get(type);
@@ -134,40 +137,45 @@ public class GenHandler {
     }
 
     @Nonnull
-    private static PlacedFeature getOreFeature(OreVeinType oreVeinType, List<TargetBlockState> targetStates, Feature<ResizableOreFeatureConfig> feature,
+    private static Holder<PlacedFeature> getOreFeature(OreVeinType oreVeinType, List<TargetBlockState> targetStates, Feature<ResizableOreFeatureConfig> feature,
           boolean retrogen) {
         OreVeinConfig oreVeinConfig = MekanismConfig.world.getVeinConfig(oreVeinType);
-        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(feature, new ResizableOreFeatureConfig(targetStates,
-              oreVeinType, oreVeinConfig.maxVeinSize(), oreVeinConfig.discardChanceOnAirExposure()), oreVeinConfig.shouldGenerate(), retrogen);
-        PlacedFeature placedFeature = configuredFeature.placed(List.of(CountPlacement.of(new ConfigurableConstantInt(oreVeinType, oreVeinConfig.perChunk())),
-              InSquarePlacement.spread(), HeightRangePlacement.of(ConfigurableHeightProvider.of(oreVeinType, oreVeinConfig)),
-              BiomeFilter.biome()));
         //Register the features
-        ResourceLocation registryName = registryName(oreVeinType.name(), retrogen);
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, registryName, configuredFeature);
-        Registry.register(BuiltinRegistries.PLACED_FEATURE, registryName, placedFeature);
-        return placedFeature;
+        String registryName = registryName(oreVeinType.name(), retrogen);
+        Holder<ConfiguredFeature<ResizableOreFeatureConfig, ?>> configuredFeature = FeatureUtils.register(registryName, feature,
+              new ResizableOreFeatureConfig(targetStates, oreVeinType, oreVeinConfig.maxVeinSize(), oreVeinConfig.discardChanceOnAirExposure())
+        );
+        return PlacementUtils.register(registryName, configuredFeature, List.of(
+              new DisableableFeaturePlacement(oreVeinType, oreVeinConfig.shouldGenerate(), retrogen),
+              CountPlacement.of(new ConfigurableConstantInt(oreVeinType, oreVeinConfig.perChunk())),
+              InSquarePlacement.spread(),
+              HeightRangePlacement.of(ConfigurableHeightProvider.of(oreVeinType, oreVeinConfig)),
+              BiomeFilter.biome()
+        ));
     }
 
     @Nonnull
-    private static PlacedFeature getSaltFeature(PlacementModifier placement, boolean retrogen) {
+    private static Holder<PlacedFeature> getSaltFeature(PlacementModifier placement, boolean retrogen) {
         SaltConfig saltConfig = MekanismConfig.world.salt;
-        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(MekanismFeatures.DISK.get(),
-              new ResizableDiskConfig(MekanismBlocks.SALT_BLOCK.getBlock().defaultBlockState(), saltConfig), saltConfig.shouldGenerate, retrogen);
-        PlacedFeature placedFeature = configuredFeature.placed(List.of(CountPlacement.of(new ConfigurableConstantInt(null, saltConfig.perChunk)),
-              InSquarePlacement.spread(), placement, BiomeFilter.biome()));
         //Register the features
-        ResourceLocation registryName = registryName("salt", retrogen);
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, registryName, configuredFeature);
-        Registry.register(BuiltinRegistries.PLACED_FEATURE, registryName, placedFeature);
-        return placedFeature;
+        String registryName = registryName("salt", retrogen);
+        Holder<ConfiguredFeature<ResizableDiskConfig, ?>> configuredFeature = FeatureUtils.register(registryName, MekanismFeatures.DISK.get(),
+              new ResizableDiskConfig(MekanismBlocks.SALT_BLOCK.getBlock().defaultBlockState(), saltConfig)
+        );
+        return PlacementUtils.register(registryName, configuredFeature, List.of(
+              new DisableableFeaturePlacement(null, saltConfig.shouldGenerate, retrogen),
+              CountPlacement.of(new ConfigurableConstantInt(null, saltConfig.perChunk)),
+              InSquarePlacement.spread(),
+              placement,
+              BiomeFilter.biome()
+        ));
     }
 
-    private static ResourceLocation registryName(String name, boolean retrogen) {
+    private static String registryName(String name, boolean retrogen) {
         if (retrogen) {
             name += "_retrogen";
         }
-        return Mekanism.rl(name);
+        return Mekanism.rl(name).toString();
     }
 
     /**
@@ -202,29 +210,29 @@ public class GenHandler {
             } else {
                 featureIndex = feature -> -1;
             }
-            Registry<PlacedFeature> registry = world.registryAccess().registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
             for (MekFeature[] features : ORES.values()) {
                 for (MekFeature feature : features) {
-                    generated |= place(registry, world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, feature);
+                    generated |= place(world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, feature);
                 }
             }
-            generated |= place(registry, world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, SALT_FEATURE);
+            generated |= place(world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, SALT_FEATURE);
             world.setCurrentlyGenerating(null);
         }
         return generated;
     }
 
-    private static boolean place(Registry<PlacedFeature> registry, WorldGenLevel world, ChunkGenerator chunkGenerator, BlockPos blockPos, WorldgenRandom random,
+    private static boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, BlockPos blockPos, WorldgenRandom random,
           long decorationSeed, int decorationStep, ToIntFunction<PlacedFeature> featureIndex, MekFeature feature) {
-        PlacedFeature retrogenFeature = feature.retrogen();
+        Holder<PlacedFeature> retrogenFeature = feature.retrogen();
+        PlacedFeature baseFeature = feature.feature().value();
         //Check the index of the source feature instead of the retrogen feature
-        random.setFeatureSeed(decorationSeed, featureIndex.applyAsInt(feature.feature()), decorationStep);
-        world.setCurrentlyGenerating(() -> registry.getResourceKey(retrogenFeature).map(Object::toString).orElseGet(retrogenFeature::toString));
+        random.setFeatureSeed(decorationSeed, featureIndex.applyAsInt(baseFeature), decorationStep);
+        world.setCurrentlyGenerating(() -> retrogenFeature.unwrapKey().map(Object::toString).orElseGet(retrogenFeature::toString));
         //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
         // it is the non retrogen feature which actually is added to the various biomes
-        return retrogenFeature.placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(feature.feature())), random, blockPos);
+        return retrogenFeature.value().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
     }
 
-    private record MekFeature(PlacedFeature feature, PlacedFeature retrogen) {
+    private record MekFeature(Holder<PlacedFeature> feature, Holder<PlacedFeature> retrogen) {
     }
 }

@@ -7,13 +7,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -31,6 +32,7 @@ import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.helpers.IColorHelper;
@@ -39,9 +41,10 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.tags.ITagManager;
 
 public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK>,
       IEmptyStackProvider<CHEMICAL, STACK> {
@@ -100,30 +103,31 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public Collection<ResourceLocation> getTags(STACK ingredient) {
-        return ingredient.getType().getTags();
+        return TagUtils.tagNames(ingredient.getType().getTags());
     }
 
-    protected abstract ChemicalTags<CHEMICAL> getTagCollection();
+    protected abstract IForgeRegistry<CHEMICAL> getRegistry();
 
     @Override
     public Optional<ResourceLocation> getTagEquivalent(Collection<STACK> stacks) {
         if (stacks.size() < 2) {
             return Optional.empty();
         }
-        List<CHEMICAL> values = stacks.stream()
+        ITagManager<CHEMICAL> tags = getRegistry().tags();
+        if (tags == null) {
+            //Something went wrong
+            return Optional.empty();
+        }
+        Set<CHEMICAL> values = stacks.stream()
               .map(ChemicalStack::getType)
-              .toList();
-        return getTagCollection()
-              .getCollection()
-              .getAllTags()
-              .entrySet()
-              .stream()
-              .filter(e -> {
-                  Tag<CHEMICAL> valueTags = e.getValue();
-                  List<CHEMICAL> tagValues = valueTags.getValues();
-                  return tagValues.equals(values);
-              })
-              .map(Map.Entry::getKey)
+              .collect(Collectors.toSet());
+        int expected = values.size();
+        if (expected != stacks.size()) {
+            //One of the chemicals is there more than once, definitely not a tag
+            return Optional.empty();
+        }
+        return tags.stream().filter(tag -> tag.size() == expected && values.stream().allMatch(tag::contains))
+              .map(tag -> tag.getKey().location())
               .findFirst();
     }
 
@@ -179,8 +183,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
-        protected ChemicalTags<Gas> getTagCollection() {
-            return ChemicalTags.GAS;
+        protected IForgeRegistry<Gas> getRegistry() {
+            return MekanismAPI.gasRegistry();
         }
 
         @Override
@@ -202,8 +206,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
-        protected ChemicalTags<InfuseType> getTagCollection() {
-            return ChemicalTags.INFUSE_TYPE;
+        protected IForgeRegistry<InfuseType> getRegistry() {
+            return MekanismAPI.infuseTypeRegistry();
         }
 
         @Override
@@ -220,8 +224,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     public static class PigmentStackHelper extends ChemicalStackHelper<Pigment, PigmentStack> implements IEmptyPigmentProvider {
 
         @Override
-        protected ChemicalTags<Pigment> getTagCollection() {
-            return ChemicalTags.PIGMENT;
+        protected IForgeRegistry<Pigment> getRegistry() {
+            return MekanismAPI.pigmentRegistry();
         }
 
         @Override
@@ -238,8 +242,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     public static class SlurryStackHelper extends ChemicalStackHelper<Slurry, SlurryStack> implements IEmptySlurryProvider {
 
         @Override
-        protected ChemicalTags<Slurry> getTagCollection() {
-            return ChemicalTags.SLURRY;
+        protected IForgeRegistry<Slurry> getRegistry() {
+            return MekanismAPI.slurryRegistry();
         }
 
         @Override

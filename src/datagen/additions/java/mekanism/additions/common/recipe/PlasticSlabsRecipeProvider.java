@@ -14,6 +14,7 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
@@ -31,7 +32,7 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
     }
 
     private void registerPlasticSlabs(Consumer<FinishedRecipe> consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
-          Tag<Item> blockType, boolean transparent, String basePath) {
+          TagKey<Item> blockType, boolean transparent, String basePath) {
         for (Map.Entry<EnumColor, ? extends IItemProvider> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
             registerPlasticSlab(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
@@ -39,7 +40,7 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
     }
 
     private void registerPlasticSlab(Consumer<FinishedRecipe> consumer, EnumColor color, IItemProvider result, IItemProvider plastic,
-          Tag<Item> blockType, boolean transparent, String basePath) {
+          TagKey<Item> blockType, boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 6)
               .pattern(PLASTIC_SLAB)
               .key(Pattern.CONSTANT, plastic)

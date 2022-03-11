@@ -8,7 +8,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.DataGenJsonConstants;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,11 +32,11 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         return new ExtendedShapelessRecipeBuilder(result, count);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Tag<Item> tag) {
+    public ExtendedShapelessRecipeBuilder addIngredient(TagKey<Item> tag) {
         return addIngredient(tag, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Tag<Item> tag, int quantity) {
+    public ExtendedShapelessRecipeBuilder addIngredient(TagKey<Item> tag, int quantity) {
         return addIngredient(Ingredient.of(tag), quantity);
     }
 

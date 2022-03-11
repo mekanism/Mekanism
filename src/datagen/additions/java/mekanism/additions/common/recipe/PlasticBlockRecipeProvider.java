@@ -32,6 +32,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -185,7 +186,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color, basePath);
     }
 
-    public static void registerRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, EnumColor color, String basePath) {
+    public static void registerRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, TagKey<Item> blockType, EnumColor color, String basePath) {
         IngredientWithout recolorInput = IngredientWithout.create(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
@@ -203,7 +204,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
     }
 
-    public static void registerTransparentRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, EnumColor color, String basePath) {
+    public static void registerTransparentRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, TagKey<Item> blockType, EnumColor color, String basePath) {
         IngredientWithout recolorInput = IngredientWithout.create(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();

@@ -12,7 +12,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -56,11 +56,11 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         return Collections.emptyList();
     }
 
-    public static Ingredient createIngredient(Tag<Item> itemTag, ItemLike... items) {
+    public static Ingredient createIngredient(TagKey<Item> itemTag, ItemLike... items) {
         return createIngredient(Collections.singleton(itemTag), items);
     }
 
-    public static Ingredient createIngredient(Collection<Tag<Item>> itemTags, ItemLike... items) {
+    public static Ingredient createIngredient(Collection<TagKey<Item>> itemTags, ItemLike... items) {
         return Ingredient.fromValues(Stream.concat(
               itemTags.stream().map(Ingredient.TagValue::new),
               Arrays.stream(items).map(item -> new Ingredient.ItemValue(new ItemStack(item)))

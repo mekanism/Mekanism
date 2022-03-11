@@ -4,7 +4,7 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -84,12 +84,12 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param tag Tag to match.
      */
-    default ItemStackIngredient from(Tag<Item> tag) {
+    default ItemStackIngredient from(TagKey<Item> tag) {
         return from(tag, 1);
     }
 
     @Override
-    default ItemStackIngredient from(Tag<Item> tag, int amount) {
+    default ItemStackIngredient from(TagKey<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
         return from(Ingredient.of(tag), amount);
     }

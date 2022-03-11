@@ -32,6 +32,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISustainedData;
@@ -44,11 +45,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITagManager;
 
 //TODO - V11: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ISustainedData, ITileFilterHolder<OredictionificatorItemFilter> {
@@ -121,7 +124,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     private List<ResourceLocation> getFilterableTags(ItemStack stack) {
         //TODO: Cache this and hasFilterableTags?
-        Set<ResourceLocation> tags = stack.getItem().getTags();
+        Set<ResourceLocation> tags = TagUtils.tagNames(stack.getTags());
         if (tags.isEmpty()) {
             return Collections.emptyList();
         }
@@ -137,7 +140,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     private boolean hasFilterableTags(ItemStack stack) {
-        Set<ResourceLocation> tags = stack.getItem().getTags();
+        Set<ResourceLocation> tags = TagUtils.tagNames(stack.getTags());
         if (!tags.isEmpty()) {
             Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
             for (ResourceLocation resource : tags) {
@@ -150,7 +153,8 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     public static boolean isValidTarget(ResourceLocation tag) {
-        if (ItemTags.getAllTags().getAvailableTags().contains(tag)) {
+        ITagManager<Item> manager = TagUtils.manager(ForgeRegistries.ITEMS);
+        if (manager.isKnownTagName(manager.createTagKey(tag))) {
             for (String filter : MekanismConfig.general.validOredictionificatorFilters.get().getOrDefault(tag.getNamespace(), Collections.emptyList())) {
                 if (tag.getPath().startsWith(filter)) {
                     return true;

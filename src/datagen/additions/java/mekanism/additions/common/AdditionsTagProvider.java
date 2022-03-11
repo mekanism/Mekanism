@@ -14,7 +14,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -116,7 +116,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS);
     }
 
-    private void addToTags(Named<Item> itemTag, Named<Block> blockTag, Map<?, ? extends IBlockProvider> blockProviders) {
+    private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, Map<?, ? extends IBlockProvider> blockProviders) {
         addToTags(itemTag, blockTag, blockProviders.values().toArray(new IBlockProvider[0]));
     }
 }

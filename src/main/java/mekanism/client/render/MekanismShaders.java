@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 public class MekanismShaders {
 
     static final ShaderTracker MEKASUIT = new ShaderTracker();
-    static final ShaderTracker SPS = new ShaderTracker();
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {

@@ -1,10 +1,8 @@
 package mekanism.api.chemical;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -13,14 +11,10 @@ import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Named;
-import net.minecraft.tags.TagCollection;
-import net.minecraftforge.common.ForgeTagHandler;
-import net.minecraftforge.common.Tags.IOptionalNamedTag;
+import net.minecraft.tags.TagKey;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.tags.ITagManager;
 
 public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
@@ -40,79 +34,27 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     }
 
     /**
-     * Gets the backing tag collection.
-     */
-    public TagCollection<CHEMICAL> getCollection() {
-        return SerializationTags.getInstance().getOrEmpty(registryKey.get());
-    }
-
-    /**
-     * Helper to look up the name of a tag, and get a decent estimate in LAN of the actual tag name.
-     *
-     * @param tag Tag to lookup.
-     *
-     * @return Name of the tag.
-     */
-    public ResourceLocation lookupTag(Tag<CHEMICAL> tag) {
-        //Manual and slightly modified implementation of TagCollection#getIdOrThrow to have better reverse lookup handling
-        TagCollection<CHEMICAL> collection = getCollection();
-        ResourceLocation resourceLocation = collection.getId(tag);
-        if (resourceLocation == null) {
-            //If we failed to get the resource location, try manually looking it up by a "matching" entry
-            // as the objects are different and neither Tag nor NamedTag override equals and hashCode
-            List<CHEMICAL> chemicals = tag.getValues();
-            for (Map.Entry<ResourceLocation, Tag<CHEMICAL>> entry : collection.getAllTags().entrySet()) {
-                if (chemicals.equals(entry.getValue().getValues())) {
-                    resourceLocation = entry.getKey();
-                    break;
-                }
-            }
-        }
-        if (resourceLocation == null) {
-            throw new IllegalStateException("Unrecognized tag");
-        }
-        return resourceLocation;
-    }
-
-    /**
      * Helper to create a chemical tag.
      *
      * @param name Tag name.
      *
      * @return Tag reference.
+     *
+     * @apiNote For statically initializing optional tags, {@link net.minecraftforge.registries.DeferredRegister#createOptionalTagKey(String, Set)} must be used instead.
      */
-    public Named<CHEMICAL> tag(ResourceLocation name) {
-        IForgeRegistry<CHEMICAL> registry = registrySupplier.get();
-        if (registry == null) {
-            return ForgeTagHandler.makeWrapperTag(registryName, name);
-        }
-        return ForgeTagHandler.makeWrapperTag(registry, name);
+    public TagKey<CHEMICAL> tag(ResourceLocation name) {
+        return getManager().map(manager -> manager.createTagKey(name))
+              .orElseGet(() -> TagKey.create(registryKey.get(), name));
     }
 
     /**
-     * Helper to create an optional chemical tag with no defaults.
-     *
-     * @param name Tag name.
-     *
-     * @return Optional tag reference.
+     * Gets the tag manager for this type of tag if it is after the registry has been created.
      */
-    public IOptionalNamedTag<CHEMICAL> optionalTag(ResourceLocation name) {
-        return optionalTag(name, null);
-    }
-
-    /**
-     * Helper to create an optional chemical tag with the given defaults.
-     *
-     * @param name     Tag name.
-     * @param defaults Default values.
-     *
-     * @return Optional tag reference.
-     */
-    public IOptionalNamedTag<CHEMICAL> optionalTag(ResourceLocation name, @Nullable Set<Supplier<CHEMICAL>> defaults) {
+    public Optional<ITagManager<CHEMICAL>> getManager() {
         IForgeRegistry<CHEMICAL> registry = registrySupplier.get();
         if (registry == null) {
-            return ForgeTagHandler.createOptionalTag(registryName, name, defaults);
+            return Optional.empty();
         }
-        return ForgeTagHandler.createOptionalTag(registry, name, defaults);
+        return Optional.ofNullable(registry.tags());
     }
 }

@@ -29,12 +29,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 
@@ -87,10 +89,10 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
             if (prevSlurry != inputSlurry) {
                 prevSlurry = inputSlurry;
                 iterStacks.clear();
-                if (!prevSlurry.isEmptyType() && !prevSlurry.isIn(MekanismTags.Slurries.DIRTY)) {
-                    Tag<Item> oreTag = prevSlurry.getOreTag();
+                if (!prevSlurry.isEmptyType() && !prevSlurry.is(MekanismTags.Slurries.DIRTY)) {
+                    TagKey<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
-                        for (Item ore : oreTag.getValues()) {
+                        for (Item ore : TagUtils.tag(ForgeRegistries.ITEMS, oreTag)) {
                             iterStacks.add(new ItemStack(ore));
                         }
                     }

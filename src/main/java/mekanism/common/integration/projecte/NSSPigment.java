@@ -9,13 +9,12 @@ import mekanism.api.providers.IPigmentProvider;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagKey;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Pigment}s.
  */
-public final class NSSPigment extends AbstractNSSTag<Pigment> {
+public final class NSSPigment extends NSSChemical<Pigment> {
 
     private NSSPigment(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
@@ -67,11 +66,11 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     /**
-     * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
+     * Helper method to create an {@link NSSPigment} representing a tag from a {@link TagKey<Pigment>}
      */
     @Nonnull
-    public static NSSPigment createTag(@Nonnull Tag<Pigment> tag) {
-        return createTag(ChemicalTags.PIGMENT.lookupTag(tag));
+    public static NSSPigment createTag(@Nonnull TagKey<Pigment> tag) {
+        return createTag(tag.location());
     }
 
     @Override
@@ -93,8 +92,8 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
 
     @Nonnull
     @Override
-    protected TagCollection<Pigment> getTagCollection() {
-        return ChemicalTags.PIGMENT.getCollection();
+    protected ChemicalTags<Pigment> tags() {
+        return ChemicalTags.PIGMENT;
     }
 
     @Override

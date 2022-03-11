@@ -1,10 +1,15 @@
 package mekanism.common.lib;
 
 import java.util.Locale;
+import net.minecraft.tags.TagKey;
 
 public class WildcardMatcher {
 
     private WildcardMatcher() {
+    }
+
+    public static boolean matches(String wildcard, TagKey<?> key) {
+        return matches(wildcard, key.location().toString());
     }
 
     public static boolean matches(String wildcard, String text) {

@@ -18,7 +18,7 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.openzen.zencode.java.ZenCodeType;
@@ -81,7 +81,7 @@ public class CrTItemStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient from(MCTag<Item> itemTag, int amount) {
-        Tag<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
+        TagKey<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
         return IngredientCreatorAccess.item().from(tag, amount);
     }
 

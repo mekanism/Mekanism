@@ -3,7 +3,7 @@ package mekanism.tools.common.material;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
@@ -11,7 +11,7 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
 
     @Nullable
     @Override
-    public abstract Tag<Block> getTag();//Force this to be implemented
+    public abstract TagKey<Block> getTag();//Force this to be implemented
 
     public abstract int getShieldDurability();
 

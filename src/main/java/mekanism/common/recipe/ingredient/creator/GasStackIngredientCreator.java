@@ -2,6 +2,7 @@ package mekanism.common.recipe.ingredient.creator;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IChemicalProvider;
@@ -11,7 +12,7 @@ import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -37,7 +38,7 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     }
 
     @Override
-    public GasStackIngredient from(Tag<Gas> tag, long amount) {
+    public GasStackIngredient from(TagKey<Gas> tag, long amount) {
         Objects.requireNonNull(tag, "GasStackIngredients cannot be created from a null tag.");
         assertPositiveAmount(amount);
         return new TaggedGasStackIngredient(tag, amount);
@@ -57,8 +58,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
 
     public static class TaggedGasStackIngredient extends TaggedChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
-        private TaggedGasStackIngredient(Tag<Gas> tag, long amount) {
-            super(tag, amount);
+        private TaggedGasStackIngredient(TagKey<Gas> tag, long amount) {
+            super(ChemicalTags.GAS, tag, amount);
         }
 
         @Override

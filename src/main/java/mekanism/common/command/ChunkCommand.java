@@ -101,7 +101,7 @@ public class ChunkCommand {
                       int startCount = sp.getLoadedChunksCount();
                       //TODO: Check this
                       //sp.queueUnloadAll();
-                      sp.tick(() -> false);
+                      sp.tick(() -> false, false);
                       source.sendSuccess(MekanismLang.COMMAND_CHUNK_FLUSH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, startCount - sp.getLoadedChunksCount()), true);
                       return 0;
                   });

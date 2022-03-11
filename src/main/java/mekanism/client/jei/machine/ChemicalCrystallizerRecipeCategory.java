@@ -29,6 +29,7 @@ import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -39,9 +40,11 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITag;
 
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<ChemicalCrystallizerRecipe> {
 
@@ -96,20 +99,20 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
             initChemical(builder, MekanismJEI.TYPE_PIGMENT, ingredient);
         } else if (input instanceof SlurryStackIngredient ingredient) {
             initChemical(builder, MekanismJEI.TYPE_SLURRY, ingredient);
-            Set<Tag<Item>> tags = new HashSet<>();
+            Set<ITag<Item>> tags = new HashSet<>();
             for (SlurryStack slurryStack : ingredient.getRepresentations()) {
                 Slurry slurry = slurryStack.getType();
-                if (!slurry.isIn(MekanismTags.Slurries.DIRTY)) {
-                    Tag<Item> oreTag = slurry.getOreTag();
+                if (!slurry.is(MekanismTags.Slurries.DIRTY)) {
+                    TagKey<Item> oreTag = slurry.getOreTag();
                     if (oreTag != null) {
-                        tags.add(oreTag);
+                        tags.add(TagUtils.tag(ForgeRegistries.ITEMS, oreTag));
                     }
                 }
             }
             if (tags.size() == 1) {
                 //TODO: Eventually come up with a better way to do this to allow for if there outputs based on the input and multiple input types
                 tags.stream().findFirst().ifPresent(tag -> initItem(builder, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot,
-                      tag.getValues().stream().map(ItemStack::new).toList()).setSlotName(DISPLAYED_ITEM));
+                      tag.stream().map(ItemStack::new).toList()).setSlotName(DISPLAYED_ITEM));
             }
         }
     }

@@ -15,7 +15,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 
@@ -44,7 +44,7 @@ class FluidTankRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredFluidTank(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFluidTank, ?> tank, IItemProvider previousTank,
-          Tag<Item> alloyTag) {
+          TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(tank.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(FLUID_TANK_PATTERN)

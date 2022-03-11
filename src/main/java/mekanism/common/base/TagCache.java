@@ -1,6 +1,5 @@
 package mekanism.common.base;
 
-import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -11,17 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -30,6 +29,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.tags.ITagManager;
 
 //TODO: Try to come up with a better name for this class given it also handles things like materials, and modids
 public final class TagCache {
@@ -59,7 +61,7 @@ public final class TagCache {
     }
 
     public static List<String> getItemTags(@Nonnull ItemStack check) {
-        return getTagsAsStrings(check.getItem().getTags());
+        return getTagsAsStrings(check.getTags());
     }
 
     public static List<String> getTileEntityTypeTags(@Nonnull Block block) {
@@ -69,20 +71,19 @@ public final class TagCache {
         List<String> tagsAsString;
         if (block instanceof IHasTileEntity<?> hasTileEntity) {
             //If it is one of our blocks, short circuit and just lookup the tile's type directly
-            tagsAsString = getTagsAsStrings(hasTileEntity.getTileType().get().getTags());
+            tagsAsString = getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.BLOCK_ENTITIES, hasTileEntity.getTileType().get()));
         } else {
             BlockState state = block.defaultBlockState();
             if (state.hasBlockEntity()) {
                 //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
                 // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
                 // that we don't know about and don't handle properly
-                Set<ResourceLocation> tileEntityTags = new HashSet<>();
-                for (BlockEntityType<?> tileEntityType : ForgeRegistries.BLOCK_ENTITIES) {
-                    if (tileEntityType.isValid(state)) {
-                        tileEntityTags.addAll(tileEntityType.getTags());
-                    }
-                }
-                tagsAsString = getTagsAsStrings(tileEntityTags);
+                ITagManager<BlockEntityType<?>> manager = TagUtils.manager(ForgeRegistries.BLOCK_ENTITIES);
+                tagsAsString = getTagsAsStrings(StreamSupport.stream(ForgeRegistries.BLOCK_ENTITIES.spliterator(), false)
+                      .filter(type -> type.isValid(state))
+                      .flatMap(type -> TagUtils.tagsStream(manager, type))
+                      .distinct()
+                );
             } else {
                 tagsAsString = Collections.emptyList();
             }
@@ -91,22 +92,15 @@ public final class TagCache {
         return tagsAsString;
     }
 
-    public static List<String> getTagsAsStrings(@Nonnull Set<ResourceLocation> tags) {
-        if (tags.isEmpty()) {
-            return Collections.emptyList();
-        }
-        ImmutableList.Builder<String> asStrings = ImmutableList.builder();
-        for (ResourceLocation tag : tags) {
-            asStrings.add(tag.toString());
-        }
-        return asStrings.build();
+    public static <TYPE> List<String> getTagsAsStrings(@Nonnull Stream<TagKey<TYPE>> tags) {
+        return tags.map(tag -> tag.location().toString()).toList();
     }
 
     public static List<ItemStack> getItemTagStacks(@Nonnull String tagName) {
         if (itemTagStacks.containsKey(tagName)) {
             return itemTagStacks.get(tagName);
         }
-        Set<Item> items = collectTagStacks(ItemTags.getAllTags(), tagName, item -> item != MekanismBlocks.BOUNDING_BLOCK.asItem());
+        Set<Item> items = collectTagStacks(TagUtils.manager(ForgeRegistries.ITEMS), tagName, item -> item != MekanismBlocks.BOUNDING_BLOCK.asItem());
         List<ItemStack> stacks = items.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList();
         itemTagStacks.put(tagName, stacks);
         return stacks;
@@ -116,23 +110,15 @@ public final class TagCache {
         if (blockTagStacks.containsKey(tagName)) {
             return blockTagStacks.get(tagName);
         }
-        Set<Block> blocks = collectTagStacks(BlockTags.getAllTags(), tagName, block -> block != MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        Set<Block> blocks = collectTagStacks(TagUtils.manager(ForgeRegistries.BLOCKS), tagName, block -> block != MekanismBlocks.BOUNDING_BLOCK.getBlock());
         return getMatching(blockTagStacks, blocks, tagName);
     }
 
-    private static <TYPE extends ItemLike> Set<TYPE> collectTagStacks(TagCollection<TYPE> tagCollection, String tagName, Predicate<TYPE> validElement) {
-        Set<TYPE> items = new HashSet<>();
-        for (Map.Entry<ResourceLocation, Tag<TYPE>> entry : tagCollection.getAllTags().entrySet()) {
-            if (WildcardMatcher.matches(tagName, entry.getKey().toString())) {
-                List<TYPE> elements = entry.getValue().getValues();
-                for (TYPE element : elements) {
-                    if (validElement.test(element)) {
-                        items.add(element);
-                    }
-                }
-            }
-        }
-        return items;
+    private static <TYPE extends IForgeRegistryEntry<TYPE> & ItemLike> Set<TYPE> collectTagStacks(ITagManager<TYPE> tagManager, String tagName, Predicate<TYPE> validElement) {
+        return tagManager.stream().filter(tag -> WildcardMatcher.matches(tagName, tag.getKey()))
+              .flatMap(ITag::stream)
+              .filter(validElement)
+              .collect(Collectors.toSet());
     }
 
     private static MatchingStacks getMatching(Map<String, MatchingStacks> cache, Set<Block> blocks, String name) {
@@ -202,31 +188,28 @@ public final class TagCache {
     }
 
     public static boolean tagHasMinerBlacklisted(@Nonnull String tag) {
-        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.isEmpty()) {
             return false;
         } else if (blockTagBlacklistedElements.containsKey(tag)) {
             return blockTagBlacklistedElements.getBoolean(tag);
         }
-        boolean hasBlacklisted = false;
-        for (Map.Entry<ResourceLocation, Tag<Block>> entry : BlockTags.getAllTags().getAllTags().entrySet()) {
-            if (WildcardMatcher.matches(tag, entry.getKey().toString()) && entry.getValue().getValues().stream().anyMatch(MekanismTags.Blocks.MINER_BLACKLIST::contains)) {
-                hasBlacklisted = true;
-                break;
-            }
-        }
+        boolean hasBlacklisted = TagUtils.manager(ForgeRegistries.BLOCKS).stream().anyMatch(blockTag ->
+              WildcardMatcher.matches(tag, blockTag.getKey()) &&
+              blockTag.stream().anyMatch(MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP::contains)
+        );
         blockTagBlacklistedElements.put(tag, hasBlacklisted);
         return hasBlacklisted;
     }
 
     public static boolean modIDHasMinerBlacklisted(@Nonnull String modName) {
-        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.isEmpty()) {
             return false;
         } else if (modIDBlacklistedElements.containsKey(modName)) {
             return modIDBlacklistedElements.getBoolean(modName);
         }
         boolean hasBlacklisted = false;
         for (Block block : ForgeRegistries.BLOCKS.getValues()) {
-            if (MekanismTags.Blocks.MINER_BLACKLIST.contains(block) && WildcardMatcher.matches(modName, block.getRegistryName().getNamespace())) {
+            if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.contains(block) && WildcardMatcher.matches(modName, block.getRegistryName().getNamespace())) {
                 hasBlacklisted = true;
                 break;
             }
@@ -240,14 +223,14 @@ public final class TagCache {
     }
 
     public static boolean materialHasMinerBlacklisted(@Nonnull Material material) {
-        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.isEmpty()) {
             return false;
         } else if (materialBlacklistedElements.containsKey(material)) {
             return materialBlacklistedElements.getBoolean(material);
         }
         boolean hasBlacklisted = false;
         for (Block block : ForgeRegistries.BLOCKS.getValues()) {
-            if (block.defaultBlockState().getMaterial() == material && MekanismTags.Blocks.MINER_BLACKLIST.contains(block)) {
+            if (block.defaultBlockState().getMaterial() == material && MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.contains(block)) {
                 hasBlacklisted = true;
                 break;
             }

@@ -14,7 +14,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -89,7 +89,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addBasicTransmitterRecipe(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter, Tag<Item> itemTag) {
+    private void addBasicTransmitterRecipe(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter, TagKey<Item> itemTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
@@ -106,7 +106,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTransmitterUpgradeRecipe(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> transmitter,
-          IItemProvider previousTransmitter, Tag<Item> alloyTag) {
+          IItemProvider previousTransmitter, TagKey<Item> alloyTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)

@@ -7,7 +7,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -43,7 +43,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    INGREDIENT from(Tag<TYPE> tag, int amount);
+    INGREDIENT from(TagKey<TYPE> tag, int amount);
 
     /**
      * Reads an Ingredient from a Packet Buffer.

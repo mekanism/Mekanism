@@ -93,8 +93,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
-        LevelAccessor world = event.getWorld();
-        if (!world.isClientSide() && world instanceof Level level) {
+        if (event.getWorld() instanceof Level level && !level.isClientSide()) {
             int version = event.getData().getInt(NBTConstants.WORLD_GEN_VERSION);
             //When a chunk is loaded, if it has an older version than the latest one
             if (version < MekanismConfig.world.userGenVersion.get()) {
@@ -117,8 +116,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent
     public void chunkUnloadEvent(ChunkEvent.Unload event) {
-        LevelAccessor world = event.getWorld();
-        if (!world.isClientSide() && world instanceof Level level && chunkVersions != null) {
+        if (event.getWorld() instanceof Level level && !level.isClientSide() && chunkVersions != null) {
             //When a chunk unloads, free up the memory tracking what version it has
             chunkVersions.getOrDefault(level.dimension().location(), Object2IntMaps.emptyMap())
                   .removeInt(event.getChunk().getPos());

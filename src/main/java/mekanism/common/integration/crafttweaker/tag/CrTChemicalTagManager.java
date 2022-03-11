@@ -2,27 +2,24 @@ package mekanism.common.integration.crafttweaker.tag;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.tag.ActionTagAdd;
-import com.blamejared.crafttweaker.api.action.tag.ActionTagCreate;
 import com.blamejared.crafttweaker.api.action.tag.ActionTagRemove;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.tag.MCTag;
-import com.blamejared.crafttweaker.api.tag.manager.ITagManager;
-import com.google.common.collect.Sets;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.tags.SetTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_CHEMICAL_TAG_MANAGER)
-public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>> implements ITagManager<CHEMICAL> {
+@ZenCodeType.Name(CrTConstants.CLASS_CHEMICAL_TAG_MANAGER)//TODO - 1.18: Hook back up
+public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>> {// implements ITagManager<CHEMICAL> {
 
     private final ChemicalTags<CHEMICAL> chemicalTags;
 
@@ -30,19 +27,20 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
         this.chemicalTags = chemicalTags;
     }
 
-    @Override
+    //@Override//TODO - 1.18: Hook back up
     public void addElements(MCTag<CHEMICAL> to, List<CHEMICAL> toAdd) {
         Tag<CHEMICAL> internal = getInternal(to);
         List<CHEMICAL> itemsFromDefinitions = getChemicals(toAdd);
         if (internal == null) {
-            SetTag<CHEMICAL> tagFromContents = SetTag.create(Sets.newHashSet(itemsFromDefinitions));
-            CraftTweakerAPI.apply(new ActionTagCreate<>(getTagCollection(), tagFromContents, to));
+            //TODO - 1.18: Hook back up
+            //SetTag<CHEMICAL> tagFromContents = SetTag.create(Sets.newHashSet(itemsFromDefinitions));
+            //CraftTweakerAPI.apply(new ActionTagCreate<>(getTagCollection(), tagFromContents, to));
         } else {
             CraftTweakerAPI.apply(new ActionTagAdd<>(internal, itemsFromDefinitions, to));
         }
     }
 
-    @Override
+    //@Override//TODO - 1.18: Hook back up
     public void removeElements(MCTag<CHEMICAL> from, List<CHEMICAL> toRemove) {
         Tag<CHEMICAL> internal = getInternal(from);
         List<CHEMICAL> chemicals = getChemicals(toRemove);
@@ -53,7 +51,7 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
         return toConvert.stream().map(IChemicalProvider::getChemical).toList();
     }
 
-    @Override
+    //@Override//TODO - 1.18: Hook back up
     public List<CHEMICAL> getElementsInTag(MCTag<CHEMICAL> theTag) {
         Tag<CHEMICAL> internal = getInternal(theTag);
         if (internal == null) {
@@ -62,14 +60,31 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
         return internal.getValues();
     }
 
-    @Override
+    //TODO - 1.18: Hook back up
+    /*@Override
     public TagCollection<CHEMICAL> getTagCollection() {
         return chemicalTags.getCollection();
-    }
+    }*/
 
     @Nullable
-    @Override
+    //@Override//TODO - 1.18: Hook back up/adjust as expected
     public Tag<CHEMICAL> getInternal(MCTag<CHEMICAL> theTag) {
-        return getTagCollection().getTag(theTag.id());
+        //TODO - 1.18: Hook back up after it changes
+        //return getTagCollection().getTag(theTag.id());
+        throw new UnsupportedOperationException("Not updated to 1.18.2 yet");
     }
+
+    //TODO - 1.18: Remove the below it is copied from CrT's ITagManager to reduce errors
+    @Nonnull
+    public abstract Class<CHEMICAL> getElementClass();
+
+    public MCTag<CHEMICAL> getTag(String name) {
+        return this.getTag(new ResourceLocation(name));
+    }
+
+    public MCTag<CHEMICAL> getTag(ResourceLocation location) {
+        throw new UnsupportedOperationException("Not updated to 1.18.2 yet");
+    }
+
+    public abstract String getTagFolder();
 }

@@ -6,7 +6,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.crafting.conditions.AndCondition;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -49,7 +49,7 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
         return new ResourceLocation(modid, path);
     }
 
-    protected Tag<Item> tag(String path) {
-        return ItemTags.bind(rl(path).toString());
+    protected TagKey<Item> tag(String path) {
+        return ItemTags.create(rl(path));
     }
 }

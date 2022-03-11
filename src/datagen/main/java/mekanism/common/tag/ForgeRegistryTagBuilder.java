@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 //Based off of TagsProvider.TagAppender but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations
@@ -36,8 +36,8 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     @SafeVarargs
-    public final ForgeRegistryTagBuilder<TYPE> add(Named<TYPE>... tags) {
-        return apply(rl -> builder.addTag(rl, modID), Named::getName, tags);
+    public final ForgeRegistryTagBuilder<TYPE> add(TagKey<TYPE>... tags) {
+        return apply(rl -> builder.addTag(rl, modID), TagKey::location, tags);
     }
 
     public ForgeRegistryTagBuilder<TYPE> add(Tag.Entry tag) {
@@ -79,8 +79,8 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     @SafeVarargs
-    public final ForgeRegistryTagBuilder<TYPE> addOptionalTag(Named<TYPE>... tags) {
-        return addOptionalTag(Named::getName, tags);
+    public final ForgeRegistryTagBuilder<TYPE> addOptionalTag(TagKey<TYPE>... tags) {
+        return addOptionalTag(TagKey::location, tags);
     }
 
     public ForgeRegistryTagBuilder<TYPE> addOptionalTag(ResourceLocation... locations) {
@@ -112,9 +112,9 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     @SafeVarargs
-    public final ForgeRegistryTagBuilder<TYPE> remove(Named<TYPE>... tags) {
-        for (Named<TYPE> tag : tags) {
-            builder.removeTag(tag.getName(), modID);
+    public final ForgeRegistryTagBuilder<TYPE> remove(TagKey<TYPE>... tags) {
+        for (TagKey<TYPE> tag : tags) {
+            builder.removeTag(tag.location(), modID);
         }
         return this;
     }

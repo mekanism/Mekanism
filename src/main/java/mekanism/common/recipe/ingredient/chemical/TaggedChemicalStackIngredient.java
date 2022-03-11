@@ -10,19 +10,25 @@ import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
+import net.minecraftforge.registries.tags.ITag;
 
 public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
       implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
     @Nonnull
-    private final Tag<CHEMICAL> tag;
+    private final ITag<CHEMICAL> tag;
     private final long amount;
 
-    public TaggedChemicalStackIngredient(@Nonnull Tag<CHEMICAL> tag, long amount) {
+    protected TaggedChemicalStackIngredient(@Nonnull ChemicalTags<CHEMICAL> tags, @Nonnull TagKey<CHEMICAL> tag, long amount) {
+        this(tags.getManager().map(manager -> manager.getTag(tag)).orElseThrow(), amount);
+    }
+
+    protected TaggedChemicalStackIngredient(@Nonnull ITag<CHEMICAL> tag, long amount) {
         this.tag = tag;
         this.amount = amount;
     }
@@ -41,7 +47,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
 
     @Override
     public boolean testType(@Nonnull CHEMICAL chemical) {
-        return Objects.requireNonNull(chemical).isIn(tag);
+        return tag.contains(Objects.requireNonNull(chemical));
     }
 
     @Nonnull
@@ -65,7 +71,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
         //TODO: Can this be cached some how
         List<@NonNull STACK> representations = new ArrayList<>();
-        for (CHEMICAL chemical : tag.getValues()) {
+        for (CHEMICAL chemical : tag) {
             representations.add(ingredientInfo.createStack(chemical, amount));
         }
         return representations;
@@ -74,14 +80,14 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     /**
      * For use in recipe input caching.
      */
-    public List<CHEMICAL> getRawInput() {
-        return tag.getValues();
+    public Iterable<CHEMICAL> getRawInput() {
+        return tag;
     }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(IngredientType.TAGGED);
-        buffer.writeResourceLocation(getIngredientInfo().getTagLocation(tag));
+        buffer.writeResourceLocation(tag.getKey().location());
         buffer.writeVarLong(amount);
     }
 
@@ -90,7 +96,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     public JsonElement serialize() {
         JsonObject json = new JsonObject();
         json.addProperty(JsonConstants.AMOUNT, amount);
-        json.addProperty(JsonConstants.TAG, getIngredientInfo().getTagLocation(tag).toString());
+        json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
         return json;
     }
 }

@@ -33,7 +33,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -86,19 +86,19 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //TODO - 1.18: Take into account if the ore is a single drop or multi like vanilla copper is?
         // We may want to consider this at least for the silk touched ore to ingot?
         ItemLike ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        Tag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
+        TagKey<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         ItemLike nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        Tag<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
+        TagKey<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
         ItemLike block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
-        Tag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
+        TagKey<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
         ItemLike raw = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
-        Tag<Item> rawTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
+        TagKey<Item> rawTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
         ItemLike rawBlock = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
-        Tag<Item> rawBlockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
+        TagKey<Item> rawBlockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
         OreBlockType oreBlockType = MekanismBlocks.ORES.get(OreType.get(resource));
         ItemLike ore = oreBlockType == null ? null : oreBlockType.stone();
         ItemLike deepslateOre = oreBlockType == null ? null : oreBlockType.deepslate();
-        Tag<Item> oreTag = resource.getOreTag();
+        TagKey<Item> oreTag = resource.getOreTag();
         float dustExperience = 0.3F;
         int toOre = 8;
         if (resource.isVanilla()) {
@@ -141,11 +141,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         IItemProvider clump = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
         IItemProvider crystal = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
         IItemProvider shard = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        Tag<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
-        Tag<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
-        Tag<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
-        Tag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        Tag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
+        TagKey<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
+        TagKey<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
+        TagKey<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
+        TagKey<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
+        TagKey<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
 
         SlurryRegistryObject<?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
 
@@ -311,8 +311,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
 
-    private void addOreProcessingGemRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, Tag<Item> oreTag,
-          IItemProvider dust, Tag<Item> dustTag, ItemLike gem, Tag<Item> gemTag, int fromOre, int toOre, Tag<Item> combineType) {
+    private void addOreProcessingGemRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
+          IItemProvider dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(dustTag),

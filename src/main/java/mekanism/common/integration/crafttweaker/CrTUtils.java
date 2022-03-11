@@ -25,6 +25,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 
 public class CrTUtils {
 
@@ -109,8 +110,9 @@ public class CrTUtils {
     /**
      * Helper to convert a CraftTweaker type tag to a regular tag and validate it exists
      */
-    public static <TYPE, CRT_TYPE> Tag<TYPE> validateTagAndGet(MCTag<CRT_TYPE> crtTag, Function<MCTag<CRT_TYPE>, Tag<TYPE>> getter) {
-        Tag<TYPE> tag = getter.apply(crtTag);
+    public static <TYPE, CRT_TYPE> TagKey<TYPE> validateTagAndGet(MCTag<CRT_TYPE> crtTag, Function<MCTag<CRT_TYPE>, Tag<TYPE>> getter) {
+        //TODO - 1.18: Hook back up
+        TagKey<TYPE> tag = null;//getter.apply(crtTag);
         if (tag == null) {
             throw new IllegalArgumentException("Tag " + crtTag.getCommandString() + " does not exist.");
         }

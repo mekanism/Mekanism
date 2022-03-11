@@ -13,7 +13,7 @@ import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
@@ -34,14 +34,14 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
     }
 
     private void registerPlasticStairs(Consumer<FinishedRecipe> consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
-          Tag<Item> blockType, boolean transparent, String basePath) {
+          TagKey<Item> blockType, boolean transparent, String basePath) {
         for (Map.Entry<EnumColor, ? extends IItemProvider> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
             registerPlasticStairs(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticStairs(Consumer<FinishedRecipe> consumer, EnumColor color, IItemProvider result, IItemProvider plastic, Tag<Item> blockType,
+    private void registerPlasticStairs(Consumer<FinishedRecipe> consumer, EnumColor color, IItemProvider result, IItemProvider plastic, TagKey<Item> blockType,
           boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC_STAIRS)

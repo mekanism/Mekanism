@@ -16,8 +16,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 
 /**
  * Helper class for providing information to the various chemical ingredients
@@ -77,16 +75,5 @@ public class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK e
      */
     public STACK createStack(STACK stack, long amount) {
         return stackToStackCreator.createStack(stack, amount);
-    }
-
-    /**
-     * Helper to look up the name of a tag, and get a decent estimate in LAN of the actual tag name.
-     *
-     * @param tag Tag to lookup.
-     *
-     * @return Name of the tag.
-     */
-    public ResourceLocation getTagLocation(Tag<CHEMICAL> tag) {
-        return tags.lookupTag(tag);
     }
 }

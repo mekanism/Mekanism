@@ -1,10 +1,8 @@
 package mekanism.api.chemical.gas;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraftforge.registries.tags.IReverseTag;
 
 public final class EmptyGas extends Gas {
 
@@ -12,15 +10,10 @@ public final class EmptyGas extends Gas {
         super(GasBuilder.builder().hidden());
     }
 
-    @Override
-    public boolean isIn(@Nonnull Tag<Gas> tags) {
-        //Empty gas is in no tags
-        return false;
-    }
-
     @Nonnull
     @Override
-    public Set<ResourceLocation> getTags() {
-        return Collections.emptySet();
+    protected Optional<IReverseTag<Gas>> getReverseTag() {
+        //Empty gas is in no tags
+        return Optional.empty();
     }
 }

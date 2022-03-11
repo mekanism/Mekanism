@@ -22,7 +22,7 @@ import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -109,7 +109,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
 
     private void registerRecipeSet(Consumer<FinishedRecipe> consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
           IItemProvider boots, IItemProvider sword, IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel,
-          IItemProvider shield, Tag<Item> ingot, Tag<Item> rod, @Nullable IItemProvider nugget) {
+          IItemProvider shield, TagKey<Item> ingot, TagKey<Item> rod, @Nullable IItemProvider nugget) {
         String baseArmorPath = name + "/armor/";
         armor(HELMET, helmet, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "helmet"));
         armor(CHESTPLATE, chestplate, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "chestplate"));
@@ -166,13 +166,13 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         }
     }
 
-    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, Tag<Item> ingot) {
+    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, TagKey<Item> ingot) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot);
     }
 
-    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, Tag<Item> ingot, Tag<Item> rod) {
+    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, TagKey<Item> ingot, TagKey<Item> rod) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(tool)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot)

@@ -9,7 +9,7 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -238,7 +238,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     @Nullable
     @Override
-    public Tag<Block> getTag() {
+    public TagKey<Block> getTag() {
         return fallBack.getTag();
     }
 

@@ -150,7 +150,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         public SolarCheck(Level world, BlockPos pos) {
             this.world = world;
             this.pos = pos;
-            Biome b = this.world.getBiomeManager().getBiome(this.pos);
+            Biome b = this.world.getBiomeManager().getBiome(this.pos).value();
             needsRainCheck = b.getPrecipitation() != Precipitation.NONE;
             // Consider the best temperature to be 0.8; biomes that are higher than that
             // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler

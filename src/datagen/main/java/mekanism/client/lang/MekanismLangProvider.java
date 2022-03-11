@@ -779,6 +779,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DICTIONARY_FLUID_DESC, "Display Fluid Tags");
         add(MekanismLang.DICTIONARY_ENTITY_TYPE, "Entity Type");
         add(MekanismLang.DICTIONARY_ENTITY_TYPE_DESC, "Display Entity Type Tags");
+        add(MekanismLang.DICTIONARY_ATTRIBUTE, "Attribute");
+        add(MekanismLang.DICTIONARY_ATTRIBUTE_DESC, "Display Attribute Tags");
         add(MekanismLang.DICTIONARY_POTION, "Potion");
         add(MekanismLang.DICTIONARY_POTION_DESC, "Display Potion Tags");
         add(MekanismLang.DICTIONARY_MOB_EFFECT, "Mob Effect");

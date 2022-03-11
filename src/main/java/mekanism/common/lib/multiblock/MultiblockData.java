@@ -155,7 +155,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         if (positions.length == 0) {
             throw new IllegalArgumentException("No positions given.");
         }
-        return Arrays.stream(positions).mapToDouble(pos -> world.getBiome(pos).getTemperature(pos)).sum() / positions.length;
+        return Arrays.stream(positions).mapToDouble(pos -> world.getBiome(pos).value().getTemperature(pos)).sum() / positions.length;
     }
 
     public boolean setShape(IShape shape) {

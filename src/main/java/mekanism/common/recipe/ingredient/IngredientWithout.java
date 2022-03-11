@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -26,11 +26,11 @@ public class IngredientWithout extends Ingredient {
     public static final ResourceLocation ID = Mekanism.rl("without");
 
     //Helper methods for the two most common types we may be creating
-    public static IngredientWithout create(Tag<Item> base, ItemLike without) {
+    public static IngredientWithout create(TagKey<Item> base, ItemLike without) {
         return new IngredientWithout(Ingredient.of(base), Ingredient.of(without));
     }
 
-    public static IngredientWithout create(Tag<Item> base, Tag<Item> without) {
+    public static IngredientWithout create(TagKey<Item> base, TagKey<Item> without) {
         return new IngredientWithout(Ingredient.of(base), Ingredient.of(without));
     }
 
