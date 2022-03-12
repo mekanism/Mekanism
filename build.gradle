@@ -417,7 +417,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    //TODO - 1.18: Make these use the mc version as a var again
+    //TODO - 1.18: Make these use the mc version as a var again and use implementation instead of compileOnly
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.1:${crafttweaker_version}")
     compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-1.18.1:${jeitweaker_version}")
 

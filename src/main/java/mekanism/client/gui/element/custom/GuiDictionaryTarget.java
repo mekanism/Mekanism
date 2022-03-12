@@ -173,6 +173,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                           .mapToObj(fluidHandler::getFluidInTank)
                           .filter(fluidInTank -> !fluidInTank.isEmpty())
                           .flatMap(fluidInTank -> TagUtils.tagsStream(fluidManager, fluidInTank.getFluid()))
+                          .distinct()
                     ));
                 });
                 //Get tags of any contained chemicals
@@ -223,6 +224,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                           .mapToObj(handler::getChemicalInTank)
                           .filter(chemicalInTank -> !chemicalInTank.isEmpty())
                           .flatMap(chemicalInTank -> chemicalInTank.getType().getTags())
+                          .distinct()
                     )
               )
         );
