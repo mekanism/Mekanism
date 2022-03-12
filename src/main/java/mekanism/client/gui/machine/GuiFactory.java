@@ -11,11 +11,10 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
-import mekanism.common.content.blocktype.FactoryType;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
@@ -79,26 +78,18 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     }
 
     private GuiProgress addProgress(GuiProgress progressBar) {
-        if (tile.getFactoryType() == FactoryType.SMELTING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.ENERGIZED_SMELTER.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.ENRICHING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.ENRICHMENT_CHAMBER.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.CRUSHING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.CRUSHER.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.COMPRESSING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.OSMIUM_COMPRESSOR.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.COMBINING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.COMBINER.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.PURIFYING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.PURIFICATION_CHAMBER.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.INJECTING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.INFUSING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.METALLURGIC_INFUSER.getRegistryName()));
-        } else if (tile.getFactoryType() == FactoryType.SAWING) {
-            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.PRECISION_SAWMILL.getRegistryName()));
-        }
-        return progressBar;
+        MekanismJEIRecipeType<?> jeiType = switch (tile.getFactoryType()) {
+            case SMELTING -> MekanismJEIRecipeType.SMELTING;
+            case ENRICHING -> MekanismJEIRecipeType.ENRICHING;
+            case CRUSHING -> MekanismJEIRecipeType.CRUSHING;
+            case COMPRESSING -> MekanismJEIRecipeType.COMPRESSING;
+            case COMBINING -> MekanismJEIRecipeType.COMBINING;
+            case PURIFYING -> MekanismJEIRecipeType.PURIFYING;
+            case INJECTING -> MekanismJEIRecipeType.INJECTING;
+            case INFUSING -> MekanismJEIRecipeType.METALLURGIC_INFUSING;
+            case SAWING -> MekanismJEIRecipeType.SAWING;
+        };
+        return addRenderableWidget(progressBar.jeiCategories(jeiType));
     }
 
     @Override

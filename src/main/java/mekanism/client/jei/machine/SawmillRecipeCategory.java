@@ -2,7 +2,6 @@ package mekanism.client.jei.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiUpArrow;
@@ -11,7 +10,9 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -24,19 +25,14 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     private final GuiSlot input;
     private final GuiSlot output;
 
-    public SawmillRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, mekanismBlock, 28, 16, 144, 54);
+    public SawmillRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<SawmillRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.PRECISION_SAWMILL, 28, 16, 144, 54);
         addElement(new GuiUpArrow(this, 60, 38));
         input = addSlot(SlotType.INPUT, 56, 17);
         addSlot(SlotType.POWER, 56, 53).with(SlotOverlay.POWER);
         output = addSlot(SlotType.OUTPUT_WIDE, 112, 31);
         addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.BAR, 78, 38);
-    }
-
-    @Override
-    public Class<? extends SawmillRecipe> getRecipeClass() {
-        return SawmillRecipe.class;
     }
 
     @Override

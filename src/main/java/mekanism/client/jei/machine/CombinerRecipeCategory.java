@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine;
 
 import javax.annotation.Nonnull;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -9,7 +8,9 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -21,8 +22,8 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
     private final GuiSlot extra;
     private final GuiSlot output;
 
-    public CombinerRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, mekanismBlock, 28, 16, 144, 54);
+    public CombinerRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<CombinerRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.COMBINER, 28, 16, 144, 54);
         addElement(new GuiUpArrow(this, 68, 38));
         input = addSlot(SlotType.INPUT, 64, 17);
         extra = addSlot(SlotType.EXTRA, 64, 53);
@@ -30,11 +31,6 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
         addSlot(SlotType.POWER, 39, 35).with(SlotOverlay.POWER);
         addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.BAR, 86, 38);
-    }
-
-    @Override
-    public Class<? extends CombinerRecipe> getRecipeClass() {
-        return CombinerRecipe.class;
     }
 
     @Override

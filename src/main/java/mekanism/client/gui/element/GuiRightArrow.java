@@ -3,6 +3,7 @@ package mekanism.client.gui.element;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -12,7 +13,7 @@ public class GuiRightArrow extends GuiTextureOnlyElement implements IJEIRecipeAr
 
     private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI, "right_arrow.png");
 
-    private ResourceLocation[] recipeCategories;
+    private MekanismJEIRecipeType<?>[] recipeCategories;
 
     public GuiRightArrow(IGuiWrapper gui, int x, int y) {
         super(ARROW, gui, x, y, 22, 15);
@@ -20,14 +21,14 @@ public class GuiRightArrow extends GuiTextureOnlyElement implements IJEIRecipeAr
 
     @Nonnull
     @Override
-    public GuiRightArrow jeiCategories(@Nullable ResourceLocation... recipeCategories) {
+    public GuiRightArrow jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }
 
     @Nullable
     @Override
-    public ResourceLocation[] getRecipeCategories() {
+    public MekanismJEIRecipeType<?>[] getRecipeCategories() {
         return recipeCategories;
     }
 }

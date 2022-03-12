@@ -11,7 +11,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.Mekanism;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
@@ -28,7 +28,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         //We override the things that reference the provider
-        super(helper, Mekanism.rl("rotary_condensentrator_" + (condensentrating ? "condensentrating" : "decondensentrating")),
+        super(helper, condensentrating ? MekanismJEIRecipeType.CONDENSENTRATING : MekanismJEIRecipeType.DECONDENSENTRATING,
               (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate(),
               createIcon(helper, MekanismBlocks.ROTARY_CONDENSENTRATOR), 3, 12, 170, 64);
         this.condensentrating = condensentrating;
@@ -40,11 +40,6 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
         addSlot(SlotType.INPUT, 155, 25);
         addSlot(SlotType.OUTPUT, 155, 56);
         addConstantProgress(this.condensentrating ? ProgressType.LARGE_RIGHT : ProgressType.LARGE_LEFT, 64, 39);
-    }
-
-    @Override
-    public Class<? extends RotaryRecipe> getRecipeClass() {
-        return RotaryRecipe.class;
     }
 
     @Override

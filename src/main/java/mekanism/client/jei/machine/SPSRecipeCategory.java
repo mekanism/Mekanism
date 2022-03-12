@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -14,12 +12,12 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.client.jei.machine.SPSRecipeCategory.SPSJEIRecipe;
+import mekanism.client.jei.MekanismJEIRecipeType;
+import mekanism.client.jei.recipe.SPSJEIRecipe;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.text.EnergyDisplay;
@@ -34,8 +32,8 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     private final GuiGauge<?> input;
     private final GuiGauge<?> output;
 
-    public SPSRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.SPS_CASING.getRegistryName(), MekanismLang.SPS.translate(), createIcon(helper, MekanismItems.ANTIMATTER_PELLET),
+    public SPSRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<SPSJEIRecipe> recipeType) {
+        super(helper, recipeType, MekanismLang.SPS.translate(), createIcon(helper, MekanismItems.ANTIMATTER_PELLET),
               3, 12, 168, 74);
         addElement(new GuiInnerScreen(this, 26, 13, 122, 60, () -> {
             List<Component> list = new ArrayList<>();
@@ -51,24 +49,14 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
               ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
-    @Nonnull
-    @Override
-    public Class<? extends SPSJEIRecipe> getRecipeClass() {
-        return SPSJEIRecipe.class;
-    }
-
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SPSJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.input.getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output));
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.input().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output()));
     }
 
     public static List<SPSJEIRecipe> getSPSRecipes() {
         return Collections.singletonList(new SPSJEIRecipe(IngredientCreatorAccess.gas().from(MekanismGases.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
               MekanismGases.ANTIMATTER.getStack(1)));
-    }
-
-    //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
-    public record SPSJEIRecipe(GasStackIngredient input, GasStack output) {
     }
 }

@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -20,7 +21,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     private Supplier<List<Component>> renderStrings;
     private Supplier<List<Component>> tooltipStrings;
 
-    private ResourceLocation[] recipeCategories;
+    private MekanismJEIRecipeType<?>[] recipeCategories;
     private boolean centerY;
     private int spacing = 1;
     private int padding = 3;
@@ -106,14 +107,14 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
 
     @Nonnull
     @Override
-    public GuiInnerScreen jeiCategories(@Nullable ResourceLocation... recipeCategories) {
+    public GuiInnerScreen jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }
 
     @Nullable
     @Override
-    public ResourceLocation[] getRecipeCategories() {
+    public MekanismJEIRecipeType<?>[] getRecipeCategories() {
         return recipeCategories;
     }
 

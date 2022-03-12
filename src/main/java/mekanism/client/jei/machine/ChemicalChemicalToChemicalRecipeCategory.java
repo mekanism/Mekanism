@@ -13,6 +13,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -35,9 +36,9 @@ public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends 
     protected final GuiProgress rightArrow;
     protected final GuiProgress leftArrow;
 
-    protected ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, IItemProvider provider, IIngredientType<STACK> ingredientType, int xOffset, int yOffset,
-          int width, int height) {
-        super(helper, provider, xOffset, yOffset, width, height);
+    protected ChemicalChemicalToChemicalRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<RECIPE> recipeType, IItemProvider provider,
+          IIngredientType<STACK> ingredientType, int xOffset, int yOffset, int width, int height) {
+        super(helper, recipeType, provider, xOffset, yOffset, width, height);
         this.ingredientType = ingredientType;
         leftInputGauge = addElement(getGauge(GaugeType.STANDARD.with(DataType.INPUT_1), 25, 13));
         outputGauge = addElement(getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 79, 4));

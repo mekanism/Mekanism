@@ -14,6 +14,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
@@ -40,16 +41,11 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     private final GuiEnergyGauge gauge;
     private final GuiSlot input;
 
-    public ItemStackToEnergyRecipeCategory(IGuiHelper helper, ResourceLocation id) {
-        super(helper, id, MekanismLang.CONVERSION_ENERGY.translate(), createIcon(helper, iconRL), 20, 12, 132, 62);
+    public ItemStackToEnergyRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<ItemStackToEnergyRecipe> recipeType) {
+        super(helper, recipeType, MekanismLang.CONVERSION_ENERGY.translate(), createIcon(helper, iconRL), 20, 12, 132, 62);
         gauge = addElement(GuiEnergyGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 133, 13));
         input = addSlot(SlotType.INPUT, 26, 36);
         addConstantProgress(ProgressType.LARGE_RIGHT, 64, 40);
-    }
-
-    @Override
-    public Class<? extends ItemStackToEnergyRecipe> getRecipeClass() {
-        return ItemStackToEnergyRecipe.class;
     }
 
     @Override

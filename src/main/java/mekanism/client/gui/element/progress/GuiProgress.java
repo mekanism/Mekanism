@@ -13,18 +13,18 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
 
 public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
 
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
-    private ResourceLocation[] recipeCategories;
+    private MekanismJEIRecipeType<?>[] recipeCategories;
     @Nullable
     private ColorDetails colorDetails;
     @Nullable
@@ -99,14 +99,14 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
 
     @Nonnull
     @Override
-    public GuiProgress jeiCategories(@Nullable ResourceLocation... recipeCategories) {
+    public GuiProgress jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }
 
     @Nullable
     @Override
-    public ResourceLocation[] getRecipeCategories() {
+    public MekanismJEIRecipeType<?>[] getRecipeCategories() {
         return recipeCategories;
     }
 

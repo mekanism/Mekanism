@@ -26,6 +26,7 @@ import mekanism.client.gui.machine.GuiChemicalCrystallizer;
 import mekanism.client.gui.machine.GuiChemicalCrystallizer.IOreInfo;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
@@ -56,19 +57,14 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     private final GuiSlot output;
     private final GuiSlot slurryOreSlot;
 
-    public ChemicalCrystallizerRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.CHEMICAL_CRYSTALLIZER, 5, 3, 147, 79);
+    public ChemicalCrystallizerRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<ChemicalCrystallizerRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.CHEMICAL_CRYSTALLIZER, 5, 3, 147, 79);
         gauge = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4));
         addSlot(SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
         output = addSlot(SlotType.OUTPUT, 129, 57);
         addSimpleProgress(ProgressType.LARGE_RIGHT, 53, 61);
         addElement(new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)));
         slurryOreSlot = addElement(new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
-    }
-
-    @Override
-    public Class<? extends ChemicalCrystallizerRecipe> getRecipeClass() {
-        return ChemicalCrystallizerRecipe.class;
     }
 
     @Override

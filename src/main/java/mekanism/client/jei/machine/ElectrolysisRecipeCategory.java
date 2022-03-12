@@ -15,6 +15,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
@@ -29,8 +30,8 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
     private final GuiGauge<?> leftOutput;
     private final GuiGauge<?> rightOutput;
 
-    public ElectrolysisRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.ELECTROLYTIC_SEPARATOR, 4, 9, 167, 62);
+    public ElectrolysisRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<ElectrolysisRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.ELECTROLYTIC_SEPARATOR, 4, 9, 167, 62);
         input = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10));
         leftOutput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_1), this, 58, 18));
         rightOutput = addElement(GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_2), this, 100, 18));
@@ -40,11 +41,6 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
         addSlot(SlotType.OUTPUT_2, 101, 52);
         addSlot(SlotType.POWER, 143, 35).with(SlotOverlay.POWER);
         addConstantProgress(ProgressType.BI, 80, 30);
-    }
-
-    @Override
-    public Class<? extends ElectrolysisRecipe> getRecipeClass() {
-        return ElectrolysisRecipe.class;
     }
 
     @Override

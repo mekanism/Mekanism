@@ -6,7 +6,8 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
@@ -20,8 +21,15 @@ public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<Formulai
     }
 
     @Override
+    public RecipeType<CraftingRecipe> getRecipeType() {
+        return RecipeTypes.CRAFTING;
+    }
+
+    @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
     public ResourceLocation getRecipeCategoryUid() {
-        return VanillaRecipeCategoryUid.CRAFTING;
+        return getRecipeType().getUid();
     }
 
     @Override
@@ -30,6 +38,8 @@ public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<Formulai
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
     public Class<CraftingRecipe> getRecipeClass() {
         return CraftingRecipe.class;
     }

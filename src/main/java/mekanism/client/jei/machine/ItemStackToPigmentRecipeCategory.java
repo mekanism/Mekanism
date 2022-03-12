@@ -9,6 +9,7 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiPigmentGauge;
 import mekanism.client.jei.JEIColorDetails;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 
@@ -16,19 +17,14 @@ public class ItemStackToPigmentRecipeCategory extends ItemStackToChemicalRecipeC
 
     private final PigmentColorDetails currentDetails;
 
-    public ItemStackToPigmentRecipeCategory(IGuiHelper helper, IItemProvider mekanismBlock) {
-        super(helper, mekanismBlock, MekanismJEI.TYPE_PIGMENT, false);
+    public ItemStackToPigmentRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<ItemStackToPigmentRecipe> recipeType, IItemProvider mekanismBlock) {
+        super(helper, recipeType, mekanismBlock, MekanismJEI.TYPE_PIGMENT, false);
         progressBar.colored(currentDetails = new PigmentColorDetails());
     }
 
     @Override
     protected GuiPigmentGauge getGauge(GaugeType type, int x, int y) {
         return GuiPigmentGauge.getDummy(type, this, x, y);
-    }
-
-    @Override
-    public Class<? extends ItemStackToPigmentRecipe> getRecipeClass() {
-        return ItemStackToPigmentRecipe.class;
     }
 
     @Override

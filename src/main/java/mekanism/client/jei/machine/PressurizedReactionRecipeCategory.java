@@ -17,6 +17,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
@@ -37,8 +38,8 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     private final GuiSlot outputItem;
     private final GuiGauge<?> outputGas;
 
-    public PressurizedReactionRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 10, 170, 60);
+    public PressurizedReactionRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<PressurizedReactionRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 10, 170, 60);
         //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
         // we will eventually instead just make the text scale
         inputItem = addSlot(SlotType.INPUT, 54, 35);
@@ -49,11 +50,6 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         outputGas = addElement(GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT), this, 140, 40));
         addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.RIGHT, 77, 38);
-    }
-
-    @Override
-    public Class<? extends PressurizedReactionRecipe> getRecipeClass() {
-        return PressurizedReactionRecipe.class;
     }
 
     @Override

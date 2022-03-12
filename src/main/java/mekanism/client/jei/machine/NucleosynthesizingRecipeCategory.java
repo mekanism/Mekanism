@@ -19,6 +19,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
@@ -41,8 +42,8 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     private final GuiSlot output;
     private final GuiGauge<?> gasInput;
 
-    public NucleosynthesizingRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, 6, 18, 182, 80);
+    public NucleosynthesizingRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<NucleosynthesizingRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, 6, 18, 182, 80);
         input = addSlot(SlotType.INPUT, 26, 40);
         extra = addSlot(SlotType.EXTRA, 6, 69);
         output = addSlot(SlotType.OUTPUT, 152, 40);
@@ -62,11 +63,6 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
         }, GaugeType.SMALL_MED, this, 172, 18));
         rateBar = addElement(new GuiDynamicHorizontalRateBar(this, getBarProgressTimer(), 5, 88, 183,
               ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
-    }
-
-    @Override
-    public Class<? extends NucleosynthesizingRecipe> getRecipeClass() {
-        return NucleosynthesizingRecipe.class;
     }
 
     @Override

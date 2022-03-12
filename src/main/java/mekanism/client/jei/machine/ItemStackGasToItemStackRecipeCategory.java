@@ -14,6 +14,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -29,8 +30,8 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
     private final GuiSlot extra;
     private final GuiSlot output;
 
-    public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, mekanismBlock, 28, 16, 144, 54);
+    public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<ItemStackGasToItemStackRecipe> recipeType, IBlockProvider mekanismBlock) {
+        super(helper, recipeType, mekanismBlock, 28, 16, 144, 54);
         input = addSlot(SlotType.INPUT, 64, 17);
         extra = addSlot(SlotType.EXTRA, 64, 53);
         output = addSlot(SlotType.OUTPUT, 116, 35);
@@ -38,11 +39,6 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
         gasInput = addElement(new GuiEmptyBar(this, 68, 36, 6, 12));
         addSimpleProgress(ProgressType.BAR, 86, 38);
-    }
-
-    @Override
-    public Class<? extends ItemStackGasToItemStackRecipe> getRecipeClass() {
-        return ItemStackGasToItemStackRecipe.class;
     }
 
     @Override

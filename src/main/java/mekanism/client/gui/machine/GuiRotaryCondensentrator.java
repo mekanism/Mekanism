@@ -14,6 +14,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -22,13 +23,9 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityRotaryCondensentrator;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRotaryCondensentrator, MekanismTileContainer<TileEntityRotaryCondensentrator>> {
-
-    private static final ResourceLocation condensentrating = Mekanism.rl("rotary_condensentrator_condensentrating");
-    private static final ResourceLocation decondensentrating = Mekanism.rl("rotary_condensentrator_decondensentrating");
 
     public GuiRotaryCondensentrator(MekanismTileContainer<TileEntityRotaryCondensentrator> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -60,7 +57,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
             public boolean isActive() {
                 return !tile.mode;
             }
-        }, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategories(condensentrating))
+        }, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategories(MekanismJEIRecipeType.CONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
         addRenderableWidget(new GuiProgress(new IBooleanProgressInfoHandler() {
             @Override
@@ -72,7 +69,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
             public boolean isActive() {
                 return tile.mode;
             }
-        }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(decondensentrating))
+        }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(MekanismJEIRecipeType.DECONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
         addRenderableWidget(new ToggleButton(this, 4, 4, () -> tile.mode, () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
               getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));

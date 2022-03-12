@@ -30,6 +30,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -56,7 +57,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     private final Component component;
     private final IGuiHelper guiHelper;
     private final IDrawable background;
-    private final ResourceLocation id;
+    private final RecipeType<RECIPE> recipeType;
     private final IDrawable icon;
     private final int xOffset;
     private final int yOffset;
@@ -65,12 +66,12 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     @Nullable
     private ITickTimer timer;
 
-    protected BaseRecipeCategory(IGuiHelper helper, IItemProvider provider, int xOffset, int yOffset, int width, int height) {
-        this(helper, provider.getRegistryName(), provider.getTextComponent(), createIcon(helper, provider), xOffset, yOffset, width, height);
+    protected BaseRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<RECIPE> recipeType, IItemProvider provider, int xOffset, int yOffset, int width, int height) {
+        this(helper, recipeType, provider.getTextComponent(), createIcon(helper, provider), xOffset, yOffset, width, height);
     }
 
-    protected BaseRecipeCategory(IGuiHelper helper, ResourceLocation id, Component component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
-        this.id = id;
+    protected BaseRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<RECIPE> recipeType, Component component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
+        this.recipeType = MekanismJEI.recipeType(recipeType);
         this.component = component;
         this.guiHelper = helper;
         this.icon = icon;
@@ -121,8 +122,22 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
+    public RecipeType<RECIPE> getRecipeType() {
+        return recipeType;
+    }
+
+    @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
+    public Class<? extends RECIPE> getRecipeClass() {
+        return getRecipeType().getRecipeClass();
+    }
+
+    @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
     public ResourceLocation getUid() {
-        return id;
+        return getRecipeType().getUid();
     }
 
     @Override

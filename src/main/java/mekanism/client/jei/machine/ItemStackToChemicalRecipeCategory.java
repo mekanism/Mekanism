@@ -13,6 +13,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -21,7 +22,6 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends BaseRecipeCategory<RECIPE> {
@@ -33,13 +33,14 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
     private final GuiGauge<?> output;
     private final GuiSlot input;
 
-    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, IItemProvider provider, IIngredientType<STACK> ingredientType, boolean isConversion) {
-        this(helper, provider.getRegistryName(), provider.getTextComponent(), createIcon(helper, provider), ingredientType, isConversion);
+    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<RECIPE> recipeType, IItemProvider provider, IIngredientType<STACK> ingredientType,
+          boolean isConversion) {
+        this(helper, recipeType, provider.getTextComponent(), createIcon(helper, provider), ingredientType, isConversion);
     }
 
-    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, ResourceLocation id, Component component, IDrawable icon, IIngredientType<STACK> ingredientType,
-          boolean isConversion) {
-        super(helper, id, component, icon, 20, 12, 132, 62);
+    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<RECIPE> recipeType, Component component, IDrawable icon,
+          IIngredientType<STACK> ingredientType, boolean isConversion) {
+        super(helper, recipeType, component, icon, 20, 12, 132, 62);
         this.ingredientType = ingredientType;
         output = addElement(getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 131, 13));
         input = addSlot(SlotType.INPUT, 26, 36);

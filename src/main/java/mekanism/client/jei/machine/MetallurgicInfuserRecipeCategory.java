@@ -14,6 +14,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -29,8 +30,8 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     private final GuiSlot output;
     private final GuiBar<?> infusionBar;
 
-    public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.METALLURGIC_INFUSER, 5, 16, 166, 54);
+    public MetallurgicInfuserRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<MetallurgicInfuserRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.METALLURGIC_INFUSER, 5, 16, 166, 54);
         extra = addSlot(SlotType.EXTRA, 17, 35);
         input = addSlot(SlotType.INPUT, 51, 43);
         output = addSlot(SlotType.OUTPUT, 109, 43);
@@ -38,11 +39,6 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.RIGHT, 72, 47);
         infusionBar = addElement(new GuiEmptyBar(this, 7, 15, 4, 52));
-    }
-
-    @Override
-    public Class<? extends MetallurgicInfuserRecipe> getRecipeClass() {
-        return MetallurgicInfuserRecipe.class;
     }
 
     @Override

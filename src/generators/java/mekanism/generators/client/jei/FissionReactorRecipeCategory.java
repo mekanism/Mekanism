@@ -5,14 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -22,6 +19,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tags.TagUtils;
@@ -31,7 +29,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
 import mekanism.common.util.text.TextUtils;
-import mekanism.generators.client.jei.FissionReactorRecipeCategory.FissionJEIRecipe;
+import mekanism.generators.client.jei.recipe.FissionJEIRecipe;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -51,8 +49,8 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
     private final GuiGauge<?> heatedCoolantTank;
     private final GuiGauge<?> wasteTank;
 
-    public FissionReactorRecipeCategory(IGuiHelper helper, ResourceLocation id) {
-        super(helper, id, GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
+    public FissionReactorRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<FissionJEIRecipe> recipeType) {
+        super(helper, recipeType, GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
         addElement(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
               MekanismLang.STATUS.translate(EnumColor.BRIGHT_GREEN, ActiveDisabled.of(true)),
               GeneratorsLang.GAS_BURN_RATE.translate(1.0),
@@ -67,27 +65,21 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
     }
 
     private List<FluidStack> getWaterInput(FissionJEIRecipe recipe) {
-        int amount = MathUtils.clampToInt(recipe.outputCoolant.getAmount());
+        int amount = MathUtils.clampToInt(recipe.outputCoolant().getAmount());
         return TagUtils.tag(ForgeRegistries.FLUIDS, FluidTags.WATER).stream().map(fluid -> new FluidStack(fluid, amount)).toList();
-    }
-
-    @Nonnull
-    @Override
-    public Class<? extends FissionJEIRecipe> getRecipeClass() {
-        return FissionJEIRecipe.class;
     }
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
         //Handle the coolant either special cased water or the proper coolant
-        if (recipe.inputCoolant == null) {
+        if (recipe.inputCoolant() == null) {
             initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, getWaterInput(recipe));
         } else {
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant.getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant().getRepresentations());
         }
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel.getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant));
-        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste));
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant()));
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste()));
     }
 
     public static List<FissionJEIRecipe> getFissionRecipes() {
@@ -111,9 +103,5 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
             }
         }
         return recipes;
-    }
-
-    //If null -> coolant is water
-    public record FissionJEIRecipe(@Nullable GasStackIngredient inputCoolant, GasStackIngredient fuel, GasStack outputCoolant, GasStack waste) {
     }
 }

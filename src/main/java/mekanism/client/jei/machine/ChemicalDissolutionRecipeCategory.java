@@ -21,6 +21,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
@@ -38,8 +39,8 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
     private final GuiGauge<?> outputGauge;
     private final GuiSlot inputSlot;
 
-    public ChemicalDissolutionRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, 3, 3, 170, 79);
+    public ChemicalDissolutionRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<ChemicalDissolutionRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, 3, 3, 170, 79);
         //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
         // we will eventually instead just make the text scale
         inputGauge = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4));
@@ -50,11 +51,6 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
         addSlot(SlotType.POWER, 152, 14).with(SlotOverlay.POWER);
         addSimpleProgress(ProgressType.LARGE_RIGHT, 64, 40);
         addElement(new GuiHorizontalPowerBar(this, FULL_BAR, 115, 75));
-    }
-
-    @Override
-    public Class<? extends ChemicalDissolutionRecipe> getRecipeClass() {
-        return ChemicalDissolutionRecipe.class;
     }
 
     @Override

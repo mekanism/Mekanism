@@ -9,6 +9,7 @@ import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiPigmentGauge;
 import mekanism.client.jei.JEIColorDetails;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -18,8 +19,8 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
     private final PigmentColorDetails leftColorDetails;
     private final PigmentColorDetails rightColorDetails;
 
-    public PigmentMixerRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.PIGMENT_MIXER, MekanismJEI.TYPE_PIGMENT, 3, 3, 170, 80);
+    public PigmentMixerRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<PigmentMixingRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.PIGMENT_MIXER, MekanismJEI.TYPE_PIGMENT, 3, 3, 170, 80);
         rightArrow.colored(leftColorDetails = new PigmentColorDetails());
         leftArrow.colored(rightColorDetails = new PigmentColorDetails());
     }
@@ -27,11 +28,6 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
     @Override
     protected GuiChemicalGauge<Pigment, PigmentStack, ?> getGauge(GaugeType type, int x, int y) {
         return GuiPigmentGauge.getDummy(type, this, x, y);
-    }
-
-    @Override
-    public Class<? extends PigmentMixingRecipe> getRecipeClass() {
-        return PigmentMixingRecipe.class;
     }
 
     @Override

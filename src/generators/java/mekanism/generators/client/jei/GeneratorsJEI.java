@@ -3,6 +3,7 @@ package mekanism.generators.client.jei;
 import javax.annotation.Nonnull;
 import mekanism.client.jei.CatalystRegistryHelper;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.RecipeRegistryHelper;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsItems;
@@ -17,8 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 
 @JeiPlugin
 public class GeneratorsJEI implements IModPlugin {
-
-    private static final ResourceLocation FISSION = MekanismGenerators.rl("fission");
 
     @Nonnull
     @Override
@@ -35,17 +34,17 @@ public class GeneratorsJEI implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
-        registry.addRecipeCategories(new FissionReactorRecipeCategory(guiHelper, FISSION));
+        registry.addRecipeCategories(new FissionReactorRecipeCategory(guiHelper, GeneratorsJEIRecipeType.FISSION));
     }
 
     @Override
     public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registry) {
-        CatalystRegistryHelper.register(registry, FISSION, GeneratorsBlocks.FISSION_REACTOR_CASING, GeneratorsBlocks.FISSION_REACTOR_PORT,
+        CatalystRegistryHelper.register(registry, GeneratorsJEIRecipeType.FISSION, GeneratorsBlocks.FISSION_REACTOR_CASING, GeneratorsBlocks.FISSION_REACTOR_PORT,
               GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY);
     }
 
     @Override
-    public void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(FissionReactorRecipeCategory.getFissionRecipes(), FISSION);
+    public void registerRecipes(@Nonnull IRecipeRegistration registry) {
+        RecipeRegistryHelper.register(registry, GeneratorsJEIRecipeType.FISSION, FissionReactorRecipeCategory.getFissionRecipes());
     }
 }

@@ -15,6 +15,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.JEIColorDetails;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
@@ -33,19 +34,14 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     private final GuiSlot inputSlot;
     private final GuiSlot output;
 
-    public PaintingRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.PAINTING_MACHINE, 25, 13, 146, 60);
+    public PaintingRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<PaintingRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.PAINTING_MACHINE, 25, 13, 146, 60);
         inputSlot = addSlot(SlotType.INPUT, 45, 35);
         addSlot(SlotType.POWER, 144, 35).with(SlotOverlay.POWER);
         output = addSlot(SlotType.OUTPUT, 116, 35);
         addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
         inputPigment = addElement(GuiPigmentGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13));
         addSimpleProgress(ProgressType.LARGE_RIGHT, 64, 39).colored(colorDetails = new PigmentColorDetails());
-    }
-
-    @Override
-    public Class<? extends PaintingRecipe> getRecipeClass() {
-        return PaintingRecipe.class;
     }
 
     @Override

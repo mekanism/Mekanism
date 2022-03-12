@@ -12,6 +12,7 @@ import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
@@ -27,8 +28,8 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
     private final GuiGauge<?> input;
     private final GuiGauge<?> output;
 
-    public FluidToFluidRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, 3, 12, 170, 62);
+    public FluidToFluidRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<FluidToFluidRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, 3, 12, 170, 62);
         addElement(new GuiInnerScreen(this, 48, 19, 80, 40, () -> Arrays.asList(
               MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(EvaporationMultiblockData.MAX_HEIGHT),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(HeatAPI.AMBIENT_TEMP, TemperatureUnit.KELVIN, true)),
@@ -43,11 +44,6 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
         addSlot(SlotType.OUTPUT, 132, 51);
         input = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
         output = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 152, 13));
-    }
-
-    @Override
-    public Class<? extends FluidToFluidRecipe> getRecipeClass() {
-        return FluidToFluidRecipe.class;
     }
 
     @Override

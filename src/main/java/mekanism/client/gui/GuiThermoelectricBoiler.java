@@ -14,11 +14,11 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -44,7 +44,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             BoilerMultiblockData multiblock = tile.getMultiblock();
             return Arrays.asList(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(multiblock.lastBoilRate)), MekanismLang.MAX_BOIL_RATE.translate(TextUtils.format(multiblock.lastMaxBoil)));
-        }).jeiCategories(MekanismBlocks.BOILER_CASING.getRegistryName()));
+        }).jeiCategories(MekanismJEIRecipeType.BOILER));
         addRenderableWidget(new GuiBoilerTab(this, tile, BoilerTab.STAT));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override

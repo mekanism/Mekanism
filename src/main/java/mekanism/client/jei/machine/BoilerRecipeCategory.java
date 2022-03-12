@@ -13,8 +13,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -24,7 +22,8 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.client.jei.machine.BoilerRecipeCategory.BoilerJEIRecipe;
+import mekanism.client.jei.MekanismJEIRecipeType;
+import mekanism.client.jei.recipe.BoilerJEIRecipe;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
@@ -52,8 +51,8 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     @Nullable
     private BoilerJEIRecipe recipe;
 
-    public BoilerRecipeCategory(IGuiHelper helper, ResourceLocation id) {
-        super(helper, id, MekanismLang.BOILER.translate(), createIcon(helper, iconRL), 6, 13, 180, 60);
+    public BoilerRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<BoilerJEIRecipe> recipeType) {
+        super(helper, recipeType, MekanismLang.BOILER.translate(), createIcon(helper, iconRL), 6, 13, 180, 60);
         //Note: All these elements except for the heatedCoolantTank and waterTank are in slightly different x positions than in the normal GUI
         // so that they fit properly in JEI
         addElement(new GuiInnerScreen(this, 48, 23, 96, 40, () -> {
@@ -63,8 +62,8 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
                 temperature = HeatAPI.AMBIENT_TEMP;
                 boilRate = 0;
             } else {
-                temperature = recipe.temperature;
-                boilRate = MathUtils.clampToInt(recipe.steam.getAmount());
+                temperature = recipe.temperature();
+                boilRate = MathUtils.clampToInt(recipe.steam().getAmount());
             }
             return Arrays.asList(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(boilRate)));
@@ -76,18 +75,12 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         cooledCoolantTank = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 168, 13).setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA)));
     }
 
-    @Nonnull
-    @Override
-    public Class<? extends BoilerJEIRecipe> getRecipeClass() {
-        return BoilerJEIRecipe.class;
-    }
-
     @Override
     public void draw(BoilerJEIRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrixStack, double mouseX, double mouseY) {
         //Update what the current recipe is so that we have the proper values for temperature and the like
         this.recipe = recipe;
         super.draw(recipe, recipeSlotView, matrixStack, mouseX, mouseY);
-        if (recipe.superHeatedCoolant == null) {
+        if (recipe.superHeatedCoolant() == null) {
             superHeatedCoolantTank.drawBarOverlay(matrixStack);
             cooledCoolantTank.drawBarOverlay(matrixStack);
         }
@@ -96,13 +89,13 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, BoilerJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
-        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water.getRepresentations());
-        if (recipe.superHeatedCoolant == null) {
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
+        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations());
+        if (recipe.superHeatedCoolant() == null) {
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
         } else {
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant.getRepresentations());
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
-            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant));
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
         }
     }
 
@@ -128,9 +121,5 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
             }
         }
         return recipes;
-    }
-
-    public record BoilerJEIRecipe(@Nullable GasStackIngredient superHeatedCoolant, FluidStackIngredient water, GasStack steam, GasStack cooledCoolant,
-                                  double temperature) {
     }
 }

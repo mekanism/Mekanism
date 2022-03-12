@@ -24,6 +24,7 @@ import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
+import mekanism.generators.client.jei.GeneratorsJEIRecipeType;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -31,12 +32,10 @@ import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorCasing, MekanismTileContainer<TileEntityFissionReactorCasing>> {
 
-    private static final ResourceLocation JEI_LOCATION = MekanismGenerators.rl("fission");
     private TranslationButton activateButton;
     private TranslationButton scramButton;
 
@@ -65,7 +64,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                   MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(multiblock.heatCapacitor.getTemperature(), TemperatureUnit.KELVIN, true)),
                   GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
             );
-        }).spacing(2).jeiCategories(JEI_LOCATION));
+        }).spacing(2).jeiCategories(GeneratorsJEIRecipeType.FISSION));
         addRenderableWidget(new GuiHybridGauge(() -> tile.getMultiblock().gasCoolantTank, () -> tile.getMultiblock().getGasTanks(null),
               () -> tile.getMultiblock().fluidCoolantTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13)
               .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));

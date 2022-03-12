@@ -9,6 +9,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -20,19 +21,14 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
     private final GuiSlot input;
     private final GuiSlot output;
 
-    public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, mekanismBlock, 28, 16, 144, 54);
+    public ItemStackToItemStackRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<ItemStackToItemStackRecipe> recipeType, IBlockProvider mekanismBlock) {
+        super(helper, recipeType, mekanismBlock, 28, 16, 144, 54);
         addElement(new GuiUpArrow(this, 68, 38));
         input = addSlot(SlotType.INPUT, 64, 17);
         output = addSlot(SlotType.OUTPUT, 116, 35);
         addSlot(SlotType.POWER, 64, 53).with(SlotOverlay.POWER);
         addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
         addSimpleProgress(ProgressType.BAR, 86, 38);
-    }
-
-    @Override
-    public Class<? extends ItemStackToItemStackRecipe> getRecipeClass() {
-        return ItemStackToItemStackRecipe.class;
     }
 
     @Override

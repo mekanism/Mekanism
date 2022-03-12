@@ -15,7 +15,6 @@ import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
 
 public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
 
@@ -118,12 +117,12 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                 }
                 //If we couldn't find any, then we need to continue on to checking this element itself
                 if (element instanceof IJEIRecipeArea<?> recipeArea && recipeArea.isJEIAreaActive()) {
-                    ResourceLocation[] categories = recipeArea.getRecipeCategories();
+                    MekanismJEIRecipeType<?>[] categories = recipeArea.getRecipeCategories();
                     //getRecipeCategory is a cheaper call than isMouseOver, so we perform it first
                     if (categories != null && recipeArea.isMouseOverJEIArea(mouseX, mouseY)) {
                         //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
                         IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(),
-                              element.getWidth(), element.getHeight(), categories);
+                              element.getWidth(), element.getHeight(), MekanismJEI.recipeType(categories));
                         return Collections.singleton(clickableArea);
                     }
                 }

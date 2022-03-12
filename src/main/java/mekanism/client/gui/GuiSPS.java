@@ -9,12 +9,12 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
@@ -45,7 +45,7 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
                 list.add(MekanismLang.PROCESS_RATE_MB.translate(multiblock.getProcessRate()));
             }
             return list;
-        }).jeiCategories(MekanismBlocks.SPS_CASING.getRegistryName()));
+        }).jeiCategories(MekanismJEIRecipeType.SPS));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public Component getTooltip() {
