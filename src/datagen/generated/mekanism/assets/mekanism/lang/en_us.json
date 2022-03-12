@@ -558,6 +558,8 @@
   "description.mekanism.uranium_ore": "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.",
   "description.mekanism.vein_mining_unit": "Allows for quick mining of ore deposits and rapid felling of trees.",
   "description.mekanism.vision_enhancement_unit": "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.",
+  "dictionary.mekanism.attribute": "Attribute",
+  "dictionary.mekanism.attribute.desc": "Display Attribute Tags",
   "dictionary.mekanism.block": "Block",
   "dictionary.mekanism.block.desc": "Display Block Tags",
   "dictionary.mekanism.block_entity_type": "Block Entity Type",
