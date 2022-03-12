@@ -558,6 +558,8 @@
   "description.mekanism.uranium_ore": "Un metal común pesado, que puede producir grandes cantidades de energía cuando se procesa correctamente. En su forma natural no es lo suficientemente radiactiva como para causar daño.",
   "description.mekanism.vein_mining_unit": "Permite la extracción rápida de depósitos de minerales y la tala rápida de árboles.",
   "description.mekanism.vision_enhancement_unit": "Resplandece el entorno circundante, permitiendo al usuario ver a través de la oscuridad. Instale múltiples para una visión nocturna más efectiva.",
+  "dictionary.mekanism.attribute": "Atributo",
+  "dictionary.mekanism.attribute.desc": "Mostrar Etiquetas de Atributos",
   "dictionary.mekanism.block": "Bloque",
   "dictionary.mekanism.block.desc": "Mostrar etiquetas de bloques",
   "dictionary.mekanism.block_entity_type": "Tipo de Entidad de Bloque",
