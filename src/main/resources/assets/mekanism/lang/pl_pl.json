@@ -558,6 +558,8 @@
   "description.mekanism.uranium_ore": "Pospolity metal ciężki, mogący dostarczyć ogromne ilości energii po odpowiednim przetworzeniu. W swojej naturalnie występującej formie, nie jest wystarczająco radioaktywny aby spowodować szkody.",
   "description.mekanism.vein_mining_unit": "Pozwala na szybkie wydobywanie złóż rud, oraz wycinanie całych drzew.",
   "description.mekanism.vision_enhancement_unit": "Rozjaśnia otaczające środowisko, umożliwiając użytkownikowi widzenie ciemności. Zainstaluj kilka, aby uzyskać silniejszy efekt.",
+  "dictionary.mekanism.attribute": "Atrybut",
+  "dictionary.mekanism.attribute.desc": "Wyświetlaj tagi atrybutów",
   "dictionary.mekanism.block": "Blok",
   "dictionary.mekanism.block.desc": "Wyświetl tagi bloków",
   "dictionary.mekanism.block_entity_type": "Typ bytu bloku",
