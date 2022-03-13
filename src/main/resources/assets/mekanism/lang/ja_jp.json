@@ -558,6 +558,8 @@
   "description.mekanism.uranium_ore": "適切に処理すれば大量のエネルギーが得られる普通の重金属です。自然に産する状態では、障害を引き起こすに十分な放射能を持ち合わせていません。",
   "description.mekanism.vein_mining_unit": "鉱脈と樹木の高速な採掘を可能にします。",
   "description.mekanism.vision_enhancement_unit": "周囲を明るくし、使用者が暗闇を見通せるようにします。複数インストールすれば、より暗視が効くようになります。",
+  "dictionary.mekanism.attribute": "属性",
+  "dictionary.mekanism.attribute.desc": "属性タグを表示",
   "dictionary.mekanism.block": "ブロック",
   "dictionary.mekanism.block.desc": "ブロックタグを表示",
   "dictionary.mekanism.block_entity_type": "ブロックエンティティタイプ",
