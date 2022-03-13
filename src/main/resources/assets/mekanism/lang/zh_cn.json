@@ -558,6 +558,8 @@
   "description.mekanism.uranium_ore": "一种普通的重金属，经过适当的处理可以产生大量的能量。以其自然形成的形式，它的放射性不足以造成伤害。",
   "description.mekanism.vein_mining_unit": "允许快速开采矿床和快速砍伐树木。",
   "description.mekanism.vision_enhancement_unit": "照亮周围环境，让玩家透过黑暗看到世界。安装多个以提高夜视效果。",
+  "dictionary.mekanism.attribute": "属性",
+  "dictionary.mekanism.attribute.desc": "显示属性标签",
   "dictionary.mekanism.block": "方块",
   "dictionary.mekanism.block.desc": "显示方块标签",
   "dictionary.mekanism.block_entity_type": "方块实体种类",
