@@ -231,6 +231,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.OREDICTIONIFICATOR, "Oredictionificator");
         add(MekanismBlocks.OSMIUM_COMPRESSOR, "Osmium Compressor");
         add(MekanismBlocks.PAINTING_MACHINE, "Painting Machine");
+        add(MekanismBlocks.PERSONAL_BARREL, "Personal Barrel");
         add(MekanismBlocks.PERSONAL_CHEST, "Personal Chest");
         add(MekanismBlocks.PIGMENT_EXTRACTOR, "Pigment Extractor");
         add(MekanismBlocks.PIGMENT_MIXER, "Pigment Mixer");
@@ -1194,7 +1195,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_ENERGIZED_SMELTER, "A simple machine that serves as a Mekanism-based furnace that runs off of energy.");
         add(MekanismLang.DESCRIPTION_TELEPORTER, "A machine capable of teleporting players to various locations defined by another teleporter.");
         add(MekanismLang.DESCRIPTION_ELECTRIC_PUMP, "An advanced, upgradeable pump, capable of extracting any type of fluid.");
-        add(MekanismLang.DESCRIPTION_PERSONAL_CHEST, "A 54-slot chest that can be opened anywhere- even from your own inventory.");
+        add(MekanismLang.DESCRIPTION_PERSONAL_BARREL, "A 54-slot barrel that can be opened anywhere- even from your own inventory.");
+        add(MekanismLang.DESCRIPTION_PERSONAL_CHEST, "A 54-slot chest that can be opened from your own inventory.");
         add(MekanismLang.DESCRIPTION_CHARGEPAD, "A universal chargepad that can charge any energized item from any mod.");
         add(MekanismLang.DESCRIPTION_LOGISTICAL_SORTER, "A filter-based, advanced sorting machine that can auto-eject specified items out of and into adjacent inventories and Logistical Transporters.");
         add(MekanismLang.DESCRIPTION_ROTARY_CONDENSENTRATOR, "A machine capable of converting gases into their fluid form and vice versa.");

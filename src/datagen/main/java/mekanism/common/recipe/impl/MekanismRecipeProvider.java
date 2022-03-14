@@ -45,7 +45,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     static final char DIAMOND_CHAR = 'D';
     static final char GLASS_CHAR = 'G';
-    static final char PERSONAL_CHEST_CHAR = 'P';
+    static final char PERSONAL_STORAGE_CHAR = 'P';
     static final char ROBIT_CHAR = 'R';
     static final char SORTER_CHAR = 'S';
     static final char TELEPORTATION_CORE_CHAR = 'T';
@@ -228,13 +228,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_OXIDIZER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
-                    TripleLine.of(PERSONAL_CHEST_CHAR, Pattern.CONSTANT, Pattern.TANK),
+                    TripleLine.of(PERSONAL_STORAGE_CHAR, Pattern.CONSTANT, Pattern.TANK),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
               ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
-              .key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
+              .key(PERSONAL_STORAGE_CHAR, MekanismTags.Items.PERSONAL_STORAGE)
               .build(consumer);
         //Chemical washer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
@@ -638,9 +638,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Laser tractor beam
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_TRACTOR_BEAM)
               .pattern(RecipePattern.createPattern(
-                    PERSONAL_CHEST_CHAR,
+                    PERSONAL_STORAGE_CHAR,
                     Pattern.CONSTANT)
-              ).key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
+              ).key(PERSONAL_STORAGE_CHAR, MekanismTags.Items.PERSONAL_STORAGE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER_AMPLIFIER)
               .build(consumer);
         //Logistical sorter
@@ -704,6 +704,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismTags.Items.SAWDUST)
               .build(consumer, Mekanism.rl("paper"));
+        //Personal barrel
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_BARREL)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.CIRCUIT, Pattern.PREVIOUS),
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
+              ).key(Pattern.PREVIOUS, Tags.Items.BARRELS_WOODEN)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(GLASS_CHAR, Tags.Items.GLASS)
+              .build(consumer);
         //Personal chest
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_CHEST)
               .pattern(RecipePattern.createPattern(
@@ -806,12 +817,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
-                    TripleLine.of(Pattern.INGOT, PERSONAL_CHEST_CHAR, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, PERSONAL_STORAGE_CHAR, Pattern.INGOT))
               ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
-              .key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
+              .key(PERSONAL_STORAGE_CHAR, MekanismTags.Items.PERSONAL_STORAGE)
               .build(consumer);
         //Rotary condensentrator
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR)
@@ -986,7 +997,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.GLASS, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
-              ).key(Pattern.CONSTANT, MekanismBlocks.PERSONAL_CHEST)
+              ).key(Pattern.CONSTANT, MekanismTags.Items.PERSONAL_STORAGE)
               .key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.GLASS, Tags.Items.GLASS_PANES)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)

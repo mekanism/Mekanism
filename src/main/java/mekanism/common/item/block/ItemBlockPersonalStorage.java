@@ -4,8 +4,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockPersonalChest;
-import mekanism.common.inventory.container.item.PersonalChestItemContainer;
+import mekanism.common.block.interfaces.IHasDescription;
+import mekanism.common.block.interfaces.IPersonalStorage;
+import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
@@ -26,12 +27,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.FakePlayer;
 
-public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockPersonalChest> implements IItemSustainedInventory, ISecurityItem, IGuiItem {
+public class ItemBlockPersonalStorage<BLOCK extends Block & IHasDescription & IPersonalStorage> extends ItemBlockTooltip<BLOCK> implements IItemSustainedInventory,
+      ISecurityItem, IGuiItem {
 
-    public ItemBlockPersonalChest(BlockPersonalChest block) {
+    public ItemBlockPersonalStorage(BLOCK block) {
         super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
@@ -82,7 +85,7 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockPersonalChest>
     }
 
     @Override
-    public ContainerTypeRegistryObject<PersonalChestItemContainer> getContainerType() {
-        return MekanismContainerTypes.PERSONAL_CHEST_ITEM;
+    public ContainerTypeRegistryObject<PersonalStorageItemContainer> getContainerType() {
+        return MekanismContainerTypes.PERSONAL_STORAGE_ITEM;
     }
 }

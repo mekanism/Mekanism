@@ -10,7 +10,7 @@
   ],
   "key": {
     "#": {
-      "item": "mekanism:personal_chest"
+      "tag": "mekanism:personal_storage"
     },
     "I": {
       "tag": "forge:pellets/polonium"

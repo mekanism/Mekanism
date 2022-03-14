@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.inventory.InventoryPersonalStorage;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
@@ -13,18 +13,18 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class PersonalChestItemContainer extends MekanismItemContainer {
+public class PersonalStorageItemContainer extends MekanismItemContainer {
 
-    private InventoryPersonalChest itemInventory;
+    private InventoryPersonalStorage itemInventory;
 
-    public PersonalChestItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
-        super(MekanismContainerTypes.PERSONAL_CHEST_ITEM, id, inv, hand, stack);
+    public PersonalStorageItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
+        super(MekanismContainerTypes.PERSONAL_STORAGE_ITEM, id, inv, hand, stack);
     }
 
     @Override
     protected void addSlotsAndOpen() {
         //We have to initialize this before actually adding the slots
-        itemInventory = new InventoryPersonalChest(stack);
+        itemInventory = new InventoryPersonalStorage(stack);
         super.addSlotsAndOpen();
     }
 

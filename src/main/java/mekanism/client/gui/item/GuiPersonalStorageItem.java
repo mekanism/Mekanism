@@ -4,13 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.inventory.container.item.PersonalChestItemContainer;
+import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer> {
+public class GuiPersonalStorageItem extends GuiMekanism<PersonalStorageItemContainer> {
 
-    public GuiPersonalChestItem(PersonalChestItemContainer container, Inventory inv, Component title) {
+    public GuiPersonalStorageItem(PersonalStorageItemContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight += 56;
         inventoryLabelY = imageHeight - 94;

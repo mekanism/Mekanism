@@ -6,9 +6,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.world.item.ItemStack;
 
-public class InventoryPersonalChest extends ItemStackMekanismInventory {
+public class InventoryPersonalStorage extends ItemStackMekanismInventory {
 
-    public InventoryPersonalChest(ItemStack stack) {
+    public InventoryPersonalStorage(ItemStack stack) {
         super(stack);
     }
 

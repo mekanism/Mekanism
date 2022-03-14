@@ -18,6 +18,7 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
+import mekanism.common.tile.TileEntityPersonalBarrel;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -155,6 +156,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuser> METALLURGIC_INFUSER = TILE_ENTITY_TYPES.register(MekanismBlocks.METALLURGIC_INFUSER, TileEntityMetallurgicInfuser::new);
     public static final TileEntityTypeRegistryObject<TileEntityOredictionificator> OREDICTIONIFICATOR = TILE_ENTITY_TYPES.register(MekanismBlocks.OREDICTIONIFICATOR, TileEntityOredictionificator::new);
     public static final TileEntityTypeRegistryObject<TileEntityOsmiumCompressor> OSMIUM_COMPRESSOR = TILE_ENTITY_TYPES.register(MekanismBlocks.OSMIUM_COMPRESSOR, TileEntityOsmiumCompressor::new);
+    public static final TileEntityTypeRegistryObject<TileEntityPersonalBarrel> PERSONAL_BARREL = TILE_ENTITY_TYPES.register(MekanismBlocks.PERSONAL_BARREL, TileEntityPersonalBarrel::new);
     public static final TileEntityTypeRegistryObject<TileEntityPersonalChest> PERSONAL_CHEST = TILE_ENTITY_TYPES.register(MekanismBlocks.PERSONAL_CHEST, TileEntityPersonalChest::new);
     public static final TileEntityTypeRegistryObject<TileEntityPrecisionSawmill> PRECISION_SAWMILL = TILE_ENTITY_TYPES.register(MekanismBlocks.PRECISION_SAWMILL, TileEntityPrecisionSawmill::new);
     public static final TileEntityTypeRegistryObject<TileEntityPressureDisperser> PRESSURE_DISPERSER = TILE_ENTITY_TYPES.register(MekanismBlocks.PRESSURE_DISPERSER, TileEntityPressureDisperser::new);

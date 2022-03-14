@@ -697,6 +697,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_ENERGIZED_SMELTER("description", "energized_smelter"),
     DESCRIPTION_TELEPORTER("description", "teleporter"),
     DESCRIPTION_ELECTRIC_PUMP("description", "electric_pump"),
+    DESCRIPTION_PERSONAL_BARREL("description", "personal_barrel"),
     DESCRIPTION_PERSONAL_CHEST("description", "personal_chest"),
     DESCRIPTION_CHARGEPAD("description", "chargepad"),
     DESCRIPTION_LOGISTICAL_SORTER("description", "logistical_sorter"),

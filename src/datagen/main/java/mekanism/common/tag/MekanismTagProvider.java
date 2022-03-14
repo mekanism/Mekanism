@@ -80,7 +80,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addCircuits();
         addEndermanBlacklist();
         addEnriched();
-        addChests();
+        addStorage();
         addOres();
         addStorageBlocks();
         addIngots();
@@ -94,7 +94,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addPellets();
         addColorableItems();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
-        addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
+        addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST);
         addToTag(BlockTags.HOGLIN_REPELLENTS, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         getItemBuilder(ItemTags.PIGLIN_LOVED).add(
               MekanismBlocks.REFINED_GLOWSTONE_BLOCK.asItem(),
@@ -303,10 +303,14 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.ENRICHED_REDSTONE, MekanismTags.Items.ENRICHED_GOLD, MekanismTags.Items.ENRICHED_TIN);
     }
 
-    private void addChests() {
+    private void addStorage() {
+        addToTag(MekanismTags.Blocks.BARRELS_PERSONAL, MekanismBlocks.PERSONAL_BARREL);
+        getBlockBuilder(Tags.Blocks.BARRELS).add(MekanismTags.Blocks.BARRELS_PERSONAL);
         addToTag(MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismBlocks.PERSONAL_CHEST);
         addToTag(MekanismTags.Blocks.CHESTS_PERSONAL, MekanismBlocks.PERSONAL_CHEST);
         getBlockBuilder(Tags.Blocks.CHESTS).add(MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismTags.Blocks.CHESTS_PERSONAL);
+        addToTag(MekanismTags.Items.PERSONAL_STORAGE, MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST);
+        getBlockBuilder(MekanismTags.Blocks.PERSONAL_STORAGE).add(MekanismTags.Blocks.BARRELS_PERSONAL, MekanismTags.Blocks.CHESTS_PERSONAL);
     }
 
     private void addOres() {
@@ -532,7 +536,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.PURIFICATION_CHAMBER,
               MekanismBlocks.ENERGIZED_SMELTER,
               MekanismBlocks.ELECTRIC_PUMP, MekanismBlocks.FLUIDIC_PLENISHER,
-              MekanismBlocks.PERSONAL_CHEST,
+              MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST,
               MekanismBlocks.CHARGEPAD,
               MekanismBlocks.LOGISTICAL_SORTER,
               MekanismBlocks.ROTARY_CONDENSENTRATOR,

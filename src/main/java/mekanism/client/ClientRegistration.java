@@ -24,7 +24,7 @@ import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiMatrixStats;
 import mekanism.client.gui.GuiModificationStation;
 import mekanism.client.gui.GuiModuleTweaker;
-import mekanism.client.gui.GuiPersonalChestTile;
+import mekanism.client.gui.GuiPersonalStorageTile;
 import mekanism.client.gui.GuiQuantumEntangloporter;
 import mekanism.client.gui.GuiSPS;
 import mekanism.client.gui.GuiSecurityDesk;
@@ -32,7 +32,7 @@ import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiThermoelectricBoiler;
 import mekanism.client.gui.item.GuiDictionary;
-import mekanism.client.gui.item.GuiPersonalChestItem;
+import mekanism.client.gui.item.GuiPersonalStorageItem;
 import mekanism.client.gui.item.GuiPortableTeleporter;
 import mekanism.client.gui.item.GuiSeismicReader;
 import mekanism.client.gui.machine.GuiAntiprotonicNucleosynthesizer;
@@ -469,8 +469,8 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ENERGY_CUBE, GuiEnergyCube::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.INDUCTION_MATRIX, GuiInductionMatrix::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.THERMOELECTRIC_BOILER, GuiThermoelectricBoiler::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PERSONAL_CHEST_ITEM, GuiPersonalChestItem::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PERSONAL_CHEST_BLOCK, GuiPersonalChestTile::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PERSONAL_STORAGE_ITEM, GuiPersonalStorageItem::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PERSONAL_STORAGE_BLOCK, GuiPersonalStorageTile::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DIGITAL_MINER_CONFIG, GuiDigitalMinerConfig::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LOGISTICAL_SORTER, GuiLogisticalSorter::new);

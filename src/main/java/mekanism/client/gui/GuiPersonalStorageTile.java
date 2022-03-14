@@ -3,13 +3,13 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.tile.TileEntityPersonalStorage;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChest, MekanismTileContainer<TileEntityPersonalChest>> {
+public class GuiPersonalStorageTile extends GuiMekanismTile<TileEntityPersonalStorage, MekanismTileContainer<TileEntityPersonalStorage>> {
 
-    public GuiPersonalChestTile(MekanismTileContainer<TileEntityPersonalChest> container, Inventory inv, Component title) {
+    public GuiPersonalStorageTile(MekanismTileContainer<TileEntityPersonalStorage> container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight += 56;
         inventoryLabelY = imageHeight - 94;

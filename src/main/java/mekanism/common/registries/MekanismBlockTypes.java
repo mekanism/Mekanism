@@ -14,6 +14,7 @@ import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeStateFacing.FacePlacementType;
+import mekanism.common.block.attribute.AttributeStateOpen;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
@@ -54,6 +55,7 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
+import mekanism.common.tile.TileEntityPersonalBarrel;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -409,11 +411,17 @@ public class MekanismBlockTypes {
           .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("seismicVibrator")
           .build();
+    // Personal Barrel
+    public static final BlockTypeTile<TileEntityPersonalBarrel> PERSONAL_BARREL = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.PERSONAL_BARREL, MekanismLang.DESCRIPTION_PERSONAL_BARREL)
+          .withGui(() -> MekanismContainerTypes.PERSONAL_STORAGE_BLOCK)
+          .with(Attributes.SECURITY, Attributes.INVENTORY, AttributeStateOpen.INSTANCE, new AttributeStateFacing(BlockStateProperties.FACING), new AttributeCustomResistance(-1))
+          .build();
     // Personal Chest
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
-          .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
-          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(-1))
+          .withGui(() -> MekanismContainerTypes.PERSONAL_STORAGE_BLOCK)
+          .with(Attributes.SECURITY, Attributes.INVENTORY, new AttributeStateFacing(), new AttributeCustomResistance(-1))
           .withCustomShape(BlockShapes.PERSONAL_CHEST)
           .build();
     // Fuelwood Heater

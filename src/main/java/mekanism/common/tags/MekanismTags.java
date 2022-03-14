@@ -87,6 +87,7 @@ public class MekanismTags {
         public static final TagKey<Item> WRENCHES = forgeTag("wrenches");
         public static final TagKey<Item> TOOLS = forgeTag("tools");
         public static final TagKey<Item> TOOLS_WRENCH = forgeTag("tools/wrench");
+        public static final TagKey<Item> PERSONAL_STORAGE = tag("personal_storage");
 
         public static final TagKey<Item> BATTERIES = forgeTag("batteries");
 
@@ -223,6 +224,8 @@ public class MekanismTags {
 
         public static final TagKey<Block> CHESTS_ELECTRIC = forgeTag("chests/electric");
         public static final TagKey<Block> CHESTS_PERSONAL = forgeTag("chests/personal");
+        public static final TagKey<Block> BARRELS_PERSONAL = forgeTag("barrels/personal");
+        public static final TagKey<Block> PERSONAL_STORAGE = tag("personal_storage");
 
         public static final TagKey<Block> STORAGE_BLOCKS_BRONZE = forgeTag("storage_blocks/bronze");
         public static final TagKey<Block> STORAGE_BLOCKS_CHARCOAL = forgeTag("storage_blocks/charcoal");
