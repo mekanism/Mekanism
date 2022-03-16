@@ -1,21 +1,24 @@
 package mekanism.common.integration.projecte;
 
+import com.mojang.datafixers.util.Either;
+import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.ChemicalTags;
-import mekanism.api.chemical.gas.Gas;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IInfuseTypeProvider;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraftforge.registries.tags.ITag;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link InfuseType}s.
  */
-public final class NSSInfuseType extends NSSChemical<InfuseType> {
+public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
 
     private NSSInfuseType(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
@@ -93,8 +96,8 @@ public final class NSSInfuseType extends NSSChemical<InfuseType> {
 
     @Nonnull
     @Override
-    protected ChemicalTags<InfuseType> tags() {
-        return ChemicalTags.INFUSE_TYPE;
+    protected Optional<Either<Named<InfuseType>, ITag<InfuseType>>> getTag() {
+        return getTag(MekanismAPI.infuseTypeRegistry());
     }
 
     @Override

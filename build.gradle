@@ -37,7 +37,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.4'
+    gradleVersion = '7.4.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -361,7 +361,6 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-    mavenLocal() //TODO - 1.18: Remove once forge updates
 
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
         if (it instanceof MavenArtifactRepository) {
