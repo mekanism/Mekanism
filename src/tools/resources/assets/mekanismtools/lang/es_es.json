@@ -167,5 +167,5 @@
   "item.mekanismtools.steel_sword": "Espada de Acero",
   "item.mekanismtools.stone_paxel": "Paxel de Acero",
   "item.mekanismtools.wood_paxel": "Paxel de Madera",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "tooltip.mekanismtools.hp": "Vida: %1$s"
 }

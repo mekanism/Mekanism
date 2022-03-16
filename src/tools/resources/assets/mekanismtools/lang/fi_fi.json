@@ -3,13 +3,11 @@
   "item.mekanismtools.bronze_boots": "Pronssi Saappaat",
   "item.mekanismtools.bronze_chestplate": "Pronssi Rintalevy",
   "item.mekanismtools.bronze_helmet": "Pronssi Kypärä",
-  "item.mekanismtools.bronze_hoe": "Bronze Hoe",
   "item.mekanismtools.bronze_leggings": "Pronssi Jalkineet",
   "item.mekanismtools.bronze_paxel": "Pronssi Paxel",
   "item.mekanismtools.bronze_pickaxe": "Pronssi Hakku",
   "item.mekanismtools.bronze_shovel": "Pronssi Lapio",
   "item.mekanismtools.bronze_sword": "Pronssi Miekka",
-  "item.mekanismtools.diamond_paxel": "Diamond Paxel",
   "item.mekanismtools.gold_paxel": "Kultainen Pakseli",
   "item.mekanismtools.iron_paxel": "Rauta Paxel",
   "item.mekanismtools.lapis_lazuli_axe": "Lapis Lazuli Kirves",
@@ -18,7 +16,6 @@
   "item.mekanismtools.lapis_lazuli_helmet": "Lapis Lazuli Kypärä",
   "item.mekanismtools.lapis_lazuli_hoe": "Lapis Lazuli Koukka",
   "item.mekanismtools.lapis_lazuli_leggings": "Lapis Lazuli Jalkineet",
-  "item.mekanismtools.lapis_lazuli_paxel": "Lapis Lazuli Paxel",
   "item.mekanismtools.lapis_lazuli_pickaxe": "Lapis Lazuli Hakku",
   "item.mekanismtools.lapis_lazuli_shovel": "Lapis Lazuli Lapio",
   "item.mekanismtools.lapis_lazuli_sword": "Lapis Lazuli Kirves",
@@ -28,7 +25,6 @@
   "item.mekanismtools.osmium_helmet": "Osmium Kypärä",
   "item.mekanismtools.osmium_hoe": "Osmium Koukka",
   "item.mekanismtools.osmium_leggings": "Osmium Jalkineet",
-  "item.mekanismtools.osmium_paxel": "Osmium Paxel",
   "item.mekanismtools.osmium_pickaxe": "Osmium Hakku",
   "item.mekanismtools.osmium_shovel": "Osmium Lapio",
   "item.mekanismtools.osmium_sword": "Osmium Miekka",
@@ -63,6 +59,5 @@
   "item.mekanismtools.steel_shovel": "Teräs Lapio",
   "item.mekanismtools.steel_sword": "Teräs Miekka",
   "item.mekanismtools.stone_paxel": "Kivinen Paxel",
-  "item.mekanismtools.wood_paxel": "Puu Paxel",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "item.mekanismtools.wood_paxel": "Puu Paxel"
 }

@@ -1,4 +1,11 @@
 {
+  "block.mekanismgenerators.bio_generator": "เครื่องกำเนิดชีวภาพ",
+  "block.mekanismgenerators.fission_reactor_port": "ตัวควบคุมเครื่องปฏิกรณ์ฟิวชั่น",
+  "block.mekanismgenerators.fusion_reactor_controller": "ตัวควบคุมเครื่องปฏิกรณ์ฟิวชั่น",
+  "block.mekanismgenerators.fusion_reactor_port": "Fusion Reactor Port",
+  "block.mekanismgenerators.heat_generator": "เครื่องกำเนิดความร้อน",
+  "block.mekanismgenerators.reactor_glass": "กระจก เครื่องปฏิกรณ์",
+  "block.mekanismgenerators.solar_generator": "เครื่องกำเนิดไฟฟ้าพลังงานแสงอาทิตย์",
   "description.mekanismgenerators.advanced_solar_generator": "เครื่องกำเนิดไฟฟ้าขั้นสูงจะซึมซับจากแสงอาทิตย์โดยตรงโดยสูญเสียเล็กน้อยเพื่อผลิตพลังงาน",
   "description.mekanismgenerators.bio_generator": "เครื่องกำเนิดไฟฟ้าจะเผาผลาญวัตถุทางชีวภาพเพื่อผลิตพลังงาน",
   "description.mekanismgenerators.electromagnetic_coil": "บล็อกนี้จะเปลี่ยนพลังงานจลน์จาก Rotational Complex เป็นกระแสไฟฟ้าที่ใช้งานได้ โดยสามารถอย่างไรก็ได้ให้สัมผัสกับ Rotational Complex",

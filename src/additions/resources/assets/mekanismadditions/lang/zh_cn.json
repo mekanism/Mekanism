@@ -305,7 +305,7 @@
   "item.mekanismadditions.yellow_balloon": "黄色气球",
   "key.mekanismadditions.voice": "语音",
   "sound_event.mekanismadditions.entity.balloon.pop": "气球爆炸声",
-  "walkie.mekanismadditions.channel": "频道：%s",
-  "walkie.mekanismadditions.channel.change": "频道切换为：%s",
+  "walkie.mekanismadditions.channel": "频道：%1$s",
+  "walkie.mekanismadditions.channel.change": "切换频道至：%1$s",
   "walkie.mekanismadditions.disabled": "语音服务器已禁用。"
 }

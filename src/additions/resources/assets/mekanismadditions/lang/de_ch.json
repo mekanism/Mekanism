@@ -300,12 +300,10 @@
   "item.mekanismadditions.pink_balloon": "Pink Ballon",
   "item.mekanismadditions.purple_balloon": "Violetter Ballon",
   "item.mekanismadditions.red_balloon": "Rot Ballon",
-  "item.mekanismadditions.walkie_talkie": "Walkie-Talkie",
+  "item.mekanismadditions.walkie_talkie": "Walkie Talk",
   "item.mekanismadditions.white_balloon": "Weiß Ballon",
   "item.mekanismadditions.yellow_balloon": "Gelb Ballon",
   "key.mekanismadditions.voice": "Stimme",
   "sound_event.mekanismadditions.entity.balloon.pop": "Ballon platzt",
-  "walkie.mekanismadditions.channel": "Kanal: %s",
-  "walkie.mekanismadditions.channel.change": "Kanal geändert zu: %s",
   "walkie.mekanismadditions.disabled": "Sprachserver deaktiviert."
 }

@@ -305,7 +305,5 @@
   "item.mekanismadditions.yellow_balloon": "Gelber Ballon",
   "key.mekanismadditions.voice": "Stimme",
   "sound_event.mekanismadditions.entity.balloon.pop": "Ballon platzt",
-  "walkie.mekanismadditions.channel": "Kanal: %s",
-  "walkie.mekanismadditions.channel.change": "Kanal geändert zu: %s",
   "walkie.mekanismadditions.disabled": "Sprachserver deaktiviert."
 }

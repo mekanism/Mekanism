@@ -167,5 +167,5 @@
   "item.mekanismtools.steel_sword": "Çelik Kılıç",
   "item.mekanismtools.stone_paxel": "Taş Kaltek",
   "item.mekanismtools.wood_paxel": "Tahta Kaltek",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "tooltip.mekanismtools.hp": "HP: %1$s"
 }

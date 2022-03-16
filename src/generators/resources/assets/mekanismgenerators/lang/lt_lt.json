@@ -27,6 +27,5 @@
   "description.mekanismgenerators.reactor.logic.depleted": "The reactor has insufficient fuel to sustain a reaction",
   "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite",
   "fission.mekanismgenerators.burn_rate": "Dabartinis Degimo Greitis:",
-  "fission.mekanismgenerators.coolant_tank": "Aušinimo Skysčio Bakas",
-  "fission.mekanismgenerators.damage": "Žala: %s"
+  "fission.mekanismgenerators.coolant_tank": "Aušinimo Skysčio Bakas"
 }
