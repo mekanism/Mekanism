@@ -77,11 +77,12 @@ sourceSets {
     generators { setupSourceSet(generators, 'generators') }
     defense { setupSourceSet(defense, 'defense') }
     tools { setupSourceSet(tools, 'tools') }
+    chemistry { setupSourceSet(chemistry, 'chemistry') }
     test {
         //The test module has no resources
         resources.srcDirs = []
-        compileClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output
-        runtimeClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output
+        compileClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output + chemistry.output
+        runtimeClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output + chemistry.output
     }
     //Data gen modules for the different modules
     datagenmain { setupDataGenSourceSet(datagenmain, null, 'main') }
@@ -89,6 +90,7 @@ sourceSets {
     datagengenerators { setupDataGenSourceSet(datagengenerators, generators, 'generators') }
     datagendefense { setupDataGenSourceSet(datagendefense, defense, 'defense') }
     datagentools { setupDataGenSourceSet(datagentools, tools, 'tools') }
+    datagenchemistry { setupDataGenSourceSet(datagenchemistry, chemistry, 'chemistry') }
 }
 
 //This method sets up an additional sourceSet in src/$name and adds a reference to the corresponding
@@ -131,7 +133,7 @@ configurations {
     // for those modules extend the main ones, and then by making the corresponding ones for datagen for the module extend those.
     // This way if we add a dependency/integration in a submodule instead of the main module of Mekanism, the datagen of the corresponding
     // module will be able to properly access the dependency
-    for (def name : ["additions", "defense", "generators", "tools"]) {
+    for (def name : ["additions", "defense", "generators", "tools", "chemistry"]) {
         maybeCreate("datagen${name}Implementation").extendsFrom(maybeCreate("${name}Implementation").extendsFrom(implementation))
         maybeCreate("datagen${name}CompileOnly").extendsFrom(maybeCreate("${name}CompileOnly").extendsFrom(compileOnly))
         maybeCreate("datagen${name}RuntimeOnly").extendsFrom(maybeCreate("${name}RuntimeOnly").extendsFrom(runtimeOnly))
@@ -156,6 +158,7 @@ def additionsReplaceResources = createReplaceResourcesTask("additions", sourceSe
 def generatorsReplaceResources = createReplaceResourcesTask("generators", sourceSets.generators)
 def defenseReplaceResources = createReplaceResourcesTask("defense", sourceSets.defense)
 def toolsReplaceResources = createReplaceResourcesTask("tools", sourceSets.tools)
+def chemistryReplaceResources = createReplaceResourcesTask("chemistry", sourceSets.chemistry)
 
 def createReplaceResourcesTask(String output, SourceSet sourceSet) {
     return tasks.register("${output}ReplaceResources", Copy) {
@@ -241,6 +244,7 @@ minecraft {
                 mekanismdefense.source((SourceSet) sourceSets.defense)
                 mekanismgenerators.source((SourceSet) sourceSets.generators)
                 mekanismtools.source((SourceSet) sourceSets.tools)
+                mekanismchemistry.source((SourceSet) sourceSets.chemistry)
             }
         }
 
@@ -264,6 +268,7 @@ minecraft {
                 mekanismdefense.source((SourceSet) sourceSets.defense)
                 mekanismgenerators.source((SourceSet) sourceSets.generators)
                 mekanismtools.source((SourceSet) sourceSets.tools)
+                mekanismchemistry.source((SourceSet) sourceSets.chemistry)
             }
         }
 
@@ -292,7 +297,9 @@ minecraft {
                     '--mod', 'mekanismgenerators',
                     '--existing', file('src/generators/resources/'),
                     '--mod', 'mekanismtools',
-                    '--existing', file('src/tools/resources/')
+                    '--existing', file('src/tools/resources/'),
+                    '--mod', 'mekanismchemistry',
+                    '--existing', file('src/chemistry/resources/')
 
             mods {
                 mekanism.sources((SourceSet[]) [sourceSets.main, sourceSets.api, sourceSets.datagenmain])
@@ -300,6 +307,7 @@ minecraft {
                 mekanismdefense.sources((SourceSet[]) [sourceSets.defense, sourceSets.datagendefense])
                 mekanismgenerators.sources((SourceSet[]) [sourceSets.generators, sourceSets.datagengenerators])
                 mekanismtools.sources((SourceSet[]) [sourceSets.tools, sourceSets.datagentools])
+                mekanismchemistry.sources((SourceSet[]) [sourceSets.chemistry, sourceSets.datagenchemistry])
             }
         }
     }
@@ -452,8 +460,8 @@ if (project.hasProperty('UPDATE_MAPPINGS')) {
     // so that whenever we need to update mappings it is quick and easy to do so.
     // Note: This needs to be below the dependencies and minecraft blocks so that it can properly read the mappings value
     // and also read and find the minecraft dep
-    def extraSourceSets = [sourceSets.api, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools, sourceSets.test,
-                           sourceSets.datagenmain, sourceSets.datagenadditions, sourceSets.datagengenerators, sourceSets.datagendefense, sourceSets.datagentools]
+    def extraSourceSets = [sourceSets.api, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools, sourceSets.chemistry, sourceSets.test,
+                           sourceSets.datagenmain, sourceSets.datagenadditions, sourceSets.datagengenerators, sourceSets.datagendefense, sourceSets.datagentools, sourceSets.datagenchemistry]
     Set<File> allExtraDirs = new HashSet<>()
     for (def sourceSet : extraSourceSets) {
         allExtraDirs.addAll(sourceSet.java.srcDirs)
@@ -473,11 +481,13 @@ processAdditionsResources { setupProcessResources(processAdditionsResources, add
 processDefenseResources { setupProcessResources(processDefenseResources, defenseReplaceResources, compileDefenseJava) }
 processGeneratorsResources { setupProcessResources(processGeneratorsResources, generatorsReplaceResources, compileGeneratorsJava) }
 processToolsResources { setupProcessResources(processToolsResources, toolsReplaceResources, compileToolsJava) }
+processChemistryResources { setupProcessResources(processChemistryResources, chemistryReplaceResources, compileChemistryJava) }
 processDatagenmainResources { dependsOn(compileJava) }
 processDatagenadditionsResources { dependsOn(compileAdditionsJava) }
 processDatagendefenseResources { dependsOn(compileDefenseJava) }
 processDatagengeneratorsResources { dependsOn(compileGeneratorsJava) }
 processDatagentoolsResources { dependsOn(compileToolsJava) }
+processDatagenchemistryResources { dependsOn(compileChemistryJava) }
 
 def setupProcessResources(ProcessResources process, TaskProvider<Task> replaceResources, JavaCompile compileTask) {
     process.duplicatesStrategy(DuplicatesStrategy.FAIL)
@@ -501,6 +511,7 @@ additionsClasses.configure { dependsOn(additionsReplaceResources) }
 defenseClasses.configure { dependsOn(defenseReplaceResources) }
 generatorsClasses.configure { dependsOn(generatorsReplaceResources) }
 toolsClasses.configure { dependsOn(toolsReplaceResources) }
+chemistryClasses.configure { dependsOn(chemistryReplaceResources) }
 
 def getManifestAttributes(String title) {
     return [
@@ -522,10 +533,10 @@ jar {
     afterEvaluate { finalizedBy reobfJar }
 }
 
-task sourcesJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses]) {
+task sourcesJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses, chemistryClasses]) {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("sources")
-    from(sourceSets.api.allJava, sourceSets.main.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
+    from(sourceSets.api.allJava, sourceSets.main.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava, sourceSets.chemistry.allJava)
     manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
@@ -573,14 +584,23 @@ task toolsJar(type: Jar) {
     afterEvaluate { finalizedBy reobfToolsJar }
 }
 
-task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses]) {
+task chemistryJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    archiveFileName.set("MekanismChemistry-${project.version}.jar")
+    archiveClassifier.set("chemistry")
+    from sourceSets.chemistry.output
+    manifest.attributes(getManifestAttributes("MekanismChemistry"))
+    afterEvaluate { finalizedBy reobfChemistryJar }
+}
+
+task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses, chemistryClasses]) {
     mustRunAfter(clean)
     afterEvaluate { finalizedBy reobfAllJar }
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
     //Start by generating the merged data
-    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools, sourceSets.chemistry)
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
     List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
@@ -591,6 +611,7 @@ task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defens
     from(sourceSets.defense.output, excludeFromAll)
     from(sourceSets.generators.output, excludeFromAll)
     from(sourceSets.tools.output, excludeFromAll)
+    from(sourceSets.chemistry.output, excludeFromAll)
     //And finally copy over the generated files
     MergeJars.getGeneratedClosures(versionProperties).each { closure -> from("$buildDir/generated", closure) }
 }
@@ -631,6 +652,7 @@ compileAdditionsJava { setupCompileJava(compileAdditionsJava, "additions", "meka
 compileDefenseJava { setupCompileJava(compileDefenseJava, "defense", "mekanismdefense") }
 compileGeneratorsJava { setupCompileJava(compileGeneratorsJava, "generators", "mekanismgenerators") }
 compileToolsJava { setupCompileJava(compileToolsJava, "tools", "mekanismtools") }
+compileChemistryJava { setupCompileJava(compileChemistryJava, "chemistry", "mekanismchemistry") }
 
 def setupCompileJava(JavaCompile task, String baseFolder, String module) {
     task.options.annotationProcessorPath = configurations.annotationProcessor
@@ -648,6 +670,7 @@ artifacts {
     archives generatorsJar
     archives defenseJar
     archives toolsJar
+    archives chemistryJar
     archives allJar
     archives sourcesJar
 }
@@ -659,6 +682,7 @@ reobf {
     generatorsJar { classpath.from(sourceSets.generators.compileClasspath) }
     defenseJar { classpath.from(sourceSets.defense.compileClasspath) }
     toolsJar { classpath.from(sourceSets.tools.compileClasspath) }
+    chemistryJar { classpath.from(sourceSets.chemistry.compileClasspath) }
     allJar {}
 }
 
@@ -683,7 +707,7 @@ task optimizePng {
         //Ensure the logo is minimized (we add this file to each jar)
         minimizePNGFile(file("${projectDir}/logo.png"))
         //Minimize any PNGs in the source sets
-        def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools]
+        def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools, sourceSets.chemistry]
         for (def sourceSet : sourceSets) {
             for (dir in sourceSet.resources.srcDirs) {
                 fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
@@ -707,7 +731,7 @@ publishing {
             publication.groupId = project.group
             publication.version = project.version
             publication.artifactId = System.getenv("MAVEN_ARTIFACT") ?: project.archivesBaseName
-            publication.artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
+            publication.artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, chemistryJar, allJar, sourcesJar]
             publication.pom {
                 name.set("Mekanism")
                 packaging = 'jar'
@@ -763,7 +787,7 @@ publishing {
     }
 }
 
-tasks.curseforge.dependsOn jar, additionsJar, generatorsJar, /*defenseJar,*/ toolsJar, apiJar
+tasks.curseforge.dependsOn jar, additionsJar, generatorsJar, /*defenseJar,*/ toolsJar, chemistryJar, apiJar
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
@@ -910,5 +934,19 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             }
             addGameVersion "${minecraft_version}"
         }
+
+        //Chemistry
+        /*project {
+            id = '???'
+            changelogType = "html"
+            changelog = changeLogResolver
+            releaseType = "${curse_release_type}"
+            mainArtifact(chemistryJar) {
+                relations {
+                    requiredDependency "mekanism"
+                }
+            }
+            addGameVersion "${minecraft_version}"
+        }*/
     }
 }
