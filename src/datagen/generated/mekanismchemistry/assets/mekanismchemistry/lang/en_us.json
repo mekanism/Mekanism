@@ -1,0 +1,7 @@
+{
+  "block.mekanismchemistry.ammonia": "Liquid Ammonia",
+  "fluid.mekanismchemistry.ammonia": "Liquid Ammonia",
+  "fluid.mekanismchemistry.flowing_ammonia": "Flowing Liquid Ammonia",
+  "gas.mekanismchemistry.ammonia": "Ammonia",
+  "item.mekanismchemistry.ammonia_bucket": "Liquid Ammonia Bucket"
+}

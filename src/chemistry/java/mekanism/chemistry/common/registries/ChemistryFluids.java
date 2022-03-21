@@ -1,5 +1,6 @@
 package mekanism.chemistry.common.registries;
 
+import mekanism.chemistry.common.ChemistryChemicalConstants;
 import mekanism.chemistry.common.MekanismChemistry;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
@@ -13,6 +14,8 @@ public class ChemistryFluids {
     }
 
     public static final FluidDeferredRegister FLUIDS = new FluidDeferredRegister(MekanismChemistry.MODID);
+
+    public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> AMMONIA = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.AMMONIA);
 
     private static FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> registerLiquidGas(String name, int tint) {
         return FLUIDS.register(name, fluidAttributes -> fluidAttributes.color(tint));
