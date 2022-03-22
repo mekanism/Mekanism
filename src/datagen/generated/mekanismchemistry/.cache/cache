@@ -19,5 +19,7 @@ e43b9d6caa0308a055312ecbd7580da1cc62c632 data/forge/tags/fluids/nitrogen.json
 77855137546b20019f9a96503c456354e2438c97 data/mekanism/tags/gases/ammonia.json
 9b739829c240df42d357367486c1d5684e26bad8 data/mekanism/tags/gases/nitrogen.json
 4be0739bb468dac6d4ad8c12472d2a7679edbc80 data/mekanismchemistry/loot_tables/blocks/air_compressor.json
+ec3e9bbafb61353c726f3e077fd805676f07d813 data/mekanismchemistry/recipes/rotary/air.json
 8eb0a1bbdde9568c7f3b31201623f6f8bde9a423 data/mekanismchemistry/recipes/rotary/ammonia.json
+3f96b70d7cc21643ca57433ddcc874ce4000ffb3 data/mekanismchemistry/recipes/rotary/nitrogen.json
 baade3d87cf40279feea7efe911263cf485c6a76 data/minecraft/tags/blocks/mineable/pickaxe.json

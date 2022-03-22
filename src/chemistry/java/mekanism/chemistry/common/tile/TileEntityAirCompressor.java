@@ -49,7 +49,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileEntityAirCompressor extends TileEntityMekanism implements IConfigurable {
 
     private static final int BASE_TICKS_REQUIRED = 19;
-    private static final GasStack AIR_STACK = new GasStack(ChemistryGases.AIR, 100);
+    public static final GasStack AIR_STACK = new GasStack(ChemistryGases.AIR, 100);
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGas", "getGasCapacity", "getGasNeeded", "getGasFilledPercentage"})
     public IGasTank gasTank;
     public int ticksRequired = BASE_TICKS_REQUIRED;
@@ -74,7 +74,7 @@ public class TileEntityAirCompressor extends TileEntityMekanism implements IConf
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.output(10_000, listener), RelativeSide.RIGHT);
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.output(10_000, listener), RelativeSide.FRONT);
         return builder.build();
     }
 
@@ -90,7 +90,7 @@ public class TileEntityAirCompressor extends TileEntityMekanism implements IConf
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, listener, 28, 51), RelativeSide.BOTTOM);
+        builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, listener, 28, 35), RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 143, 35), RelativeSide.BACK);
         outputSlot.setSlotType(ContainerSlotType.OUTPUT);
         return builder.build();
@@ -113,7 +113,7 @@ public class TileEntityAirCompressor extends TileEntityMekanism implements IConf
             }
         }
         if (!gasTank.isEmpty()) {
-            ChemicalUtil.emit(Collections.singleton(Direction.UP), gasTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
+            ChemicalUtil.emit(Collections.singleton(RelativeSide.FRONT.getDirection(getDirection())), gasTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
     }
 

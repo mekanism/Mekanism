@@ -7,6 +7,8 @@ import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.chemistry.common.ChemistryTags.Fluids;
+import mekanism.chemistry.common.ChemistryTags.Gases;
 import mekanism.chemistry.common.registries.ChemistryFluids;
 import mekanism.chemistry.common.registries.ChemistryGases;
 import mekanism.common.recipe.BaseRecipeProvider;
@@ -31,6 +33,8 @@ public class ChemistryRecipeProvider extends BaseRecipeProvider {
     private void addRotaryCondensentratorRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "rotary/";
         addRotaryCondensentratorRecipe(consumer, basePath, ChemistryGases.AMMONIA, ChemistryFluids.AMMONIA, ChemistryTags.Fluids.AMMONIA, ChemistryTags.Gases.AMMONIA);
+        addRotaryCondensentratorRecipe(consumer, basePath, ChemistryGases.NITROGEN, ChemistryFluids.NITROGEN, ChemistryTags.Fluids.NITROGEN, ChemistryTags.Gases.NITROGEN);
+        addRotaryCondensentratorRecipe(consumer, basePath, ChemistryGases.AIR, ChemistryFluids.AIR, ChemistryTags.Fluids.AIR, ChemistryTags.Gases.AIR);
     }
 
     private void addRotaryCondensentratorRecipe(Consumer<FinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput,
