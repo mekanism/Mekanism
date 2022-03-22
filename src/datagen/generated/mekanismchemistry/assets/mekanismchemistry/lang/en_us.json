@@ -1,7 +1,20 @@
 {
+  "block.mekanismchemistry.air": "Liquid Air",
+  "block.mekanismchemistry.air_compressor": "Air Compressor",
   "block.mekanismchemistry.ammonia": "Liquid Ammonia",
+  "block.mekanismchemistry.nitrogen": "Liquid Nitrogen",
+  "container.mekanismchemistry.air_compressor": "Air Compressor",
+  "description.mekanismchemistry.air_compressor": "An advanced, upgradeable air compressor.",
+  "fluid.mekanismchemistry.air": "Liquid Air",
   "fluid.mekanismchemistry.ammonia": "Liquid Ammonia",
+  "fluid.mekanismchemistry.flowing_air": "Flowing Liquid Air",
   "fluid.mekanismchemistry.flowing_ammonia": "Flowing Liquid Ammonia",
+  "fluid.mekanismchemistry.flowing_nitrogen": "Flowing Liquid Nitrogen",
+  "fluid.mekanismchemistry.nitrogen": "Liquid Nitrogen",
+  "gas.mekanismchemistry.air": "Air",
   "gas.mekanismchemistry.ammonia": "Ammonia",
-  "item.mekanismchemistry.ammonia_bucket": "Liquid Ammonia Bucket"
+  "gas.mekanismchemistry.nitrogen": "Nitrogen",
+  "item.mekanismchemistry.air_bucket": "Liquid Air Bucket",
+  "item.mekanismchemistry.ammonia_bucket": "Liquid Ammonia Bucket",
+  "item.mekanismchemistry.nitrogen_bucket": "Liquid Nitrogen Bucket"
 }

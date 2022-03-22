@@ -6,18 +6,16 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
-public class ChemistryStorageConfig extends BaseMekanismConfig {
-
-    private final ForgeConfigSpec configSpec;
+public class ChemistryUsageConfig extends BaseMekanismConfig {
 
     public final CachedFloatingLongValue airCompressor;
+    private final ForgeConfigSpec configSpec;
 
-    ChemistryStorageConfig() {
+    ChemistryUsageConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Chemistry Energy Storage Config. This config is synced from server to client.").push("storage");
+        builder.comment("Chemistry Energy Usage Config. This config is synced from server to client.").push("storage");
 
-        airCompressor = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "airCompressor",
-              FloatingLong.createConst(40_000));
+        airCompressor = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "airCompressor", FloatingLong.createConst(100));
 
         builder.pop();
         configSpec = builder.build();
@@ -25,7 +23,7 @@ public class ChemistryStorageConfig extends BaseMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "chemistry-storage";
+        return "chemistry-usage";
     }
 
     @Override

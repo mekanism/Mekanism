@@ -4,13 +4,7 @@ import mekanism.api.text.ILangEntry;
 import net.minecraft.Util;
 
 public enum ChemistryLang implements ILangEntry {
-//    CHANNEL("walkie", "channel"),
-//    CHANNEL_CHANGE("walkie", "channel.change"),
-//    WALKIE_DISABLED("walkie", "disabled"),
-//    KEY_VOICE("key", "voice"),
-//    DESCRIPTION_OBSIDIAN_TNT("description", "obsidian_tnt"),
-//    DESCRIPTION_GLOW_PANEL("description", "glow_panel")
-    ;
+    DESCRIPTION_AIR_COMPRESSOR("description", "air_compressor");
 
     private final String key;
 

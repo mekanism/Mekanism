@@ -1,6 +1,10 @@
 {
   "values": [
     "mekanismchemistry:ammonia",
-    "mekanismchemistry:flowing_ammonia"
+    "mekanismchemistry:flowing_ammonia",
+    "mekanismchemistry:nitrogen",
+    "mekanismchemistry:flowing_nitrogen",
+    "mekanismchemistry:air",
+    "mekanismchemistry:flowing_air"
   ]
 }

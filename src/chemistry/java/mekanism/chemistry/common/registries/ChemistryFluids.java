@@ -10,12 +10,14 @@ import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
 public class ChemistryFluids {
-    private ChemistryFluids() {
-    }
 
     public static final FluidDeferredRegister FLUIDS = new FluidDeferredRegister(MekanismChemistry.MODID);
-
     public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> AMMONIA = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.AMMONIA);
+    public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> NITROGEN = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.NITROGEN);
+    public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> AIR = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.AIR);
+
+    private ChemistryFluids() {
+    }
 
     private static FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> registerLiquidGas(String name, int tint) {
         return FLUIDS.register(name, fluidAttributes -> fluidAttributes.color(tint));

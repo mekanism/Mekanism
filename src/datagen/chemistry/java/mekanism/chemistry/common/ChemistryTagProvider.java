@@ -11,6 +11,7 @@ import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.MekanismTagProvider;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +51,8 @@ public class ChemistryTagProvider extends BaseTagProvider {
 
     private void addFluids() {
         addToTag(ChemistryTags.Fluids.AMMONIA, ChemistryFluids.AMMONIA);
+        addToTag(ChemistryTags.Fluids.NITROGEN, ChemistryFluids.NITROGEN);
+        addToTag(ChemistryTags.Fluids.AIR, ChemistryFluids.AIR);
         //Prevent all our fluids from being duped by create
         for (FluidRegistryObject<?, ?, ?, ?> fluid : ChemistryFluids.FLUIDS.getAllFluids()) {
             addToTag(MekanismTagProvider.CREATE_NO_INFINITE_FLUID, fluid);
@@ -58,10 +61,13 @@ public class ChemistryTagProvider extends BaseTagProvider {
 
     private void addGases() {
         addToTag(ChemistryTags.Gases.AMMONIA, ChemistryGases.AMMONIA);
+        addToTag(ChemistryTags.Gases.NITROGEN, ChemistryGases.NITROGEN);
+        addToTag(ChemistryTags.Gases.AIR, ChemistryGases.AIR);
     }
 
     private void addHarvestRequirements() {
-//        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
-//        );
+        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
+              ChemistryBlocks.AIR_COMPRESSOR
+        );
     }
 }

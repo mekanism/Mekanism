@@ -3,7 +3,9 @@ package mekanism.chemistry.common;
 import mekanism.common.base.IChemicalConstant;
 
 public enum ChemistryChemicalConstants implements IChemicalConstant {
-    AMMONIA("ammonia", 0xFF68FFF8, 0, 239.81F, 681.9F);
+    AMMONIA("ammonia", 0xFF68FFF8, 0, 239.81F, 681.9F),
+    NITROGEN("nitrogen", 0xFF6BD0FF, 0, 63.23F, 808F),
+    AIR("air", 0xFFFFFFFF, 0, 78.80F, 870F);
 
     private final String name;
     private final int color;

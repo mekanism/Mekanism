@@ -20,6 +20,8 @@ public class ChemistryTags {
     public static class Fluids {
 
         public static final Named<Fluid> AMMONIA = forgeTag("ammonia");
+        public static final Named<Fluid> NITROGEN = forgeTag("nitrogen");
+        public static final Named<Fluid> AIR = forgeTag("air");
 
         private Fluids() {
         }
@@ -35,6 +37,8 @@ public class ChemistryTags {
     public static class Gases {
 
         public static final Named<Gas> AMMONIA = tag("ammonia");
+        public static final Named<Gas> NITROGEN = tag("nitrogen");
+        public static final Named<Gas> AIR = tag("air");
 
         private Gases() {
         }
