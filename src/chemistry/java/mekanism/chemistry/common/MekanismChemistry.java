@@ -1,8 +1,11 @@
 package mekanism.chemistry.common;
 
 import mekanism.chemistry.common.config.MekanismChemistryConfig;
+import mekanism.chemistry.common.content.distiller.DistillerMultiblockData;
+import mekanism.chemistry.common.content.distiller.DistillerValidator;
 import mekanism.chemistry.common.network.ChemistryPacketHandler;
 import mekanism.chemistry.common.registries.ChemistryBlocks;
+import mekanism.chemistry.common.registries.ChemistryBuilders.DistillerBuilder;
 import mekanism.chemistry.common.registries.ChemistryContainerTypes;
 import mekanism.chemistry.common.registries.ChemistryFluids;
 import mekanism.chemistry.common.registries.ChemistryGases;
@@ -11,8 +14,11 @@ import mekanism.chemistry.common.registries.ChemistrySounds;
 import mekanism.chemistry.common.registries.ChemistryTileEntityTypes;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
+import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
+import mekanism.common.lib.multiblock.MultiblockCache;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -26,20 +32,19 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class MekanismChemistry implements IModModule {
 
     public static final String MODID = "mekanismchemistry";
-
+    /**
+     * MultiblockManagers for various structures
+     */
+    public static final MultiblockManager<DistillerMultiblockData> distillerManager = new MultiblockManager<>("distiller", MultiblockCache::new, DistillerValidator::new);
     public static MekanismChemistry instance;
-
     /**
      * MekanismTools version number
      */
     public final Version versionNumber;
-
     /**
      * Mekanism Chemistry Packet Pipeline
      */
     private final ChemistryPacketHandler packetHandler;
-
-    // TODO: multiblocks go here
 
     public MekanismChemistry() {
         Mekanism.modulesLoaded.add(instance = this);
@@ -90,7 +95,7 @@ public class MekanismChemistry implements IModModule {
             ChemistryTags.init();
         });
 
-        // TODO: multiblocks go here
+        BuildCommand.register("distiller", ChemistryLang.DISTILLER, new DistillerBuilder());
 
         packetHandler.initialize();
 

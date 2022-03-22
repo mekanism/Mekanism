@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mekanismchemistry:block/fractionating_distiller/block"
+    }
+  }
+}

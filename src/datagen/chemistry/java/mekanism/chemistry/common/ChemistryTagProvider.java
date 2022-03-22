@@ -67,7 +67,10 @@ public class ChemistryTagProvider extends BaseTagProvider {
 
     private void addHarvestRequirements() {
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
-              ChemistryBlocks.AIR_COMPRESSOR
+              ChemistryBlocks.AIR_COMPRESSOR,
+              ChemistryBlocks.FRACTIONATING_DISTILLER_CONTROLLER,
+              ChemistryBlocks.FRACTIONATING_DISTILLER_VALVE,
+              ChemistryBlocks.FRACTIONATING_DISTILLER_BLOCK
         );
     }
 }

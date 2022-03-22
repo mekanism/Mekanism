@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,active=false": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller"
+    },
+    "facing=south,active=false": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanismchemistry:block/fractionating_distiller/controller_active",
+      "y": -90
+    }
+  }
+}

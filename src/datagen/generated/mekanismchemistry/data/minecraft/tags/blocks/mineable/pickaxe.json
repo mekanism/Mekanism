@@ -1,5 +1,8 @@
 {
   "values": [
-    "mekanismchemistry:air_compressor"
+    "mekanismchemistry:air_compressor",
+    "mekanismchemistry:fractionating_distiller_controller",
+    "mekanismchemistry:fractionating_distiller_valve",
+    "mekanismchemistry:fractionating_distiller_block"
   ]
 }
