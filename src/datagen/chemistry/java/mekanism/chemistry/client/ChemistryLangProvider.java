@@ -5,6 +5,7 @@ import mekanism.chemistry.common.MekanismChemistry;
 import mekanism.chemistry.common.registries.ChemistryBlocks;
 import mekanism.chemistry.common.registries.ChemistryFluids;
 import mekanism.chemistry.common.registries.ChemistryGases;
+import mekanism.chemistry.common.registries.ChemistryItems;
 import mekanism.client.lang.BaseLanguageProvider;
 import net.minecraft.data.DataGenerator;
 
@@ -24,6 +25,8 @@ public class ChemistryLangProvider extends BaseLanguageProvider {
     }
 
     private void addItems() {
+        add(ChemistryItems.AMMONIUM, "Ammonium");
+        add(ChemistryItems.FERTILIZER, "Fertilizer");
     }
 
     private void addBlocks() {

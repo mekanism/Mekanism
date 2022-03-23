@@ -1,17 +1,25 @@
 package mekanism.chemistry.common;
 
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.DistillingRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.chemistry.common.ChemistryTags.Fluids;
-import mekanism.chemistry.common.ChemistryTags.Gases;
 import mekanism.chemistry.common.registries.ChemistryFluids;
 import mekanism.chemistry.common.registries.ChemistryGases;
+import mekanism.chemistry.common.registries.ChemistryItems;
 import mekanism.common.recipe.BaseRecipeProvider;
+import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
+import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
+import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.Tag;
@@ -27,7 +35,38 @@ public class ChemistryRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected void addRecipes(Consumer<FinishedRecipe> consumer) {
+        addCraftingRecipes(consumer);
         addRotaryCondensentratorRecipes(consumer);
+        addDistillingRecipes(consumer);
+        addChemicalInfuserRecipes(consumer);
+        addChemicalCrystalizerRecipes(consumer);
+    }
+
+    private void addCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+        //Fertilizer
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(ChemistryItems.FERTILIZER, 2)
+              .addIngredient(ChemistryItems.AMMONIUM)
+              .addIngredient(MekanismItems.SULFUR_DUST)
+              .build(consumer);
+    }
+
+    private void addChemicalCrystalizerRecipes(Consumer<FinishedRecipe> consumer) {
+        String basePath = "crystallizing/";
+        //Ammonia
+        ChemicalCrystallizerRecipeBuilder.crystallizing(
+              IngredientCreatorAccess.gas().from(ChemistryGases.AMMONIA, 100),
+              ChemistryItems.AMMONIUM.getItemStack()
+        ).build(consumer, MekanismChemistry.rl(basePath + "ammonium"));
+    }
+
+    private void addChemicalInfuserRecipes(Consumer<FinishedRecipe> consumer) {
+        String basePath = "chemical_infusing/";
+        //Ammonia
+        ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
+              IngredientCreatorAccess.gas().from(ChemistryGases.NITROGEN, 1),
+              IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN, 1),
+              ChemistryGases.AMMONIA.getStack(1)
+        ).build(consumer, MekanismChemistry.rl(basePath + "ammonia"));
     }
 
     private void addRotaryCondensentratorRecipes(Consumer<FinishedRecipe> consumer) {
@@ -45,5 +84,15 @@ public class ChemistryRecipeProvider extends BaseRecipeProvider {
               gas.getStack(1),
               fluidOutput.getFluidStack(1)
         ).build(consumer, MekanismChemistry.rl(basePath + gas.getName()));
+    }
+
+    private void addDistillingRecipes(Consumer<FinishedRecipe> consumer) {
+        String basePath = "distilling/";
+        //Air
+        DistillingRecipeBuilder.distilling(IngredientCreatorAccess.fluid().from(ChemistryFluids.AIR, 100), List.of(
+                    ChemistryFluids.NITROGEN.getFluidStack(78),
+                    MekanismFluids.OXYGEN.getFluidStack(21)
+              )
+        ).build(consumer, MekanismChemistry.rl(basePath + "air"));
     }
 }

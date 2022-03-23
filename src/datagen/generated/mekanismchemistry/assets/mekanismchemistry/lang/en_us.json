@@ -23,5 +23,7 @@
   "gas.mekanismchemistry.nitrogen": "Nitrogen",
   "item.mekanismchemistry.air_bucket": "Liquid Air Bucket",
   "item.mekanismchemistry.ammonia_bucket": "Liquid Ammonia Bucket",
+  "item.mekanismchemistry.ammonium": "Ammonium",
+  "item.mekanismchemistry.fertilizer": "Fertilizer",
   "item.mekanismchemistry.nitrogen_bucket": "Liquid Nitrogen Bucket"
 }
