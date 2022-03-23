@@ -104,6 +104,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
     public static final MekanismRecipeType<FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> EVAPORATING =
           create("evaporating", recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
 
+
     public static final MekanismRecipeType<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> ACTIVATING =
           create("activating", recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
     public static final MekanismRecipeType<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> CENTRIFUGING =
@@ -163,7 +164,8 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
     public static final MekanismRecipeType<SawmillRecipe, SingleItem<SawmillRecipe>> SAWING =
           create("sawing", recipeType -> new SingleItem<>(recipeType, SawmillRecipe::getInput));
 
-    public static final MekanismRecipeType<DistillingRecipe, SingleFluid<DistillingRecipe>> DISTILLING = create("distilling", recipeType -> new SingleFluid<>(recipeType, DistillingRecipe::getInput));
+    public static final MekanismRecipeType<DistillingRecipe, SingleFluid<DistillingRecipe>> DISTILLING =
+          create("distilling", recipeType -> new SingleFluid<>(recipeType, DistillingRecipe::getInput));
 
     private static <RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> MekanismRecipeType<RECIPE_TYPE, INPUT_CACHE> create(String name,
           Function<MekanismRecipeType<RECIPE_TYPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {

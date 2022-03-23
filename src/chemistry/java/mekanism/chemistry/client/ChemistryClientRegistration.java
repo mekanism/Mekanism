@@ -1,6 +1,7 @@
 package mekanism.chemistry.client;
 
 import mekanism.chemistry.client.gui.GuiAirCompressor;
+import mekanism.chemistry.client.gui.GuiFractionatingDistillerController;
 import mekanism.chemistry.common.MekanismChemistry;
 import mekanism.chemistry.common.registries.ChemistryContainerTypes;
 import mekanism.chemistry.common.registries.ChemistryFluids;
@@ -32,5 +33,6 @@ public class ChemistryClientRegistration {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         ClientRegistrationUtil.registerScreen(ChemistryContainerTypes.AIR_COMPRESSOR, GuiAirCompressor::new);
+        ClientRegistrationUtil.registerScreen(ChemistryContainerTypes.FRACTIONATING_DISTILLER_CONTROLLER, GuiFractionatingDistillerController::new);
     }
 }
