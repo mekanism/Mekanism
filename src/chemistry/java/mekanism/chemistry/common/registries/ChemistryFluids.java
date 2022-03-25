@@ -15,6 +15,8 @@ public class ChemistryFluids {
     public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> AMMONIA = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.AMMONIA);
     public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> NITROGEN = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.NITROGEN);
     public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> AIR = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.AIR);
+    public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> NITRIC_OXIDE = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.NITRIC_OXIDE);
+    public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> NITROGEN_DIOXIDE = FLUIDS.registerLiquidChemical(ChemistryChemicalConstants.NITROGEN_DIOXIDE);
 
     private ChemistryFluids() {
     }

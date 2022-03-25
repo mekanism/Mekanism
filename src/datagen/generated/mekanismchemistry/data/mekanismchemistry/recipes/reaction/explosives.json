@@ -1,0 +1,20 @@
+{
+  "type": "mekanism:reaction",
+  "itemInput": {
+    "ingredient": {
+      "item": "mekanism:substrate"
+    }
+  },
+  "fluidInput": {
+    "amount": 100,
+    "tag": "minecraft:water"
+  },
+  "gasInput": {
+    "amount": 100,
+    "gas": "mekanismchemistry:nitrogen_dioxide"
+  },
+  "duration": 100,
+  "itemOutput": {
+    "item": "mekanismchemistry:explosives"
+  }
+}

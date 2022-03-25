@@ -5,6 +5,10 @@
     "mekanismchemistry:nitrogen",
     "mekanismchemistry:flowing_nitrogen",
     "mekanismchemistry:air",
-    "mekanismchemistry:flowing_air"
+    "mekanismchemistry:flowing_air",
+    "mekanismchemistry:nitric_oxide",
+    "mekanismchemistry:flowing_nitric_oxide",
+    "mekanismchemistry:nitrogen_dioxide",
+    "mekanismchemistry:flowing_nitrogen_dioxide"
   ]
 }

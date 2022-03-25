@@ -15,7 +15,7 @@
     "fluid": "mekanismchemistry:ammonia"
   },
   "gasInput": {
-    "amount": 100,
+    "amount": 1000,
     "gas": "mekanism:oxygen"
   },
   "duration": 900,

@@ -16,4 +16,5 @@ public class ChemistryItems {
 
     public static final ItemRegistryObject<Item> AMMONIUM = ITEMS.register("ammonium");
     public static final ItemRegistryObject<ItemFertilizer> FERTILIZER = ITEMS.register("fertilizer", ItemFertilizer::new);
+    public static final ItemRegistryObject<Item> EXPLOSIVES = ITEMS.register("explosives");
 }

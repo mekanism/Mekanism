@@ -27,6 +27,7 @@ public class ChemistryLangProvider extends BaseLanguageProvider {
     private void addItems() {
         add(ChemistryItems.AMMONIUM, "Ammonium");
         add(ChemistryItems.FERTILIZER, "Fertilizer");
+        add(ChemistryItems.EXPLOSIVES, "Explosives");
     }
 
     private void addBlocks() {
@@ -40,12 +41,16 @@ public class ChemistryLangProvider extends BaseLanguageProvider {
         addFluid(ChemistryFluids.AMMONIA, "Liquid Ammonia");
         addFluid(ChemistryFluids.NITROGEN, "Liquid Nitrogen");
         addFluid(ChemistryFluids.AIR, "Liquid Air");
+        addFluid(ChemistryFluids.NITRIC_OXIDE, "Liquid Nitric Oxide");
+        addFluid(ChemistryFluids.NITROGEN_DIOXIDE, "Liquid Nitrogen Dioxide");
     }
 
     private void addGases() {
         add(ChemistryGases.AMMONIA, "Ammonia");
         add(ChemistryGases.NITROGEN, "Nitrogen");
         add(ChemistryGases.AIR, "Air");
+        add(ChemistryGases.NITRIC_OXIDE, "Nitric Oxide");
+        add(ChemistryGases.NITROGEN_DIOXIDE, "Nitrogen Dioxide");
     }
 
     private void addSubtitles() {

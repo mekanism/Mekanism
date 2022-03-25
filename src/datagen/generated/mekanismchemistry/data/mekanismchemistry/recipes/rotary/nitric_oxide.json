@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "amount": 1,
+    "tag": "forge:nitric_oxide"
+  },
+  "gasOutput": {
+    "gas": "mekanismchemistry:nitric_oxide",
+    "amount": 1
+  },
+  "gasInput": {
+    "amount": 1,
+    "tag": "mekanism:nitric_oxide"
+  },
+  "fluidOutput": {
+    "fluid": "mekanismchemistry:nitric_oxide",
+    "amount": 1
+  }
+}
