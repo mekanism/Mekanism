@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:distilling",
+  "input": {
+    "amount": 100,
+    "fluid": "mekanismchemistry:air"
+  },
+  "output": [
+    {
+      "fluid": "mekanismchemistry:nitrogen",
+      "amount": 78
+    },
+    {
+      "fluid": "mekanism:oxygen",
+      "amount": 21
+    }
+  ]
+}

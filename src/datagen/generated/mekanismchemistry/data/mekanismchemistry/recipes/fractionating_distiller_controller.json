@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismchemistry:fractionating_distiller_controller"
+  },
+  "pattern": [
+    "CGC",
+    "#T#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismchemistry:fractionating_distiller_block"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    },
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "T": {
+      "item": "mekanism:basic_fluid_tank"
+    }
+  }
+}

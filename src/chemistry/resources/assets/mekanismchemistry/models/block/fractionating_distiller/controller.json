@@ -1,0 +1,7 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanismchemistry:block/fractionating_distiller_block",
+    "front": "mekanismchemistry:block/fractionating_distiller_controller"
+  }
+}

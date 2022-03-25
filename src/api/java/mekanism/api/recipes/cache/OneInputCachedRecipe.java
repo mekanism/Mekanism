@@ -11,6 +11,8 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.DistillingRecipe;
+import mekanism.api.recipes.DistillingRecipe.DistillingRecipeOutput;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -122,6 +124,21 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
           BooleanSupplier recheckAllErrors, IInputHandler<@NonNull FluidStack> inputHandler, IOutputHandler<@NonNull FluidStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, FluidStack::isEmpty,
               FluidStack::isEmpty);
+    }
+
+    /**
+     * Base implementation for handling Fluid to Fluid Recipes.
+     *
+     * @param recipe           Recipe.
+     * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+     *                         do this every tick or if there is no one viewing recipes.
+     * @param inputHandler     Input handler.
+     * @param outputHandler    Output handler.
+     */
+    public static OneInputCachedRecipe<@NonNull FluidStack, @NonNull DistillingRecipeOutput, DistillingRecipe> distilling(DistillingRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NonNull FluidStack> inputHandler, IOutputHandler<@NonNull DistillingRecipeOutput> outputHandler) {
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, FluidStack::isEmpty,
+              output -> false);
     }
 
     /**

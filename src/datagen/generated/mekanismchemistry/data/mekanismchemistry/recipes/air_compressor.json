@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanismchemistry:air_compressor"
+  },
+  "pattern": [
+    " T ",
+    "AXA",
+    "OOO"
+  ],
+  "key": {
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

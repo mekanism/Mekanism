@@ -1,0 +1,20 @@
+modLoader="javafml"
+loaderVersion="${loader_version}"
+issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
+license="MIT"
+
+[[mods]]
+    modId="mekanismchemistry"
+    version="${version}"
+    displayName="Mekanism: Chemistry"
+    displayURL="https://aidancbrady.com/mekanism/"
+    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
+    credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
+    logoFile="logo.png"
+    description='''Chemistry module for Mekanism'''
+
+[[dependencies.mekanismchemistry]]
+    modId="mekanism"
+    mandatory=true
+    versionRange="[${version}]"
+    side="BOTH"

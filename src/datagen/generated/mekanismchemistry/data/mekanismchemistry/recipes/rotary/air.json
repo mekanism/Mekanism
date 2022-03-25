@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "amount": 1,
+    "tag": "forge:air"
+  },
+  "gasOutput": {
+    "gas": "mekanismchemistry:air",
+    "amount": 1
+  },
+  "gasInput": {
+    "amount": 1,
+    "tag": "mekanism:air"
+  },
+  "fluidOutput": {
+    "fluid": "mekanismchemistry:air",
+    "amount": 1
+  }
+}
