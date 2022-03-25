@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismchemistry:fractionating_distiller_valve"
+  },
+  "pattern": [
+    " # ",
+    "#C#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismchemistry:fractionating_distiller_block"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    }
+  }
+}
