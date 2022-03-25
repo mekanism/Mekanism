@@ -5,7 +5,7 @@
     "gas": "mekanismchemistry:nitrogen"
   },
   "rightInput": {
-    "amount": 1,
+    "amount": 3,
     "gas": "mekanism:hydrogen"
   },
   "output": {

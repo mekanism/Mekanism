@@ -1,0 +1,26 @@
+{
+  "type": "mekanism:reaction",
+  "itemInput": {
+    "ingredient": [
+      {
+        "tag": "forge:storage_blocks/coal"
+      },
+      {
+        "tag": "forge:storage_blocks/charcoal"
+      }
+    ]
+  },
+  "fluidInput": {
+    "amount": 1000,
+    "fluid": "mekanismchemistry:ammonia"
+  },
+  "gasInput": {
+    "amount": 100,
+    "gas": "mekanism:oxygen"
+  },
+  "duration": 900,
+  "itemOutput": {
+    "item": "mekanismchemistry:ammonium",
+    "count": 10
+  }
+}
