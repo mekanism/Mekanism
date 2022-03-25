@@ -421,9 +421,7 @@ dependencies {
     compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-1.18.1:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
-    //compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
-    compileOnly fg.deobf("projecte:projecte:1.0.0:api")
+    compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     //TODO - 1.18: Support flux networks again when it ports
     //compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
@@ -444,9 +442,7 @@ dependencies {
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
-    //datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
-    datagenmainRuntimeOnly fg.deobf("projecte:projecte:1.0.0:universal")
+    datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 }
 
 if (project.hasProperty('UPDATE_MAPPINGS')) {
