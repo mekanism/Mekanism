@@ -89,6 +89,7 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalTank;
+import mekanism.common.tile.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityModificationStation;
@@ -296,6 +297,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSCasing>, ItemBlockTooltip<BlockBasicMultiblock<TileEntitySPSCasing>>> SPS_CASING = registerBlock("sps_casing", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_CASING), Rarity.EPIC);
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSPort>, ItemBlockTooltip<BlockBasicMultiblock<TileEntitySPSPort>>> SPS_PORT = registerBlock("sps_port", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_PORT), Rarity.EPIC);
     public static final BlockRegistryObject<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>, ItemBlockTooltip<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>>> SUPERCHARGED_COIL = registerBlock("supercharged_coil", () -> new BlockTileModel<>(MekanismBlockTypes.SUPERCHARGED_COIL), Rarity.EPIC);
+    public static final BlockRegistryObject<BlockTile<TileEntityDimensionalStabilizer, Machine<TileEntityDimensionalStabilizer>>, ItemBlockMachine> DIMENSIONAL_STABILIZER = BLOCKS.register("dimensional_stabilizer", () -> new BlockTile<>(MekanismBlockTypes.DIMENSIONAL_STABILIZER), ItemBlockMachine::new);
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockMachine> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_DRIVE_ARRAY), ItemBlockQIOComponent::new);
     public static final BlockRegistryObject<BlockTile<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockMachine> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockTile<>(MekanismBlockTypes.QIO_DASHBOARD), ItemBlockQIOComponent::new);

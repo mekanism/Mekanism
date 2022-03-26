@@ -743,6 +743,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_SPS_CASING("description", "sps_casing"),
     DESCRIPTION_SPS_PORT("description", "sps_port"),
     DESCRIPTION_SUPERCHARGED_COIL("description", "supercharged_coil"),
+    DESCRIPTION_DIMENSIONAL_STABILIZER("description", "dimensional_stabilizer"),
     //Factory Type
     SMELTING("factory", "smelting"),
     ENRICHING("factory", "enriching"),

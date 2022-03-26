@@ -13,6 +13,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalTank;
+import mekanism.common.tile.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
@@ -186,6 +187,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntitySPSCasing> SPS_CASING = TILE_ENTITY_TYPES.register(MekanismBlocks.SPS_CASING, TileEntitySPSCasing::new);
     public static final TileEntityTypeRegistryObject<TileEntitySPSPort> SPS_PORT = TILE_ENTITY_TYPES.register(MekanismBlocks.SPS_PORT, TileEntitySPSPort::new);
     public static final TileEntityTypeRegistryObject<TileEntitySuperchargedCoil> SUPERCHARGED_COIL = TILE_ENTITY_TYPES.register(MekanismBlocks.SUPERCHARGED_COIL, TileEntitySuperchargedCoil::new);
+    public static final TileEntityTypeRegistryObject<TileEntityDimensionalStabilizer> DIMENSIONAL_STABILIZER = TILE_ENTITY_TYPES.register(MekanismBlocks.DIMENSIONAL_STABILIZER, TileEntityDimensionalStabilizer::new);
 
     public static final TileEntityTypeRegistryObject<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = TILE_ENTITY_TYPES.register(MekanismBlocks.QIO_DRIVE_ARRAY, TileEntityQIODriveArray::new);
     public static final TileEntityTypeRegistryObject<TileEntityQIODashboard> QIO_DASHBOARD = TILE_ENTITY_TYPES.register(MekanismBlocks.QIO_DASHBOARD, TileEntityQIODashboard::new);

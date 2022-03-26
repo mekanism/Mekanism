@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "mekanism:block/dimensional_stabilizer"
+    },
+    "facing=down": {
+      "model": "mekanism:block/dimensional_stabilizer",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "mekanism:block/dimensional_stabilizer",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "mekanism:block/dimensional_stabilizer",
+      "x": -90
+    },
+    "facing=east": {
+      "model": "mekanism:block/dimensional_stabilizer",
+      "x": -90,
+      "y": -90
+    },
+    "facing=west": {
+      "model": "mekanism:block/dimensional_stabilizer",
+      "x": -90,
+      "y": 90
+    }
+  }
+}

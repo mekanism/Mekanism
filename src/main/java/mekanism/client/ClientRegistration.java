@@ -14,6 +14,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
+import mekanism.client.gui.GuiDimensionalStabilizer;
 import mekanism.client.gui.GuiDynamicTank;
 import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiFluidTank;
@@ -463,6 +464,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_EXPORTER, GuiQIOExporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_REDSTONE_ADAPTER, GuiQIORedstoneAdapter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SPS, GuiSPS::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DIMENSIONAL_STABILIZER, GuiDimensionalStabilizer::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_TANK, GuiChemicalTank::new);

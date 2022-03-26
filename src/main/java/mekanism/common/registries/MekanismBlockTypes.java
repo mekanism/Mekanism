@@ -51,6 +51,7 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalTank;
+import mekanism.common.tile.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
@@ -544,6 +545,14 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.paintingMachine, MekanismConfig.storage.paintingMachine)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
           .withComputerSupport("paintingMachine")
+          .build();
+    // Dimensional Stabilizer
+    public static final Machine<TileEntityDimensionalStabilizer> DIMENSIONAL_STABILIZER = MachineBuilder
+          .createMachine(() -> MekanismTileEntityTypes.DIMENSIONAL_STABILIZER, MekanismLang.DESCRIPTION_DIMENSIONAL_STABILIZER)
+          .withGui(() -> MekanismContainerTypes.DIMENSIONAL_STABILIZER)
+          .with(Attributes.SECURITY, Attributes.ACTIVE, Attributes.REDSTONE, new AttributeStateFacing(BlockStateProperties.FACING))
+          .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeComparator.class)
+          .withComputerSupport("dimensionalStabilizer")
           .build();
 
     // QIO Drive Array
