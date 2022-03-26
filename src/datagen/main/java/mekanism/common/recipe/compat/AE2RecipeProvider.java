@@ -37,12 +37,17 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "fluix_crystal_to_dust"));
 
-        //Certus Ore -> Certus Crystal
+        //Certus Ore -> Certus Dust
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_ORE),
                     AEItems.CERTUS_QUARTZ_DUST.stack(5)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "certus_ore_to_dust"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+                    IngredientCreatorAccess.item().from(AEBlocks.DEEPSLATE_QUARTZ_ORE),
+                    AEItems.CERTUS_QUARTZ_DUST.stack(5)
+            ).addCondition(modLoaded)
+            .build(consumer, Mekanism.rl(basePath + "deepslate_certus_ore_to_dust"));
 
         //Certus Crystal Seed -> Certus Crystal
         ItemStackToItemStackRecipeBuilder.enriching(
