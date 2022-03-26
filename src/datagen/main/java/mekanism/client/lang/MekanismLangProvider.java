@@ -93,6 +93,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.SCUBA_TANK, "Scuba Tank");
         add(MekanismItems.FLAMETHROWER, "Flamethrower");
         add(MekanismItems.FREE_RUNNERS, "Free Runners");
+        add(MekanismItems.ARMORED_FREE_RUNNERS, "Armored Free Runners");
         add(MekanismItems.JETPACK, "Jetpack");
         add(MekanismItems.ARMORED_JETPACK, "Armored Jetpack");
         add(MekanismItems.HDPE_REINFORCED_ELYTRA, "HDPE Reinforced Elytra");

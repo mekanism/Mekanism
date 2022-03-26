@@ -21,8 +21,9 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String ENERGY_TABLET_CATEGORY = "energy_tablet";
     private static final String FLAMETHROWER_CATEGORY = "flamethrower";
     private static final String FREE_RUNNER_CATEGORY = "free_runner";
+    private static final String ARMORED_FREE_RUNNER_SUBCATEGORY = "armored_free_runner";
     private static final String JETPACK_CATEGORY = "jetpack";
-    private static final String ARMORED_JETPACK_SUBCATEGORY = "armored";
+    private static final String ARMORED_JETPACK_SUBCATEGORY = "armored_jetpack";
     private static final String NETWORK_READER_CATEGORY = "network_reader";
     private static final String PORTABLE_TELEPORTER_CATEGORY = "portable_teleporter";
     private static final String SCUBA_TANK_CATEGORY = "scuba_tank";
@@ -67,6 +68,9 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatValue freeRunnerFallDamageRatio;
     public final CachedFloatingLongValue freeRunnerMaxEnergy;
     public final CachedFloatingLongValue freeRunnerChargeRate;
+    //Armored Free Runner
+    public final CachedIntValue armoredFreeRunnerArmor;
+    public final CachedFloatValue armoredFreeRunnerToughness;
     //Jetpack
     public final CachedLongValue jetpackMaxGas;
     public final CachedLongValue jetpackFillRate;
@@ -205,7 +209,12 @@ public class GearConfig extends BaseMekanismConfig {
               "maxEnergy", FloatingLong.createConst(64_000));
         freeRunnerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Free Runners can accept per tick.",
               "chargeRate", FloatingLong.createConst(320));
-        builder.pop();
+        builder.comment("Armored Free Runner Settings").push(ARMORED_FREE_RUNNER_SUBCATEGORY);
+        armoredFreeRunnerArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Free Runners")
+              .define("armor", 3));
+        armoredFreeRunnerToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Free Runners.")
+              .define("toughness", 2.0));
+        builder.pop(2);
 
         builder.comment("Jetpack Settings").push(JETPACK_CATEGORY);
         jetpackMaxGas = CachedLongValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
