@@ -9,13 +9,14 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
+import mekanism.common.capabilities.energy.item.FixedUsageEnergyContainer;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ElectrolyticSeparatorEnergyContainer extends MachineEnergyContainer<TileEntityElectrolyticSeparator> {
+public class ElectrolyticSeparatorEnergyContainer extends FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> {
 
     public static ElectrolyticSeparatorEnergyContainer input(TileEntityElectrolyticSeparator tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
@@ -30,11 +31,5 @@ public class ElectrolyticSeparatorEnergyContainer extends MachineEnergyContainer
     @Override
     public FloatingLong getBaseEnergyPerTick() {
         return super.getBaseEnergyPerTick().multiply(tile.getRecipeEnergyMultiplier());
-    }
-
-    @Override
-    public void updateEnergyPerTick() {
-        //Update our energy per tick to be based off of our recipe
-        this.currentEnergyPerTick = getBaseEnergyPerTick();
     }
 }
