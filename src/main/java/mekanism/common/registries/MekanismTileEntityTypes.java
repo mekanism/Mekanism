@@ -30,6 +30,7 @@ import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityItemStackToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
+import mekanism.common.tile.laser.TileEntityCreativeLaser;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
@@ -151,6 +152,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityLaser> LASER = TILE_ENTITY_TYPES.register(MekanismBlocks.LASER, TileEntityLaser::new);
     public static final TileEntityTypeRegistryObject<TileEntityLaserAmplifier> LASER_AMPLIFIER = TILE_ENTITY_TYPES.register(MekanismBlocks.LASER_AMPLIFIER, TileEntityLaserAmplifier::new);
     public static final TileEntityTypeRegistryObject<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = TILE_ENTITY_TYPES.register(MekanismBlocks.LASER_TRACTOR_BEAM, TileEntityLaserTractorBeam::new);
+    public static final TileEntityTypeRegistryObject<TileEntityCreativeLaser> CREATIVE_LASER = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_LASER, TileEntityCreativeLaser::new);
     public static final TileEntityTypeRegistryObject<TileEntityLogisticalSorter> LOGISTICAL_SORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter::new);
     public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuser> METALLURGIC_INFUSER = TILE_ENTITY_TYPES.register(MekanismBlocks.METALLURGIC_INFUSER, TileEntityMetallurgicInfuser::new);
     public static final TileEntityTypeRegistryObject<TileEntityOredictionificator> OREDICTIONIFICATOR = TILE_ENTITY_TYPES.register(MekanismBlocks.OREDICTIONIFICATOR, TileEntityOredictionificator::new);

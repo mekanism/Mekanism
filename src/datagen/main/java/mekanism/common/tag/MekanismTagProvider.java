@@ -545,7 +545,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.PRESSURIZED_REACTION_CHAMBER,
               MekanismBlocks.ISOTOPIC_CENTRIFUGE,
               MekanismBlocks.NUTRITIONAL_LIQUIFIER,
-              MekanismBlocks.LASER, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
+              MekanismBlocks.LASER, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM, MekanismBlocks.CREATIVE_LASER,
               MekanismBlocks.QUANTUM_ENTANGLOPORTER,
               MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
               MekanismBlocks.OREDICTIONIFICATOR,

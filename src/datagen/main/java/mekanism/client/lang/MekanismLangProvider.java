@@ -226,6 +226,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.LASER, "Laser");
         add(MekanismBlocks.LASER_AMPLIFIER, "Laser Amplifier");
         add(MekanismBlocks.LASER_TRACTOR_BEAM, "Laser Tractor Beam");
+        add(MekanismBlocks.CREATIVE_LASER, "Creative Laser");
         add(MekanismBlocks.LOGISTICAL_SORTER, "Logistical Sorter");
         add(MekanismBlocks.METALLURGIC_INFUSER, "Metallurgic Infuser");
         add(MekanismBlocks.OREDICTIONIFICATOR, "Oredictionificator");

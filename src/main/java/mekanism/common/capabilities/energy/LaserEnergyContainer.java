@@ -24,7 +24,7 @@ public class LaserEnergyContainer extends BasicEnergyContainer {
         return new LaserEnergyContainer(MachineEnergyContainer.validateBlock(tile).getStorage(), canExtract, canInsert, listener);
     }
 
-    private LaserEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
+    protected LaserEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
           @Nullable IContentsListener listener) {
         super(maxEnergy, canExtract, canInsert, listener);
     }

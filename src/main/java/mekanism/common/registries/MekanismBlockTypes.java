@@ -61,6 +61,7 @@ import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.laser.TileEntityCreativeLaser;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
@@ -387,6 +388,15 @@ public class MekanismBlockTypes {
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .withComputerSupport("laserTractorBeam")
+          .build();
+    // Creative Laser
+    public static final BlockTypeTile<TileEntityCreativeLaser> CREATIVE_LASER = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.CREATIVE_LASER, MekanismLang.DESCRIPTION_LASER)
+          .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
+          .withSound(MekanismSounds.LASER)
+          .with(Attributes.ACTIVE, new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY)
+          .withCustomShape(BlockShapes.LASER)
+          .withComputerSupport("laser")
           .build();
     // Resistive Heater
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
