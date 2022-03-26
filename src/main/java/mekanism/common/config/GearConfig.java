@@ -21,9 +21,8 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String ENERGY_TABLET_CATEGORY = "energy_tablet";
     private static final String FLAMETHROWER_CATEGORY = "flamethrower";
     private static final String FREE_RUNNER_CATEGORY = "free_runner";
-    private static final String ARMORED_FREE_RUNNER_SUBCATEGORY = "armored_free_runner";
+    private static final String ARMORED_SUBCATEGORY = "armored";
     private static final String JETPACK_CATEGORY = "jetpack";
-    private static final String ARMORED_JETPACK_SUBCATEGORY = "armored_jetpack";
     private static final String NETWORK_READER_CATEGORY = "network_reader";
     private static final String PORTABLE_TELEPORTER_CATEGORY = "portable_teleporter";
     private static final String SCUBA_TANK_CATEGORY = "scuba_tank";
@@ -209,7 +208,7 @@ public class GearConfig extends BaseMekanismConfig {
               "maxEnergy", FloatingLong.createConst(64_000));
         freeRunnerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Free Runners can accept per tick.",
               "chargeRate", FloatingLong.createConst(320));
-        builder.comment("Armored Free Runner Settings").push(ARMORED_FREE_RUNNER_SUBCATEGORY);
+        builder.comment("Armored Free Runner Settings").push(ARMORED_SUBCATEGORY);
         armoredFreeRunnerArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Free Runners")
               .define("armor", 3));
         armoredFreeRunnerToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Free Runners.")
@@ -221,7 +220,7 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
         jetpackFillRate = CachedLongValue.wrap(this, builder.comment("Amount of hydrogen the Jetpack can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
-        builder.comment("Armored Jetpack Settings").push(ARMORED_JETPACK_SUBCATEGORY);
+        builder.comment("Armored Jetpack Settings").push(ARMORED_SUBCATEGORY);
         armoredJetpackArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Jetpack.")
               .define("armor", 8));
         armoredJetpackToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Jetpack.")
