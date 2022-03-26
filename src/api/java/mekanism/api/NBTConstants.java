@@ -189,6 +189,8 @@ public final class NBTConstants {
     public static final String SLURRY_STORED = "slurry";
     public static final String SLURRY_TANKS = "SlurryTanks";
     public static final String SORTING = "sorting";
+    public static final String STABILIZER_CHUNKLOADING = "stabilizerChunkLoading";
+    public static final String STABILIZER_CHUNKS_TO_LOAD = "stabilizerChunksToLoad";
     public static final String STATE = "state";
     public static final String STOCK_CONTROL = "stockControl";
     public static final String STORED = "stored";

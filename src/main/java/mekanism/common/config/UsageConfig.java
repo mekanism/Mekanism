@@ -41,6 +41,7 @@ public class UsageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue pigmentExtractor;
     public final CachedFloatingLongValue pigmentMixer;
     public final CachedFloatingLongValue paintingMachine;
+    public final CachedFloatingLongValue dimensionalStabilizer;
 
     public final CachedFloatingLongValue teleporterBase;
     public final CachedFloatingLongValue teleporterDistance;
@@ -107,6 +108,8 @@ public class UsageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(200));
         paintingMachine = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "paintingMachine",
               FloatingLong.createConst(100));
+        dimensionalStabilizer = CachedFloatingLongValue.define(this, builder, "Energy per chunk per tick (Joules).", "dimensionalStabilizer",
+              FloatingLong.createConst(1_000));
 
         builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
 

@@ -19,7 +19,7 @@
       "tag": "mekanism:alloys/atomic"
     },
     "D": {
-      "tag": "forge:storage_blocks/diamond"
+      "tag": "forge:gems/diamond"
     }
   }
 }
