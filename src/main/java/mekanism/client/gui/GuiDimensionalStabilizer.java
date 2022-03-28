@@ -1,8 +1,13 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import javax.annotation.Nonnull;
+import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.button.ColorToggleButton;
 import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -37,7 +42,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
             for (int x = 0; x < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; ++x) {
                 int finalX = x;
                 int finalZ = z;
-                addRenderableWidget(new ToggleButton(
+                addRenderableWidget(new ColorToggleButton(
                       this,
                       63 + 10 * x,
                       19 + 10 * z,
@@ -47,5 +52,14 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                       null));
             }
         }
+        addRenderableWidget(new GuiUpArrow(this, 52, 28));
+    }
+
+    @Override
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawTextExact(matrix, MekanismLang.NORTH_SHORT.translate(), 53.5F, 41F, titleTextColor());
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }
