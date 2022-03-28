@@ -18,6 +18,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.registries.MekanismBlocks;
@@ -79,11 +80,17 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.trackArray(loadingChunks);
+    }
+
+    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         if (MekanismUtils.canFunction(this)) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
+            FloatingLong energyPerTick = energyContainer.getEnergyPerTick().multiply(getChunksLoaded());
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 setChunkloading(true);
@@ -99,6 +106,18 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         if (old != chunkloading) {
             setChanged(true);
         }
+    }
+
+    private int getChunksLoaded() {
+        int retval = 0;
+        for (int z = 0; z < MAX_LOAD_DIAMETER; ++z) {
+            for (int x = 0; x < MAX_LOAD_DIAMETER; ++x) {
+                if (loadingChunks[x][z]) {
+                    ++retval;
+                }
+            }
+        }
+        return retval;
     }
 
     @Override
