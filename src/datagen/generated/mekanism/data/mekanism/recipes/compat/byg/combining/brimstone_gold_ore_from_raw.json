@@ -1,17 +1,17 @@
 {
   "type": "mekanism:combining",
   "mainInput": {
-    "amount": 14,
+    "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/quartz"
+      "tag": "forge:raw_materials/gold"
     }
   },
   "extraInput": {
     "ingredient": {
-      "item": "minecraft:netherrack"
+      "item": "byg:brimstone"
     }
   },
   "output": {
-    "item": "minecraft:nether_quartz_ore"
+    "item": "byg:brimstone_nether_gold_ore"
   }
 }

@@ -1,6 +1,7 @@
 package mekanism.common.integration.crafttweaker;
 
 import mekanism.common.Mekanism;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Constants we use throughout our CraftTweaker integration.
@@ -8,6 +9,7 @@ import mekanism.common.Mekanism;
 public class CrTConstants {
 
     public static final String CONTENT_LOADER = Mekanism.MODID + "content";
+    public static final ResourceLocation CONTENT_LOADER_SOURCE_ID = Mekanism.rl("content");
 
     public static final String BRACKET_GAS = "gas";
     public static final String BRACKET_INFUSE_TYPE = "infuse_type";
@@ -41,12 +43,6 @@ public class CrTConstants {
     public static final String CLASS_MODULE_HELPER = "mods." + Mekanism.MODID + ".api.gear.ModuleHelper";
     public static final String CLASS_CUSTOM_MODULE = "mods." + Mekanism.MODID + ".api.gear.CustomModule";
     public static final String CLASS_MODULE_DATA_PROVIDER = "mods." + Mekanism.MODID + ".api.gear.ModuleDataProvider";
-
-    public static final String CLASS_CHEMICAL_TAG_MANAGER = "mods." + Mekanism.MODID + ".api.tag.ChemicalTagManager";
-    public static final String CLASS_GAS_TAG_MANAGER = "mods." + Mekanism.MODID + ".api.tag.GasTagManager";
-    public static final String CLASS_INFUSE_TYPE_TAG_MANAGER = "mods." + Mekanism.MODID + ".api.tag.InfuseTypeTagManager";
-    public static final String CLASS_PIGMENT_TAG_MANAGER = "mods." + Mekanism.MODID + ".api.tag.PigmentTagManager";
-    public static final String CLASS_SLURRY_TAG_MANAGER = "mods." + Mekanism.MODID + ".api.tag.SlurryTagManager";
 
     public static final String CLASS_FLOATING_LONG = "mods." + Mekanism.MODID + ".api.FloatingLong";
     public static final String CLASS_ITEM_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ItemStackIngredient";
@@ -126,14 +122,13 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_ROTARY_FLUID_TO_GAS = CLASS_RECIPE_ROTARY + ".FluidToGas";
     public static final String CLASS_RECIPE_SAWING = "mods." + Mekanism.MODID + ".recipe.Sawing";
 
-    public static final String CLASS_ATTRIBUTE_CHEMICAL = "mods." + Mekanism.MODID + ".content.attribute.ChemicalAttribute";
-    public static final String CLASS_ATTRIBUTE_GAS = "mods." + Mekanism.MODID + ".content.attribute.GasAttribute";
-    public static final String CLASS_ATTRIBUTE_INFUSE_TYPE = "mods." + Mekanism.MODID + ".content.attribute.InfuseTypeAttribute";
-    public static final String CLASS_ATTRIBUTE_PIGMENT = "mods." + Mekanism.MODID + ".content.attribute.PigmentAttribute";
-    public static final String CLASS_ATTRIBUTE_SLURRY = "mods." + Mekanism.MODID + ".content.attribute.SlurryAttribute";
-    public static final String CLASS_ATTRIBUTE_COOLANT = "mods." + Mekanism.MODID + ".content.attribute.gas.CoolantAttribute";
-    public static final String CLASS_ATTRIBUTE_FUEL = "mods." + Mekanism.MODID + ".content.attribute.gas.FuelAttribute";
-    public static final String CLASS_ATTRIBUTE_RADIATION = "mods." + Mekanism.MODID + ".content.attribute.gas.RadiationAttribute";
+    public static final String CLASS_ATTRIBUTE_CHEMICAL = "mods." + Mekanism.MODID + ".attribute.ChemicalAttribute";
+    public static final String CLASS_ATTRIBUTE_COOLANT = "mods." + Mekanism.MODID + ".attribute.gas.CoolantAttribute";
+    public static final String CLASS_ATTRIBUTE_COOLED_COOLANT = "mods." + Mekanism.MODID + ".attribute.gas.CooledCoolantAttribute";
+    public static final String CLASS_ATTRIBUTE_HEATED_COOLANT = "mods." + Mekanism.MODID + ".attribute.gas.HeatedCoolantAttribute";
+    public static final String CLASS_ATTRIBUTE_FUEL = "mods." + Mekanism.MODID + ".attribute.gas.FuelAttribute";
+    public static final String CLASS_ATTRIBUTE_RADIATION = "mods." + Mekanism.MODID + ".attribute.gas.RadiationAttribute";
+
     public static final String CLASS_BUILDER_CHEMICAL = "mods." + Mekanism.MODID + ".content.builder.ChemicalBuilder";
     public static final String CLASS_BUILDER_GAS = "mods." + Mekanism.MODID + ".content.builder.GasBuilder";
     public static final String CLASS_BUILDER_INFUSE_TYPE = "mods." + Mekanism.MODID + ".content.builder.InfuseTypeBuilder";
@@ -143,16 +138,18 @@ public class CrTConstants {
     public static final String CLASS_BUILDER_ROBIT_SKIN = "mods." + Mekanism.MODID + ".content.builder.RobitSkinBuilder";
 
     //Expansions, declared below classes we can reference the partial string parts of our other types
+    private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";
+    private static final String EXPANSION_TARGET_TAG = "crafttweaker.api.tag.type.KnownTag";
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
-    public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.ItemDefinition>";
-    public static final String EXPANSION_TARGET_GAS_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_GAS + ">";
-    public static final String EXPANSION_TARGET_INFUSE_TYPE_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_INFUSE_TYPE + ">";
-    public static final String EXPANSION_TARGET_PIGMENT_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_PIGMENT + ">";
-    public static final String EXPANSION_TARGET_SLURRY_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_SLURRY + ">";
-    public static final String EXPANSION_TARGET_ITEM_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_ITEM_TAG + ">";
-    public static final String EXPANSION_TARGET_FLUID_AMOUNT_TAG = "crafttweaker.api.util.Many<crafttweaker.api.tag.MCTag<crafttweaker.api.fluid.Fluid>>";
-    public static final String EXPANSION_TARGET_GAS_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_GAS_TAG + ">";
-    public static final String EXPANSION_TARGET_INFUSE_TYPE_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_INFUSE_TYPE_TAG + ">";
-    public static final String EXPANSION_TARGET_PIGMENT_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_PIGMENT_TAG + ">";
-    public static final String EXPANSION_TARGET_SLURRY_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_SLURRY_TAG + ">";
+    public static final String EXPANSION_TARGET_ITEM_TAG = EXPANSION_TARGET_TAG + "<crafttweaker.api.item.ItemDefinition>";
+    public static final String EXPANSION_TARGET_GAS_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_GAS + ">";
+    public static final String EXPANSION_TARGET_INFUSE_TYPE_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_INFUSE_TYPE + ">";
+    public static final String EXPANSION_TARGET_PIGMENT_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_PIGMENT + ">";
+    public static final String EXPANSION_TARGET_SLURRY_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_SLURRY + ">";
+    public static final String EXPANSION_TARGET_ITEM_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_ITEM_TAG + ">";
+    public static final String EXPANSION_TARGET_FLUID_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_TAG + "<crafttweaker.api.fluid.Fluid>>";
+    public static final String EXPANSION_TARGET_GAS_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_GAS_TAG + ">";
+    public static final String EXPANSION_TARGET_INFUSE_TYPE_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_INFUSE_TYPE_TAG + ">";
+    public static final String EXPANSION_TARGET_PIGMENT_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_PIGMENT_TAG + ">";
+    public static final String EXPANSION_TARGET_SLURRY_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_SLURRY_TAG + ">";
 }

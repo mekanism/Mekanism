@@ -5,13 +5,12 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
-import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute.ICrTGasAttribute;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
+@ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_GAS)
-public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, ICrTGasAttribute, CrTGasBuilder> {
+public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, CrTGasBuilder> {
 
     /**
      * Creates a builder for registering a custom {@link Gas}.

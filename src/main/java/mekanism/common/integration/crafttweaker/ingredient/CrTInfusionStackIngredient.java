@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.base.IData;
 import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
-import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
@@ -14,7 +14,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
-import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -61,8 +60,8 @@ public class CrTInfusionStackIngredient {
      * @return A {@link InfusionStackIngredient} that matches a given infuse type tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static InfusionStackIngredient from(MCTag<InfuseType> infuseTypeTag, long amount) {
-        TagKey<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, CrTInfuseTypeTagManager.INSTANCE::getInternal, "InfusionStackIngredients");
+    public static InfusionStackIngredient from(KnownTag<InfuseType> infuseTypeTag, long amount) {
+        TagKey<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, "InfusionStackIngredients");
         return IngredientCreatorAccess.infusion().from(tag, amount);
     }
 
@@ -74,7 +73,7 @@ public class CrTInfusionStackIngredient {
      * @return A {@link InfusionStackIngredient} that matches a given infuse type tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static InfusionStackIngredient from(Many<MCTag<InfuseType>> infuseTypeTag) {
+    public static InfusionStackIngredient from(Many<KnownTag<InfuseType>> infuseTypeTag) {
         return from(infuseTypeTag.getData(), infuseTypeTag.getAmount());
     }
 

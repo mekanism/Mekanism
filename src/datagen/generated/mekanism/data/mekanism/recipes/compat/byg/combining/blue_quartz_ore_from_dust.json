@@ -8,10 +8,10 @@
   },
   "extraInput": {
     "ingredient": {
-      "item": "minecraft:netherrack"
+      "item": "byg:blue_netherrack"
     }
   },
   "output": {
-    "item": "minecraft:nether_quartz_ore"
+    "item": "byg:blue_nether_quartz_ore"
   }
 }

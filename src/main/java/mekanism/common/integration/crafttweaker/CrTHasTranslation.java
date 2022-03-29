@@ -13,6 +13,7 @@ public class CrTHasTranslation {
      * Gets the translation key for this object.
      */
     @ZenCodeType.Method
+    @ZenCodeType.Getter("translationKey")
     public static String getTranslationKey(IHasTranslationKey internal) {
         return internal.getTranslationKey();
     }

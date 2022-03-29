@@ -800,6 +800,34 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * {@inheritDoc}
      *
+     * @implNote We clamp the value to MAX_BYTE rather than having it overflow into the negatives.
+     */
+    @Override
+    public byte byteValue() {
+        int v = intValue();
+        if (v < Byte.MAX_VALUE) {
+            return (byte) v;
+        }
+        return Byte.MAX_VALUE;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote We clamp the value to MAX_SHORT rather than having it overflow into the negatives.
+     */
+    @Override
+    public short shortValue() {
+        int v = intValue();
+        if (v < Short.MAX_VALUE) {
+            return (short) v;
+        }
+        return Short.MAX_VALUE;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @implNote We clamp the value to MAX_INT rather than having it overflow into the negatives.
      */
     @Override

@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.base.IData;
 import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
-import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
@@ -14,7 +14,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
-import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -61,8 +60,8 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(MCTag<Pigment> pigmentTag, long amount) {
-        TagKey<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
+    public static PigmentStackIngredient from(KnownTag<Pigment> pigmentTag, long amount) {
+        TagKey<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, "PigmentStackIngredients");
         return IngredientCreatorAccess.pigment().from(tag, amount);
     }
 
@@ -74,7 +73,7 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(Many<MCTag<Pigment>> pigmentTag) {
+    public static PigmentStackIngredient from(Many<KnownTag<Pigment>> pigmentTag) {
         return from(pigmentTag.getData(), pigmentTag.getAmount());
     }
 

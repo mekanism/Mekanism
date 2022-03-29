@@ -1,13 +1,11 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.tag.MCTag;
-import java.util.function.Function;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IIngredientCreator;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 
 public class CrTIngredientHelper {
@@ -24,10 +22,9 @@ public class CrTIngredientHelper {
     /**
      * Validates that the amount is greater than zero and that the tag exists. If it does it get and returns the tag, otherwise it throws an error.
      */
-    static <TYPE, CRT_TYPE> TagKey<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount, Function<MCTag<CRT_TYPE>, Tag<TYPE>> getter,
-          String ingredientType) {
+    static <TYPE> TagKey<TYPE> assertValidAndGet(KnownTag<TYPE> crtTag, long amount, String ingredientType) {
         assertValidAmount(ingredientType, amount);
-        return CrTUtils.validateTagAndGet(crtTag, getter);
+        return CrTUtils.validateTagAndGet(crtTag);
     }
 
     /**

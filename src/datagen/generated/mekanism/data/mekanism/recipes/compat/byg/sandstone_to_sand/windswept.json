@@ -1,0 +1,29 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "byg:windswept_sandstone"
+      },
+      {
+        "item": "byg:chiseled_windswept_sandstone"
+      },
+      {
+        "item": "byg:cut_windswept_sandstone"
+      },
+      {
+        "item": "byg:smooth_windswept_sandstone"
+      }
+    ]
+  },
+  "output": {
+    "item": "byg:windswept_sand",
+    "count": 2
+  }
+}

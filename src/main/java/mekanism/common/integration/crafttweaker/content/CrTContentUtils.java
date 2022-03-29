@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.content;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.ScriptLoadingOptions;
+import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -80,21 +80,28 @@ public class CrTContentUtils {
     private static <V extends IForgeRegistryEntry<V>> void queueForRegistration(String type, @Nullable Map<ResourceLocation, V> queued, ResourceLocation registryName,
           V element) {
         //Only queue our chemicals for registration on the first run of our loader
-        if (queued == null) {
-            CraftTweakerAPI.LOGGER.error("Cannot register {} '{}' since it was called too late. Registering must be done during '#loader {}'!",
-                  type, registryName, CrTConstants.CONTENT_LOADER);
-        } else if (queued.put(registryName, element) == null) {
-            CraftTweakerAPI.LOGGER.info("Queueing {} '{}' for registration.", type, registryName);
-        } else {
-            CraftTweakerAPI.LOGGER.warn("Registration for {} '{}' is already queued, skipping duplicate.", type, registryName);
+        if (queued != null) {
+            if (queued.put(registryName, element) == null) {
+                CraftTweakerAPI.LOGGER.info("Queueing {} '{}' for registration.", type, registryName);
+            } else {
+                CraftTweakerAPI.LOGGER.warn("Registration for {} '{}' is already queued, skipping duplicate.", type, registryName);
+            }
         }
     }
 
     public static void registerCrTGases(RegistryEvent.Register<Gas> event) {
-        //We register and load our content scripts here in the first registry event of ours for our types of content
+        //We load our content scripts here in the first registry event of ours for our types of content
         // to make sure that the new registry events have fired and that the registries exist and the bracket handler
         // validators won't choke
-        CraftTweakerAPI.loadScripts(new ScriptLoadingOptions().setLoaderName(CrTConstants.CONTENT_LOADER).execute());
+        try {
+            CraftTweakerAPI.getScriptRunManager().createScriptRun(new ScriptRunConfiguration(
+                  CrTConstants.CONTENT_LOADER,
+                  CrTConstants.CONTENT_LOADER_SOURCE_ID,
+                  ScriptRunConfiguration.RunKind.EXECUTE
+            )).execute();
+        } catch (Throwable e) {
+            CraftTweakerAPI.LOGGER.error("Unable to register chemicals due to an error.", e);
+        }
         registerQueued(event, queuedGases, () -> queuedGases = null, "Gas", "gases");
     }
 

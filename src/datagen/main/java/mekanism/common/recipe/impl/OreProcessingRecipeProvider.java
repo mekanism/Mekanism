@@ -50,10 +50,10 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             addDynamicOreProcessingIngotRecipes(consumer, basePath + resource.getRegistrySuffix() + "/", resource);
         }
-        //Gold Dust plus netherrack to nether gold ore
+        //Raw Gold plus netherrack to nether gold ore
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(Tags.Items.RAW_MATERIALS_GOLD, 8),
-              IngredientCreatorAccess.item().from(Tags.Items.NETHERRACK),
+              IngredientCreatorAccess.item().from(Blocks.NETHERRACK),
               new ItemStack(Blocks.NETHER_GOLD_ORE)
         ).build(consumer, Mekanism.rl(basePath + "gold/ore/nether_from_raw"));
 
@@ -73,7 +73,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE, Tags.Items.ORES_LAPIS,
               MekanismItems.LAPIS_LAZULI_DUST, MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONE_NORMAL);
         addOreProcessingGemRecipes(consumer, basePath + "quartz/", Blocks.NETHER_QUARTZ_ORE, null, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
-              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 14, Tags.Items.NETHERRACK);
+              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 14, IngredientCreatorAccess.item().from(Blocks.NETHERRACK));
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
         addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
         addRefinedObsidianProcessingRecipes(consumer, basePath + "refined_obsidian/");
@@ -313,6 +313,12 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
     private void addOreProcessingGemRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
           IItemProvider dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
+        addOreProcessingGemRecipes(consumer, basePath, ore, deepslateOre, oreTag, dust, dustTag, gem, gemTag, fromOre, toOre,
+              IngredientCreatorAccess.item().from(combineType));
+    }
+
+    private void addOreProcessingGemRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
+          IItemProvider dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, ItemStackIngredient combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(dustTag),
@@ -332,7 +338,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //to ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(combineType),
+              combineType,
               new ItemStack(ore)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
         if (deepslateOre != null) {

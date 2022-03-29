@@ -340,7 +340,6 @@ repositories {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
         content {
-            includeGroup 'mcjty.theoneprobe'
             includeGroup 'team.chisel.ctm'
         }
     }
@@ -356,6 +355,7 @@ repositories {
         url 'https://modmaven.dev/'
         content {
             includeGroup 'appeng'
+            includeGroup 'mcjty.theoneprobe'
         }
     }
     flatDir {
@@ -408,16 +408,20 @@ dependencies {
     //TODO - 1.18: Re-enable once updated
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:1.18-${ctm_version}")
 
-    //TODO - 1.18: Switch back to the proper maven once TOP is on it again
-    implementation fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
-    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
-    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
+    //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
+    compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
+        transitive = false
+    }
+    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
+        transitive = false
+    }
 
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
     //TODO - 1.18: Make these use the mc version as a var again and use implementation instead of compileOnly
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.1:${crafttweaker_version}")
+    implementation fg.deobf("crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+    //implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
     compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-1.18.1:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
@@ -432,14 +436,14 @@ dependencies {
     testRuntimeOnly cc
 
     //Dependencies for data generators for mod compat reference
-    datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}") {
-        transitive = false
-    }
+    datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")//Biomes O' Plenty dep
     datagenmainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
-    datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    //TODO - 1.18: Switch back
+    datagenmainImplementation fg.deobf("ilikewood:ilikewood:1.18.2-8.5.0.1")
+    //datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")

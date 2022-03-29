@@ -1,6 +1,7 @@
 package mekanism.api.recipes.ingredients.creator;
 
 import com.google.gson.JsonElement;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -74,4 +75,20 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws IllegalArgumentException if the given array is empty.
      */
     INGREDIENT createMulti(INGREDIENT... ingredients);
+
+    /**
+     * Creates an Ingredient out of a stream of Ingredients.
+     *
+     * @param ingredients Ingredient(s) to combine.
+     *
+     * @return Given Ingredient or Combined Ingredient if multiple were in the stream.
+     *
+     * @throws NullPointerException     if the given stream is null.
+     * @throws IllegalArgumentException if the given stream is empty.
+     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link #createMulti(InputIngredient[])}.
+     */
+    @SuppressWarnings("unchecked")
+    default INGREDIENT from(Stream<INGREDIENT> ingredients) {
+        return createMulti((INGREDIENT[]) ingredients.toArray());
+    }
 }

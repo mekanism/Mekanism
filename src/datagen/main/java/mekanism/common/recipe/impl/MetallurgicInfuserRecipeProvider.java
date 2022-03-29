@@ -27,7 +27,7 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_mycelium"));
         //Netherrack -> crimson nylium
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(Tags.Items.NETHERRACK),
+              IngredientCreatorAccess.item().from(Blocks.NETHERRACK),
               IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.FUNGI, 10),
               new ItemStack(Blocks.CRIMSON_NYLIUM)
         ).build(consumer, Mekanism.rl(basePath + "netherrack_to_crimson_nylium"));

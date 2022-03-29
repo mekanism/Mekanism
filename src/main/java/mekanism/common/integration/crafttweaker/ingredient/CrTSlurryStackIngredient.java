@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.base.IData;
 import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
-import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
@@ -14,7 +14,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -61,8 +60,8 @@ public class CrTSlurryStackIngredient {
      * @return A {@link SlurryStackIngredient} that matches a given slurry tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static SlurryStackIngredient from(MCTag<Slurry> slurryTag, long amount) {
-        TagKey<Slurry> tag = CrTIngredientHelper.assertValidAndGet(slurryTag, amount, CrTSlurryTagManager.INSTANCE::getInternal, "SlurryStackIngredients");
+    public static SlurryStackIngredient from(KnownTag<Slurry> slurryTag, long amount) {
+        TagKey<Slurry> tag = CrTIngredientHelper.assertValidAndGet(slurryTag, amount, "SlurryStackIngredients");
         return IngredientCreatorAccess.slurry().from(tag, amount);
     }
 
@@ -74,7 +73,7 @@ public class CrTSlurryStackIngredient {
      * @return A {@link SlurryStackIngredient} that matches a given slurry tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static SlurryStackIngredient from(Many<MCTag<Slurry>> slurryTag) {
+    public static SlurryStackIngredient from(Many<KnownTag<Slurry>> slurryTag) {
         return from(slurryTag.getData(), slurryTag.getAmount());
     }
 

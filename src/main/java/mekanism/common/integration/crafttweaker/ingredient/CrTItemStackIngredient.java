@@ -8,8 +8,7 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.item.MCItemStack;
-import com.blamejared.crafttweaker.api.tag.MCTag;
-import com.blamejared.crafttweaker.api.tag.manager.TagManagerItem;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.ArrayList;
@@ -80,8 +79,8 @@ public class CrTItemStackIngredient {
      * @return A {@link ItemStackIngredient} that matches a given item tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCTag<Item> itemTag, int amount) {
-        TagKey<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
+    public static ItemStackIngredient from(KnownTag<Item> itemTag, int amount) {
+        TagKey<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, "ItemStackIngredients");
         return IngredientCreatorAccess.item().from(tag, amount);
     }
 
@@ -93,7 +92,7 @@ public class CrTItemStackIngredient {
      * @return A {@link ItemStackIngredient} that matches a given item tag with an amount of one.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCTag<Item> itemTag) {
+    public static ItemStackIngredient from(KnownTag<Item> itemTag) {
         return from(itemTag, 1);
     }
 
@@ -105,7 +104,7 @@ public class CrTItemStackIngredient {
      * @return A {@link ItemStackIngredient} that matches a given item tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(Many<MCTag<Item>> itemTag) {
+    public static ItemStackIngredient from(Many<KnownTag<Item>> itemTag) {
         return from(itemTag.getData(), itemTag.getAmount());
     }
 

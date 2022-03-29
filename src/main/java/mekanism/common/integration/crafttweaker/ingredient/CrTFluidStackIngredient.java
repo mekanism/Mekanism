@@ -3,14 +3,15 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.base.IData;
 import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
-import com.blamejared.crafttweaker.api.tag.MCTag;
-import com.blamejared.crafttweaker.api.tag.manager.TagManagerFluid;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -67,8 +68,8 @@ public class CrTFluidStackIngredient {
      * @return A {@link FluidStackIngredient} that matches a given fluid tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static FluidStackIngredient from(MCTag<Fluid> fluidTag, int amount) {
-        TagKey<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
+    public static FluidStackIngredient from(KnownTag<Fluid> fluidTag, int amount) {
+        TagKey<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, "FluidStackIngredients");
         return IngredientCreatorAccess.fluid().from(tag, amount);
     }
 
@@ -80,8 +81,25 @@ public class CrTFluidStackIngredient {
      * @return A {@link FluidStackIngredient} that matches a given fluid tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static FluidStackIngredient from(Many<MCTag<Fluid>> fluidTag) {
+    public static FluidStackIngredient from(Many<KnownTag<Fluid>> fluidTag) {
         return from(fluidTag.getData(), fluidTag.getAmount());
+    }
+
+    /**
+     * Creates a {@link FluidStackIngredient} that matches the given CraftTweaker fluid ingredient.
+     *
+     * @param ingredient Ingredient to match.
+     *
+     * @return A {@link FluidStackIngredient} that matches a given CraftTweaker fluid ingredient.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static FluidStackIngredient from(CTFluidIngredient ingredient) {
+        IFluidStackIngredientCreator ingredientCreator = IngredientCreatorAccess.fluid();
+        return ingredient.mapTo(
+              ingredientCreator::from,
+              ingredientCreator::from,
+              ingredientCreator::from
+        );
     }
 
     /**

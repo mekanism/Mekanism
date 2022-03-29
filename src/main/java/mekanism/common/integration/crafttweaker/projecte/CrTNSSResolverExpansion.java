@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.projecte;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -16,10 +16,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
-import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
-import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
-import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.integration.projecte.NSSInfuseType;
 import mekanism.common.integration.projecte.NSSPigment;
@@ -62,15 +58,15 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Gas>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Gas>}.
      *
      * @param tag Gas Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Gas>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Gas>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromGasTag(MCTag<Gas> tag) {
-        return NSSGas.createTag(CrTUtils.validateTagAndGet(tag, CrTGasTagManager.INSTANCE::getInternal));
+    public static NormalizedSimpleStack fromGasTag(KnownTag<Gas> tag) {
+        return NSSGas.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     /**
@@ -98,15 +94,15 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<InfuseType>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<InfuseType>}.
      *
      * @param tag Infuse Type Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<InfuseType>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<InfuseType>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromInfuseTypeTag(MCTag<InfuseType> tag) {
-        return NSSInfuseType.createTag(CrTUtils.validateTagAndGet(tag, CrTInfuseTypeTagManager.INSTANCE::getInternal));
+    public static NormalizedSimpleStack fromInfuseTypeTag(KnownTag<InfuseType> tag) {
+        return NSSInfuseType.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     /**
@@ -134,15 +130,15 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Pigment>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Pigment>}.
      *
      * @param tag Pigment Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Pigment>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Pigment>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromPigmentTag(MCTag<Pigment> tag) {
-        return NSSPigment.createTag(CrTUtils.validateTagAndGet(tag, CrTPigmentTagManager.INSTANCE::getInternal));
+    public static NormalizedSimpleStack fromPigmentTag(KnownTag<Pigment> tag) {
+        return NSSPigment.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     /**
@@ -170,15 +166,15 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Slurry>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Slurry>}.
      *
      * @param tag Slurry Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Slurry>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Slurry>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromSlurryTag(MCTag<Slurry> tag) {
-        return NSSSlurry.createTag(CrTUtils.validateTagAndGet(tag, CrTSlurryTagManager.INSTANCE::getInternal));
+    public static NormalizedSimpleStack fromSlurryTag(KnownTag<Slurry> tag) {
+        return NSSSlurry.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL validateNotEmptyAndGet(CHEMICAL chemical, String type) {

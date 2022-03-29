@@ -13,9 +13,9 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient.InfusionStackIngredi
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
 // <recipetype:mekanism:crystallizing>.addRecipe("osmium_ingotification", <gas:mekanism:osmium> * 200, <item:mekanism:ingot_osmium>);
 
-<recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", InfusionStackIngredient.from(<tag:infuse_types:mekanism:gold>, 9), <item:minecraft:gold_nugget>);
+<recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", InfusionStackIngredient.from(<tag:mekanism/infuse_type:mekanism:gold>, 9), <item:minecraft:gold_nugget>);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
-// <recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", <tag:infuse_types:mekanism:gold> * 9, <item:minecraft:gold_nugget>);
+// <recipetype:mekanism:crystallizing>.addRecipe("gold_infusion_to_gold", <tag:mekanism/infuse_type:mekanism:gold> * 9, <item:minecraft:gold_nugget>);
 
 
 /*

@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
+@ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_ROBIT_SKIN)
 public class CrTRobitSkinBuilder {
 

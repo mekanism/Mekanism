@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.base.IData;
 import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
-import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
@@ -14,7 +14,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -61,8 +60,8 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(MCTag<Gas> gasTag, long amount) {
-        TagKey<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, CrTGasTagManager.INSTANCE::getInternal, "GasStackIngredients");
+    public static GasStackIngredient from(KnownTag<Gas> gasTag, long amount) {
+        TagKey<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, "GasStackIngredients");
         return IngredientCreatorAccess.gas().from(tag, amount);
     }
 
@@ -74,7 +73,7 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(Many<MCTag<Gas>> gasTag) {
+    public static GasStackIngredient from(Many<KnownTag<Gas>> gasTag) {
         return from(gasTag.getData(), gasTag.getAmount());
     }
 

@@ -1,12 +1,13 @@
 package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
 import mekanism.api.chemical.gas.Gas;
@@ -113,10 +114,10 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link MCTag<Item>}s to {@link ItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link KnownTag<Item>}s to {@link ItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static ItemStackIngredient asItemStackIngredient(MCTag<Item> _this) {
+        public static ItemStackIngredient asItemStackIngredient(KnownTag<Item> _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
@@ -129,10 +130,10 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link Many<MCTag<Item>>}s to {@link ItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Many<KnownTag<Item>>}s to {@link ItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static ItemStackIngredient asItemStackIngredient(Many<MCTag<Item>> _this) {
+        public static ItemStackIngredient asItemStackIngredient(Many<KnownTag<Item>> _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
@@ -177,10 +178,26 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link Many<MCTag<Fluid>>}s to {@link FluidStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Many<KnownTag<Fluid>>}s to {@link FluidStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static FluidStackIngredient asFluidStackIngredient(Many<MCTag<Fluid>> _this) {
+        public static FluidStackIngredient asFluidStackIngredient(Many<KnownTag<Fluid>> _this) {
+            return CrTFluidStackIngredient.from(_this);
+        }
+    }
+
+    @ZenRegister
+    @TypedExpansion(CTFluidIngredient.class)
+    public static class CTFluidIngredientExpansion {
+
+        private CTFluidIngredientExpansion() {
+        }
+
+        /**
+         * Allows for casting {@link CTFluidIngredient}s to {@link FluidStackIngredient} without even needing to specify the cast.
+         */
+        @ZenCodeType.Caster(implicit = true)
+        public static FluidStackIngredient asFluidStackIngredient(CTFluidIngredient _this) {
             return CrTFluidStackIngredient.from(_this);
         }
     }
@@ -193,10 +210,10 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link Many<MCTag<Gas>>}s to {@link GasStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Many<KnownTag<Gas>>}s to {@link GasStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static GasStackIngredient asGasStackIngredient(Many<MCTag<Gas>> _this) {
+        public static GasStackIngredient asGasStackIngredient(Many<KnownTag<Gas>> _this) {
             return CrTGasStackIngredient.from(_this);
         }
     }
@@ -209,10 +226,10 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link Many<MCTag<InfuseType>>}s to {@link InfusionStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Many<KnownTag<InfuseType>>}s to {@link InfusionStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static InfusionStackIngredient asGasStackIngredient(Many<MCTag<InfuseType>> _this) {
+        public static InfusionStackIngredient asGasStackIngredient(Many<KnownTag<InfuseType>> _this) {
             return CrTInfusionStackIngredient.from(_this);
         }
     }
@@ -225,10 +242,10 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link Many<MCTag<Pigment>>}s to {@link PigmentStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Many<KnownTag<Pigment>>}s to {@link PigmentStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static PigmentStackIngredient asGasStackIngredient(Many<MCTag<Pigment>> _this) {
+        public static PigmentStackIngredient asGasStackIngredient(Many<KnownTag<Pigment>> _this) {
             return CrTPigmentStackIngredient.from(_this);
         }
     }
@@ -241,10 +258,10 @@ public class CrTIngredientExpansion {
         }
 
         /**
-         * Allows for casting {@link Many<MCTag<Slurry>>}s to {@link SlurryStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Many<KnownTag<Slurry>>}s to {@link SlurryStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static SlurryStackIngredient asGasStackIngredient(Many<MCTag<Slurry>> _this) {
+        public static SlurryStackIngredient asGasStackIngredient(Many<KnownTag<Slurry>> _this) {
             return CrTSlurryStackIngredient.from(_this);
         }
     }

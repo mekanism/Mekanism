@@ -90,7 +90,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             setActive(true);
             if (!fuelTank.isEmpty() && fuelTank.getType().has(Fuel.class)) {
                 Fuel fuel = fuelTank.getType().get(Fuel.class);
-                maxBurnTicks = fuel.getBurnTicks();
+                //Ensure valid data
+                maxBurnTicks = Math.max(1, fuel.getBurnTicks());
                 generationRate = fuel.getEnergyPerTick();
             }
 
