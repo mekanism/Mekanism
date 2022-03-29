@@ -11,11 +11,11 @@
   ],
   "key": {
     "#": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanismadditions:glow_panels"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:light_gray_glow_panel"
       }
     },

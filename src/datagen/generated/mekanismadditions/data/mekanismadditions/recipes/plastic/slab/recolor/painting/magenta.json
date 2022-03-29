@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "forge:slabs/plastic"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:magenta_plastic_slab"
       }
     }

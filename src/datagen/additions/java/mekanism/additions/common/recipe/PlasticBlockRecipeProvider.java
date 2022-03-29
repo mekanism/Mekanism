@@ -15,11 +15,11 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.item.block.ItemBlockColoredName;
+import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.recipe.ingredient.IngredientWithout;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
@@ -34,6 +34,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
 public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
@@ -185,7 +186,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
     }
 
     public static void registerRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, TagKey<Item> blockType, EnumColor color, String basePath) {
-        IngredientWithout recolorInput = IngredientWithout.create(blockType, result);
+        Ingredient recolorInput = BaseRecipeProvider.difference(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
@@ -203,7 +204,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
     }
 
     public static void registerTransparentRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, TagKey<Item> blockType, EnumColor color, String basePath) {
-        IngredientWithout recolorInput = IngredientWithout.create(blockType, result);
+        Ingredient recolorInput = BaseRecipeProvider.difference(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {

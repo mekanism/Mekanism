@@ -11,11 +11,11 @@
   ],
   "key": {
     "#": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanismadditions:plastic_blocks/slick"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:light_gray_slick_plastic"
       }
     },

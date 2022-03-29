@@ -25,7 +25,7 @@ public class MekCraftTweakerPlugin implements ICraftTweakerPlugin {
 
     @Override
     public void registerModuleConfigurators(final IScriptRunModuleConfiguratorRegistrationHandler handler) {
-        IScriptRunModuleConfigurator defaultConfig = IScriptRunModuleConfigurator.createDefault(Mekanism.MODID);
+        IScriptRunModuleConfigurator defaultConfig = IScriptRunModuleConfigurator.createDefault(CraftTweakerConstants.DEFAULT_LOADER_NAME);
         handler.registerConfigurator(CrTConstants.CONTENT_LOADER, defaultConfig);
     }
 }

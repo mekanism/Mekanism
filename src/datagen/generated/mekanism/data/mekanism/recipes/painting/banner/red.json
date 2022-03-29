@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanism:colorable/banners"
       },
-      "without": {
+      "subtracted": {
         "item": "minecraft:red_banner"
       }
     }

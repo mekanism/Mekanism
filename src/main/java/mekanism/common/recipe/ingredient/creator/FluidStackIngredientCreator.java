@@ -19,6 +19,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
+import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.tags.TagUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -288,7 +289,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    public static class MultiFluidStackIngredient extends FluidStackIngredient {
+    public static class MultiFluidStackIngredient extends FluidStackIngredient implements IMultiIngredient<FluidStack, FluidStackIngredient> {
 
         private final FluidStackIngredient[] ingredients;
 
@@ -337,11 +338,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             return representations;
         }
 
-        /**
-         * For use in recipe input caching, checks all ingredients even if some match.
-         *
-         * @return {@code true} if any ingredient matches.
-         */
+        @Override
         public boolean forEachIngredient(Predicate<FluidStackIngredient> checker) {
             boolean result = false;
             for (FluidStackIngredient ingredient : ingredients) {

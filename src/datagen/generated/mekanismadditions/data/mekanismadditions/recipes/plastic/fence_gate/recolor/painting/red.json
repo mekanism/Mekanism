@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "forge:fence_gates/plastic"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:red_plastic_fence_gate"
       }
     }

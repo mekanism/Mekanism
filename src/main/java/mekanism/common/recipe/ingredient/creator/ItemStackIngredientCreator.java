@@ -17,6 +17,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
+import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.util.StackUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
@@ -199,7 +200,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    public static class MultiItemStackIngredient extends ItemStackIngredient {
+    public static class MultiItemStackIngredient extends ItemStackIngredient implements IMultiIngredient<ItemStack, ItemStackIngredient> {
 
         @Nonnull
         private final ItemStackIngredient[] ingredients;
@@ -249,11 +250,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             return representations;
         }
 
-        /**
-         * For use in recipe input caching, checks all ingredients even if some match.
-         *
-         * @return {@code true} if any ingredient matches.
-         */
+        @Override
         public boolean forEachIngredient(Predicate<ItemStackIngredient> checker) {
             boolean result = false;
             for (ItemStackIngredient ingredient : ingredients) {

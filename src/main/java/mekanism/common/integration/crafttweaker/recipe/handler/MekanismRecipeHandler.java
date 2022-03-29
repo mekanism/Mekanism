@@ -10,9 +10,11 @@ import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -38,6 +40,7 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGas
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
+import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
@@ -155,13 +158,18 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     @Nullable
     public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized) {
+        return basicImplicitIngredient(vanillaIngredient, amount, serialized, true);
+    }
+
+    @Nullable
+    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized, boolean handleTags) {
         if (serialized.isJsonObject()) {
             JsonObject serializedIngredient = serialized.getAsJsonObject();
             if (vanillaIngredient.isVanilla()) {
                 if (serializedIngredient.has(JsonConstants.ITEM)) {
                     Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(serializedIngredient.get(JsonConstants.ITEM).getAsString()));
                     return ItemStackUtil.getCommandString(new ItemStack(item, amount));
-                } else if (serializedIngredient.has(JsonConstants.TAG)) {
+                } else if (handleTags && serializedIngredient.has(JsonConstants.TAG)) {
                     KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
                     return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
                 }
@@ -189,15 +197,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             //Note: Handled via implicit casts
             return rep;
         } else if (ingredient instanceof MultiItemStackIngredient multiIngredient) {
-            StringBuilder builder = new StringBuilder(CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".createMulti(");
-            multiIngredient.forEachIngredient(i -> {
-                builder.append(convertIngredient(i)).append(", ");
-                return false;
-            });
-            //Remove trailing comma and space
-            builder.setLength(builder.length() - 2);
-            builder.append(")");
-            return builder.toString();
+            return convertMultiIngredient(CrTConstants.CLASS_ITEM_STACK_INGREDIENT, multiIngredient, this::convertIngredient);
         }
         //Shouldn't happen
         return "Unimplemented itemstack ingredient: " + ingredient;
@@ -214,15 +214,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             return CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString())
                   .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
         } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
-            StringBuilder builder = new StringBuilder(CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".createMulti(");
-            multiIngredient.forEachIngredient(i -> {
-                builder.append(convertIngredient(i)).append(", ");
-                return false;
-            });
-            //Remove trailing comma and space
-            builder.setLength(builder.length() - 2);
-            builder.append(")");
-            return builder.toString();
+            return convertMultiIngredient(CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::convertIngredient);
         }
         return "Unimplemented fluidstack ingredient: " + ingredient;
     }
@@ -246,17 +238,22 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
             return crtClass + ".from(" + tag.getCommandString() + ", " + amount + ")";
         } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
-            StringBuilder builder = new StringBuilder(crtClass + ".createMulti(");
-            multiIngredient.forEachIngredient(i -> {
-                builder.append(convertIngredient(crtClass, tagManager, deserializer, i)).append(", ");
-                return false;
-            });
-            //Remove trailing comma and space
-            builder.setLength(builder.length() - 2);
-            builder.append(")");
-            return builder.toString();
+            return convertMultiIngredient(crtClass, multiIngredient, i -> convertIngredient(crtClass, tagManager, deserializer, i));
         }
         //Shouldn't happen
         return "Unimplemented chemical stack ingredient: " + ingredient;
+    }
+
+    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String convertMultiIngredient(String crtClass, IMultiIngredient<TYPE, INGREDIENT> multiIngredient,
+          Function<INGREDIENT, String> converter) {
+        StringBuilder builder = new StringBuilder(crtClass + ".createMulti(");
+        multiIngredient.forEachIngredient(i -> {
+            builder.append(converter.apply(i)).append(", ");
+            return false;
+        });
+        //Remove trailing comma and space
+        builder.setLength(builder.length() - 2);
+        builder.append(")");
+        return builder.toString();
     }
 }

@@ -5,11 +5,11 @@
   },
   "ingredients": [
     {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanismadditions:balloons"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:gray_balloon"
       }
     },

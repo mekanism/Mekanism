@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.crafting.DifferenceIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 @ParametersAreNonnullByDefault
@@ -65,5 +66,9 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
               itemTags.stream().map(Ingredient.TagValue::new),
               Arrays.stream(items).map(item -> new Ingredient.ItemValue(new ItemStack(item)))
         ));
+    }
+
+    public static Ingredient difference(TagKey<Item> base, ItemLike subtracted) {
+        return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted));
     }
 }

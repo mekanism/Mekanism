@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanismadditions:plastic_blocks/glow"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:pink_plastic_glow"
       }
     }

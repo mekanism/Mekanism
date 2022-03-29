@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanism:colorable/concrete"
       },
-      "without": {
+      "subtracted": {
         "item": "minecraft:light_blue_concrete"
       }
     }

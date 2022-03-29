@@ -11,11 +11,11 @@
   ],
   "key": {
     "#": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanismadditions:plastic_blocks/transparent"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:red_plastic_transparent"
       }
     },

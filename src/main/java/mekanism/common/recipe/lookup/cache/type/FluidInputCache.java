@@ -21,7 +21,7 @@ public class FluidInputCache<RECIPE extends MekanismRecipe> extends NBTSensitive
                 addInputCache(input, recipe);
             }
         } else if (inputIngredient instanceof MultiFluidStackIngredient multi) {
-            return multi.forEachIngredient(ingredient -> mapInputs(recipe, ingredient));
+            return mapMultiInputs(recipe, multi);
         } else {
             //This should never really happen as we don't really allow for custom ingredients especially for networking,
             // but if it does add it as a fallback

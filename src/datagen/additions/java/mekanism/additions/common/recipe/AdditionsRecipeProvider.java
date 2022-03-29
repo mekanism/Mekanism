@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.additions.common.AdditionsTags;
-import mekanism.additions.common.AdditionsTags.Items;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.BlockGlowPanel;
 import mekanism.additions.common.item.ItemBalloon;
@@ -21,7 +20,6 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.recipe.ingredient.IngredientWithout;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
@@ -36,6 +34,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -104,7 +103,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private void registerBalloon(Consumer<FinishedRecipe> consumer, ItemRegistryObject<ItemBalloon> result, String basePath) {
         EnumColor color = result.asItem().getColor();
         String colorString = color.getRegistryPrefix();
-        IngredientWithout recolorInput = IngredientWithout.create(Items.BALLOONS, result);
+        Ingredient recolorInput = difference(AdditionsTags.Items.BALLOONS, result);
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
             ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 2)

@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanismadditions:balloons"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:purple_balloon"
       }
     }

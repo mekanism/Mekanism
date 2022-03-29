@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanism:colorable/terracotta"
       },
-      "without": {
+      "subtracted": {
         "item": "minecraft:white_terracotta"
       }
     }

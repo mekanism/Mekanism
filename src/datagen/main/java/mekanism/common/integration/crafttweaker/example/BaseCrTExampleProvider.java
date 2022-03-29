@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -46,6 +47,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIng
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -60,6 +62,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.recipe.handler.MekanismRecipeHandler;
+import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
@@ -75,15 +78,11 @@ import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class BaseCrTExampleProvider implements DataProvider {
 
@@ -304,25 +303,18 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               });
     }
 
+    @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
         if (ingredient instanceof SingleItemStackIngredient single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            //While it is easier to compare types of some stuff using the inner ingredient, some things
-            // are easier to get the information of out of the serialized ingredient
-            JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
             Ingredient vanillaIngredient = single.getInputRaw();
             int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
             String representation = null;
             if (amount > 1) {
                 //Special case handling for when we would want to use a different constructor
-                if (vanillaIngredient.isVanilla() && !serializedIngredient.isJsonArray() && serializedIngredient.has(JsonConstants.ITEM)) {
-                    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(serializedIngredient, JsonConstants.ITEM)));
-                    representation = ItemStackUtil.getCommandString(new ItemStack(item, amount));
-                    amount = 1;
-                } else if (vanillaIngredient instanceof NBTIngredient) {
-                    ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
-                    stack.setCount(amount);
-                    representation = ItemStackUtil.getCommandString(stack);
+                JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
+                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, amount, serializedIngredient, false);
+                if (representation != null) {
                     amount = 1;
                 }
             }
@@ -335,20 +327,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             }
             return path + ".from(" + representation + ", " + amount + ")";
         } else if (ingredient instanceof MultiItemStackIngredient multiIngredient) {
-            StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT) + ".createMulti(");
-            if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(imports, i);
-                if (rep == null) {
-                    return true;
-                }
-                builder.append(rep).append(", ");
-                return false;
-            })) {
-                //Remove trailing comma and space
-                builder.setLength(builder.length() - 2);
-                builder.append(")");
-                return builder.toString();
-            }
+            return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_ITEM_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
         return null;
     }
@@ -368,6 +347,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               });
     }
 
+    @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
         if (ingredient instanceof SingleFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
@@ -378,20 +358,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             String tagRepresentation = CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
         } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
-            StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".createMulti(");
-            if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(imports, i);
-                if (rep == null) {
-                    return true;
-                }
-                builder.append(rep).append(", ");
-                return false;
-            })) {
-                //Remove trailing comma and space
-                builder.setLength(builder.length() - 2);
-                builder.append(")");
-                return builder.toString();
-            }
+            return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
         return null;
     }
@@ -418,6 +385,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               });
     }
 
+    @Nullable
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
           ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
           Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager) {
@@ -430,20 +398,34 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             String tagRepresentation = tagManager.tag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
         } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
-            StringBuilder builder = new StringBuilder(ingredientType + ".createMulti(");
-            if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(i, ingredientType, deserializer, singleDescription, tagManager);
-                if (rep == null) {
-                    return true;
-                }
-                builder.append(rep).append(", ");
-                return false;
-            })) {
-                //Remove trailing comma and space
-                builder.setLength(builder.length() - 2);
-                builder.append(")");
-                return builder.toString();
+            return getMultiIngredientRepresentation(ingredientType, multiIngredient, i -> getIngredientRepresentation(i, ingredientType, deserializer,
+                  singleDescription, tagManager));
+        }
+        return null;
+    }
+
+    @Nullable
+    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String getMultiIngredientRepresentation(CrTImportsComponent imports, String crtClass,
+          IMultiIngredient<TYPE, INGREDIENT> multiIngredient, BiFunction<CrTImportsComponent, INGREDIENT, String> basicRepresentation) {
+        return getMultiIngredientRepresentation(imports.addImport(crtClass), multiIngredient, ingredient -> basicRepresentation.apply(imports, ingredient));
+    }
+
+    @Nullable
+    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String getMultiIngredientRepresentation(String type,
+          IMultiIngredient<TYPE, INGREDIENT> multiIngredient, Function<INGREDIENT, String> basicRepresentation) {
+        StringBuilder builder = new StringBuilder(type + ".createMulti(");
+        if (!multiIngredient.forEachIngredient(i -> {
+            String rep = basicRepresentation.apply(i);
+            if (rep == null) {
+                return true;
             }
+            builder.append(rep).append(", ");
+            return false;
+        })) {
+            //Remove trailing comma and space
+            builder.setLength(builder.length() - 2);
+            builder.append(")");
+            return builder.toString();
         }
         return null;
     }

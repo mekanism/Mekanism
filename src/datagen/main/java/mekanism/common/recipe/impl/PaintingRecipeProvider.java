@@ -8,8 +8,8 @@ import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBui
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
-import mekanism.common.recipe.ingredient.IngredientWithout;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
@@ -123,7 +123,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
 
     private static void addRecoloringRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, TagKey<Item> input, ItemLike result, long rate, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
-              IngredientCreatorAccess.item().from(IngredientWithout.create(input, result)),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(input, result)),
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), rate),
               new ItemStack(result)
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));

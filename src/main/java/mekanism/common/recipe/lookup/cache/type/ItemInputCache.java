@@ -18,7 +18,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
         if (inputIngredient instanceof SingleItemStackIngredient single) {
             return mapIngredient(recipe, single.getInputRaw());
         } else if (inputIngredient instanceof MultiItemStackIngredient multi) {
-            return multi.forEachIngredient(ingredient -> mapInputs(recipe, ingredient));
+            return mapMultiInputs(recipe, multi);
         }
         //This should never really happen as we don't really allow for custom ingredients especially for networking,
         // but if it does add it as a fallback
@@ -40,7 +40,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
             }
             return result;
         } else if (input instanceof NBTIngredient) {
-            //Special handling for forge's NBT Ingredient
+            //Special handling for forge's NBT Ingredient as it requires an exact NBT match
             addNbtInputCache(HashedItem.create(input.getItems()[0]), recipe);
         } else {
             //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks

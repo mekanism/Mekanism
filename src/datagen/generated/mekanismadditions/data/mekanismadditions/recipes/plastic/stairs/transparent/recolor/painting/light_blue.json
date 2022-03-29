@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "forge:stairs/plastic/transparent"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:light_blue_plastic_transparent_stairs"
       }
     }

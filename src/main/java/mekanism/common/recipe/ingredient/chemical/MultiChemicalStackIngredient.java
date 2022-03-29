@@ -19,11 +19,12 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
 
 public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK>, IMultiIngredient<STACK, INGREDIENT> {
 
     private final INGREDIENT[] ingredients;
 
@@ -89,11 +90,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         return representations;
     }
 
-    /**
-     * For use in recipe input caching, checks all ingredients even if some match.
-     *
-     * @return {@code true} if any ingredient matches.
-     */
+    @Override
     public boolean forEachIngredient(Predicate<INGREDIENT> checker) {
         boolean result = false;
         for (INGREDIENT ingredient : ingredients) {
