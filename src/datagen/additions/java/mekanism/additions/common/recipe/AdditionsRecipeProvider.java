@@ -14,7 +14,6 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.recipe.BaseRecipeProvider;
@@ -122,7 +121,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.item().from(recolorInput),
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(result)
-        ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
+        ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 
     private void registerGlowPanels(Consumer<FinishedRecipe> consumer) {

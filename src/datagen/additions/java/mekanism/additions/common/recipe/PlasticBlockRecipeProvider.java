@@ -13,7 +13,6 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -31,7 +30,6 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -201,7 +199,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(recolorInput),
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
               new ItemStack(result)
-        ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
+        ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 
     public static void registerTransparentRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, TagKey<Item> blockType, EnumColor color, String basePath) {
@@ -219,6 +217,6 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(recolorInput),
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
               new ItemStack(result)
-        ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
+        ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 }
