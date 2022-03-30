@@ -56,7 +56,7 @@ public class AttributeHasBounding implements Attribute {
         });
     }
 
-    private Stream<BlockPos> getPositions(BlockPos pos, BlockState state) {
+    public Stream<BlockPos> getPositions(BlockPos pos, BlockState state) {
         Stream.Builder<BlockPos> builder = Stream.builder();
         boundingPositions.accept(pos, state, builder);
         return builder.build();

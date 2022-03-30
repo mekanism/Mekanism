@@ -18,15 +18,12 @@ import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
-import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -46,15 +43,6 @@ public class ItemBlockSeismicVibrator extends ItemBlockTooltip<BlockTile<?, ?>> 
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
-    }
-
-    @Override
-    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
-        if (!WorldUtils.isValidReplaceableBlock(context.getLevel(), context.getClickedPos().above())) {
-            //If there isn't room then fail
-            return false;
-        }
-        return super.placeBlock(context, state);
     }
 
     @Override

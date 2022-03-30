@@ -6,16 +6,21 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> {
 
@@ -34,6 +39,13 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
         //Try to drop the inventory contents if we are a block item that persists our inventory
         InventoryUtils.dropItemContents(item, damageSource);
+    }
+
+    @Override
+    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+        AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+        return (hasBounding == null || WorldUtils.areBlocksValidAndReplaceable(context.getLevel(), hasBounding.getPositions(context.getClickedPos(), state))) &&
+               super.placeBlock(context, state);
     }
 
     @Override
