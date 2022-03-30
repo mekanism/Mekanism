@@ -19,6 +19,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -78,6 +79,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
             }
         }
         return 0;
+    }
+
+    @Override
+    public boolean hasNoMatchingInstances() {
+        return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
     }
 
     @Nonnull

@@ -102,6 +102,11 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     }
 
     @Override
+    public boolean isIncomplete() {
+        return fluidInput.hasNoMatchingInstances() || chemicalInput.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         fluidInput.write(buffer);
         chemicalInput.write(buffer);

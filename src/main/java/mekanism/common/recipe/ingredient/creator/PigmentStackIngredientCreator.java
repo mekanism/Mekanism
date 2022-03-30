@@ -1,6 +1,7 @@
 package mekanism.common.recipe.ingredient.creator;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.pigment.Pigment;
@@ -42,6 +43,17 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
         Objects.requireNonNull(tag, "PigmentStackIngredients cannot be created from a null tag.");
         assertPositiveAmount(amount);
         return new TaggedPigmentStackIngredient(tag, amount);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link
+     * #createMulti(PigmentStackIngredient[])}.
+     */
+    @Override
+    public PigmentStackIngredient from(Stream<PigmentStackIngredient> ingredients) {
+        return createMulti(ingredients.toArray(PigmentStackIngredient[]::new));
     }
 
     public static class SinglePigmentStackIngredient extends SingleChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {

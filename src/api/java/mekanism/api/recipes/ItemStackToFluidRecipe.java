@@ -88,6 +88,11 @@ public abstract class ItemStackToFluidRecipe extends MekanismRecipe implements P
     }
 
     @Override
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToPacket(buffer);

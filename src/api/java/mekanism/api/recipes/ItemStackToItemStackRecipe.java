@@ -94,6 +94,11 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
     }
 
     @Override
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         buffer.writeItem(output);

@@ -151,6 +151,11 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     }
 
     @Override
+    public boolean isIncomplete() {
+        return inputSolid.hasNoMatchingInstances() || inputFluid.hasNoMatchingInstances() || inputGas.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         inputSolid.write(buffer);
         inputFluid.write(buffer);

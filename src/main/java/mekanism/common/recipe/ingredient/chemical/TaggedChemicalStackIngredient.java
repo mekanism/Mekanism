@@ -65,6 +65,11 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         return testType(stack) ? amount : 0;
     }
 
+    @Override
+    public boolean hasNoMatchingInstances() {
+        return tag.isEmpty();
+    }
+
     @Nonnull
     @Override
     public List<@NonNull STACK> getRepresentations() {

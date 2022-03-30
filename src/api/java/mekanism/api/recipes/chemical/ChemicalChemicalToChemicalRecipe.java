@@ -100,6 +100,11 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
     }
 
     @Override
+    public boolean isIncomplete() {
+        return leftInput.hasNoMatchingInstances() || rightInput.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         leftInput.write(buffer);
         rightInput.write(buffer);

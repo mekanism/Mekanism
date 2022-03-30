@@ -56,6 +56,11 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
         return testType(stack) ? chemicalInstance.getAmount() : 0;
     }
 
+    @Override
+    public boolean hasNoMatchingInstances() {
+        return false;
+    }
+
     @Nonnull
     @Override
     public List<@NonNull STACK> getRepresentations() {

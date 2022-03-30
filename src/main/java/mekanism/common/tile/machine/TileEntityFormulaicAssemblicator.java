@@ -44,6 +44,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -296,7 +297,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 }
                 lastRemainingItems = EMPTY_LIST;
                 if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, level)) {
-                    cachedRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, dummyInv, level).orElse(null);
+                    cachedRecipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, dummyInv, level).orElse(null);
                 }
                 if (cachedRecipe == null) {
                     lastOutputStack = ItemStack.EMPTY;

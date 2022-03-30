@@ -102,6 +102,11 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     }
 
     @Override
+    public boolean isIncomplete() {
+        return mainInput.hasNoMatchingInstances() || extraInput.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         mainInput.write(buffer);
         extraInput.write(buffer);

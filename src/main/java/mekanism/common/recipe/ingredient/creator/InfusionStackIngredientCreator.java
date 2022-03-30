@@ -1,6 +1,7 @@
 package mekanism.common.recipe.ingredient.creator;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -42,6 +43,17 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
         Objects.requireNonNull(tag, "InfusionStackIngredients cannot be created from a null tag.");
         assertPositiveAmount(amount);
         return new TaggedInfusionStackIngredient(tag, amount);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link
+     * #createMulti(InfusionStackIngredient[])}.
+     */
+    @Override
+    public InfusionStackIngredient from(Stream<InfusionStackIngredient> ingredients) {
+        return createMulti(ingredients.toArray(InfusionStackIngredient[]::new));
     }
 
     public static class SingleInfusionStackIngredient extends SingleChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {

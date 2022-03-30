@@ -85,10 +85,6 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @throws NullPointerException     if the given stream is null.
      * @throws IllegalArgumentException if the given stream is empty.
-     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link #createMulti(InputIngredient[])}.
      */
-    @SuppressWarnings("unchecked")
-    default INGREDIENT from(Stream<INGREDIENT> ingredients) {
-        return createMulti((INGREDIENT[]) ingredients.toArray());
-    }
+    INGREDIENT from(Stream<INGREDIENT> ingredients);
 }

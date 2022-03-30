@@ -3,8 +3,7 @@ package mekanism.common.recipe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -18,7 +17,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -46,6 +44,7 @@ import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -71,6 +70,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -218,37 +218,32 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
         }
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
-            //TODO: Should we use the byType(RecipeType) that we ATd so that our recipes don't have to always return true for matching?
-            List<RECIPE_TYPE> recipes = recipeManager.getRecipesFor(this, IgnoredIInventory.INSTANCE, world);
+            //Note: This is a fresh mutable list that gets returned
+            List<RECIPE_TYPE> recipes = recipeManager.getAllRecipesFor(this);
             if (this == SMELTING) {
-                Map<ResourceLocation, Recipe<Container>> smeltingRecipes = recipeManager.byType(RecipeType.SMELTING);
-                //Copy recipes our recipes to make sure it is mutable
-                recipes = new ArrayList<>(recipes);
-                for (Entry<ResourceLocation, Recipe<Container>> entry : smeltingRecipes.entrySet()) {
-                    Recipe<Container> smeltingRecipe = entry.getValue();
+                for (SmeltingRecipe smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
                     ItemStack recipeOutput = smeltingRecipe.getResultItem();
-                    if (!smeltingRecipe.isSpecial() && !recipeOutput.isEmpty()) {
+                    if (!smeltingRecipe.isSpecial() && !smeltingRecipe.isIncomplete() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
                         NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();
-                        int ingredientCount = ingredients.size();
                         ItemStackIngredient input;
-                        if (ingredientCount == 0) {
+                        if (ingredients.size() == 0) {
                             //Something went wrong
                             continue;
-                        } else if (ingredientCount == 1) {
-                            input = IngredientCreatorAccess.item().from(ingredients.get(0));
                         } else {
-                            ItemStackIngredient[] itemIngredients = new ItemStackIngredient[ingredientCount];
-                            for (int i = 0; i < ingredientCount; i++) {
-                                itemIngredients[i] = IngredientCreatorAccess.item().from(ingredients.get(i));
-                            }
-                            input = IngredientCreatorAccess.item().createMulti(itemIngredients);
+                            IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
+                            input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        recipes.add((RECIPE_TYPE) new SmeltingIRecipe(entry.getKey(), input, recipeOutput));
+                        recipes.add((RECIPE_TYPE) new SmeltingIRecipe(smeltingRecipe.getId(), input, recipeOutput));
                     }
                 }
             }
-            cachedRecipes = recipes;
+            //Make the list of cached recipes immutable and filter out any incomplete recipes
+            // as there is no reason to potentially look the partial complete piece up if
+            // the other portion of the recipe is incomplete
+            cachedRecipes = recipes.stream()
+                  .filter(recipe -> !recipe.isIncomplete())
+                  .toList();
         }
         return cachedRecipes;
     }
@@ -270,5 +265,23 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
      */
     public boolean contains(@Nullable Level world, Predicate<RECIPE_TYPE> matchCriteria) {
         return stream(world).anyMatch(matchCriteria);
+    }
+
+    /**
+     * Helper for getting a recipe from a world's recipe manager.
+     */
+    public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
+        //Only allow looking up complete recipes
+        return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
+              .filter(recipe -> !recipe.isIncomplete());
+    }
+
+    /**
+     * Helper for getting a recipe from a world's recipe manager.
+     */
+    public static Optional<? extends Recipe<?>> byKey(Level level, ResourceLocation id) {
+        //Only allow looking up complete recipes
+        return level.getRecipeManager().byKey(id)
+              .filter(recipe -> !recipe.isIncomplete());
     }
 }

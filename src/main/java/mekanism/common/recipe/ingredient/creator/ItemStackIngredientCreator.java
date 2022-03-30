@@ -10,11 +10,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
@@ -102,6 +104,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         return from(ingredient, amount);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link #createMulti(ItemStackIngredient[])}.
+     */
     @Override
     public ItemStackIngredient createMulti(ItemStackIngredient... ingredients) {
         Objects.requireNonNull(ingredients, "Cannot create a multi ingredient out of a null array.");
@@ -122,6 +129,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
         //There should be more than a single item, or we would have split out earlier
         return new MultiItemStackIngredient(cleanedIngredients.toArray(new ItemStackIngredient[0]));
+    }
+
+    @Override
+    public ItemStackIngredient from(Stream<ItemStackIngredient> ingredients) {
+        return createMulti(ingredients.toArray(ItemStackIngredient[]::new));
     }
 
     @ParametersAreNonnullByDefault
@@ -155,6 +167,12 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         @Override
         public long getNeededAmount(ItemStack stack) {
             return testType(stack) ? amount : 0;
+        }
+
+        @Override
+        public boolean hasNoMatchingInstances() {
+            //TODO - 1.18: Figure out if this properly handles tags or it needs to special case the single element forge adds into them when empty
+            return ingredient.getItems().length == 0;
         }
 
         @Override
@@ -239,6 +257,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                 }
             }
             return 0;
+        }
+
+        @Override
+        public boolean hasNoMatchingInstances() {
+            return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
         }
 
         @Override

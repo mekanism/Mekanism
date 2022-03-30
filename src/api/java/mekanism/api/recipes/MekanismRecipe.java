@@ -38,6 +38,7 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
 
     @Override
     public boolean matches(@Nonnull IgnoredIInventory inv, @Nonnull Level world) {
+        //TODO: Decide if we ever want to make use of this method
         return true;
     }
 
@@ -47,6 +48,10 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
         // For now none of that works/makes sense in our concept so don't lock it
         return true;
     }
+
+    //Force implementation of this method as our ingredients is always empty so the super implementation would have all ours as incomplete
+    @Override
+    public abstract boolean isIncomplete();
 
     @Nonnull
     @Override

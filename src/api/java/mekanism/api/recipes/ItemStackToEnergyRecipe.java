@@ -82,6 +82,11 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
     }
 
     @Override
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToBuffer(buffer);

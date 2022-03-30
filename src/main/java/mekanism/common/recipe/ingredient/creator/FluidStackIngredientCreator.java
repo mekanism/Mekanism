@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,6 +19,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.tags.TagUtils;
@@ -130,6 +132,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a fluid.");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link #createMulti(FluidStackIngredient[])}.
+     */
     @Override
     public FluidStackIngredient createMulti(FluidStackIngredient... ingredients) {
         Objects.requireNonNull(ingredients, "Cannot create a multi ingredient out of a null array.");
@@ -150,6 +157,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
         //There should be more than a single fluid, or we would have split out earlier
         return new MultiFluidStackIngredient(cleanedIngredients.toArray(new FluidStackIngredient[0]));
+    }
+
+    @Override
+    public FluidStackIngredient from(Stream<FluidStackIngredient> ingredients) {
+        return createMulti(ingredients.toArray(FluidStackIngredient[]::new));
     }
 
     @ParametersAreNonnullByDefault
@@ -181,6 +193,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public long getNeededAmount(FluidStack stack) {
             return testType(stack) ? fluidInstance.getAmount() : 0;
+        }
+
+        @Override
+        public boolean hasNoMatchingInstances() {
+            return false;
         }
 
         @Override
@@ -252,6 +269,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public long getNeededAmount(FluidStack stack) {
             return testType(stack) ? amount : 0;
+        }
+
+        @Override
+        public boolean hasNoMatchingInstances() {
+            return tag.isEmpty();
         }
 
         @Override
@@ -327,6 +349,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 }
             }
             return 0;
+        }
+
+        @Override
+        public boolean hasNoMatchingInstances() {
+            return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
         }
 
         @Override

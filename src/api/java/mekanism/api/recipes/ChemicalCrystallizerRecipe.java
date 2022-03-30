@@ -140,6 +140,11 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     }
 
     @Override
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
         input.write(buffer);

@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.NonNullList;
@@ -121,6 +122,6 @@ public class RecipeFormula {
 
     @Nullable
     private static CraftingRecipe getRecipeFromGrid(CraftingContainer inv, Level world) {
-        return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inv, world).orElse(null);
+        return MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, inv, world).orElse(null);
     }
 }

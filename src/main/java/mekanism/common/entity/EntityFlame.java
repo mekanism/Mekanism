@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.math.Pos3D;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
@@ -202,7 +203,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     }
 
     private boolean smeltItem(ItemEntity item) {
-        Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(item.getItem()), level);
+        Optional<SmeltingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(item.getItem()), level);
         if (recipe.isPresent()) {
             ItemStack result = recipe.get().getResultItem();
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
@@ -224,7 +225,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         }
         Optional<SmeltingRecipe> recipe;
         try {
-            recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
+            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
         } catch (Exception e) {
             return;
         }

@@ -109,6 +109,11 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
     }
 
     @Override
+    public boolean isIncomplete() {
+        return itemInput.hasNoMatchingInstances() || chemicalInput.hasNoMatchingInstances();
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         itemInput.write(buffer);
         chemicalInput.write(buffer);

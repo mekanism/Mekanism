@@ -26,6 +26,7 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.NonNullList;
@@ -157,7 +158,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 outputSlot.setStack(lastRecipe.assemble(craftingInventory));
             } else {
                 //If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents, lookup the recipe
-                CraftingRecipe recipe = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world).orElse(null);
+                CraftingRecipe recipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, craftingInventory, world).orElse(null);
                 if (recipe != lastRecipe) {
                     if (recipe == null) {
                         //If there is no found recipe, clear the output, but don't update our last recipe

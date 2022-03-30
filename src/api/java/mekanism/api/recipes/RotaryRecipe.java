@@ -254,6 +254,11 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     }
 
     @Override
+    public boolean isIncomplete() {
+        return (hasFluidToGas && fluidInput.hasNoMatchingInstances()) || (hasGasToFluid && gasInput.hasNoMatchingInstances());
+    }
+
+    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(hasFluidToGas);
         if (hasFluidToGas) {

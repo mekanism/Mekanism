@@ -11,6 +11,7 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemS
 import mekanism.common.content.qio.QIOServerCraftingTransferHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,7 +41,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
             } else {
-                Optional<? extends Recipe<?>> optionalRecipe = player.level.getRecipeManager().byKey(recipeID);
+                Optional<? extends Recipe<?>> optionalRecipe = MekanismRecipeType.byKey(player.level, recipeID);
                 if (optionalRecipe.isPresent()) {
                     Recipe<?> recipe = optionalRecipe.get();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {
