@@ -10,6 +10,10 @@
         {
           "modid": "biomesoplenty",
           "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "ilikewood_crafting_tables",
+          "type": "forge:mod_loaded"
         }
       ],
       "type": "forge:and"

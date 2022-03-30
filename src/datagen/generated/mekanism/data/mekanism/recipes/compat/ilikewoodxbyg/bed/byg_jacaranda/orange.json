@@ -10,6 +10,10 @@
         {
           "modid": "byg",
           "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "ilikewood_beds",
+          "type": "forge:mod_loaded"
         }
       ],
       "type": "forge:and"
