@@ -161,6 +161,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
+    public boolean canWalkOnPowderedSnow(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+        return getSlot() == EquipmentSlot.FEET;
+    }
+
+    @Override
     public boolean isBarVisible(@Nonnull ItemStack stack) {
         return true;
     }

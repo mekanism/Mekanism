@@ -29,6 +29,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -63,6 +64,11 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         if (allowdedIn(group)) {
             items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.freeRunnerMaxEnergy.get()));
         }
+    }
+
+    @Override
+    public boolean canWalkOnPowderedSnow(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+        return true;
     }
 
     @Override
