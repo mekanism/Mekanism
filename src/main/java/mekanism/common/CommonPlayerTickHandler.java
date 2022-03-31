@@ -33,18 +33,13 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -55,20 +50,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class CommonPlayerTickHandler {
 
     public static boolean isOnGroundOrSleeping(Player player) {
-        if (player.isSleeping()) {
-            return true;
-        }
-        int x = Mth.floor(player.getX());
-        int y = Mth.floor(player.getY() - 0.01);
-        int z = Mth.floor(player.getZ());
-        BlockPos pos = new BlockPos(x, y, z);
-        BlockState s = player.level.getBlockState(pos);
-        VoxelShape shape = s.getShape(player.level, pos);
-        if (shape.isEmpty()) {
-            return false;
-        }
-        AABB playerBox = player.getBoundingBox();
-        return !s.isAir() && playerBox.move(0, -0.01, 0).intersects(shape.bounds().move(pos));
+        return player.isOnGround() || player.isSleeping();
     }
 
     public static boolean isScubaMaskOn(Player player, ItemStack tank) {

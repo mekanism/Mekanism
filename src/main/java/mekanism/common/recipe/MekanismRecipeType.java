@@ -197,7 +197,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
     }
 
     private void clearCaches() {
-        cachedRecipes.clear();
+        cachedRecipes = Collections.emptyList();
         inputCache.clear();
     }
 
