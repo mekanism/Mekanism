@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -35,7 +35,7 @@ public class GuiEnergyCube extends GuiConfigurableTile<TileEntityEnergyCube, Mek
         addRenderableWidget(GuiSideHolder.create(this, imageWidth, 36, 98, false, true, SpecialColors.TAB_ARMOR_SLOTS));
         super.addGuiElements();
         addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.WIDE, this, 55, 18));
-        addRenderableWidget(new GuiEnergyTab(this, () -> Arrays.asList(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
+        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getTier().getOutput())))));
     }
 

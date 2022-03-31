@@ -1,6 +1,5 @@
 package mekanism.common.tile.component.config.slot;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.chemical.gas.IGasTank;
@@ -23,7 +22,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
         private final Supplier<List<IEnergyContainer>> containerSupplier;
 
         public EnergyProxy(boolean canInput, boolean canOutput, Supplier<List<IEnergyContainer>> containerSupplier) {
-            super(canInput, canOutput, Collections.emptyList());
+            super(canInput, canOutput);
             this.containerSupplier = containerSupplier;
         }
 
@@ -38,7 +37,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
         private final Supplier<List<IExtendedFluidTank>> tankSupplier;
 
         public FluidProxy(boolean canInput, boolean canOutput, Supplier<List<IExtendedFluidTank>> tankSupplier) {
-            super(canInput, canOutput, Collections.emptyList());
+            super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
@@ -53,7 +52,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
         private final Supplier<List<IGasTank>> tankSupplier;
 
         public GasProxy(boolean canInput, boolean canOutput, Supplier<List<IGasTank>> tankSupplier) {
-            super(canInput, canOutput, Collections.emptyList());
+            super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
@@ -68,7 +67,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
         private final Supplier<List<IInfusionTank>> tankSupplier;
 
         public InfusionProxy(boolean canInput, boolean canOutput, Supplier<List<IInfusionTank>> tankSupplier) {
-            super(canInput, canOutput, Collections.emptyList());
+            super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
@@ -83,7 +82,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
         private final Supplier<List<IPigmentTank>> tankSupplier;
 
         public PigmentProxy(boolean canInput, boolean canOutput, Supplier<List<IPigmentTank>> tankSupplier) {
-            super(canInput, canOutput, Collections.emptyList());
+            super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
@@ -98,7 +97,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
         private final Supplier<List<ISlurryTank>> tankSupplier;
 
         public SlurryProxy(boolean canInput, boolean canOutput, Supplier<List<ISlurryTank>> tankSupplier) {
-            super(canInput, canOutput, Collections.emptyList());
+            super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
@@ -128,7 +127,7 @@ public interface IProxiedSlotInfo extends ISlotInfo {
         private final Supplier<List<IInventorySlot>> slotSupplier;
 
         public InventoryProxy(boolean canInput, boolean canOutput, Supplier<List<IInventorySlot>> slotSupplier) {
-            super(canInput, canOutput, Collections.emptyList());
+            super(canInput, canOutput);
             this.slotSupplier = slotSupplier;
         }
 

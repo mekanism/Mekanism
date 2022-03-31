@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -77,7 +76,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected List<ISubRecipeProvider> getSubRecipeProviders() {
-        return Arrays.asList(
+        return List.of(
               new BinRecipeProvider(),
               new ChemicalInfuserRecipeProvider(),
               new ChemicalInjectorRecipeProvider(),

@@ -1,8 +1,6 @@
 package mekanism.client.jei;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import mekanism.api.providers.IItemProvider;
@@ -73,14 +71,14 @@ public class RecipeRegistryHelper {
         ItemStack damaged3 = item.getItemStack();
         damaged3.setDamageValue(damaged3.getMaxDamage() * 2 / 4);
         //Two damaged items combine to undamaged
-        registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))));
+        registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged2, List.of(damaged2), List.of(damaged3))));
         ItemStack[] repairStacks = repairMaterials.apply(item.asItem());
         //Damaged item + the repair material
         if (repairStacks != null && repairStacks.length > 0) {
             //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
             ItemStack damaged1 = item.getItemStack();
             damaged1.setDamageValue(damaged1.getMaxDamage());
-            registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged1, Arrays.asList(repairStacks), Collections.singletonList(damaged2))));
+            registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged1, List.of(repairStacks), List.of(damaged2))));
         }
     }
 

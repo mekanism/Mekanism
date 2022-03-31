@@ -1,7 +1,6 @@
 package mekanism.generators.client.jei;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -51,7 +50,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
 
     public FissionReactorRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<FissionJEIRecipe> recipeType) {
         super(helper, recipeType, GeneratorsLang.FISSION_REACTOR.translate(), createIcon(helper, iconRL), 6, 13, 182, 60);
-        addElement(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
+        addElement(new GuiInnerScreen(this, 45, 17, 105, 56, () -> List.of(
               MekanismLang.STATUS.translate(EnumColor.BRIGHT_GREEN, ActiveDisabled.of(true)),
               GeneratorsLang.GAS_BURN_RATE.translate(1.0),
               GeneratorsLang.FISSION_HEATING_RATE.translate(0),

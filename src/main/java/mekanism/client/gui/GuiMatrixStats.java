@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -70,7 +70,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         }, 38, 13));
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
-            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
+            return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
                   MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastInput())),
                   MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastOutput())));
         }));

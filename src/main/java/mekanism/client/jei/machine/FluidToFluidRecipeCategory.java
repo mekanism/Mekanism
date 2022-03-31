@@ -1,6 +1,6 @@
 package mekanism.client.jei.machine;
 
-import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -30,7 +30,7 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
 
     public FluidToFluidRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<FluidToFluidRecipe> recipeType) {
         super(helper, recipeType, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, 3, 12, 170, 62);
-        addElement(new GuiInnerScreen(this, 48, 19, 80, 40, () -> Arrays.asList(
+        addElement(new GuiInnerScreen(this, 48, 19, 80, 40, () -> List.of(
               MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(EvaporationMultiblockData.MAX_HEIGHT),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(HeatAPI.AMBIENT_TEMP, TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(0.0))

@@ -1,7 +1,6 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -174,7 +173,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     private List<IInventorySlot> getSlots() {
-        return Arrays.asList(upgradeSlot, upgradeOutputSlot);
+        return List.of(upgradeSlot, upgradeOutputSlot);
     }
 
     @Override

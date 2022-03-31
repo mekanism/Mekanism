@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -39,7 +39,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         super.addGuiElements();
         addRenderableWidget(new GuiInnerScreen(this, 48, 19, 80, 40, () -> {
             EvaporationMultiblockData multiblock = tile.getMultiblock();
-            return Arrays.asList(MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(multiblock.height()),
+            return List.of(MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(multiblock.height()),
                   MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTemperature(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.FLUID_PRODUCTION.translate(Math.round(multiblock.lastGain * 100D) / 100D));
         }).spacing(1).jeiCategory(tile));

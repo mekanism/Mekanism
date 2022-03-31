@@ -3,7 +3,6 @@ package mekanism.client.gui.element.tab;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
@@ -34,13 +33,13 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
     }
 
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer) {
-        this(gui, () -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
+        this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
         //TODO: Re-evaluate uses of this constructor at some point, as well as the isActive constructor
     }
 
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, FloatingLongSupplier lastEnergyUsed) {
-        this(gui, () -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
+        this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
     }
 
@@ -50,7 +49,7 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
             // to the client, but it is close enough given a lot more things would have to be kept track of otherwise
             // which would lead to higher memory usage
             FloatingLong using = isActive.getAsBoolean() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
-            return Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(using)),
+            return List.of(MekanismLang.USING.translate(EnergyDisplay.of(using)),
                   MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded())));
         });
     }

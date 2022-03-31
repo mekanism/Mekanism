@@ -491,9 +491,13 @@ public class MekaSuitArmor implements ICustomArmor {
 
     private record ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
 
-        public ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
-            this.opaqueQuads = opaqueQuads.isEmpty() ? Collections.emptyMap() : opaqueQuads;
-            this.transparentQuads = transparentQuads.isEmpty() ? Collections.emptyMap() : transparentQuads;
+        public ArmorQuads {
+            if (opaqueQuads.isEmpty()) {
+                opaqueQuads = Collections.emptyMap();
+            }
+            if (transparentQuads.isEmpty()) {
+                transparentQuads = Collections.emptyMap();
+            }
         }
     }
 

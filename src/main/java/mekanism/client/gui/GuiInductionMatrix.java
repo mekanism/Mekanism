@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.SpecialColors;
@@ -42,7 +42,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         addRenderableWidget(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addRenderableWidget(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
-            return Arrays.asList(MekanismLang.ENERGY.translate(EnergyDisplay.of(multiblock.getEnergy())),
+            return List.of(MekanismLang.ENERGY.translate(EnergyDisplay.of(multiblock.getEnergy())),
                   MekanismLang.CAPACITY.translate(EnergyDisplay.of(multiblock.getStorageCap())),
                   MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastInput()))),
                   MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastOutput()))));
@@ -61,7 +61,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         }, GaugeType.MEDIUM, this, 7, 16, 34, 56));
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
-            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
+            return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
                   MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastInput())),
                   MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastOutput())));
         }));

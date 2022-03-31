@@ -1,7 +1,7 @@
 package mekanism.generators.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
@@ -30,7 +30,7 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
         if (tile.getMultiblock().isFormed()) {
             addRenderableWidget(new GuiEnergyTab(this, () -> {
                 FusionReactorMultiblockData multiblock = tile.getMultiblock();
-                return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer)),
+                return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer)),
                       GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
             }));
             addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));

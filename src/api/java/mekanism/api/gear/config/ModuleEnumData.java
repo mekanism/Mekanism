@@ -1,7 +1,6 @@
 package mekanism.api.gear.config;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -50,7 +49,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
             throw new IllegalArgumentException("Selectable count is larger than the number of elements in " + enumClass.getSimpleName());
         } else if (constants.length == selectableCount) {
             this.enumConstants = ImmutableList.<TYPE>builder()
-                  .addAll(Arrays.asList(constants))
+                  .add(constants)
                   .build();
             this.value = def;
         } else {
@@ -58,7 +57,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
                 throw new IllegalArgumentException("Invalid default, it is out of range of the selectable values.");
             }
             this.enumConstants = ImmutableList.<TYPE>builder()
-                  .addAll(Arrays.asList(constants).subList(0, selectableCount))
+                  .addAll(List.of(constants).subList(0, selectableCount))
                   .build();
             this.value = def;
         }

@@ -1,7 +1,6 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -196,7 +195,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
             config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
-            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
+            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, List.of(inputContainer, outputContainer)));
             config.fill(DataType.INPUT);
             config.setDataType(DataType.OUTPUT, outputSide);
         }
@@ -364,7 +363,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, Object... containers) {
-        return createInfo(type, input, output, Arrays.asList(containers));
+        return createInfo(type, input, output, List.of(containers));
     }
 
     @SuppressWarnings("unchecked")

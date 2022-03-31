@@ -1,6 +1,6 @@
 package mekanism.common.recipe.impl;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.math.FloatingLong;
@@ -29,7 +29,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
     private void addCoalGasificationRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Blocks
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(Arrays.asList(
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(List.of(
                     Tags.Items.STORAGE_BLOCKS_COAL,
                     MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL
               ))),
@@ -50,10 +50,10 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "coals"));
         //Dusts
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(Arrays.asList(
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
                     MekanismTags.Items.DUSTS_COAL,
                     MekanismTags.Items.DUSTS_CHARCOAL
-              ))),
+              )),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 100),
               IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 100),
               100,

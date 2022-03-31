@@ -1,8 +1,8 @@
 package mekanism.generators.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
@@ -57,7 +57,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         addRenderableWidget(new GuiFissionReactorTab(this, tile, FissionReactorTab.STAT));
         addRenderableWidget(new GuiInnerScreen(this, 45, 17, 105, 56, () -> {
             FissionReactorMultiblockData multiblock = tile.getMultiblock();
-            return Arrays.asList(
+            return List.of(
                   MekanismLang.STATUS.translate(multiblock.isActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(multiblock.isActive())),
                   GeneratorsLang.GAS_BURN_RATE.translate(multiblock.lastBurnRate),
                   GeneratorsLang.FISSION_HEATING_RATE.translate(TextUtils.format(multiblock.lastBoilRate)),

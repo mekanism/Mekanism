@@ -1,7 +1,7 @@
 package mekanism.generators.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -28,12 +28,12 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 40, () -> Arrays.asList(
+        addRenderableWidget(new GuiInnerScreen(this, 48, 23, 80, 40, () -> List.of(
               EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(),
               GeneratorsLang.STORED_BIO_FUEL.translate(TextUtils.format(tile.bioFuelTank.getFluidAmount())),
               GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
         )));
-        addRenderableWidget(new GuiEnergyTab(this, () -> Arrays.asList(
+        addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
               GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(MekanismGeneratorsConfig.generators.bioGeneration.get()) : EnergyDisplay.ZERO),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));

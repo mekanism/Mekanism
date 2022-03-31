@@ -1,7 +1,6 @@
 package mekanism.common.config;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
@@ -257,7 +256,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Oredictionificator Settings").push(OREDICTIONIFICATOR_CATEGORY);
         validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, builder.comment("The list of valid tag prefixes for the Oredictionificator. Note: It is highly recommended to only include well known/defined tag prefixes otherwise it is very easy to potentially add in accidental conversions of things that are not actually equivalent."),
-              "validItemFilters", () -> Collections.singletonMap("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/")));
+              "validItemFilters", () -> Collections.singletonMap("forge", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/")));
         builder.pop();
 
         builder.comment("Pump Settings").push(PUMP_CATEGORY);

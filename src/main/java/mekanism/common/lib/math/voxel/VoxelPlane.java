@@ -1,7 +1,7 @@
 package mekanism.common.lib.math.voxel;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.core.BlockPos;
@@ -114,7 +114,7 @@ public class VoxelPlane {
 
     @Override
     public String toString() {
-        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow) + ")";
+        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + List.of(minCol, minRow, maxCol, maxRow) + ")";
     }
 
     @Override

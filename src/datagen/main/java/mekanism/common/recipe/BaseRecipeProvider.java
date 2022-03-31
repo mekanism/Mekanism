@@ -68,6 +68,11 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         ));
     }
 
+    @SafeVarargs
+    public static Ingredient createIngredient(TagKey<Item>... tags) {
+        return Ingredient.fromValues(Arrays.stream(tags).map(Ingredient.TagValue::new));
+    }
+
     public static Ingredient difference(TagKey<Item> base, ItemLike subtracted) {
         return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted));
     }

@@ -1,7 +1,6 @@
 package mekanism.client.render.lib;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -289,7 +288,7 @@ public interface QuadTransformation {
         }
 
         public static TransformationList of(QuadTransformation... trans) {
-            return new TransformationList(Arrays.asList(trans));
+            return new TransformationList(List.of(trans));
         }
 
         @Override

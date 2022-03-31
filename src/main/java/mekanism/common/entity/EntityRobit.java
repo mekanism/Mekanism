@@ -211,7 +211,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         smeltingOutputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
 
         mainContainerSlots = Collections.singletonList(energySlot);
-        smeltingContainerSlots = Arrays.asList(smeltingInputSlot, smeltingOutputSlot);
+        smeltingContainerSlots = List.of(smeltingInputSlot, smeltingOutputSlot);
 
         inputHandler = InputHelper.getInputHandler(smeltingInputSlot, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);

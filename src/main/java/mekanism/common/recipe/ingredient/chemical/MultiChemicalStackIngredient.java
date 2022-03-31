@@ -40,7 +40,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
      * @apiNote For use in flattening multi ingredients
      */
     List<INGREDIENT> getIngredients() {
-        return Arrays.asList(ingredients);
+        return List.of(ingredients);
     }
 
     @Override

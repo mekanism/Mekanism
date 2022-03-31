@@ -1,6 +1,5 @@
 package mekanism.additions.common.recipe;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -85,7 +84,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected List<ISubRecipeProvider> getSubRecipeProviders() {
-        return Arrays.asList(
+        return List.of(
               new PigmentExtractingPlasticRecipeProvider(),
               new PlasticBlockRecipeProvider(),
               new PlasticFencesRecipeProvider(),
