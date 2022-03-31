@@ -41,3 +41,9 @@ license="MIT"
     versionRange="${oc2_version}"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="wildfire_gender"
+    mandatory=false
+    versionRange="${wildfire_gender_version}"
+    ordering="AFTER"
+    side="BOTH"

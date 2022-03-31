@@ -44,6 +44,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
+import mekanism.common.integration.gender.GenderCapabilityHelper;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismFluids;
@@ -223,6 +224,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!fluidTankSpecs.isEmpty()) {
             wrapper.add(RateLimitMultiTankFluidHandler.create(fluidTankSpecs));
         }
+        GenderCapabilityHelper.addGenderCapability(this, wrapper);
         return wrapper;
     }
 

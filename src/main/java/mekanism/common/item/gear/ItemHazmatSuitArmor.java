@@ -5,6 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
+import mekanism.common.integration.gender.GenderCapabilityHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -24,16 +25,13 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     }
 
     public static double getShieldingByArmor(EquipmentSlot type) {
-        if (type == EquipmentSlot.HEAD) {
-            return 0.25;
-        } else if (type == EquipmentSlot.CHEST) {
-            return 0.4;
-        } else if (type == EquipmentSlot.LEGS) {
-            return 0.2;
-        } else if (type == EquipmentSlot.FEET) {
-            return 0.15;
-        }
-        return 0;
+        return switch (type) {
+            case HEAD -> 0.25;
+            case CHEST -> 0.4;
+            case LEGS -> 0.2;
+            case FEET -> 0.15;
+            default -> 0;
+        };
     }
 
     @Override
@@ -43,7 +41,9 @@ public class ItemHazmatSuitArmor extends ArmorItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
+        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
+        GenderCapabilityHelper.addGenderCapability(this, wrapper);
+        return wrapper;
     }
 
     @Override

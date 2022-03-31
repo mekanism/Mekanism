@@ -28,6 +28,7 @@ public final class MekanismHooks {
     public static final String OC2_MOD_ID = "oc2";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String TOP_MOD_ID = "theoneprobe";
+    public static final String WILDFIRE_GENDER_MOD_ID = "wildfire_gender";
 
     public boolean CCLoaded;
     public boolean CraftTweakerLoaded;
@@ -38,6 +39,7 @@ public final class MekanismHooks {
     public boolean OC2Loaded;
     public boolean ProjectELoaded;
     public boolean TOPLoaded;
+    public boolean WildfireGenderModLoaded;
 
     public void hookConstructor() {
         ModList modList = ModList.get();
@@ -54,6 +56,7 @@ public final class MekanismHooks {
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
+        WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
         if (CCLoaded) {
             CCCapabilityHelper.registerCCMathHelper();
         }

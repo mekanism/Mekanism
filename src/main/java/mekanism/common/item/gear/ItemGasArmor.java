@@ -9,6 +9,7 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
+import mekanism.common.integration.gender.GenderCapabilityHelper;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
@@ -66,7 +67,9 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem 
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(getFillRate(), getMaxGas(),
+        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(getFillRate(), getMaxGas(),
               (item, automationType) -> automationType != AutomationType.EXTERNAL, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == getGasType().getChemical()));
+        GenderCapabilityHelper.addGenderCapability(this, wrapper);
+        return wrapper;
     }
 }
