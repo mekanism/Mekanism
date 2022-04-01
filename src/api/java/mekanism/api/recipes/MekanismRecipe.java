@@ -39,7 +39,8 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
     @Override
     public boolean matches(@Nonnull IgnoredIInventory inv, @Nonnull Level world) {
         //TODO: Decide if we ever want to make use of this method
-        return true;
+        //Default to not being able to match incomplete recipes though
+        return !isIncomplete();
     }
 
     @Override

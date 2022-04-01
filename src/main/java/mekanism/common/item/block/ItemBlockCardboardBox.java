@@ -106,14 +106,6 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     //Mark that we are monitoring item drops that might have been created due to using the cardboard box
                     // and then replace the block with the cardboard box, which will cause items to drop and then get
                     // cancelled by our listener in CommonWorldTickHandler
-                    //TODO - 1.18: If https://github.com/MinecraftForge/MinecraftForge/pull/8417 gets denied, we may want to
-                    // look into using the following way of clearing dropped contents instead:
-                    /*if (tile instanceof RandomizableContainerBlockEntity randomizable) {
-                        //Force chests with not yet generated loot to generate so that they can be cleared,
-                        // as otherwise they will generate the loot when broken even though we tried to clear them
-                        randomizable.unpackLootTable(null);
-                    }
-                    Clearable.tryClear(tile);*/
                     CommonWorldTickHandler.monitoringCardboardBox = true;
                     world.setBlockAndUpdate(pos, getBlock().defaultBlockState().setValue(BlockStateHelper.storageProperty, true));
                     CommonWorldTickHandler.monitoringCardboardBox = false;

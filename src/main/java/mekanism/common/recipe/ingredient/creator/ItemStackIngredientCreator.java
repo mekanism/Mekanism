@@ -23,9 +23,12 @@ import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.util.StackUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.ForgeConfig;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -171,8 +174,16 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
         @Override
         public boolean hasNoMatchingInstances() {
-            //TODO - 1.18: Figure out if this properly handles tags or it needs to special case the single element forge adds into them when empty
-            return ingredient.getItems().length == 0;
+            ItemStack[] items = ingredient.getItems();
+            if (items.length == 0) {
+                return true;
+            } else if (items.length == 1 && !ForgeConfig.SERVER.treatEmptyTagsAsAir.get()) {
+                //Manually compare it as we want to make sure we don't initialize the capabilities on it
+                // to ensure we reduce any potential lag from this comparison
+                ItemStack item = items[0];
+                return item.getItem() == Items.BARRIER && item.getHoverName() instanceof TextComponent hoverName && hoverName.getText().startsWith("Empty Tag: ");
+            }
+            return false;
         }
 
         @Override

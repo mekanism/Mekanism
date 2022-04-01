@@ -71,7 +71,6 @@ public class CommonWorldTickHandler {
         //If we are in the middle of breaking a block using a cardboard box, cancel any items
         // that are dropped, we do this at highest priority to ensure we cancel it the same tick
         // before forge replaces items with custom item entities with a tick delay
-        //TODO - 1.18: Requires https://github.com/MinecraftForge/MinecraftForge/pull/8417
         if (monitoringCardboardBox && event.getEntity() instanceof ItemEntity entity) {
             entity.discard();
             event.setCanceled(true);
