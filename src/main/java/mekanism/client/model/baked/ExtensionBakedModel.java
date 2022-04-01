@@ -267,11 +267,9 @@ public class ExtensionBakedModel<T> implements BakedModel {
             }
             if (!(obj instanceof QuadsKey<?> other)) {
                 return false;
-            }
-            if (side != other.side || !Objects.equals(state, other.state) || layer != other.layer) {
+            } else if (side != other.side || layer != other.layer || !Objects.equals(state, other.state)) {
                 return false;
-            }
-            if (transformation != null && !transformation.equals(other.transformation)) {
+            } else if (transformation != null && !transformation.equals(other.transformation)) {
                 return false;
             }
             return data == null || equality.test(data, (T) other.getData());

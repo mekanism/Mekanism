@@ -63,7 +63,7 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("enablePlayerSounds", true));
         enableMachineSounds = CachedBooleanValue.wrap(this, builder.comment("If enabled machines play their sounds while running.")
               .define("enableMachineSounds", true));
-        holidays = CachedBooleanValue.wrap(this, builder.comment("Christmas/New Years greetings in chat.")
+        holidays = CachedBooleanValue.wrap(this, builder.comment("Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years).")
               .define("holidays", true));
         baseSoundVolume = CachedFloatValue.wrap(this, builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.")
               .defineInRange("baseSoundVolume", 1, 0, Float.MAX_VALUE));
