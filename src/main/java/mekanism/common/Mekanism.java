@@ -89,11 +89,14 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismHeightProviderTypes;
 import mekanism.common.registries.MekanismInfuseTypes;
+import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
@@ -109,7 +112,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -223,7 +225,12 @@ public class Mekanism {
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismSounds.SOUND_EVENTS.register(modEventBus);
         MekanismParticleTypes.PARTICLE_TYPES.register(modEventBus);
+        MekanismHeightProviderTypes.HEIGHT_PROVIDER_TYPES.register(modEventBus);
+        MekanismIntProviderTypes.INT_PROVIDER_TYPES.register(modEventBus);
+        MekanismPlacementModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
+        MekanismFeatures.SETUP_FEATURES.register(modEventBus);
+        MekanismRecipeType.RECIPE_TYPES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
         MekanismGases.GASES.createAndRegister(modEventBus, Gas.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
@@ -238,7 +245,6 @@ public class Mekanism {
         modEventBus.addGenericListener(Pigment.class, this::registerPigments);
         modEventBus.addGenericListener(Slurry.class, this::registerSlurries);
         modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
-        modEventBus.addGenericListener(Feature.class, EventPriority.LOW, this::registerWorldGenFeatures);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
         packetHandler = new PacketHandler();
@@ -292,14 +298,7 @@ public class Mekanism {
     }
 
     private void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        MekanismRecipeType.registerRecipeTypes(event.getRegistry());
         CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
-    }
-
-    private void registerWorldGenFeatures(RegistryEvent.Register<Feature<?>> event) {
-        //Register the mod's world generators. We do this from the feature event at a low priority to ensure we run after
-        // our features get registered but while registries are not frozen
-        GenHandler.setupWorldGenFeatures();
     }
 
     public static ResourceLocation rl(String path) {

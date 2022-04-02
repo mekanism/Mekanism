@@ -21,7 +21,7 @@ public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToGasRecipe> getType() {
-        return MekanismRecipeType.OXIDIZING;
+        return MekanismRecipeType.OXIDIZING.get();
     }
 
     @Nonnull

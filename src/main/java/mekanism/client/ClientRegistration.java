@@ -400,7 +400,7 @@ public class ClientRegistration {
               ScubaMaskArmor.SCUBA_MASK, ScubaTankArmor.SCUBA_TANK);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MODULE_TWEAKER, GuiModuleTweaker::new);
 

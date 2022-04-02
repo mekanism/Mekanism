@@ -31,6 +31,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tags.TagUtils;
 import mekanism.common.tier.ChemicalTankTier;
@@ -146,7 +147,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Nullable
-    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> getConversionRecipeType() {
+    protected IMekanismRecipeTypeProvider<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> getConversionRecipeType() {
         return null;
     }
 
@@ -163,7 +164,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         if (displayConversions) {
             //See if there are any chemical to item mappings
-            MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> recipeType = getConversionRecipeType();
+            IMekanismRecipeTypeProvider<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> recipeType = getConversionRecipeType();
             if (recipeType != null) {
                 for (ItemStackToChemicalRecipe<CHEMICAL, STACK> recipe : recipeType.getRecipes(world)) {
                     if (recipe.getOutputDefinition().stream().anyMatch(output -> output.isTypeEqual(type))) {
@@ -188,7 +189,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
-        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Gas, GasStack>, ?> getConversionRecipeType() {
+        protected IMekanismRecipeTypeProvider<? extends ItemStackToChemicalRecipe<Gas, GasStack>, ?> getConversionRecipeType() {
             return MekanismRecipeType.GAS_CONVERSION;
         }
 
@@ -211,7 +212,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
-        protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>, ?> getConversionRecipeType() {
+        protected IMekanismRecipeTypeProvider<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>, ?> getConversionRecipeType() {
             return MekanismRecipeType.INFUSION_CONVERSION;
         }
 

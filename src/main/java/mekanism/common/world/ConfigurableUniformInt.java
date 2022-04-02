@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismIntProviderTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
@@ -34,7 +35,7 @@ public class ConfigurableUniformInt extends IntProvider {
     @Nonnull
     @Override
     public IntProviderType<?> getType() {
-        return GenHandler.CONFIGURABLE_UNIFORM;
+        return MekanismIntProviderTypes.CONFIGURABLE_UNIFORM.get();
     }
 
     @Override

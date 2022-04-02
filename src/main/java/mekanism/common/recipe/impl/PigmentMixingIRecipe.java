@@ -21,7 +21,7 @@ public class PigmentMixingIRecipe extends PigmentMixingRecipe {
     @Nonnull
     @Override
     public RecipeType<PigmentMixingRecipe> getType() {
-        return MekanismRecipeType.PIGMENT_MIXING;
+        return MekanismRecipeType.PIGMENT_MIXING.get();
     }
 
     @Nonnull

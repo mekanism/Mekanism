@@ -21,7 +21,7 @@ public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToInfuseTypeRecipe> getType() {
-        return MekanismRecipeType.INFUSION_CONVERSION;
+        return MekanismRecipeType.INFUSION_CONVERSION.get();
     }
 
     @Nonnull

@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
@@ -50,6 +49,7 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
@@ -244,7 +244,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @Nonnull
     @Override
-    public MekanismRecipeType<RotaryRecipe, RotaryInputRecipeCache> getRecipeType() {
+    public IMekanismRecipeTypeProvider<RotaryRecipe, RotaryInputRecipeCache> getRecipeType() {
         return MekanismRecipeType.ROTARY;
     }
 

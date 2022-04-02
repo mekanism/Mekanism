@@ -5,13 +5,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class DataSerializerDeferredRegister extends WrappedDeferredRegister<DataSerializerEntry> {
+public class DataSerializerDeferredRegister extends WrappedForgeDeferredRegister<DataSerializerEntry> {
 
     public DataSerializerDeferredRegister(String modid) {
         super(modid, ForgeRegistries.Keys.DATA_SERIALIZERS);

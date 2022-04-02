@@ -8,6 +8,7 @@ import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismFluids;
@@ -41,7 +42,8 @@ public class RecipeRegistryHelper {
         register(registry, MekanismJEIRecipeType.DECONDENSENTRATING, decondensentratorRecipes);
     }
 
-    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, MekanismJEIRecipeType<RECIPE> recipeType, MekanismRecipeType<RECIPE, ?> type) {
+    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, MekanismJEIRecipeType<RECIPE> recipeType,
+          IMekanismRecipeTypeProvider<RECIPE, ?> type) {
         register(registry, recipeType, type.getRecipes(getWorld()));
     }
 

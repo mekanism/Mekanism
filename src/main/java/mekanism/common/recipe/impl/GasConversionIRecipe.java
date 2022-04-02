@@ -21,7 +21,7 @@ public class GasConversionIRecipe extends ItemStackToGasRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToGasRecipe> getType() {
-        return MekanismRecipeType.GAS_CONVERSION;
+        return MekanismRecipeType.GAS_CONVERSION.get();
     }
 
     @Nonnull

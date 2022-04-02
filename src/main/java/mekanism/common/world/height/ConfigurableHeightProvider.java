@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
+import mekanism.common.registries.MekanismHeightProviderTypes;
 import mekanism.common.resource.ore.OreType.OreVeinType;
-import mekanism.common.world.GenHandler;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
@@ -67,7 +67,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
     @Nonnull
     @Override
     public HeightProviderType<?> getType() {
-        return GenHandler.CONFIGURABLE_HEIGHT_PROVIDER;
+        return MekanismHeightProviderTypes.CONFIGURABLE.get();
     }
 
     @Override

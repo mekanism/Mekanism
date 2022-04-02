@@ -21,7 +21,7 @@ public class ActivatingIRecipe extends GasToGasRecipe {
     @Nonnull
     @Override
     public RecipeType<GasToGasRecipe> getType() {
-        return MekanismRecipeType.ACTIVATING;
+        return MekanismRecipeType.ACTIVATING.get();
     }
 
     @Nonnull

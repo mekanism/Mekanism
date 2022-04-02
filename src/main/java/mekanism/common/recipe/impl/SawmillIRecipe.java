@@ -20,7 +20,7 @@ public class SawmillIRecipe extends SawmillRecipe {
     @Nonnull
     @Override
     public RecipeType<SawmillRecipe> getType() {
-        return MekanismRecipeType.SAWING;
+        return MekanismRecipeType.SAWING.get();
     }
 
     @Nonnull

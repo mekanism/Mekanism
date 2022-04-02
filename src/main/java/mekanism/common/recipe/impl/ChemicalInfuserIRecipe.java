@@ -21,7 +21,7 @@ public class ChemicalInfuserIRecipe extends ChemicalInfuserRecipe {
     @Nonnull
     @Override
     public RecipeType<ChemicalInfuserRecipe> getType() {
-        return MekanismRecipeType.CHEMICAL_INFUSING;
+        return MekanismRecipeType.CHEMICAL_INFUSING.get();
     }
 
     @Nonnull

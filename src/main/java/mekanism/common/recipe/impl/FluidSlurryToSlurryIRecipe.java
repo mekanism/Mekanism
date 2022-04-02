@@ -22,7 +22,7 @@ public class FluidSlurryToSlurryIRecipe extends FluidSlurryToSlurryRecipe {
     @Nonnull
     @Override
     public RecipeType<FluidSlurryToSlurryRecipe> getType() {
-        return MekanismRecipeType.WASHING;
+        return MekanismRecipeType.WASHING.get();
     }
 
     @Nonnull

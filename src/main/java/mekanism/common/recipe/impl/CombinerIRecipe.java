@@ -20,7 +20,7 @@ public class CombinerIRecipe extends CombinerRecipe {
     @Nonnull
     @Override
     public RecipeType<CombinerRecipe> getType() {
-        return MekanismRecipeType.COMBINING;
+        return MekanismRecipeType.COMBINING.get();
     }
 
     @Nonnull

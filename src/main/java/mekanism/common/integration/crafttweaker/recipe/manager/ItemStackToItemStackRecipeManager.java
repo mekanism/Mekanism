@@ -7,6 +7,7 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.CrushingIRecipe;
 import mekanism.common.recipe.impl.EnrichingIRecipe;
@@ -19,7 +20,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK)
 public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<ItemStackToItemStackRecipe> {
 
-    protected ItemStackToItemStackRecipeManager(MekanismRecipeType<ItemStackToItemStackRecipe, ?> recipeType) {
+    protected ItemStackToItemStackRecipeManager(IMekanismRecipeTypeProvider<ItemStackToItemStackRecipe, ?> recipeType) {
         super(recipeType);
     }
 

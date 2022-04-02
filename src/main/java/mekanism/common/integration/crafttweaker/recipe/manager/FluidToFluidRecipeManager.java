@@ -7,6 +7,7 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.FluidToFluidIRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_TO_FLUID)
 public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<FluidToFluidRecipe> {
 
-    protected FluidToFluidRecipeManager(MekanismRecipeType<FluidToFluidRecipe, ?> recipeType) {
+    protected FluidToFluidRecipeManager(IMekanismRecipeTypeProvider<FluidToFluidRecipe, ?> recipeType) {
         super(recipeType);
     }
 

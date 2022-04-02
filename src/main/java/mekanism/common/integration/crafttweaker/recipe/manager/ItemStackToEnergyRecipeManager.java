@@ -7,6 +7,7 @@ import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.EnergyConversionIRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +17,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY)
 public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManager<ItemStackToEnergyRecipe> {
 
-    protected ItemStackToEnergyRecipeManager(MekanismRecipeType<ItemStackToEnergyRecipe, ?> recipeType) {
+    protected ItemStackToEnergyRecipeManager(IMekanismRecipeTypeProvider<ItemStackToEnergyRecipe, ?> recipeType) {
         super(recipeType);
     }
 

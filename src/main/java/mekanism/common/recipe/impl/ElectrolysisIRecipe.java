@@ -22,7 +22,7 @@ public class ElectrolysisIRecipe extends ElectrolysisRecipe {
     @Nonnull
     @Override
     public RecipeType<ElectrolysisRecipe> getType() {
-        return MekanismRecipeType.SEPARATING;
+        return MekanismRecipeType.SEPARATING.get();
     }
 
     @Nonnull

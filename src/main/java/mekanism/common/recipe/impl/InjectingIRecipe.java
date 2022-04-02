@@ -21,7 +21,7 @@ public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackGasToItemStackRecipe> getType() {
-        return MekanismRecipeType.INJECTING;
+        return MekanismRecipeType.INJECTING.get();
     }
 
     @Nonnull

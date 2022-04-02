@@ -52,6 +52,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -107,8 +108,8 @@ public class GeneratorsClientRegistration {
         event.registerReloadListener(RenderWindGeneratorItem.RENDERER);
     }
 
-    @SubscribeEvent
     @SuppressWarnings("Convert2MethodRef")
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.BIO_GENERATOR, GuiBioGenerator::new);
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GuiGasGenerator::new);

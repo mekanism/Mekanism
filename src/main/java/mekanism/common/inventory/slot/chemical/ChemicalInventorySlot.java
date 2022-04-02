@@ -18,7 +18,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -41,7 +41,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
      * Gets the ChemicalStack from ItemStack conversion, ignoring the size of the item stack.
      */
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
-    STACK getPotentialConversion(MekanismRecipeType<RECIPE, SingleItem<RECIPE>> recipeType, @Nullable Level world, ItemStack itemStack, STACK empty) {
+    STACK getPotentialConversion(IMekanismRecipeTypeProvider<RECIPE, SingleItem<RECIPE>> recipeType, @Nullable Level world, ItemStack itemStack, STACK empty) {
         ItemStackToChemicalRecipe<CHEMICAL, STACK> foundRecipe = recipeType.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? empty : foundRecipe.getOutput(itemStack);
     }

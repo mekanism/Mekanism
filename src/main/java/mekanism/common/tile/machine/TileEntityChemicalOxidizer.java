@@ -36,6 +36,7 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
@@ -124,7 +125,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.OXIDIZING;
     }
 

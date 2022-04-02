@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
+import mekanism.common.registration.impl.RecipeSerializerRegistryObject;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +21,7 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         this.serializer = serializer;
     }
 
-    public static void build(Consumer<FinishedRecipe> consumer, IRecipeSerializerRegistryObject<?> serializer) {
+    public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializerRegistryObject<?> serializer) {
         build(consumer, serializer.get());
     }
 

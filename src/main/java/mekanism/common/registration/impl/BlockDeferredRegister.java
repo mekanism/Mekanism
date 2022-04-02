@@ -1,20 +1,21 @@
 package mekanism.common.registration.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.registration.DoubleDeferredRegister;
+import mekanism.common.registration.DoubleForgeDeferredRegister;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
+public class BlockDeferredRegister extends DoubleForgeDeferredRegister<Block, Item> {
 
     private final List<IBlockProvider> allBlocks = new ArrayList<>();
 
@@ -43,6 +44,6 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
     }
 
     public List<IBlockProvider> getAllBlocks() {
-        return allBlocks;
+        return Collections.unmodifiableList(allBlocks);
     }
 }

@@ -32,7 +32,7 @@ public class RotaryIRecipe extends RotaryRecipe {
     @Nonnull
     @Override
     public RecipeType<RotaryRecipe> getType() {
-        return MekanismRecipeType.ROTARY;
+        return MekanismRecipeType.ROTARY.get();
     }
 
     @Nonnull

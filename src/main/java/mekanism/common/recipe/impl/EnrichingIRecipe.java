@@ -20,7 +20,7 @@ public class EnrichingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToItemStackRecipe> getType() {
-        return MekanismRecipeType.ENRICHING;
+        return MekanismRecipeType.ENRICHING.get();
     }
 
     @Nonnull

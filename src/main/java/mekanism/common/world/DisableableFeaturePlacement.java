@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
@@ -50,6 +51,6 @@ public class DisableableFeaturePlacement extends PlacementFilter {
     @Nonnull
     @Override
     public PlacementModifierType<?> type() {
-        return GenHandler.DISABLEABLE_PLACEMENT;
+        return MekanismPlacementModifiers.DISABLEABLE.get();
     }
 }

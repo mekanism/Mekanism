@@ -22,7 +22,7 @@ public class ChemicalDissolutionIRecipe extends ChemicalDissolutionRecipe {
     @Nonnull
     @Override
     public RecipeType<ChemicalDissolutionRecipe> getType() {
-        return MekanismRecipeType.DISSOLUTION;
+        return MekanismRecipeType.DISSOLUTION.get();
     }
 
     @Nonnull

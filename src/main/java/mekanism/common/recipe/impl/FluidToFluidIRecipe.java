@@ -21,7 +21,7 @@ public class FluidToFluidIRecipe extends FluidToFluidRecipe {
     @Nonnull
     @Override
     public RecipeType<FluidToFluidRecipe> getType() {
-        return MekanismRecipeType.EVAPORATING;
+        return MekanismRecipeType.EVAPORATING.get();
     }
 
     @Nonnull

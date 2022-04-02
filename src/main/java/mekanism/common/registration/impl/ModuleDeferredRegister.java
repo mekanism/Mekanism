@@ -6,10 +6,10 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ModuleDataBuilder;
 import mekanism.api.providers.IItemProvider;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
 import net.minecraftforge.common.util.NonNullSupplier;
 
-public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?>> {
+public class ModuleDeferredRegister extends WrappedForgeDeferredRegister<ModuleData<?>> {
 
     public ModuleDeferredRegister(String modid) {
         super(modid, MekanismAPI.moduleRegistryName());

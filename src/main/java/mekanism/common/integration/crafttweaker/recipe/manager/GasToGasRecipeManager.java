@@ -8,6 +8,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ActivatingIRecipe;
 import mekanism.common.recipe.impl.CentrifugingIRecipe;
@@ -18,7 +19,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_GAS_TO_GAS)
 public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToGasRecipe> {
 
-    protected GasToGasRecipeManager(MekanismRecipeType<GasToGasRecipe, ?> recipeType) {
+    protected GasToGasRecipeManager(IMekanismRecipeTypeProvider<GasToGasRecipe, ?> recipeType) {
         super(recipeType);
     }
 

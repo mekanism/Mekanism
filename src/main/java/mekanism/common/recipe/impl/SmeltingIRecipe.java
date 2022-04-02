@@ -20,7 +20,7 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToItemStackRecipe> getType() {
-        return MekanismRecipeType.SMELTING;
+        return MekanismRecipeType.SMELTING.get();
     }
 
     @Nonnull

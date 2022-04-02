@@ -21,7 +21,7 @@ public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToPigmentRecipe> getType() {
-        return MekanismRecipeType.PIGMENT_EXTRACTING;
+        return MekanismRecipeType.PIGMENT_EXTRACTING.get();
     }
 
     @Nonnull

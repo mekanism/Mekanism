@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -69,14 +70,11 @@ public class FluidDeferredRegister {
 
     private final List<FluidRegistryObject<?, ?, ?, ?>> allFluids = new ArrayList<>();
 
-    private final String modid;
-
     private final DeferredRegister<Fluid> fluidRegister;
     private final DeferredRegister<Block> blockRegister;
     private final DeferredRegister<Item> itemRegister;
 
     public FluidDeferredRegister(String modid) {
-        this.modid = modid;
         blockRegister = DeferredRegister.create(ForgeRegistries.BLOCKS, modid);
         fluidRegister = DeferredRegister.create(ForgeRegistries.FLUIDS, modid);
         itemRegister = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
@@ -109,8 +107,8 @@ public class FluidDeferredRegister {
           BucketCreator<BUCKET> bucketCreator) {
         String flowingName = "flowing_" + name;
         String bucketName = name + "_bucket";
-        //Create the registry object with dummy entries that we can use as part of the supplier but that works as use in suppliers
-        FluidRegistryObject<Source, Flowing, LiquidBlock, BUCKET> fluidRegistryObject = new FluidRegistryObject<>(modid, name);
+        //Create the registry object and let the values init to null as before we actually call get on them, we will update the backing values
+        FluidRegistryObject<Source, Flowing, LiquidBlock, BUCKET> fluidRegistryObject = new FluidRegistryObject<>();
         //Pass in suppliers that are wrapped instead of direct references to the registry objects, so that when we update the registry object to
         // point to a new object it gets updated properly.
         ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(fluidRegistryObject::getStillFluid,
@@ -134,7 +132,7 @@ public class FluidDeferredRegister {
     }
 
     public List<FluidRegistryObject<?, ?, ?, ?>> getAllFluids() {
-        return allFluids;
+        return Collections.unmodifiableList(allFluids);
     }
 
     public void registerBucketDispenserBehavior() {

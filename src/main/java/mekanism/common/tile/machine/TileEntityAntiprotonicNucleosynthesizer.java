@@ -39,6 +39,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
@@ -186,7 +187,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     @Nonnull
     @Override
-    public MekanismRecipeType<NucleosynthesizingRecipe, ItemChemical<Gas, GasStack, NucleosynthesizingRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<NucleosynthesizingRecipe, ItemChemical<Gas, GasStack, NucleosynthesizingRecipe>> getRecipeType() {
         return MekanismRecipeType.NUCLEOSYNTHESIZING;
     }
 

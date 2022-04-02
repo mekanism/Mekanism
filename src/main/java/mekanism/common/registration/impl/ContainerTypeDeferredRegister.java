@@ -12,7 +12,7 @@ import mekanism.common.inventory.container.type.MekanismContainerType.IMekanismC
 import mekanism.common.inventory.container.type.MekanismItemContainerType;
 import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekanismItemContainerFactory;
 import mekanism.common.registration.INamedEntry;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuType<?>> {
+public class ContainerTypeDeferredRegister extends WrappedForgeDeferredRegister<MenuType<?>> {
 
     public ContainerTypeDeferredRegister(String modid) {
         super(modid, ForgeRegistries.CONTAINERS);

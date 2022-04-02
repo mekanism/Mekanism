@@ -6,9 +6,9 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.common.base.IChemicalConstant;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
 
-public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
+public class GasDeferredRegister extends WrappedForgeDeferredRegister<Gas> {
 
     public GasDeferredRegister(String modid) {
         super(modid, MekanismAPI.gasRegistryName());

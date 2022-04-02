@@ -4,10 +4,10 @@ import java.util.function.UnaryOperator;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
 
-public class SlurryDeferredRegister extends WrappedDeferredRegister<Slurry> {
+public class SlurryDeferredRegister extends WrappedForgeDeferredRegister<Slurry> {
 
     public SlurryDeferredRegister(String modid) {
         super(modid, MekanismAPI.slurryRegistryName());

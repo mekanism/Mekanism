@@ -4,10 +4,10 @@ import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfuseTypeBuilder;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
 import net.minecraft.resources.ResourceLocation;
 
-public class InfuseTypeDeferredRegister extends WrappedDeferredRegister<InfuseType> {
+public class InfuseTypeDeferredRegister extends WrappedForgeDeferredRegister<InfuseType> {
 
     public InfuseTypeDeferredRegister(String modid) {
         super(modid, MekanismAPI.infuseTypeRegistryName());

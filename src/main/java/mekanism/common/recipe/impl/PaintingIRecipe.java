@@ -21,7 +21,7 @@ public class PaintingIRecipe extends PaintingRecipe {
     @Nonnull
     @Override
     public RecipeType<PaintingRecipe> getType() {
-        return MekanismRecipeType.PAINTING;
+        return MekanismRecipeType.PAINTING.get();
     }
 
     @Nonnull

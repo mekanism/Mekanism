@@ -8,6 +8,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.PigmentExtractingIRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT)
 public abstract class ItemStackToPigmentRecipeManager extends MekanismRecipeManager<ItemStackToPigmentRecipe> {
 
-    protected ItemStackToPigmentRecipeManager(MekanismRecipeType<ItemStackToPigmentRecipe, ?> recipeType) {
+    protected ItemStackToPigmentRecipeManager(IMekanismRecipeTypeProvider<ItemStackToPigmentRecipe, ?> recipeType) {
         super(recipeType);
     }
 

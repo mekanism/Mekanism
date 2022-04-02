@@ -21,7 +21,7 @@ public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackGasToItemStackRecipe> getType() {
-        return MekanismRecipeType.COMPRESSING;
+        return MekanismRecipeType.COMPRESSING.get();
     }
 
     @Nonnull

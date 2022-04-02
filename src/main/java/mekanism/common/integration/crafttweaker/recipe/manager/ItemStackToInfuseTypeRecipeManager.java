@@ -8,6 +8,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.InfusionConversionIRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE)
 public abstract class ItemStackToInfuseTypeRecipeManager extends MekanismRecipeManager<ItemStackToInfuseTypeRecipe> {
 
-    protected ItemStackToInfuseTypeRecipeManager(MekanismRecipeType<ItemStackToInfuseTypeRecipe, ?> recipeType) {
+    protected ItemStackToInfuseTypeRecipeManager(IMekanismRecipeTypeProvider<ItemStackToInfuseTypeRecipe, ?> recipeType) {
         super(recipeType);
     }
 

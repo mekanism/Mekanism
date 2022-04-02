@@ -21,7 +21,7 @@ public class EnergyConversionIRecipe extends ItemStackToEnergyRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToEnergyRecipe> getType() {
-        return MekanismRecipeType.ENERGY_CONVERSION;
+        return MekanismRecipeType.ENERGY_CONVERSION.get();
     }
 
     @Nonnull

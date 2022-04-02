@@ -8,6 +8,7 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
@@ -55,7 +56,7 @@ public class ConfigurableConstantInt extends IntProvider {
     @Nonnull
     @Override
     public IntProviderType<?> getType() {
-        return GenHandler.CONFIGURABLE_CONSTANT;
+        return MekanismIntProviderTypes.CONFIGURABLE_CONSTANT.get();
     }
 
     @Override

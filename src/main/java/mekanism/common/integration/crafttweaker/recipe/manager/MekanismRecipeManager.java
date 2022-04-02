@@ -14,7 +14,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -25,9 +25,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER)
 public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> implements IRecipeManager<RECIPE> {
 
-    private final MekanismRecipeType<RECIPE, ?> recipeType;
+    private final IMekanismRecipeTypeProvider<RECIPE, ?> recipeType;
 
-    protected MekanismRecipeManager(MekanismRecipeType<RECIPE, ?> recipeType) {
+    protected MekanismRecipeManager(IMekanismRecipeTypeProvider<RECIPE, ?> recipeType) {
         this.recipeType = recipeType;
     }
 
@@ -39,7 +39,7 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
 
     @Override
     public RecipeType<RECIPE> getRecipeType() {
-        return recipeType;
+        return recipeType.getRecipeType();
     }
 
     @Override

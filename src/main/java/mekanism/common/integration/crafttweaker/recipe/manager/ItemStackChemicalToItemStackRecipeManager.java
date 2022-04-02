@@ -22,6 +22,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngr
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.CompressingIRecipe;
 import mekanism.common.recipe.impl.InjectingIRecipe;
@@ -38,7 +39,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends MekanismRecipeManager<RECIPE> {
 
-    protected ItemStackChemicalToItemStackRecipeManager(MekanismRecipeType<RECIPE, ?> recipeType) {
+    protected ItemStackChemicalToItemStackRecipeManager(IMekanismRecipeTypeProvider<RECIPE, ?> recipeType) {
         super(recipeType);
     }
 

@@ -20,7 +20,7 @@ public class CrushingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackToItemStackRecipe> getType() {
-        return MekanismRecipeType.CRUSHING;
+        return MekanismRecipeType.CRUSHING.get();
     }
 
     @Nonnull

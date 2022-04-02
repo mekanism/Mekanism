@@ -3,10 +3,10 @@ package mekanism.common.registration.impl;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
 import net.minecraft.resources.ResourceLocation;
 
-public class RobitSkinDeferredRegister extends WrappedDeferredRegister<RobitSkin> {
+public class RobitSkinDeferredRegister extends WrappedForgeDeferredRegister<RobitSkin> {
 
     private final String modid;
 

@@ -25,7 +25,7 @@ public class PressurizedReactionIRecipe extends PressurizedReactionRecipe {
     @Nonnull
     @Override
     public RecipeType<PressurizedReactionRecipe> getType() {
-        return MekanismRecipeType.REACTION;
+        return MekanismRecipeType.REACTION.get();
     }
 
     @Nonnull

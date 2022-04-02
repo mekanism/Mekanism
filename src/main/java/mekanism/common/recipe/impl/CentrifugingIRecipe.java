@@ -21,7 +21,7 @@ public class CentrifugingIRecipe extends GasToGasRecipe {
     @Nonnull
     @Override
     public RecipeType<GasToGasRecipe> getType() {
-        return MekanismRecipeType.CENTRIFUGING;
+        return MekanismRecipeType.CENTRIFUGING.get();
     }
 
     @Nonnull

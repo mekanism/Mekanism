@@ -20,7 +20,7 @@ public class ChemicalCrystallizerIRecipe extends ChemicalCrystallizerRecipe {
     @Nonnull
     @Override
     public RecipeType<ChemicalCrystallizerRecipe> getType() {
-        return MekanismRecipeType.CRYSTALLIZING;
+        return MekanismRecipeType.CRYSTALLIZING.get();
     }
 
     @Nonnull

@@ -46,6 +46,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.ChemicalCrystallizerInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
@@ -171,7 +172,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ChemicalCrystallizerRecipe, ChemicalCrystallizerInputRecipeCache> getRecipeType() {
+    public IMekanismRecipeTypeProvider<ChemicalCrystallizerRecipe, ChemicalCrystallizerInputRecipeCache> getRecipeType() {
         return MekanismRecipeType.CRYSTALLIZING;
     }
 

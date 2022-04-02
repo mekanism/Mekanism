@@ -21,7 +21,7 @@ public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeType<ItemStackGasToItemStackRecipe> getType() {
-        return MekanismRecipeType.PURIFYING;
+        return MekanismRecipeType.PURIFYING.get();
     }
 
     @Nonnull

@@ -21,7 +21,7 @@ public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe {
     @Nonnull
     @Override
     public RecipeType<NucleosynthesizingRecipe> getType() {
-        return MekanismRecipeType.NUCLEOSYNTHESIZING;
+        return MekanismRecipeType.NUCLEOSYNTHESIZING.get();
     }
 
     @Nonnull

@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -30,7 +30,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @return The recipe type this {@link IRecipeLookupHandler} handles.
      */
     @Nonnull
-    MekanismRecipeType<RECIPE, ?> getRecipeType();
+    IMekanismRecipeTypeProvider<RECIPE, ?> getRecipeType();
 
     /**
      * Returns how many operating ticks were saved for purposes of persisting through saves how far a cached recipe is through processing.
@@ -91,7 +91,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
 
         @Nonnull
         @Override
-        MekanismRecipeType<RECIPE, INPUT_CACHE> getRecipeType();
+        IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> getRecipeType();
     }
 
     interface ConstantUsageRecipeLookupHandler {

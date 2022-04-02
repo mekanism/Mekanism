@@ -21,7 +21,7 @@ public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
     @Nonnull
     @Override
     public RecipeType<MetallurgicInfuserRecipe> getType() {
-        return MekanismRecipeType.METALLURGIC_INFUSING;
+        return MekanismRecipeType.METALLURGIC_INFUSING.get();
     }
 
     @Nonnull
