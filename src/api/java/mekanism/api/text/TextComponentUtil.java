@@ -131,8 +131,16 @@ public class TextComponentUtil {
         return new TextComponent(cleanString(component));
     }
 
+    /**
+     * Helper to clean up strings and convert any non-breaking spaces to spaces so that they render properly.
+     *
+     * @param component String
+     *
+     * @return Cleaned string
+     */
     private static String cleanString(String component) {
-        return component.replace("\u00A0", " ");
+        return component.replace("\u00A0", " ")//non-breaking space
+              .replace("\u202f", " ");//narrow non-breaking space
     }
 
     /**

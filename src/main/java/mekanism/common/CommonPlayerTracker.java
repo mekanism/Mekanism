@@ -44,7 +44,7 @@ public class CommonPlayerTracker {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
             player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
-            event.getPlayer().sendMessage(ALPHA_WARNING, Util.NIL_UUID);
+            player.sendMessage(ALPHA_WARNING, Util.NIL_UUID);
         }
     }
 
