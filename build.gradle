@@ -358,9 +358,6 @@ repositories {
             includeGroup 'mcjty.theoneprobe'
         }
     }
-    flatDir {
-        dirs 'libs'
-    }
 
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
         if (it instanceof MavenArtifactRepository) {
@@ -419,9 +416,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    //TODO - 1.18: Make these use the mc version as a var again and use implementation instead of compileOnly
-    implementation fg.deobf("crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    //implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
     compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-1.18.1:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
