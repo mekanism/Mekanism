@@ -20,7 +20,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
@@ -116,7 +118,36 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         return itemTypeLookup.get(item);
     }
 
+    //TODO: Expose to the API. This Returns the amount actually inserted
+    public long massInsert(ItemStack stack, long amount, Action action) {
+        if (stack.isEmpty() || amount <= 0) {
+            return 0;
+        }
+        HashedItem type = action.execute() ? HashedItem.create(stack) : HashedItem.raw(stack);
+        // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
+        // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
+        if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity)) {
+            return 0;
+        }
+        // at this point we're guaranteed at least part of the input stack will be inserted
+        QIOItemTypeData data;
+        if (action.execute()) {
+            data = itemDataMap.computeIfAbsent(type, this::createTypeDataForAbsent);
+        } else {
+            //If we are simulating, look it up
+            data = itemDataMap.get(type);
+            if (data == null) {
+                // if it doesn't already have that type, fall back to a new item type data that doesn't actually get added
+                data = new QIOItemTypeData(type);
+            }
+        }
+        return amount - data.add(amount, action);
+    }
+
     public ItemStack addItem(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
         HashedItem type = HashedItem.create(stack);
         // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
         // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
@@ -125,7 +156,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         }
         // at this point we're guaranteed at least part of the input stack will be inserted
         QIOItemTypeData data = itemDataMap.computeIfAbsent(type, this::createTypeDataForAbsent);
-        return type.createStack((int) data.add(stack.getCount()));
+        return type.createStack(MathUtils.clampToInt(data.add(stack.getCount(), Action.EXECUTE)));
     }
 
     private QIOItemTypeData createTypeDataForAbsent(HashedItem type) {
@@ -161,11 +192,32 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         return new QIOItemTypeData(type);
     }
 
+    //TODO: Expose to the API. This Returns the amount actually extracted
+    public long massExtract(ItemStack stack, long amount, Action action) {
+        if (amount <= 0 || stack.isEmpty() || itemDataMap.isEmpty()) {
+            return 0;
+        }
+        HashedItem type = HashedItem.raw(stack);
+        QIOItemTypeData data = itemDataMap.get(type);
+        if (data == null) {
+            return 0;
+        }
+        long removed = data.remove(amount, action);
+        // remove this item type if it's now empty
+        if (action.execute() && data.count == 0) {
+            removeItemData(data.itemType);
+        }
+        return removed;
+    }
+
     public ItemStack removeItem(int amount) {
         return removeByType(null, amount);
     }
 
     public ItemStack removeItem(ItemStack stack, int amount) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
         return removeByType(HashedItem.raw(stack), amount);
     }
 
@@ -581,11 +633,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
             setNeedsUpdate();
         }
 
-        private long add(long amount) {
+        private long add(long amount, Action action) {
             long toAdd = amount;
             // first we try to add the items to an already-containing drive
             for (QIODriveKey key : containingDrives) {
-                toAdd = addItemsToDrive(toAdd, driveMap.get(key));
+                toAdd = addItemsToDrive(toAdd, driveMap.get(key), action);
                 if (toAdd == 0) {
                     break;
                 }
@@ -593,53 +645,56 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
             // next, we add the items to any drive that will take it
             if (toAdd > 0) {
                 for (QIODriveData data : driveMap.values()) {
-                    if (containingDrives.contains(data.getKey())) {
-                        continue;
-                    }
-                    toAdd = addItemsToDrive(toAdd, data);
-                    if (toAdd == 0) {
-                        break;
+                    if (!containingDrives.contains(data.getKey())) {
+                        toAdd = addItemsToDrive(toAdd, data, action);
+                        if (toAdd == 0) {
+                            break;
+                        }
                     }
                 }
             }
-            // update internal/core values and return
-            count += amount - toAdd;
-            totalCount += amount - toAdd;
-            setNeedsUpdate(itemType);
+            if (action.execute()) {
+                // update internal/core values
+                count += amount - toAdd;
+                totalCount += amount - toAdd;
+                setNeedsUpdate(itemType);
+            }
             return toAdd;
         }
 
-        private long addItemsToDrive(long toAdd, QIODriveData data) {
-            long rejects = data.add(itemType, toAdd);
-            if (rejects < toAdd) {
+        private long addItemsToDrive(long toAdd, QIODriveData data, Action action) {
+            long rejects = data.add(itemType, toAdd, action);
+            if (action.execute() && rejects < toAdd) {
                 containingDrives.add(data.getKey());
             }
             return rejects;
         }
 
-        private ItemStack remove(int amount) {
-            ItemStack ret = ItemStack.EMPTY;
+        private long remove(long amount, Action action) {
+            long removed = 0;
             for (Iterator<QIODriveKey> iter = containingDrives.iterator(); iter.hasNext(); ) {
                 QIODriveData data = driveMap.get(iter.next());
-                ItemStack stack = data.remove(itemType, amount - ret.getCount());
-                if (ret.isEmpty()) {
-                    ret = stack;
-                } else {
-                    ret.grow(stack.getCount());
-                }
+                removed += data.remove(itemType, amount - removed, action);
                 // remove this drive from containingDrives if it doesn't have this item anymore
-                if (data.getStored(itemType) == 0) {
+                if (action.execute() && data.getStored(itemType) == 0) {
                     iter.remove();
                 }
                 // break early if we found enough items
-                if (ret.getCount() == amount) {
+                if (removed == amount) {
                     break;
                 }
             }
-            count -= ret.getCount();
-            totalCount -= ret.getCount();
-            setNeedsUpdate(itemType);
-            return ret;
+            if (action.execute()) {
+                count -= removed;
+                totalCount -= removed;
+                setNeedsUpdate(itemType);
+            }
+            return removed;
+        }
+
+        private ItemStack remove(int amount) {
+            int removed = MathUtils.clampToInt(remove(amount, Action.EXECUTE));
+            return removed == 0 ? ItemStack.EMPTY : itemType.createStack(removed);
         }
 
         public long getCount() {
