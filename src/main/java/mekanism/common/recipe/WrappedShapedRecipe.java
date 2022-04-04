@@ -85,4 +85,9 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     public int getRecipeHeight() {
         return internal.getRecipeHeight();
     }
+
+    @Override
+    public boolean isIncomplete() {
+        return internal.isIncomplete();
+    }
 }

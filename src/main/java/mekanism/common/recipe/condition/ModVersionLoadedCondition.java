@@ -26,7 +26,13 @@ public class ModVersionLoadedCondition implements ICondition {
     }
 
     @Override
+    @SuppressWarnings("removal")
     public boolean test() {
+        return test(IContext.EMPTY);
+    }
+
+    @Override
+    public boolean test(IContext context) {
         //They match or we are ahead of the min version
         return ModList.get().getModContainerById(modid).filter(modContainer -> new ComparableVersion(minVersion).compareTo(
               new ComparableVersion(modContainer.getModInfo().getVersion().toString())) <= 0).isPresent();

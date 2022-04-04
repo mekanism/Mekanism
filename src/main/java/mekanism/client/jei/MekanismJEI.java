@@ -67,6 +67,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -330,7 +331,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismJEIRecipeType.INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
         RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
-        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidAttributes.BUCKET_VOLUME), VanillaTypes.FLUID,
+        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidAttributes.BUCKET_VOLUME), ForgeTypes.FLUID,
               MekanismLang.JEI_INFO_HEAVY_WATER.translate(TileEntityElectricPump.HEAVY_WATER_AMOUNT));
         registry.addIngredientInfo(MekanismAPI.moduleRegistry().getValues().stream().map(data -> data.getItemProvider().getItemStack()).toList(),
               VanillaTypes.ITEM, MekanismLang.JEI_INFO_MODULE_INSTALLATION.translate());

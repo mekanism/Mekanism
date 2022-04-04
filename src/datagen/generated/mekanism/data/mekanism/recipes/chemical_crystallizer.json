@@ -1,5 +1,5 @@
 {
-  "type": "mekanism:mek_data",
+  "type": "minecraft:crafting_shaped",
   "result": {
     "item": "mekanism:chemical_crystallizer"
   },

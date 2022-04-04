@@ -402,8 +402,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    //TODO - 1.18: Re-enable once updated
-    //runtimeOnly fg.deobf("team.chisel.ctm:CTM:1.18-${ctm_version}")
+    runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
@@ -417,7 +416,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-1.18.1:${jeitweaker_version}")
+    implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")

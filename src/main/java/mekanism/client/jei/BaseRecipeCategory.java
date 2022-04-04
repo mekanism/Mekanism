@@ -22,6 +22,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -241,7 +242,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         int width = gauge.getWidth() - 2;
         int height = gauge.getHeight() - 2;
         int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
-        return init(builder, VanillaTypes.FLUID, role, gauge, stacks)
+        return init(builder, ForgeTypes.FLUID, role, gauge, stacks)
               .setFluidRenderer(max, false, width, height);
     }
 

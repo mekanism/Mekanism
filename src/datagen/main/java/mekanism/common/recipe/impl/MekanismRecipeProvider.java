@@ -180,7 +180,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .build(consumer);
         //Chemical crystallizer
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
@@ -358,7 +358,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .build(consumer);
         //Electric pump
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.BUCKET, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
@@ -562,7 +562,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
               .build(consumer);
         //Industrial Alarm
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUSTRIAL_ALARM)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUSTRIAL_ALARM)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
@@ -604,7 +604,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_DIAMOND)
               .build(consumer);
         //HDPE Elytra
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.HDPE_CHAR, Pattern.ALLOY),
                     TripleLine.of(Pattern.HDPE_CHAR, Pattern.PREVIOUS, Pattern.HDPE_CHAR),
