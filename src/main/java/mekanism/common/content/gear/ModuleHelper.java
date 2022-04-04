@@ -46,6 +46,9 @@ public class ModuleHelper implements IModuleHelper {
 
     public static final ModuleHelper INSTANCE = new ModuleHelper();
 
+    private ModuleHelper() {
+    }
+
     private final Map<Item, Set<ModuleData<?>>> supportedModules = new Object2ObjectOpenHashMap<>(5);
     private final Map<ModuleData<?>, Set<Item>> supportedContainers = new Object2ObjectOpenHashMap<>();
 

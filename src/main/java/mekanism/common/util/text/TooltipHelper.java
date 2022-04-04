@@ -12,6 +12,9 @@ public class TooltipHelper implements ITooltipHelper {
 
     public static final TooltipHelper INSTANCE = new TooltipHelper();
 
+    private TooltipHelper() {
+    }
+
     @Override
     public Component getEnergyPerMBDisplayShort(FloatingLong energy) {
         return MekanismLang.GENERIC_PER_MB.translate(MekanismUtils.getEnergyDisplayShort(energy));

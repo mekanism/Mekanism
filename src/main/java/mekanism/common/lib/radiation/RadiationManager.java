@@ -122,6 +122,9 @@ public class RadiationManager implements IRadiationManager {
     @Nullable
     private RadiationDataHandler dataHandler;
 
+    private RadiationManager() {
+    }
+
     @Override
     public boolean isRadiationEnabled() {
         return MekanismConfig.general.radiationEnabled.get();
