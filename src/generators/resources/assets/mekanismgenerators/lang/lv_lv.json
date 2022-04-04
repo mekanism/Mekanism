@@ -1,4 +1,13 @@
 {
+  "block.mekanismgenerators.bioethanol": "Bioetanols",
+  "block.mekanismgenerators.heat_generator": "Siltuma Ģenerators",
+  "block.mekanismgenerators.reactor_glass": "Reaktora Stikls",
+  "block.mekanismgenerators.solar_generator": "Saules Ģenerators",
+  "block.mekanismgenerators.wind_generator": "Vēja Ģenerators",
+  "container.mekanismgenerators.gas_burning_generator": "Gāzes Ģenerators",
+  "container.mekanismgenerators.heat_generator": "Siltuma Ģenerators",
+  "container.mekanismgenerators.solar_generator": "Saules Ģenerators",
+  "container.mekanismgenerators.wind_generator": "Vēja Ģenerators",
   "description.mekanismgenerators.laser_focus_matrix": "A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.",
   "description.mekanismgenerators.reactor.logic.capacity": "The reactor's core heat capacity has been met",
   "description.mekanismgenerators.reactor.logic.depleted": "The reactor has insufficient fuel to sustain a reaction",
