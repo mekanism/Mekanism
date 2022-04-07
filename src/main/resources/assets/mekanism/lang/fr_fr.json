@@ -516,7 +516,7 @@
   "description.mekanism.modification_station": "Un établi avancé capable d'installer et de retirer des modules de l'équipement modulaire (ex: armure Meka!)",
   "description.mekanism.nutritional_injection_unit": "Alimente automatiquement le joueur avec de la pâte nutritionnelle quand il a faim.",
   "description.mekanism.nutritional_liquifier": "Une machine capable de transformer n'importe quel aliment en pâte nutritionnelle non dangereuse et facilement digestible.",
-  "description.mekanism.oredictionificator": "Une machine utilisée pour unifier et traduire plusieurs objets et blocs.",
+  "description.mekanism.oredictionificator": "Une machine utilisée pour unifier et traduire plusieurs objets et blocs en utilisant les tags d'objects.",
   "description.mekanism.osmium_compressor": "Une machine assez avancée utilisée pour compresser l'osmium en diverses poussières afin de créer leurs homologues en lingot.",
   "description.mekanism.osmium_ore": "Un minéral solide qui peut être trouvé à presque n'importe quelle hauteur dans le monde. Il est connu pour avoir de nombreuses utilisations dans la construction de machines.",
   "description.mekanism.painting_machine": "Une machine utilisée pour colorier les blocs et les objets via une application prudente d'un pigment stocké.",
