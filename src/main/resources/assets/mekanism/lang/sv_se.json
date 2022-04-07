@@ -394,7 +394,6 @@
   "description.mekanism.logistical_sorter": "En filterbaserad, avancerad sorteringsmaskin som automatiskt kan mata ut specificerade objekt ur och in i intilliggande lager och Logistiska transportörer.",
   "description.mekanism.magnetic_attraction_unit": "Använder kraftfulla magneter för att dra avlägsna objekt mot spelaren. Installera flera för ett större räckvidd.",
   "description.mekanism.metallurgic_infuser": "En maskin som används för att ingjuta olika material i (allmänt) metaller för att skapa metalllegeringar och andra föreningar.",
-  "description.mekanism.oredictionificator": "En maskin som används för att förena och översätta mellan olika objekt och block med hjälp av Ore Dictionary.",
   "description.mekanism.osmium_compressor": "En ganska avancerad maskin som används för att komprimera osmium till olika damm för att skapa sina göt motsvarigheter.",
   "description.mekanism.osmium_ore": "Ett starkt mineral som finns på nästan vilken höjd som helst i världen. Det är känt att ha många användningsområden vid konstruktion av maskiner.",
   "description.mekanism.precision_sawmill": "En maskin som används för att bearbeta stockar och andra träbaserade föremål effektivare, samt för att göra sågspån.",
