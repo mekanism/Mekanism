@@ -516,6 +516,7 @@
   "description.mekanism.modification_station": "改造可能な装備(例 MekaSuit)へのモジュールの取り付け・取り外しを行う高度なワークベンチです。",
   "description.mekanism.nutritional_injection_unit": "空腹時に自動で栄養補助ペーストを供給します。",
   "description.mekanism.nutritional_liquifier": "あらゆる食品を安全かつ消化しやすい栄養補助ペーストに加工するマシンです。",
+  "description.mekanism.oredictionificator": "アイテムタグを通じて様々なアイテムやブロックを統合、変換する機械です。",
   "description.mekanism.osmium_compressor": "オスミウムを様々な粉に詰め込み、新たなインゴットへと加工するとても発展的な機械です。",
   "description.mekanism.osmium_ore": "どんな高度でも見つかる頑健な鉱物です。 機械の中心的な材料です。",
   "description.mekanism.painting_machine": "セットされた顔料で丁重に塗装し、ブロックやアイテムに色を付ける機械です。",
