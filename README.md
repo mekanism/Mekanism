@@ -67,7 +67,7 @@ mekanism_version=1.16.5-10.1.0.455
   * [aidancbrady](https://twitter.com/aidancbrady) - [Patreon](https://www.patreon.com/user?u=260704)
   * thommy101
   * [thiakil](https://twitter.com/thiakil)
-  * [pupnewfster](https://twitter.com/pupnewfster) - [Patreon](https://www.patreon.com/pupnewfster)
+  * [pupnewfster](https://twitter.com/pupnewfster) - [Patreon](https://www.patreon.com/pupnewfster), [Ko-fi](https://ko-fi.com/pupnewfster)
   * dizzyd  
   * unpairedbracket
   * [CyanideX](https://twitter.com/theCyanideX) (artwork)
