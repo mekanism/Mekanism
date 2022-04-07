@@ -516,6 +516,7 @@
   "description.mekanism.modification_station": "Zaawansowane stanowisko pracy, potrafiące instalować i usuwać moduły modularnemu wyposażeniu (innymi słowy MekaPancerzowi!)",
   "description.mekanism.nutritional_injection_unit": "Automatycznie żywi gracza Pastą odżywczą, gdy ten jest głodny.",
   "description.mekanism.nutritional_liquifier": "Maszyna, która jest w stanie przetworzyć dowolne jedzenie w bezpieczną, łatwostrawną Pastę odżywczą.",
+  "description.mekanism.oredictionificator": "Maszyna używana do ujednolicania różnych przedmiotów i bloków przy użyciu tagów przedmiotów.",
   "description.mekanism.osmium_compressor": "Maszyna służąca do kompresowania osmu z różnymi metalami.",
   "description.mekanism.osmium_ore": "Wytrzymały materiał znajdowany na każdej wysokości. Ma wiele zastosowań w budowie maszyn.",
   "description.mekanism.painting_machine": "Maszyna używana do kolorowania bloków i przedmiotów poprzez ostrożne nakładanie przechowywanego pigmentu.",
