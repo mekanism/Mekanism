@@ -166,5 +166,6 @@
   "item.mekanismtools.steel_shovel": "Stahlschaufel",
   "item.mekanismtools.steel_sword": "Stahlschwert",
   "item.mekanismtools.stone_paxel": "Steinpaxel",
-  "item.mekanismtools.wood_paxel": "Holzpaxel"
+  "item.mekanismtools.wood_paxel": "Holzpaxel",
+  "tooltip.mekanismtools.hp": "LP: %1$s"
 }
