@@ -4,7 +4,7 @@ Mekanism is developed for Minecraft 1.18.2 using Minecraft Forge.
 
 ## Prerequisites
 
-* Gradle - Version 7.4.1 is known to work, your mileage with other versions may vary
+* Gradle - Version 7.4.2 is known to work, your mileage with other versions may vary
 
 ## Directory Structure
 

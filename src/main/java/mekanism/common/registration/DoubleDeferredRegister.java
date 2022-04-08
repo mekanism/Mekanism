@@ -31,8 +31,13 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
 
     public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,
           Function<P, S> secondarySupplier, BiFunction<RegistryObject<P>, RegistryObject<S>, W> objectWrapper) {
+        return registerAdvanced(name, primarySupplier, secondarySupplier.compose(RegistryObject::get), objectWrapper);
+    }
+
+    public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<P, S>> W registerAdvanced(String name, Supplier<? extends P> primarySupplier,
+          Function<RegistryObject<P>, S> secondarySupplier, BiFunction<RegistryObject<P>, RegistryObject<S>, W> objectWrapper) {
         RegistryObject<P> primaryObject = primaryRegister.register(name, primarySupplier);
-        return objectWrapper.apply(primaryObject, secondaryRegister.register(name, () -> secondarySupplier.apply(primaryObject.get())));
+        return objectWrapper.apply(primaryObject, secondaryRegister.register(name, () -> secondarySupplier.apply(primaryObject)));
     }
 
     public void register(IEventBus bus) {

@@ -3,8 +3,6 @@ package mekanism.common.registration.impl;
 import javax.annotation.Nonnull;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -31,10 +29,10 @@ public class SetupFeatureRegistryObject<FEATURE_CONFIG extends FeatureConfigurat
 
     @Nonnull
     public Holder<PlacedFeature> getPlacedFeatureHolder() {
-        return BuiltinRegistries.PLACED_FEATURE.getOrCreateHolder(getPlacedFeatureKey());
+        return secondaryRO.getHolder().orElseThrow();
     }
 
     public ResourceKey<PlacedFeature> getPlacedFeatureKey() {
-        return ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, secondaryRO.getId());
+        return secondaryRO.getKey();
     }
 }
