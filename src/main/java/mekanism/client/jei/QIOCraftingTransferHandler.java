@@ -131,7 +131,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         Byte2ObjectMap<TrackedIngredients> hashedIngredients = new Byte2ObjectArrayMap<>(maxInputCount);
         for (int index = 0; index < maxInputCount; index++) {
             IRecipeSlotView slotView = slotViews.get(index);
-            List<ItemStack> validIngredients = slotView.getIngredients(VanillaTypes.ITEM).toList();
+            List<ItemStack> validIngredients = slotView.getIngredients(VanillaTypes.ITEM_STACK).toList();
             if (!validIngredients.isEmpty()) {
                 //If there are valid ingredients, increment the count
                 inputCount++;
@@ -143,7 +143,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 // client the recipe. If this turns out to be incorrect due to how some mod does recipes, then we may need
                 // to change this
                 // Unchecked cast as we only requested views for item types
-                ItemStack displayed = slotView.getDisplayedIngredient(VanillaTypes.ITEM).orElse(ItemStack.EMPTY);
+                ItemStack displayed = slotView.getDisplayedIngredient(VanillaTypes.ITEM_STACK).orElse(ItemStack.EMPTY);
                 //Note: We use raw hashed items as none of this stuff should or will be modified while doing these checks,
                 // so we may as well remove some unneeded copies
                 if (!displayed.isEmpty()) {

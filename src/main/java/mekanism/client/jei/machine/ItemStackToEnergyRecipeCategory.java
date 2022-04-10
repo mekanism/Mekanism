@@ -79,7 +79,7 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     private FloatingLong getOutputEnergy(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotsView) {
-        ItemStack displayedIngredient = getDisplayedStack(recipeSlotsView, INPUT, VanillaTypes.ITEM, ItemStack.EMPTY);
+        ItemStack displayedIngredient = getDisplayedStack(recipeSlotsView, INPUT, VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         if (displayedIngredient.isEmpty()) {
             //Shouldn't happen but if it does just return no energy known so nothing will really show
             return FloatingLong.ZERO;

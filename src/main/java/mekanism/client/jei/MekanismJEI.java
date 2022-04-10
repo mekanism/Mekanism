@@ -209,7 +209,7 @@ public class MekanismJEI implements IModPlugin {
             if (itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent() || itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() ||
                 itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent() || itemStack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent() ||
                 itemStack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent() || FluidUtil.getFluidHandler(itemStack).isPresent()) {
-                registry.registerSubtypeInterpreter(itemProvider.asItem(), MEKANISM_NBT_INTERPRETER);
+                registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, itemProvider.asItem(), MEKANISM_NBT_INTERPRETER);
             }
         }
     }
@@ -331,10 +331,10 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismJEIRecipeType.INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
         RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
-        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidAttributes.BUCKET_VOLUME), ForgeTypes.FLUID,
+        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidAttributes.BUCKET_VOLUME), ForgeTypes.FLUID_STACK,
               MekanismLang.JEI_INFO_HEAVY_WATER.translate(TileEntityElectricPump.HEAVY_WATER_AMOUNT));
         registry.addIngredientInfo(MekanismAPI.moduleRegistry().getValues().stream().map(data -> data.getItemProvider().getItemStack()).toList(),
-              VanillaTypes.ITEM, MekanismLang.JEI_INFO_MODULE_INSTALLATION.translate());
+              VanillaTypes.ITEM_STACK, MekanismLang.JEI_INFO_MODULE_INSTALLATION.translate());
     }
 
     @Override

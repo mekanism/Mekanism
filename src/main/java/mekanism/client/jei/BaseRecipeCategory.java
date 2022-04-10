@@ -51,7 +51,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     protected static IDrawable createIcon(IGuiHelper helper, IItemProvider provider) {
-        return helper.createDrawableIngredient(VanillaTypes.ITEM, provider.getItemStack());
+        return helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, provider.getItemStack());
     }
 
     private final List<GuiTexturedElement> guiElements = new ArrayList<>();
@@ -242,7 +242,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         int width = gauge.getWidth() - 2;
         int height = gauge.getHeight() - 2;
         int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
-        return init(builder, ForgeTypes.FLUID, role, gauge, stacks)
+        return init(builder, ForgeTypes.FLUID_STACK, role, gauge, stacks)
               .setFluidRenderer(max, false, width, height);
     }
 

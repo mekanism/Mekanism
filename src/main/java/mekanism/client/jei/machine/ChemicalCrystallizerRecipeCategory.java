@@ -76,7 +76,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
               .map(ITypedIngredient::getIngredient)
               .filter(ingredient -> ingredient instanceof ChemicalStack)
               .orElse(null);
-        oreInfo.itemIngredient = getDisplayedStack(recipeSlotsView, DISPLAYED_ITEM, VanillaTypes.ITEM, ItemStack.EMPTY);
+        oreInfo.itemIngredient = getDisplayedStack(recipeSlotsView, DISPLAYED_ITEM, VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
         super.draw(recipe, recipeSlotsView, matrixStack, mouseX, mouseY);
         oreInfo.currentRecipe = null;
         oreInfo.ingredient = null;
