@@ -192,7 +192,7 @@ def createReplaceResourcesTask(String output, SourceSet sourceSet) {
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "Mekanism"
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
 
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
@@ -848,6 +848,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addArtifact apiJar
+            addGameVersion "Java ${java_version}"
             addGameVersion "${minecraft_version}"
         }
 
@@ -862,6 +863,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
+            addGameVersion "Java ${java_version}"
             addGameVersion "${minecraft_version}"
         }
 
@@ -876,6 +878,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
+            addGameVersion "Java ${java_version}"
             addGameVersion "${minecraft_version}"
         }*/
 
@@ -890,6 +893,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
+            addGameVersion "Java ${java_version}"
             addGameVersion "${minecraft_version}"
         }
 
@@ -904,6 +908,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
+            addGameVersion "Java ${java_version}"
             addGameVersion "${minecraft_version}"
         }
     }
