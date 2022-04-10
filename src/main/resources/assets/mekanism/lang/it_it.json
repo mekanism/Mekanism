@@ -516,7 +516,7 @@
   "description.mekanism.modification_station": "Un banco da lavoro avanzato in grado di installare e rimuovere moduli da apparecchiature modulari (es. MekaSuit!)",
   "description.mekanism.nutritional_injection_unit": "Automaticamente sfama il giocatore se affamato.",
   "description.mekanism.nutritional_liquifier": "Una macchina in grado di trasformare tutti gli alimenti in pasta nutrizionale non pericolosa e facilmente digeribile.",
-  "description.mekanism.oredictionificator": "Un blocco usato per unificare e trasformare vari oggetti e blocchi usando l'OreDictionary.",
+  "description.mekanism.oredictionificator": "Un blocco usato per unificare e trasformare vari oggetti e blocchi usando i tag oggetti.",
   "description.mekanism.osmium_compressor": "Un macchinario abbastanza avanzato usato per comprimere l'osmio in vari tipi di polvere per creare lingotti.",
   "description.mekanism.osmium_ore": "Un minerale resistente che può essere trovato a quasi tutte le altezze nel mondo. E' conosciuto per avere molti usi nella costruzione di macchinari.",
   "description.mekanism.painting_machine": "Una macchina utilizzata per colorare i blocchi e gli oggetti attraverso un'attenta applicazione di un pigmento immagazzinato.",

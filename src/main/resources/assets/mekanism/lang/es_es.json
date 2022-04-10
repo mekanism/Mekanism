@@ -516,7 +516,6 @@
   "description.mekanism.modification_station": "Una mesa de trabajo avanzada capaz de instalar y eliminar módulos del equipo modular (ej: Traje de Meka!)",
   "description.mekanism.nutritional_injection_unit": "Alimenta automáticamente al jugador Pasta Nutricional cuando tiene hambre.",
   "description.mekanism.nutritional_liquifier": "Una máquina capaz de procesar cualquier alimento en Pasta Nutricional, no peligrosa y fácilmente digerible.",
-  "description.mekanism.oredictionificator": "Una máquina que se usa para unificar y traducir entre varios objetos y bloques usando el Diccionario de Menas.",
   "description.mekanism.osmium_compressor": "Máquina bastante avanzada que se utiliza para comprimir osmio en distintos polvos con el fin de crear sus respectivos lingotes.",
   "description.mekanism.osmium_ore": "Un mineral fuerte que se puede encontrar a casi cualquier altura en el mundo. Se sabe que tiene muchos usos en la construcción de maquinaria.",
   "description.mekanism.painting_machine": "Máquina usada para colorear bloques y objetos mediante una cuidadosa aplicación del pigmento almacenado.",

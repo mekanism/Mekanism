@@ -374,6 +374,7 @@
   "description.mekanism.modification_station": "Pokročilý pracovní stůl schopný instalace a odstranění modulů z modulárního zařízení (tj. MekaSuit!)",
   "description.mekanism.nutritional_injection_unit": "Automaticky krmí hráče Nutriční pastou, když má hlad.",
   "description.mekanism.nutritional_liquifier": "Stroj schopný zpracovat potraviny na bezpečnou, snadno stravitelnou Nutriční pastu.",
+  "description.mekanism.oredictionificator": "Stroj sjednocující různé předměty a bloky pomoci Rudo-Slovníku.",
   "description.mekanism.qio_dashboard": "Umístitelný monitor používaný pro přístup k obsahu systému Kvantového uložení položek .",
   "description.mekanism.qio_drive_array": "Základna systému Kvantového uložení položek. Místo pro uložení KUP disků.",
   "dictionary.mekanism.item": "Položka",
