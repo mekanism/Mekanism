@@ -6,9 +6,11 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.network.to_server.PacketModeChange;
+import mekanism.common.network.to_server.PacketModeChangeCurios;
 import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketOpenGui.GuiType;
 import mekanism.common.registries.MekanismSounds;
@@ -63,9 +65,18 @@ public class MekanismKeyHandler {
 
     private static void handlePotentialModeItem(EquipmentSlot slot) {
         Player player = Minecraft.getInstance().player;
-        if (player != null && IModeItem.isModeItem(player, slot)) {
-            Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
-            SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+        if (player != null) {
+            if (IModeItem.isModeItem(player, slot)) {
+                Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+            } else if (Mekanism.hooks.CuriosLoaded) {
+                CuriosIntegration.findFirstCurioAsResult(player, s -> s.canEquip(slot, player)).ifPresent(result -> {
+                    if (IModeItem.isModeItem(result.stack(), slot)) {
+                        Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(result.slotContext().index(), player.isShiftKeyDown()));
+                        SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+                    }
+                });
+            }
         }
     }
 }

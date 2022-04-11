@@ -15,7 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
-import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.StorageUtils;
@@ -76,7 +76,7 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
                 }
             }
             if (!toCharge.isZero() && Mekanism.hooks.CuriosLoaded) {
-                Optional<? extends IItemHandler> curiosInventory = MekanismHooks.getCuriosInventory(player);
+                Optional<? extends IItemHandler> curiosInventory = CuriosIntegration.getCuriosInventory(player);
                 if (curiosInventory.isPresent()) {
                     IItemHandler handler = curiosInventory.get();
                     for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {

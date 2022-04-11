@@ -28,6 +28,7 @@ import mekanism.common.network.to_server.PacketGuiSetFrequency;
 import mekanism.common.network.to_server.PacketGuiSetFrequencyColor;
 import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.network.to_server.PacketModeChange;
+import mekanism.common.network.to_server.PacketModeChangeCurios;
 import mekanism.common.network.to_server.PacketNewFilter;
 import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
@@ -66,6 +67,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketGuiSetFrequencyColor.class, PacketGuiSetFrequencyColor::decode);
         registerClientToServer(PacketKey.class, PacketKey::decode);
         registerClientToServer(PacketModeChange.class, PacketModeChange::decode);
+        registerClientToServer(PacketModeChangeCurios.class, PacketModeChangeCurios::decode);
         registerClientToServer(PacketNewFilter.class, PacketNewFilter::decode);
         registerClientToServer(PacketOpenGui.class, PacketOpenGui::decode);
         registerClientToServer(PacketPortableTeleporterTeleport.class, PacketPortableTeleporterTeleport::decode);

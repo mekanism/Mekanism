@@ -9,4 +9,8 @@ import net.minecraft.world.item.ItemStack;
 public interface IItemHUDProvider {
 
     void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType);
+
+    default void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
+
+    }
 }

@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -105,18 +106,19 @@ public class CommonPlayerTickHandler {
         }
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        if (isJetpackOn(player, chest)) {
-            JetpackMode mode = getJetpackMode(chest);
+        final ItemStack jetStack = getJetpackIfOn(player);
+        if (!jetStack.isEmpty()) {
+            JetpackMode mode = getJetpackMode(jetStack);
             if (handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
                 player.fallDistance = 0.0F;
                 if (player instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.aboveGroundTickCount = 0;
                 }
             }
-            if (chest.getItem() instanceof ItemJetpack jetpack) {
-                jetpack.useGas(chest, 1);
+            if (jetStack.getItem() instanceof ItemJetpack jetpack) {
+                jetpack.useGas(jetStack, 1);
             } else {
-                ((ItemMekaSuitArmor) chest.getItem()).useGas(chest, MekanismGases.HYDROGEN.get(), 1);
+                ((ItemMekaSuitArmor) jetStack.getItem()).useGas(jetStack, MekanismGases.HYDROGEN.get(), 1);
             }
         }
 
@@ -179,21 +181,22 @@ public class CommonPlayerTickHandler {
         return true;
     }
 
-    private static boolean isJetpackOn(Player player, ItemStack chest) {
+    private static ItemStack getJetpackIfOn(Player player) {
+        final ItemStack chest = ItemJetpack.getJetpack(player);
         if (!chest.isEmpty() && !player.isSpectator()) {
             JetpackMode mode = getJetpackMode(chest);
             if (mode == JetpackMode.NORMAL) {
-                return Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
+                return Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND) ? chest : ItemStack.EMPTY;
             } else if (mode == JetpackMode.HOVER) {
                 boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
                 boolean descending = player.isDescending();
                 if (!ascending || descending) {
-                    return !isOnGroundOrSleeping(player);
+                    return isOnGroundOrSleeping(player) ? ItemStack.EMPTY : chest;
                 }
-                return true;
+                return chest;
             }
         }
-        return false;
+        return ItemStack.EMPTY;
     }
 
     public static boolean isGravitationalModulationReady(Player player) {

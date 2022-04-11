@@ -10,6 +10,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
@@ -180,6 +181,8 @@ public class MekanismTags {
         public static final TagKey<Item> COLORABLE_CONCRETE = tag("colorable/concrete");
         public static final TagKey<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
         public static final TagKey<Item> COLORABLE_BANNERS = tag("colorable/banners");
+
+        public static final TagKey<Item> CURIOS_BODY = ItemTags.create(new ResourceLocation(MekanismHooks.CURIOS_MODID, "body"));
 
         private static TagKey<Item> forgeTag(String name) {
             return ItemTags.create(new ResourceLocation("forge", name));

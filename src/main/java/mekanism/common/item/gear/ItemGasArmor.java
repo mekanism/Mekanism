@@ -13,6 +13,7 @@ import mekanism.common.integration.gender.GenderCapabilityHelper;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
