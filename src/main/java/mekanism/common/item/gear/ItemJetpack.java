@@ -32,7 +32,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -82,7 +81,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
-        if (Screen.hasShiftDown() && Mekanism.hooks.CuriosLoaded && !ForgeRegistries.ITEMS.tags().getTag(MekanismTags.Items.CURIOS_BODY).contains(this)) {
+        if (flag.isAdvanced() && Mekanism.hooks.CuriosLoaded && !ForgeRegistries.ITEMS.tags().getTag(MekanismTags.Items.CURIOS_BODY).contains(this)) {
             tooltip.add(MekanismLang.CURIO_NOT_USABLE.translateColored(EnumColor.DARK_GRAY));
         }
     }
