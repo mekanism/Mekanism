@@ -1357,6 +1357,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "Temp: %1$s",
   "tooltip.mekanism.bucket_mode": "Bucket Mode: %1$s",
+  "tooltip.mekanism.curio_not_usable": "This item is usable as a curio, but it has not been added to a Curios tag",
   "tooltip.mekanism.decay_immune": "Will not decay inside a Radioactive Waste Barrel",
   "tooltip.mekanism.fire_mode": "Fire Mode: %1$s",
   "tooltip.mekanism.flowing": "Flowing: %1$s",
