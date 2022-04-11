@@ -4,6 +4,7 @@ import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
@@ -39,12 +40,12 @@ public final class MekanismHooks {
     public boolean TOPLoaded;
     public boolean WildfireGenderModLoaded;
 
-    public void hookConstructor() {
+    public void hookConstructor(final IEventBus bus) {
         ModList modList = ModList.get();
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
         CuriosLoaded = modList.isLoaded(CURIOS_MODID);
         if (CuriosLoaded) {
-            CuriosIntegration.addListeners(FMLJavaModLoadingContext.get().getModEventBus());
+            CuriosIntegration.addListeners(bus);
         }
     }
 

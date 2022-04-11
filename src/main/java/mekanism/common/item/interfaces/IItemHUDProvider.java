@@ -10,7 +10,5 @@ public interface IItemHUDProvider {
 
     void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType);
 
-    default void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
-
-    }
+    default void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {}
 }

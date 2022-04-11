@@ -20,6 +20,7 @@ import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
@@ -106,7 +107,7 @@ public class CommonPlayerTickHandler {
         }
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        final ItemStack jetStack = getJetpackIfOn(player);
+        final ItemStack jetStack = getJetpackIfOn(chest, player);
         if (!jetStack.isEmpty()) {
             JetpackMode mode = getJetpackMode(jetStack);
             if (handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
@@ -181,8 +182,10 @@ public class CommonPlayerTickHandler {
         return true;
     }
 
-    private static ItemStack getJetpackIfOn(Player player) {
-        final ItemStack chest = ItemJetpack.getJetpack(player);
+    private static ItemStack getJetpackIfOn(ItemStack chest, Player player) {
+        if (chest.isEmpty() && Mekanism.hooks.CuriosLoaded) {
+            chest = CuriosIntegration.findFirstCurio(player, s -> s.getItem() instanceof ItemJetpack).orElse(ItemStack.EMPTY);
+        }
         if (!chest.isEmpty() && !player.isSpectator()) {
             JetpackMode mode = getJetpackMode(chest);
             if (mode == JetpackMode.NORMAL) {

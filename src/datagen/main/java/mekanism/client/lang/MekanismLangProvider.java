@@ -667,7 +667,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %1$s");
         add(MekanismLang.DECAY_IMMUNE, "Will not decay inside a Radioactive Waste Barrel");
         add(MekanismLang.CURIO_NOT_USABLE, "This item is usable as a curio, but it has not been added to a Curios tag");
-		//Gui stuff
+        //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");
         add(MekanismLang.CRAFTING_TAB, "Crafting (%1$s/%2$s)");

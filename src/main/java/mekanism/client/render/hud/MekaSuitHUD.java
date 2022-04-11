@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import mekanism.client.MekanismClient;
 import mekanism.client.render.HUDRenderer;
@@ -34,17 +35,11 @@ public class MekaSuitHUD implements IIngameOverlay {
         Minecraft minecraft = Minecraft.getInstance();
         if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
             int count = 0;
-            final List<List<Component>> renderStrings = new LinkedList<>();
+            final List<List<Component>> renderStrings = new ArrayList<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {
-                ItemStack stack = minecraft.player.getItemBySlot(slotType);
+                final ItemStack stack = minecraft.player.getItemBySlot(slotType);
                 if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
-                    List<Component> list = new ArrayList<>();
-                    hudProvider.addHUDStrings(list, minecraft.player, stack, slotType);
-                    int size = list.size();
-                    if (size > 0) {
-                        renderStrings.add(list);
-                        count += size;
-                    }
+                    count += makeComponent(list -> hudProvider.addHUDStrings(list, minecraft.player, stack, slotType), renderStrings);
                 }
             }
             if (Mekanism.hooks.CuriosLoaded) {
@@ -52,15 +47,9 @@ public class MekaSuitHUD implements IIngameOverlay {
                 if (invOptional.isPresent()) { // Can't use ifPresent due to count not being final
                     final IItemHandler inv = invOptional.get();
                     for (int i = 0; i < inv.getSlots(); i++) {
-                        ItemStack stack = inv.getStackInSlot(i);
+                        final ItemStack stack = inv.getStackInSlot(i);
                         if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
-                            List<Component> list = new ArrayList<>();
-                            hudProvider.addCurioHUDStrings(list, minecraft.player, stack);
-                            int size = list.size();
-                            if (size > 0) {
-                                renderStrings.add(list);
-                                count += size;
-                            }
+                            count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, minecraft.player, stack), renderStrings);
                         }
                     }
                 }
@@ -87,6 +76,17 @@ public class MekaSuitHUD implements IIngameOverlay {
         }
     }
 
+    private int makeComponent(Consumer<List<Component>> adder, List<List<Component>> initial) {
+        List<Component> list = new ArrayList<>();
+        adder.accept(list);
+        int size = list.size();
+        if (size > 0) {
+            initial.add(list);
+            return size;
+        }
+        return 0;
+    }
+
     private void drawString(Font font, int windowWidth, PoseStack matrix, Component text, boolean leftSide, int y, int color) {
         // Note that we always offset by 2 pixels when left or right aligned
         if (leftSide) {
@@ -96,4 +96,5 @@ public class MekaSuitHUD implements IIngameOverlay {
             font.drawShadow(matrix, text, windowWidth - width, y, color);
         }
     }
+
 }

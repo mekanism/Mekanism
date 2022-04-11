@@ -21,26 +21,26 @@ import java.util.function.Predicate;
 
 public class CuriosIntegration {
 
-	public static void sendIMC() {
-		InterModComms.sendTo(MekanismHooks.CURIOS_MODID, "register_type", () -> SlotTypePreset.BODY.getMessageBuilder().build());
-	}
+    public static void sendIMC() {
+        InterModComms.sendTo(MekanismHooks.CURIOS_MODID, "register_type", () -> SlotTypePreset.BODY.getMessageBuilder().build());
+    }
 
-	public static void addListeners(final IEventBus bus) {
-		bus.addListener((FMLClientSetupEvent event) -> {
-			CuriosRendererRegistry.register(MekanismItems.JETPACK.asItem(), () -> new MekanismCurioRenderer(JetpackArmor.JETPACK));
-			CuriosRendererRegistry.register(MekanismItems.ARMORED_JETPACK.asItem(), () -> new MekanismCurioRenderer(JetpackArmor.ARMORED_JETPACK));
-		});
-	}
+    public static void addListeners(final IEventBus bus) {
+        bus.addListener((FMLClientSetupEvent event) -> {
+            CuriosRendererRegistry.register(MekanismItems.JETPACK.asItem(), () -> new MekanismCurioRenderer(JetpackArmor.JETPACK));
+            CuriosRendererRegistry.register(MekanismItems.ARMORED_JETPACK.asItem(), () -> new MekanismCurioRenderer(JetpackArmor.ARMORED_JETPACK));
+        });
+    }
 
-	public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity living) {
-		return CuriosApi.getCuriosHelper().getEquippedCurios(living).resolve();
-	}
+    public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity living) {
+        return CuriosApi.getCuriosHelper().getEquippedCurios(living).resolve();
+    }
 
-	public static Optional<ItemStack> findFirstCurio(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
-		return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, filter).map(SlotResult::stack);
-	}
+    public static Optional<ItemStack> findFirstCurio(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
+        return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, filter).map(SlotResult::stack);
+    }
 
-	public static Optional<SlotResult> findFirstCurioAsResult(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
-		return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, filter);
-	}
+    public static Optional<SlotResult> findFirstCurioAsResult(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
+        return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, filter);
+    }
 }

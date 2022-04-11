@@ -48,164 +48,164 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
-	private static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
+    private static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
-	public ItemJetpack(Properties properties) {
-		this(JETPACK_MATERIAL, properties);
-	}
+    public ItemJetpack(Properties properties) {
+        this(JETPACK_MATERIAL, properties);
+    }
 
-	public ItemJetpack(ArmorMaterial material, Properties properties) {
-		super(material, EquipmentSlot.CHEST, properties.setNoRepair());
-	}
+    public ItemJetpack(ArmorMaterial material, Properties properties) {
+        super(material, EquipmentSlot.CHEST, properties.setNoRepair());
+    }
 
-	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-		consumer.accept(RenderPropertiesProvider.jetpack());
-	}
+    @Override
+    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(RenderPropertiesProvider.jetpack());
+    }
 
-	@Override
-	protected LongSupplier getMaxGas() {
-		return MekanismConfig.gear.jetpackMaxGas;
-	}
+    @Override
+    protected LongSupplier getMaxGas() {
+        return MekanismConfig.gear.jetpackMaxGas;
+    }
 
-	@Override
-	protected LongSupplier getFillRate() {
-		return MekanismConfig.gear.jetpackFillRate;
-	}
+    @Override
+    protected LongSupplier getFillRate() {
+        return MekanismConfig.gear.jetpackFillRate;
+    }
 
-	@Override
-	protected IGasProvider getGasType() {
-		return MekanismGases.HYDROGEN;
-	}
+    @Override
+    protected IGasProvider getGasType() {
+        return MekanismGases.HYDROGEN;
+    }
 
-	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-		super.appendHoverText(stack, world, tooltip, flag);
-		tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
-		if (Screen.hasShiftDown() && Mekanism.hooks.CuriosLoaded && !ForgeRegistries.ITEMS.tags().getTag(MekanismTags.Items.CURIOS_BODY).contains(this)) {
-			tooltip.add(MekanismLang.CURIO_NOT_USABLE.translateColored(EnumColor.DARK_GRAY));
-		}
-	}
+    @Override
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
+        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
+        if (Screen.hasShiftDown() && Mekanism.hooks.CuriosLoaded && !ForgeRegistries.ITEMS.tags().getTag(MekanismTags.Items.CURIOS_BODY).contains(this)) {
+            tooltip.add(MekanismLang.CURIO_NOT_USABLE.translateColored(EnumColor.DARK_GRAY));
+        }
+    }
 
-	public JetpackMode getMode(ItemStack stack) {
-		return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
-	}
+    public JetpackMode getMode(ItemStack stack) {
+        return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
+    }
 
-	public void setMode(ItemStack stack, JetpackMode mode) {
-		ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
-	}
+    public void setMode(ItemStack stack, JetpackMode mode) {
+        ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
+    }
 
-	@Override
-	public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-		if (slotType == getSlot()) {
-			addHUD(list, stack);
-		}
-	}
+    @Override
+    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
+        if (slotType == getSlot()) {
+            addHUD(list, stack);
+        }
+    }
 
-	@Override
-	public void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
-		addHUD(list, stack);
-	}
+    @Override
+    public void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
+        addHUD(list, stack);
+    }
 
-	private void addHUD(List<Component> list, ItemStack stack) {
-		final ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-		list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
-		GasStack stored = GasStack.EMPTY;
-		final Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
-		if (capability.isPresent()) {
-			final IGasHandler gasHandlerItem = capability.get();
-			if (gasHandlerItem.getTanks() > 0) {
-				stored = gasHandlerItem.getChemicalInTank(0);
-			}
-		}
-		list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
-	}
+    private void addHUD(List<Component> list, ItemStack stack) {
+        final ItemJetpack jetpack = (ItemJetpack) stack.getItem();
+        list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
+        GasStack stored = GasStack.EMPTY;
+        final Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+        if (capability.isPresent()) {
+            final IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem.getTanks() > 0) {
+                stored = gasHandlerItem.getChemicalInTank(0);
+            }
+        }
+        list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
+    }
 
-	@Override
-	public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-		JetpackMode mode = getMode(stack);
-		JetpackMode newMode = mode.adjust(shift);
-		if (mode != newMode) {
-			setMode(stack, newMode);
-			if (displayChangeMessage) {
-				player.sendMessage(MekanismUtils.logFormat(MekanismLang.JETPACK_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
-			}
-		}
-	}
+    @Override
+    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        JetpackMode mode = getMode(stack);
+        JetpackMode newMode = mode.adjust(shift);
+        if (mode != newMode) {
+            setMode(stack, newMode);
+            if (displayChangeMessage) {
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.JETPACK_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
+            }
+        }
+    }
 
-	@Override
-	public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlot slotType) {
-		return slotType == getSlot();
-	}
+    @Override
+    public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlot slotType) {
+        return slotType == getSlot();
+    }
 
-	@Override
-	public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
-		if (!(this instanceof ItemArmoredJetpack)) {
-			return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
-		}
-		return super.getDefaultTooltipHideFlags(stack);
-	}
+    @Override
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        if (!(this instanceof ItemArmoredJetpack)) {
+            return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
+        }
+        return super.getDefaultTooltipHideFlags(stack);
+    }
 
-	/**
-	 * Gets the first found jetpack from an entity, if one is worn. <br>
-	 * If Curios is loaded, the curio slots will be checked as well.
-	 *
-	 * @param entity the entity on which to look for the jetpack
-	 * @return the jetpack stack if present, otherwise an empty stack
-	 */
-	@Nonnull
-	public static ItemStack getJetpack(final LivingEntity entity) {
-		final ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-		if (chest.getItem() instanceof ItemJetpack) return chest;
-		if (Mekanism.hooks.CuriosLoaded) {
-			return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof ItemJetpack).orElse(ItemStack.EMPTY);
-		}
-		return ItemStack.EMPTY;
-	}
+    /**
+     * Gets the first found jetpack from an entity, if one is worn. <br>
+     * If Curios is loaded, the curio slots will be checked as well.
+     *
+     * @param entity the entity on which to look for the jetpack
+     * @return the jetpack stack if present, otherwise an empty stack
+     */
+    @Nonnull
+    public static ItemStack getJetpack(final LivingEntity entity) {
+        final ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+        if (chest.getItem() instanceof ItemJetpack) return chest;
+        if (Mekanism.hooks.CuriosLoaded) {
+            return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof ItemJetpack).orElse(ItemStack.EMPTY);
+        }
+        return ItemStack.EMPTY;
+    }
 
-	public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
-		NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
-		HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_hover.png")),
-		DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_off.png"));
+    public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
+        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
+        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_hover.png")),
+        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_off.png"));
 
-		private static final JetpackMode[] MODES = values();
-		private final ILangEntry langEntry;
-		private final EnumColor color;
-		private final ResourceLocation hudIcon;
+        private static final JetpackMode[] MODES = values();
+        private final ILangEntry langEntry;
+        private final EnumColor color;
+        private final ResourceLocation hudIcon;
 
-		JetpackMode(ILangEntry langEntry, EnumColor color, ResourceLocation hudIcon) {
-			this.langEntry = langEntry;
-			this.color = color;
-			this.hudIcon = hudIcon;
-		}
+        JetpackMode(ILangEntry langEntry, EnumColor color, ResourceLocation hudIcon) {
+            this.langEntry = langEntry;
+            this.color = color;
+            this.hudIcon = hudIcon;
+        }
 
-		@Override
-		public Component getTextComponent() {
-			return langEntry.translateColored(color);
-		}
+        @Override
+        public Component getTextComponent() {
+            return langEntry.translateColored(color);
+        }
 
-		@Nonnull
-		@Override
-		public JetpackMode byIndex(int index) {
-			return byIndexStatic(index);
-		}
+        @Nonnull
+        @Override
+        public JetpackMode byIndex(int index) {
+            return byIndexStatic(index);
+        }
 
-		public ResourceLocation getHUDIcon() {
-			return hudIcon;
-		}
+        public ResourceLocation getHUDIcon() {
+            return hudIcon;
+        }
 
-		public static JetpackMode byIndexStatic(int index) {
-			return MathUtils.getByIndexMod(MODES, index);
-		}
-	}
+        public static JetpackMode byIndexStatic(int index) {
+            return MathUtils.getByIndexMod(MODES, index);
+        }
+    }
 
-	@ParametersAreNonnullByDefault
-	@MethodsReturnNonnullByDefault
-	protected static class JetpackMaterial extends BaseSpecialArmorMaterial {
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    protected static class JetpackMaterial extends BaseSpecialArmorMaterial {
 
-		@Override
-		public String getName() {
-			return Mekanism.MODID + ":jetpack";
-		}
-	}
+        @Override
+        public String getName() {
+            return Mekanism.MODID + ":jetpack";
+        }
+    }
 }
