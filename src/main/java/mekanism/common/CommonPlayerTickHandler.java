@@ -1,7 +1,5 @@
 package mekanism.common;
 
-import java.util.Comparator;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -21,7 +19,6 @@ import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
-import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
@@ -49,7 +46,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import top.theillusivec4.curios.api.SlotResult;
 
 public class CommonPlayerTickHandler {
 
@@ -186,7 +182,7 @@ public class CommonPlayerTickHandler {
 
     private static ItemStack getJetpackIfOn(Player player, ItemStack chest) {
         if (chest.isEmpty() && Mekanism.hooks.CuriosLoaded) {
-            chest = ItemJetpack.findMostFullCurioJetpack(player);
+            chest = ItemJetpack.findNonEmptyJetpack(player);
         }
         if (!chest.isEmpty() && !player.isSpectator()) {
             JetpackMode mode = getJetpackMode(chest);

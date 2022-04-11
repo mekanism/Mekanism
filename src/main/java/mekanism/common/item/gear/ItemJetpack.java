@@ -155,15 +155,15 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
         final ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
         if (chest.getItem() instanceof ItemJetpack) return chest;
         if (Mekanism.hooks.CuriosLoaded) {
-            return findMostFullCurioJetpack(entity);
+            return findNonEmptyJetpack(entity);
         }
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack findMostFullCurioJetpack(final LivingEntity entity) {
-        return CuriosIntegration.findCurio(entity, s -> s.getItem() instanceof ItemJetpack)
+    public static ItemStack findNonEmptyJetpack(final LivingEntity entity) {
+        return CuriosIntegration.findCurio(entity, s -> s.getItem() instanceof ItemJetpack jetpackItem && !jetpackItem.getGas(s).isEmpty())
                 .stream()
-                .max(Comparator.comparingLong(s -> ((ItemJetpack) s.stack().getItem()).getGas(s.stack()).getAmount()))
+                .findFirst()
                 .map(SlotResult::stack)
                 .orElse(ItemStack.EMPTY);
     }
