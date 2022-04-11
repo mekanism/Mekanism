@@ -86,7 +86,7 @@ public class ClientTickHandler {
             return Mekanism.playerState.isJetpackOn(player);
         }
         if (!player.isSpectator()) {
-            final var chest = ItemJetpack.getJetpack(player);
+            final ItemStack chest = ItemJetpack.getJetpack(player);
             if (!chest.isEmpty()) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
@@ -208,7 +208,7 @@ public class ClientTickHandler {
             ItemStack chestStack = minecraft.player.getItemBySlot(EquipmentSlot.CHEST);
             IModule<ModuleJetpackUnit> jetpackModule = MekanismAPI.getModuleHelper().load(chestStack, MekanismModules.JETPACK_UNIT);
 
-            final var jetpack = ItemJetpack.getJetpack(minecraft.player);
+            final ItemStack jetpack = ItemJetpack.getJetpack(minecraft.player);
             if (!jetpack.isEmpty() || jetpackModule != null) {
                 MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
             }

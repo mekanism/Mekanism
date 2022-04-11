@@ -2,7 +2,6 @@ package mekanism.client.render.hud;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -61,8 +60,8 @@ public class MekaSuitHUD implements IIngameOverlay {
                 int yScale = (int) ((1 / hudScale) * height);
                 poseStack.pushPose();
                 poseStack.scale(hudScale, hudScale, hudScale);
-                for (List<Component> entry : renderStrings) {
-                    for (Component text : entry) {
+                for (final List<Component> group : renderStrings) {
+                    for (final Component text : group) {
                         drawString(minecraft.font, width, poseStack, text, alignLeft, yScale - start, 0xC8C8C8);
                         start -= 9;
                     }
@@ -82,9 +81,8 @@ public class MekaSuitHUD implements IIngameOverlay {
         int size = list.size();
         if (size > 0) {
             initial.add(list);
-            return size;
         }
-        return 0;
+        return size;
     }
 
     private void drawString(Font font, int windowWidth, PoseStack matrix, Component text, boolean leftSide, int y, int color) {
@@ -96,5 +94,4 @@ public class MekaSuitHUD implements IIngameOverlay {
             font.drawShadow(matrix, text, windowWidth - width, y, color);
         }
     }
-
 }

@@ -107,7 +107,7 @@ public class CommonPlayerTickHandler {
         }
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        final ItemStack jetStack = getJetpackIfOn(chest, player);
+        final ItemStack jetStack = getJetpackIfOn(player, chest);
         if (!jetStack.isEmpty()) {
             JetpackMode mode = getJetpackMode(jetStack);
             if (handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
@@ -182,7 +182,7 @@ public class CommonPlayerTickHandler {
         return true;
     }
 
-    private static ItemStack getJetpackIfOn(ItemStack chest, Player player) {
+    private static ItemStack getJetpackIfOn(Player player, ItemStack chest) {
         if (chest.isEmpty() && Mekanism.hooks.CuriosLoaded) {
             chest = CuriosIntegration.findFirstCurio(player, s -> s.getItem() instanceof ItemJetpack).orElse(ItemStack.EMPTY);
         }

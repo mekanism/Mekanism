@@ -148,7 +148,7 @@ ext {
     versionProperties = ["version"           : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version"    : loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
                          "wildfire_gender_version": wildfire_gender_version_range,
-                        "curios_version": "${minecraft_version}-${curios_version}"]
+                         "curios_version": curios_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
@@ -423,8 +423,8 @@ dependencies {
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     //TODO - 1.18: Support flux networks again when it ports
     //compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
+    // runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
     def cc = fg.deobf("curse.maven:cc-tweaked-282001:${cc_tweaked_id}")
     compileOnly cc

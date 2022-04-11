@@ -98,27 +98,23 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         if (slotType == getSlot()) {
-            addHUD(list, stack);
+            final ItemJetpack jetpack = (ItemJetpack) stack.getItem();
+            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
+            GasStack stored = GasStack.EMPTY;
+            final Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+            if (capability.isPresent()) {
+                final IGasHandler gasHandlerItem = capability.get();
+                if (gasHandlerItem.getTanks() > 0) {
+                    stored = gasHandlerItem.getChemicalInTank(0);
+                }
+            }
+            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
         }
     }
 
     @Override
     public void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
-        addHUD(list, stack);
-    }
-
-    private void addHUD(List<Component> list, ItemStack stack) {
-        final ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-        list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
-        GasStack stored = GasStack.EMPTY;
-        final Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
-        if (capability.isPresent()) {
-            final IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem.getTanks() > 0) {
-                stored = gasHandlerItem.getChemicalInTank(0);
-            }
-        }
-        list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
+        addHUDStrings(list, player, stack, getSlot());
     }
 
     @Override
