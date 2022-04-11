@@ -163,7 +163,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     public static ItemStack findMostFullCurioJetpack(final LivingEntity entity) {
         return CuriosIntegration.findCurio(entity, s -> s.getItem() instanceof ItemJetpack)
                 .stream()
-                .min(Comparator.comparingLong(s -> ((ItemJetpack) s.stack().getItem()).getGas(s.stack()).getAmount()))
+                .max(Comparator.comparingLong(s -> ((ItemJetpack) s.stack().getItem()).getGas(s.stack()).getAmount()))
                 .map(SlotResult::stack)
                 .orElse(ItemStack.EMPTY);
     }

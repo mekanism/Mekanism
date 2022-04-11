@@ -77,7 +77,7 @@ public class MekanismKeyHandler {
                 CuriosIntegration.findCurio(player, s -> s.canEquip(slot, player))
                         .stream()
                         .filter(r -> IModeItem.isModeItem(r.stack(), slot))
-                        .min((a, b) -> {
+                        .max((a, b) -> {
                             final ItemStack stackA = a.stack();
                             final ItemStack stackB = b.stack();
                             if (stackA.getItem() instanceof IGasItem gasA && stackB.getItem() instanceof IGasItem gasB) {
