@@ -182,7 +182,8 @@ public class MekanismTags {
         public static final TagKey<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
         public static final TagKey<Item> COLORABLE_BANNERS = tag("colorable/banners");
 
-        public static final TagKey<Item> CURIOS_BODY = ItemTags.create(new ResourceLocation(MekanismHooks.CURIOS_MODID, "body"));
+        public static final TagKey<Item> CURIOS_BODY = other(MekanismHooks.CURIOS_MODID, "body");
+        public static final TagKey<Item> CURIOS_BACK = other(MekanismHooks.CURIOS_MODID, "back");
 
         private static TagKey<Item> forgeTag(String name) {
             return ItemTags.create(new ResourceLocation("forge", name));
@@ -190,6 +191,10 @@ public class MekanismTags {
 
         private static TagKey<Item> tag(String name) {
             return ItemTags.create(Mekanism.rl(name));
+        }
+
+        private static TagKey<Item> other(String namespace, String name) {
+            return ItemTags.create(new ResourceLocation(namespace, namespace));
         }
     }
 
