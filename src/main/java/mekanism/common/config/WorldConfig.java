@@ -94,7 +94,7 @@ public class WorldConfig extends BaseMekanismConfig {
                             .defineInRange("perChunk", baseConfig.perChunk(), 1, 256)),
                       CachedIntValue.wrap(config, builder.comment("Maximum number of blocks in a " + veinType + ".")
                             .defineInRange("maxVeinSize", baseConfig.maxVeinSize(), 1, 64)),
-                      CachedFloatValue.wrap(config, builder.comment("Maximum number of blocks in a " + veinType + ".")
+                      CachedFloatValue.wrap(config, builder.comment("Chance that blocks that are directly exposed to air in a " + veinType + " are not placed.")
                             .defineInRange("discardChanceOnAirExposure", baseConfig.discardChanceOnAirExposure(), 0, 1)),
                       ConfigurableHeightRange.create(config, builder, veinType, baseConfig)
                 ));
