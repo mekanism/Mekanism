@@ -8,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
+import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketModeChangeCurios;
@@ -18,8 +19,11 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Comparator;
 
 public class MekanismKeyHandler {
 
@@ -70,12 +74,21 @@ public class MekanismKeyHandler {
                 Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             } else if (Mekanism.hooks.CuriosLoaded) {
-                CuriosIntegration.findFirstCurioAsResult(player, s -> s.canEquip(slot, player)).ifPresent(result -> {
-                    if (IModeItem.isModeItem(result.stack(), slot)) {
-                        Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(result.slotContext().index(), player.isShiftKeyDown()));
-                        SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-                    }
-                });
+                CuriosIntegration.findCurio(player, s -> s.canEquip(slot, player))
+                        .stream()
+                        .filter(r -> IModeItem.isModeItem(r.stack(), slot))
+                        .min((a, b) -> {
+                            final ItemStack stackA = a.stack();
+                            final ItemStack stackB = b.stack();
+                            if (stackA.getItem() instanceof IGasItem gasA && stackB.getItem() instanceof IGasItem gasB) {
+                                return Comparator.<Long>naturalOrder().compare(gasA.getGas(stackA).getAmount(), gasB.getGas(stackB).getAmount());
+                            }
+                            return 0;
+                        })
+                        .ifPresent(result -> {
+                            Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(result.slotContext().index(), player.isShiftKeyDown()));
+                            SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+                        });
             }
         }
     }

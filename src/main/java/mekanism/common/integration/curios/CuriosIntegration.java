@@ -16,6 +16,7 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -42,5 +43,9 @@ public class CuriosIntegration {
 
     public static Optional<SlotResult> findFirstCurioAsResult(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
         return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, filter);
+    }
+
+    public static List<SlotResult> findCurio(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
+        return CuriosApi.getCuriosHelper().findCurios(livingEntity, filter);
     }
 }

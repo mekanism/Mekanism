@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
@@ -48,6 +49,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import top.theillusivec4.curios.api.SlotResult;
 
 public class CommonPlayerTickHandler {
 
@@ -184,7 +186,7 @@ public class CommonPlayerTickHandler {
 
     private static ItemStack getJetpackIfOn(Player player, ItemStack chest) {
         if (chest.isEmpty() && Mekanism.hooks.CuriosLoaded) {
-            chest = CuriosIntegration.findFirstCurio(player, s -> s.getItem() instanceof ItemJetpack).orElse(ItemStack.EMPTY);
+            chest = ItemJetpack.findMostFullCurioJetpack(player);
         }
         if (!chest.isEmpty() && !player.isSpectator()) {
             JetpackMode mode = getJetpackMode(chest);

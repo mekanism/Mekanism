@@ -1,5 +1,6 @@
 package mekanism.common.item.gear;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -44,6 +45,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.registries.ForgeRegistries;
+import top.theillusivec4.curios.api.SlotResult;
 
 public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
@@ -153,9 +155,17 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
         final ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
         if (chest.getItem() instanceof ItemJetpack) return chest;
         if (Mekanism.hooks.CuriosLoaded) {
-            return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof ItemJetpack).orElse(ItemStack.EMPTY);
+            return findMostFullCurioJetpack(entity);
         }
         return ItemStack.EMPTY;
+    }
+
+    public static ItemStack findMostFullCurioJetpack(final LivingEntity entity) {
+        return CuriosIntegration.findCurio(entity, s -> s.getItem() instanceof ItemJetpack)
+                .stream()
+                .min(Comparator.comparingLong(s -> ((ItemJetpack) s.stack().getItem()).getGas(s.stack()).getAmount()))
+                .map(SlotResult::stack)
+                .orElse(ItemStack.EMPTY);
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {

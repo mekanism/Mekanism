@@ -30,4 +30,16 @@ public interface IGasItem {
         }
         return GasStack.EMPTY;
     }
+
+    @Nonnull
+    default GasStack getGas(ItemStack stack) {
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem instanceof IMekanismGasHandler gasHandler) {
+                return gasHandler.getChemicalTank(0, null).getStack();
+            }
+        }
+        return GasStack.EMPTY;
+    }
 }
