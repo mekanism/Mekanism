@@ -1,1 +1,19 @@
-{}
+{
+  "entity.mekanismadditions.balloon": "Balons",
+  "item.mekanismadditions.black_balloon": "Melns Balons",
+  "item.mekanismadditions.blue_balloon": "Zils Balons",
+  "item.mekanismadditions.brown_balloon": "Brūns Balons",
+  "item.mekanismadditions.cyan_balloon": "Ciāns Balons",
+  "item.mekanismadditions.dark_red_balloon": "Tumši Sarkans Balons",
+  "item.mekanismadditions.gray_balloon": "Pelēks Balons",
+  "item.mekanismadditions.green_balloon": "Zaļš Balons",
+  "item.mekanismadditions.light_blue_balloon": "Gaiši Zils Balons",
+  "item.mekanismadditions.light_gray_balloon": "Gaiši Pelēks Balons",
+  "item.mekanismadditions.orange_balloon": "Oranžs Balons",
+  "item.mekanismadditions.pink_balloon": "Rozā Balons",
+  "item.mekanismadditions.purple_balloon": "Violets Balons",
+  "item.mekanismadditions.red_balloon": "Sarkans Balons",
+  "item.mekanismadditions.walkie_talkie": "Rācija",
+  "item.mekanismadditions.white_balloon": "Balts Balons",
+  "item.mekanismadditions.yellow_balloon": "Dzeltens Balons"
+}
