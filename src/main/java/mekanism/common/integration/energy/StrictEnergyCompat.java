@@ -21,13 +21,8 @@ public class StrictEnergyCompat implements IEnergyCompat {
 
     @Nonnull
     @Override
-    public Capability<?> getCapability() {
+    public Capability<IStrictEnergyHandler> getCapability() {
         return Capabilities.STRICT_ENERGY_CAPABILITY;
-    }
-
-    @Override
-    public boolean isCapabilityPresent(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, Capabilities.STRICT_ENERGY_CAPABILITY, side).isPresent();
     }
 
     @Nonnull
@@ -39,6 +34,6 @@ public class StrictEnergyCompat implements IEnergyCompat {
     @Nonnull
     @Override
     public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, Capabilities.STRICT_ENERGY_CAPABILITY, side);
+        return CapabilityUtils.getCapability(provider, getCapability(), side);
     }
 }

@@ -84,7 +84,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
     @Override
     public void addHUDStrings(IModule<ModuleVeinMiningUnit> module, Player player, Consumer<Component> hudStringAdder) {
         //Only add hud string for extended vein mining if enabled in config
-        if (module.isEnabled() && MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
+        if (module.isEnabled() && MekanismConfig.gear.mekaToolExtendedMining.get()) {
             hudStringAdder.accept(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
                   isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
                   isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER));

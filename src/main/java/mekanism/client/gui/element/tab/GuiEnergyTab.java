@@ -5,10 +5,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.client.gui.IGuiWrapper;
@@ -17,14 +18,14 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.UnitDisplayUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiEnergyTab extends GuiBiDirectionalTab {
 
-    private static final Map<EnergyType, ResourceLocation> ICONS = new EnumMap<>(EnergyType.class);
+    private static final Map<EnergyUnit, ResourceLocation> ICONS = new EnumMap<>(EnergyUnit.class);
     private final IInfoHandler infoHandler;
 
     public GuiEnergyTab(IGuiWrapper gui, IInfoHandler handler) {
@@ -65,23 +66,32 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         List<Component> info = new ArrayList<>(infoHandler.getInfo());
-        info.add(MekanismLang.UNIT.translate(MekanismConfig.general.energyUnit.get()));
+        info.add(MekanismLang.UNIT.translate(EnergyUnit.getConfigured()));
         displayTooltips(matrix, mouseX, mouseY, info);
     }
 
     @Override
     protected ResourceLocation getResource() {
-        return ICONS.computeIfAbsent(MekanismConfig.general.energyUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
-              "energy_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
+        return ICONS.computeIfAbsent(EnergyUnit.getConfigured(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
+              "energy_info_" + type.getTabName() + ".png"));
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getNext());
+        updateEnergyUnit(IIncrementalEnum::getNext);
     }
 
     @Override
     protected void onRightClick(double mouseX, double mouseY) {
-        MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getPrevious());
+        updateEnergyUnit(IIncrementalEnum::getPrevious);
+    }
+
+    private void updateEnergyUnit(UnaryOperator<EnergyUnit> converter) {
+        EnergyUnit current = EnergyUnit.getConfigured();
+        EnergyUnit updated = converter.apply(current);
+        if (current != updated) {//May be equal if all other energy types are disabled
+            MekanismConfig.common.energyUnit.set(updated);
+            MekanismConfig.common.save();
+        }
     }
 }

@@ -1,13 +1,12 @@
 package mekanism.common.integration.computer;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 
 public class ComputerEnergyHelper {
 
@@ -21,33 +20,30 @@ public class ComputerEnergyHelper {
 
     @ComputerMethod
     private static FloatingLong joulesToFE(FloatingLong joules) throws ComputerException {
-        if (MekanismConfig.general.blacklistForge.get()) {
-            throw new ComputerException("Conversion between Joules and Forge Energy is disabled in Mekanism's config.");
-        }
-        return EnergyType.FORGE.convertToAsFloatingLong(joules);
+        return convert(EnergyUnit.FORGE_ENERGY, joules, true);
     }
 
     @ComputerMethod
     private static FloatingLong feToJoules(FloatingLong fe) throws ComputerException {
-        if (MekanismConfig.general.blacklistForge.get()) {
-            throw new ComputerException("Conversion between Forge Energy and Joules is disabled in Mekanism's config.");
-        }
-        return EnergyType.FORGE.convertFrom(fe);
+        return convert(EnergyUnit.FORGE_ENERGY, fe, false);
     }
 
     @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID)
     private static FloatingLong joulesToEU(FloatingLong joules) throws ComputerException {
-        if (!EnergyCompatUtils.useIC2()) {
-            throw new ComputerException("Conversion between Joules and Electrical Units is either disabled in Mekanism's config.");
-        }
-        return EnergyType.EU.convertToAsFloatingLong(joules);
+        return convert(EnergyUnit.ELECTRICAL_UNITS, joules, true);
     }
 
     @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID)
     private static FloatingLong euToJoules(FloatingLong eu) throws ComputerException {
-        if (!EnergyCompatUtils.useIC2()) {
-            throw new ComputerException("Conversion between Electrical Units and Joules is either disabled in Mekanism's config.");
+        return convert(EnergyUnit.ELECTRICAL_UNITS, eu, false);
+    }
+
+    private static FloatingLong convert(EnergyUnit type, FloatingLong energy, boolean to) throws ComputerException {
+        if (type.isEnabled()) {
+            return to ? type.convertToAsFloatingLong(energy) : type.convertFrom(energy);
         }
-        return EnergyType.EU.convertFrom(eu);
+        String name = type.name().replace('_', ' ').toLowerCase(Locale.ROOT);
+        String between = to ? "Joules and " + name : name + " and Joules";
+        throw new ComputerException("Conversion between " + between + " is disabled in Mekanism's config or missing required mods.");
     }
 }

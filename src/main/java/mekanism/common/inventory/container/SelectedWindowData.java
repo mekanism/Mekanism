@@ -66,7 +66,7 @@ public class SelectedWindowData {
                     changed = true;
                 }
                 if (changed) {
-                    MekanismConfig.client.getConfigSpec().save();
+                    MekanismConfig.client.save();
                 }
             }
         }

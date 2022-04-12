@@ -118,7 +118,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             //Note: We need to update it here to ensure that it refreshes when recreating the viewer on the client when connected to a server
             MekanismConfig.client.qioItemViewerSlotsY.set(maxY);
             // save the updated config info
-            MekanismConfig.client.getConfigSpec().save();
+            MekanismConfig.client.save();
             recreateViewer();
         }
     }
@@ -153,7 +153,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
         if (changed) {
             // save the updated config info
-            MekanismConfig.client.getConfigSpec().save();
+            MekanismConfig.client.save();
             // And recreate the viewer
             recreateViewer();
         }

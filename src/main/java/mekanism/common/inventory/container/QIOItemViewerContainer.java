@@ -93,7 +93,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {
                 MekanismConfig.client.qioItemViewerSlotsY.set(maxY);
                 // save the updated config info
-                MekanismConfig.client.getConfigSpec().save();
+                MekanismConfig.client.save();
             }
         }
         if (!remote) {
@@ -352,7 +352,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public void setSortDirection(SortDirection sortDirection) {
         this.sortDirection = sortDirection;
         MekanismConfig.client.qioItemViewerSortDirection.set(sortDirection);
-        MekanismConfig.client.getConfigSpec().save();
+        MekanismConfig.client.save();
         sortItemList();
     }
 
@@ -363,7 +363,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public void setSortType(ListSortType sortType) {
         this.sortType = sortType;
         MekanismConfig.client.qioItemViewerSortType.set(sortType);
-        MekanismConfig.client.getConfigSpec().save();
+        MekanismConfig.client.save();
         sortItemList();
     }
 

@@ -40,7 +40,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.FactoryType;
-import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.lib.frequency.Frequency;
@@ -52,7 +51,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.UpgradeDisplay;
@@ -481,11 +480,8 @@ public final class MekanismUtils {
     }
 
     public static Component getEnergyDisplayShort(FloatingLong energy) {
-        return switch (MekanismConfig.general.energyUnit.get()) {
-            case J -> UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
-            case FE -> UnitDisplayUtils.getDisplayShort(EnergyType.FORGE.convertToAsFloatingLong(energy), ElectricUnit.FORGE_ENERGY);
-            case EU -> UnitDisplayUtils.getDisplayShort(EnergyType.EU.convertToAsFloatingLong(energy), ElectricUnit.ELECTRICAL_UNITS);
-        };
+        EnergyUnit configured = EnergyUnit.getConfigured();
+        return UnitDisplayUtils.getDisplayShort(configured.convertToAsFloatingLong(energy), configured);
     }
 
     /**
@@ -496,11 +492,7 @@ public final class MekanismUtils {
      * @return energy converted to joules
      */
     public static FloatingLong convertToJoules(FloatingLong energy) {
-        return switch (MekanismConfig.general.energyUnit.get()) {
-            case FE -> EnergyType.FORGE.convertFrom(energy);
-            case EU -> EnergyType.EU.convertFrom(energy);
-            default -> energy;
-        };
+        return EnergyUnit.getConfigured().convertFrom(energy);
     }
 
     /**
@@ -511,11 +503,7 @@ public final class MekanismUtils {
      * @return energy converted to configured unit
      */
     public static FloatingLong convertToDisplay(FloatingLong energy) {
-        return switch (MekanismConfig.general.energyUnit.get()) {
-            case FE -> EnergyType.FORGE.convertToAsFloatingLong(energy);
-            case EU -> EnergyType.EU.convertToAsFloatingLong(energy);
-            default -> energy;
-        };
+        return EnergyUnit.getConfigured().convertToAsFloatingLong(energy);
     }
 
     /**
@@ -527,13 +515,7 @@ public final class MekanismUtils {
      */
     public static Component getTemperatureDisplay(double temp, TemperatureUnit unit, boolean shift) {
         double tempKelvin = unit.convertToK(temp, true);
-        return switch (MekanismConfig.general.tempUnit.get()) {
-            case K -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.KELVIN, shift);
-            case C -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.CELSIUS, shift);
-            case R -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.RANKINE, shift);
-            case F -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.FAHRENHEIT, shift);
-            case STP -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.AMBIENT, shift);
-        };
+        return UnitDisplayUtils.getDisplayShort(tempKelvin, MekanismConfig.common.tempUnit.get(), shift);
     }
 
     public static CraftingContainer getDummyCraftingInv() {

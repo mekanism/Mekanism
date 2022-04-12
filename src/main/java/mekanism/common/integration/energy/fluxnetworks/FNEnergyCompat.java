@@ -36,12 +36,7 @@ public class FNEnergyCompat implements IEnergyCompat {
 
     @Override
     public boolean isUsable() {
-        return !MekanismConfig.general.blacklistForge.get() && Mekanism.hooks.FluxNetworksLoaded && !MekanismConfig.general.blacklistFluxNetworks.get();
-    }
-
-    @Override
-    public boolean isCapabilityPresent(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, FN_ENERGY_CAPABILITY, side).isPresent();
+        return EnergyUnit.FORGE_ENERGY.isEnabled() && Mekanism.hooks.FluxNetworksLoaded && !MekanismConfig.general.blacklistFluxNetworks.get();
     }
 
     @Nonnull

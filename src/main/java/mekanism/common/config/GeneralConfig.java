@@ -7,7 +7,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
-import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -16,8 +15,7 @@ import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.util.UnitDisplayUtils.EnergyType;
-import mekanism.common.util.UnitDisplayUtils.TempType;
+import mekanism.common.util.UnitDisplayUtils.EnergyConversionRate;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -53,7 +51,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue fuelwoodTickMultiplier;
     public final CachedDoubleValue resistiveHeaterEfficiency;
     public final CachedDoubleValue superheatingHeatTransfer;
-    public final CachedEnumValue<TempType> tempUnit;
     public final CachedIntValue maxSolarNeutronActivatorRate;
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
@@ -70,16 +67,13 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue prefilledSlurryTanks;
     //Energy Conversion
     public final CachedBooleanValue blacklistIC2;
-    public final CachedFloatingLongValue FROM_IC2;
-    public final CachedFloatingLongValue TO_IC2;
+    public final EnergyConversionRate IC2_CONVERSION_RATE;
     public final CachedBooleanValue blacklistForge;
-    public final CachedFloatingLongValue FROM_FORGE;
-    public final CachedFloatingLongValue TO_FORGE;
+    public final EnergyConversionRate FORGE_CONVERSION_RATE;
     public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedFloatingLongValue FROM_H2;
     public final CachedIntValue ETHENE_BURN_TIME;
     public final CachedFloatingLongValue maxEnergyPerSteam;
-    public final CachedEnumValue<EnergyType> energyUnit;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
     public final CachedIntValue radiationChunkCheckRadius;
@@ -152,8 +146,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("resistiveHeaterEfficiency", 0.6, 0, 1));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
               .define("superheatingHeatTransfer", 16_000_000D));
-        tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs.")
-              .defineEnum("temperatureUnit", TempType.K));
         maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, builder.comment("Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments.")
               .define("maxSolarNeutronActivatorRate", 64));
 
@@ -191,17 +183,21 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistIC2 = CachedBooleanValue.wrap(this, builder.comment("Disables IC2 power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistIC2", false));
-        FROM_IC2 = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * JoulePerEU = Joules)",
-              "JoulePerEU", FloatingLong.createConst(10), CachedFloatingLongValue.POSITIVE);
-        TO_IC2 = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to EU (Joules * EUPerJoule = EU)",
-              "EUPerJoule", FloatingLong.createConst(0.1), CachedFloatingLongValue.POSITIVE);
+        IC2_CONVERSION_RATE = new EnergyConversionRate(
+              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * JoulePerEU = Joules)",
+                    "JoulePerEU", FloatingLong.createConst(10), CachedFloatingLongValue.POSITIVE),
+              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to EU (Joules * EUPerJoule = EU)",
+                    "EUPerJoule", FloatingLong.createConst(0.1), CachedFloatingLongValue.POSITIVE)
+        );
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));
-        FROM_FORGE = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * JoulePerForgeEnergy = Joules)",
-              "JoulePerForgeEnergy", FloatingLong.createConst(2.5), CachedFloatingLongValue.POSITIVE);
-        TO_FORGE = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to Forge Energy (Joules * ForgeEnergyPerJoule = FE)",
-              "ForgeEnergyPerJoule", FloatingLong.createConst(0.4), CachedFloatingLongValue.POSITIVE);
+        FORGE_CONVERSION_RATE = new EnergyConversionRate(
+              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * JoulePerForgeEnergy = Joules)",
+                    "JoulePerForgeEnergy", FloatingLong.createConst(2.5), CachedFloatingLongValue.POSITIVE),
+              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to Forge Energy (Joules * ForgeEnergyPerJoule = FE)",
+                    "ForgeEnergyPerJoule", FloatingLong.createConst(0.4), CachedFloatingLongValue.POSITIVE)
+        );
         blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistFluxNetworks", false));
@@ -211,8 +207,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("EthyleneBurnTime", 40, 1, Integer.MAX_VALUE));
         maxEnergyPerSteam = CachedFloatingLongValue.define(this, builder, "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.",
               "maxEnergyPerSteam", FloatingLong.createConst(10));
-        energyUnit = CachedEnumValue.wrap(this, builder.comment("Displayed energy type in Mekanism GUIs.")
-              .defineEnum("energyType", EnergyType.FE));
         builder.pop();
 
         builder.comment("Radiation Settings").push(RADIATION_CATEGORY);

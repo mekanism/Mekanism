@@ -89,7 +89,7 @@ public class WorldConfig extends BaseMekanismConfig {
                 CachedBooleanValue shouldVeinTypeGenerate = CachedBooleanValue.wrap(config, builder.comment("Determines if " + veinType + "s should be added to world generation. Note: Requires generating " + ore + " ore to be enabled.")
                       .define("shouldGenerate", true));
                 veinBuilder.add(new OreVeinConfig(
-                      () -> this.shouldGenerate.getAsBoolean() && shouldVeinTypeGenerate.getAsBoolean(),
+                      () -> this.shouldGenerate.get() && shouldVeinTypeGenerate.get(),
                       CachedIntValue.wrap(config, builder.comment("Chance that " + veinType + "s generates in a chunk.")
                             .defineInRange("perChunk", baseConfig.perChunk(), 1, 256)),
                       CachedIntValue.wrap(config, builder.comment("Maximum number of blocks in a " + veinType + ".")

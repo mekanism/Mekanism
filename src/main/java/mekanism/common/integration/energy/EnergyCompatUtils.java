@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
@@ -136,38 +134,5 @@ public class EnergyCompatUtils {
     public static boolean useIC2() {
         //TODO: IC2
         return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.get();
-    }
-
-    public enum EnergyType {
-        FORGE(MekanismConfig.general.FROM_FORGE, MekanismConfig.general.TO_FORGE),
-        EU(MekanismConfig.general.FROM_IC2, MekanismConfig.general.TO_IC2);
-
-        private final FloatingLongSupplier fromSupplier;
-        private final FloatingLongSupplier toSupplier;
-
-        EnergyType(FloatingLongSupplier fromSupplier, FloatingLongSupplier toSupplier) {
-            this.fromSupplier = fromSupplier;
-            this.toSupplier = toSupplier;
-        }
-
-        public FloatingLong convertFrom(long energy) {
-            return fromSupplier.get().multiply(energy);
-        }
-
-        public FloatingLong convertFrom(FloatingLong energy) {
-            return energy.multiply(fromSupplier.get());
-        }
-
-        public int convertToAsInt(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).intValue();
-        }
-
-        public long convertToAsLong(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).longValue();
-        }
-
-        public FloatingLong convertToAsFloatingLong(FloatingLong joules) {
-            return joules.multiply(toSupplier.get());
-        }
     }
 }
