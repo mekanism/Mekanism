@@ -1,9 +1,6 @@
 package mekanism.common.content.gear.mekatool;
 
-import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,7 +31,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -85,14 +81,14 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         Lazy<BlockState> lazyClickedState = Lazy.of(() -> context.getLevel().getBlockState(context.getClickedPos()));
         return MekanismUtils.performActions(
               //First try to use the disassembler as an axe
-              useAxeAOE(context, lazyClickedState, energyContainer, diameter, player, stack, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP, -1),
-              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, player, stack, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE),
-              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, player, stack, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF),
+              useAxeAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP, -1),
+              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE, LevelEvent.PARTICLES_SCRAPE),
+              () -> useAxeAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF, LevelEvent.PARTICLES_WAX_OFF),
               //Then as a shovel
-              () -> flattenAOE(context, lazyClickedState, energyContainer, diameter, player, stack),
+              () -> flattenAOE(context, lazyClickedState, energyContainer, diameter),
               () -> dowseCampfire(context, lazyClickedState, energyContainer),
               //Finally, as a hoe
-              () -> tillAOE(context, lazyClickedState, energyContainer, diameter, player, stack, MekanismConfig.gear.mekaToolEnergyUsageHoe.get())
+              () -> tillAOE(context, lazyClickedState, energyContainer, diameter)
         );
     }
 
@@ -150,88 +146,29 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         return InteractionResult.PASS;
     }
 
-    private InteractionResult tillAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, Player player,
-          ItemStack stack, FloatingLong energyUsage) {
-        FloatingLong energy = energyContainer.getEnergy();
-        if (energy.smallerThan(energyUsage)) {
-            //Fail if we don't have enough energy or using the item failed
-            return InteractionResult.FAIL;
-        }
-        Block type = lazyClickedState.get().getBlock();
-        //TODO: Hopefully one day make this not go based off of the internal map
-        Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> conversion = HoeItem.TILLABLES.get(type);
-        if (conversion == null) {
-            //Skip tilling the blocks if the one we clicked cannot be tilled
-            return InteractionResult.PASS;
-        }
-        Predicate<UseOnContext> canConvert = conversion.getFirst();
-        if (!canConvert.test(context)) {
-            //Skip tilling the blocks if the one we clicked cannot be tilled
-            return InteractionResult.PASS;
-        }
-        Level world = context.getLevel();
-        if (world.isClientSide) {
-            return InteractionResult.SUCCESS;
-        }
-        Consumer<UseOnContext> converter = conversion.getSecond();
-        converter.accept(context);
-        BlockPos pos = context.getClickedPos();
-        world.playSound(null, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-        //Note: We don't need to copy this as we add to it in a non modifying way
-        FloatingLong energyUsed = energyUsage;
-        int radius = (diameter - 1) / 2;
-        for (BlockPos newPos : BlockPos.betweenClosed(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius))) {
-            if (pos.equals(newPos)) {
-                //Skip the source position as we manually handled it before the loop
-                continue;
-            }
-            FloatingLong nextEnergyUsed = energyUsed.add(energyUsage);
-            if (nextEnergyUsed.greaterThan(energy)) {
-                break;
-            }
-            //Note: Unfortunately we no longer can compare this based on output state as we do not have easy access to it,
-            // so instead we have to instead go based on the input block
-            if (world.getBlockState(newPos).is(type)) {
-                //Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
-                // matter we make sure to get an immutable instance of newPos
-                newPos = newPos.immutable();
-                //Create a new used context based on the original one to try and pass the proper information to the conversion
-                UseOnContext adjustedContext = new UseOnContext(world, player, context.getHand(), stack, new BlockHitResult(
-                      context.getClickLocation().add(newPos.getX() - pos.getX(), newPos.getY() - pos.getY(), newPos.getZ() - pos.getZ()),
-                      context.getClickedFace(), newPos, context.isInside()));
-                if (canConvert.test(adjustedContext)) {
-                    //Update energy cost
-                    energyUsed = nextEnergyUsed;
-                    //Apply the conversion
-                    converter.accept(adjustedContext);
-                    world.playSound(null, newPos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    Mekanism.packetHandler().sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
-                          Vec3.upFromBottomCenterOf(pos, 0.94), Vec3.upFromBottomCenterOf(newPos, 0.94), 10), world, pos);
-                }
-            }
-        }
-        energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
-        return InteractionResult.CONSUME;
+    private InteractionResult tillAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter) {
+        return useAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.HOE_TILL, SoundEvents.HOE_TILL, -1,
+              MekanismConfig.gear.mekaToolEnergyUsageHoe.get(), new HoeToolAOEData());
     }
 
-    private InteractionResult flattenAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, Player player, ItemStack stack) {
+    private InteractionResult flattenAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter) {
         Direction sideHit = context.getClickedFace();
         if (sideHit == Direction.DOWN) {
             //Don't allow flattening a block from underneath
             return InteractionResult.PASS;
         }
-        return useAOE(context, lazyClickedState, energyContainer, diameter, player, stack, ToolActions.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN, -1,
+        return useAOE(context, lazyClickedState, energyContainer, diameter, ToolActions.SHOVEL_FLATTEN, SoundEvents.SHOVEL_FLATTEN, -1,
               MekanismConfig.gear.mekaToolEnergyUsageShovel.get(), new ShovelToolAOEData());
     }
 
-    private InteractionResult useAxeAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, Player player,
-          ItemStack stack, ToolAction action, SoundEvent sound, int particle) {
-        return useAOE(context, lazyClickedState, energyContainer, diameter, player, stack, action, sound, particle, MekanismConfig.gear.mekaToolEnergyUsageAxe.get(),
+    private InteractionResult useAxeAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ToolAction action,
+          SoundEvent sound, int particle) {
+        return useAOE(context, lazyClickedState, energyContainer, diameter, action, sound, particle, MekanismConfig.gear.mekaToolEnergyUsageAxe.get(),
               new AxeToolAOEData());
     }
 
-    private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, Player player,
-          ItemStack stack, ToolAction action, SoundEvent sound, int particle, FloatingLong energyUsage, IToolAOEData toolAOEData) {
+    private InteractionResult useAOE(UseOnContext context, Lazy<BlockState> lazyClickedState, IEnergyContainer energyContainer, int diameter, ToolAction action,
+          SoundEvent sound, int particle, FloatingLong energyUsage, IToolAOEData toolAOEData) {
         FloatingLong energy = energyContainer.getEnergy();
         if (energy.smallerThan(energyUsage)) {
             //Fail if we don't have enough energy or using the item failed
@@ -240,10 +177,13 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockState clickedState = lazyClickedState.get();
-        BlockState modifiedState = clickedState.getToolModifiedState(world, pos, player, stack, action);
-        if (modifiedState == null || !toolAOEData.isValid(world, pos, clickedState)) {
+        if (!toolAOEData.isValid(world, pos, clickedState)) {
+            //Skip modifying the blocks if there is something we think is invalid about the position in the world in general
+            return InteractionResult.PASS;
+        }
+        BlockState modifiedState = clickedState.getToolModifiedState(context, action, false);
+        if (modifiedState == null) {
             //Skip modifying the blocks if the one we clicked cannot be modified
-            // or if there is something we think is invalid about the position in the world in general
             return InteractionResult.PASS;
         } else if (world.isClientSide) {
             return InteractionResult.SUCCESS;
@@ -270,12 +210,18 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
             //Check to make that the result we would get from modifying the other block is the same as the one we got on the initial block we interacted with
             // Also make sure that it is properly valid
             BlockState state = world.getBlockState(newPos);
-            if (toolAOEData.isValid(world, newPos, state) && modifiedState == state.getToolModifiedState(world, newPos, player, stack, action)) {
+            //Create a new used context based on the original one to try and pass the proper information to the conversion
+            UseOnContext adjustedContext = new UseOnContext(world, context.getPlayer(), context.getHand(), context.getItemInHand(), new BlockHitResult(
+                  context.getClickLocation().add(newPos.getX() - pos.getX(), newPos.getY() - pos.getY(), newPos.getZ() - pos.getZ()),
+                  context.getClickedFace(), newPos, context.isInside()));
+            if (toolAOEData.isValid(world, newPos, state) && modifiedState == state.getToolModifiedState(adjustedContext, action, true)) {
                 //Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
                 // matter we make sure to get an immutable instance of newPos
                 newPos = newPos.immutable();
                 //Update energy cost
                 energyUsed = nextEnergyUsed;
+                //Run it without simulation in case there are any side effects
+                state.getToolModifiedState(adjustedContext, action, false);
                 //Replace the block. Note it just directly sets it (in the same way the normal tools do).
                 world.setBlock(newPos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
                 world.playSound(null, newPos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -302,7 +248,31 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         Vec3 getLightningPos(BlockPos pos);
     }
 
-    private static class ShovelToolAOEData implements IToolAOEData {
+    private static abstract class FlatToolAOEData implements IToolAOEData {
+
+        @Override
+        public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {
+            return BlockPos.betweenClosed(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius));
+        }
+
+        @Override
+        public Vec3 getLightningPos(BlockPos pos) {
+            return Vec3.upFromBottomCenterOf(pos, 0.94);
+        }
+    }
+
+    private static class HoeToolAOEData extends FlatToolAOEData {
+
+        @Override
+        public boolean isValid(Level level, BlockPos pos, BlockState state) {
+            //Always return that we are valid if we could find a conversion, we unfortunately are no longer able
+            // to allow conversions when there is plants on top of it as then the tool modified state won't return
+            // anything
+            return true;
+        }
+    }
+
+    private static class ShovelToolAOEData extends FlatToolAOEData {
 
         @Override
         public boolean isValid(Level level, BlockPos pos, BlockState state) {
@@ -318,16 +288,6 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 return !aboveState.isSolidRender(level, abovePos);
             }
             return false;
-        }
-
-        @Override
-        public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {
-            return BlockPos.betweenClosed(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius));
-        }
-
-        @Override
-        public Vec3 getLightningPos(BlockPos pos) {
-            return Vec3.upFromBottomCenterOf(pos, 0.94);
         }
     }
 

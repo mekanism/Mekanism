@@ -95,7 +95,6 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         Player player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
         BlockState blockstate = world.getBlockState(blockpos);
         BlockState resultToSet = useAsAxe(blockstate, context);
         if (resultToSet == null) {
@@ -103,7 +102,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
             if (context.getClickedFace() == Direction.DOWN) {
                 return InteractionResult.PASS;
             }
-            BlockState foundResult = blockstate.getToolModifiedState(world, blockpos, player, stack, ToolActions.SHOVEL_FLATTEN);
+            BlockState foundResult = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
             if (foundResult != null && world.isEmptyBlock(blockpos.above())) {
                 //We can flatten the item as a shovel
                 world.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -121,6 +120,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
             }
         }
         if (!world.isClientSide) {
+            ItemStack stack = context.getItemInHand();
             if (player instanceof ServerPlayer serverPlayer) {
                 CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockpos, stack);
             }
@@ -137,19 +137,18 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
         Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
         Player player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
-        BlockState resultToSet = state.getToolModifiedState(world, blockpos, player, stack, ToolActions.AXE_STRIP);
+        BlockState resultToSet = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
         if (resultToSet != null) {
             world.playSound(player, blockpos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
             return resultToSet;
         }
-        resultToSet = state.getToolModifiedState(world, blockpos, player, stack, ToolActions.AXE_SCRAPE);
+        resultToSet = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
         if (resultToSet != null) {
             world.playSound(player, blockpos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
             world.levelEvent(player, LevelEvent.PARTICLES_SCRAPE, blockpos, 0);
             return resultToSet;
         }
-        resultToSet = state.getToolModifiedState(world, blockpos, player, stack, ToolActions.AXE_WAX_OFF);
+        resultToSet = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
         if (resultToSet != null) {
             world.playSound(player, blockpos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
             world.levelEvent(player, LevelEvent.PARTICLES_WAX_OFF, blockpos, 0);

@@ -67,6 +67,7 @@ public class GasAttributes {
         private final double thermalEnthalpy;
         private final double conductivity;
 
+        //TODO - 1.19: Make constructor private or package private
         public Coolant(double thermalEnthalpy, double conductivity) {
             this.thermalEnthalpy = thermalEnthalpy;
             this.conductivity = conductivity;
