@@ -126,9 +126,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
-                  Item item = stack.getItem();
-                  if (item.isEdible()) {//Double-check the stack is food
-                      FoodProperties food = item.getFoodProperties();
+                  if (stack.getItem().isEdible()) {//Double-check the stack is food
+                      FoodProperties food = stack.getFoodProperties(null);
                       //And only allow inserting foods that actually would provide paste
                       return food != null && food.getNutrition() > 0;
                   }
@@ -185,13 +184,12 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         if (stack.isEmpty() || !stack.getItem().isEdible()) {
             return null;
         }
-        FoodProperties food = stack.getItem().getFoodProperties();
+        FoodProperties food = stack.getFoodProperties(null);
         if (food == null || food.getNutrition() == 0) {
             //If the food provides no healing don't allow consuming it as it won't provide any paste
             return null;
         }
-        //TODO: If food eventually becomes stack sensitive make this use stack instead of stack.getItem as the ingredient
-        return new NutritionalLiquifierIRecipe(stack.getItem(), IngredientCreatorAccess.item().from(stack.getItem()),
+        return new NutritionalLiquifierIRecipe(stack.getItem(), IngredientCreatorAccess.item().from(stack, 1),
               MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50));
     }
 
