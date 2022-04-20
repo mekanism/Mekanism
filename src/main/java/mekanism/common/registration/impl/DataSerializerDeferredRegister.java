@@ -17,6 +17,10 @@ public class DataSerializerDeferredRegister extends WrappedForgeDeferredRegister
         super(modid, ForgeRegistries.Keys.DATA_SERIALIZERS);
     }
 
+    public <T extends Enum<T>> DataSerializerRegistryObject<T> registerEnum(String name, Class<T> enumClass) {
+        return registerSimple(name, FriendlyByteBuf::writeEnum, buffer -> buffer.readEnum(enumClass));
+    }
+
     public <T> DataSerializerRegistryObject<T> registerSimple(String name, BiConsumer<FriendlyByteBuf, T> writer, Function<FriendlyByteBuf, T> reader) {
         return register(name, writer, reader, UnaryOperator.identity());
     }

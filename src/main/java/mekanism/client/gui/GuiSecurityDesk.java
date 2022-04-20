@@ -3,6 +3,8 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiSecurityLight;
@@ -19,7 +21,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.to_server.PacketAddTrusted;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
@@ -63,7 +64,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addRenderableWidget(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addRenderableWidget(new GuiSecurityLight(this, 144, 77, () -> {
             SecurityFrequency frequency = tile.getFreq();
-            return frequency == null || tile.ownerUUID == null || !tile.ownerUUID.equals(getMinecraft().player.getUUID()) ? 2 : frequency.isOverridden() ? 0 : 1;
+            return !isOwner(frequency) ? 2 : frequency.isOverridden() ? 0 : 1;
         }));
         addRenderableWidget(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addRenderableWidget(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
@@ -110,9 +111,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         updateButtons();
     }
 
+    private boolean isOwner(@Nullable SecurityFrequency frequency) {
+        return frequency != null && tile.ownerMatches(getMinecraft().player);
+    }
+
     private void setTrusted() {
-        SecurityFrequency freq = tile.getFreq();
-        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUUID())) {
+        if (isOwner(tile.getFreq())) {
             addTrusted(trustedField.getText());
             trustedField.setText("");
             updateButtons();
@@ -127,12 +131,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void updateButtons() {
         SecurityFrequency freq = tile.getFreq();
-        if (tile.ownerUUID != null) {
+        if (tile.getOwnerUUID() != null) {
             scrollList.setText(freq == null ? Collections.emptyList() : freq.getTrustedUsernameCache());
             removeButton.active = scrollList.hasSelection();
         }
 
-        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUUID())) {
+        if (isOwner(freq)) {
             publicButton.active = freq.getSecurityMode() != SecurityMode.PUBLIC;
             privateButton.active = freq.getSecurityMode() != SecurityMode.PRIVATE;
             trustedButton.active = freq.getSecurityMode() != SecurityMode.TRUSTED;
@@ -160,7 +164,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        Component ownerComponent = OwnerDisplay.of(tile.ownerUUID, tile.clientOwner).getTextComponent();
+        Component ownerComponent = OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent();
         drawString(matrix, ownerComponent, imageWidth - 7 - getStringWidth(ownerComponent), inventoryLabelY, titleTextColor());
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawCenteredText(matrix, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());

@@ -14,10 +14,16 @@ import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
+import mekanism.api.security.IOwnerObject;
+import mekanism.api.security.ISecurityObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 
+//TODO - 1.19: rename these objects to not end with _CAPABILITY as it is a given based on the class
+// this just seems like a class that has a higher likelihood of people accessing our internals even
+// when they don't need to, so we are just leaving the names be for now to avoid breaking any mods
+// that are improperly accessing these
 public class Capabilities {
 
     private Capabilities() {
@@ -50,4 +56,7 @@ public class Capabilities {
     public static final Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static final Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+
+    public static final Capability<IOwnerObject> OWNER_OBJECT = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ISecurityObject> SECURITY_OBJECT = CapabilityManager.get(new CapabilityToken<>() {});
 }

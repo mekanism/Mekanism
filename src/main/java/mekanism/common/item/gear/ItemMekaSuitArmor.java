@@ -29,7 +29,7 @@ import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler;
 import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler.GasTankSpec;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -43,7 +43,6 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
-import mekanism.common.integration.gender.GenderCapabilityHelper;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismFluids;
@@ -67,7 +66,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -209,22 +207,22 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
+        super.gatherCapabilities(capabilities, stack, nbt);
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack),
-              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue),
-              RadiationShieldingHandler.create(item -> isModuleEnabled(item, MekanismModules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0),
-              LaserDissipationHandler.create(item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserDissipation : 0,
+        capabilities.add(RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.manualOnly,
+              BasicEnergyContainer.alwaysTrue));
+        capabilities.add(RadiationShieldingHandler.create(item -> isModuleEnabled(item, MekanismModules.RADIATION_SHIELDING_UNIT) ?
+                                                                  ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
+        capabilities.add(LaserDissipationHandler.create(item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserDissipation : 0,
                     item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
         if (!gasTankSpecs.isEmpty()) {
-            wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
+            capabilities.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
         }
         if (!fluidTankSpecs.isEmpty()) {
-            wrapper.add(RateLimitMultiTankFluidHandler.create(fluidTankSpecs));
+            capabilities.add(RateLimitMultiTankFluidHandler.create(fluidTankSpecs));
         }
-        GenderCapabilityHelper.addGenderCapability(this, wrapper);
-        return wrapper;
     }
 
     @Nonnull

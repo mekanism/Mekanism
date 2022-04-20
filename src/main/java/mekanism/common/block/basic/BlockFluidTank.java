@@ -1,6 +1,7 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -9,7 +10,6 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.FluidUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -65,15 +65,13 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         }
         //Handle filling fluid tank
         if (!player.isShiftKeyDown()) {
-            if (SecurityUtils.canAccess(player, tile)) {
-                ItemStack stack = player.getItemInHand(hand);
-                if (!stack.isEmpty() && FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
-                    player.getInventory().setChanged();
-                    return InteractionResult.SUCCESS;
-                }
-            } else {
-                SecurityUtils.displayNoAccess(player);
+            if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                 return InteractionResult.FAIL;
+            }
+            ItemStack stack = player.getItemInHand(hand);
+            if (!stack.isEmpty() && FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
+                player.getInventory().setChanged();
+                return InteractionResult.SUCCESS;
             }
         }
         return tile.openGui(player);

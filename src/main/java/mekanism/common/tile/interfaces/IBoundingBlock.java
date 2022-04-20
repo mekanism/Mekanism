@@ -1,9 +1,9 @@
 package mekanism.common.tile.interfaces;
 
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IOffsetCapability;
-import mekanism.common.lib.security.ISecurityTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -16,7 +16,13 @@ import net.minecraftforge.common.util.LazyOptional;
  *
  * @author AidanBrady
  */
-public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport, IOffsetCapability, ISecurityTile, IUpgradeTile {
+public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport, IOffsetCapability, IUpgradeTile {
+
+    Set<Capability<?>> ALWAYS_PROXY = Set.of(
+          Capabilities.CONFIG_CARD_CAPABILITY,
+          Capabilities.OWNER_OBJECT,
+          Capabilities.SECURITY_OBJECT
+    );
 
     default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
     }
@@ -31,8 +37,8 @@ public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport,
 
     @Override
     default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
-        //By default, only allow proxying the config card capability to bounding blocks
-        return capability != Capabilities.CONFIG_CARD_CAPABILITY;
+        //By default, only allow proxying specific capabilities
+        return !ALWAYS_PROXY.contains(capability);
     }
 
     @Nonnull

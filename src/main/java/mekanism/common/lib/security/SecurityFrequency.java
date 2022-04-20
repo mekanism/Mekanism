@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -133,13 +134,16 @@ public class SecurityFrequency extends Frequency {
         trustedCacheHash = trustedCache.hashCode();
     }
 
-    public void removeTrusted(int index) {
+    @Nullable
+    public UUID removeTrusted(int index) {
+        UUID uuid = null;
         if (index >= 0 && index < trusted.size()) {
-            trusted.remove(index);
+            uuid = trusted.remove(index);
         }
         if (index >= 0 && index < trustedCache.size()) {
             trustedCache.remove(index);
+            trustedCacheHash = trustedCache.hashCode();
         }
-        trustedCacheHash = trustedCache.hashCode();
+        return uuid;
     }
 }

@@ -2,6 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -14,7 +15,6 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.core.BlockPos;
@@ -88,7 +88,8 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 }
                 BlockEntity tile = WorldUtils.getTileEntity(world, pos);
                 if (tile != null) {
-                    if (MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST_LOOKUP.contains(tile.getType()) || !SecurityUtils.canAccess(player, tile)) {
+                    if (MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST_LOOKUP.contains(tile.getType()) ||
+                        !MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                         //If the tile is in the tile entity type blacklist or the player cannot access the tile
                         // don't allow them to pick it up with a cardboard box
                         return InteractionResult.FAIL;

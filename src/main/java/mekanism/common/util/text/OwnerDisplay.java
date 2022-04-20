@@ -16,11 +16,13 @@ import net.minecraftforge.fml.util.thread.EffectiveSide;
 public class OwnerDisplay implements IHasTextComponent {
 
     private final Player player;
+    @Nullable
     private final UUID ownerUUID;
+    @Nullable
     private final String ownerName;
     private final boolean colorBase;
 
-    private OwnerDisplay(Player player, UUID ownerUUID, String ownerName, boolean colorBase) {
+    private OwnerDisplay(@Nullable Player player, @Nullable UUID ownerUUID, @Nullable String ownerName, boolean colorBase) {
         this.player = player;
         this.ownerUUID = ownerUUID;
         this.ownerName = ownerName;
@@ -65,6 +67,7 @@ public class OwnerDisplay implements IHasTextComponent {
         return component;
     }
 
+    @Nullable
     public static String getOwnerName(@Nullable Player player, @Nonnull UUID ownerUUID, @Nullable String ownerName) {
         //Allows for the name to be overridden by a passed value
         if (ownerName != null) {
@@ -73,7 +76,7 @@ public class OwnerDisplay implements IHasTextComponent {
             return MekanismUtils.getLastKnownUsername(ownerUUID);
         }
         String name = MekanismClient.clientUUIDMap.get(ownerUUID);
-        if (name != null && player != null) {
+        if (name == null && player != null) {
             //If the name is still null, see if the uuid is the same as the client uuid
             if (player.getUUID().equals(ownerUUID)) {
                 //If it is set the name to the name of the player

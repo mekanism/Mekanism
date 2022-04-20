@@ -9,6 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -39,7 +40,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -99,7 +99,9 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                         if (!player.isShiftKeyDown()) {
                             player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
                                   dataType.getColor().getColoredName())), Util.NIL_UUID);
-                        } else if (SecurityUtils.canAccess(player, tile)) {
+                        } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                            return InteractionResult.FAIL;
+                        } else {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                                 FloatingLong energyPerConfigure = MekanismConfig.gear.configuratorEnergyPerConfigure.get();
@@ -115,67 +117,58 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                                       dataType.getColor().getColoredName())), Util.NIL_UUID);
                                 config.getConfig().sideChanged(transmissionType, relativeSide);
                             }
-                        } else {
-                            SecurityUtils.displayNoAccess(player);
-                            return InteractionResult.FAIL;
                         }
                     }
                     return InteractionResult.SUCCESS;
                 }
-                if (SecurityUtils.canAccess(player, tile)) {
-                    Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
-                    if (capability.isPresent()) {
-                        IConfigurable config = capability.get();
-                        if (player.isShiftKeyDown()) {
-                            return config.onSneakRightClick(player);
-                        }
-                        return config.onRightClick(player);
-                    }
-                } else {
-                    SecurityUtils.displayNoAccess(player);
+                if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                     return InteractionResult.FAIL;
+                }
+                Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
+                if (capability.isPresent()) {
+                    IConfigurable config = capability.get();
+                    if (player.isShiftKeyDown()) {
+                        return config.onSneakRightClick(player);
+                    }
+                    return config.onRightClick(player);
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
-                    if (SecurityUtils.canAccess(player, tile)) {
-                        boolean creative = player.isCreative();
-                        IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
-                        if (!creative && energyContainer == null) {
-                            return InteractionResult.FAIL;
-                        }
-                        //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                        FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
-                        for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
-                            if (!inventorySlot.isEmpty()) {
-                                if (!creative) {
-                                    if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
-                                        break;
-                                    }
-                                    energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
-                                }
-                                Block.popResource(world, pos, inventorySlot.getStack().copy());
-                                inventorySlot.setEmpty();
-                            }
-                        }
-                        return InteractionResult.SUCCESS;
-                    } else {
-                        SecurityUtils.displayNoAccess(player);
+                    if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                         return InteractionResult.FAIL;
                     }
+                    boolean creative = player.isCreative();
+                    IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
+                    if (!creative && energyContainer == null) {
+                        return InteractionResult.FAIL;
+                    }
+                    //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
+                    FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
+                    for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
+                        if (!inventorySlot.isEmpty()) {
+                            if (!creative) {
+                                if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
+                                    break;
+                                }
+                                energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
+                            }
+                            Block.popResource(world, pos, inventorySlot.getStack().copy());
+                            inventorySlot.setEmpty();
+                        }
+                    }
+                    return InteractionResult.SUCCESS;
                 }
             } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
                 if (tile instanceof TileEntityMekanism tileMekanism) {
-                    if (SecurityUtils.canAccess(player, tile)) {
-                        if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
-                            if (!player.isShiftKeyDown()) {
-                                tileMekanism.setFacing(side);
-                            } else if (player.isShiftKeyDown()) {
-                                tileMekanism.setFacing(side.getOpposite());
-                            }
-                        }
-                    } else {
-                        SecurityUtils.displayNoAccess(player);
+                    if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                         return InteractionResult.FAIL;
+                    }
+                    if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
+                        if (!player.isShiftKeyDown()) {
+                            tileMekanism.setFacing(side);
+                        } else if (player.isShiftKeyDown()) {
+                            tileMekanism.setFacing(side.getOpposite());
+                        }
                     }
                 }
                 return InteractionResult.SUCCESS;

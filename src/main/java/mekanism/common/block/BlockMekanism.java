@@ -23,12 +23,11 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.lib.security.ISecurityItem;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
-import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IComparatorSupport;
@@ -107,9 +106,11 @@ public abstract class BlockMekanism extends Block {
         if (tile.getFrequencyComponent().hasCustomFrequencies()) {
             tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(itemStack));
         }
-        if (item instanceof ISecurityItem securityItem && tile.hasSecurity()) {
-            securityItem.setOwnerUUID(itemStack, tile.getOwnerUUID());
-            securityItem.setSecurity(itemStack, tile.getSecurityMode());
+        if (tile.hasSecurity()) {
+            itemStack.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject -> {
+                ownerObject.setOwnerUUID(tile.getOwnerUUID());
+                itemStack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(securityObject -> securityObject.setSecurityMode(tile.getSecurityMode()));
+            });
         }
         if (tile.supportsUpgrades()) {
             tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
@@ -278,19 +279,16 @@ public abstract class BlockMekanism extends Block {
         if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
             tile.getFrequencyComponent().read(ItemDataUtils.getDataMap(stack));
         }
-        if (tile instanceof TileEntitySecurityDesk && placer != null) {
-            tile.getSecurity().setOwnerUUID(placer.getUUID());
-        }
-        if (item instanceof ISecurityItem securityItem && tile.hasSecurity()) {
-            tile.setSecurityMode(securityItem.getSecurity(stack));
-            UUID ownerUUID = securityItem.getOwnerUUID(stack);
+        if (tile.hasSecurity()) {
+            stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> tile.setSecurityMode(security.getSecurityMode()));
+            UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
             if (ownerUUID != null) {
-                tile.getSecurity().setOwnerUUID(ownerUUID);
+                tile.setOwnerUUID(ownerUUID);
             } else if (placer != null) {
-                tile.getSecurity().setOwnerUUID(placer.getUUID());
+                tile.setOwnerUUID(placer.getUUID());
                 if (!world.isClientSide) {
                     //If the machine doesn't already have an owner, make sure we portray this
-                    Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(placer.getUUID(), null));
+                    Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(placer.getUUID()));
                 }
             }
         }

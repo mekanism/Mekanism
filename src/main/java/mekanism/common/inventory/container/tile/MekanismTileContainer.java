@@ -7,13 +7,13 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
@@ -37,9 +37,10 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         return tile;
     }
 
+    @Nullable
     @Override
-    public ISecurityObject getSecurityObject() {
-        return getTileEntity();
+    public ICapabilityProvider getSecurityObject() {
+        return tile;
     }
 
     @Override

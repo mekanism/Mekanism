@@ -64,6 +64,10 @@ public enum APILang implements ILangEntry {
     CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY("chemical", "attribute.coolant.heat_capacity"),
     CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS("chemical", "attribute.fuel.burn_ticks"),
     CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY("chemical", "attribute.fuel.energy_density"),
+    //Security
+    PUBLIC("security", "public"),
+    TRUSTED("security", "trusted"),
+    PRIVATE("security", "private"),
     ;
 
     private final String key;

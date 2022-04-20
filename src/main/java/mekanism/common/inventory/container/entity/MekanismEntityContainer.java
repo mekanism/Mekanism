@@ -1,12 +1,13 @@
 package mekanism.common.inventory.container.entity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public abstract class MekanismEntityContainer<ENTITY extends Entity> extends MekanismContainer implements IEntityContainer<ENTITY> {
 
@@ -30,8 +31,9 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
         return entity.isAlive();
     }
 
+    @Nullable
     @Override
-    public ISecurityObject getSecurityObject() {
-        return entity instanceof ISecurityObject securityObject ? securityObject : ISecurityObject.NO_SECURITY;
+    public ICapabilityProvider getSecurityObject() {
+        return entity;
     }
 }

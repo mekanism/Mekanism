@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.security.ISecurityTile;
 import net.minecraft.nbt.CompoundTag;
 
-public interface IFrequencyHandler extends ISecurityTile {
+public interface IFrequencyHandler {
 
     TileComponentFrequency getFrequencyComponent();
 

@@ -42,7 +42,7 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
-        GenderCapabilityHelper.addGenderCapability(this, wrapper);
+        GenderCapabilityHelper.addGenderCapability(this, wrapper::add);
         return wrapper;
     }
 

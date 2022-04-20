@@ -5,11 +5,9 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IUpgradeTile;
@@ -30,7 +28,7 @@ import net.minecraftforge.common.util.LazyOptional;
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
  */
-public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, ISecurityTile, Nameable {
+public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, Nameable {
 
     private BlockPos mainPos = BlockPos.ZERO;
 
@@ -137,21 +135,6 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         if (main != null && main.supportsUpgrades()) {
             main.recalculateUpgrades(upgradeType);
         }
-    }
-
-    @Override
-    public boolean hasSecurity() {
-        IBoundingBlock main = getMain();
-        return main != null && main.hasSecurity();
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        IBoundingBlock main = getMain();
-        if (main != null && main.hasSecurity()) {
-            return main.getSecurity();
-        }
-        return null;
     }
 
     @Override

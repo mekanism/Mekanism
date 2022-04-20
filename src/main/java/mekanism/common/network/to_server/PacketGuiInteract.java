@@ -1,13 +1,11 @@
 package mekanism.common.network.to_server;
 
-import java.util.UUID;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
-import mekanism.common.lib.security.ISecurityObject;
-import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -26,6 +24,7 @@ import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
+import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -305,14 +304,7 @@ public class PacketGuiInteract implements IMekanismPacket {
             }
         }),
 
-        NEXT_SECURITY_MODE((tile, player, extra) -> {
-            if (tile.hasSecurity()) {
-                UUID owner = tile.getOwnerUUID();
-                if (owner != null && player.getUUID().equals(owner)) {
-                    tile.setSecurityMode(tile.getSecurityMode().getNext());
-                }
-            }
-        }),
+        NEXT_SECURITY_MODE((tile, player, extra) -> SecurityUtils.INSTANCE.incrementSecurityMode(player, tile)),
 
         SECURITY_DESK_MODE((tile, player, extra) -> {
             if (tile instanceof TileEntitySecurityDesk desk) {
@@ -399,14 +391,7 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public enum GuiInteractionEntity {
-        NEXT_SECURITY_MODE((entity, player, extra) -> {
-            if (entity instanceof ISecurityObject security && security.hasSecurity()) {
-                UUID owner = security.getOwnerUUID();
-                if (owner != null && player.getUUID().equals(owner)) {
-                    security.setSecurityMode(security.getSecurityMode().getNext());
-                }
-            }
-        }),
+        NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.INSTANCE.incrementSecurityMode(player, entity)),
         CONTAINER_STOP_TRACKING((entity, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {
                 container.stopTracking(extra);

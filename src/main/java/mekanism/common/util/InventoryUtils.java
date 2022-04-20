@@ -7,15 +7,11 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPI;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.inventory.TileTransitRequest;
-import mekanism.common.lib.security.IOwnerItem;
-import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.lib.security.ISecurityObject;
-import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.recipe.upgrade.ItemRecipeData;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
@@ -43,16 +39,10 @@ public final class InventoryUtils {
             boolean shouldDrop;
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
-                shouldDrop = SecurityUtils.canAccess(player, stack);
-            } else if (!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem ownerItem) {
-                // otherwise, if it is an owner item but not a security item make sure the owner matches,
-                // and only allow it if protection is disabled or the item doesn't have an owner yet
-                shouldDrop = !MekanismConfig.general.allowProtection.get() || ownerItem.getOwnerUUID(stack) == null;
+                shouldDrop = MekanismAPI.getSecurityUtils().canAccess(player, stack);
             } else {
-                // finally, if the destroyer wasn't a player and not just an owner item but not a security item,
-                // wrap it as a security item and allow dropping if it doesn't have security, or it is public
-                ISecurityObject security = SecurityUtils.wrapSecurityItem(stack);
-                shouldDrop = !security.hasSecurity() || security.getSecurityMode() == SecurityMode.PUBLIC;
+                // otherwise, just check against there being no known player
+                shouldDrop = MekanismAPI.getSecurityUtils().canAccess(null, stack, entity.level.isClientSide);
             }
             if (shouldDrop) {
                 ListTag storedContents = sustainedInventory.getInventory(stack);

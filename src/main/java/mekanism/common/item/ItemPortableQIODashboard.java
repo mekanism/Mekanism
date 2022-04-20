@@ -2,9 +2,12 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IGuiItem;
@@ -19,22 +22,20 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IItemSustainedInventory {
+public class ItemPortableQIODashboard extends CapabilityItem implements IFrequencyItem, IGuiItem, IItemSustainedInventory {
 
     public ItemPortableQIODashboard(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE));
@@ -47,7 +48,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-        tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), getOwnerUUID(stack)).getTextComponent());
+        MekanismAPI.getSecurityUtils().addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         super.appendHoverText(stack, world, tooltip, flag);
@@ -55,21 +56,8 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (getOwnerUUID(stack) == null) {
-            if (!world.isClientSide) {
-                SecurityUtils.claimItem(player, stack);
-            }
-        } else if (SecurityUtils.canAccess(player, stack)) {
-            if (!world.isClientSide) {
-                getContainerType().tryOpenGui((ServerPlayer) player, hand, stack);
-            }
-        } else {
-            SecurityUtils.displayNoAccess(player);
-            return InteractionResultHolder.fail(stack);
-        }
-        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+        return SecurityUtils.INSTANCE.claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 
     @Override
@@ -101,5 +89,11 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
         } else {
             ItemDataUtils.setInt(stack, NBTConstants.COLOR, color.ordinal());
         }
+    }
+
+    @Override
+    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
+        capabilities.add(new ItemStackOwnerObject());
+        super.gatherCapabilities(capabilities, stack, nbt);
     }
 }

@@ -8,15 +8,17 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.security.ISecurityObject;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
-import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
@@ -92,7 +94,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (item instanceof ISustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (item instanceof ISecurityItem) {
+        if (stack.getCapability(Capabilities.OWNER_OBJECT).isPresent() || tile != null && tile.hasSecurity()) {
+            //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
+            // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
         }
         if (item instanceof IQIODriveItem) {
@@ -123,9 +127,14 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case ITEM:
                 return new ItemRecipeData(((ISustainedInventory) item).getInventory(stack));
             case SECURITY:
-                ISecurityItem securityItem = (ISecurityItem) item;
-                UUID ownerUUID = securityItem.getOwnerUUID(stack);
-                return ownerUUID == null ? null : new SecurityRecipeData(ownerUUID, securityItem.getSecurity(stack));
+                UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
+                if (ownerUUID == null) {
+                    return null;
+                }
+                //Treat owner items as public even though they are private as we don't want to lower the output
+                // item's security just because it has one item that is owned
+                SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
+                return new SecurityRecipeData(ownerUUID, securityMode);
             case UPGRADE:
                 CompoundTag componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                 return componentUpgrade.isEmpty() ? null : new UpgradesRecipeData(Upgrade.buildMap(componentUpgrade));

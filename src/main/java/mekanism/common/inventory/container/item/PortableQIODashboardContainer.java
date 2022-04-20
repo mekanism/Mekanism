@@ -1,18 +1,18 @@
 package mekanism.common.inventory.container.item;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.PortableQIODashboardInventory;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
@@ -75,8 +75,9 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         super.clicked(slotId, dragType, clickType, player);
     }
 
+    @Nullable
     @Override
-    public ISecurityObject getSecurityObject() {
-        return SecurityUtils.wrapSecurityItem(stack);
+    public ICapabilityProvider getSecurityObject() {
+        return stack;
     }
 }

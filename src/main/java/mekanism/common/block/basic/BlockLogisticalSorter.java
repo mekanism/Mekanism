@@ -2,6 +2,7 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -10,7 +11,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,27 +59,26 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         //TODO: Make this be moved into the logistical sorter tile
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            if (SecurityUtils.canAccess(player, tile)) {
-                if (player.isShiftKeyDown()) {
-                    WorldUtils.dismantleBlock(state, world, pos);
-                    return InteractionResult.SUCCESS;
-                }
-                Direction change = tile.getDirection().getClockWise();
-                if (!tile.hasConnectedInventory()) {
-                    for (Direction dir : EnumUtils.DIRECTIONS) {
-                        BlockEntity tileEntity = WorldUtils.getTileEntity(world, pos.relative(dir));
-                        if (InventoryUtils.isItemHandler(tileEntity, dir)) {
-                            change = dir.getOpposite();
-                            break;
-                        }
-                    }
-                }
-                tile.setFacing(change);
-                world.updateNeighborsAt(pos, this);
+            if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                return InteractionResult.FAIL;
+            }
+            if (player.isShiftKeyDown()) {
+                WorldUtils.dismantleBlock(state, world, pos);
                 return InteractionResult.SUCCESS;
             }
-            SecurityUtils.displayNoAccess(player);
-            return InteractionResult.FAIL;
+            Direction change = tile.getDirection().getClockWise();
+            if (!tile.hasConnectedInventory()) {
+                for (Direction dir : EnumUtils.DIRECTIONS) {
+                    BlockEntity tileEntity = WorldUtils.getTileEntity(world, pos.relative(dir));
+                    if (InventoryUtils.isItemHandler(tileEntity, dir)) {
+                        change = dir.getOpposite();
+                        break;
+                    }
+                }
+            }
+            tile.setFacing(change);
+            world.updateNeighborsAt(pos, this);
+            return InteractionResult.SUCCESS;
         }
         return tile.openGui(player);
     }

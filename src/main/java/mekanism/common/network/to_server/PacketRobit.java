@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.TextComponentUtil;
@@ -13,7 +14,6 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismRobitSkins;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
@@ -55,7 +55,7 @@ public class PacketRobit implements IMekanismPacket {
         Player player = context.getSender();
         if (player != null) {
             EntityRobit robit = (EntityRobit) player.level.getEntity(entityId);
-            if (robit != null && SecurityUtils.canAccess(player, robit)) {
+            if (robit != null && MekanismAPI.getSecurityUtils().canAccess(player, robit)) {
                 if (activeType == RobitPacketType.GO_HOME) {
                     robit.goHome();
                 } else if (activeType == RobitPacketType.FOLLOW) {

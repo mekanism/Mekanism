@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.client.MekanismClient;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityData;
@@ -19,6 +20,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
 
     private final boolean isUpdate;
     //Sync
+    @Nullable
     private SecurityData securityData;
     private String playerUsername;
     private UUID playerUUID;
@@ -26,11 +28,15 @@ public class PacketSecurityUpdate implements IMekanismPacket {
     private Map<UUID, SecurityData> securityMap = new Object2ObjectOpenHashMap<>();
     private Map<UUID, String> uuidMap = new Object2ObjectOpenHashMap<>();
 
-    public PacketSecurityUpdate(UUID uuid, SecurityData data) {
+    public PacketSecurityUpdate(SecurityFrequency frequency) {
+        this(frequency.getOwner());
+        securityData = new SecurityData(frequency);
+    }
+
+    public PacketSecurityUpdate(UUID uuid) {
         this(true);
         playerUUID = uuid;
         playerUsername = MekanismUtils.getLastKnownUsername(uuid);
-        securityData = data;
     }
 
     public PacketSecurityUpdate() {

@@ -8,7 +8,6 @@ import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedItemButton;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
@@ -49,12 +48,10 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (MekanismConfig.general.allowProtection.get()) {
-            if (isItem) {
-                Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedItemButton.QIO_FREQUENCY_SELECT, currentHand));
-            } else {
-                Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedTileButton.QIO_FREQUENCY_SELECT, dataSource));
-            }
+        if (isItem) {
+            Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedItemButton.QIO_FREQUENCY_SELECT, currentHand));
+        } else {
+            Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedTileButton.QIO_FREQUENCY_SELECT, dataSource));
         }
     }
 }

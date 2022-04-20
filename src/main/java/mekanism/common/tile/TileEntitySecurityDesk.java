@@ -3,29 +3,27 @@ package mekanism.common.tile;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.MekanismAPI;
+import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -33,24 +31,22 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
-    public UUID ownerUUID;
-    public String clientOwner;
-
     private SecurityInventorySlot unlockSlot;
     private SecurityInventorySlot lockSlot;
 
     public TileEntitySecurityDesk(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SECURITY_DESK, pos, state);
         //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
-        // people unintentionally
-        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        // people unintentionally. We also disable the security object capability so that we only provide access to the security desk as an
+        // "owner object" which means that all access checks will be handled as requiring the owner
+        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Capabilities.SECURITY_OBJECT);
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(() -> ownerUUID, listener, 146, 18));
+        builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(this::getOwnerUUID, listener, 146, 18));
         builder.addSlot(lockSlot = SecurityInventorySlot.lock(listener, 146, 97));
         return builder.build();
     }
@@ -59,6 +55,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     protected void onUpdateServer() {
         super.onUpdateServer();
         SecurityFrequency frequency = getFreq();
+        UUID ownerUUID = getOwnerUUID();
         if (ownerUUID != null && frequency != null) {
             unlockSlot.unlock(ownerUUID);
             lockSlot.lock(ownerUUID, frequency);
@@ -74,7 +71,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             frequency.setOverridden(!frequency.isOverridden());
             markForSave();
             // send the security update to other players; this change will be visible on machine security tabs
-            Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
+            Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency));
             validateAccess();
         }
     }
@@ -86,8 +83,9 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (hasLevel()) {
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
+                ISecurityUtils securityUtils = MekanismAPI.getSecurityUtils();
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                    if (player.containerMenu instanceof ISecurityContainer container && !SecurityUtils.canAccess(player, container.getSecurityObject())) {
+                    if (player.containerMenu instanceof ISecurityContainer container && !securityUtils.canAccess(player, container.getSecurityObject())) {
                         //Boot any players out of the container if they no longer have access to viewing it
                         player.closeContainer();
                     }
@@ -99,8 +97,20 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public void removeTrusted(int index) {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
-            frequency.removeTrusted(index);
+            UUID removed = frequency.removeTrusted(index);
             markForSave();
+            if (removed != null && hasLevel()) {
+                MinecraftServer server = getWorldNN().getServer();
+                if (server != null) {
+                    Player player = server.getPlayerList().getPlayer(removed);
+                    if (player != null && player.containerMenu instanceof ISecurityContainer container &&
+                        !MekanismAPI.getSecurityUtils().canAccess(player, container.getSecurityObject())) {
+                        //If the player that got removed from being trusted no longer has access to view the container they were viewing
+                        // boot them out of it
+                        player.closeContainer();
+                    }
+                }
+            }
         }
     }
 
@@ -112,8 +122,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 frequency.setSecurityMode(mode);
                 markForSave();
                 // send the security update to other players; this change will be visible on machine security tabs
-                Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
-                if (old == SecurityMode.PUBLIC || (old == SecurityMode.TRUSTED && mode == SecurityMode.PRIVATE)) {
+                Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency));
+                if (MekanismAPI.getSecurityUtils().moreRestrictive(old, mode)) {
                     validateAccess();
                 }
             }
@@ -128,38 +138,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 markForSave();
             });
         }
-    }
-
-    @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
-        NBTUtils.setUUIDIfPresent(nbt, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
-        if (ownerUUID != null) {
-            nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
-        }
-    }
-
-    @Nonnull
-    @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
-        if (ownerUUID != null) {
-            updateTag.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
-            updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
-        }
-        return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        NBTUtils.setUUIDIfPresent(tag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-        NBTUtils.setStringIfPresent(tag, NBTConstants.OWNER_NAME, uuid -> clientOwner = uuid);
     }
 
     public SecurityFrequency getFreq() {

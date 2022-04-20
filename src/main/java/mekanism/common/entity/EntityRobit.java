@@ -38,15 +38,19 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.robit.IRobit;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.ISecurityObject;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -56,8 +60,6 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
-import mekanism.common.lib.security.ISecurityObject;
-import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
@@ -117,7 +119,9 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.ITeleporter;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -125,6 +129,10 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
 public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, ISustainedInventory, ISecurityObject, IMekanismStrictEnergyHandler,
       ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+
+    public static AttributeSupplier.Builder getDefaultAttributes() {
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
+    }
 
     public static final ModelProperty<ResourceLocation> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();
 
@@ -135,6 +143,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
     private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.getSerializer());
     private static final EntityDataAccessor<String> OWNER_NAME = define(EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.getSerializer());
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DROP_PICKUP = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<RobitSkin> SKIN = define(MekanismDataSerializers.<RobitSkin>getRegistryEntrySerializer());
@@ -151,7 +160,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
     private static final int ticksRequired = 100;
-    private SecurityMode securityMode = SecurityMode.PUBLIC;
+
+    private final CapabilityCache capabilityCache = new CapabilityCache();
     public Coord4D homeLocation;
     private int lastTextureUpdate;
     private int textureIndex;
@@ -187,6 +197,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         super(type, world);
         getNavigation().setCanFloat(false);
         setCustomNameVisible(true);
+        addCapabilityResolver(BasicCapabilityResolver.security(this));
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
@@ -241,10 +252,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         goalSelector.addGoal(4, new FloatGoal(this));
     }
 
-    public static AttributeSupplier.Builder getDefaultAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
-    }
-
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
@@ -256,6 +263,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         //Default before it has a brief chance to get set the owner to mekanism's fake player
         entityData.define(OWNER_UUID, Mekanism.gameProfile.getId());
         entityData.define(OWNER_NAME, "");
+        entityData.define(SECURITY, SecurityMode.PUBLIC);
         entityData.define(FOLLOW, false);
         entityData.define(DROP_PICKUP, false);
         entityData.define(SKIN, MekanismRobitSkins.BASE.get());
@@ -391,9 +399,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @Nonnull
     @Override
-    public InteractionResult interactAt(Player player, @Nonnull Vec3 vec, @Nonnull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown()) {
+    public InteractionResult interactAt(@Nonnull Player player, @Nonnull Vec3 vec, @Nonnull InteractionHand hand) {
+        if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, this)) {
+            return InteractionResult.FAIL;
+        } else if (player.isShiftKeyDown()) {
+            ItemStack stack = player.getItemInHand(hand);
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 if (!level.isClientSide) {
                     drop();
@@ -402,23 +412,15 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 player.swing(hand);
                 return InteractionResult.SUCCESS;
             }
-        } else {
-            if (!SecurityUtils.canAccess(player, this)) {
-                if (!level.isClientSide) {
-                    SecurityUtils.displayNoAccess(player);
-                }
-                return InteractionResult.FAIL;
+            return InteractionResult.PASS;
+        } else if (!level.isClientSide) {
+            MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
+            if (provider != null) {
+                //Validate the provider isn't null, it shouldn't be but just in case
+                NetworkHooks.openGui((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
             }
-            if (!level.isClientSide) {
-                MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
-                if (provider != null) {
-                    //Validate the provider isn't null, it shouldn't be but just in case
-                    NetworkHooks.openGui((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
-                }
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide);
         }
-        return InteractionResult.PASS;
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     private ItemStack getItemVariant() {
@@ -433,8 +435,10 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         ItemRobit item = (ItemRobit) stack.getItem();
         item.setInventory(getInventory(), stack);
         item.setName(stack, getName());
-        item.setOwnerUUID(stack, getOwnerUUID());
-        item.setSecurity(stack, getSecurityMode());
+        stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
+            security.setOwnerUUID(getOwnerUUID());
+            security.setSecurityMode(getSecurityMode());
+        });
         item.setSkin(stack, getSkin());
         return stack;
     }
@@ -463,7 +467,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
-        nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
+        nbtTags.putInt(NBTConstants.SECURITY_MODE, getSecurityMode().ordinal());
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
@@ -479,7 +483,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void readAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         super.readAdditionalSaveData(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, this::setSecurityMode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         homeLocation = Coord4D.read(nbtTags);
@@ -540,34 +544,25 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return entityData.get(OWNER_UUID);
     }
 
+    @Nonnull
     @Override
     public SecurityMode getSecurityMode() {
-        return securityMode;
+        return entityData.get(SECURITY);
     }
 
     @Override
-    public void setSecurityMode(SecurityMode mode) {
-        if (securityMode != mode) {
-            SecurityMode old = securityMode;
-            securityMode = mode;
-            onSecurityChanged(old, securityMode);
+    public void setSecurityMode(@Nonnull SecurityMode mode) {
+        SecurityMode current = getSecurityMode();
+        if (current != mode) {
+            entityData.set(SECURITY, mode);
+            onSecurityChanged(current, mode);
         }
     }
 
     @Override
-    public void onSecurityChanged(SecurityMode old, SecurityMode mode) {
-        //If the mode changed and the new security mode is more restrictive than the old one
-        if (old != mode && (old == SecurityMode.PUBLIC || (old == SecurityMode.TRUSTED && mode == SecurityMode.PRIVATE))) {
-            //and there are players using this tile
-            if (!playersUsing.isEmpty()) {
-                //then double check that all the players are actually supposed to be able to access the GUI
-                for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
-                    if (!SecurityUtils.canAccess(player, this)) {
-                        //and if they can't then boot them out
-                        player.closeContainer();
-                    }
-                }
-            }
+    public void onSecurityChanged(@Nonnull SecurityMode old, @Nonnull SecurityMode mode) {
+        if (!level.isClientSide) {
+            SecurityUtils.INSTANCE.securityChanged(playersUsing, this, old, mode);
         }
     }
 
@@ -579,6 +574,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         playersUsing.remove(player);
     }
 
+    @Override
     public void setOwnerUUID(UUID uuid) {
         entityData.set(OWNER_UUID, uuid);
         entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
@@ -696,7 +692,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     public void addContainerTrackers(MekanismContainer container) {
         MenuType<?> containerType = container.getType();
-        container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, this::getSecurityMode, this::setSecurityMode));
         if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
             container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
         } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.get()) {
@@ -728,7 +723,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         Objects.requireNonNull(skinProvider, "Robit skin cannot be null.");
         RobitSkin skin = skinProvider.getSkin();
         if (player != null) {
-            if (!SecurityUtils.canAccess(player, this) || !skin.isUnlocked(player)) {
+            if (!MekanismAPI.getSecurityUtils().canAccess(player, this) || !skin.isUnlocked(player)) {
                 return false;
             }
         }
@@ -779,5 +774,28 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
         }
         return textures.get(textureIndex);
+    }
+
+    protected final void addCapabilityResolver(ICapabilityResolver resolver) {
+        capabilityCache.addCapabilityResolver(resolver);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (capabilityCache.isCapabilityDisabled(capability, side)) {
+            return LazyOptional.empty();
+        } else if (capabilityCache.canResolve(capability)) {
+            return capabilityCache.getCapabilityUnchecked(capability, side);
+        }
+        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        //When the capabilities on our tile get invalidated, make sure to also invalidate all our cached ones
+        capabilityCache.invalidateAll();
     }
 }

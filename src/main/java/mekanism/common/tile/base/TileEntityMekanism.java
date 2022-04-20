@@ -33,6 +33,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -57,6 +58,7 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
@@ -91,7 +93,6 @@ import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.ISecurityTile;
-import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -285,6 +286,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
+            addCapabilityResolver(BasicCapabilityResolver.security(this));
         }
         if (hasSound()) {
             soundEvent = Attribute.get(block, AttributeSound.class).getSoundEvent();
@@ -490,8 +492,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public WrenchResult tryWrench(BlockState state, Player player, InteractionHand hand, BlockHitResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
-                SecurityUtils.displayNoAccess(player);
+            if (hasSecurity() && !MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, this)) {
                 return WrenchResult.NO_SECURITY;
             }
             if (player.isShiftKeyDown()) {
@@ -510,8 +511,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public InteractionResult openGui(Player player) {
         //Everything that calls this has isRemote being false but add the check just in case anyway
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
-            if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
-                SecurityUtils.displayNoAccess(player);
+            if (hasSecurity() && !MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, this)) {
                 return InteractionResult.FAIL;
             }
             //Pass on this activation if the player is rotating with a configurator
@@ -1169,22 +1169,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void onSecurityChanged(SecurityMode old, SecurityMode mode) {
-        //If the mode changed and this tile has a gui
-        if (old != mode && hasGui()) {
-            //and the new security mode is more restrictive than the old one
-            if (old == SecurityMode.PUBLIC || (old == SecurityMode.TRUSTED && mode == SecurityMode.PRIVATE)) {
-                //and there are players using this tile
-                if (!playersUsing.isEmpty()) {
-                    //then double check that all the players are actually supposed to be able to access the GUI
-                    for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
-                        if (!SecurityUtils.canAccess(player, this)) {
-                            //and if they can't then boot them out
-                            player.closeContainer();
-                        }
-                    }
-                }
-            }
+    public void onSecurityChanged(@Nonnull SecurityMode old, @Nonnull SecurityMode mode) {
+        if (!isRemote() && hasGui()) {
+            SecurityUtils.INSTANCE.securityChanged(playersUsing, this, old, mode);
         }
     }
     //End methods ITileSecurity
@@ -1284,7 +1271,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public void validateSecurityIsPublic() throws ComputerException {
-        if (hasSecurity() && getSecurityMode() != SecurityMode.PUBLIC) {
+        if (hasSecurity() && MekanismAPI.getSecurityUtils().getSecurityMode(this, isRemote()) != SecurityMode.PUBLIC) {
             throw new ComputerException("Setter not available due to machine security not being public.");
         }
     }

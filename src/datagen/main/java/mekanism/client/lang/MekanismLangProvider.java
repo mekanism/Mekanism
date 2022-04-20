@@ -926,9 +926,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SECURITY_OVERRIDE, "Security Override: %1$s");
         add(MekanismLang.NO_ACCESS, "You don't have access.");
         add(MekanismLang.TRUSTED_PLAYERS, "Trusted Players");
-        add(MekanismLang.PUBLIC, "Public");
-        add(MekanismLang.TRUSTED, "Trusted");
-        add(MekanismLang.PRIVATE, "Private");
+        add(APILang.PUBLIC, "Public");
+        add(APILang.TRUSTED, "Trusted");
+        add(APILang.PRIVATE, "Private");
         add(MekanismLang.PUBLIC_MODE, "Public Mode");
         add(MekanismLang.TRUSTED_MODE, "Trusted Mode");
         add(MekanismLang.PRIVATE_MODE, "Private Mode");

@@ -27,5 +27,6 @@ public class ItemBlockFactory extends ItemBlockMachine {
     @Override
     protected void addTypeDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, Attribute.get(getBlock(), AttributeFactoryType.class).getFactoryType()));
+        super.addTypeDetails(stack, world, tooltip, flag);
     }
 }

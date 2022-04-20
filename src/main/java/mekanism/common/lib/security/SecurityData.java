@@ -1,25 +1,18 @@
 package mekanism.common.lib.security;
 
+import mekanism.api.security.SecurityMode;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class SecurityData {
+public record SecurityData(SecurityMode mode, boolean override) {
 
-    public SecurityMode mode = SecurityMode.PUBLIC;
-    public boolean override;
-
-    public SecurityData() {
-    }
+    public static final SecurityData DUMMY = new SecurityData(SecurityMode.PUBLIC, false);
 
     public SecurityData(SecurityFrequency frequency) {
-        mode = frequency.getSecurityMode();
-        override = frequency.isOverridden();
+        this(frequency.getSecurityMode(), frequency.isOverridden());
     }
 
     public static SecurityData read(FriendlyByteBuf dataStream) {
-        SecurityData data = new SecurityData();
-        data.mode = dataStream.readEnum(SecurityMode.class);
-        data.override = dataStream.readBoolean();
-        return data;
+        return new SecurityData(dataStream.readEnum(SecurityMode.class), dataStream.readBoolean());
     }
 
     public void write(FriendlyByteBuf dataStream) {

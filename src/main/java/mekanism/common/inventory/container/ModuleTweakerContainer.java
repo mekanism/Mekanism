@@ -1,11 +1,11 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ModuleTweakerContainer extends MekanismContainer {
 
@@ -82,8 +83,9 @@ public class ModuleTweakerContainer extends MekanismContainer {
                player.getInventory().offhand.stream().anyMatch(ModuleTweakerContainer::isTweakableItem);
     }
 
+    @Nullable
     @Override
-    public ISecurityObject getSecurityObject() {
-        return ISecurityObject.NO_SECURITY;
+    public ICapabilityProvider getSecurityObject() {
+        return null;
     }
 }

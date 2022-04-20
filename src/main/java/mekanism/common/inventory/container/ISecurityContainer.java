@@ -1,11 +1,13 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.lib.security.ISecurityObject;
+import javax.annotation.Nullable;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public interface ISecurityContainer {
 
     /**
      * @apiNote Only for use on the server, which means that it doesn't need to properly update on the client side if the stack changes
      */
-    ISecurityObject getSecurityObject();
+    @Nullable
+    ICapabilityProvider getSecurityObject();
 }

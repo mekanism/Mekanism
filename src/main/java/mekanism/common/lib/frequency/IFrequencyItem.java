@@ -1,23 +1,14 @@
 package mekanism.common.lib.frequency;
 
-import java.util.UUID;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.security.IOwnerItem;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
-public interface IFrequencyItem extends IOwnerItem {
-
-    @Override
-    default void setOwnerUUID(@Nonnull ItemStack stack, @Nullable UUID owner) {
-        setFrequency(stack, null);
-        IOwnerItem.super.setOwnerUUID(stack, owner);
-    }
+public interface IFrequencyItem {
 
     @Nullable
     default FrequencyIdentity getFrequencyIdentity(ItemStack stack) {

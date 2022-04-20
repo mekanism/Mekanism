@@ -2,22 +2,20 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.energy.item.ItemStackEnergyHandler;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
-import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
-import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -27,12 +25,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemSustainedInventory {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setNoRepair());
+        super(block);
     }
 
     @Override
@@ -54,22 +51,21 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    protected void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-        SecurityUtils.addSecurityTooltip(stack, tooltip);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
+    protected void addTypeDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+        //Don't call super so that we can exclude the stored energy from being shown as we show it in hover text
     }
 
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
-        //Add the charged variant
         if (allowdedIn(group)) {
             EnergyCubeTier tier = Attribute.getTier(getBlock(), EnergyCubeTier.class);
-            ItemStack stack = StorageUtils.getFilledEnergyVariant(new ItemStack(this), tier.getMaxEnergy());
+            ItemStack stack = new ItemStack(this);
             if (tier == EnergyCubeTier.CREATIVE) {
                 //TODO: Add side specific NBT configuration here rather than in BlockEnergyCube
             }
+            //Add the empty and charged variants
             items.add(stack);
+            items.add(StorageUtils.getFilledEnergyVariant(stack.copy(), tier.getMaxEnergy()));
         }
     }
 
@@ -89,19 +85,15 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(Attribute.getTier(getBlock(), EnergyCubeTier.class)));
-    }
-
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        //Ignore NBT for energized items causing re-equip animations
-        return oldStack.getItem() != newStack.getItem();
-    }
-
-    @Override
-    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        //Ignore NBT for energized items causing block break reset
-        return oldStack.getItem() != newStack.getItem();
+    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
+        super.gatherCapabilities(capabilities, stack, nbt);
+        ItemCapability capability = RateLimitEnergyHandler.create(Attribute.getTier(getBlock(), EnergyCubeTier.class));
+        int index = IntStream.range(0, capabilities.size()).filter(i -> capabilities.get(i) instanceof ItemStackEnergyHandler).findFirst().orElse(-1);
+        if (index != -1) {
+            //This is likely always the path that will be taken
+            capabilities.set(index, capability);
+        } else {
+            capabilities.add(capability);
+        }
     }
 }

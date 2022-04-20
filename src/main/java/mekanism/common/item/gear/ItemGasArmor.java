@@ -7,9 +7,8 @@ import javax.annotation.Nullable;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.providers.IGasProvider;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
-import mekanism.common.integration.gender.GenderCapabilityHelper;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem {
 
@@ -66,10 +64,9 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem 
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(getFillRate(), getMaxGas(),
-              (item, automationType) -> automationType != AutomationType.EXTERNAL, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == getGasType().getChemical()));
-        GenderCapabilityHelper.addGenderCapability(this, wrapper);
-        return wrapper;
+    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
+        super.gatherCapabilities(capabilities, stack, nbt);
+        capabilities.add(RateLimitGasHandler.create(getFillRate(), getMaxGas(), (item, automationType) -> automationType != AutomationType.EXTERNAL,
+              ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == getGasType().getChemical()));
     }
 }

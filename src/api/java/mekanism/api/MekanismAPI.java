@@ -15,6 +15,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -35,7 +36,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.2.0";
+    public static final String API_VERSION = "10.2.1";
     public static final String MEKANISM_MODID = "mekanism";
     /**
      * Mekanism debug mode
@@ -75,6 +76,7 @@ public class MekanismAPI {
     private static IModuleHelper MODULE_HELPER;
     private static IRadiationManager RADIATION_MANAGER;
     private static ITooltipHelper TOOLTIP_HELPER;
+    private static ISecurityUtils SECURITY_UTILS;
     private static IMekanismJEIHelper JEI_HELPER;
 
     //Note: None of the empty variants support registry replacement
@@ -300,7 +302,7 @@ public class MekanismAPI {
      */
     public static IRadiationManager getRadiationManager() {
         if (RADIATION_MANAGER == null) {//Harmless race
-            lookupInstance(IRadiationManager.class, "mekanism.common.lib.radiation.RadiationManager", helper -> RADIATION_MANAGER = helper);
+            lookupInstance(IRadiationManager.class, "mekanism.common.lib.radiation.RadiationManager", manager -> RADIATION_MANAGER = manager);
         }
         return RADIATION_MANAGER;
     }
@@ -313,6 +315,16 @@ public class MekanismAPI {
             lookupInstance(ITooltipHelper.class, "mekanism.common.util.text.TooltipHelper", helper -> TOOLTIP_HELPER = helper);
         }
         return TOOLTIP_HELPER;
+    }
+
+    /**
+     * Provides access to various utility methods for interacting with Mekanism's security system.
+     */
+    public static ISecurityUtils getSecurityUtils() {
+        if (SECURITY_UTILS == null) {//Harmless race
+            lookupInstance(ISecurityUtils.class, "mekanism.common.util.SecurityUtils", utils -> SECURITY_UTILS = utils);
+        }
+        return SECURITY_UTILS;
     }
 
     /**

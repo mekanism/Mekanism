@@ -1,15 +1,16 @@
 package mekanism.common.inventory.container.entity.robit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.container.entity.IEntityContainer;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class RepairRobitContainer extends AnvilMenu implements IEntityContainer<EntityRobit>, ISecurityContainer {
 
@@ -44,8 +45,9 @@ public class RepairRobitContainer extends AnvilMenu implements IEntityContainer<
         entity.close(player);
     }
 
+    @Nullable
     @Override
-    public ISecurityObject getSecurityObject() {
+    public ICapabilityProvider getSecurityObject() {
         return entity;
     }
 }

@@ -997,22 +997,18 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return getCapability(capability, side);
     }
 
-    private boolean canAccessFromAnySide(@Nonnull Capability<?> capability) {
-        return capability == Capabilities.CONFIG_CARD_CAPABILITY;
-    }
-
     @Override
     public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);
-        } else if (canEverResolve(capability) && !canAccessFromAnySide(capability)) {
+        } else if (canEverResolve(capability) && IBoundingBlock.super.isOffsetCapabilityDisabled(capability, side, offset)) {
             //If we are not an item handler or energy capability, and it is a capability that we can support,
-            // but it is not one that we can access from any side so is only a capability that we want to expose
+            // but it is one that normally should be disabled for offset capabilities, then expose it but only do so
             // via our ports for things like computer integration capabilities, then we treat the capability as
             // disabled if it is not against one of our ports
-            return canAccessFromAnySide(capability) || notItemPort(side, offset) && notEnergyPort(side, offset);
+            return notItemPort(side, offset) && notEnergyPort(side, offset);
         }
         return false;
     }

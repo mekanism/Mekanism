@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.common.lib.security.SecurityMode;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;

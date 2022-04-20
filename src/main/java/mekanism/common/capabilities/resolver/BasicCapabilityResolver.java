@@ -1,9 +1,10 @@
 package mekanism.common.capabilities.resolver;
 
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.security.ISecurityObject;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -16,7 +17,7 @@ import net.minecraftforge.common.util.NonNullSupplier;
 public class BasicCapabilityResolver implements ICapabilityResolver {
 
     public static <T> BasicCapabilityResolver create(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
-        return new BasicCapabilityResolver(supportedCapability, supplier);
+        return new BasicCapabilityResolver(supplier, supportedCapability);
     }
 
     /**
@@ -33,12 +34,17 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
         return create(supportedCapability, () -> value);
     }
 
+    public static BasicCapabilityResolver security(ISecurityObject value) {
+        return new BasicCapabilityResolver(() -> value, Capabilities.OWNER_OBJECT, Capabilities.SECURITY_OBJECT);
+    }
+
     private final List<Capability<?>> supportedCapability;
     private final NonNullSupplier<?> supplier;
     private LazyOptional<?> cachedCapability;
 
-    protected <T> BasicCapabilityResolver(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
-        this.supportedCapability = Collections.singletonList(supportedCapability);
+    @SafeVarargs
+    protected <T> BasicCapabilityResolver(NonNullSupplier<T> supplier, Capability<? super T>... supportedCapabilities) {
+        this.supportedCapability = List.of(supportedCapabilities);
         this.supplier = supplier;
     }
 

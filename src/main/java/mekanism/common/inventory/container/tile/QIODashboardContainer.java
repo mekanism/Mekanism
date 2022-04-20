@@ -1,13 +1,14 @@
 package mekanism.common.inventory.container.tile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class QIODashboardContainer extends QIOItemViewerContainer {
 
@@ -49,8 +50,9 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
         return tile;
     }
 
+    @Nullable
     @Override
-    public ISecurityObject getSecurityObject() {
+    public ICapabilityProvider getSecurityObject() {
         return tile;
     }
 }

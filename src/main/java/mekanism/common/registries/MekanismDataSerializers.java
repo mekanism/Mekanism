@@ -1,6 +1,7 @@
 package mekanism.common.registries;
 
 import java.util.UUID;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.DataSerializerDeferredRegister;
 import mekanism.common.registration.impl.DataSerializerRegistryObject;
@@ -15,6 +16,7 @@ public class MekanismDataSerializers {
 
     @SuppressWarnings("rawtypes")
     private static final DataSerializerRegistryObject REGISTRY_ENTRY = registerRegistryEntry();
+    public static final DataSerializerRegistryObject<SecurityMode> SECURITY = DATA_SERIALIZERS.registerEnum("security", SecurityMode.class);
     public static final DataSerializerRegistryObject<UUID> UUID = DATA_SERIALIZERS.registerSimple("uuid", FriendlyByteBuf::writeUUID, FriendlyByteBuf::readUUID);
 
     @SuppressWarnings("unchecked")

@@ -2,15 +2,19 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
+import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +23,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem {
+public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem {
 
     public ItemPortableTeleporter(Properties properties) {
         super(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy, properties.rarity(Rarity.RARE));
@@ -27,7 +31,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-        tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), getOwnerUUID(stack)).getTextComponent());
+        MekanismAPI.getSecurityUtils().addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         super.appendHoverText(stack, world, tooltip, flag);
     }
@@ -39,22 +43,18 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (getOwnerUUID(stack) == null) {
-            if (!world.isClientSide) {
-                SecurityUtils.claimItem(player, stack);
-            }
-        } else if (SecurityUtils.canAccess(player, stack)) {
-            if (!world.isClientSide) {
-                MekanismContainerTypes.PORTABLE_TELEPORTER.tryOpenGui((ServerPlayer) player, hand, stack);
-            }
-        } else {
-            if (!world.isClientSide) {
-                SecurityUtils.displayNoAccess(player);
-            }
-            return InteractionResultHolder.fail(stack);
-        }
-        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+        return SecurityUtils.INSTANCE.claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<?> getContainerType() {
+        return MekanismContainerTypes.PORTABLE_TELEPORTER;
+    }
+
+    @Override
+    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
+        capabilities.add(new ItemStackOwnerObject());
+        super.gatherCapabilities(capabilities, stack, nbt);
     }
 }

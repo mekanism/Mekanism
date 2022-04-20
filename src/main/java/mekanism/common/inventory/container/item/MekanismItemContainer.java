@@ -1,12 +1,12 @@
 package mekanism.common.inventory.container.item;
 
+import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public abstract class MekanismItemContainer extends MekanismContainer {
 
@@ -30,9 +30,10 @@ public abstract class MekanismItemContainer extends MekanismContainer {
         }
     }
 
+    @Nullable
     @Override
-    public ISecurityObject getSecurityObject() {
-        return SecurityUtils.wrapSecurityItem(stack);
+    public ICapabilityProvider getSecurityObject() {
+        return stack;
     }
 
     public interface IItemContainerTracker {

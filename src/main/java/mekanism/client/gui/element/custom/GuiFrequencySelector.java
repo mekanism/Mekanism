@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -59,12 +60,12 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         this.yStart = yStart;
         boolean hasColor = frequencySelector instanceof IGuiColorFrequencySelector;
         scrollList = addChild(new GuiTextScrollList(frequencySelector, 27, yStart + 22, 122, 42));
-        publicButton = addChild(new TranslationButton(frequencySelector, 27, yStart, 60, 20, MekanismLang.PUBLIC, () -> {
+        publicButton = addChild(new TranslationButton(frequencySelector, 27, yStart, 60, 20, APILang.PUBLIC, () -> {
             this.publicFreq = true;
             this.scrollList.clearSelection();
             updateButtons();
         }));
-        privateButton = addChild(new TranslationButton(frequencySelector, 89, yStart, 60, 20, MekanismLang.PRIVATE, () -> {
+        privateButton = addChild(new TranslationButton(frequencySelector, 89, yStart, 60, 20, APILang.PRIVATE, () -> {
             this.publicFreq = false;
             this.scrollList.clearSelection();
             updateButtons();
