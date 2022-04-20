@@ -8,6 +8,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -39,15 +40,13 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
 
         //Certus Ore -> Certus Dust
         ItemStackToItemStackRecipeBuilder.enriching(
-                    IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_ORE),
+                    IngredientCreatorAccess.item().from(Ingredient.of(
+                          AEBlocks.QUARTZ_ORE,
+                          AEBlocks.DEEPSLATE_QUARTZ_ORE
+                    )),
                     AEItems.CERTUS_QUARTZ_DUST.stack(5)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "certus_ore_to_dust"));
-        ItemStackToItemStackRecipeBuilder.enriching(
-                    IngredientCreatorAccess.item().from(AEBlocks.DEEPSLATE_QUARTZ_ORE),
-                    AEItems.CERTUS_QUARTZ_DUST.stack(5)
-            ).addCondition(modLoaded)
-            .build(consumer, Mekanism.rl(basePath + "deepslate_certus_ore_to_dust"));
 
         //Certus Crystal Seed -> Certus Crystal
         ItemStackToItemStackRecipeBuilder.enriching(

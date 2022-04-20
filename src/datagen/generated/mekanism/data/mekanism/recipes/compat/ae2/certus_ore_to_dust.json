@@ -7,9 +7,14 @@
     }
   ],
   "input": {
-    "ingredient": {
-      "item": "ae2:quartz_ore"
-    }
+    "ingredient": [
+      {
+        "item": "ae2:quartz_ore"
+      },
+      {
+        "item": "ae2:deepslate_quartz_ore"
+      }
+    ]
   },
   "output": {
     "item": "ae2:certus_quartz_dust",
