@@ -8,9 +8,9 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.tags.TagKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 @ParametersAreNonnullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
@@ -23,10 +23,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
     protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Certus Crystal -> Certus Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-                    IngredientCreatorAccess.item().from(Ingredient.of(
-                          AEItems.CERTUS_QUARTZ_CRYSTAL,
-                          AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
-                    )),
+                    IngredientCreatorAccess.item().from(ItemTags.create(new ResourceLocation("forge", "gems/certus_quartz"))),
                     AEItems.CERTUS_QUARTZ_DUST.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "certus_crystal_to_dust"));
@@ -40,10 +37,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
 
         //Certus Ore -> Certus Dust
         ItemStackToItemStackRecipeBuilder.enriching(
-                    IngredientCreatorAccess.item().from(Ingredient.of(
-                          AEBlocks.QUARTZ_ORE,
-                          AEBlocks.DEEPSLATE_QUARTZ_ORE
-                    )),
+                    IngredientCreatorAccess.item().from(ItemTags.create(new ResourceLocation("forge", "ores/certus_quartz"))),
                     AEItems.CERTUS_QUARTZ_DUST.stack(5)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "certus_ore_to_dust"));
