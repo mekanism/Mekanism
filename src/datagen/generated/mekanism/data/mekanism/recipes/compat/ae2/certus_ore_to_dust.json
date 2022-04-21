@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "item": "ae2:quartz_ore"
+      "tag": "forge:ores/certus_quartz"
     }
   },
   "output": {
