@@ -1,11 +1,16 @@
 package mekanism.common.integration.curios;
 
 import mekanism.client.render.MekanismCurioRenderer;
+import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.JetpackArmor;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -27,10 +32,17 @@ public class CuriosIntegration {
     }
 
     public static void addListeners(final IEventBus bus) {
-        bus.addListener((FMLClientSetupEvent event) -> {
-            CuriosRendererRegistry.register(MekanismItems.JETPACK.asItem(), () -> new MekanismCurioRenderer(JetpackArmor.JETPACK));
-            CuriosRendererRegistry.register(MekanismItems.ARMORED_JETPACK.asItem(), () -> new MekanismCurioRenderer(JetpackArmor.ARMORED_JETPACK));
-        });
+        bus.addListener((FMLClientSetupEvent event) -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
+    }
+
+    private static void registerRenderers(ItemLike... items) {
+        for (final ItemLike item : items) {
+            if (item.asItem() instanceof ArmorItem armour && RenderProperties.get(armour) instanceof ISpecialGear gear) {
+                CuriosRendererRegistry.register(armour, () -> new MekanismCurioRenderer(gear.getGearModel(armour.getSlot())));
+            } else {
+                Mekanism.logger.warn("Attempted to register Curios renderer for a non-special gear item.");
+            }
+        }
     }
 
     public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity living) {

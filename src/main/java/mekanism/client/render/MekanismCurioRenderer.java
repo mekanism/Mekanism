@@ -15,9 +15,9 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 public record MekanismCurioRenderer(ICustomArmor model) implements ICurioRenderer {
 
     @Override
-    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        final M model = renderLayerParent.getModel();
-        if (model instanceof HumanoidModel<? extends LivingEntity> humanoidModel) {
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack,
+                  RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (renderLayerParent.getModel() instanceof HumanoidModel<? extends LivingEntity> humanoidModel) {
             this.model.render(humanoidModel, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, partialTicks, stack.hasFoil(), slotContext.entity(), stack);
         }
     }

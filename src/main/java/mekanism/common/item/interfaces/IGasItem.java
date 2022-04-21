@@ -33,13 +33,8 @@ public interface IGasItem {
 
     @Nonnull
     default GasStack getGas(ItemStack stack) {
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem instanceof IMekanismGasHandler gasHandler) {
-                return gasHandler.getChemicalTank(0, null).getStack();
-            }
-        }
-        return GasStack.EMPTY;
+        // TODO Change this and no longer hardcode checking in the first tank, if we end up with items that have more than one tank
+        return stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY)
+                .map(handler -> handler.getChemicalInTank(0)).orElse(GasStack.EMPTY);
     }
 }

@@ -19,11 +19,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.Comparator;
 
 public class MekanismKeyHandler {
 
@@ -76,15 +73,14 @@ public class MekanismKeyHandler {
             } else if (Mekanism.hooks.CuriosLoaded) {
                 CuriosIntegration.findCurio(player, s -> s.canEquip(slot, player))
                         .stream()
-                        .filter(r -> IModeItem.isModeItem(r.stack(), slot))
-                        .max((a, b) -> {
-                            final ItemStack stackA = a.stack();
-                            final ItemStack stackB = b.stack();
-                            if (stackA.getItem() instanceof IGasItem gasA && stackB.getItem() instanceof IGasItem gasB) {
-                                return Comparator.<Long>naturalOrder().compare(gasA.getGas(stackA).getAmount(), gasB.getGas(stackB).getAmount());
+                        .filter(r -> {
+                            final boolean isMode = IModeItem.isModeItem(r.stack(), slot);
+                            if (r.stack().getItem() instanceof IGasItem gas) {
+                                return isMode && !gas.getGas(r.stack()).isEmpty();
                             }
-                            return 0;
+                            return isMode;
                         })
+                        .findFirst()
                         .ifPresent(result -> {
                             Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(result.slotContext().index(), player.isShiftKeyDown()));
                             SoundHandler.playSound(MekanismSounds.HYDRAULIC);
@@ -92,4 +88,5 @@ public class MekanismKeyHandler {
             }
         }
     }
+
 }

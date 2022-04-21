@@ -3,6 +3,7 @@ package mekanism.client.render.hud;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import mekanism.client.MekanismClient;
@@ -42,10 +43,10 @@ public class MekaSuitHUD implements IIngameOverlay {
                 }
             }
             if (Mekanism.hooks.CuriosLoaded) {
-                final var invOptional = CuriosIntegration.getCuriosInventory(minecraft.player);
+                final Optional<? extends IItemHandler> invOptional = CuriosIntegration.getCuriosInventory(minecraft.player);
                 if (invOptional.isPresent()) { // Can't use ifPresent due to count not being final
                     final IItemHandler inv = invOptional.get();
-                    for (int i = 0; i < inv.getSlots(); i++) {
+                    for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
                         final ItemStack stack = inv.getStackInSlot(i);
                         if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
                             count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, minecraft.player, stack), renderStrings);
@@ -76,9 +77,9 @@ public class MekaSuitHUD implements IIngameOverlay {
     }
 
     private int makeComponent(Consumer<List<Component>> adder, List<List<Component>> initial) {
-        List<Component> list = new ArrayList<>();
+        final List<Component> list = new ArrayList<>();
         adder.accept(list);
-        int size = list.size();
+        final int size = list.size();
         if (size > 0) {
             initial.add(list);
         }

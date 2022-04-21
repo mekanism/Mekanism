@@ -1,6 +1,5 @@
 package mekanism.common.item.gear;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -44,7 +43,6 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.registries.ForgeRegistries;
 import top.theillusivec4.curios.api.SlotResult;
 
 public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
@@ -99,10 +97,10 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         if (slotType == getSlot()) {
-            final ItemJetpack jetpack = (ItemJetpack) stack.getItem();
+            ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
             GasStack stored = GasStack.EMPTY;
-            final Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+            Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
             if (capability.isPresent()) {
                 final IGasHandler gasHandlerItem = capability.get();
                 if (gasHandlerItem.getTanks() > 0) {
@@ -111,11 +109,6 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
             }
             list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
         }
-    }
-
-    @Override
-    public void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
-        addHUDStrings(list, player, stack, getSlot());
     }
 
     @Override
@@ -153,8 +146,9 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     @Nonnull
     public static ItemStack getJetpack(final LivingEntity entity) {
         final ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof ItemJetpack) return chest;
-        if (Mekanism.hooks.CuriosLoaded) {
+        if (chest.getItem() instanceof ItemJetpack) {
+            return chest;
+        } else if (Mekanism.hooks.CuriosLoaded) {
             return findNonEmptyJetpack(entity);
         }
         return ItemStack.EMPTY;
