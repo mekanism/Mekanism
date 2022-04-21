@@ -666,7 +666,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %1$s mB/t");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %1$s");
         add(MekanismLang.DECAY_IMMUNE, "Will not decay inside a Radioactive Waste Barrel");
-        add(MekanismLang.CURIO_NOT_USABLE, "This item is usable as a curio, but it has not been added to a Curios tag");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");

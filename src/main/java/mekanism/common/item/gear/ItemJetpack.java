@@ -81,9 +81,6 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
-        if (flag.isAdvanced() && Mekanism.hooks.CuriosLoaded && !(stack.is(MekanismTags.Items.CURIOS_BODY) || stack.is(MekanismTags.Items.CURIOS_BACK))) {
-            tooltip.add(MekanismLang.CURIO_NOT_USABLE.translateColored(EnumColor.DARK_GRAY));
-        }
     }
 
     public JetpackMode getMode(ItemStack stack) {
