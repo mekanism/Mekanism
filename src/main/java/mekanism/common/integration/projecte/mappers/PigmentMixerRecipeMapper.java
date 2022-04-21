@@ -30,7 +30,7 @@ public class PigmentMixerRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.PIGMENT_MIXING;
+        return recipeType == MekanismRecipeType.PIGMENT_MIXING.get();
     }
 
     @Override

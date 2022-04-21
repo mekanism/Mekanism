@@ -32,7 +32,7 @@ public class ItemStackGasToItemStackRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.COMPRESSING || recipeType == MekanismRecipeType.PURIFYING || recipeType == MekanismRecipeType.INJECTING;
+        return recipeType == MekanismRecipeType.COMPRESSING.get() || recipeType == MekanismRecipeType.PURIFYING.get() || recipeType == MekanismRecipeType.INJECTING.get();
     }
 
     @Override

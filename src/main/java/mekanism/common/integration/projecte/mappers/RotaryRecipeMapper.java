@@ -28,7 +28,7 @@ public class RotaryRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.ROTARY;
+        return recipeType == MekanismRecipeType.ROTARY.get();
     }
 
     @Override

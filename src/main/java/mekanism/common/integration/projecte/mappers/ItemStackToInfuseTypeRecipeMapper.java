@@ -28,7 +28,7 @@ public class ItemStackToInfuseTypeRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.INFUSION_CONVERSION;
+        return recipeType == MekanismRecipeType.INFUSION_CONVERSION.get();
     }
 
     @Override

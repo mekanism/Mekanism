@@ -30,7 +30,7 @@ public class CombinerRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.COMBINING;
+        return recipeType == MekanismRecipeType.COMBINING.get();
     }
 
     @Override

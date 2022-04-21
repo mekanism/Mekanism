@@ -28,7 +28,7 @@ public class ItemStackToPigmentRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.PIGMENT_EXTRACTING;
+        return recipeType == MekanismRecipeType.PIGMENT_EXTRACTING.get();
     }
 
     @Override

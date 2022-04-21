@@ -32,7 +32,7 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.SEPARATING;
+        return recipeType == MekanismRecipeType.SEPARATING.get();
     }
 
     @Override

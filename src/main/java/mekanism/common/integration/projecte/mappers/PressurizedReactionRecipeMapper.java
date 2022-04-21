@@ -40,7 +40,7 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.REACTION;
+        return recipeType == MekanismRecipeType.REACTION.get();
     }
 
     @Override

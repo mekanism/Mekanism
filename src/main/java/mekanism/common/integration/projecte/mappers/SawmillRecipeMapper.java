@@ -36,7 +36,7 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.SAWING;
+        return recipeType == MekanismRecipeType.SAWING.get();
     }
 
     @Override

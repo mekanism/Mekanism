@@ -29,7 +29,7 @@ public class ChemicalCrystallizerRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.CRYSTALLIZING;
+        return recipeType == MekanismRecipeType.CRYSTALLIZING.get();
     }
 
     @Override

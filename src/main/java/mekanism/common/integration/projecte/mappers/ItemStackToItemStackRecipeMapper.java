@@ -27,7 +27,7 @@ public class ItemStackToItemStackRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.CRUSHING || recipeType == MekanismRecipeType.ENRICHING || recipeType == MekanismRecipeType.SMELTING;
+        return recipeType == MekanismRecipeType.CRUSHING.get() || recipeType == MekanismRecipeType.ENRICHING.get() || recipeType == MekanismRecipeType.SMELTING.get();
     }
 
     @Override

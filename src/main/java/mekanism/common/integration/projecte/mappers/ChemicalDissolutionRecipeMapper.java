@@ -33,7 +33,7 @@ public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.DISSOLUTION;
+        return recipeType == MekanismRecipeType.DISSOLUTION.get();
     }
 
     @Override

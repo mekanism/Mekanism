@@ -28,7 +28,7 @@ public class ItemStackToGasRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.GAS_CONVERSION || recipeType == MekanismRecipeType.OXIDIZING;
+        return recipeType == MekanismRecipeType.GAS_CONVERSION.get() || recipeType == MekanismRecipeType.OXIDIZING.get();
     }
 
     @Override

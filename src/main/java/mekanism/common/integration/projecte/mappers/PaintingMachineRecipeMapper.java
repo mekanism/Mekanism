@@ -31,7 +31,7 @@ public class PaintingMachineRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.PAINTING;
+        return recipeType == MekanismRecipeType.PAINTING.get();
     }
 
     @Override

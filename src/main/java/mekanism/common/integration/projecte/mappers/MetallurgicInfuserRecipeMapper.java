@@ -31,7 +31,7 @@ public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.METALLURGIC_INFUSING;
+        return recipeType == MekanismRecipeType.METALLURGIC_INFUSING.get();
     }
 
     @Override

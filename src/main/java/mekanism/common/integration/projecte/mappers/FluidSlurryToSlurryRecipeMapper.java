@@ -31,7 +31,7 @@ public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.WASHING;
+        return recipeType == MekanismRecipeType.WASHING.get();
     }
 
     @Override

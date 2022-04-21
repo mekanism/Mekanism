@@ -27,7 +27,7 @@ public class GasToGasRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.ACTIVATING || recipeType == MekanismRecipeType.CENTRIFUGING;
+        return recipeType == MekanismRecipeType.ACTIVATING.get() || recipeType == MekanismRecipeType.CENTRIFUGING.get();
     }
 
     @Override

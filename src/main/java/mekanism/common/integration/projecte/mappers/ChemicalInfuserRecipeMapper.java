@@ -30,7 +30,7 @@ public class ChemicalInfuserRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.CHEMICAL_INFUSING;
+        return recipeType == MekanismRecipeType.CHEMICAL_INFUSING.get();
     }
 
     @Override
