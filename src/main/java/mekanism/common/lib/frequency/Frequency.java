@@ -3,6 +3,7 @@ package mekanism.common.lib.frequency;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import mekanism.api.IFrequency;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.network.BasePacketHandler;
@@ -12,7 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public abstract class Frequency {
+public abstract class Frequency implements IFrequency {
 
     private String name;
 
@@ -58,6 +59,7 @@ public abstract class Frequency {
         return name;
     }
 
+    @Override
     public final SecurityMode getSecurity() {
         //TODO: Eventually we may want to allow for protected frequencies, at which point instead of
         // storing a boolean publicFreq we would just store the security mode
@@ -73,6 +75,7 @@ public abstract class Frequency {
         return this;
     }
 
+    @Override
     public boolean isValid() {
         return valid;
     }
@@ -81,11 +84,13 @@ public abstract class Frequency {
         this.valid = valid;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
     @Nullable
+    @Override
     public UUID getOwner() {
         return ownerUUID;
     }

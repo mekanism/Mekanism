@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Contract;
 
 /**
  * Utility class for interacting with Mekanism's security system. Get an instance from {@link mekanism.api.MekanismAPI#getSecurityUtils()}.
+ *
+ * @since 10.2.1
  */
 @ParametersAreNonnullByDefault
 public interface ISecurityUtils {

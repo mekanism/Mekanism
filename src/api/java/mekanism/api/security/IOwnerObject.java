@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
  * It is assumed that exposed {@link ISecurityObject security objects} always will have a corresponding owner object exposed, but it is not safe to assume that just
  * because an exposed owner object is an instance of an {@link ISecurityObject} that the object actually has security. The only way to know for certain if it does is by
  * checking if the provider exposes a security capability.
+ * @since 10.2.1
  */
 public interface IOwnerObject {
 

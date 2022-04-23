@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 
 /**
  * Simple security enum for defining different access levels.
+ *
+ * @since 10.2.1
  */
 public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComponent {
     /**

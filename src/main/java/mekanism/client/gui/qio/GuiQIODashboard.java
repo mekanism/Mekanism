@@ -5,7 +5,6 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,7 +32,7 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
     @Override
     public FrequencyIdentity getFrequency() {
-        QIOFrequency freq = tile.getFrequency(FrequencyType.QIO);
+        QIOFrequency freq = tile.getQIOFrequency();
         return freq == null ? null : freq.getIdentity();
     }
 }

@@ -17,7 +17,6 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
-import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -96,7 +95,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag nbtTags) {
-        QIOFrequency freq = getFrequency(FrequencyType.QIO);
+        QIOFrequency freq = getQIOFrequency();
         if (freq != null) {
             // save all item data before we save
             freq.saveAll();

@@ -108,8 +108,8 @@ public class MekanismAPI {
      *
      * @return Name of the {@link Gas} registry.
      *
-     * @apiNote When registering {@link Gas gases} using {@link net.minecraftforge.registries.DeferredRegister<Gas>}, use this method to get access to the {@link
-     * ResourceKey}.
+     * @apiNote When registering {@link Gas gases} using {@link net.minecraftforge.registries.DeferredRegister<Gas>}, use this method to get access to the
+     * {@link ResourceKey}.
      */
     @Nonnull
     public static ResourceKey<? extends Registry<Gas>> gasRegistryName() {
@@ -147,8 +147,8 @@ public class MekanismAPI {
      *
      * @return Name of the {@link Slurry} registry.
      *
-     * @apiNote When registering {@link Slurry sluries} using {@link net.minecraftforge.registries.DeferredRegister<Slurry>}, use this method to get access to the {@link
-     * ResourceKey}.
+     * @apiNote When registering {@link Slurry sluries} using {@link net.minecraftforge.registries.DeferredRegister<Slurry>}, use this method to get access to the
+     * {@link ResourceKey}.
      */
     @Nonnull
     public static ResourceKey<? extends Registry<Slurry>> slurryRegistryName() {
@@ -201,11 +201,11 @@ public class MekanismAPI {
     /**
      * Gets the Forge Registry for {@link InfuseType}.
      *
-     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<InfuseType>} instead of {@link
-     * net.minecraftforge.event.RegistryEvent.Register<InfuseType>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)}
-     * rather than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
-     * net.minecraftforge.registries.NewRegistryEvent} events have been fired. This method is marked as {@link Nonnull} just because except for when this is being called
-     * super early it is never {@code null}.
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<InfuseType>} instead of
+     * {@link net.minecraftforge.event.RegistryEvent.Register<InfuseType>} make sure to use
+     * {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)} rather than passing the result of this method to the other create method, as
+     * this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.registries.NewRegistryEvent} events have been fired. This
+     * method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      * @see #infuseTypeRegistryName()
      */
     @Nonnull
@@ -219,11 +219,11 @@ public class MekanismAPI {
     /**
      * Gets the Forge Registry for {@link Pigment}.
      *
-     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<Pigment>} instead of {@link
-     * net.minecraftforge.event.RegistryEvent.Register<Pigment>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)}
-     * rather than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
-     * net.minecraftforge.registries.NewRegistryEvent} events have been fired. This method is marked as {@link Nonnull} just because except for when this is being called
-     * super early it is never {@code null}.
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<Pigment>} instead of
+     * {@link net.minecraftforge.event.RegistryEvent.Register<Pigment>} make sure to use
+     * {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)} rather than passing the result of this method to the other create method, as
+     * this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.registries.NewRegistryEvent} events have been fired. This
+     * method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      * @see #pigmentRegistryName()
      */
     @Nonnull
@@ -237,10 +237,11 @@ public class MekanismAPI {
     /**
      * Gets the Forge Registry for {@link Slurry}.
      *
-     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<Slurry>} instead of {@link net.minecraftforge.event.RegistryEvent.Register<Slurry>}
-     * make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)} rather than passing the result of this method to the other
-     * create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.registries.NewRegistryEvent} events have been
-     * fired. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<Slurry>} instead of
+     * {@link net.minecraftforge.event.RegistryEvent.Register<Slurry>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)}
+     * rather than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the
+     * {@link net.minecraftforge.registries.NewRegistryEvent} events have been fired. This method is marked as {@link Nonnull} just because except for when this is being
+     * called super early it is never {@code null}.
      * @see #slurryRegistryName()
      */
     @Nonnull
@@ -254,11 +255,11 @@ public class MekanismAPI {
     /**
      * Gets the Forge Registry for {@link ModuleData}.
      *
-     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<ModuleData>} instead of {@link
-     * net.minecraftforge.event.RegistryEvent.Register<ModuleData>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)}
-     * rather than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
-     * net.minecraftforge.registries.NewRegistryEvent} events have been fired. This method is marked as {@link Nonnull} just because except for when this is being called
-     * super early it is never {@code null}.
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<ModuleData>} instead of
+     * {@link net.minecraftforge.event.RegistryEvent.Register<ModuleData>} make sure to use
+     * {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)} rather than passing the result of this method to the other create method, as
+     * this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.registries.NewRegistryEvent} events have been fired. This
+     * method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      * @see #moduleRegistryName()
      */
     @Nonnull
@@ -272,11 +273,11 @@ public class MekanismAPI {
     /**
      * Gets the Forge Registry for {@link RobitSkin}.
      *
-     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<RobitSkin>} instead of {@link
-     * net.minecraftforge.event.RegistryEvent.Register<RobitSkin>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)}
-     * rather than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
-     * net.minecraftforge.registries.NewRegistryEvent} events have been fired. This method is marked as {@link Nonnull} just because except for when this is being called
-     * super early it is never {@code null}.
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<RobitSkin>} instead of
+     * {@link net.minecraftforge.event.RegistryEvent.Register<RobitSkin>} make sure to use
+     * {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)} rather than passing the result of this method to the other create method, as
+     * this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.registries.NewRegistryEvent} events have been fired. This
+     * method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      * @see #robitSkinRegistryName()
      */
     @Nonnull
@@ -319,6 +320,8 @@ public class MekanismAPI {
 
     /**
      * Provides access to various utility methods for interacting with Mekanism's security system.
+     *
+     * @since 10.2.1
      */
     public static ISecurityUtils getSecurityUtils() {
         if (SECURITY_UTILS == null) {//Harmless race

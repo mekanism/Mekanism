@@ -71,6 +71,9 @@ public class HashedItem {
         if (itemStack.hasTag()) {
             code = 31 * code + itemStack.getTag().hashCode();
         }
+        //TODO: Eventually it may be worth also hashing the capability NBT, but as there is no way to access it
+        // without reflection we don't do that for now as odds are grabbing it would have more of a performance
+        // impact than comparing the cap nbt in equals for the few items from mods that do make use of it
         return code;
     }
 

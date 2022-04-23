@@ -13,6 +13,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  * While an {@link IOwnerObject owner object} <em>must</em> be exposed if this object is exposed, it is not safe to assume that just because an exposed
  * {@link IOwnerObject} is an instance of an {@link ISecurityObject} that the object actually has security. The only way to know for certain if it does is by checking if
  * the provider exposes a security capability.
+ * @since 10.2.1
  */
 @ParametersAreNonnullByDefault
 public interface ISecurityObject extends IOwnerObject {

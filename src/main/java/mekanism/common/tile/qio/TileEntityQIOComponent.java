@@ -77,13 +77,13 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
 
     @ComputerMethod
     private boolean hasFrequency() {
-        QIOFrequency frequency = getFrequency(FrequencyType.QIO);
+        QIOFrequency frequency = getQIOFrequency();
         return frequency != null && frequency.isValid();
     }
 
     @ComputerMethod(nameOverride = "getFrequency")
     protected QIOFrequency computerGetFrequency() throws ComputerException {
-        QIOFrequency frequency = getFrequency(FrequencyType.QIO);
+        QIOFrequency frequency = getQIOFrequency();
         if (frequency == null || !frequency.isValid()) {
             throw new ComputerException("No frequency is currently selected.");
         }

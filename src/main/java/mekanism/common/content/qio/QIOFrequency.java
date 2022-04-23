@@ -18,10 +18,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -46,7 +48,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class QIOFrequency extends Frequency implements IColorableFrequency {
+public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
 
     private static final Random rand = new Random();
 
@@ -108,6 +110,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         return itemDataMap;
     }
 
+    @Override
+    public void forAllStored(ObjLongConsumer<ItemStack> consumer) {
+        itemDataMap.forEach((type, data) -> consumer.accept(type.createStack(1), data.getCount()));
+    }
+
     @Nullable
     public HashedItem getTypeByUUID(@Nullable UUID uuid) {
         return uuid == null ? null : itemTypeLookup.inverse().get(uuid);
@@ -118,7 +125,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         return itemTypeLookup.get(item);
     }
 
-    //TODO: Expose to the API. This Returns the amount actually inserted
+    @Override
     public long massInsert(ItemStack stack, long amount, Action action) {
         if (stack.isEmpty() || amount <= 0) {
             return 0;
@@ -192,7 +199,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         return new QIOItemTypeData(type);
     }
 
-    //TODO: Expose to the API. This Returns the amount actually extracted
+    @Override
     public long massExtract(ItemStack stack, long amount, Action action) {
         if (amount <= 0 || stack.isEmpty() || itemDataMap.isEmpty()) {
             return 0;
@@ -321,7 +328,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
                     //If our return map doesn't already have the stored value in it, calculate it.
                     // The case where it may have the stored value in it is if an item has multiple
                     // tags that all match the wildcard
-                    ret.computeIfAbsent(item, this::getStored);
+                    ret.computeIfAbsent(item, (HashedItem type) -> getStored(type));
                 }
             }
             return ret;
@@ -410,6 +417,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
 
     public int getTotalItemTypeCapacity() {
         return totalTypeCapacity;
+    }
+
+    @Override
+    public long getStored(ItemStack type) {
+        return getStored(HashedItem.raw(type));
     }
 
     public long getStored(HashedItem itemType) {
