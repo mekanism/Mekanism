@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 8,
+    "ingredient": {
+      "tag": "forge:raw_materials/lead"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone/deepslate"
+    }
+  },
+  "output": {
+    "item": "mekanism:deepslate_lead_ore"
+  }
+}

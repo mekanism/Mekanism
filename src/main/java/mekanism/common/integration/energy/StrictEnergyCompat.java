@@ -6,7 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -21,13 +21,8 @@ public class StrictEnergyCompat implements IEnergyCompat {
 
     @Nonnull
     @Override
-    public Capability<?> getCapability() {
+    public Capability<IStrictEnergyHandler> getCapability() {
         return Capabilities.STRICT_ENERGY_CAPABILITY;
-    }
-
-    @Override
-    public boolean isCapabilityPresent(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, Capabilities.STRICT_ENERGY_CAPABILITY, side).isPresent();
     }
 
     @Nonnull
@@ -39,6 +34,6 @@ public class StrictEnergyCompat implements IEnergyCompat {
     @Nonnull
     @Override
     public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, Capabilities.STRICT_ENERGY_CAPABILITY, side);
+        return CapabilityUtils.getCapability(provider, getCapability(), side);
     }
 }

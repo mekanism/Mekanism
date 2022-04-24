@@ -1,6 +1,5 @@
 package mekanism.common.config;
 
-import com.mojang.datafixers.util.Pair;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -10,6 +9,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
+import mekanism.common.inventory.container.SelectedWindowData.CachedWindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -48,7 +48,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue hudDangerColor;
     public final CachedFloatValue hudJitter;
     public final CachedBooleanValue hudCompassEnabled;
-    public final Map<String, Pair<CachedIntValue, CachedIntValue>> lastWindowPositions = new HashMap<>();
+    public final Map<String, CachedWindowPosition> lastWindowPositions = new HashMap<>();
 
     public final CachedEnumValue<ListSortType> qioItemViewerSortType;
     public final CachedEnumValue<SortDirection> qioItemViewerSortDirection;
@@ -63,7 +63,7 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("enablePlayerSounds", true));
         enableMachineSounds = CachedBooleanValue.wrap(this, builder.comment("If enabled machines play their sounds while running.")
               .define("enableMachineSounds", true));
-        holidays = CachedBooleanValue.wrap(this, builder.comment("Christmas/New Years greetings in chat.")
+        holidays = CachedBooleanValue.wrap(this, builder.comment("Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years).")
               .define("holidays", true));
         baseSoundVolume = CachedFloatValue.wrap(this, builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.")
               .defineInRange("baseSoundVolume", 1, 0, Float.MAX_VALUE));
@@ -114,7 +114,7 @@ public class ClientConfig extends BaseMekanismConfig {
         for (WindowType windowType : WindowType.values()) {
             for (String savePath : windowType.getSavePaths()) {
                 builder.push(savePath);
-                lastWindowPositions.put(savePath, Pair.of(
+                lastWindowPositions.put(savePath, new CachedWindowPosition(
                       CachedIntValue.wrap(this, builder.define("x", Integer.MAX_VALUE)),
                       CachedIntValue.wrap(this, builder.define("y", Integer.MAX_VALUE))
                 ));

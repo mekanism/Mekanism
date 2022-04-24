@@ -4,15 +4,15 @@ import javax.annotation.Nonnull;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDispenseResult;
 import mekanism.api.gear.IModule;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.OptionalDispenseBehavior;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
+import net.minecraft.world.item.ItemStack;
 
-public class ModuleDispenseBehavior extends OptionalDispenseBehavior {
+public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
 
     @Nonnull
     @Override
-    protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+    protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
         //Note: We don't check if the stack is empty as it is never checked in vanilla's ones, and we also
         // don't check if the stack is a module container as we only register this dispense behavior on stacks that are
         setSuccess(true);
@@ -38,11 +38,11 @@ public class ModuleDispenseBehavior extends OptionalDispenseBehavior {
         return super.execute(source, stack);
     }
 
-    private <MODULE extends ICustomModule<MODULE>> ModuleDispenseResult onModuleDispense(IModule<MODULE> module, @Nonnull IBlockSource source) {
+    private <MODULE extends ICustomModule<MODULE>> ModuleDispenseResult onModuleDispense(IModule<MODULE> module, @Nonnull BlockSource source) {
         return module.getCustomInstance().onDispense(module, source);
     }
 
-    protected ModuleDispenseResult performBuiltin(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+    protected ModuleDispenseResult performBuiltin(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
         return ModuleDispenseResult.DEFAULT;
     }
 }

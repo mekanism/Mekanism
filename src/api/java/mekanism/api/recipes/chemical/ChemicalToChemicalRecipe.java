@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Contract;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements Predicate<@NonNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements Predicate<@NonNull STACK> {
 
     private final INGREDIENT input;
     protected final STACK output;
@@ -62,14 +62,6 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
     }
 
     /**
-     * @deprecated Use {@link #getOutputDefinition()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public STACK getOutputRepresentation() {
-        return output;
-    }
-
-    /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
@@ -95,7 +87,12 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToPacket(buffer);
     }

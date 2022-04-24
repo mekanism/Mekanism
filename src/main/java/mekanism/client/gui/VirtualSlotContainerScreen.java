@@ -1,25 +1,25 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
-//TODO - 1.18: Heavily re-evaluate this class/make sure nothing has gotten broken
-public abstract class VirtualSlotContainerScreen<T extends Container> extends ContainerScreen<T> {
+//TODO - 1.19: Heavily re-evaluate this class/make sure nothing has gotten broken
+public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
-    public VirtualSlotContainerScreen(T container, PlayerInventory inv, ITextComponent titleIn) {
+    public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
     }
 
@@ -59,7 +59,7 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void renderFloatingItem(@Nonnull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
-            if (stack == this.snapbackItem && this.snapbackEnd instanceof IVirtualSlot) {
+            if (stack == this.snapbackItem && this.snapbackEnd instanceof IVirtualSlot returningVirtualSlot) {
                 //Use an instance equality check to see if we are rendering the returning stack (used in touch screens)
                 // if we are and the slot we are returning to is a virtual one, so the position may be changing
                 // then recalculate where the stack actually is/should be to send it to the correct position
@@ -71,7 +71,6 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
                     return;
                 }
                 //Recalculate the x and y values to make sure they are the correct values
-                IVirtualSlot returningVirtualSlot = (IVirtualSlot) this.snapbackEnd;
                 int xOffset = returningVirtualSlot.getActualX() - this.snapbackStartX;
                 int yOffset = returningVirtualSlot.getActualY() - this.snapbackStartY;
                 x = this.snapbackStartX + (int) (xOffset * f);
@@ -84,8 +83,8 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderSlot(@Nonnull MatrixStack matrixStack, @Nonnull Slot slot) {
-        if (!(slot instanceof IVirtualSlot)) {
+    protected final void renderSlot(@Nonnull PoseStack matrixStack, @Nonnull Slot slot) {
+        if (!(slot instanceof IVirtualSlot virtualSlot)) {
             //If we are not a virtual slot, the super method is good enough
             super.renderSlot(matrixStack, slot);
             return;
@@ -95,7 +94,7 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
         ItemStack currentStack = slot.getItem();
         boolean shouldDrawOverlay = false;
         boolean skipStackRendering = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
-        ItemStack heldStack = minecraft.player.inventory.getCarried();
+        ItemStack heldStack = minecraft.player.containerMenu.getCarried();
         String s = null;
         if (slot == this.clickedSlot && !this.draggingItem.isEmpty() && this.isSplittingStack && !currentStack.isEmpty()) {
             currentStack = currentStack.copy();
@@ -104,13 +103,13 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
             if (quickCraftSlots.size() == 1) {
                 return;
             }
-            if (Container.canItemQuickReplace(slot, heldStack, true) && this.menu.canDragTo(slot)) {
+            if (AbstractContainerMenu.canItemQuickReplace(slot, heldStack, true) && this.menu.canDragTo(slot)) {
                 currentStack = heldStack.copy();
                 shouldDrawOverlay = true;
-                Container.getQuickCraftSlotCount(quickCraftSlots, this.quickCraftingType, currentStack, slot.getItem().isEmpty() ? 0 : slot.getItem().getCount());
+                AbstractContainerMenu.getQuickCraftSlotCount(quickCraftSlots, this.quickCraftingType, currentStack, slot.getItem().isEmpty() ? 0 : slot.getItem().getCount());
                 int k = Math.min(currentStack.getMaxStackSize(), slot.getMaxStackSize(currentStack));
                 if (currentStack.getCount() > k) {
-                    s = TextFormatting.YELLOW.toString() + k;
+                    s = ChatFormatting.YELLOW.toString() + k;
                     currentStack.setCount(k);
                 }
             } else {
@@ -119,12 +118,12 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
             }
         }
         //If the slot is a virtual slot, have the GuiSlot that corresponds to it handle the rendering
-        ((IVirtualSlot) slot).updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
+        virtualSlot.updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
     }
 
     public boolean slotClicked(@Nonnull Slot slot, int button) {
         //Copy of super.mouseClicked, minus the call to all the sub elements as we know how we are interacting with it
-        InputMappings.Input mouseKey = InputMappings.Type.MOUSE.getOrCreate(button);
+        InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
         boolean pickBlockButton = minecraft.options.keyPickItem.isActiveAndMatches(mouseKey);
         long time = Util.getMillis();
         this.doubleclick = this.lastClickSlot == slot && time - this.lastClickTime < 250L && this.lastClickButton == button;
@@ -141,7 +140,7 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
                     this.clickedSlot = null;
                 }
             } else if (!this.isQuickCrafting) {
-                if (minecraft.player.inventory.getCarried().isEmpty()) {
+                if (minecraft.player.containerMenu.getCarried().isEmpty()) {
                     if (pickBlockButton) {
                         this.slotClicked(slot, slot.index, button, ClickType.CLONE);
                     } else {

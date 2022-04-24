@@ -5,8 +5,8 @@ import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 public class TankCache extends MultiblockCache<TankMultiblockData> {
 
@@ -31,13 +31,13 @@ public class TankCache extends MultiblockCache<TankMultiblockData> {
     }
 
     @Override
-    public void load(CompoundNBT nbtTags) {
+    public void load(CompoundTag nbtTags) {
         super.load(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
     @Override
-    public void save(CompoundNBT nbtTags) {
+    public void save(CompoundTag nbtTags) {
         super.save(nbtTags);
         nbtTags.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
     }

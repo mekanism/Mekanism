@@ -13,7 +13,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.chemical.GasStackPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling gas stacks
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling gas stacks
  */
 public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> implements IEmptyGasProvider {
 

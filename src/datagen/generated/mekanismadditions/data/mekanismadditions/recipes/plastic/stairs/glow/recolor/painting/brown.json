@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "forge:stairs/plastic/glow"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:brown_plastic_glow_stairs"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:brown"
+  },
+  "output": {
+    "item": "mekanismadditions:brown_plastic_glow_stairs"
+  }
+}

@@ -1,18 +1,18 @@
 package mekanism.client.render.lib.effect;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.CustomEffect;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 public class BillboardingEffectRenderer {
 
@@ -21,19 +21,19 @@ public class BillboardingEffectRenderer {
 
     private static final Minecraft minecraft = Minecraft.getInstance();
 
-    public static void render(CustomEffect effect, BlockPos renderPos, MatrixStack matrixStack, IRenderTypeBuffer renderer, long time, float partialTick) {
+    public static void render(CustomEffect effect, BlockPos renderPos, PoseStack matrixStack, MultiBufferSource renderer, long time, float partialTick) {
         matrixStack.pushPose();
         int gridSize = effect.getTextureGridSize();
-        IVertexBuilder buffer = getRenderBuffer(renderer, effect.getTexture());
+        VertexConsumer buffer = getRenderBuffer(renderer, effect.getTexture());
         Matrix4f matrix = matrixStack.last().pose();
-        ActiveRenderInfo renderInfo = minecraft.gameRenderer.getMainCamera();
+        Camera renderInfo = minecraft.gameRenderer.getMainCamera();
         int tick = (int) time % (gridSize * gridSize);
         int xIndex = tick % gridSize, yIndex = tick / gridSize;
         float spriteSize = 1F / gridSize;
         Quaternion quaternion = renderInfo.rotation();
         Vector3f[] vertexPos = new Vector3f[]{new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
                                               new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
-        Vector3d pos = effect.getPos(partialTick).subtract(Vector3d.atLowerCornerOf(renderPos));
+        Vec3 pos = effect.getPos(partialTick).subtract(Vec3.atLowerCornerOf(renderPos));
         for (int i = 0; i < 4; i++) {
             Vector3f vector3f = vertexPos[i];
             vector3f.transform(quaternion);
@@ -52,7 +52,7 @@ public class BillboardingEffectRenderer {
         matrixStack.popPose();
     }
 
-    protected static IVertexBuilder getRenderBuffer(IRenderTypeBuffer renderer, ResourceLocation texture) {
-        return renderer.getBuffer(MekanismRenderType.renderSPS(texture));
+    protected static VertexConsumer getRenderBuffer(MultiBufferSource renderer, ResourceLocation texture) {
+        return renderer.getBuffer(MekanismRenderType.SPS.apply(texture));
     }
 }

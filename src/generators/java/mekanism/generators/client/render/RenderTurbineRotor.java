@@ -1,7 +1,8 @@
 package mekanism.generators.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
@@ -9,31 +10,31 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor> {
 
     public static RenderTurbineRotor INSTANCE;
     private static final float BASE_SPEED = 512F;
-    public final ModelTurbine model = new ModelTurbine();
+    public final ModelTurbine model;
 
-    public RenderTurbineRotor(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderTurbineRotor(BlockEntityRendererProvider.Context context) {
+        super(context);
         INSTANCE = this;
+        model = new ModelTurbine(context.getModelSet());
     }
 
     @Override
-    protected void render(TileEntityTurbineRotor tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityTurbineRotor tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         if (tile.getMultiblock() == null) {
             render(tile, matrix, model.getBuffer(renderer), light, overlayLight);
         }
     }
 
-    public void render(TileEntityTurbineRotor tile, MatrixStack matrix, IVertexBuilder buffer, int light, int overlayLight) {
+    public void render(TileEntityTurbineRotor tile, PoseStack matrix, VertexConsumer buffer, int light, int overlayLight) {
         int housedBlades = tile.getHousedBlades();
         if (housedBlades == 0) {
             return;

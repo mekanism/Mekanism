@@ -49,11 +49,7 @@ public class HashedFluid {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof HashedFluid) {
-            HashedFluid other = (HashedFluid) obj;
-            return !fluidStack.isEmpty() && fluidStack.isFluidEqual(other.fluidStack);
-        }
-        return false;
+        return obj instanceof HashedFluid other && !fluidStack.isEmpty() && fluidStack.isFluidEqual(other.fluidStack);
     }
 
     @Override

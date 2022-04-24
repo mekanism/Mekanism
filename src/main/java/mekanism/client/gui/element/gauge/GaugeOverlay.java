@@ -2,7 +2,7 @@ package mekanism.client.gui.element.gauge;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public enum GaugeOverlay {
     SMALL(16, 28, "small.png"),

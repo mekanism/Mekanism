@@ -18,12 +18,13 @@ import mekanism.generators.common.base.IReactorLogicMode;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactorBlock implements IReactorLogic<FusionReactorLogic>, IHasMode {
 
@@ -31,8 +32,8 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     private boolean activeCooled;
     private boolean prevOutputting;
 
-    public TileEntityFusionReactorLogicAdapter() {
-        super(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER);
+    public TileEntityFusionReactorLogicAdapter(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER, pos, state);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         boolean needsPacket = super.onUpdateServer(multiblock);
         boolean outputting = checkMode();
         if (outputting != prevOutputting) {
-            World world = getLevel();
+            Level world = getLevel();
             if (world != null) {
                 world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
@@ -55,36 +56,29 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         }
         FusionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
-            switch (logicType) {
-                case READY:
-                    return multiblock.getLastPlasmaTemp() >= multiblock.getIgnitionTemperature(activeCooled);
-                case CAPACITY:
-                    return multiblock.getLastPlasmaTemp() >= multiblock.getMaxPlasmaTemperature(activeCooled);
-                case DEPLETED:
-                    return (multiblock.deuteriumTank.getStored() < multiblock.getInjectionRate() / 2) ||
-                           (multiblock.tritiumTank.getStored() < multiblock.getInjectionRate() / 2);
-                case DISABLED:
-                default:
-                    return false;
-            }
+            return switch (logicType) {
+                case READY -> multiblock.getLastPlasmaTemp() >= multiblock.getIgnitionTemperature(activeCooled);
+                case CAPACITY -> multiblock.getLastPlasmaTemp() >= multiblock.getMaxPlasmaTemperature(activeCooled);
+                case DEPLETED -> (multiblock.deuteriumTank.getStored() < multiblock.getInjectionRate() / 2) ||
+                                 (multiblock.tritiumTank.getStored() < multiblock.getInjectionRate() / 2);
+                case DISABLED -> false;
+            };
         }
         return false;
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.LOGIC_TYPE, FusionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
-        activeCooled = nbtTags.getBoolean(NBTConstants.ACTIVE_COOLED);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FusionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
+        activeCooled = nbt.getBoolean(NBTConstants.ACTIVE_COOLED);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
         nbtTags.putBoolean(NBTConstants.ACTIVE_COOLED, activeCooled);
-        return nbtTags;
     }
 
     @Override
@@ -95,7 +89,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void nextMode() {
         activeCooled = !activeCooled;
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod(nameOverride = "isActiveCooledLogic")
@@ -118,7 +112,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     public void setLogicTypeFromPacket(FusionReactorLogic logicType) {
         if (this.logicType != logicType) {
             this.logicType = logicType;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -168,7 +162,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         }
 
         @Override
-        public ITextComponent getDescription() {
+        public Component getDescription() {
             return description.translate();
         }
 

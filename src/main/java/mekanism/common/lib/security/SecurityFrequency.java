@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class SecurityFrequency extends Frequency {
 
@@ -47,35 +47,35 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public void write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.OVERRIDE, override);
         nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         if (!trusted.isEmpty()) {
-            ListNBT trustedList = new ListNBT();
+            ListTag trustedList = new ListTag();
             for (UUID uuid : trusted) {
-                trustedList.add(NBTUtil.createUUID(uuid));
+                trustedList.add(NbtUtils.createUUID(uuid));
             }
             nbtTags.put(NBTConstants.TRUSTED, trustedList);
         }
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         override = nbtTags.getBoolean(NBTConstants.OVERRIDE);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
-        if (nbtTags.contains(NBTConstants.TRUSTED, NBT.TAG_LIST)) {
-            ListNBT trustedList = nbtTags.getList(NBTConstants.TRUSTED, NBT.TAG_INT_ARRAY);
-            for (INBT trusted : trustedList) {
-                UUID uuid = NBTUtil.loadUUID(trusted);
+        if (nbtTags.contains(NBTConstants.TRUSTED, Tag.TAG_LIST)) {
+            ListTag trustedList = nbtTags.getList(NBTConstants.TRUSTED, Tag.TAG_INT_ARRAY);
+            for (Tag trusted : trustedList) {
+                UUID uuid = NbtUtils.loadUUID(trusted);
                 addTrusted(uuid, MekanismUtils.getLastKnownUsername(uuid));
             }
         }
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeBoolean(override);
         buffer.writeEnum(securityMode);
@@ -84,7 +84,7 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    protected void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
         override = dataStream.readBoolean();
         securityMode = dataStream.readEnum(SecurityMode.class);
@@ -134,13 +134,16 @@ public class SecurityFrequency extends Frequency {
         trustedCacheHash = trustedCache.hashCode();
     }
 
-    public void removeTrusted(int index) {
+    @Nullable
+    public UUID removeTrusted(int index) {
+        UUID uuid = null;
         if (index >= 0 && index < trusted.size()) {
-            trusted.remove(index);
+            uuid = trusted.remove(index);
         }
         if (index >= 0 && index < trustedCache.size()) {
             trustedCache.remove(index);
+            trustedCacheHash = trustedCache.hashCode();
         }
-        trustedCacheHash = trustedCache.hashCode();
+        return uuid;
     }
 }

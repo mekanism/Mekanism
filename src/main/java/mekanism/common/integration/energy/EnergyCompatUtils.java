@@ -1,21 +1,16 @@
 package mekanism.common.integration.energy;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.math.FloatingLong;
-import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -25,13 +20,13 @@ public class EnergyCompatUtils {
     private EnergyCompatUtils() {
     }
 
-    private static final List<IEnergyCompat> energyCompats = Collections.unmodifiableList(Arrays.asList(
+    private static final List<IEnergyCompat> energyCompats = List.of(
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),
           //Note: We check the Flux Networks capability above Forge's so that we allow it to use the higher throughput amount supported by Flux Networks
-          new FNEnergyCompat(),
+          //new FNEnergyCompat(),
           new ForgeEnergyCompat()
-    ));
+    );
 
     public static List<IEnergyCompat> getCompats() {
         return energyCompats;
@@ -60,7 +55,7 @@ public class EnergyCompatUtils {
         return energyCompats.stream().filter(IEnergyCompat::isUsable).map(IEnergyCompat::getCapability).collect(Collectors.toList());
     }
 
-    private static boolean isTileValid(@Nullable TileEntity tile) {
+    private static boolean isTileValid(@Nullable BlockEntity tile) {
         return tile != null && !tile.isRemoved() && tile.hasLevel();
     }
 
@@ -68,7 +63,7 @@ public class EnergyCompatUtils {
         return !stack.isEmpty() && hasStrictEnergyHandler(stack, null);
     }
 
-    public static boolean hasStrictEnergyHandler(@Nullable TileEntity tile, Direction side) {
+    public static boolean hasStrictEnergyHandler(@Nullable BlockEntity tile, Direction side) {
         return isTileValid(tile) && hasStrictEnergyHandler((ICapabilityProvider) tile, side);
     }
 
@@ -93,7 +88,7 @@ public class EnergyCompatUtils {
     }
 
     @Nonnull
-    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable TileEntity tile, Direction side) {
+    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable BlockEntity tile, Direction side) {
         return isTileValid(tile) ? getLazyStrictEnergyHandler((ICapabilityProvider) tile, side) : LazyOptional.empty();
     }
 
@@ -139,38 +134,5 @@ public class EnergyCompatUtils {
     public static boolean useIC2() {
         //TODO: IC2
         return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.get();
-    }
-
-    public enum EnergyType {
-        FORGE(MekanismConfig.general.FROM_FORGE, MekanismConfig.general.TO_FORGE),
-        EU(MekanismConfig.general.FROM_IC2, MekanismConfig.general.TO_IC2);
-
-        private final FloatingLongSupplier fromSupplier;
-        private final FloatingLongSupplier toSupplier;
-
-        EnergyType(FloatingLongSupplier fromSupplier, FloatingLongSupplier toSupplier) {
-            this.fromSupplier = fromSupplier;
-            this.toSupplier = toSupplier;
-        }
-
-        public FloatingLong convertFrom(long energy) {
-            return fromSupplier.get().multiply(energy);
-        }
-
-        public FloatingLong convertFrom(FloatingLong energy) {
-            return energy.multiply(fromSupplier.get());
-        }
-
-        public int convertToAsInt(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).intValue();
-        }
-
-        public long convertToAsLong(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).longValue();
-        }
-
-        public FloatingLong convertToAsFloatingLong(FloatingLong joules) {
-            return joules.multiply(toSupplier.get());
-        }
     }
 }

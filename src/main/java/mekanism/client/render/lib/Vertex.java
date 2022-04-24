@@ -1,18 +1,18 @@
 package mekanism.client.render.lib;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 public class Vertex {
 
     // I'm not sure why Forge packs light this way but w/e
     private static final float LIGHT_PACK_FACTOR = 240F / Short.MAX_VALUE;
 
-    private Vector3d pos;
-    private Vector3d normal;
+    private Vec3 pos;
+    private Vec3 normal;
 
     private Color color;
 
@@ -24,7 +24,7 @@ public class Vertex {
     public Vertex() {
     }
 
-    public Vertex(Vector3d pos, Vector3d normal, Color color, float texU, float texV, float lightU, float lightV) {
+    public Vertex(Vec3 pos, Vec3 normal, Color color, float texU, float texV, float lightU, float lightV) {
         this.pos = pos;
         this.normal = normal;
         this.color = color;
@@ -34,19 +34,19 @@ public class Vertex {
         this.lightV = lightV;
     }
 
-    public static Vertex create(Vector3d pos, Vector3d normal, Color color, TextureAtlasSprite sprite, float texU, float texV, float lightU, float lightV) {
+    public static Vertex create(Vec3 pos, Vec3 normal, Color color, TextureAtlasSprite sprite, float texU, float texV, float lightU, float lightV) {
         return new Vertex(pos, normal, color, sprite.getU(texU), sprite.getV(texV), lightU, lightV);
     }
 
-    public static Vertex create(Vector3d pos, Vector3d normal, TextureAtlasSprite sprite, float u, float v) {
+    public static Vertex create(Vec3 pos, Vec3 normal, TextureAtlasSprite sprite, float u, float v) {
         return create(pos, normal, Color.WHITE, sprite, u, v, 0, 0);
     }
 
-    public Vector3d getPos() {
+    public Vec3 getPos() {
         return pos;
     }
 
-    public Vector3d getNormal() {
+    public Vec3 getNormal() {
         return normal;
     }
 
@@ -75,12 +75,12 @@ public class Vertex {
         return this;
     }
 
-    public Vertex pos(Vector3d pos) {
+    public Vertex pos(Vec3 pos) {
         this.pos = pos;
         return this;
     }
 
-    public Vertex normal(Vector3d normal) {
+    public Vertex normal(Vec3 normal) {
         this.normal = normal;
         return this;
     }

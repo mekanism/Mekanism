@@ -1,12 +1,16 @@
 package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.tags.MekanismTags;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
@@ -56,33 +60,25 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 234;
-            case LEGS:
-                return 270;
-            case CHEST:
-                return 288;
-            case HEAD:
-                return 198;
-        }
-        return 0;
+    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 234;
+            case LEGS -> 270;
+            case CHEST -> 288;
+            case HEAD -> 198;
+            default -> 0;
+        };
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 2;
-            case LEGS:
-                return 6;
-            case CHEST:
-                return 7;
-            case HEAD:
-                return 3;
-        }
-        return 0;
+    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 2;
+            case LEGS -> 6;
+            case CHEST -> 7;
+            case HEAD -> 3;
+            default -> 0;
+        };
     }
 
     @Nonnull
@@ -95,6 +91,12 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return "bronze";
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Block> getTag() {
+        return ToolsTags.Blocks.NEEDS_BRONZE_TOOL;
     }
 
     @Nonnull

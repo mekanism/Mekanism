@@ -6,30 +6,29 @@ import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityCardboardBox extends TileEntityUpdateable {
 
     public BlockData storedData;
 
-    public TileEntityCardboardBox() {
-        super(MekanismTileEntityTypes.CARDBOARD_BOX.getTileEntityType());
+    public TileEntityCardboardBox(BlockPos pos, BlockState state) {
+        super(MekanismTileEntityTypes.CARDBOARD_BOX, pos, state);
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.DATA, nbt -> storedData = BlockData.read(nbt));
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        NBTUtils.setCompoundIfPresent(nbt, NBTConstants.DATA, tag -> storedData = BlockData.read(tag));
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         if (storedData != null) {
-            nbtTags.put(NBTConstants.DATA, storedData.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.DATA, storedData.write(new CompoundTag()));
         }
-        return nbtTags;
     }
 }

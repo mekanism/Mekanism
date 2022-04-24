@@ -16,8 +16,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -34,8 +34,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     @Override
-    protected List<ITextComponent> getScreenText() {
-        List<ITextComponent> list = super.getScreenText();
+    protected List<Component> getScreenText() {
+        List<Component> list = super.getScreenText();
         list.add(MekanismLang.MODID_FILTER_ID.translate(filter.getModID()));
         return list;
     }
@@ -54,7 +54,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
-            return TagCache.getModIDStacks(filter.getModID(), false);
+            return TagCache.getItemModIDStacks(filter.getModID());
         }
         return Collections.emptyList();
     }
@@ -65,26 +65,26 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         return new IGhostIngredientConsumer() {
             @Override
             public boolean supportsIngredient(Object ingredient) {
-                if (ingredient instanceof ItemStack) {
-                    return !((ItemStack) ingredient).isEmpty();
-                } else if (ingredient instanceof FluidStack) {
-                    return !((FluidStack) ingredient).isEmpty();
-                } else if (ingredient instanceof ChemicalStack) {
-                    return !((ChemicalStack<?>) ingredient).isEmpty();
+                if (ingredient instanceof ItemStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof FluidStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                    return !stack.isEmpty();
                 }
                 return ingredient instanceof IForgeRegistryEntry;
             }
 
             @Override
             public void accept(Object ingredient) {
-                if (ingredient instanceof ItemStack) {
-                    setFilterName((ItemStack) ingredient);
-                } else if (ingredient instanceof FluidStack) {
-                    setFilterName(((FluidStack) ingredient).getFluid());
-                } else if (ingredient instanceof ChemicalStack) {
-                    setFilterName(((ChemicalStack<?>) ingredient).getType());
-                } else if (ingredient instanceof IForgeRegistryEntry) {
-                    setFilterName((IForgeRegistryEntry<?>) ingredient);
+                if (ingredient instanceof ItemStack stack) {
+                    setFilterName(stack);
+                } else if (ingredient instanceof FluidStack stack) {
+                    setFilterName(stack.getFluid());
+                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                    setFilterName(stack.getType());
+                } else if (ingredient instanceof IForgeRegistryEntry<?> registryEntry) {
+                    setFilterName(registryEntry);
                 }
             }
         };
@@ -110,15 +110,24 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             filterSaveFailed(getNoFilterSaveError());
         } else if (name.equals(filter.getModID())) {
             filterSaveFailed(MekanismLang.MODID_FILTER_SAME_ID);
+        } else if (!hasMatchingTargets(name)) {
+            //Even though we got the mod id from the target if it is not a click, there may not be any
+            // matching elements if say a mod only adds fluids. and we are matching items
+            filterSaveFailed(MekanismLang.TEXT_FILTER_NO_MATCHES);
         } else {
             filter.setModID(name);
             slotDisplay.updateStackList();
             text.setText("");
+            filterSaveSuccess();
             success = true;
         }
         if (click) {
             playClickSound();
         }
         return success;
+    }
+
+    protected boolean hasMatchingTargets(String name) {
+        return !TagCache.getItemModIDStacks(name).isEmpty();
     }
 }

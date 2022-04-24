@@ -2,10 +2,10 @@
   "type": "mekanism:metallurgic_infusing",
   "itemInput": {
     "ingredient": {
-      "tag": "forge:netherrack"
+      "item": "minecraft:netherrack"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:fungi"
   },

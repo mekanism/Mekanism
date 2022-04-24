@@ -7,10 +7,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Basic implementation for {@link IInputRecipeCache} for handling recipes with a single input.
@@ -43,7 +43,7 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable World world, INPUT input) {
+    public boolean containsInput(@Nullable Level world, INPUT input) {
         return containsInput(world, input, inputExtractor, cache, complexRecipes);
     }
 
@@ -56,7 +56,7 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable World world, INPUT input) {
+    public RECIPE findFirstRecipe(@Nullable Level world, INPUT input) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
@@ -76,7 +76,7 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RECIPE findTypeBasedRecipe(@Nullable World world, INPUT input) {
+    public RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input) {
         return findTypeBasedRecipe(world, input, recipe -> true);
     }
 
@@ -90,7 +90,7 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RECIPE findTypeBasedRecipe(@Nullable World world, INPUT input, Predicate<RECIPE> matchCriteria) {
+    public RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, Predicate<RECIPE> matchCriteria) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;

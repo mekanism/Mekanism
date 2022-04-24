@@ -10,26 +10,23 @@ import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.integration.lookingat.LookingAtHelper;
 import mekanism.common.integration.lookingat.LookingAtUtils;
-import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.GasElement;
-import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.InfuseTypeElement;
-import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.PigmentElement;
-import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.SlurryElement;
+import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.GasElementFactory;
+import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.InfuseTypeElementFactory;
+import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.PigmentElementFactory;
+import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.SlurryElementFactory;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 //Registered via IMC
@@ -37,23 +34,18 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
 
     private boolean displayFluidTanks;
     private ConfigMode tankMode = ConfigMode.EXTENDED;
-    static int ENERGY_ELEMENT_ID;
-    static int FLUID_ELEMENT_ID;
-    static int GAS_ELEMENT_ID;
-    static int INFUSION_ELEMENT_ID;
-    static int PIGMENT_ELEMENT_ID;
-    static int SLURRY_ELEMENT_ID;
 
     @Override
     public Void apply(ITheOneProbe probe) {
         probe.registerProvider(this);
+        probe.registerEntityProvider(TOPEntityProvider.INSTANCE);
         probe.registerProbeConfigProvider(ProbeConfigProvider.INSTANCE);
-        ENERGY_ELEMENT_ID = probe.registerElementFactory(TOPEnergyElement::new);
-        FLUID_ELEMENT_ID = probe.registerElementFactory(TOPFluidElement::new);
-        GAS_ELEMENT_ID = probe.registerElementFactory(GasElement::new);
-        INFUSION_ELEMENT_ID = probe.registerElementFactory(InfuseTypeElement::new);
-        PIGMENT_ELEMENT_ID = probe.registerElementFactory(PigmentElement::new);
-        SLURRY_ELEMENT_ID = probe.registerElementFactory(SlurryElement::new);
+        probe.registerElementFactory(new TOPEnergyElement.Factory());
+        probe.registerElementFactory(new TOPFluidElement.Factory());
+        probe.registerElementFactory(new GasElementFactory());
+        probe.registerElementFactory(new InfuseTypeElementFactory());
+        probe.registerElementFactory(new PigmentElementFactory());
+        probe.registerElementFactory(new SlurryElementFactory());
         //Grab the default view settings
         IProbeConfig probeConfig = probe.createProbeConfig();
         displayFluidTanks = probeConfig.getTankMode() > 0;
@@ -62,12 +54,12 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     }
 
     @Override
-    public String getID() {
-        return Mekanism.rl("chemicals").toString();
+    public ResourceLocation getID() {
+        return Mekanism.rl("data");
     }
 
     @Override
-    public void addProbeInfo(ProbeMode mode, IProbeInfo info, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(ProbeMode mode, IProbeInfo info, Player player, Level world, BlockState blockState, IProbeHitData data) {
         BlockPos pos = data.getPos();
         if (blockState.getBlock() instanceof BlockBounding) {
             //If we are a bounding block that has a position set, redirect the probe to the main location
@@ -79,7 +71,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                 //blockState = world.getBlockState(mainPos);
             }
         }
-        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         if (tile != null) {
             LookingAtUtils.addInfo(new TOPLookingAtHelper(info), tile, displayTanks(mode), displayFluidTanks);
         }
@@ -96,7 +88,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         return mode == ProbeMode.EXTENDED;
     }
 
-    private static class TOPLookingAtHelper implements LookingAtHelper {
+    static class TOPLookingAtHelper implements LookingAtHelper {
 
         private final IProbeInfo info;
 
@@ -105,7 +97,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         }
 
         @Override
-        public void addText(ITextComponent text) {
+        public void addText(Component text) {
             info.text(CompoundText.create().name(text).get());
         }
 
@@ -121,14 +113,9 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
 
         @Override
         public void addChemicalElement(ChemicalStack<?> stored, long capacity) {
-            if (stored instanceof GasStack) {
-                info.element(new GasElement((GasStack) stored, capacity));
-            } else if (stored instanceof InfusionStack) {
-                info.element(new InfuseTypeElement((InfusionStack) stored, capacity));
-            } else if (stored instanceof PigmentStack) {
-                info.element(new PigmentElement((PigmentStack) stored, capacity));
-            } else if (stored instanceof SlurryStack) {
-                info.element(new SlurryElement((SlurryStack) stored, capacity));
+            TOPChemicalElement element = TOPChemicalElement.create(stored, capacity);
+            if (element != null) {
+                info.element(element);
             }
         }
     }

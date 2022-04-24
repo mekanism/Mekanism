@@ -6,9 +6,9 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.network.BasePacketHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements IModIDFilter<MinerModIDFilter> {
 
@@ -37,26 +37,26 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.MODID, modID);
         return nbtTags;
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         modID = nbtTags.getString(NBTConstants.MODID);
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeUtf(modID);
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
+    public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
         modID = BasePacketHandler.readString(dataStream);
     }
@@ -69,8 +69,8 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MinerModIDFilter && ((MinerModIDFilter) filter).modID.equals(modID);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof MinerModIDFilter filter && filter.modID.equals(modID);
     }
 
     @Override

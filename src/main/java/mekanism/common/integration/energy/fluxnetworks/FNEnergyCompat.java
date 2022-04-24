@@ -1,4 +1,4 @@
-package mekanism.common.integration.energy.fluxnetworks;
+/*package mekanism.common.integration.energy.fluxnetworks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -8,9 +8,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
@@ -18,8 +17,7 @@ import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 @ParametersAreNonnullByDefault
 public class FNEnergyCompat implements IEnergyCompat {
 
-    @CapabilityInject(IFNEnergyStorage.class)
-    private static Capability<IFNEnergyStorage> FN_ENERGY_CAPABILITY;
+    private static final Capability<IFNEnergyStorage> FN_ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 
     @Nonnull
     @Override
@@ -38,12 +36,7 @@ public class FNEnergyCompat implements IEnergyCompat {
 
     @Override
     public boolean isUsable() {
-        return !MekanismConfig.general.blacklistForge.get() && Mekanism.hooks.FluxNetworksLoaded && !MekanismConfig.general.blacklistFluxNetworks.get();
-    }
-
-    @Override
-    public boolean isCapabilityPresent(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, FN_ENERGY_CAPABILITY, side).isPresent();
+        return EnergyUnit.FORGE_ENERGY.isEnabled() && Mekanism.hooks.FluxNetworksLoaded && !MekanismConfig.general.blacklistFluxNetworks.get();
     }
 
     @Nonnull
@@ -57,4 +50,4 @@ public class FNEnergyCompat implements IEnergyCompat {
     public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
         return CapabilityUtils.getCapability(provider, FN_ENERGY_CAPABILITY, side).lazyMap(FNStrictEnergyHandler::new);
     }
-}
+}*/

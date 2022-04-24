@@ -8,18 +8,18 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -51,7 +51,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param criterion Criterion to add.
      */
     public BUILDER addCriterion(RecipeCriterion criterion) {
-        return addCriterion(criterion.name, criterion.criterion);
+        return addCriterion(criterion.name(), criterion.criterion());
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param name      Name of the criterion.
      * @param criterion Criterion to add.
      */
-    public BUILDER addCriterion(String name, ICriterionInstance criterion) {
+    public BUILDER addCriterion(String name, CriterionTriggerInstance criterion) {
         advancementBuilder.addCriterion(name, criterion);
         return (BUILDER) this;
     }
@@ -105,12 +105,12 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param consumer Finished Recipe Consumer.
      * @param id       Name of the recipe being built.
      */
-    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
         validate(id);
         if (hasCriteria()) {
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
             advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-                  .rewards(AdvancementRewards.Builder.recipe(id)).requirements(IRequirementsStrategy.OR);
+                  .rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
         }
         consumer.accept(getResult(id));
     }
@@ -118,7 +118,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     /**
      * Base recipe result.
      */
-    protected abstract class RecipeResult implements IFinishedRecipe {
+    protected abstract class RecipeResult implements FinishedRecipe {
 
         private final ResourceLocation id;
 
@@ -143,7 +143,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
 
         @Nonnull
         @Override
-        public IRecipeSerializer<?> getType() {
+        public RecipeSerializer<?> getType() {
             //Note: This may be null if something is screwed up but this method isn't actually used, so it shouldn't matter
             // and in fact it will probably be null if only the API is included. But again, as we manually just use
             // the serializer's name this should not affect us

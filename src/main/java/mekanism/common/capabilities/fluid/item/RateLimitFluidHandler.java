@@ -9,28 +9,33 @@ import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.tier.FluidTankTier;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
-    public static RateLimitFluidHandler create(int rate, IntSupplier capacity) {
-        if (rate <= 0) {
-            throw new IllegalArgumentException("Rate must be greater than zero");
-        }
+    public static RateLimitFluidHandler create(IntSupplier rate, IntSupplier capacity) {
+        return create(rate, capacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue);
+    }
+
+    public static RateLimitFluidHandler create(IntSupplier rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid) {
+        Objects.requireNonNull(rate, "Rate supplier cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
-        return new RateLimitFluidHandler(handler -> new RateLimitFluidTank(rate, capacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi,
-              BasicFluidTank.alwaysTrue, handler));
+        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
+        Objects.requireNonNull(isValid, "Gas validity check cannot be null");
+        return new RateLimitFluidHandler(listener -> new RateLimitFluidTank(rate, capacity, canExtract, canInsert, isValid, listener));
     }
 
     public static RateLimitFluidHandler create(FluidTankTier tier) {
@@ -51,14 +56,14 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
     public static class RateLimitFluidTank extends VariableCapacityFluidTank {
 
-        private final int rate;
+        private final IntSupplier rate;
 
-        public RateLimitFluidTank(int rate, IntSupplier capacity, IContentsListener listener) {
+        public RateLimitFluidTank(IntSupplier rate, IntSupplier capacity, @Nullable IContentsListener listener) {
             this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
         }
 
-        public RateLimitFluidTank(int rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid, IContentsListener listener) {
+        public RateLimitFluidTank(IntSupplier rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
+              BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid, @Nullable IContentsListener listener) {
             super(capacity, canExtract, canInsert, isValid, listener);
             this.rate = rate;
         }
@@ -66,19 +71,17 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         @Override
         protected int getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate;
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
         }
     }
 
-    private static class FluidTankRateLimitFluidTank extends VariableCapacityFluidTank {
+    private static class FluidTankRateLimitFluidTank extends RateLimitFluidTank {
 
-        private final IntSupplier rate;
         private final boolean isCreative;
 
-        private FluidTankRateLimitFluidTank(FluidTankTier tier, IContentsListener listener) {
-            super(tier::getStorage, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, listener);
+        private FluidTankRateLimitFluidTank(FluidTankTier tier, @Nullable IContentsListener listener) {
+            super(tier::getOutput, tier::getStorage, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, listener);
             isCreative = tier == FluidTankTier.CREATIVE;
-            rate = tier::getOutput;
         }
 
         @Override
@@ -100,12 +103,6 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         @Override
         public int setStackSize(int amount, Action action) {
             return super.setStackSize(amount, action.combine(!isCreative));
-        }
-
-        @Override
-        protected int getRate(@Nullable AutomationType automationType) {
-            //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
         }
     }
 }

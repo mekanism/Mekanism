@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 public enum GeneratorsLang implements ILangEntry {
     PRODUCING_AMOUNT("gui", "producing.amount"),

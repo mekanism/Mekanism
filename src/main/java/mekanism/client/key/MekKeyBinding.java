@@ -1,27 +1,27 @@
 package mekanism.client.key;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 
-public class MekKeyBinding extends KeyBinding {
+public class MekKeyBinding extends KeyMapping {
 
     @Nullable
-    private final BiConsumer<KeyBinding, Boolean> onKeyDown;
+    private final BiConsumer<KeyMapping, Boolean> onKeyDown;
     @Nullable
-    private final Consumer<KeyBinding> onKeyUp;
+    private final Consumer<KeyMapping> onKeyUp;
     @Nullable
     private final BooleanSupplier toggleable;
     private final boolean repeating;
     private boolean lastState;
 
-    MekKeyBinding(String description, IKeyConflictContext keyConflictContext, KeyModifier keyModifier, InputMappings.Input key, String category,
-          @Nullable BiConsumer<KeyBinding, Boolean> onKeyDown, @Nullable Consumer<KeyBinding> onKeyUp, @Nullable BooleanSupplier toggleable, boolean repeating) {
+    MekKeyBinding(String description, IKeyConflictContext keyConflictContext, KeyModifier keyModifier, InputConstants.Key key, String category,
+          @Nullable BiConsumer<KeyMapping, Boolean> onKeyDown, @Nullable Consumer<KeyMapping> onKeyUp, @Nullable BooleanSupplier toggleable, boolean repeating) {
         super(description, keyConflictContext, keyModifier, key, category);
         this.onKeyDown = onKeyDown;
         this.onKeyUp = onKeyUp;

@@ -10,6 +10,7 @@ import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -99,13 +100,13 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               "windGenerationMin", FloatingLong.createConst(60));
         //TODO: Should this be capped by the min generator?
         windGenerationMax = CachedFloatingLongValue.define(this, builder, "Maximum base generation value of the Wind Generator.",
-              "windGenerationMax", FloatingLong.createConst(480));
-        windGenerationMinY = CachedIntValue.wrap(this, builder.comment("The minimum Y value that affects the Wind Generators Power generation.")
-              .define("windGenerationMinY", 24));
-        //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
-        //TODO: Also see if we can somehow check world.getHeight()
-        windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
-              .define("windGenerationMaxY", 255, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
+              "generationMax", FloatingLong.createConst(480));
+        windGenerationMinY = CachedIntValue.wrap(this, builder.comment("The minimum Y value that affects the Wind Generators Power generation. This value gets clamped at the world's min height.")
+              .defineInRange("minY", 24, DimensionType.MIN_Y, DimensionType.MAX_Y - 1));
+        //Note: We just require that the maxY is greater than the minY, nothing goes badly if it is set above the max y of the world though
+        // as it is just used for range clamping
+        windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation. This value gets clamped at the world's logical height.")
+              .define("maxY", DimensionType.MAX_Y, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating
         windGenerationDimBlacklist = CachedResourceLocationListValue.define(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in."),
               "windGenerationDimBlacklist", rl -> true);

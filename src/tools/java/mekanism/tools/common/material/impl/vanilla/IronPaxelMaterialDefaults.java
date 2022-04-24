@@ -2,14 +2,14 @@ package mekanism.tools.common.material.impl.vanilla;
 
 import javax.annotation.Nonnull;
 import mekanism.tools.common.material.VanillaPaxelMaterial;
-import net.minecraft.item.ItemTier;
+import net.minecraft.world.item.Tiers;
 
 public class IronPaxelMaterialDefaults extends VanillaPaxelMaterial {
 
     @Nonnull
     @Override
-    public ItemTier getVanillaTier() {
-        return ItemTier.IRON;
+    public Tiers getVanillaTier() {
+        return Tiers.IRON;
     }
 
     @Override

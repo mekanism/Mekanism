@@ -4,7 +4,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
@@ -57,11 +57,7 @@ public class HashedItem {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof HashedItem) {
-            HashedItem other = (HashedItem) obj;
-            return ItemHandlerHelper.canItemStacksStack(itemStack, other.itemStack);
-        }
-        return false;
+        return obj instanceof HashedItem other && ItemHandlerHelper.canItemStacksStack(itemStack, other.itemStack);
     }
 
     @Override
@@ -75,6 +71,9 @@ public class HashedItem {
         if (itemStack.hasTag()) {
             code = 31 * code + itemStack.getTag().hashCode();
         }
+        //TODO: Eventually it may be worth also hashing the capability NBT, but as there is no way to access it
+        // without reflection we don't do that for now as odds are grabbing it would have more of a performance
+        // impact than comparing the cap nbt in equals for the few items from mods that do make use of it
         return code;
     }
 
@@ -109,7 +108,7 @@ public class HashedItem {
                 return true;
             }
             if (overrideHash && uuid != null) {
-                return obj instanceof UUIDAwareHashedItem && uuid.equals(((UUIDAwareHashedItem) obj).uuid) && super.equals(obj);
+                return obj instanceof UUIDAwareHashedItem uuidAware && uuid.equals(uuidAware.uuid) && super.equals(obj);
             }
             return super.equals(obj);
         }

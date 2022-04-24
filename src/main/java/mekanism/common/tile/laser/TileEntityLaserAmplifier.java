@@ -1,6 +1,8 @@
 package mekanism.common.tile.laser;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
@@ -13,6 +15,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -20,29 +23,31 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
-    private static final FloatingLong MAX = FloatingLong.createConst(5_000_000_000L);
     private FloatingLong minThreshold = FloatingLong.ZERO;
-    private FloatingLong maxThreshold = MAX;
+    private FloatingLong maxThreshold = MekanismConfig.storage.laserAmplifier.get();
     private int ticks = 0;
     private int delay = 0;
     private boolean emittingRedstone;
     private RedstoneOutput outputMode = RedstoneOutput.OFF;
 
-    public TileEntityLaserAmplifier() {
-        super(MekanismBlocks.LASER_AMPLIFIER);
+    public TileEntityLaserAmplifier(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.LASER_AMPLIFIER, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Override
-    protected void addInitialEnergyContainers(EnergyContainerHelper builder) {
-        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.internalOnly, this));
+    protected void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener) {
+        builder.addContainer(energyContainer = LaserEnergyContainer.create(BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.internalOnly, this, listener));
     }
 
     @Override
@@ -82,6 +87,11 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
+    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+        return type == SubstanceType.ENERGY;
+    }
+
+    @Override
     protected void notifyComparatorChange() {
         //Notify neighbors instead of just comparators as we also allow for direct redstone levels
         level.updateNeighborsAt(getBlockPos(), getBlockType());
@@ -91,45 +101,71 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         delay = Math.max(0, delay);
         if (this.delay != delay) {
             this.delay = delay;
-            markDirty(false);
+            markForSave();
         }
     }
 
     @Override
     public void nextMode() {
         outputMode = outputMode.getNext();
-        markDirty(false);
+        setChanged();
     }
 
-    public void setMinThresholdFromPacket(FloatingLong floatingLong) {
-        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
-        FloatingLong threshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
+    public void setMinThresholdFromPacket(FloatingLong target) {
+        if (updateMinThreshold(target)) {
+            markForSave();
+        }
+    }
+
+    public void setMaxThresholdFromPacket(FloatingLong target) {
+        if (updateMaxThreshold(target)) {
+            markForSave();
+        }
+    }
+
+    private boolean updateMinThreshold(FloatingLong target) {
+        FloatingLong threshold = getThreshold(target);
         if (!minThreshold.equals(threshold)) {
             minThreshold = threshold;
-            markDirty(false);
+            //If the min threshold is greater than the max threshold, update max threshold
+            if (minThreshold.greaterThan(maxThreshold)) {
+                maxThreshold = minThreshold;
+            }
+            return true;
         }
+        return false;
     }
 
-    public void setMaxThresholdFromPacket(FloatingLong floatingLong) {
-        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
-        FloatingLong threshold = maxEnergy.greaterThan(floatingLong) ? floatingLong : maxEnergy.copyAsConst();
+    private boolean updateMaxThreshold(FloatingLong target) {
+        //Cap threshold at max energy capacity
+        FloatingLong threshold = getThreshold(target);
         if (!maxThreshold.equals(threshold)) {
             maxThreshold = threshold;
-            markDirty(false);
+            //If the max threshold is smaller than the min threshold, update min threshold
+            if (maxThreshold.smallerThan(minThreshold)) {
+                minThreshold = maxThreshold;
+            }
+            return true;
         }
+        return false;
+    }
+
+    private FloatingLong getThreshold(FloatingLong target) {
+        FloatingLong maxEnergy = energyContainer.getMaxEnergy();
+        return target.smallerOrEqual(maxEnergy) ? target : maxEnergy.copyAsConst();
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
-        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, value -> minThreshold = value);
-        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, value -> maxThreshold = value);
+        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, this::updateMinThreshold);
+        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, this::updateMaxThreshold);
         NBTUtils.setIntIfPresent(data, NBTConstants.TIME, value -> delay = value);
         NBTUtils.setEnumIfPresent(data, NBTConstants.OUTPUT_MODE, RedstoneOutput::byIndexStatic, mode -> outputMode = mode);
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putString(NBTConstants.MIN, minThreshold.toString());
         data.putString(NBTConstants.MAX, maxThreshold.toString());
@@ -177,7 +213,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         validateSecurityIsPublic();
         if (outputMode != mode) {
             outputMode = mode;
-            markDirty(false);
+            setChanged();
         }
     }
 

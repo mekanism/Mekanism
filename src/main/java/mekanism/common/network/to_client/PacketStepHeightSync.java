@@ -2,9 +2,9 @@ package mekanism.common.network.to_client;
 
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketStepHeightSync implements IMekanismPacket {
 
@@ -16,18 +16,18 @@ public class PacketStepHeightSync implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             player.maxUpStep = stepHeight;
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeFloat(stepHeight);
     }
 
-    public static PacketStepHeightSync decode(PacketBuffer buffer) {
+    public static PacketStepHeightSync decode(FriendlyByteBuf buffer) {
         return new PacketStepHeightSync(buffer.readFloat());
     }
 }

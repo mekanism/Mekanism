@@ -14,9 +14,9 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 
 public class TileComponentFrequency implements ITileComponent {
 
@@ -54,7 +54,9 @@ public class TileComponentFrequency implements ITileComponent {
             needsNotify = false;
         }
         if (needsSave) {
-            tile.markDirty(false);
+            //Mark the entire tile as dirty as maybe the frequency having changed means we need to update
+            // comparators if the comparators are based on data stored in the frequency
+            tile.setChanged();
             needsSave = false;
         }
     }
@@ -109,7 +111,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
         FrequencyManager<?> manager = type.getManager(data, player);
-        if (manager != null && manager.remove(data.getKey(), player)) {
+        if (manager != null && manager.remove(data.key(), player)) {
             setNeedsNotify(type);
         }
     }
@@ -148,12 +150,6 @@ public class TileComponentFrequency implements ITileComponent {
         needsSave = true;
     }
 
-    private void unload() {
-        if (!tile.isRemote()) {
-            heldFrequencies.forEach((key, value) -> deactivate(key));
-        }
-    }
-
     private <FREQ extends Frequency> void deactivate(FrequencyType<FREQ> type) {
         FREQ freq = getFrequency(type);
         if (freq != null) {
@@ -165,30 +161,26 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        CompoundNBT frequencyNBT;
-        if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, NBT.TAG_COMPOUND)) {
-            frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
-        } else {
-            //TODO - 1.18: Remove this old fallback loading system
-            frequencyNBT = nbtTags;
-        }
-        for (FrequencyType<?> type : supportedFrequencies.keySet()) {
-            if (frequencyNBT.contains(type.getName(), NBT.TAG_COMPOUND)) {
-                Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
-                frequency.setValid(false);
-                heldFrequencies.put(type, frequency);
+    public void read(CompoundTag nbtTags) {
+        if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
+            CompoundTag frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
+            for (FrequencyType<?> type : supportedFrequencies.keySet()) {
+                if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
+                    Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
+                    frequency.setValid(false);
+                    heldFrequencies.put(type, frequency);
+                }
             }
         }
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        CompoundNBT frequencyNBT = new CompoundNBT();
+    public void write(CompoundTag nbtTags) {
+        CompoundTag frequencyNBT = new CompoundTag();
         for (Frequency frequency : heldFrequencies.values()) {
             if (frequency != null) {
                 //TODO: Can this be transitioned over to frequency.serializeIdentityWithOwner()
-                CompoundNBT frequencyTag = new CompoundNBT();
+                CompoundTag frequencyTag = new CompoundTag();
                 frequency.writeComponentData(frequencyTag);
                 frequencyNBT.put(frequency.getType().getName(), frequencyTag);
             }
@@ -196,14 +188,14 @@ public class TileComponentFrequency implements ITileComponent {
         nbtTags.put(NBTConstants.COMPONENT_FREQUENCY, frequencyNBT);
     }
 
-    public void readConfiguredFrequencies(PlayerEntity player, CompoundNBT data) {
-        if (hasCustomFrequencies() && data.contains(NBTConstants.COMPONENT_FREQUENCY, NBT.TAG_COMPOUND)) {
-            CompoundNBT frequencyNBT = data.getCompound(NBTConstants.COMPONENT_FREQUENCY);
+    public void readConfiguredFrequencies(Player player, CompoundTag data) {
+        if (hasCustomFrequencies() && data.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
+            CompoundTag frequencyNBT = data.getCompound(NBTConstants.COMPONENT_FREQUENCY);
             for (FrequencyType<?> type : supportedFrequencies.keySet()) {
                 if (type != FrequencyType.SECURITY) {
                     //Don't allow transferring security data via config cards
-                    if (frequencyNBT.contains(type.getName(), NBT.TAG_COMPOUND)) {
-                        CompoundNBT frequencyData = frequencyNBT.getCompound(type.getName());
+                    if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
+                        CompoundTag frequencyData = frequencyNBT.getCompound(type.getName());
                         if (frequencyData.hasUUID(NBTConstants.OWNER_UUID)) {
                             FrequencyIdentity identity = FrequencyIdentity.load(type, frequencyData);
                             if (identity != null) {
@@ -223,8 +215,8 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    public void writeConfiguredFrequencies(CompoundNBT data) {
-        CompoundNBT frequencyNBT = new CompoundNBT();
+    public void writeConfiguredFrequencies(CompoundTag data) {
+        CompoundTag frequencyNBT = new CompoundTag();
         for (Frequency frequency : heldFrequencies.values()) {
             if (frequency != null && frequency.getType() != FrequencyType.SECURITY) {
                 //Don't allow transferring security data via config cards
@@ -238,12 +230,9 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void invalidate() {
-        unload();
-    }
-
-    @Override
-    public void onChunkUnload() {
-        unload();
+        if (!tile.isRemote()) {
+            heldFrequencies.forEach((key, value) -> deactivate(key));
+        }
     }
 
     @Override
@@ -274,16 +263,6 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    private static class FrequencyTrackingData {
-
-        private final boolean needsContainerSync;
-        private final boolean needsListCache;
-        private final boolean notifyNeighbors;
-
-        public FrequencyTrackingData(boolean needsContainerSync, boolean needsListCache, boolean notifyNeighbors) {
-            this.needsContainerSync = needsContainerSync;
-            this.needsListCache = needsListCache;
-            this.notifyNeighbors = notifyNeighbors;
-        }
+    private record FrequencyTrackingData(boolean needsContainerSync, boolean needsListCache, boolean notifyNeighbors) {
     }
 }

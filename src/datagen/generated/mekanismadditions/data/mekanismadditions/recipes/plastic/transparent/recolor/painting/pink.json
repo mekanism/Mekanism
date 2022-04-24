@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/transparent"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:pink_plastic_transparent"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:pink"
+  },
+  "output": {
+    "item": "mekanismadditions:pink_plastic_transparent"
+  }
+}

@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.math.FloatingLong;
 import org.openzen.zencode.java.ZenCodeType;
 

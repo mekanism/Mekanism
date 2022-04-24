@@ -11,7 +11,7 @@
       "item": "byg:red_rock_brick_slab"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:bio"
   },

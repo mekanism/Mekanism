@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiUtils;
@@ -14,8 +14,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
@@ -28,25 +27,23 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, dataSource.getControlType().getTextComponent(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, dataSource.getControlType().getTextComponent());
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_REDSTONE_CONTROL, dataSource));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_REDSTONE_CONTROL, dataSource));
     }
 
     @Override
     protected ResourceLocation getOverlay() {
-        switch (dataSource.getControlType()) {
-            case HIGH:
-                return HIGH;
-            case LOW:
-                return LOW;
-        }
-        return super.getOverlay();
+        return switch (dataSource.getControlType()) {
+            case HIGH -> HIGH;
+            case LOW -> LOW;
+            default -> super.getOverlay();
+        };
     }
 
     @Override
@@ -55,9 +52,8 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    protected void drawBackgroundOverlay(@Nonnull MatrixStack matrix) {
+    protected void drawBackgroundOverlay(@Nonnull PoseStack matrix) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
-            minecraft.textureManager.bind(AtlasTexture.LOCATION_BLOCKS);
             GuiUtils.drawSprite(matrix, getButtonX() + 1, getButtonY() + 1, innerWidth - 2, innerHeight - 2, 0, MekanismRenderer.redstonePulse);
         } else {
             super.drawBackgroundOverlay(matrix);

@@ -1,17 +1,16 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -25,9 +24,9 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
 public class TileComponentUpgrade implements ITileComponent, ISpecificContainerTracker {
@@ -63,8 +62,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     public void tickServer() {
         ItemStack stack = upgradeSlot.getStack();
-        if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem) {
-            Upgrade type = ((IUpgradeItem) stack.getItem()).getUpgradeType(stack);
+        if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem upgradeItem) {
+            Upgrade type = upgradeItem.getUpgradeType(stack);
             if (supports(type) && getUpgrades(type) < type.getMax()) {
                 if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
                     upgradeTicks++;
@@ -117,7 +116,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                     //Send an update packet to the client to update the number of muffling upgrades installed
                     tile.sendUpdatePacket();
                 }
-                tile.markDirty(false);
+                tile.markForSave();
                 return toAdd;
             }
         }
@@ -174,27 +173,25 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     private List<IInventorySlot> getSlots() {
-        return Arrays.asList(upgradeSlot, upgradeOutputSlot);
+        return List.of(upgradeSlot, upgradeOutputSlot);
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
-            CompoundNBT upgradeNBT = nbtTags.getCompound(NBTConstants.COMPONENT_UPGRADE);
+    public void read(CompoundTag nbtTags) {
+        if (nbtTags.contains(NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
+            CompoundTag upgradeNBT = nbtTags.getCompound(NBTConstants.COMPONENT_UPGRADE);
             upgrades = Upgrade.buildMap(upgradeNBT);
             for (Upgrade upgrade : getSupportedTypes()) {
                 tile.recalculateUpgrades(upgrade);
             }
             //Load the inventory
-            NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, NBT.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
-            //TODO - 1.18: Remove this, it is the legacy way of loading
-            NBTUtils.setCompoundIfPresent(upgradeNBT, NBTConstants.SLOT, upgradeSlot::deserializeNBT);
+            NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, Tag.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
         }
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        CompoundNBT upgradeNBT = new CompoundNBT();
+    public void write(CompoundTag nbtTags) {
+        CompoundTag upgradeNBT = new CompoundTag();
         Upgrade.saveMap(upgrades, upgradeNBT);
         //Save the inventory
         upgradeNBT.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getSlots()));
@@ -202,7 +199,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {
+    public void addToUpdateTag(CompoundTag updateTag) {
         //Note: We only bother to sync how many muffling upgrades we have installed as that is the only thing the client cares about
         if (supports(Upgrade.MUFFLING)) {
             updateTag.putInt(NBTConstants.MUFFLING_COUNT, upgrades.getOrDefault(Upgrade.MUFFLING, 0));
@@ -210,7 +207,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {
+    public void readFromUpdateTag(CompoundTag updateTag) {
         if (supports(Upgrade.MUFFLING)) {
             NBTUtils.setIntIfPresent(updateTag, NBTConstants.MUFFLING_COUNT, amount -> {
                 if (amount == 0) {

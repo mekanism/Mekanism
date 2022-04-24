@@ -167,5 +167,5 @@
   "item.mekanismtools.steel_sword": "Stalowe buty",
   "item.mekanismtools.stone_paxel": "Kamienny łopasiekilof",
   "item.mekanismtools.wood_paxel": "Drewniany łopasiekilof",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "tooltip.mekanismtools.hp": "HP: %1$s"
 }

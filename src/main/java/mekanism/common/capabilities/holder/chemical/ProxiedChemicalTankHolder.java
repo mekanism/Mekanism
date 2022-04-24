@@ -9,7 +9,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.common.capabilities.holder.ProxiedHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ProxiedChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
       extends ProxiedHolder implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {

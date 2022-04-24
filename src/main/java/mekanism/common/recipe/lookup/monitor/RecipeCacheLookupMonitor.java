@@ -8,10 +8,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
-import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedRecipe;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
-import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 
 public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements ICachedRecipeHolder<RECIPE>, IContentsListener {
 
@@ -34,8 +33,12 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     }
 
     @Override
-    public void onContentsChanged() {
+    public final void onContentsChanged() {
         handler.onContentsChanged();
+        onChange();
+    }
+
+    public void onChange() {
         //Mark that we may have a recipe again
         hasNoRecipe = false;
     }
@@ -72,8 +75,9 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     public void loadSavedData(@Nonnull CachedRecipe<RECIPE> cached, int cacheIndex) {
         if (cachedIndexMatches(cacheIndex)) {
             ICachedRecipeHolder.super.loadSavedData(cached, cacheIndex);
-            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe && handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler) {
-                ((ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?>) cached).loadSavedUsageSoFar(((ConstantUsageRecipeLookupHandler) handler).getSavedUsedSoFar(cacheIndex));
+            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?> c &&
+                handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler handler) {
+                c.loadSavedUsageSoFar(handler.getSavedUsedSoFar(cacheIndex));
             }
         }
     }

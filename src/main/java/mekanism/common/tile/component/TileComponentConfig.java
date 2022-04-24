@@ -1,7 +1,6 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -46,10 +45,10 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -86,32 +85,16 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
-            case ENERGY:
-                tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
-                break;
-            case FLUID:
-                tile.invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
-                break;
-            case GAS:
-                tile.invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, direction);
-                break;
-            case INFUSION:
-                tile.invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, direction);
-                break;
-            case PIGMENT:
-                tile.invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, direction);
-                break;
-            case SLURRY:
-                tile.invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, direction);
-                break;
-            case ITEM:
-                tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
-                break;
-            case HEAT:
-                tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
-                break;
+            case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
+            case FLUID -> tile.invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, direction);
+            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, direction);
+            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, direction);
+            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, direction);
+            case ITEM -> tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
+            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
         }
-        tile.markDirty(false);
+        tile.markForSave();
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
         for (Consumer<Direction> listener : configChangeListeners.getOrDefault(transmissionType, Collections.emptyList())) {
             listener.accept(direction);
@@ -212,7 +195,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
             config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
-            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
+            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, List.of(inputContainer, outputContainer)));
             config.fill(DataType.INPUT);
             config.setDataType(DataType.OUTPUT, outputSide);
         }
@@ -295,15 +278,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
-            CompoundNBT configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);
+    public void read(CompoundTag nbtTags) {
+        if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, Tag.TAG_COMPOUND)) {
+            CompoundTag configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);
             Set<Direction> directionsToUpdate = EnumSet.noneOf(Direction.class);
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
                 info.setEjecting(configNBT.getBoolean(NBTConstants.EJECT + type.ordinal()));
-                CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
+                CompoundTag sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
                     NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
                         if (info.getDataType(side) != dataType) {
@@ -322,13 +305,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        CompoundNBT configNBT = new CompoundNBT();
+    public void write(CompoundTag nbtTags) {
+        CompoundTag configNBT = new CompoundTag();
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
             configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
-            CompoundNBT sideConfig = new CompoundNBT();
+            CompoundTag sideConfig = new CompoundTag();
             for (RelativeSide side : EnumUtils.SIDES) {
                 sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());
             }
@@ -338,13 +321,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {
+    public void addToUpdateTag(CompoundTag updateTag) {
         //Note: This is slightly different from read and write as we don't bother syncing the ejecting status
-        CompoundNBT configNBT = new CompoundNBT();
+        CompoundTag configNBT = new CompoundTag();
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            CompoundNBT sideConfig = new CompoundNBT();
+            CompoundTag sideConfig = new CompoundTag();
             for (RelativeSide side : EnumUtils.SIDES) {
                 sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());
             }
@@ -354,13 +337,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {
-        if (updateTag.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
-            CompoundNBT configNBT = updateTag.getCompound(NBTConstants.COMPONENT_CONFIG);
+    public void readFromUpdateTag(CompoundTag updateTag) {
+        if (updateTag.contains(NBTConstants.COMPONENT_CONFIG, Tag.TAG_COMPOUND)) {
+            CompoundTag configNBT = updateTag.getCompound(NBTConstants.COMPONENT_CONFIG);
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
-                CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
+                CompoundTag sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
                     NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
                 }
@@ -380,30 +363,21 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, Object... containers) {
-        return createInfo(type, input, output, Arrays.asList(containers));
+        return createInfo(type, input, output, List.of(containers));
     }
 
     @SuppressWarnings("unchecked")
     public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, List<?> containers) {
-        switch (type) {
-            case ITEM:
-                return new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
-            case FLUID:
-                return new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
-            case GAS:
-                return new GasSlotInfo(input, output, (List<IGasTank>) containers);
-            case INFUSION:
-                return new InfusionSlotInfo(input, output, (List<IInfusionTank>) containers);
-            case PIGMENT:
-                return new PigmentSlotInfo(input, output, (List<IPigmentTank>) containers);
-            case SLURRY:
-                return new SlurrySlotInfo(input, output, (List<ISlurryTank>) containers);
-            case ENERGY:
-                return new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
-            case HEAT:
-                return new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
-        }
-        return null;
+        return switch (type) {
+            case ITEM -> new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
+            case FLUID -> new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
+            case GAS -> new GasSlotInfo(input, output, (List<IGasTank>) containers);
+            case INFUSION -> new InfusionSlotInfo(input, output, (List<IInfusionTank>) containers);
+            case PIGMENT -> new PigmentSlotInfo(input, output, (List<IPigmentTank>) containers);
+            case SLURRY -> new SlurrySlotInfo(input, output, (List<ISlurryTank>) containers);
+            case ENERGY -> new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
+            case HEAT -> new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
+        };
     }
 
     //Computer related methods
@@ -435,7 +409,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
         if (config.isEjecting() != ejecting) {
             config.setEjecting(ejecting);
-            tile.markDirty(false);
+            tile.markForSave();
         }
     }
 

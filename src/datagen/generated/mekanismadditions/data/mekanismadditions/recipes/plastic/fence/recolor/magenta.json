@@ -11,11 +11,11 @@
   ],
   "key": {
     "#": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "forge:fences/plastic"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:magenta_plastic_fence"
       }
     },

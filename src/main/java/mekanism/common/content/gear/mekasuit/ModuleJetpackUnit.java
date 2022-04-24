@@ -16,8 +16,8 @@ import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNonnullByDefault
 public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
@@ -30,7 +30,7 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleJetpackUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleJetpackUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             ItemStack container = module.getContainer();
             GasStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedGas(container, MekanismGases.HYDROGEN.get());
@@ -40,7 +40,7 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
     }
 
     @Override
-    public void changeMode(IModule<ModuleJetpackUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(IModule<ModuleJetpackUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
         if (module.isEnabled()) {
             JetpackMode newMode = jetpackMode.get().adjust(shift);
             if (jetpackMode.get() != newMode) {

@@ -1,11 +1,10 @@
 package mekanism.common.recipe.serializer;
 
-import mekanism.api.JsonConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 
 public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends ItemStackGasToItemStackRecipe> extends
       ItemStackChemicalToItemStackRecipeSerializer<Gas, GasStack, GasStackIngredient, RECIPE> {
@@ -17,10 +16,5 @@ public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends ItemStackGas
     @Override
     protected ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient> getDeserializer() {
         return ChemicalIngredientDeserializer.GAS;
-    }
-
-    @Override
-    protected String getChemicalInputJsonKey() {
-        return JsonConstants.GAS_INPUT;
     }
 }

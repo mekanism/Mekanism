@@ -1,11 +1,15 @@
 package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 
 public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
@@ -56,33 +60,25 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 130;
-            case LEGS:
-                return 150;
-            case CHEST:
-                return 160;
-            case HEAD:
-                return 110;
-        }
-        return 0;
+    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 130;
+            case LEGS -> 150;
+            case CHEST -> 160;
+            case HEAD -> 110;
+            default -> 0;
+        };
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 1;
-            case LEGS:
-                return 3;
-            case CHEST:
-                return 4;
-            case HEAD:
-                return 1;
-        }
-        return 0;
+    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 1;
+            case LEGS -> 3;
+            case CHEST -> 4;
+            case HEAD -> 1;
+            default -> 0;
+        };
     }
 
     @Nonnull
@@ -95,6 +91,12 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return "lapis_lazuli";
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Block> getTag() {
+        return ToolsTags.Blocks.NEEDS_LAPIS_LAZULI_TOOL;
     }
 
     @Nonnull

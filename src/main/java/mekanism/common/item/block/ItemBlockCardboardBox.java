@@ -2,8 +2,10 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
@@ -13,26 +15,23 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.world.BlockEvent;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
@@ -42,22 +41,21 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(getBlockData(stack) != null)));
         BlockData data = getBlockData(stack);
         if (data != null) {
             try {
                 tooltip.add(MekanismLang.BLOCK.translate(data.blockState.getBlock()));
                 if (data.tileTag != null) {
-                    tooltip.add(MekanismLang.TILE.translate(data.tileTag.getString(NBTConstants.ID)));
+                    tooltip.add(MekanismLang.BLOCK_ENTITY.translate(data.tileTag.getString(NBTConstants.ID)));
                 }
             } catch (Exception ignored) {
             }
         }
     }
 
-    private static boolean canReplace(World world, PlayerEntity player, BlockPos pos, Direction sideClicked, BlockState state, ItemStack stack) {
+    private static boolean canReplace(Level world, Player player, BlockPos pos, Direction sideClicked, BlockState state, ItemStack stack) {
         //Check if the player is allowed to use the cardboard box in the given position
         if (world.mayInteract(player, pos) && player.mayUseItemAt(pos.relative(sideClicked), sideClicked, stack)) {
             //If they are then check if they can "break" the block that is in that spot
@@ -73,62 +71,59 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Nonnull
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Player player = context.getPlayer();
         if (stack.isEmpty() || player == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         if (getBlockData(stack) == null && !player.isShiftKeyDown()) {
             BlockState state = world.getBlockState(pos);
-            if (!state.isAir(world, pos) && state.getDestroySpeed(world, pos) != -1) {
+            if (!state.isAir() && state.getDestroySpeed(world, pos) != -1) {
                 if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) ||
                     MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace()) ||
                     !canReplace(world, player, pos, context.getClickedFace(), state, stack)) {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 }
-                TileEntity tile = WorldUtils.getTileEntity(world, pos);
+                BlockEntity tile = WorldUtils.getTileEntity(world, pos);
                 if (tile != null) {
-                    if (tile.getType().isIn(MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST) || !SecurityUtils.canAccess(player, tile)) {
+                    if (MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST_LOOKUP.contains(tile.getType()) ||
+                        !MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                         //If the tile is in the tile entity type blacklist or the player cannot access the tile
                         // don't allow them to pick it up with a cardboard box
-                        return ActionResultType.FAIL;
+                        return InteractionResult.FAIL;
                     }
                 }
                 if (!world.isClientSide) {
                     BlockData data = new BlockData(state);
                     if (tile != null) {
                         //Note: We check security access above
-                        CompoundNBT tag = new CompoundNBT();
-                        tile.save(tag);
-                        data.tileTag = tag;
+                        data.tileTag = tile.saveWithFullMetadata();
                     }
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }
-                    //Start by removing the tile entity so that there is no backing inventory to have dropped
-                    // when we change the block to a cardboard box.
-                    // Note: If this starts causing issues switch back to a monitorCardboardBox styled system
-                    // for stopping item drops and try to find a way of getting it to work properly with custom
-                    // item entities that are added a tick later (such as trying to get forge to change their
-                    // listener from highest to high)
-                    world.removeBlockEntity(pos);
+                    //Mark that we are monitoring item drops that might have been created due to using the cardboard box
+                    // and then replace the block with the cardboard box, which will cause items to drop and then get
+                    // cancelled by our listener in CommonWorldTickHandler
+                    CommonWorldTickHandler.monitoringCardboardBox = true;
                     world.setBlockAndUpdate(pos, getBlock().defaultBlockState().setValue(BlockStateHelper.storageProperty, true));
+                    CommonWorldTickHandler.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
                         box.storedData = data;
                     }
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getLevel();
+    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+        Level world = context.getLevel();
         if (world.isClientSide) {
             return true;
         }
@@ -143,11 +138,11 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     public void setBlockData(ItemStack stack, BlockData data) {
-        ItemDataUtils.setCompound(stack, NBTConstants.DATA, data.write(new CompoundNBT()));
+        ItemDataUtils.setCompound(stack, NBTConstants.DATA, data.write(new CompoundTag()));
     }
 
     public BlockData getBlockData(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.DATA, NBT.TAG_COMPOUND)) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.DATA, Tag.TAG_COMPOUND)) {
             return BlockData.read(ItemDataUtils.getCompound(stack, NBTConstants.DATA));
         }
         return null;

@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server;
 
+import mekanism.api.MekanismAPI;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
@@ -7,15 +8,14 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismPacket {
 
@@ -23,9 +23,9 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
     private final FrequencyUpdate updateType;
     private final FrequencyIdentity data;
     private final BlockPos tilePosition;
-    private final Hand currentHand;
+    private final InteractionHand currentHand;
 
-    private PacketGuiSetFrequency(FrequencyUpdate updateType, FrequencyType<FREQ> type, FrequencyIdentity data, BlockPos tilePosition, Hand currentHand) {
+    private PacketGuiSetFrequency(FrequencyUpdate updateType, FrequencyType<FREQ> type, FrequencyIdentity data, BlockPos tilePosition, InteractionHand currentHand) {
         this.updateType = updateType;
         this.type = type;
         this.data = data;
@@ -37,29 +37,28 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
         return new PacketGuiSetFrequency<>(updateType, type, data, tilePosition, null);
     }
 
-    public static <FREQ extends Frequency> PacketGuiSetFrequency<FREQ> create(FrequencyUpdate updateType, FrequencyType<FREQ> type, FrequencyIdentity data, Hand currentHand) {
+    public static <FREQ extends Frequency> PacketGuiSetFrequency<FREQ> create(FrequencyUpdate updateType, FrequencyType<FREQ> type, FrequencyIdentity data, InteractionHand currentHand) {
         return new PacketGuiSetFrequency<>(updateType, type, data, null, currentHand);
     }
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player == null) {
             return;
         }
         if (updateType.isTile()) {
-            TileEntity tile = WorldUtils.getTileEntity(player.level, tilePosition);
-            if (SecurityUtils.canAccess(player, tile) && tile instanceof IFrequencyHandler) {
+            BlockEntity tile = WorldUtils.getTileEntity(player.level, tilePosition);
+            if (tile instanceof IFrequencyHandler frequencyHandler && MekanismAPI.getSecurityUtils().canAccess(player, tile)) {
                 if (updateType == FrequencyUpdate.SET_TILE) {
-                    ((IFrequencyHandler) tile).setFrequency(type, data, player.getUUID());
+                    frequencyHandler.setFrequency(type, data, player.getUUID());
                 } else if (updateType == FrequencyUpdate.REMOVE_TILE) {
-                    ((IFrequencyHandler) tile).removeFrequency(type, data, player.getUUID());
+                    frequencyHandler.removeFrequency(type, data, player.getUUID());
                 }
             }
         } else {
             ItemStack stack = player.getItemInHand(currentHand);
-            if (SecurityUtils.canAccess(player, stack) && stack.getItem() instanceof IFrequencyItem) {
-                IFrequencyItem item = (IFrequencyItem) stack.getItem();
+            if (MekanismAPI.getSecurityUtils().canAccess(player, stack) && stack.getItem() instanceof IFrequencyItem item) {
                 FrequencyManager<FREQ> manager = type.getManager(data, player.getUUID());
                 if (updateType == FrequencyUpdate.SET_ITEM) {
                     //Note: We don't bother validating if the frequency is public or not here, as if it isn't then
@@ -67,7 +66,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
                     // have been able to send due to not knowing what private frequencies exist for other players
                     item.setFrequency(stack, manager.getOrCreateFrequency(data, player.getUUID()));
                 } else if (updateType == FrequencyUpdate.REMOVE_ITEM) {
-                    if (manager.remove(data.getKey(), player.getUUID())) {
+                    if (manager.remove(data.key(), player.getUUID())) {
                         FrequencyIdentity current = item.getFrequencyIdentity(stack);
                         if (current != null && current.equals(data)) {
                             //If the frequency we are removing matches the stored frequency set it to nothing
@@ -80,7 +79,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(updateType);
         type.write(buffer);
         type.getIdentitySerializer().write(buffer, data);
@@ -91,12 +90,12 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
         }
     }
 
-    public static <FREQ extends Frequency> PacketGuiSetFrequency<FREQ> decode(PacketBuffer buffer) {
+    public static <FREQ extends Frequency> PacketGuiSetFrequency<FREQ> decode(FriendlyByteBuf buffer) {
         FrequencyUpdate updateType = buffer.readEnum(FrequencyUpdate.class);
         FrequencyType<FREQ> type = FrequencyType.load(buffer);
         FrequencyIdentity data = type.getIdentitySerializer().read(buffer);
         BlockPos pos = updateType.isTile() ? buffer.readBlockPos() : null;
-        Hand hand = updateType.isTile() ? null : buffer.readEnum(Hand.class);
+        InteractionHand hand = updateType.isTile() ? null : buffer.readEnum(InteractionHand.class);
         return new PacketGuiSetFrequency<>(updateType, type, data, pos, hand);
     }
 

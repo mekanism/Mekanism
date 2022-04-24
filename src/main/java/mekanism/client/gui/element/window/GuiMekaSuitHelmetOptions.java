@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiColorPickerSlot;
 import mekanism.client.gui.element.GuiScreenSwitch;
@@ -18,17 +18,17 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
         addChild(new GuiColorPickerSlot(gui, relativeX + 12, relativeY + 32, HUDColor.REGULAR::getColor, color -> {
             MekanismConfig.client.hudColor.set(color.argb());
             // save the updated config info
-            MekanismConfig.client.getConfigSpec().save();
+            MekanismConfig.client.save();
         }));
         addChild(new GuiColorPickerSlot(gui, relativeX + 61, relativeY + 32, HUDColor.WARNING::getColor, color -> {
             MekanismConfig.client.hudWarningColor.set(color.argb());
             // save the updated config info
-            MekanismConfig.client.getConfigSpec().save();
+            MekanismConfig.client.save();
         }));
         addChild(new GuiColorPickerSlot(gui, relativeX + 110, relativeY + 32, HUDColor.DANGER::getColor, color -> {
             MekanismConfig.client.hudDangerColor.set(color.argb());
             // save the updated config info
-            MekanismConfig.client.getConfigSpec().save();
+            MekanismConfig.client.save();
         }));
 
         GuiSlider slider = addChild(new GuiSlider(gui, relativeX + 10, relativeY + 62, 120, value -> MekanismConfig.client.hudOpacity.set((float) value)));
@@ -37,12 +37,12 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
         addChild(new GuiScreenSwitch(gui, relativeX + 7, relativeY + 87, 126, MekanismLang.COMPASS.translate(), MekanismConfig.client.hudCompassEnabled, () -> {
             MekanismConfig.client.hudCompassEnabled.set(!MekanismConfig.client.hudCompassEnabled.get());
             // save the updated config info
-            MekanismConfig.client.getConfigSpec().save();
+            MekanismConfig.client.save();
         }));
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
 
         drawTitleText(matrix, MekanismLang.HELMET_OPTIONS.translate(), 6);

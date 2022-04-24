@@ -1,43 +1,53 @@
 package mekanism.client.render.armor;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelScubaTank;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
-public class ScubaTankArmor extends CustomArmor {
+public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListener {
 
-    public static final ScubaTankArmor SCUBA_TANK = new ScubaTankArmor(0.5F);
-    private static final ModelScubaTank model = new ModelScubaTank();
+    public static final ScubaTankArmor SCUBA_TANK = new ScubaTankArmor();
 
-    private ScubaTankArmor(float size) {
-        super(size);
+    private ModelScubaTank model;
+
+    private ScubaTankArmor() {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
-          LivingEntity entity, ItemStack stack) {
-        if (!body.visible) {
+    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+        model = new ModelScubaTank(Minecraft.getInstance().getEntityModels());
+    }
+
+    @Override
+    public void render(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+          int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
+        if (!baseModel.body.visible) {
             //If the body model shouldn't show don't bother displaying it
             return;
         }
-        if (young) {
+        if (baseModel.young) {
             matrix.pushPose();
-            float f1 = 1.0F / babyBodyScale;
+            float f1 = 1.0F / baseModel.babyBodyScale;
             matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, bodyYOffset / 16.0F, 0.0D);
-            renderTank(matrix, renderer, light, overlayLight, hasEffect);
+            matrix.translate(0.0D, baseModel.bodyYOffset / 16.0F, 0.0D);
+            renderTank(baseModel, matrix, renderer, light, overlayLight, hasEffect);
             matrix.popPose();
         } else {
-            renderTank(matrix, renderer, light, overlayLight, hasEffect);
+            renderTank(baseModel, matrix, renderer, light, overlayLight, hasEffect);
         }
     }
 
-    private void renderTank(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
+    private void renderTank(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light,
+          int overlayLight, boolean hasEffect) {
         matrix.pushPose();
-        body.translateAndRotate(matrix);
+        baseModel.body.translateAndRotate(matrix);
         matrix.translate(0, 0, 0.06);
         model.render(matrix, renderer, light, overlayLight, hasEffect);
         matrix.popPose();

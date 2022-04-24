@@ -9,15 +9,15 @@ import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.client.model.baked.MekanismModel;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 public class RobitModel extends MekanismModel {
@@ -27,15 +27,15 @@ public class RobitModel extends MekanismModel {
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-          ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+          ItemOverrides overrides, ResourceLocation modelLocation) {
         return new RobitBakedModel(super.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation));
     }
 
     @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter,
+    public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter,
           Set<Pair<String, String>> missingTextureErrors) {
-        Collection<RenderMaterial> textures = super.getTextures(owner, modelGetter, missingTextureErrors);
+        Collection<Material> textures = super.getTextures(owner, modelGetter, missingTextureErrors);
         //Remove any missing errors where the texture in the file was #robit
         missingTextureErrors.removeIf(p -> p.getFirst().equals("#robit"));
         return textures;
@@ -52,7 +52,7 @@ public class RobitModel extends MekanismModel {
         }
 
         @Override
-        public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
+        public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
         }
 
         @Nonnull

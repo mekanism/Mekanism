@@ -7,16 +7,16 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
@@ -29,7 +29,7 @@ public class ChemicalUtils {
      * @param buffer Buffer to write to.
      * @param stack  Stack to write.
      */
-    public static void writeChemicalStack(PacketBuffer buffer, ChemicalStack<?> stack) {
+    public static void writeChemicalStack(FriendlyByteBuf buffer, ChemicalStack<?> stack) {
         if (stack.isEmpty()) {
             buffer.writeBoolean(false);
         } else {
@@ -45,7 +45,7 @@ public class ChemicalUtils {
      *
      * @return Gas Stack.
      */
-    public static GasStack readGasStack(PacketBuffer buffer) {
+    public static GasStack readGasStack(FriendlyByteBuf buffer) {
         return buffer.readBoolean() ? GasStack.readFromPacket(buffer) : GasStack.EMPTY;
     }
 
@@ -56,7 +56,7 @@ public class ChemicalUtils {
      *
      * @return Infusion Stack.
      */
-    public static InfusionStack readInfusionStack(PacketBuffer buffer) {
+    public static InfusionStack readInfusionStack(FriendlyByteBuf buffer) {
         return buffer.readBoolean() ? InfusionStack.readFromPacket(buffer) : InfusionStack.EMPTY;
     }
 
@@ -67,7 +67,7 @@ public class ChemicalUtils {
      *
      * @return Pigment Stack.
      */
-    public static PigmentStack readPigmentStack(PacketBuffer buffer) {
+    public static PigmentStack readPigmentStack(FriendlyByteBuf buffer) {
         return buffer.readBoolean() ? PigmentStack.readFromPacket(buffer) : PigmentStack.EMPTY;
     }
 
@@ -78,7 +78,7 @@ public class ChemicalUtils {
      *
      * @return Slurry Stack.
      */
-    public static SlurryStack readSlurryStack(PacketBuffer buffer) {
+    public static SlurryStack readSlurryStack(FriendlyByteBuf buffer) {
         return buffer.readBoolean() ? SlurryStack.readFromPacket(buffer) : SlurryStack.EMPTY;
     }
 
@@ -92,7 +92,7 @@ public class ChemicalUtils {
      *
      * @return Chemical.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromNBT(@Nullable CompoundNBT nbtTags, CHEMICAL empty, String nbtName,
+    public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromNBT(@Nullable CompoundTag nbtTags, CHEMICAL empty, String nbtName,
           Function<ResourceLocation, CHEMICAL> registryLookup) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return empty;

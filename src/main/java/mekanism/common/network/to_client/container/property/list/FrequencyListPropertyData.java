@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.lib.frequency.Frequency;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends ListPropertyData<FREQUENCY> {
 
@@ -12,7 +12,7 @@ public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends List
         super(property, ListType.FREQUENCY, values);
     }
 
-    public static <FREQUENCY extends Frequency> FrequencyListPropertyData<FREQUENCY> read(short property, int elements, PacketBuffer buffer) {
+    public static <FREQUENCY extends Frequency> FrequencyListPropertyData<FREQUENCY> read(short property, int elements, FriendlyByteBuf buffer) {
         List<FREQUENCY> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
             values.add(Frequency.readFromPacket(buffer));
@@ -21,7 +21,7 @@ public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends List
     }
 
     @Override
-    protected void writeListElement(PacketBuffer buffer, FREQUENCY value) {
+    protected void writeListElement(FriendlyByteBuf buffer, FREQUENCY value) {
         value.write(buffer);
     }
 }

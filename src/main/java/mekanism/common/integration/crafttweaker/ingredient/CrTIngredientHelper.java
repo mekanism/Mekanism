@@ -1,12 +1,12 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import java.util.function.Function;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
+import mekanism.api.recipes.ingredients.creator.IIngredientCreator;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagKey;
 
 public class CrTIngredientHelper {
 
@@ -22,10 +22,9 @@ public class CrTIngredientHelper {
     /**
      * Validates that the amount is greater than zero and that the tag exists. If it does it get and returns the tag, otherwise it throws an error.
      */
-    static <TYPE, CRT_TYPE> ITag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount, Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter,
-          String ingredientType) {
+    static <TYPE> TagKey<TYPE> assertValidAndGet(KnownTag<TYPE> crtTag, long amount, String ingredientType) {
         assertValidAmount(ingredientType, amount);
-        return CrTUtils.validateTagAndGet(crtTag, getter);
+        return CrTUtils.validateTagAndGet(crtTag);
     }
 
     /**
@@ -51,14 +50,13 @@ public class CrTIngredientHelper {
      * Combines multiple ingredients into a single ingredient.
      */
     @SafeVarargs
-    static <INGREDIENT extends InputIngredient<?>> INGREDIENT createMulti(String ingredientType, Function<INGREDIENT[], INGREDIENT> multiCreator,
-          INGREDIENT... ingredients) {
+    static <INGREDIENT extends InputIngredient<?>> INGREDIENT createMulti(String ingredientType, IIngredientCreator<?, ?, INGREDIENT> creator, INGREDIENT... ingredients) {
         if (ingredients.length == 0) {
             throw new IllegalArgumentException("Multi " + ingredientType + " ingredients cannot be made out of no ingredients!");
         } else if (ingredients.length == 1) {
             //While this technically isn't needed because the multi creator methods also do this, it is good to be on the safe side
             return ingredients[0];
         }
-        return multiCreator.apply(ingredients);
+        return creator.createMulti(ingredients);
     }
 }

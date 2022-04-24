@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.IChemicalTank;
@@ -23,8 +23,8 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.network.chat.Component;
 
 public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> extends GuiBar<IBarInfoHandler> implements
       IJEIIngredientHelper {
@@ -36,7 +36,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     private final GuiChemicalBar<Slurry, SlurryStack> slurryBar;
 
     public GuiMergedChemicalBar(IGuiWrapper gui, HANDLER handler, MergedChemicalTank chemicalTank, int x, int y, int width, int height, boolean horizontal) {
-        super(AtlasTexture.LOCATION_BLOCKS, gui, new IBarInfoHandler() {
+        super(TextureAtlas.LOCATION_BLOCKS, gui, new IBarInfoHandler() {
             @Nullable
             private IChemicalTank<?, ?> getCurrentTank() {
                 Current current = chemicalTank.getCurrent();
@@ -56,7 +56,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
             }
 
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 IChemicalTank<?, ?> currentTank = getCurrentTank();
                 if (currentTank == null) {
                     return MekanismLang.EMPTY.translate();
@@ -80,7 +80,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar == null) {
             super.renderToolTip(matrix, mouseX, mouseY);
@@ -90,7 +90,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    void drawContentsChecked(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
+    void drawContentsChecked(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar != null) {
             currentBar.drawContentsChecked(matrix, mouseX, mouseY, partialTicks, handlerLevel, warning);
@@ -98,7 +98,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         //Rendering is redirected in drawContentsChecked
     }
 
@@ -117,23 +117,19 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
-        return currentBar == null ? null : currentBar.getIngredient();
+        return currentBar == null ? null : currentBar.getIngredient(mouseX, mouseY);
     }
 
     @Nullable
     private GuiChemicalBar<?, ?> getCurrentBarNoFallback() {
-        switch (chemicalTank.getCurrent()) {
-            case GAS:
-                return gasBar;
-            case INFUSION:
-                return infusionBar;
-            case PIGMENT:
-                return pigmentBar;
-            case SLURRY:
-                return slurryBar;
-        }
-        return null;
+        return switch (chemicalTank.getCurrent()) {
+            case GAS -> gasBar;
+            case INFUSION -> infusionBar;
+            case PIGMENT -> pigmentBar;
+            case SLURRY -> slurryBar;
+            default -> null;
+        };
     }
 }

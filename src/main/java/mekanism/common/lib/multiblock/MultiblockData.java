@@ -45,12 +45,12 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker, IInfusionTracker,
       IPigmentTracker, ISlurryTracker {
@@ -88,7 +88,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     private int currentRedstoneLevel;
 
     private final BooleanSupplier remoteSupplier;
-    private final Supplier<World> worldSupplier;
+    private final Supplier<Level> worldSupplier;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
     protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
@@ -101,7 +101,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     private boolean dirty;
 
-    public MultiblockData(TileEntity tile) {
+    public MultiblockData(BlockEntity tile) {
         remoteSupplier = () -> tile.getLevel().isClientSide();
         worldSupplier = tile::getLevel;
     }
@@ -123,7 +123,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      *
      * @return if we need an update packet
      */
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = false;
         for (ValveData data : valves) {
             data.activeTicks = Math.max(0, data.activeTicks - 1);
@@ -135,7 +135,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return needsPacket;
     }
 
-    protected double calculateAverageAmbientTemperature(World world) {
+    protected double calculateAverageAmbientTemperature(Level world) {
         //Take a rough average of the biome temperature by calculating the average of all the corners of the multiblock
         BlockPos min = getMinPos();
         BlockPos max = getMaxPos();
@@ -151,16 +151,15 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         ));
     }
 
-    private static double getBiomeTemp(World world, BlockPos... positions) {
+    private static double getBiomeTemp(Level world, BlockPos... positions) {
         if (positions.length == 0) {
             throw new IllegalArgumentException("No positions given.");
         }
-        return Arrays.stream(positions).mapToDouble(pos -> world.getBiome(pos).getTemperature(pos)).sum() / positions.length;
+        return Arrays.stream(positions).mapToDouble(pos -> world.getBiome(pos).value().getTemperature(pos)).sum() / positions.length;
     }
 
     public boolean setShape(IShape shape) {
-        if (shape instanceof VoxelCuboid) {
-            VoxelCuboid cuboid = (VoxelCuboid) shape;
+        if (shape instanceof VoxelCuboid cuboid) {
             bounds = cuboid;
             renderLocation = cuboid.getMinPos().relative(Direction.UP);
             setVolume(bounds.length() * bounds.width() * bounds.height());
@@ -169,7 +168,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return false;
     }
 
-    public void onCreated(World world) {
+    public void onCreated(Level world) {
         for (BlockPos pos : internalLocations) {
             TileEntityInternalMultiblock tile = WorldUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
             if (tile != null) {
@@ -215,7 +214,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return remoteSupplier.getAsBoolean();
     }
 
-    protected World getWorld() {
+    protected Level getWorld() {
         return worldSupplier.get();
     }
 
@@ -223,7 +222,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return true;
     }
 
-    public void remove(World world) {
+    public void remove(Level world) {
         for (BlockPos pos : internalLocations) {
             TileEntityInternalMultiblock tile = WorldUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
             if (tile != null) {
@@ -234,21 +233,21 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         formed = false;
     }
 
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> renderLocation = value);
-        bounds = new VoxelCuboid(NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN)),
-              NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)));
+        bounds = new VoxelCuboid(NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MIN)),
+              NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MAX)));
         NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.INVENTORY_ID, value -> inventoryID = value, () -> inventoryID = null);
     }
 
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         tag.putInt(NBTConstants.VOLUME, getVolume());
         if (renderLocation != null) {//In theory this shouldn't be null here but check it anyway
-            tag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(renderLocation));
+            tag.put(NBTConstants.RENDER_LOCATION, NbtUtils.writeBlockPos(renderLocation));
         }
-        tag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(bounds.getMinPos()));
-        tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(bounds.getMaxPos()));
+        tag.put(NBTConstants.MIN, NbtUtils.writeBlockPos(bounds.getMinPos()));
+        tag.put(NBTConstants.MAX, NbtUtils.writeBlockPos(bounds.getMaxPos()));
         if (inventoryID != null) {
             tag.putUUID(NBTConstants.INVENTORY_ID, inventoryID);
         }
@@ -294,12 +293,13 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             } else if (relativeLocation.isWall()) {
                 //If we are in the wall check if we are really an inner position. For example evap towers
                 MultiblockManager<T> manager = (MultiblockManager<T>) structure.getManager();
-                IStructureValidator<T> validator = manager.createValidator();
-                if (validator instanceof CuboidStructureValidator) {
-                    CuboidStructureValidator<T> cuboidValidator = (CuboidStructureValidator<T>) validator;
-                    validator.init(getWorld(), manager, structure);
-                    cuboidValidator.loadCuboid(getBounds());
-                    return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;
+                if (manager != null) {
+                    IStructureValidator<T> validator = manager.createValidator();
+                    if (validator instanceof CuboidStructureValidator<T> cuboidValidator) {
+                        validator.init(getWorld(), manager, structure);
+                        cuboidValidator.loadCuboid(getBounds());
+                        return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;
+                    }
                 }
             }
         }
@@ -415,7 +415,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     // Only call from the server
-    public void markDirtyComparator(World world) {
+    public void markDirtyComparator(Level world) {
         if (!isFormed()) {
             return;
         }
@@ -428,7 +428,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         }
     }
 
-    public void notifyAllUpdateComparator(World world) {
+    public void notifyAllUpdateComparator(Level world) {
         for (ValveData valve : valves) {
             TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location);
             if (tile != null) {

@@ -10,7 +10,7 @@
   ],
   "key": {
     "_": {
-      "tag": "forge:cobblestone"
+      "tag": "forge:cobblestone/normal"
     },
     "C": {
       "tag": "forge:circuits/basic"

@@ -1,20 +1,20 @@
 package mekanism.common.tile.component;
 
 import java.util.UUID;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.common.config.MekanismConfig;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 public class TileComponentSecurity implements ITileComponent {
 
@@ -53,20 +53,18 @@ public class TileComponentSecurity implements ITileComponent {
         return ownerName;
     }
 
-    @ComputerMethod(nameOverride = "getSecurityMode")
     public SecurityMode getMode() {
-        if (MekanismConfig.general.allowProtection.get()) {
-            return securityMode;
-        }
-        return SecurityMode.PUBLIC;
+        return securityMode;
     }
 
     public void setMode(SecurityMode mode) {
         if (securityMode != mode) {
             SecurityMode old = securityMode;
             securityMode = mode;
-            tile.markDirty(false);
             tile.onSecurityChanged(old, securityMode);
+            if (!tile.isRemote()) {
+                tile.markForSave();
+            }
         }
     }
 
@@ -77,17 +75,17 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_SECURITY, NBT.TAG_COMPOUND)) {
-            CompoundNBT securityNBT = nbtTags.getCompound(NBTConstants.COMPONENT_SECURITY);
+    public void read(CompoundTag nbtTags) {
+        if (nbtTags.contains(NBTConstants.COMPONENT_SECURITY, Tag.TAG_COMPOUND)) {
+            CompoundTag securityNBT = nbtTags.getCompound(NBTConstants.COMPONENT_SECURITY);
             NBTUtils.setEnumIfPresent(securityNBT, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
             NBTUtils.setUUIDIfPresent(securityNBT, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
         }
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        CompoundNBT securityNBT = new CompoundNBT();
+    public void write(CompoundTag nbtTags) {
+        CompoundTag securityNBT = new CompoundTag();
         securityNBT.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         if (ownerUUID != null) {
             securityNBT.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
@@ -101,7 +99,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {
+    public void addToUpdateTag(CompoundTag updateTag) {
         if (ownerUUID != null) {
             updateTag.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
@@ -109,8 +107,16 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {
+    public void readFromUpdateTag(CompoundTag updateTag) {
         NBTUtils.setUUIDIfPresent(updateTag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-        NBTUtils.setStringIfPresent(updateTag, NBTConstants.OWNER_NAME, uuid -> ownerName = uuid);
+        NBTUtils.setStringIfPresent(updateTag, NBTConstants.OWNER_NAME, name -> ownerName = name);
     }
+
+    //Computer related methods
+    @ComputerMethod(nameOverride = "getSecurityMode")
+    private SecurityMode getComputerSecurityMode() {
+        //Get the effective security mode
+        return MekanismAPI.getSecurityUtils().getSecurityMode(tile, tile.isRemote());
+    }
+    //End computer related methods
 }

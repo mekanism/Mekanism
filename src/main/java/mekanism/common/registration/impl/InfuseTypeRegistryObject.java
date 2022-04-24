@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 public class InfuseTypeRegistryObject<INFUSE_TYPE extends InfuseType> extends WrappedRegistryObject<INFUSE_TYPE> implements IInfuseTypeProvider {
 

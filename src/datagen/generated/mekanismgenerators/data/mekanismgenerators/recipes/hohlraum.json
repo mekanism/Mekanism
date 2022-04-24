@@ -6,7 +6,7 @@
       "tag": "forge:dusts/gold"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:carbon"
   },

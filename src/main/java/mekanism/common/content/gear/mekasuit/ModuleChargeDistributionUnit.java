@@ -19,8 +19,8 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 @ParametersAreNonnullByDefault
@@ -36,7 +36,7 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
     }
 
     @Override
-    public void tickServer(IModule<ModuleChargeDistributionUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleChargeDistributionUnit> module, Player player) {
         // charge inventory first
         if (chargeInventory.get()) {
             chargeInventory(module, player);
@@ -47,10 +47,10 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
         }
     }
 
-    private void chargeSuit(PlayerEntity player) {
+    private void chargeSuit(Player player) {
         FloatingLong total = FloatingLong.ZERO;
         EnergySaveTarget saveTarget = new EnergySaveTarget(4);
-        for (ItemStack stack : player.inventory.armor) {
+        for (ItemStack stack : player.getArmorSlots()) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {
                 saveTarget.addDelegate(energyContainer);
@@ -61,13 +61,13 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
         saveTarget.save();
     }
 
-    private void chargeInventory(IModule<ModuleChargeDistributionUnit> module, PlayerEntity player) {
+    private void chargeInventory(IModule<ModuleChargeDistributionUnit> module, Player player) {
         FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
         // first try to charge mainhand/offhand item
         toCharge = charge(module, player, player.getMainHandItem(), toCharge);
         toCharge = charge(module, player, player.getOffhandItem(), toCharge);
         if (!toCharge.isZero()) {
-            for (ItemStack stack : player.inventory.items) {
+            for (ItemStack stack : player.getInventory().items) {
                 if (stack != player.getMainHandItem() && stack != player.getOffhandItem()) {
                     toCharge = charge(module, player, stack, toCharge);
                     if (toCharge.isZero()) {
@@ -91,7 +91,7 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
     }
 
     /** return rejects */
-    private FloatingLong charge(IModule<ModuleChargeDistributionUnit> module, PlayerEntity player, ItemStack stack, FloatingLong amount) {
+    private FloatingLong charge(IModule<ModuleChargeDistributionUnit> module, Player player, ItemStack stack, FloatingLong amount) {
         if (!stack.isEmpty() && !amount.isZero()) {
             IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (handler != null) {

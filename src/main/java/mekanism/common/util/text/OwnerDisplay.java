@@ -9,18 +9,20 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.MekanismClient;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 public class OwnerDisplay implements IHasTextComponent {
 
-    private final PlayerEntity player;
+    private final Player player;
+    @Nullable
     private final UUID ownerUUID;
+    @Nullable
     private final String ownerName;
     private final boolean colorBase;
 
-    private OwnerDisplay(PlayerEntity player, UUID ownerUUID, String ownerName, boolean colorBase) {
+    private OwnerDisplay(@Nullable Player player, @Nullable UUID ownerUUID, @Nullable String ownerName, boolean colorBase) {
         this.player = player;
         this.ownerUUID = ownerUUID;
         this.ownerName = ownerName;
@@ -31,7 +33,7 @@ public class OwnerDisplay implements IHasTextComponent {
         return of(null, ownerUUID);
     }
 
-    public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID) {
+    public static OwnerDisplay of(Player player, UUID ownerUUID) {
         return of(player, ownerUUID, null);
     }
 
@@ -39,21 +41,21 @@ public class OwnerDisplay implements IHasTextComponent {
         return of(null, ownerUUID, ownerName);
     }
 
-    public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID, String ownerName) {
+    public static OwnerDisplay of(Player player, UUID ownerUUID, String ownerName) {
         return of(player, ownerUUID, ownerName, true);
     }
 
-    public static OwnerDisplay of(PlayerEntity player, UUID ownerUUID, String ownerName, boolean colorBase) {
+    public static OwnerDisplay of(Player player, UUID ownerUUID, String ownerName, boolean colorBase) {
         return new OwnerDisplay(player, ownerUUID, ownerName, colorBase);
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         if (ownerUUID == null) {
             return MekanismLang.NO_OWNER.translateColored(EnumColor.RED);
         }
         String name = getOwnerName(player, ownerUUID, ownerName);
-        ITextComponent component;
+        Component component;
         if (player == null) {
             component = MekanismLang.OWNER.translate(name);
         } else {
@@ -65,7 +67,8 @@ public class OwnerDisplay implements IHasTextComponent {
         return component;
     }
 
-    public static String getOwnerName(@Nullable PlayerEntity player, @Nonnull UUID ownerUUID, @Nullable String ownerName) {
+    @Nullable
+    public static String getOwnerName(@Nullable Player player, @Nonnull UUID ownerUUID, @Nullable String ownerName) {
         //Allows for the name to be overridden by a passed value
         if (ownerName != null) {
             return ownerName;
@@ -73,7 +76,7 @@ public class OwnerDisplay implements IHasTextComponent {
             return MekanismUtils.getLastKnownUsername(ownerUUID);
         }
         String name = MekanismClient.clientUUIDMap.get(ownerUUID);
-        if (name != null && player != null) {
+        if (name == null && player != null) {
             //If the name is still null, see if the uuid is the same as the client uuid
             if (player.getUUID().equals(ownerUUID)) {
                 //If it is set the name to the name of the player
@@ -82,7 +85,7 @@ public class OwnerDisplay implements IHasTextComponent {
                 MekanismClient.clientUUIDMap.put(ownerUUID, name);
             } else {
                 //Otherwise, see if there is a player that the client knows about with the UUID
-                PlayerEntity owner = player.getCommandSenderWorld().getPlayerByUUID(ownerUUID);
+                Player owner = player.getCommandSenderWorld().getPlayerByUUID(ownerUUID);
                 if (owner == null) {
                     //If there isn't just display the UUID
                     name = "<" + ownerUUID + ">";

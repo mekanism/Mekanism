@@ -3,7 +3,7 @@ package mekanism.client.gui.element.tab;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiBiDirectionalTab extends GuiTexturedElement {
 
@@ -19,7 +19,7 @@ public abstract class GuiBiDirectionalTab extends GuiTexturedElement {
             return true;
         }
         //TODO: We may want to eventually move this logic into GuiElement as it is shared by GuiButton
-        if (this.active && this.visible && isHovered()) {
+        if (this.active && this.visible && isHoveredOrFocused()) {
             if (button == 1) {
                 //Right-clicked
                 playDownSound(Minecraft.getInstance().getSoundManager());

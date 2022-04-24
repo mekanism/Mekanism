@@ -5,7 +5,7 @@
       "tag": "forge:dusts/obsidian"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:diamond"
   },

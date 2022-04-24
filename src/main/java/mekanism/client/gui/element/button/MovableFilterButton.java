@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
@@ -19,7 +19,7 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.collection.HashList;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class MovableFilterButton extends FilterButton {
 
@@ -37,10 +37,9 @@ public class MovableFilterButton extends FilterButton {
         super(gui, x, y, width, height, index, filterIndex, filters, onPress, renderStackSupplier);
         int arrowX = relativeX + width - 12;
         upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
-              (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_UP.translate(), xAxis, yAxis)));
+              getOnHover(MekanismLang.MOVE_UP)));
         downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + height - 8, true,
-              () -> downButtonPress.accept(index + filterIndex.getAsInt()),
-              (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis)));
+              () -> downButtonPress.accept(index + filterIndex.getAsInt()), getOnHover(MekanismLang.MOVE_DOWN)));
     }
 
     @Override
@@ -55,7 +54,7 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         if (upButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             upButton.renderToolTip(matrix, xAxis, yAxis);
@@ -86,7 +85,7 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         IFilter<?> filter = getFilter(filters, filterIndex, index);
         EnumColor color;

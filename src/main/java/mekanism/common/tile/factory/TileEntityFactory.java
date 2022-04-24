@@ -1,11 +1,15 @@
 package mekanism.common.tile.factory;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,8 +23,8 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -52,19 +56,21 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntArrayNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
@@ -74,6 +80,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected static final int BASE_TICKS_REQUIRED = 200;
 
     protected FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
+    protected BooleanSupplier[] recheckAllRecipeErrors;
+    protected final ErrorTracker errorTracker;
     private final boolean[] activeStates;
     protected ProcessInfo[] processInfoSlots;
     /**
@@ -104,18 +112,18 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     protected EnergyInventorySlot energySlot;
 
-    protected TileEntityFactory(IBlockProvider blockProvider) {
-        super(blockProvider);
+    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, Map<RecipeError, Boolean> errorTypes) {
+        super(blockProvider, pos, state);
         type = Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
 
         for (ProcessInfo info : processInfoSlots) {
-            inputSlots.add(info.getInputSlot());
-            outputSlots.add(info.getOutputSlot());
-            if (info.getSecondaryOutputSlot() != null) {
-                outputSlots.add(info.getSecondaryOutputSlot());
+            inputSlots.add(info.inputSlot());
+            outputSlots.add(info.outputSlot());
+            if (info.secondaryOutputSlot() != null) {
+                outputSlots.add(info.secondaryOutputSlot());
             }
         }
         configComponent.setupItemIOConfig(inputSlots, outputSlots, energySlot, false);
@@ -134,27 +142,26 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         progress = new int[tier.processes];
         activeStates = new boolean[tier.processes];
-    }
-
-    /**
-     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the normal {@link
-     * #onContentsChanged()} to not cause sorting to happen again just because the energy level of the factory changed.
-     */
-    private void onContentsChangedUpdateSorting() {
-        onContentsChanged();
-        //Mark sorting as being needed again
-        sortingNeeded = true;
-    }
-
-    /**
-     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the other {@link
-     * #onContentsChangedUpdateSorting()} to not cause recipe lookups to rerun when an output is removed as the raw recipe lookup ignores outputs.
-     */
-    protected void onContentsChangedUpdateSortingAndCache() {
-        onContentsChangedUpdateSorting();
-        for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
-            cacheLookupMonitor.markMayHaveRecipe();
+        recheckAllRecipeErrors = new BooleanSupplier[tier.processes];
+        for (int i = 0; i < recheckAllRecipeErrors.length; i++) {
+            //Note: We store one per slot so that we can recheck the different slots at different times to reduce the load on the server
+            recheckAllRecipeErrors[i] = TileEntityRecipeMachine.shouldRecheckAllErrors(this);
         }
+        errorTracker = new ErrorTracker(errorTypes, tier.processes);
+    }
+
+    /**
+     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again and recipes as needing to be rechecked. This combines with the
+     * passed in listener to allow for abstracting the comparator type checks up to the base level.
+     */
+    protected IContentsListener markAllMonitorsChanged(IContentsListener listener) {
+        return () -> {
+            listener.onContentsChanged();
+            //Note: Updating sorting is handled by the onChange calls
+            for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
+                cacheLookupMonitor.onChange();
+            }
+        };
     }
 
     @Override
@@ -170,25 +177,29 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        addSlots(builder, this::onContentsChangedUpdateSorting);
+        addSlots(builder, listener, () -> {
+            listener.onContentsChanged();
+            //Mark sorting as being needed again
+            sortingNeeded = true;
+        });
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
         //Note: We can just pass ourselves as the listener instead of the listener that updates sorting as well,
         // as changes to it won't change anything about the sorting of the recipe
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 7, 13));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 7, 13));
         return builder.build();
     }
 
-    protected abstract void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener);
+    protected abstract void addSlots(InventorySlotHelper builder, IContentsListener listener, IContentsListener updateSortingListener);
 
     @Nullable
     protected IInventorySlot getExtraSlot() {
@@ -301,6 +312,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return recipeCacheLookupMonitors[cacheIndex].getCachedRecipe(cacheIndex);
     }
 
+    public BooleanSupplier getWarningCheck(RecipeError error, int processIndex) {
+        return errorTracker.getWarningCheck(error, processIndex);
+    }
+
+    @Override
+    public void clearRecipeErrors(int cacheIndex) {
+        Arrays.fill(errorTracker.trackedErrors[cacheIndex], false);
+    }
+
     protected void setActiveState(boolean state, int cacheIndex) {
         activeStates[cacheIndex] = state;
     }
@@ -331,7 +351,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     public void toggleSorting() {
         sorting = !isSorting();
-        markDirty(false);
+        markForSave();
     }
 
     @ComputerMethod(nameOverride = "isAutoSortEnabled")
@@ -351,41 +371,33 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        if (nbtTags.contains(NBTConstants.PROGRESS, NBT.TAG_INT_ARRAY)) {
-            int[] savedProgress = nbtTags.getIntArray(NBTConstants.PROGRESS);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        if (nbt.contains(NBTConstants.PROGRESS, Tag.TAG_INT_ARRAY)) {
+            int[] savedProgress = nbt.getIntArray(NBTConstants.PROGRESS);
             if (tier.processes != savedProgress.length) {
                 Arrays.fill(progress, 0);
             }
             for (int i = 0; i < tier.processes && i < savedProgress.length; i++) {
                 progress[i] = savedProgress[i];
             }
-        } else {
-            //TODO - 1.18: Remove this way of loading the old data with
-            // Arrays.fill(progress, 0);
-            for (int i = 0; i < tier.processes; i++) {
-                progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
-            }
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        nbtTags.put(NBTConstants.PROGRESS, new IntArrayNBT(Arrays.copyOf(progress, progress.length)));
-        return nbtTags;
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
+        nbtTags.put(NBTConstants.PROGRESS, new IntArrayTag(Arrays.copyOf(progress, progress.length)));
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putBoolean(NBTConstants.SORTING, isSorting());
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
     }
@@ -399,12 +411,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
         if (super.isConfigurationDataCompatible(tileType)) {
             //Check exact match first
             return true;
@@ -416,7 +428,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
         }
         //And finally check if it is the non factory version (it will be missing sorting data, but we can gracefully ignore that)
-        return type.getBaseMachine().getTileType() == tileType;
+        return type.getBaseMachine().getTileType().get() == tileType;
     }
 
     public boolean hasSecondaryResourceBar() {
@@ -431,6 +443,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.trackArray(progress);
+        errorTracker.track(container);
         container.track(SyncableFloatingLong.create(this::getLastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(this::isSorting, value -> sorting = value));
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
@@ -438,8 +451,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof MachineUpgradeData) {
-            MachineUpgradeData data = (MachineUpgradeData) upgradeData;
+        if (upgradeData instanceof MachineUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
@@ -473,7 +485,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         validateSecurityIsPublic();
         if (sorting != enabled) {
             sorting = enabled;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -486,13 +498,13 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @ComputerMethod
     private ItemStack getInput(int process) throws ComputerException {
         validateValidProcess(process);
-        return processInfoSlots[process].getInputSlot().getStack();
+        return processInfoSlots[process].inputSlot().getStack();
     }
 
     @ComputerMethod
     private ItemStack getOutput(int process) throws ComputerException {
         validateValidProcess(process);
-        return processInfoSlots[process].getOutputSlot().getStack();
+        return processInfoSlots[process].outputSlot().getStack();
     }
     //End methods IComputerTile
 
@@ -500,7 +512,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         Map<HashedItem, RecipeProcessInfo> processes = new HashMap<>();
         List<ProcessInfo> emptyProcesses = new ArrayList<>();
         for (ProcessInfo processInfo : processInfoSlots) {
-            IInventorySlot inputSlot = processInfo.getInputSlot();
+            IInventorySlot inputSlot = processInfo.inputSlot();
             if (inputSlot.isEmpty()) {
                 emptyProcesses.add(processInfo);
             } else {
@@ -512,7 +524,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
                     //If we don't have a lazily initialized min per slot calculation set for it yet
                     // and our cache is not invalid/out of date due to a reload
-                    CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.getProcess());
+                    CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.process());
                     if (isCachedRecipeValid(cachedRecipe, inputStack)) {
                         // And our current process has a cached recipe then set the lazily initialized per slot value
                         // Note: If something goes wrong, and we end up with zero as how much we need as an input
@@ -540,7 +552,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     ItemStack largerInput = item.createStack(Math.min(item.getStack().getMaxStackSize(), recipeProcessInfo.totalCount));
                     ProcessInfo processInfo = recipeProcessInfo.processes.get(0);
                     //Try getting a recipe for our input with a larger size, and update the cache if we find one
-                    RECIPE recipe = getRecipeForInput(processInfo.getProcess(), largerInput, processInfo.getOutputSlot(), processInfo.getSecondaryOutputSlot(), true);
+                    RECIPE recipe = getRecipeForInput(processInfo.process(), largerInput, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
                     if (recipe != null) {
                         return Math.max(1, getNeededInput(recipe, largerInput));
                     }
@@ -579,8 +591,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             int added = 0;
             List<ProcessInfo> toRemove = new ArrayList<>();
             for (ProcessInfo emptyProcess : emptyProcesses) {
-                if (inputProducesOutput(emptyProcess.getProcess(), sourceStack, emptyProcess.getOutputSlot(),
-                      emptyProcess.getSecondaryOutputSlot(), true)) {
+                if (inputProducesOutput(emptyProcess.process(), sourceStack, emptyProcess.outputSlot(), emptyProcess.secondaryOutputSlot(), true)) {
                     //If the input is valid for the stuff in the empty process' output slot
                     // then add our empty process to our recipeProcessInfo, and mark
                     // the empty process as accounted for
@@ -652,7 +663,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
             for (int i = 0; i < processCount; i++) {
                 ProcessInfo processInfo = recipeProcessInfo.processes.get(i);
-                FactoryInputInventorySlot inputSlot = processInfo.getInputSlot();
+                FactoryInputInventorySlot inputSlot = processInfo.inputSlot();
                 int sizeForSlot = numberPerSlot;
                 if (remainder > 0) {
                     //If we have a remainder, factor it into our slots
@@ -700,6 +711,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
     }
 
+    public record ProcessInfo(int process, @Nonnull FactoryInputInventorySlot inputSlot, @Nonnull IInventorySlot outputSlot,
+                              @Nullable IInventorySlot secondaryOutputSlot) {
+    }
+
     private static class RecipeProcessInfo {
 
         private final List<ProcessInfo> processes = new ArrayList<>();
@@ -715,6 +730,64 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 lazyMinPerSlot = null;
             }
             return minPerSlot;
+        }
+    }
+
+    protected static class ErrorTracker {
+
+        private final List<RecipeError> errorTypes;
+        private final IntList globalTypes;
+
+        //TODO: See if we can get it so we only have to sync a single version of global types?
+        private final boolean[][] trackedErrors;
+        private final int processes;
+
+        public ErrorTracker(Map<RecipeError, Boolean> errorTypes, int processes) {
+            this.errorTypes = List.copyOf(errorTypes.keySet());
+            globalTypes = new IntArrayList();
+            for (int i = 0; i < this.errorTypes.size(); i++) {
+                RecipeError error = this.errorTypes.get(i);
+                if (errorTypes.get(error)) {
+                    globalTypes.add(i);
+                }
+            }
+            this.processes = processes;
+            trackedErrors = new boolean[this.processes][];
+            int errors = this.errorTypes.size();
+            for (int i = 0; i < trackedErrors.length; i++) {
+                trackedErrors[i] = new boolean[errors];
+            }
+        }
+
+        private void track(MekanismContainer container) {
+            for (boolean[] processTrackedErrors : trackedErrors) {
+                //Note: We don't need a special syncable boolean for two depth arrays
+                // as long as our arrays are in the same order on client and server
+                for (int j = 0; j < processTrackedErrors.length; j++) {
+                    container.track(SyncableBoolean.create(processTrackedErrors, j));
+                }
+            }
+        }
+
+        public void onErrorsChanged(Set<RecipeError> errors, int processIndex) {
+            boolean[] processTrackedErrors = trackedErrors[processIndex];
+            for (int i = 0; i < processTrackedErrors.length; i++) {
+                processTrackedErrors[i] = errors.contains(errorTypes.get(i));
+            }
+        }
+
+        private BooleanSupplier getWarningCheck(RecipeError error, int processIndex) {
+            if (processIndex >= 0 && processIndex < processes) {
+                int errorIndex = errorTypes.indexOf(error);
+                if (errorIndex >= 0) {
+                    if (globalTypes.contains(errorIndex)) {
+                        return () -> Arrays.stream(trackedErrors).anyMatch(processTrackedErrors -> processTrackedErrors[errorIndex]);
+                    }
+                    return () -> trackedErrors[processIndex][errorIndex];
+                }
+            }
+            //Something went wrong
+            return () -> false;
         }
     }
 }

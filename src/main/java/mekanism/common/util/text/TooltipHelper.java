@@ -6,19 +6,22 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class TooltipHelper implements ITooltipHelper {
 
     public static final TooltipHelper INSTANCE = new TooltipHelper();
 
+    private TooltipHelper() {
+    }
+
     @Override
-    public ITextComponent getEnergyPerMBDisplayShort(FloatingLong energy) {
+    public Component getEnergyPerMBDisplayShort(FloatingLong energy) {
         return MekanismLang.GENERIC_PER_MB.translate(MekanismUtils.getEnergyDisplayShort(energy));
     }
 
     @Override
-    public ITextComponent getRadioactivityDisplayShort(double radioactivity) {
+    public Component getRadioactivityDisplayShort(double radioactivity) {
         return UnitDisplayUtils.getDisplayShort(radioactivity, RadiationUnit.SVH, 2);
     }
 
@@ -28,7 +31,7 @@ public class TooltipHelper implements ITooltipHelper {
     }
 
     @Override
-    public ITextComponent getPercent(double ratio) {
+    public Component getPercent(double ratio) {
         return TextUtils.getPercent(ratio);
     }
 }

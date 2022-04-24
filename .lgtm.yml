@@ -4,6 +4,6 @@ path_classifiers:
 extraction:
   java:
     index:
-      java_version: 8
+      java_version: 17
       gradle:
-        version: 7.3.3
+        version: 7.4.2

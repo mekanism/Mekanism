@@ -19,14 +19,14 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 
 @ParametersAreNonnullByDefault
 public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElectrolyticBreathingUnit> {
@@ -39,7 +39,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
     }
 
     @Override
-    public void tickServer(IModule<ModuleElectrolyticBreathingUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleElectrolyticBreathingUnit> module, Player player) {
         int productionRate = 0;
         //Check if the mask is underwater
         //Note: Being in water is checked first to ensure that if it is raining and the player is in water
@@ -50,9 +50,9 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             double centerX = (bb.minX + bb.maxX) / 2;
             double centerZ = (bb.minZ + bb.maxZ) / 2;
             //For the y range check a range of where the mask's breathing unit is based on where the eyes are
-            return new AxisAlignedBB(centerX, Math.min(bb.minY + eyeHeight - 0.27, bb.maxY), centerZ, centerX, Math.min(bb.minY + eyeHeight - 0.14, bb.maxY), centerZ);
+            return new AABB(centerX, Math.min(bb.minY + eyeHeight - 0.27, bb.maxY), centerZ, centerX, Math.min(bb.minY + eyeHeight - 0.14, bb.maxY), centerZ);
         });
-        if (fluidsIn.entrySet().stream().anyMatch(entry -> entry.getKey().is(FluidTags.WATER) && entry.getValue().getMaxHeight() >= 0.11)) {
+        if (fluidsIn.entrySet().stream().anyMatch(entry -> MekanismTags.Fluids.WATER_LOOKUP.contains(entry.getKey()) && entry.getValue().getMaxHeight() >= 0.11)) {
             //If the position the bottom of the mask is almost entirely in water set the production rate to our max rate
             // if the mask is only partially in water treat it as not being in it enough to actually function
             productionRate = getMaxRate(module);
@@ -65,7 +65,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             int maxRate = Math.min(productionRate, module.getContainerEnergy().divideToInt(usage));
             long hydrogenUsed = 0;
             GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
-            ItemStack chestStack = player.getItemBySlot(EquipmentSlotType.CHEST);
+            ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
             if (checkChestPlate(chestStack)) {
                 Optional<IGasHandler> chestCapability = chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
                 if (chestCapability.isPresent()) {
@@ -74,7 +74,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
                 }
             }
             if (fillHeld.get()) {
-                ItemStack handStack = player.getItemBySlot(EquipmentSlotType.MAINHAND);
+                ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
                 Optional<IGasHandler> handCapability = handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
                 if (handCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2L - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();

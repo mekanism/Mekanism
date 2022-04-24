@@ -6,10 +6,10 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 public class SidedBlockPos {
 
@@ -21,9 +21,9 @@ public class SidedBlockPos {
     }
 
     @Nullable
-    public static SidedBlockPos deserialize(CompoundNBT tag) {
-        if (tag.contains(NBTConstants.X, NBT.TAG_INT) && tag.contains(NBTConstants.Y, NBT.TAG_INT) && tag.contains(NBTConstants.Z, NBT.TAG_INT) &&
-            tag.contains(NBTConstants.SIDE, NBT.TAG_INT)) {
+    public static SidedBlockPos deserialize(CompoundTag tag) {
+        if (tag.contains(NBTConstants.X, Tag.TAG_INT) && tag.contains(NBTConstants.Y, Tag.TAG_INT) && tag.contains(NBTConstants.Z, Tag.TAG_INT) &&
+            tag.contains(NBTConstants.SIDE, Tag.TAG_INT)) {
             BlockPos pos = new BlockPos(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z));
             Direction side = Direction.from3DDataValue(tag.getInt(NBTConstants.SIDE));
             return new SidedBlockPos(pos, side);
@@ -47,8 +47,8 @@ public class SidedBlockPos {
         return side;
     }
 
-    public CompoundNBT serialize() {
-        CompoundNBT target = new CompoundNBT();
+    public CompoundTag serialize() {
+        CompoundTag target = new CompoundTag();
         target.putInt(NBTConstants.X, pos.getX());
         target.putInt(NBTConstants.Y, pos.getY());
         target.putInt(NBTConstants.Z, pos.getZ());

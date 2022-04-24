@@ -8,7 +8,7 @@
   },
   "extraInput": {
     "ingredient": {
-      "tag": "forge:netherrack"
+      "item": "minecraft:netherrack"
     }
   },
   "output": {

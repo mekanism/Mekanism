@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class HeatCapacitorHelper {
 
@@ -24,28 +24,30 @@ public class HeatCapacitorHelper {
         return new HeatCapacitorHelper(new ConfigHeatCapacitorHolder(facingSupplier, configSupplier));
     }
 
-    public void addCapacitor(@Nonnull IHeatCapacitor capacitor) {
+    public <CAPACITOR extends IHeatCapacitor> CAPACITOR addCapacitor(@Nonnull CAPACITOR capacitor) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof HeatCapacitorHolder) {
-            ((HeatCapacitorHolder) slotHolder).addCapacitor(capacitor);
-        } else if (slotHolder instanceof ConfigHeatCapacitorHolder) {
-            ((ConfigHeatCapacitorHolder) slotHolder).addCapacitor(capacitor);
+        if (slotHolder instanceof HeatCapacitorHolder slotHolder) {
+            slotHolder.addCapacitor(capacitor);
+        } else if (slotHolder instanceof ConfigHeatCapacitorHolder slotHolder) {
+            slotHolder.addCapacitor(capacitor);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add capacitors");
         }
+        return capacitor;
     }
 
-    public void addCapacitor(@Nonnull IHeatCapacitor container, RelativeSide... sides) {
+    public <CAPACITOR extends IHeatCapacitor> CAPACITOR addCapacitor(@Nonnull CAPACITOR capacitor, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof HeatCapacitorHolder) {
-            ((HeatCapacitorHolder) slotHolder).addCapacitor(container, sides);
+        if (slotHolder instanceof HeatCapacitorHolder slotHolder) {
+            slotHolder.addCapacitor(capacitor, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add capacitors on specific sides");
         }
+        return capacitor;
     }
 
     public IHeatCapacitorHolder build() {

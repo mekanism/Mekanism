@@ -1,6 +1,7 @@
 package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -21,11 +22,11 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -36,13 +37,8 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
 
     private final List<IInventorySlot> slots;
 
-    ItemRecipeData(ListNBT slots) {
-        int count = DataHandlerUtils.getMaxId(slots, NBTConstants.SLOT);
-        this.slots = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            this.slots.add(new DummyInventorySlot());
-        }
-        DataHandlerUtils.readContainers(this.slots, slots);
+    ItemRecipeData(ListTag slots) {
+        this.slots = readContents(slots);
     }
 
     private ItemRecipeData(List<IInventorySlot> slots) {
@@ -73,8 +69,8 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                 int slot = i;
                 slots.add(new DummyInventorySlot(itemHandler.getSlotLimit(slot), itemStack -> itemHandler.isItemValid(slot, itemStack), isBin));
             }
-        } else if (item instanceof BlockItem) {
-            TileEntityMekanism tile = getTileFromBlock(((BlockItem) item).getBlock());
+        } else if (item instanceof BlockItem blockItem) {
+            TileEntityMekanism tile = getTileFromBlock(blockItem.getBlock());
             if (tile == null || !tile.persistInventory()) {
                 //Something went wrong
                 return false;
@@ -103,12 +99,12 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemStack), false));
             //Smelting output slot
             slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
-        } else if (item instanceof ISustainedInventory) {
+        } else if (item instanceof ISustainedInventory sustainedInventory) {
             //Fallback just save it all
             for (IInventorySlot slot : this.slots) {
                 if (!slot.isEmpty()) {
                     //We have no information about what our item supports, but we have at least some stacks we want to transfer
-                    ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(this.slots), stack);
+                    sustainedInventory.setInventory(DataHandlerUtils.writeContainers(this.slots), stack);
                     return true;
                 }
             }
@@ -147,6 +143,19 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(slots), stack);
         }
         return true;
+    }
+
+    public static List<IInventorySlot> readContents(@Nullable ListTag contents) {
+        if (contents == null) {
+            return Collections.emptyList();
+        }
+        int count = DataHandlerUtils.getMaxId(contents, NBTConstants.SLOT);
+        List<IInventorySlot> slots = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            slots.add(new DummyInventorySlot());
+        }
+        DataHandlerUtils.readContainers(slots, contents);
+        return slots;
     }
 
     private static class DummyInventorySlot extends BasicInventorySlot {

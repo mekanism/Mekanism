@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:exposed_cut_copper"
+    }
+  },
+  "output": {
+    "item": "minecraft:cut_copper"
+  }
+}

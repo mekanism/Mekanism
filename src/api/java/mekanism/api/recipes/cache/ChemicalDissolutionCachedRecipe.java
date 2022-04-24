@@ -1,16 +1,18 @@
 package mekanism.api.recipes.cache;
 
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 import java.util.function.LongSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Base class to help implement handling of chemical dissolution recipes.
@@ -27,17 +29,20 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
 
     private ItemStack recipeItem = ItemStack.EMPTY;
     private GasStack recipeGas = GasStack.EMPTY;
+    private BoxedChemicalStack output = BoxedChemicalStack.EMPTY;
 
     /**
      * @param recipe           Recipe.
+     * @param recheckAllErrors Returns {@code true} if processing should be continued even if an error is hit in order to gather all the errors. It is recommended to not
+     *                         do this every tick or if there is no one viewing recipes.
      * @param itemInputHandler Item input handler.
      * @param gasInputHandler  Chemical input handler.
      * @param gasUsage         Gas usage multiplier.
      * @param outputHandler    Output handler.
      */
-    public ChemicalDissolutionCachedRecipe(ChemicalDissolutionRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
+    public ChemicalDissolutionCachedRecipe(ChemicalDissolutionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NonNull ItemStack> itemInputHandler,
           ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, BoxedChemicalOutputHandler outputHandler) {
-        super(recipe);
+        super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
         this.gasInputHandler = Objects.requireNonNull(gasInputHandler, "Gas input handler cannot be null.");
         this.gasUsage = Objects.requireNonNull(gasUsage, "Gas usage cannot be null.");
@@ -50,44 +55,53 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     }
 
     @Override
-    protected int getOperationsThisTick(int currentMax) {
-        currentMax = super.getOperationsThisTick(currentMax);
-        if (currentMax <= 0) {
-            //If our parent checks show we can't operate then return so
-            return currentMax;
+    protected void calculateOperationsThisTick(OperationTracker tracker) {
+        super.calculateOperationsThisTick(tracker);
+        if (tracker.shouldContinueChecking()) {
+            recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
+            //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
+            if (recipeItem.isEmpty()) {
+                //No input, we don't know if the recipe matches or not so treat it as not matching
+                tracker.mismatchedRecipe();
+            } else {
+                //Now check the gas input
+                recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
+                //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+                if (recipeGas.isEmpty()) {
+                    //TODO: Allow processing when secondary chemical is empty if the usage multiplier is zero?
+                    //Note: we don't force reset based on secondary per tick usages
+                    tracker.updateOperations(0);
+                    if (!tracker.shouldContinueChecking()) {
+                        //If we shouldn't continue checking exit, otherwise see if there is an error with the item
+                        // though due to not having a chemical we won't be able to check if there is errors with the output
+                        return;
+                    }
+                }
+                //Calculate the current max based on the item input
+                itemInputHandler.calculateOperationsCanSupport(tracker, recipeItem);
+                if (!recipeGas.isEmpty() && tracker.shouldContinueChecking()) {
+                    //Calculate the current max based on the gas input, and the given usage amount
+                    gasInputHandler.calculateOperationsCanSupport(tracker, recipeGas, gasUsageMultiplier);
+                    if (tracker.shouldContinueChecking()) {
+                        output = recipe.getOutput(recipeItem, recipeGas);
+                        //Calculate the max based on the space in the output
+                        outputHandler.calculateOperationsRoomFor(tracker, output);
+                    }
+                }
+            }
         }
-        recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
-        if (recipeItem.isEmpty()) {
-            return -1;
-        }
-        //Now check the gas input
-        recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
-        if (recipeGas.isEmpty()) {
-            //Note: we don't force reset based on secondary per tick usages
-            return 0;
-        }
-        //Calculate the current max based on the item input
-        currentMax = itemInputHandler.operationsCanSupport(recipeItem, currentMax);
-        if (currentMax <= 0) {
-            //If our input can't handle it return that we should be resetting
-            //Note: we don't force reset based on secondary per tick usages
-            return -1;
-        }
-        //Calculate the current max based on the gas input, and the given usage amount
-        currentMax = gasInputHandler.operationsCanSupport(recipeGas, currentMax, gasUsageMultiplier);
-        //Calculate the max based on the space in the output
-        return outputHandler.operationsRoomFor(recipe.getOutput(recipeItem, recipeGas), currentMax);
     }
 
     @Override
     public boolean isInputValid() {
-        GasStack gasStack = gasInputHandler.getInput();
-        //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
-        if (!gasStack.isEmpty() && recipe.test(itemInputHandler.getInput(), gasStack)) {
-            GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
-            return !recipeGas.isEmpty() && gasStack.getAmount() >= recipeGas.getAmount();
+        ItemStack itemInput = itemInputHandler.getInput();
+        if (!itemInput.isEmpty()) {
+            GasStack gasStack = gasInputHandler.getInput();
+            //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
+            if (!gasStack.isEmpty() && recipe.test(itemInput, gasStack)) {
+                GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
+                return !recipeGas.isEmpty() && gasStack.getAmount() >= recipeGas.getAmount();
+            }
         }
         return false;
     }
@@ -108,14 +122,13 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
 
     @Override
     protected void finishProcessing(int operations) {
-        if (recipeItem.isEmpty() || recipeGas.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
+        //Validate something didn't go horribly wrong
+        if (!recipeItem.isEmpty() && !recipeGas.isEmpty() && !output.isEmpty()) {
+            itemInputHandler.use(recipeItem, operations);
+            if (gasUsageMultiplier > 0) {
+                gasInputHandler.use(recipeGas, operations * gasUsageMultiplier);
+            }
+            outputHandler.handleOutput(output, operations);
         }
-        itemInputHandler.use(recipeItem, operations);
-        if (gasUsageMultiplier > 0) {
-            gasInputHandler.use(recipeGas, operations * gasUsageMultiplier);
-        }
-        outputHandler.handleOutput(recipe.getOutput(recipeItem, recipeGas), operations);
     }
 }

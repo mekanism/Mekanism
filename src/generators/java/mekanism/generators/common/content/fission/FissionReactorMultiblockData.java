@@ -1,10 +1,11 @@
 package mekanism.generators.common.content.fission;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -15,7 +16,6 @@ import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
@@ -33,6 +33,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -41,13 +42,12 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -116,7 +116,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     private boolean forceDisable;
 
-    private AxisAlignedBB hotZone;
+    private AABB hotZone;
 
     public float prevCoolantScale;
     private float prevFuelScale;
@@ -129,7 +129,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
-              fluid -> fluid.getFluid().is(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
+              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()) && gasCoolantTank.isEmpty(), null);
         fluidTanks.add(fluidCoolantTank);
         gasCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> (long) getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
@@ -143,24 +143,24 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         wasteTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
+        Collections.addAll(gasTanks, fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
               () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);
         heatCapacitors.add(heatCapacitor);
     }
 
     @Override
-    public void onCreated(World world) {
+    public void onCreated(Level world) {
         super.onCreated(world);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
-        hotZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
+        hotZone = new AABB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
               getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
         // burn reactor fuel, create energy
         if (isActive()) {
@@ -204,7 +204,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevCoolantScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
@@ -217,8 +217,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
         readValves(tag);
         assemblies.clear();
-        if (tag.contains(NBTConstants.ASSEMBLIES, NBT.TAG_LIST)) {
-            ListNBT list = tag.getList(NBTConstants.ASSEMBLIES, NBT.TAG_COMPOUND);
+        if (tag.contains(NBTConstants.ASSEMBLIES, Tag.TAG_LIST)) {
+            ListTag list = tag.getList(NBTConstants.ASSEMBLIES, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
                 assemblies.add(FormedAssembly.read(list.getCompound(i)));
             }
@@ -226,24 +226,24 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
         tag.putFloat(NBTConstants.SCALE, prevCoolantScale);
         tag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
         tag.putFloat(NBTConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         tag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
-        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().writeToNBT(new CompoundNBT()));
-        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().write(new CompoundNBT()));
-        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().write(new CompoundNBT()));
-        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundNBT()));
+        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().writeToNBT(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundTag()));
         writeValves(tag);
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
         assemblies.forEach(assembly -> list.add(assembly.write()));
         tag.put(NBTConstants.ASSEMBLIES, list);
     }
 
-    private void handleDamage(World world) {
+    private void handleDamage(Level world) {
         double lastDamage = reactorDamage;
         double temp = heatCapacitor.getTemperature();
         if (temp > MIN_DAMAGE_TEMPERATURE) {
@@ -277,7 +277,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
-    public void meltdownHappened(World world) {
+    public void meltdownHappened(Level world) {
         if (isFormed()) {
             IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
             //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
@@ -370,7 +370,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         lastBoilRate = coolantHeated;
     }
 
-    private void burnFuel(World world) {
+    private void burnFuel(Level world) {
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
         double storedFuel = fuelTank.getStored() + burnRemaining;
@@ -399,7 +399,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
-    private void radiateEntities(World world) {
+    private void radiateEntities(Level world) {
         IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
         if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesOfClass(LivingEntity.class, hotZone);

@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import java.util.Arrays;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
@@ -13,7 +12,7 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
@@ -22,13 +21,13 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        ITextComponent visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(dataSource.clientRendering));
+        Component visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(dataSource.clientRendering));
         if (dataSource.getRadius() <= 64) {
-            displayTooltip(matrix, visualsComponent, mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, visualsComponent);
         } else {
-            displayTooltips(matrix, Arrays.asList(visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED)), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED));
         }
     }
 

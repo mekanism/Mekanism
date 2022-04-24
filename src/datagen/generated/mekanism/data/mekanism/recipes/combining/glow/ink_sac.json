@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "ingredient": {
+      "item": "minecraft:ink_sac"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:dusts/glowstone"
+    }
+  },
+  "output": {
+    "item": "minecraft:glow_ink_sac"
+  }
+}

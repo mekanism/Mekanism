@@ -10,7 +10,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 public class GuiFluidBar extends GuiTankBar<FluidStack> {
@@ -40,7 +40,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
     }
 
     public static TankInfoProvider<FluidStack> getProvider(IExtendedFluidTank tank, List<IExtendedFluidTank> tanks) {
-        return new TankInfoProvider<FluidStack>() {
+        return new TankInfoProvider<>() {
             @Nonnull
             @Override
             public FluidStack getStack() {
@@ -53,7 +53,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
             }
 
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 if (tank.isEmpty()) {
                     return MekanismLang.EMPTY.translate();
                 } else if (tank.getFluidAmount() == Integer.MAX_VALUE) {

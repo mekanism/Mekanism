@@ -13,16 +13,16 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.ILocationArgument;
-import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.Coordinates;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.GameRules;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.phys.Vec3;
 
 public class CommandMek {
 
@@ -31,7 +31,7 @@ public class CommandMek {
 
     private static final Map<UUID, Stack<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
 
-    public static LiteralArgumentBuilder<CommandSource> register() {
+    public static LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("mek")
               .then(BuildCommand.COMMAND)
               .then(ChunkCommand.register())
@@ -45,7 +45,7 @@ public class CommandMek {
 
     private static class DebugCommand {
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("debug")
                   .requires(cs -> cs.hasPermission(2))
                   .executes(ctx -> {
@@ -58,11 +58,11 @@ public class CommandMek {
 
     private static class TestRulesCommand {
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("testrules")
                   .requires(cs -> cs.hasPermission(2))
                   .executes(ctx -> {
-                      CommandSource source = ctx.getSource();
+                      CommandSourceStack source = ctx.getSource();
                       MinecraftServer server = source.getServer();
                       GameRules rules = server.getGameRules();
                       rules.getRule(GameRules.RULE_KEEPINVENTORY).set(true, server);
@@ -79,30 +79,30 @@ public class CommandMek {
 
     private static class TpCommand {
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("tp")
-                  .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayerEntity)
+                  .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayer)
                   .then(Commands.argument("location", Vec3Argument.vec3())
                         .executes(ctx -> {
-                            CommandSource source = ctx.getSource();
-                            ServerPlayerEntity player = source.getPlayerOrException();
+                            CommandSourceStack source = ctx.getSource();
+                            ServerPlayer player = source.getPlayerOrException();
                             // Save the current location on the stack
                             UUID uuid = player.getUUID();
                             Stack<BlockPos> playerLocations = tpStack.getOrDefault(uuid, new Stack<>());
                             playerLocations.push(player.blockPosition());
                             tpStack.put(uuid, playerLocations);
 
-                            ILocationArgument location = Vec3Argument.getCoordinates(ctx, "location");
-                            Vector3d position = location.getPosition(source);
+                            Coordinates location = Vec3Argument.getCoordinates(ctx, "location");
+                            Vec3 position = location.getPosition(source);
                             // Teleport user to new location
-                            player.connection.teleport(position.x(), position.y(), position.z(), player.yRot, player.xRot);
+                            player.connection.teleport(position.x(), position.y(), position.z(), player.getYRot(), player.getXRot());
                             source.sendSuccess(MekanismLang.COMMAND_TP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(position)), true);
                             return 0;
                         })
                   );
         }
 
-        private static ITextComponent getPosition(Vector3d pos) {
+        private static Component getPosition(Vec3 pos) {
             return MekanismLang.GENERIC_BLOCK_POS.translate(pos.x(), pos.y(), pos.z());
         }
     }
@@ -111,12 +111,12 @@ public class CommandMek {
 
         private static final SimpleCommandExceptionType TPOP_EMPTY = new SimpleCommandExceptionType(MekanismLang.COMMAND_ERROR_TPOP_EMPTY.translate());
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("tpop")
-                  .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayerEntity)
+                  .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayer)
                   .executes(ctx -> {
-                      CommandSource source = ctx.getSource();
-                      ServerPlayerEntity player = source.getPlayerOrException();
+                      CommandSourceStack source = ctx.getSource();
+                      ServerPlayer player = source.getPlayerOrException();
                       UUID uuid = player.getUUID();
 
                       // Get stack of locations for the user; if there's at least one entry, pop it off
@@ -127,13 +127,13 @@ public class CommandMek {
                       }
                       BlockPos lastPos = playerLocations.pop();
                       tpStack.put(uuid, playerLocations);
-                      player.connection.teleport(lastPos.getX(), lastPos.getY(), lastPos.getZ(), player.yRot, player.xRot);
+                      player.connection.teleport(lastPos.getX(), lastPos.getY(), lastPos.getZ(), player.getYRot(), player.getXRot());
                       source.sendSuccess(MekanismLang.COMMAND_TPOP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(lastPos), EnumColor.INDIGO, playerLocations.size()), true);
                       return 0;
                   });
         }
 
-        private static ITextComponent getPosition(BlockPos pos) {
+        private static Component getPosition(BlockPos pos) {
             return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
         }
     }

@@ -9,15 +9,16 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.IHasTextComponent;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraftforge.common.ToolAction;
 
 /**
  * Interface used to describe and implement custom modules. Instances of this should be returned via the {@link ModuleData}.
@@ -41,7 +42,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param module Module instance.
      * @param player Player wearing the MekaSuit.
      */
-    default void tickServer(IModule<MODULE> module, PlayerEntity player) {
+    default void tickServer(IModule<MODULE> module, Player player) {
     }
 
     /**
@@ -50,7 +51,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param module Module instance.
      * @param player Player wearing the MekaSuit.
      */
-    default void tickClient(IModule<MODULE> module, PlayerEntity player) {
+    default void tickClient(IModule<MODULE> module, Player player) {
     }
 
     /**
@@ -61,7 +62,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *                       easier.
      * @param hudStringAdder Accepts and adds HUD strings.
      */
-    default void addHUDStrings(IModule<MODULE> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
+    default void addHUDStrings(IModule<MODULE> module, Player player, Consumer<Component> hudStringAdder) {
     }
 
     /**
@@ -75,7 +76,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @apiNote See {@link IModuleHelper} for various helpers to create HUD elements.
      */
-    default void addHUDElements(IModule<MODULE> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
+    default void addHUDElements(IModule<MODULE> module, Player player, Consumer<IHUDElement> hudElementAdder) {
     }
 
     /**
@@ -92,8 +93,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /**
      * Called to change the mode of the module. This will only be called if {@link ModuleData#handlesModeChange()} is {@code true}. {@link
-     * IModule#displayModeChange(PlayerEntity, ITextComponent, IHasTextComponent)} is provided to help display the mode change when {@code displayChangeMessage} is {@code
-     * true}.
+     * IModule#displayModeChange(Player, Component, IHasTextComponent)} is provided to help display the mode change when {@code displayChangeMessage} is {@code true}.
      *
      * @param module               Module instance.
      * @param player               The player who made the mode change.
@@ -101,7 +101,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param shift                The amount to shift the mode by, may be negative for indicating the mode should decrease.
      * @param displayChangeMessage {@code true} if a message should be displayed when the mode changes
      */
-    default void changeMode(IModule<MODULE> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    default void changeMode(IModule<MODULE> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
     }
 
     /**
@@ -149,11 +149,21 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param module  Module instance.
      * @param context Use context.
      *
-     * @return Result type or {@link ActionResultType#PASS} to pass.
+     * @return Result type or {@link InteractionResult#PASS} to pass.
      */
     @Nonnull
-    default ActionResultType onItemUse(IModule<MODULE> module, ItemUseContext context) {
-        return ActionResultType.PASS;
+    default InteractionResult onItemUse(IModule<MODULE> module, UseOnContext context) {
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Called to check if this module allows the Meka-Tool to perform a specific {@link ToolAction}.
+     *
+     * @param module Module instance.
+     * @param action Tool action to check.
+     */
+    default boolean canPerformAction(IModule<MODULE> module, ToolAction action) {
+        return false;
     }
 
     /**
@@ -164,11 +174,11 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param entity Entity type being interacted with.
      * @param hand   Hand used.
      *
-     * @return Result type or {@link ActionResultType#PASS} to pass.
+     * @return Result type or {@link InteractionResult#PASS} to pass.
      */
     @Nonnull
-    default ActionResultType onInteract(IModule<MODULE> module, PlayerEntity player, LivingEntity entity, Hand hand) {
-        return ActionResultType.PASS;
+    default InteractionResult onInteract(IModule<MODULE> module, Player player, LivingEntity entity, InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
     /**
@@ -181,42 +191,28 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @return The {@link ModuleDispenseResult} defining how this dispenser should behave.
      */
     @Nonnull
-    default ModuleDispenseResult onDispense(IModule<MODULE> module, IBlockSource source) {
+    default ModuleDispenseResult onDispense(IModule<MODULE> module, BlockSource source) {
         return ModuleDispenseResult.DEFAULT;
     }
 
-    //TODO - 1.18: Switch this to a record
-    class ModuleDamageAbsorbInfo {
-
-        private final FloatSupplier absorptionRatio;
-        private final FloatingLongSupplier energyCost;
+    /**
+     * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
+     * @param energyCost      Energy cost per point of damage reduced.
+     */
+    record ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
 
         /**
          * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
          * @param energyCost      Energy cost per point of damage reduced.
          */
-        public ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
-            this.absorptionRatio = Objects.requireNonNull(absorptionRatio, "Absorption ratio supplier cannot be null");
-            this.energyCost = Objects.requireNonNull(energyCost, "Energy cost supplier cannot be null");
-        }
-
-        /**
-         * Gets the ratio of damage this module can absorb up to, returns a value between zero and one.
-         */
-        public FloatSupplier getAbsorptionRatio() {
-            return absorptionRatio;
-        }
-
-        /**
-         * Gets the energy cost per point of damage reduced.
-         */
-        public FloatingLongSupplier getEnergyCost() {
-            return energyCost;
+        public ModuleDamageAbsorbInfo {
+            Objects.requireNonNull(absorptionRatio, "Absorption ratio supplier cannot be null");
+            Objects.requireNonNull(energyCost, "Energy cost supplier cannot be null");
         }
     }
 
     /**
-     * Represents the different result states of {@link ICustomModule#onDispense(IModule, IBlockSource)}.
+     * Represents the different result states of {@link ICustomModule#onDispense(IModule, BlockSource)}.
      */
     enum ModuleDispenseResult {
         /**

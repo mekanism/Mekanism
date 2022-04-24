@@ -10,6 +10,14 @@
         {
           "modid": "biomesoplenty",
           "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "ilikewood_panels",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "ilikewood_sticks",
+          "type": "forge:mod_loaded"
         }
       ],
       "type": "forge:and"

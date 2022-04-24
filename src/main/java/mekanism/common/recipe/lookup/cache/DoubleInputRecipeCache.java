@@ -9,10 +9,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Basic implementation for {@link IInputRecipeCache} for handling recipes with two inputs.
@@ -56,7 +56,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputA(@Nullable World world, INPUT_A input) {
+    public boolean containsInputA(@Nullable Level world, INPUT_A input) {
         return containsInput(world, input, inputAExtractor, cacheA, complexIngredientA);
     }
 
@@ -68,7 +68,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputB(@Nullable World world, INPUT_B input) {
+    public boolean containsInputB(@Nullable Level world, INPUT_B input) {
         return containsInput(world, input, inputBExtractor, cacheB, complexIngredientB);
     }
 
@@ -82,10 +82,10 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputA is not empty and inputB is empty.
      *
-     * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call {@link #containsInputBA(World, Object,
+     * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call {@link #containsInputBA(Level, Object,
      * Object)}.
      */
-    public boolean containsInputAB(@Nullable World world, INPUT_A inputA, INPUT_B inputB) {
+    public boolean containsInputAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
         return containsPairing(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB);
     }
 
@@ -99,10 +99,10 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputB is not empty and inputA is empty.
      *
-     * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call {@link #containsInputAB(World, Object,
+     * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call {@link #containsInputAB(Level, Object,
      * Object)}.
      */
-    public boolean containsInputBA(@Nullable World world, INPUT_A inputA, INPUT_B inputB) {
+    public boolean containsInputBA(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
         return containsPairing(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA);
     }
 
@@ -116,10 +116,10 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
      *
      * @implNote Lookups up the recipe first from the A input map (the fact that it is A is arbitrary and just as well could be B).
-     * @apiNote To force using the B input map instead for recipe lookup use {@link #findFirstRecipe(World, Object, Object, boolean)}.
+     * @apiNote To force using the B input map instead for recipe lookup use {@link #findFirstRecipe(Level, Object, Object, boolean)}.
      */
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable World world, INPUT_A inputA, INPUT_B inputB) {
+    public RECIPE findFirstRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
         return findFirstRecipe(world, inputA, inputB, true);
     }
 
@@ -137,7 +137,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      * than looking up based on the A input map and then having to iterate all the recipes. For example the chemical washer recipes.
      */
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable World world, INPUT_A inputA, INPUT_B inputB, boolean useCacheA) {
+    public RECIPE findFirstRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, boolean useCacheA) {
         if (cacheA.isEmpty(inputA) || cacheB.isEmpty(inputB)) {
             //Don't allow empty inputs
             return null;
@@ -168,7 +168,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      * @apiNote This is mainly meant as a helper for factories so makes the assumption that if inputB is empty it doesn't factor it into the check at all.
      */
     @Nullable
-    public RECIPE findTypeBasedRecipe(@Nullable World world, INPUT_A inputA, INPUT_B inputB, Predicate<RECIPE> matchCriteria) {
+    public RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, Predicate<RECIPE> matchCriteria) {
         if (cacheA.isEmpty(inputA)) {
             //Don't allow empty primary inputs
             return null;

@@ -7,9 +7,9 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
-public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringSerializable, IHasTranslationKey {
+public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRepresentable, IHasTranslationKey {
     NORMAL(MekanismLang.CONNECTION_NORMAL),
     PUSH(MekanismLang.CONNECTION_PUSH),
     PULL(MekanismLang.CONNECTION_PULL),

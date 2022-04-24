@@ -8,8 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ResourceLocationException;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
@@ -22,8 +22,8 @@ public class CachedOredictionificatorConfigValue extends CachedResolvableConfigV
     public static CachedOredictionificatorConfigValue define(IMekanismConfig config, ForgeConfigSpec.Builder builder, String path,
           Supplier<Map<String, List<String>>> defaults) {
         return new CachedOredictionificatorConfigValue(config, builder.defineListAllowEmpty(Collections.singletonList(path), () -> encodeStatic(defaults.get()), o -> {
-            if (o instanceof String) {
-                return ResourceLocation.tryParse(((String) o).toLowerCase(Locale.ROOT)) != null;
+            if (o instanceof String string) {
+                return ResourceLocation.tryParse(string.toLowerCase(Locale.ROOT)) != null;
             }
             return false;
         }));

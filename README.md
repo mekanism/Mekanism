@@ -1,9 +1,6 @@
-
-[![Build Status](https://travis-ci.com/mekanism/Mekanism.svg?branch=1.16.x)](https://travis-ci.com/mekanism/Mekanism)
-
 ![Mekanism Logo](logo.png)
 
-# Mekanism for Minecraft 1.16 #
+# Mekanism for Minecraft 1.18 #
 
 Mekanism is an independent Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features on the [**Official Website**](http://aidancbrady.com/mekanism/).
@@ -30,7 +27,7 @@ If you would like to help translate Mekanism, you can do so through [Crowdin](ht
 
 Mekanism is licensed under the MIT license. You may use it in modpacks, reviews, or any other form as long as you abide by the terms below. 
 
-Copyright 2017 Aidan C. Brady
+Copyright 2017-2022 Aidan C. Brady
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -62,7 +59,7 @@ dependencies {
 Add the following to your `gradle.properties` file (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions):
 
 ```properties
-mekanism_version=1.16.5-10.1.0.455
+mekanism_version=1.18.2-10.2.0.459
 ```
 
 # Credits #
@@ -70,7 +67,7 @@ mekanism_version=1.16.5-10.1.0.455
   * [aidancbrady](https://twitter.com/aidancbrady) - [Patreon](https://www.patreon.com/user?u=260704)
   * thommy101
   * [thiakil](https://twitter.com/thiakil)
-  * [pupnewfster](https://twitter.com/pupnewfster) - [Patreon](https://www.patreon.com/pupnewfster)
+  * [pupnewfster](https://twitter.com/pupnewfster) - [Patreon](https://www.patreon.com/pupnewfster), [Ko-fi](https://ko-fi.com/pupnewfster)
   * dizzyd  
   * unpairedbracket
   * [CyanideX](https://twitter.com/theCyanideX) (artwork)

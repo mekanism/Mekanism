@@ -1,23 +1,25 @@
 package mekanism.additions.common.entity.baby;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import mekanism.additions.common.registries.AdditionsEntityTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraftforge.network.NetworkHooks;
 
-public class EntityBabySkeleton extends SkeletonEntity implements IBabyEntity {
+public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
 
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.defineId(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_CHILD = SynchedEntityData.defineId(EntityBabySkeleton.class, EntityDataSerializers.BOOLEAN);
 
-    public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, World world) {
+    public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, Level world) {
         super(type, world);
         setBaby(true);
     }
@@ -39,7 +41,7 @@ public class EntityBabySkeleton extends SkeletonEntity implements IBabyEntity {
     }
 
     @Override
-    public void onSyncedDataUpdated(@Nonnull DataParameter<?> key) {
+    public void onSyncedDataUpdated(@Nonnull EntityDataAccessor<?> key) {
         if (IS_CHILD.equals(key)) {
             refreshDimensions();
         }
@@ -47,7 +49,7 @@ public class EntityBabySkeleton extends SkeletonEntity implements IBabyEntity {
     }
 
     @Override
-    protected int getExperienceReward(@Nonnull PlayerEntity player) {
+    protected int getExperienceReward(@Nonnull Player player) {
         if (isBaby()) {
             xpReward = (int) (xpReward * 2.5F);
         }
@@ -60,13 +62,21 @@ public class EntityBabySkeleton extends SkeletonEntity implements IBabyEntity {
     }
 
     @Override
-    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
+    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntityDimensions size) {
         return this.isBaby() ? 0.93F : super.getStandingEyeHeight(pose, size);
     }
 
     @Nonnull
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    @Override
+    protected void doFreezeConversion() {
+        convertTo(AdditionsEntityTypes.BABY_STRAY.getEntityType(), true);
+        if (!this.isSilent()) {
+            level.levelEvent(null, LevelEvent.SOUND_SKELETON_TO_STRAY, this.blockPosition(), 0);
+        }
     }
 }

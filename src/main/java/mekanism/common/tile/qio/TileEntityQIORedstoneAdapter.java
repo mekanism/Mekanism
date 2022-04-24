@@ -16,17 +16,18 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent implements ISustainedData {
@@ -38,8 +39,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     private long count = 0;
     private long clientStoredCount = 0;
 
-    public TileEntityQIORedstoneAdapter() {
-        super(MekanismBlocks.QIO_REDSTONE_ADAPTER);
+    public TileEntityQIORedstoneAdapter(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.QIO_REDSTONE_ADAPTER, pos, state);
     }
 
     public boolean isPowering() {
@@ -56,13 +57,13 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     public void handleStackChange(ItemStack stack) {
         itemType = stack.isEmpty() ? null : HashedItem.create(stack);
-        markDirty(false);
+        markForSave();
     }
 
     public void handleCountChange(long count) {
         if (this.count != count) {
             this.count = count;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -71,7 +72,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
         super.onUpdateServer();
         boolean powering = isPowering();
         if (powering != prevPowering) {
-            World world = getLevel();
+            Level world = getLevel();
             if (world != null) {
                 world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
@@ -89,14 +90,14 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (itemType != null) {
-            ItemDataUtils.setCompound(itemStack, NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundTag()));
         }
         ItemDataUtils.setLong(itemStack, NBTConstants.AMOUNT, count);
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.SINGLE_ITEM, NBT.TAG_COMPOUND)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.SINGLE_ITEM, Tag.TAG_COMPOUND)) {
             itemType = HashedItem.create(ItemStack.of(ItemDataUtils.getCompound(itemStack, NBTConstants.SINGLE_ITEM)));
         }
         count = ItemDataUtils.getLong(itemStack, NBTConstants.AMOUNT);
@@ -112,32 +113,32 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.ACTIVE, prevPowering);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();
         WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         NBTUtils.setItemStackIfPresent(data, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(data, NBTConstants.AMOUNT, value -> count = value);
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         if (itemType != null) {
-            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
+            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundTag()));
         }
         data.putLong(NBTConstants.AMOUNT, count);
     }

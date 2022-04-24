@@ -14,9 +14,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNonnullByDefault
 public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcavationEscalationUnit> {
@@ -30,7 +30,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
     }
 
     @Override
-    public void changeMode(IModule<ModuleExcavationEscalationUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(IModule<ModuleExcavationEscalationUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
         if (module.isEnabled()) {
             ExcavationMode newMode = excavationMode.get().adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 2);
             if (excavationMode.get() != newMode) {
@@ -43,7 +43,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleExcavationEscalationUnit> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
+    public void addHUDStrings(IModule<ModuleExcavationEscalationUnit> module, Player player, Consumer<Component> hudStringAdder) {
         if (module.isEnabled()) {
             hudStringAdder.accept(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, excavationMode.get().getEfficiency()));
         }
@@ -63,7 +63,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
 
         private static final ExcavationMode[] MODES = values();
 
-        private final ITextComponent label;
+        private final Component label;
         private final int efficiency;
 
         ExcavationMode(int efficiency) {
@@ -78,7 +78,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return label;
         }
 

@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
@@ -24,15 +25,16 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
@@ -45,8 +47,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored")
     private BinInventorySlot binSlot;
 
-    public TileEntityBin(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityBin(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
@@ -58,9 +60,9 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(binSlot = BinInventorySlot.create(this, tier));
+        builder.addSlot(binSlot = BinInventorySlot.create(listener, tier));
         return builder.build();
     }
 
@@ -84,12 +86,12 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         delayTicks = Math.max(0, delayTicks - 1);
         if (delayTicks == 0) {
             if (getActive()) {
-                TileEntity tile = WorldUtils.getTileEntity(getLevel(), getBlockPos().below());
+                BlockEntity tile = WorldUtils.getTileEntity(getLevel(), getBlockPos().below());
                 TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
-                if (tile instanceof TileEntityLogisticalTransporterBase) {
-                    response = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().insert(this, request, null, true, 0);
+                if (tile instanceof TileEntityLogisticalTransporterBase transporter) {
+                    response = transporter.getTransmitter().insert(this, request, null, true, 0);
                 } else {
                     response = request.addToInventory(tile, Direction.DOWN, 0, false);
                 }
@@ -105,26 +107,25 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         setActive(!getActive());
-        World world = getLevel();
+        Level world = getLevel();
         if (world != null) {
-            world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+            world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
+    public InteractionResult onRightClick(Player player) {
+        return InteractionResult.PASS;
     }
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof BinUpgradeData) {
-            BinUpgradeData data = (BinUpgradeData) upgradeData;
-            redstone = data.redstone;
-            binSlot.setStack(data.binSlot.getStack());
+        if (upgradeData instanceof BinUpgradeData data) {
+            redstone = data.redstone();
+            binSlot.setStack(data.binSlot().getStack());
         } else {
             super.parseUpgradeData(upgradeData);
         }
@@ -146,15 +147,15 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT());
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
     }
 

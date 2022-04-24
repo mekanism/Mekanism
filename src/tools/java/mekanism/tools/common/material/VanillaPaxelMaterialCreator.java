@@ -6,7 +6,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
-import net.minecraft.item.ItemTier;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 @FieldsAreNonnullByDefault
@@ -15,7 +15,6 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     private final VanillaPaxelMaterial fallback;
 
-    private final CachedIntValue paxelHarvestLevel;
     public final CachedFloatValue paxelDamage;
     public final CachedFloatValue paxelAtkSpeed;
     private final CachedFloatValue paxelEfficiency;
@@ -27,8 +26,6 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         String toolKey = getRegistryPrefix();
         String name = getConfigCommentName();
         builder.comment("Vanilla Material Paxel Settings for " + name).push(toolKey);
-        paxelHarvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + name + " paxels.")
-              .defineInRange(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel(), 0, Integer.MAX_VALUE));
         //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
         // can effectively have zero damage for things like the hoe
         paxelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + name + " paxels.")
@@ -62,18 +59,13 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     }
 
     @Nonnull
-    public ItemTier getVanillaTier() {
+    public Tiers getVanillaTier() {
         return fallback.getVanillaTier();
     }
 
     @Nonnull
     public String getRegistryPrefix() {
         return fallback.getRegistryPrefix();
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return paxelHarvestLevel.get();
     }
 
     @Override

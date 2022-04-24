@@ -3,7 +3,7 @@ package mekanism.api.providers;
 import javax.annotation.Nonnull;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ModuleData;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IModuleDataProvider<MODULE extends ICustomModule<MODULE>> extends IBaseProvider {
 

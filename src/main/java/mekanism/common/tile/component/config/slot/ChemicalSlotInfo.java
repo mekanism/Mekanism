@@ -1,6 +1,5 @@
 package mekanism.common.tile.component.config.slot;
 
-import java.util.Arrays;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -25,7 +24,7 @@ public abstract class ChemicalSlotInfo<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     @SafeVarargs
     protected ChemicalSlotInfo(boolean canInput, boolean canOutput, TANK... tanks) {
-        this(canInput, canOutput, Arrays.asList(tanks));
+        this(canInput, canOutput, List.of(tanks));
     }
 
     protected ChemicalSlotInfo(boolean canInput, boolean canOutput, List<TANK> tanks) {

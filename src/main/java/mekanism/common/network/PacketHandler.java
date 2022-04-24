@@ -39,11 +39,11 @@ import mekanism.common.network.to_server.PacketRobit;
 import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.network.to_server.PacketWindowSelect;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketHandler extends BasePacketHandler {
 
-    private static final SimpleChannel netHandler = createChannel(Mekanism.rl(Mekanism.MODID));
+    private final SimpleChannel netHandler = createChannel(Mekanism.rl(Mekanism.MODID), Mekanism.instance.versionNumber);
 
     @Override
     protected SimpleChannel getChannel() {

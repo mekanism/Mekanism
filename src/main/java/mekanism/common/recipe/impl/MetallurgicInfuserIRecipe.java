@@ -2,15 +2,15 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
 
@@ -20,14 +20,14 @@ public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<MetallurgicInfuserRecipe> getType() {
-        return MekanismRecipeType.METALLURGIC_INFUSING;
+    public RecipeType<MetallurgicInfuserRecipe> getType() {
+        return MekanismRecipeType.METALLURGIC_INFUSING.get();
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<MetallurgicInfuserRecipe> getSerializer() {
-        return MekanismRecipeSerializers.METALLURGIC_INFUSING.getRecipeSerializer();
+    public RecipeSerializer<MetallurgicInfuserRecipe> getSerializer() {
+        return MekanismRecipeSerializers.METALLURGIC_INFUSING.get();
     }
 
     @Nonnull

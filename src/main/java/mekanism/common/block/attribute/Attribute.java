@@ -10,16 +10,16 @@ import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface Attribute {
 
     interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
 
-    default void adjustProperties(AbstractBlock.Properties props) {
+    default void adjustProperties(BlockBehaviour.Properties props) {
     }
 
     static boolean has(BlockState state, Class<? extends Attribute> type) {
@@ -27,7 +27,7 @@ public interface Attribute {
     }
 
     static boolean has(Block block, Class<? extends Attribute> type) {
-        return block instanceof ITypeBlock && ((ITypeBlock) block).getType().has(type);
+        return block instanceof ITypeBlock typeBlock && typeBlock.getType().has(type);
     }
 
     static <T extends Attribute> T get(BlockState state, Class<T> type) {
@@ -39,7 +39,7 @@ public interface Attribute {
     }
 
     static <T extends Attribute> T get(Block block, Class<T> type) {
-        return block instanceof ITypeBlock ? ((ITypeBlock) block).getType().get(type) : null;
+        return block instanceof ITypeBlock typeBlock ? typeBlock.getType().get(type) : null;
     }
 
     static boolean has(Block block1, Block block2, Class<? extends Attribute> type) {
@@ -47,12 +47,12 @@ public interface Attribute {
     }
 
     static Collection<Attribute> getAll(Block block) {
-        return block instanceof ITypeBlock ? ((ITypeBlock) block).getType().getAll() : Lists.newArrayList();
+        return block instanceof ITypeBlock typeBlock ? typeBlock.getType().getAll() : Lists.newArrayList();
     }
 
     static <T extends Attribute> void ifHas(Block block, Class<T> type, Consumer<T> run) {
-        if (block instanceof ITypeBlock) {
-            T attribute = ((ITypeBlock) block).getType().get(type);
+        if (block instanceof ITypeBlock typeBlock) {
+            T attribute = typeBlock.getType().get(type);
             if (attribute != null) {
                 run.accept(attribute);
             }

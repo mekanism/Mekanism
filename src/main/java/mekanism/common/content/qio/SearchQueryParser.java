@@ -12,11 +12,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import javax.annotation.Nullable;
 import mekanism.common.base.TagCache;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 /**
  * Advanced pattern searching, in use by QIO Item Viewers. Only use on client-side.
@@ -54,11 +54,11 @@ public class SearchQueryParser {
                 type = QueryType.NAME;
             }
             // read the key string(s) of the given query type
-            Pair<Boolean, Integer> keyListResult = readKeyList(query, i, type, curQuery);
-            if (!keyListResult.getLeft()) {
+            KeyListResult keyListResult = readKeyList(query, i, type, curQuery);
+            if (!keyListResult.hasResult()) {
                 return INVALID;
             }
-            i = keyListResult.getRight();
+            i = keyListResult.index();
         }
         if (!curQuery.isEmpty()) {
             ret.add(curQuery);
@@ -66,42 +66,43 @@ public class SearchQueryParser {
         return new SearchQueryList(ret);
     }
 
-    private static Pair<Boolean, Integer> readKeyList(String query, int start, QueryType type, SearchQuery curQuery) {
+    private static KeyListResult readKeyList(String query, int start, QueryType type, SearchQuery curQuery) {
         // make sure the query doesn't begin out of string bounds
         // if it does, it's just incomplete- we'll treat it as valid and just skip this key list
         if (start >= query.length()) {
-            return Pair.of(true, start);
+            return new KeyListResult(true, start);
         }
         int newIndex;
         List<String> keys;
         char qc = query.charAt(start);
         if (qc == '(') {
-            Pair<List<String>, Integer> listResult = readList(query, start);
+            ListResult<String> listResult = readList(query, start);
             if (listResult == null) {
-                return Pair.of(false, -1);
+                return KeyListResult.INVALID;
             }
-            keys = listResult.getLeft();
-            newIndex = listResult.getRight();
+            keys = listResult.result();
+            newIndex = listResult.index();
         } else if (qc == '\"' || qc == '\'') {
-            Pair<String, Integer> quoteResult = readQuote(query, start);
+            Result quoteResult = readQuote(query, start);
             if (quoteResult == null) {
-                return Pair.of(false, -1);
+                return KeyListResult.INVALID;
             }
-            keys = Collections.singletonList(quoteResult.getLeft());
-            newIndex = quoteResult.getRight();
+            keys = Collections.singletonList(quoteResult.result());
+            newIndex = quoteResult.index();
         } else {
-            Pair<String, Integer> textResult = readUntilTermination(query, start, type != QueryType.NAME);
-            keys = Collections.singletonList(textResult.getLeft());
-            newIndex = textResult.getRight();
+            Result textResult = readUntilTermination(query, start, type != QueryType.NAME);
+            keys = Collections.singletonList(textResult.result());
+            newIndex = textResult.index();
         }
         if (!keys.isEmpty()) {
             curQuery.queryStrings.put(type, keys);
         }
-        return Pair.of(true, newIndex);
+        return new KeyListResult(true, newIndex);
     }
 
     // called with index of start parenthesis, returns index of last character
-    private static Pair<List<String>, Integer> readList(String query, int start) {
+    @Nullable
+    private static ListResult<String> readList(String query, int start) {
         List<String> ret = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
 
@@ -112,7 +113,7 @@ public class SearchQueryParser {
                 if (!key.isEmpty()) {
                     ret.add(key);
                 }
-                return Pair.of(ret, i);
+                return new ListResult<>(ret, i);
             } else if (qc == '|') {
                 String key = sb.toString().trim();
                 if (!key.isEmpty()) {
@@ -120,12 +121,12 @@ public class SearchQueryParser {
                 }
                 sb = new StringBuilder();
             } else if (qc == '\"' || qc == '\'') {
-                Pair<String, Integer> quoteResult = readQuote(query, i);
+                Result quoteResult = readQuote(query, i);
                 if (quoteResult == null) {
                     return null;
                 }
-                ret.add(quoteResult.getLeft());
-                i = quoteResult.getRight();
+                ret.add(quoteResult.result());
+                i = quoteResult.index();
             } else {
                 sb.append(qc);
             }
@@ -135,20 +136,21 @@ public class SearchQueryParser {
     }
 
     // called with the index of the start quote, returns index of last character
-    private static Pair<String, Integer> readQuote(String text, int start) {
+    @Nullable
+    private static Result readQuote(String text, int start) {
         char quoteChar = text.charAt(start);
         StringBuilder ret = new StringBuilder();
         for (int i = start + 1; i < text.length(); i++) {
             char tc = text.charAt(i);
             if (tc == quoteChar) {
-                return Pair.of(ret.toString(), i);
+                return new Result(ret.toString(), i);
             }
             ret.append(tc);
         }
         return null;
     }
 
-    private static Pair<String, Integer> readUntilTermination(String text, int start, boolean spaceTerminate) {
+    private static Result readUntilTermination(String text, int start, boolean spaceTerminate) {
         StringBuilder sb = new StringBuilder();
         int i = start;
         for (; i < text.length(); i++) {
@@ -159,14 +161,25 @@ public class SearchQueryParser {
             }
             sb.append(tc);
         }
-        return Pair.of(sb.toString().trim(), i);
+        return new Result(sb.toString().trim(), i);
+    }
+
+    private record KeyListResult(boolean hasResult, int index) {
+
+        public static final KeyListResult INVALID = new KeyListResult(false, -1);
+    }
+
+    private record Result(String result, int index) {
+    }
+
+    private record ListResult<TYPE>(List<TYPE> result, int index) {
     }
 
     public enum QueryType {
         // ~ is a dummy char, not actually used by parser
         NAME('~', (key, stack) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
         MOD_ID('@', (key, stack) -> MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
-        TOOLTIP('$', (key, stack) -> stack.getTooltipLines(null, ITooltipFlag.TooltipFlags.NORMAL).stream().map(t -> t.getString().toLowerCase(Locale.ROOT))
+        TOOLTIP('$', (key, stack) -> stack.getTooltipLines(null, TooltipFlag.Default.NORMAL).stream().map(t -> t.getString().toLowerCase(Locale.ROOT))
               .anyMatch(tooltip -> tooltip.contains(key.toLowerCase(Locale.ROOT)))),
         TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))));
 

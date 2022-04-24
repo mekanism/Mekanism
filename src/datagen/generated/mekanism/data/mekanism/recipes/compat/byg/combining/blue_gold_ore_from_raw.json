@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:combining",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "mainInput": {
+    "amount": 8,
+    "ingredient": {
+      "tag": "forge:raw_materials/gold"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "item": "byg:blue_netherrack"
+    }
+  },
+  "output": {
+    "item": "byg:blue_nether_gold_ore"
+  }
+}

@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -18,8 +17,9 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -34,14 +34,14 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
     /**
      * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
      */
-    private static InfusionStack getPotentialConversion(@Nullable World world, ItemStack itemStack) {
+    private static InfusionStack getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
         return getPotentialConversion(MekanismRecipeType.INFUSION_CONVERSION, world, itemStack, InfusionStack.EMPTY);
     }
 
     /**
      * Fills the tank from this item OR converts the given item to an infusion type
      */
-    public static InfusionInventorySlot fillOrConvert(IInfusionTank infusionTank, Supplier<World> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
+    public static InfusionInventorySlot fillOrConvert(IInfusionTank infusionTank, Supplier<Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         Function<ItemStack, InfusionStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
@@ -57,7 +57,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
         }, listener, x, y);
     }
 
-    private InfusionInventorySlot(IInfusionTank infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+    private InfusionInventorySlot(IInfusionTank infusionTank, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(infusionTank, worldSupplier, canExtract, canInsert, validator, listener, x, y);
     }
@@ -70,7 +70,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
 
     @Nullable
     @Override
-    protected ItemStackToInfuseTypeRecipe getConversionRecipe(@Nullable World world, ItemStack stack) {
+    protected ItemStackToInfuseTypeRecipe getConversionRecipe(@Nullable Level world, ItemStack stack) {
         return MekanismRecipeType.INFUSION_CONVERSION.getInputCache().findFirstRecipe(world, stack);
     }
 }

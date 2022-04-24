@@ -48,7 +48,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        add(ToolsLang.HP, "HP: %s");
+        add(ToolsLang.HP, "HP: %1$s");
     }
 
     private void addSet(String type, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings, IItemProvider boots, IItemProvider sword,

@@ -1,16 +1,15 @@
 package mekanism.client.gui.robit;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.GuiRightArrow;
-import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
-    public GuiRobitCrafting(CraftingRobitContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiRobitCrafting(CraftingRobitContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 1;
         dynamicSlots = true;
@@ -19,13 +18,13 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiRightArrow(this, 90, 35).jeiCrafting());
+        addRenderableWidget(new GuiRightArrow(this, 90, 35).jeiCrafting());
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.ROBIT_CRAFTING.translate(), titleLabelX, titleLabelY, titleTextColor());
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

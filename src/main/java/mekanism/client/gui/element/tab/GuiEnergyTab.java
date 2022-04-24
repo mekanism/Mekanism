@@ -1,14 +1,15 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.client.gui.IGuiWrapper;
@@ -17,14 +18,14 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.UnitDisplayUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiEnergyTab extends GuiBiDirectionalTab {
 
-    private static final Map<EnergyType, ResourceLocation> ICONS = new EnumMap<>(EnergyType.class);
+    private static final Map<EnergyUnit, ResourceLocation> ICONS = new EnumMap<>(EnergyUnit.class);
     private final IInfoHandler infoHandler;
 
     public GuiEnergyTab(IGuiWrapper gui, IInfoHandler handler) {
@@ -33,13 +34,13 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
     }
 
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer) {
-        this(gui, () -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
+        this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
         //TODO: Re-evaluate uses of this constructor at some point, as well as the isActive constructor
     }
 
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, FloatingLongSupplier lastEnergyUsed) {
-        this(gui, () -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
+        this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
     }
 
@@ -49,39 +50,48 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
             // to the client, but it is close enough given a lot more things would have to be kept track of otherwise
             // which would lead to higher memory usage
             FloatingLong using = isActive.getAsBoolean() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
-            return Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(using)),
+            return List.of(MekanismLang.USING.translate(EnergyDisplay.of(using)),
                   MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded())));
         });
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bind(getResource());
+        RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
-        info.add(MekanismLang.UNIT.translate(MekanismConfig.general.energyUnit.get()));
-        displayTooltips(matrix, info, mouseX, mouseY);
+        List<Component> info = new ArrayList<>(infoHandler.getInfo());
+        info.add(MekanismLang.UNIT.translate(EnergyUnit.getConfigured()));
+        displayTooltips(matrix, mouseX, mouseY, info);
     }
 
     @Override
     protected ResourceLocation getResource() {
-        return ICONS.computeIfAbsent(MekanismConfig.general.energyUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
-              "energy_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
+        return ICONS.computeIfAbsent(EnergyUnit.getConfigured(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
+              "energy_info_" + type.getTabName() + ".png"));
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getNext());
+        updateEnergyUnit(IIncrementalEnum::getNext);
     }
 
     @Override
     protected void onRightClick(double mouseX, double mouseY) {
-        MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getPrevious());
+        updateEnergyUnit(IIncrementalEnum::getPrevious);
+    }
+
+    private void updateEnergyUnit(UnaryOperator<EnergyUnit> converter) {
+        EnergyUnit current = EnergyUnit.getConfigured();
+        EnergyUnit updated = converter.apply(current);
+        if (current != updated) {//May be equal if all other energy types are disabled
+            MekanismConfig.common.energyUnit.set(updated);
+            MekanismConfig.common.save();
+        }
     }
 }

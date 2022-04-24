@@ -1,6 +1,7 @@
 package mekanism.common.tile.machine;
 
 import javax.annotation.Nonnull;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -20,8 +21,9 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism {
@@ -36,23 +38,23 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
     private BasicHeatCapacitor heatCapacitor;
 
-    public TileEntityFuelwoodHeater() {
-        super(MekanismBlocks.FUELWOOD_HEATER);
+    public TileEntityFuelwoodHeater(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.FUELWOOD_HEATER, pos, state);
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(ForgeHooks::getBurnTime, this, 15, 29));
+        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(stack -> ForgeHooks.getBurnTime(stack, null), listener, 15, 29));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 10, ambientTemperature, this));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 10, ambientTemperature, listener));
         return builder.build();
     }
 
@@ -71,7 +73,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
             setActive(false);
         }
         HeatTransfer loss = simulate();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer();
+        lastEnvironmentLoss = loss.environmentTransfer();
     }
 
     @ComputerMethod(nameOverride = "getEnvironmentalLoss")
@@ -80,19 +82,17 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        burnTime = nbtTags.getInt(NBTConstants.BURN_TIME);
-        maxBurnTime = nbtTags.getInt(NBTConstants.MAX_BURN_TIME);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        burnTime = nbt.getInt(NBTConstants.BURN_TIME);
+        maxBurnTime = nbt.getInt(NBTConstants.MAX_BURN_TIME);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.BURN_TIME, burnTime);
         nbtTags.putInt(NBTConstants.MAX_BURN_TIME, maxBurnTime);
-        return nbtTags;
     }
 
     @Override

@@ -10,7 +10,7 @@ import mekanism.common.capabilities.holder.ConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ConfigEnergyContainerHolder extends ConfigHolder<IEnergyContainer> implements IEnergyContainerHolder {
 
@@ -30,6 +30,6 @@ public class ConfigEnergyContainerHolder extends ConfigHolder<IEnergyContainer> 
     @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction direction) {
-        return getSlots(direction, slotInfo -> slotInfo instanceof EnergySlotInfo ? ((EnergySlotInfo) slotInfo).getContainers() : Collections.emptyList());
+        return getSlots(direction, slotInfo -> slotInfo instanceof EnergySlotInfo info ? info.getContainers() : Collections.emptyList());
     }
 }

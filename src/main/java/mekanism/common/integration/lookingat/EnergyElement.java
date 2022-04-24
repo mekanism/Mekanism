@@ -4,7 +4,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class EnergyElement extends LookingAtElement {
 
@@ -31,7 +31,7 @@ public class EnergyElement extends LookingAtElement {
     }
 
     @Override
-    public ITextComponent getText() {
+    public Component getText() {
         return EnergyDisplay.of(energy, maxEnergy).getTextComponent();
     }
 }

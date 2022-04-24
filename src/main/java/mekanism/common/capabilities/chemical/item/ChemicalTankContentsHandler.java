@@ -2,7 +2,6 @@ package mekanism.common.capabilities.chemical.item;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
@@ -16,6 +15,7 @@ import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalT
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.SlurryTankRateLimitChemicalTank;
 import mekanism.common.capabilities.merged.MergedTankContentsHandler;
 import mekanism.common.tier.ChemicalTankTier;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

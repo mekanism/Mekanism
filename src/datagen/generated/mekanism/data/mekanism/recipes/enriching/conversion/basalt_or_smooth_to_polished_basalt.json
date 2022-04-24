@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": [
+      {
+        "item": "minecraft:basalt"
+      },
+      {
+        "item": "minecraft:smooth_basalt"
+      }
+    ]
+  },
+  "output": {
+    "item": "minecraft:polished_basalt"
+  }
+}

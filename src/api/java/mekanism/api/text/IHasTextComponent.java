@@ -1,6 +1,6 @@
 package mekanism.api.text;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public interface IHasTextComponent {
 
@@ -11,5 +11,5 @@ public interface IHasTextComponent {
     /**
      * Gets the text component that represents this object.
      */
-    ITextComponent getTextComponent();
+    Component getTextComponent();
 }

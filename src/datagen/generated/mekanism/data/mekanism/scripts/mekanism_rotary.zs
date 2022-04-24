@@ -20,8 +20,8 @@ import mods.mekanism.api.ingredient.FluidStackIngredient;
  * 3) Adds a recipe to convert between Liquid Sulfur Trioxide and Sulfur Trioxide.
 */
 
-// <recipetype:mekanism:rotary>.addRecipe(name as string, fluidInput as FluidStackIngredient, gasOutput as ICrTGasStack)
 // <recipetype:mekanism:rotary>.addRecipe(name as string, gasInput as GasStackIngredient, fluidOutput as IFluidStack)
+// <recipetype:mekanism:rotary>.addRecipe(name as string, fluidInput as FluidStackIngredient, gasOutput as ICrTGasStack)
 // <recipetype:mekanism:rotary>.addRecipe(name as string, fluidInput as FluidStackIngredient, gasInput as GasStackIngredient, gasOutput as ICrTGasStack, fluidOutput as IFluidStack)
 
 <recipetype:mekanism:rotary>.addRecipe("condensentrate_lithium", GasStackIngredient.from(<gas:mekanism:lithium>), <fluid:mekanism:lithium>);

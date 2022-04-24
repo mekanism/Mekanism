@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,6 +10,7 @@ import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.window.GuiUpgradeWindowTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemConfigurator;
@@ -20,10 +21,10 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
@@ -34,7 +35,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     @Nullable
     private GuiUpgradeWindowTab upgradeWindowTab;
 
-    protected GuiMekanismTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+    protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
         tile = container.getTileEntity();
     }
@@ -51,25 +52,26 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
 
     protected void addGenericTabs() {
         if (tile.supportsUpgrades()) {
-            upgradeWindowTab = addButton(new GuiUpgradeWindowTab(this, tile, () -> upgradeWindowTab));
+            upgradeWindowTab = addRenderableWidget(new GuiUpgradeWindowTab(this, tile, () -> upgradeWindowTab));
         }
         if (tile.supportsRedstone()) {
-            addButton(new GuiRedstoneControlTab(this, tile));
+            addRenderableWidget(new GuiRedstoneControlTab(this, tile));
         }
-        if (tile.hasSecurity()) {
+        //Note: We check if the capability is present rather than calling hasSecurity so that we don't add the tab to the security desk
+        if (tile.getCapability(Capabilities.SECURITY_OBJECT).isPresent()) {
             addSecurityTab();
         }
     }
 
     protected void addSecurityTab() {
-        addButton(new GuiSecurityTab(this, tile));
+        addRenderableWidget(new GuiSecurityTab(this, tile));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
         if (tile instanceof ISideConfiguration) {
-            ItemStack stack = getMinecraft().player.inventory.getCarried();
+            ItemStack stack = getMinecraft().player.containerMenu.getCarried();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 for (int i = 0; i < menu.slots.size(); i++) {
                     Slot slot = menu.slots.get(i);
@@ -77,7 +79,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                         DataType data = getFromSlot(slot);
                         if (data != null) {
                             EnumColor color = data.getColor();
-                            displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()), mouseX - leftPos, mouseY - topPos);
+                            displayTooltips(matrix, mouseX - leftPos, mouseY - topPos, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()));
                         }
                         break;
                     }
@@ -86,20 +88,16 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
         }
     }
 
-    public void renderTitleText(MatrixStack matrix) {
-        drawTitleText(matrix, tile.getName(), titleLabelY);
-    }
-
     private DataType getFromSlot(Slot slot) {
-        if (slot.index < tile.getSlots() && slot instanceof InventoryContainerSlot) {
+        if (slot.index < tile.getSlots() && slot instanceof InventoryContainerSlot containerSlot) {
             ISideConfiguration config = (ISideConfiguration) tile;
             ConfigInfo info = config.getConfig().getConfig(TransmissionType.ITEM);
             if (info != null) {
                 Set<DataType> supportedDataTypes = info.getSupportedDataTypes();
-                IInventorySlot inventorySlot = ((InventoryContainerSlot) slot).getInventorySlot();
+                IInventorySlot inventorySlot = containerSlot.getInventorySlot();
                 for (DataType type : supportedDataTypes) {
                     ISlotInfo slotInfo = info.getSlotInfo(type);
-                    if (slotInfo instanceof InventorySlotInfo && ((InventorySlotInfo) slotInfo).hasSlot(inventorySlot)) {
+                    if (slotInfo instanceof InventorySlotInfo inventorySlotInfo && inventorySlotInfo.hasSlot(inventorySlot)) {
                         return type;
                     }
                 }

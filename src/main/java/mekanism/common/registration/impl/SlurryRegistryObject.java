@@ -3,7 +3,7 @@ package mekanism.common.registration.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 public class SlurryRegistryObject<DIRTY extends Slurry, CLEAN extends Slurry> extends DoubleWrappedRegistryObject<DIRTY, CLEAN> {
 

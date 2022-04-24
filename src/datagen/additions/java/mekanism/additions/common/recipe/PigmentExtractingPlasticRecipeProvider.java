@@ -8,13 +8,13 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IPigmentProvider;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registries.MekanismPigments;
-import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.data.recipes.FinishedRecipe;
 
 public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvider {
 
@@ -32,7 +32,7 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
     private static final long TRANSPARENT_PLASTIC_SLAB_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE / 2;//21
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "pigment_extracting/plastic/";
         for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
@@ -52,10 +52,10 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
         }
     }
 
-    private static void addExtractionRecipe(Consumer<IFinishedRecipe> consumer, EnumColor color, Map<EnumColor, ? extends IItemProvider> input, IPigmentProvider pigment,
+    private static void addExtractionRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Map<EnumColor, ? extends IItemProvider> input, IPigmentProvider pigment,
           long rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-              ItemStackIngredient.from(input.get(color)),
+              IngredientCreatorAccess.item().from(input.get(color)),
               pigment.getStack(rate)
         ).build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
     }

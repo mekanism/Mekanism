@@ -4,13 +4,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends BaseFilter<FILTER> {
@@ -35,7 +33,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     public abstract boolean hasBlacklistedElement();
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.REQUIRE_STACK, requiresReplacement);
         if (replaceTarget != Items.AIR) {
@@ -45,25 +43,20 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         requiresReplacement = nbtTags.getBoolean(NBTConstants.REQUIRE_STACK);
-        //TODO - 1.18: Remove this legacy loading branch
-        if (nbtTags.contains(NBTConstants.REPLACE_STACK, NBT.TAG_COMPOUND)) {
-            replaceTarget = ItemStack.of(nbtTags.getCompound(NBTConstants.REPLACE_STACK)).getItem();
-        } else {
-            replaceTarget = NBTUtils.readRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
-        }
+        replaceTarget = NBTUtils.readRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeBoolean(requiresReplacement);
         buffer.writeRegistryId(replaceTarget);
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
+    public void read(FriendlyByteBuf dataStream) {
         requiresReplacement = dataStream.readBoolean();
         replaceTarget = dataStream.readRegistryId();
     }
@@ -77,8 +70,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return filter instanceof MinerFilter && ((MinerFilter<?>) filter).requiresReplacement == requiresReplacement &&
-               ((MinerFilter<?>) filter).replaceTarget == replaceTarget;
+    public boolean equals(Object o) {
+        return o instanceof MinerFilter<?> filter && filter.requiresReplacement == requiresReplacement && filter.replaceTarget == replaceTarget;
     }
 }

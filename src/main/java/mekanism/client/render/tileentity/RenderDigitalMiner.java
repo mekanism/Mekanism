@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -8,11 +8,11 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.Direction;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner> {
@@ -33,12 +33,12 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
         model = null;
     }
 
-    public RenderDigitalMiner(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderDigitalMiner(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    protected void render(TileEntityDigitalMiner miner, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityDigitalMiner miner, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         if (miner.clientRendering && miner.getRadius() <= 64) {
             if (model == null) {
                 model = new Model3D();
@@ -59,7 +59,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             // we want to be able to see all faces easily
             FaceDisplay faceDisplay = isInsideBounds(miner.getBlockPos().getX() - miner.getRadius(), miner.getMinY(), miner.getBlockPos().getZ() - miner.getRadius(),
                   miner.getBlockPos().getX() + miner.getRadius(), miner.getMaxY(), miner.getBlockPos().getZ() + miner.getRadius()) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()), colors, MekanismRenderer.FULL_LIGHT, overlayLight,
+            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), colors, MekanismRenderer.FULL_LIGHT, overlayLight,
                   faceDisplay);
             matrix.popPose();
         }

@@ -5,7 +5,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class EnergyCubeUpgradeData implements IUpgradeData {
 
@@ -14,7 +14,7 @@ public class EnergyCubeUpgradeData implements IUpgradeData {
     public final IEnergyContainer energyContainer;
     public final EnergyInventorySlot chargeSlot;
     public final EnergyInventorySlot dischargeSlot;
-    public final CompoundNBT components;
+    public final CompoundTag components;
 
     public EnergyCubeUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, EnergyInventorySlot chargeSlot, EnergyInventorySlot dischargeSlot,
           List<ITileComponent> components) {
@@ -23,7 +23,7 @@ public class EnergyCubeUpgradeData implements IUpgradeData {
         this.energyContainer = energyContainer;
         this.chargeSlot = chargeSlot;
         this.dischargeSlot = dischargeSlot;
-        this.components = new CompoundNBT();
+        this.components = new CompoundTag();
         for (ITileComponent component : components) {
             component.write(this.components);
         }

@@ -1,7 +1,7 @@
 package mekanism.tools.common;
 
 import javax.annotation.Nonnull;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public interface IHasRepairType {
 

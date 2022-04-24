@@ -2,14 +2,14 @@ package mekanism.common.capabilities.heat;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -17,8 +17,8 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
 
     default void updateHeatCapacitors(@Nullable Direction side) {
         for (IHeatCapacitor capacitor : getHeatCapacitors(side)) {
-            if (capacitor instanceof BasicHeatCapacitor) {
-                ((BasicHeatCapacitor) capacitor).update();
+            if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
+                heatCapacitor.update();
             }
         }
     }

@@ -5,14 +5,15 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot implements IHasExtraData {
 
@@ -52,6 +53,9 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     @Nonnull
     @Override
     public ItemStack remove(int amount) {
+        if (amount == 0) {
+            return ItemStack.EMPTY;
+        }
         //Simulate extraction to not actually modify the slot
         // Note: In theory even though we are "simulating" here instead of actually changing how much is
         // in the slot, this shouldn't be a problem or be a risk of duplication, as there are slots like
@@ -59,15 +63,17 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         // by taking it and then just setting the contents again, but effectively it is just returning
         // a copy so if mods cause any duplication glitches because of how we handle this, then in theory
         // they probably also cause duplication glitches with some of vanilla's slots as well.
-        ItemStack extracted = getInventorySlot().extractItem(amount, Action.SIMULATE, AutomationType.MANUAL);
+        // Note: We use the slot's actual amount instead of the passed in one, so that we ensure we properly
+        // craft everything from the output stack instead of only producing part of the output
+        IInventorySlot slot = getInventorySlot();
+        ItemStack extracted = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.MANUAL);
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.getCount();
         return extracted;
     }
 
     /**
-     * @implNote We override this similar to how {@link net.minecraft.inventory.container.CraftingResultSlot} does, but this never actually ends up getting called for our
-     * slots.
+     * @implNote We override this similar to how {@link net.minecraft.world.inventory.ResultSlot} does, but this never actually ends up getting called for our slots.
      */
     @Override
     protected void onQuickCraft(@Nonnull ItemStack stack, int amount) {
@@ -80,20 +86,18 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         amountCrafted += numItemsCrafted;
     }
 
-    @Nonnull
     @Override
-    public ItemStack onTake(@Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+    public void onTake(@Nonnull Player player, @Nonnull ItemStack stack) {
         ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
         amountCrafted = 0;
-        return result;
     }
 
     @Override
-    public boolean mayPickup(@Nonnull PlayerEntity player) {
-        if (player.level.isClientSide || !(player instanceof ServerPlayerEntity)) {
+    public boolean mayPickup(@Nonnull Player player) {
+        if (player.level.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
             return canCraft && super.mayPickup(player);
         }
-        return craftingWindow.canViewRecipe((ServerPlayerEntity) player) && super.mayPickup(player);
+        return craftingWindow.canViewRecipe(serverPlayer) && super.mayPickup(player);
     }
 
     @Nonnull
@@ -103,7 +107,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Nonnull
-    public ItemStack shiftClickSlot(@Nonnull PlayerEntity player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+    public ItemStack shiftClickSlot(@Nonnull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
         craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
         // afterwards we want to "stop" crafting as our window determines how much a shift click should produce
@@ -113,8 +117,8 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public void addTrackers(PlayerEntity player, Consumer<ISyncableData> tracker) {
-        if (player.level.isClientSide || !(player instanceof ServerPlayerEntity)) {
+    public void addTrackers(Player player, Consumer<ISyncableData> tracker) {
+        if (player.level.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
             //If we are on the client or not a server player entity for some reason return our cached value
             tracker.accept(SyncableBoolean.create(() -> canCraft, value -> canCraft = value));
         } else {
@@ -130,7 +134,6 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
             // 2. The player specific one
             // and then when encoding it just add the sizes together and pretend they are all part of the first list for purposes of
             // what the client is aware of as the client shouldn't care about them
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             tracker.accept(SyncableBoolean.create(() -> craftingWindow.canViewRecipe(serverPlayer), value -> canCraft = value));
         }
     }

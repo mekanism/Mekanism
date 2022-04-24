@@ -6,7 +6,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ItemStackToGasRecipeSerializer<RECIPE extends ItemStackToGasRecipe> extends ItemStackToChemicalRecipeSerializer<Gas, GasStack, RECIPE> {
 
@@ -20,7 +20,7 @@ public class ItemStackToGasRecipeSerializer<RECIPE extends ItemStackToGasRecipe>
     }
 
     @Override
-    protected GasStack fromBuffer(@Nonnull PacketBuffer buffer) {
+    protected GasStack fromBuffer(@Nonnull FriendlyByteBuf buffer) {
         return GasStack.readFromPacket(buffer);
     }
 }

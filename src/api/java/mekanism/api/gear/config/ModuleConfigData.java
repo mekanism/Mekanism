@@ -2,7 +2,7 @@ package mekanism.api.gear.config;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * Class representing config data types that modules can make use of.
@@ -29,18 +29,18 @@ public interface ModuleConfigData<TYPE> {
     void set(TYPE val);
 
     /**
-     * Attempts to read a {@link ModuleConfigData} of this type with the given name from the given {@link CompoundNBT} and updates the current value to the stored value.
+     * Attempts to read a {@link ModuleConfigData} of this type with the given name from the given {@link CompoundTag} and updates the current value to the stored value.
      *
      * @param name Name of the config data to read.
      * @param tag  Stored data.
      */
-    void read(String name, CompoundNBT tag);
+    void read(String name, CompoundTag tag);
 
     /**
-     * Attempts to write the current value of this {@link ModuleConfigData} into the given {@link CompoundNBT} using the given name.
+     * Attempts to write the current value of this {@link ModuleConfigData} into the given {@link CompoundTag} using the given name.
      *
      * @param name Name of the config data to write to.
      * @param tag  Data to store the value in.
      */
-    void write(String name, CompoundNBT tag);
+    void write(String name, CompoundTag tag);
 }

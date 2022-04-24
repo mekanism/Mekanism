@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.common.network.to_client.container.property.BooleanPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling booleans
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling booleans
  */
 public abstract class SyncableBoolean implements ISyncableData {
 

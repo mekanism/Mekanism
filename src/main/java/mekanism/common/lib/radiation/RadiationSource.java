@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class RadiationSource implements IRadiationSource {
 
@@ -41,11 +41,11 @@ public class RadiationSource implements IRadiationSource {
         return magnitude < RadiationManager.MIN_MAGNITUDE;
     }
 
-    public static RadiationSource load(CompoundNBT tag) {
+    public static RadiationSource load(CompoundTag tag) {
         return new RadiationSource(Coord4D.read(tag), tag.getDouble(NBTConstants.RADIATION));
     }
 
-    public void write(CompoundNBT tag) {
+    public void write(CompoundTag tag) {
         pos.write(tag);
         tag.putDouble(NBTConstants.RADIATION, magnitude);
     }

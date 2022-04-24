@@ -1,6 +1,6 @@
 package mekanism.client.gui.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
@@ -13,11 +13,10 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.container.item.DictionaryContainer;
-import mekanism.common.registries.MekanismItems;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 //TODO: Eventually it would be nice that when a tag is selected in the GUI that it shows everything else that is in that tag
 public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
@@ -26,7 +25,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     private GuiDictionaryTarget target;
     private DictionaryTagType currentType = DictionaryTagType.ITEM;
 
-    public GuiDictionary(DictionaryContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiDictionary(DictionaryContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight += 5;
         inventoryLabelY = imageHeight - 96;
@@ -37,12 +36,12 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
-        scrollList = addButton(new GuiTextScrollList(this, 7, 29, 162, 42));
+        addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
+        scrollList = addRenderableWidget(new GuiTextScrollList(this, 7, 29, 162, 42));
         //TODO: Ideally we would eventually replace this with some sort of tab system as it would probably look better
         // and could then be limited to just the tags the target supports
-        addButton(new GuiDropdown<>(this, 124, 73, 45, DictionaryTagType.class, () -> currentType, this::setCurrentType));
-        target = addButton(new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
+        addRenderableWidget(new GuiDropdown<>(this, 124, 73, 45, DictionaryTagType.class, () -> currentType, this::setCurrentType));
+        target = addRenderableWidget(new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
     }
 
     private void setCurrentType(DictionaryTagType type) {
@@ -58,9 +57,9 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismItems.DICTIONARY.getTextComponent(), titleLabelY);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, inventoryLabelY, titleTextColor(), 45);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
@@ -86,11 +85,13 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     public enum DictionaryTagType implements IDropdownEnum<DictionaryTagType> {
         ITEM(MekanismLang.DICTIONARY_ITEM, MekanismLang.DICTIONARY_ITEM_DESC),
         BLOCK(MekanismLang.DICTIONARY_BLOCK, MekanismLang.DICTIONARY_BLOCK_DESC),
+        BLOCK_ENTITY_TYPE(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_DESC),
         FLUID(MekanismLang.DICTIONARY_FLUID, MekanismLang.DICTIONARY_FLUID_DESC),
         ENTITY_TYPE(MekanismLang.DICTIONARY_ENTITY_TYPE, MekanismLang.DICTIONARY_ENTITY_TYPE_DESC),
+        ATTRIBUTE(MekanismLang.DICTIONARY_ATTRIBUTE, MekanismLang.DICTIONARY_ATTRIBUTE_DESC),
         POTION(MekanismLang.DICTIONARY_POTION, MekanismLang.DICTIONARY_POTION_DESC),
+        MOB_EFFECT(MekanismLang.DICTIONARY_MOB_EFFECT, MekanismLang.DICTIONARY_MOB_EFFECT_DESC),
         ENCHANTMENT(MekanismLang.DICTIONARY_ENCHANTMENT, MekanismLang.DICTIONARY_ENCHANTMENT_DESC),
-        TILE_ENTITY_TYPE(MekanismLang.DICTIONARY_TILE_ENTITY_TYPE, MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_DESC),
         GAS(MekanismLang.DICTIONARY_GAS, MekanismLang.DICTIONARY_GAS_DESC),
         INFUSE_TYPE(MekanismLang.DICTIONARY_INFUSE_TYPE, MekanismLang.DICTIONARY_INFUSE_TYPE_DESC),
         PIGMENT(MekanismLang.DICTIONARY_PIGMENT, MekanismLang.DICTIONARY_PIGMENT_DESC),
@@ -105,12 +106,12 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
         }
 
         @Override
-        public ITextComponent getTooltip() {
+        public Component getTooltip() {
             return tooltip.translate();
         }
 
         @Override
-        public ITextComponent getShortName() {
+        public Component getShortName() {
             return name.translate();
         }
     }

@@ -3,14 +3,14 @@ package mekanism.common.inventory.container.slot;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.common.util.StackUtils;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class InsertableSlot extends Slot implements IInsertableSlot {
 
-    public InsertableSlot(IInventory inventory, int index, int x, int y) {
+    public InsertableSlot(Container inventory, int index, int x, int y) {
         super(inventory, index, x, y);
     }
 

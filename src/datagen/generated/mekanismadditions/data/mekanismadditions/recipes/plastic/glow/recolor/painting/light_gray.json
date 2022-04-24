@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/glow"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:light_gray_plastic_glow"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:light_gray"
+  },
+  "output": {
+    "item": "mekanismadditions:light_gray_plastic_glow"
+  }
+}

@@ -1,6 +1,8 @@
 package mekanism.generators.common;
 
+import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
@@ -11,6 +13,7 @@ import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -21,11 +24,18 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     @Override
+    protected List<IBlockProvider> getAllBlocks() {
+        return GeneratorsBlocks.BLOCKS.getAllBlocks();
+    }
+
+    @Override
     protected void registerTags() {
         addBoxBlacklist();
         addEndermanBlacklist();
         addFluids();
         addGases();
+        addHarvestRequirements();
+        addToTag(BlockTags.IMPERMEABLE, GeneratorsBlocks.REACTOR_GLASS);
     }
 
     private void addBoxBlacklist() {
@@ -79,5 +89,22 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addToTag(GeneratorTags.Gases.DEUTERIUM, GeneratorsGases.DEUTERIUM);
         addToTag(GeneratorTags.Gases.TRITIUM, GeneratorsGases.TRITIUM);
         addToTag(GeneratorTags.Gases.FUSION_FUEL, GeneratorsGases.FUSION_FUEL);
+    }
+
+    private void addHarvestRequirements() {
+        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
+              GeneratorsBlocks.HEAT_GENERATOR,
+              GeneratorsBlocks.SOLAR_GENERATOR, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
+              GeneratorsBlocks.GAS_BURNING_GENERATOR,
+              GeneratorsBlocks.BIO_GENERATOR,
+              GeneratorsBlocks.WIND_GENERATOR,
+              GeneratorsBlocks.TURBINE_ROTOR, GeneratorsBlocks.ROTATIONAL_COMPLEX, GeneratorsBlocks.ELECTROMAGNETIC_COIL, GeneratorsBlocks.TURBINE_CASING,
+              GeneratorsBlocks.TURBINE_VALVE, GeneratorsBlocks.TURBINE_VENT, GeneratorsBlocks.SATURATING_CONDENSER,
+              GeneratorsBlocks.REACTOR_GLASS,
+              GeneratorsBlocks.FISSION_REACTOR_CASING, GeneratorsBlocks.FISSION_REACTOR_PORT, GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER,
+              GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY,
+              GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, GeneratorsBlocks.FUSION_REACTOR_FRAME, GeneratorsBlocks.FUSION_REACTOR_PORT,
+              GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER
+        );
     }
 }

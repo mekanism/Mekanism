@@ -12,8 +12,8 @@ import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEIIngredientHelper {
 
@@ -32,12 +32,12 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
 
     @Override
     protected GaugeInfo getGaugeColor() {
-        if (gui() instanceof GuiMekanismTile) {
+        if (gui() instanceof GuiMekanismTile<?, ?> gui) {
             TANK tank = getTank();
             if (tank != null) {
-                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getMenu().getTileEntity();
-                if (tile instanceof ISideConfiguration) {
-                    DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
+                TileEntityMekanism tile = gui.getMenu().getTileEntity();
+                if (tile instanceof ISideConfiguration config) {
+                    DataType dataType = config.getActiveDataType(tank);
                     if (dataType != null) {
                         return GaugeInfo.get(dataType);
                     }
@@ -50,8 +50,8 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY) && tankType != null) {
-            ItemStack stack = minecraft.player.inventory.getCarried();
-            if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+            ItemStack stack = minecraft.player.containerMenu.getCarried();
+            if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 int index = infoHandler.getTankIndex();
                 if (index != -1) {
                     DropperAction action;
@@ -60,7 +60,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
                     } else {
                         action = DropperAction.DRAIN_DROPPER;
                     }
-                    Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getBlockPos(), action, tankType, index));
+                    Mekanism.packetHandler().sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
                 }
                 return true;
             }

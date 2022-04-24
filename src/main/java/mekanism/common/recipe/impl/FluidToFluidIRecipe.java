@@ -2,14 +2,14 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidToFluidIRecipe extends FluidToFluidRecipe {
@@ -20,14 +20,14 @@ public class FluidToFluidIRecipe extends FluidToFluidRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<FluidToFluidRecipe> getType() {
-        return MekanismRecipeType.EVAPORATING;
+    public RecipeType<FluidToFluidRecipe> getType() {
+        return MekanismRecipeType.EVAPORATING.get();
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<FluidToFluidRecipe> getSerializer() {
-        return MekanismRecipeSerializers.EVAPORATING.getRecipeSerializer();
+    public RecipeSerializer<FluidToFluidRecipe> getSerializer() {
+        return MekanismRecipeSerializers.EVAPORATING.get();
     }
 
     @Nonnull

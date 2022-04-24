@@ -9,7 +9,7 @@ import mekanism.common.network.to_client.container.property.list.RegistryEntryLi
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling registry entry based lists
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling registry entry based lists
  */
 public class SyncableRegistryEntryList<V extends IForgeRegistryEntry<V>> extends SyncableList<V> {
 

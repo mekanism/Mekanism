@@ -1,10 +1,7 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-import javax.annotation.Nullable;
+import com.mojang.blaze3d.vertex.PoseStack;
+import javax.annotation.Nonnull;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PaintingRecipe;
@@ -18,30 +15,27 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.JEIColorDetails;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
 
-    //Note: We use a weak hashmap so that when the recipe stops existing either due to disconnecting from the server
-    // or because of a reload, then it can be properly garbage collected, but until then we keep track of the pairing
-    // between the recipe and the ingredient group JEI has so that we can ensure the arrows are the proper color
-    private final Map<PaintingRecipe, IGuiIngredientGroup<PigmentStack>> ingredients = new WeakHashMap<>();
+    private static final String PIGMENT_INPUT = "pigmentInput";
+
     private final PigmentColorDetails colorDetails;
     private final GuiGauge<?> inputPigment;
     private final GuiSlot inputSlot;
     private final GuiSlot output;
 
-    public PaintingRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.PAINTING_MACHINE, 25, 13, 146, 60);
+    public PaintingRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<PaintingRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.PAINTING_MACHINE, 25, 13, 146, 60);
         inputSlot = addSlot(SlotType.INPUT, 45, 35);
         addSlot(SlotType.POWER, 144, 35).with(SlotOverlay.POWER);
         output = addSlot(SlotType.OUTPUT, 116, 35);
@@ -51,42 +45,22 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     }
 
     @Override
-    public Class<? extends PaintingRecipe> getRecipeClass() {
-        return PaintingRecipe.class;
-    }
-
-    @Override
-    public void draw(PaintingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(PaintingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
-        IGuiIngredientGroup<PigmentStack> group = ingredients.get(recipe);
-        if (group != null) {
-            colorDetails.ingredient = group.getGuiIngredients().get(0);
-        }
-        super.draw(recipe, matrixStack, mouseX, mouseY);
-        colorDetails.ingredient = null;
+        colorDetails.ingredient = getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY);
+        super.draw(recipe, recipeSlotsView, matrixStack, mouseX, mouseY);
+        colorDetails.reset();
     }
 
     @Override
-    public void setIngredients(PaintingRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
-        ingredients.setInputLists(MekanismJEI.TYPE_PIGMENT, Collections.singletonList(recipe.getChemicalInput().getRepresentations()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, PaintingRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        initItem(itemStacks, 0, true, inputSlot, recipe.getItemInput().getRepresentations());
-        initItem(itemStacks, 1, false, output, recipe.getOutputDefinition());
-        IGuiIngredientGroup<PigmentStack> pigmentStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_PIGMENT);
-        initChemical(pigmentStacks, 0, true, inputPigment, recipe.getChemicalInput().getRepresentations());
-        this.ingredients.put(recipe, pigmentStacks);
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PaintingRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_PIGMENT, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
+              .setSlotName(PIGMENT_INPUT);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 
     private static class PigmentColorDetails extends JEIColorDetails<Pigment, PigmentStack> {
-
-        @Nullable
-        private IGuiIngredient<PigmentStack> ingredient;
 
         private PigmentColorDetails() {
             super(PigmentStack.EMPTY);

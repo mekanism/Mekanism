@@ -1,12 +1,12 @@
 package mekanism.generators.common.base;
 
 import mekanism.api.text.EnumColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public interface IReactorLogicMode<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE>> {
 
-    ITextComponent getDescription();
+    Component getDescription();
 
     ItemStack getRenderStack();
 

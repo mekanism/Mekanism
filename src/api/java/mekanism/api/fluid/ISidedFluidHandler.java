@@ -2,10 +2,9 @@ package mekanism.api.fluid;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.Direction;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -231,7 +230,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
      *
-     * @param stack  {@link FluidStack} representing the {@link Fluid} and maximum amount to be drained.
+     * @param stack  {@link FluidStack} representing the {@link net.minecraft.world.level.material.Fluid} and maximum amount to be drained.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      * @param side   The side we are interacting with the handler from (null for internal).
      *

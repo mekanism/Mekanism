@@ -13,11 +13,11 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketEditFilter implements IMekanismPacket {
 
@@ -35,14 +35,14 @@ public class PacketEditFilter implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player == null) {
             return;
         }
-        TileEntity tile = WorldUtils.getTileEntity(player.level, pos);
+        BlockEntity tile = WorldUtils.getTileEntity(player.level, pos);
         if (tile != null) {
-            if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
-                HashList<SorterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
+            if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter sorter) {
+                HashList<SorterFilter<?>> filters = sorter.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
@@ -50,8 +50,8 @@ public class PacketEditFilter implements IMekanismPacket {
                         filters.add(index, (SorterFilter<?>) edited);
                     }
                 }
-            } else if (filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
-                HashList<MinerFilter<?>> filters = ((TileEntityDigitalMiner) tile).getFilters();
+            } else if (filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner miner) {
+                HashList<MinerFilter<?>> filters = miner.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
@@ -59,8 +59,8 @@ public class PacketEditFilter implements IMekanismPacket {
                         filters.add(index, (MinerFilter<?>) edited);
                     }
                 }
-            } else if (filter instanceof OredictionificatorItemFilter && tile instanceof TileEntityOredictionificator) {
-                HashList<OredictionificatorItemFilter> filters = ((TileEntityOredictionificator) tile).getFilters();
+            } else if (filter instanceof OredictionificatorItemFilter && tile instanceof TileEntityOredictionificator oredictionificator) {
+                HashList<OredictionificatorItemFilter> filters = oredictionificator.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
@@ -68,8 +68,8 @@ public class PacketEditFilter implements IMekanismPacket {
                         filters.add(index, (OredictionificatorItemFilter) edited);
                     }
                 }
-            } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
-                HashList<QIOFilter<?>> filters = ((TileEntityQIOFilterHandler) tile).getFilters();
+            } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler qioFilterHandler) {
+                HashList<QIOFilter<?>> filters = qioFilterHandler.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
@@ -83,7 +83,7 @@ public class PacketEditFilter implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeBoolean(delete);
         filter.write(buffer);
@@ -92,7 +92,7 @@ public class PacketEditFilter implements IMekanismPacket {
         }
     }
 
-    public static PacketEditFilter decode(PacketBuffer buffer) {
+    public static PacketEditFilter decode(FriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         boolean delete = buffer.readBoolean();
         IFilter<?> filter = BaseFilter.readFromPacket(buffer);

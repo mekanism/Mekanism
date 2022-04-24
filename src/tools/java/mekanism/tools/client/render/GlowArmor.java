@@ -1,37 +1,32 @@
 package mekanism.tools.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.RenderType;
 
-public class GlowArmor extends BipedModel<LivingEntity> {
+public class GlowArmor extends Model {
 
-    private static final GlowArmor BIG = new GlowArmor(1.0F);
-    private static final GlowArmor SMALL = new GlowArmor(0.5F);
+    private static final GlowArmor WRAPPER = new GlowArmor();
+    private HumanoidModel<?> base;
 
-    private GlowArmor(float size) {
-        super(size);
+    private GlowArmor() {
+        super(RenderType::entityCutoutNoCull);
+    }
+
+    public static GlowArmor wrap(HumanoidModel<?> base) {
+        WRAPPER.base = base;
+        return WRAPPER;
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        //Make it render at full brightness
-        super.renderToBuffer(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
-    }
-
-    public static BipedModel<LivingEntity> getGlow(EquipmentSlotType index) {
-        BipedModel<LivingEntity> biped = index == EquipmentSlotType.LEGS ? SMALL : BIG;
-        biped.head.visible = index == EquipmentSlotType.HEAD;
-        biped.hat.visible = index == EquipmentSlotType.HEAD;
-        biped.body.visible = index == EquipmentSlotType.CHEST || index == EquipmentSlotType.LEGS;
-        biped.rightArm.visible = index == EquipmentSlotType.CHEST;
-        biped.leftArm.visible = index == EquipmentSlotType.CHEST;
-        biped.rightLeg.visible = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
-        biped.leftLeg.visible = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
-        return biped;
+    public void renderToBuffer(@Nonnull PoseStack matrix, @Nonnull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        if (base != null) {
+            //Make it render at full brightness
+            base.renderToBuffer(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        }
     }
 }

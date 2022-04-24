@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.tab.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -27,9 +27,9 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, MekanismLang.CRAFTING_TAB.translate(currentWindows, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, MekanismLang.CRAFTING_TAB.translate(currentWindows, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS));
     }
 
     @Override
@@ -41,8 +41,8 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     protected Consumer<GuiWindow> getCloseListener() {
         return window -> {
             GuiCraftingWindowTab tab = getElementSupplier().get();
-            if (window instanceof GuiCraftingWindow) {
-                tab.openWindows[((GuiCraftingWindow) window).getIndex()] = false;
+            if (window instanceof GuiCraftingWindow craftingWindow) {
+                tab.openWindows[craftingWindow.getIndex()] = false;
             }
             tab.currentWindows--;
             if (tab.currentWindows < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
@@ -55,9 +55,9 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     @Override
     protected Consumer<GuiWindow> getReAttachListener() {
         return super.getReAttachListener().andThen(window -> {
-            if (window instanceof GuiCraftingWindow) {
+            if (window instanceof GuiCraftingWindow craftingWindow) {
                 GuiCraftingWindowTab tab = getElementSupplier().get();
-                tab.openWindows[((GuiCraftingWindow) window).getIndex()] = true;
+                tab.openWindows[craftingWindow.getIndex()] = true;
             }
         });
     }

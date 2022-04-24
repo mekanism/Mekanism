@@ -12,8 +12,8 @@ import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 
 @RecipeTypeMapper
 public class PigmentMixerRecipeMapper implements IRecipeTypeMapper {
@@ -29,18 +29,17 @@ public class PigmentMixerRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(IRecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.PIGMENT_MIXING;
+    public boolean canHandle(RecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.PIGMENT_MIXING.get();
     }
 
     @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof PigmentMixingRecipe)) {
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
+        if (!(iRecipe instanceof PigmentMixingRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        PigmentMixingRecipe recipe = (PigmentMixingRecipe) iRecipe;
         List<@NonNull PigmentStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
         List<@NonNull PigmentStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
         for (PigmentStack leftRepresentation : leftInputRepresentations) {

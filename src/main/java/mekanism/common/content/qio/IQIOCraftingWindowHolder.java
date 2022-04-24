@@ -2,14 +2,14 @@ package mekanism.common.content.qio;
 
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public interface IQIOCraftingWindowHolder extends IContentsListener {
 
     byte MAX_CRAFTING_WINDOWS = 3;
 
     @Nullable
-    World getHolderWorld();
+    Level getHolderWorld();
 
     QIOCraftingWindow[] getCraftingWindows();
 

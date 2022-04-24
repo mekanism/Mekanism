@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.security.ISecurityTile;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
-public interface IFrequencyHandler extends ISecurityTile {
+public interface IFrequencyHandler {
 
     TileComponentFrequency getFrequencyComponent();
 
@@ -20,18 +19,10 @@ public interface IFrequencyHandler extends ISecurityTile {
      *
      * @param frequencyCompound Frequency identity super saturated with the owner of the frequency.
      */
-    default void setFrequency(FrequencyType<?> type, CompoundNBT frequencyCompound) {
+    default void setFrequency(FrequencyType<?> type, CompoundTag frequencyCompound) {
         FrequencyIdentity freq = FrequencyIdentity.load(type, frequencyCompound);
-        if (freq != null) {
-            UUID owner;
-            if (frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
-                //TODO - 1.18: Require the compound to actually have an owner uuid stored as well
-                // having a fallback to the tile's owner is mostly for properly loading legacy data
-                owner = frequencyCompound.getUUID(NBTConstants.OWNER_UUID);
-            } else {
-                owner = getOwnerUUID();
-            }
-            setFrequency(type, freq, owner);
+        if (freq != null && frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
+            setFrequency(type, freq, frequencyCompound.getUUID(NBTConstants.OWNER_UUID));
         }
     }
 

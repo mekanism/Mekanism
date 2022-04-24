@@ -1,14 +1,14 @@
 package mekanism.api.radiation.capability;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**
  * Base capability definition for handling radiation for entities.
  */
-public interface IRadiationEntity extends INBTSerializable<CompoundNBT> {
+public interface IRadiationEntity extends INBTSerializable<CompoundTag> {
 
     /**
      * Gets the radiation dosage (Sv) of the entity.

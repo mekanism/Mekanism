@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "forge:stairs/plastic/transparent"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:purple_plastic_transparent_stairs"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:purple"
+  },
+  "output": {
+    "item": "mekanismadditions:purple_plastic_transparent_stairs"
+  }
+}

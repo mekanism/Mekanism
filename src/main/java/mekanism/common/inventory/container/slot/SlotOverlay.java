@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.slot;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public enum SlotOverlay {
     MINUS("overlay_minus.png", 18, 18),

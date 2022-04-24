@@ -5,7 +5,7 @@
       "item": "minecraft:dead_bubble_coral_block"
     }
   },
-  "gasInput": {
+  "chemicalInput": {
     "amount": 5,
     "tag": "mekanism:water_vapor"
   },

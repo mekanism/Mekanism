@@ -1,9 +1,9 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
@@ -12,15 +12,15 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 public class PortableTeleporterContainer extends FrequencyItemContainer<TeleporterFrequency> implements IEmptyContainer {
 
     private byte status;
 
-    public PortableTeleporterContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+    public PortableTeleporterContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(MekanismContainerTypes.PORTABLE_TELEPORTER, id, inv, hand, stack);
     }
 

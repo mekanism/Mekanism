@@ -7,18 +7,18 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.tier.EnergyCubeTier;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -58,7 +58,7 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
         private final FloatingLongSupplier rate;
 
         private RateLimitEnergyContainer(FloatingLongSupplier rate, FloatingLongSupplier capacity, Predicate<@NonNull AutomationType> canExtract,
-              Predicate<@NonNull AutomationType> canInsert, IContentsListener listener) {
+              Predicate<@NonNull AutomationType> canInsert, @Nullable IContentsListener listener) {
             super(capacity, canExtract, canInsert, listener);
             this.rate = rate;
         }
@@ -74,7 +74,7 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
 
         private final boolean isCreative;
 
-        private EnergyCubeRateLimitEnergyContainer(EnergyCubeTier tier, IContentsListener listener) {
+        private EnergyCubeRateLimitEnergyContainer(EnergyCubeTier tier, @Nullable IContentsListener listener) {
             super(tier::getOutput, tier::getMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, listener);
             isCreative = tier == EnergyCubeTier.CREATIVE;
         }

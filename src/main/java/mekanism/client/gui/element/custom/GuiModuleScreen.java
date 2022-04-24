@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntSupplier;
@@ -22,9 +23,9 @@ import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiModuleScreen extends GuiElement {
 
@@ -46,7 +47,7 @@ public class GuiModuleScreen extends GuiElement {
     private Runnable getCallback(ModuleConfigData<?> configData, int dataIndex) {
         return () -> {
             if (currentModule != null) {//Shouldn't be null but validate just in case
-                Mekanism.packetHandler.sendToServer(PacketUpdateModuleSettings.create(slotIdSupplier.getAsInt(), currentModule.getData(), dataIndex, configData));
+                Mekanism.packetHandler().sendToServer(PacketUpdateModuleSettings.create(slotIdSupplier.getAsInt(), currentModule.getData(), dataIndex, configData));
             }
         };
     }
@@ -68,7 +69,7 @@ public class GuiModuleScreen extends GuiElement {
                 ModuleConfigItem<?> configItem = configItems.get(i);
                 // Don't show the enabled option if this is enabled by default
                 if (configItem.getData() instanceof ModuleBooleanData && (!configItem.getName().equals(Module.ENABLED_KEY) || !module.getData().isNoDisable())) {
-                    if (configItem instanceof DisableableModuleConfigItem && !((DisableableModuleConfigItem) configItem).isConfigEnabled()) {
+                    if (configItem instanceof DisableableModuleConfigItem item && !item.isConfigEnabled()) {
                         //Skip options that are force disabled by the config
                         //TODO: Eventually we may want to make it slightly "faster" in that it allows updating the toggle elements rather than just
                         // not adding them back when switching to another module and then back again
@@ -81,8 +82,8 @@ public class GuiModuleScreen extends GuiElement {
                     newElements.add(toggle);
                     startY += 34;
                     // allow the dragger to continue sliding, even when we reset the config element
-                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle) {
-                        toggle.dragging = ((EnumToggle) miniElements.get(i)).dragging;
+                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle enumToggle) {
+                        toggle.dragging = enumToggle.dragging;
                     }
                 }
             }
@@ -93,7 +94,7 @@ public class GuiModuleScreen extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
         for (MiniElement element : miniElements) {
@@ -118,13 +119,13 @@ public class GuiModuleScreen extends GuiElement {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
 
         if (currentModule != null) {
             int startY = relativeY + 5;
             if (currentModule.getData().isExclusive()) {
-                ITextComponent comp = MekanismLang.MODULE_EXCLUSIVE.translate();
+                Component comp = MekanismLang.MODULE_EXCLUSIVE.translate();
                 drawTextWithScale(matrix, comp, relativeX + 5, startY, 0x635BD4, 0.8F);
                 startY += 13;
             }
@@ -149,9 +150,9 @@ public class GuiModuleScreen extends GuiElement {
             this.dataIndex = dataIndex;
         }
 
-        abstract void renderBackground(MatrixStack matrix, int mouseX, int mouseY);
+        abstract void renderBackground(PoseStack matrix, int mouseX, int mouseY);
 
-        abstract void renderForeground(MatrixStack matrix, int mouseX, int mouseY);
+        abstract void renderForeground(PoseStack matrix, int mouseX, int mouseY);
 
         abstract void click(double mouseX, double mouseY);
 
@@ -185,8 +186,8 @@ public class GuiModuleScreen extends GuiElement {
         }
 
         @Override
-        public void renderBackground(MatrixStack matrix, int mouseX, int mouseY) {
-            minecraft.textureManager.bind(RADIO);
+        public void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
+            RenderSystem.setShaderTexture(0, RADIO);
 
             boolean hover = mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19;
             if (data.get()) {
@@ -203,7 +204,7 @@ public class GuiModuleScreen extends GuiElement {
         }
 
         @Override
-        public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
             drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
             drawTextWithScale(matrix, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, TEXT_COLOR, 0.8F);
             drawTextWithScale(matrix, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, TEXT_COLOR, 0.8F);
@@ -213,12 +214,12 @@ public class GuiModuleScreen extends GuiElement {
         public void click(double mouseX, double mouseY) {
             if (!data.get() && mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
                 data.set(true, getCallback(data.getData(), dataIndex));
-                minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
+                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
             }
 
             if (data.get() && mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
                 data.set(false, getCallback(data.getData(), dataIndex));
-                minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
+                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
             }
         }
     }
@@ -237,8 +238,8 @@ public class GuiModuleScreen extends GuiElement {
         }
 
         @Override
-        public void renderBackground(MatrixStack matrix, int mouseX, int mouseY) {
-            minecraft.textureManager.bind(SLIDER);
+        public void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
+            RenderSystem.setShaderTexture(0, SLIDER);
             int count = ((ModuleEnumData<?>) data.getData()).getEnums().size();
             int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();
             blit(matrix, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
@@ -246,7 +247,7 @@ public class GuiModuleScreen extends GuiElement {
         }
 
         @Override
-        public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
             ModuleEnumData<?> enumData = (ModuleEnumData<?>) data.getData();
             drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
             List<? extends Enum<? extends IHasTextComponent>> options = enumData.getEnums();

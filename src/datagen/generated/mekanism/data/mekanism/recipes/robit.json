@@ -22,7 +22,7 @@
       "tag": "mekanism:alloys/atomic"
     },
     "P": {
-      "item": "mekanism:personal_chest"
+      "tag": "mekanism:personal_storage"
     }
   }
 }

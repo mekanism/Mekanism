@@ -2,18 +2,18 @@ package mekanism.api.chemical.pigment;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IPigmentProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PigmentStack extends ChemicalStack<Pigment> {
+public final class PigmentStack extends ChemicalStack<Pigment> {
 
     /**
      * Empty PigmentStack instance.
@@ -56,7 +56,7 @@ public class PigmentStack extends ChemicalStack<Pigment> {
      *
      * @return PigmentStack stored in the tag compound
      */
-    public static PigmentStack readFromNBT(@Nullable CompoundNBT nbtTags) {
+    public static PigmentStack readFromNBT(@Nullable CompoundTag nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return EMPTY;
         }
@@ -71,7 +71,7 @@ public class PigmentStack extends ChemicalStack<Pigment> {
         return new PigmentStack(type, amount);
     }
 
-    public static PigmentStack readFromPacket(PacketBuffer buf) {
+    public static PigmentStack readFromPacket(FriendlyByteBuf buf) {
         Pigment pigment = buf.readRegistryId();
         long amount = buf.readVarLong();
         if (pigment.isEmptyType()) {

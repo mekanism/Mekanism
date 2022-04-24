@@ -2,11 +2,13 @@ package mekanism.common.tile.multiblock;
 
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock {
 
-    public TileEntityThermalEvaporationController() {
-        super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
+    public TileEntityThermalEvaporationController(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, pos, state);
         delaySupplier = () -> 0;
     }
 

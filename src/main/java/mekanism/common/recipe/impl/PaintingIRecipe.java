@@ -2,15 +2,15 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.PaintingRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class PaintingIRecipe extends PaintingRecipe {
 
@@ -20,14 +20,14 @@ public class PaintingIRecipe extends PaintingRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<PaintingRecipe> getType() {
-        return MekanismRecipeType.PAINTING;
+    public RecipeType<PaintingRecipe> getType() {
+        return MekanismRecipeType.PAINTING.get();
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<PaintingRecipe> getSerializer() {
-        return MekanismRecipeSerializers.PAINTING.getRecipeSerializer();
+    public RecipeSerializer<PaintingRecipe> getSerializer() {
+        return MekanismRecipeSerializers.PAINTING.get();
     }
 
     @Nonnull

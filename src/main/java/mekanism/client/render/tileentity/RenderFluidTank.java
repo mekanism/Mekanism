@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import javax.annotation.Nonnull;
@@ -10,13 +10,14 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
@@ -27,8 +28,8 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
 
     private static final int stages = 1_400;
 
-    public RenderFluidTank(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderFluidTank(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     public static void resetCachedModels() {
@@ -37,24 +38,19 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     }
 
     @Override
-    protected void render(TileEntityFluidTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityFluidTank tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         FluidStack fluid = tile.fluidTank.getFluid();
         float fluidScale = tile.prevScale;
-        IVertexBuilder buffer = null;
+        VertexConsumer buffer = null;
         if (!fluid.isEmpty() && fluidScale > 0) {
-            int modelNumber;
-            if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                modelNumber = stages - 1;
-            } else {
-                modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
-            }
-            buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
+            int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
+            buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
                   MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT);
         }
         if (!tile.valveFluid.isEmpty() && !tile.valveFluid.getFluid().getAttributes().isGaseous(tile.valveFluid)) {
             if (buffer == null) {
-                buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
+                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             }
             MekanismRenderer.renderObject(getValveModel(tile.valveFluid, Math.min(stages - 1, (int) (fluidScale * (stages - 1)))), matrix, buffer,
                   MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid), overlayLight, FaceDisplay.FRONT);

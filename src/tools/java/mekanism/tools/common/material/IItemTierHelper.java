@@ -1,10 +1,10 @@
 package mekanism.tools.common.material;
 
 import javax.annotation.Nonnull;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
 
-abstract class IItemTierHelper implements IItemTier {
+abstract class IItemTierHelper implements Tier {
 
     public abstract int getItemEnchantability();
 

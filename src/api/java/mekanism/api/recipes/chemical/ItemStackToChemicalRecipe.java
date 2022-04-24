@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -79,25 +79,21 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
     }
 
     /**
-     * @deprecated Use {@link #getOutputDefinitionNew()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public STACK getOutputDefinition() {
-        return output;
-    }
-
-    /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<STACK> getOutputDefinitionNew() {
-        //TODO - 1.18: Rename this to getOutputDefinition
+    public List<STACK> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToPacket(buffer);
     }

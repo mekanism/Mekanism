@@ -1,7 +1,7 @@
 package mekanism.common.network.to_client.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class RegistryEntryPropertyData<V extends IForgeRegistryEntry<V>> extends PropertyData {
@@ -13,7 +13,7 @@ public class RegistryEntryPropertyData<V extends IForgeRegistryEntry<V>> extends
         this.value = value;
     }
 
-    public static <V extends IForgeRegistryEntry<V>> RegistryEntryPropertyData<V> readRegistryEntry(short property, PacketBuffer buffer) {
+    public static <V extends IForgeRegistryEntry<V>> RegistryEntryPropertyData<V> readRegistryEntry(short property, FriendlyByteBuf buffer) {
         return new RegistryEntryPropertyData<V>(property, buffer.readRegistryId());
     }
 
@@ -23,7 +23,7 @@ public class RegistryEntryPropertyData<V extends IForgeRegistryEntry<V>> extends
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
         buffer.writeRegistryId(value);
     }

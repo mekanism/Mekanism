@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismgenerators:module_solar_recharging_unit"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "mekanismgenerators:advanced_solar_generator"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    }
+  }
+}

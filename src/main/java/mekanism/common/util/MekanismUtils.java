@@ -1,5 +1,8 @@
 package mekanism.common.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
@@ -11,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
@@ -19,15 +23,16 @@ import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -36,7 +41,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.FactoryType;
-import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.lib.frequency.Frequency;
@@ -48,59 +52,55 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.TripWireBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SPlayEntityEffectPacket;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.ITag;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceContext.BlockMode;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.UsernameCache;
-import net.minecraftforge.common.util.Constants.BlockFlags;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -109,7 +109,7 @@ import net.minecraftforge.items.IItemHandler;
  */
 public final class MekanismUtils {
 
-    public static final Codec<Direction> DIRECTION_CODEC = IStringSerializable.fromEnum(Direction::values, Direction::byName);
+    public static final Codec<Direction> DIRECTION_CODEC = StringRepresentable.fromEnum(Direction::values, Direction::byName);
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
 
@@ -132,12 +132,19 @@ public final class MekanismUtils {
         }
     }
 
-    public static ITextComponent logFormat(Object message) {
+    public static Component logFormat(Object message) {
         return logFormat(EnumColor.GRAY, message);
     }
 
-    public static ITextComponent logFormat(EnumColor messageColor, Object message) {
+    public static Component logFormat(EnumColor messageColor, Object message) {
         return MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, messageColor, message);
+    }
+
+    @Nullable
+    public static Player tryGetClientPlayer() {
+        //Note: Ideally we would have some way to get which player is in question on the server
+        // as this is mostly used in tooltips, but odds are it won't end up being called
+        return DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> MekanismClient::tryGetClientPlayer);
     }
 
     /**
@@ -160,16 +167,16 @@ public final class MekanismUtils {
         return modid;
     }
 
-    public static ItemStack getItemInHand(LivingEntity entity, HandSide side) {
-        if (entity instanceof PlayerEntity) {
-            return getItemInHand((PlayerEntity) entity, side);
-        } else if (side == HandSide.RIGHT) {
+    public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {
+        if (entity instanceof Player player) {
+            return getItemInHand(player, side);
+        } else if (side == HumanoidArm.RIGHT) {
             return entity.getMainHandItem();
         }
         return entity.getOffhandItem();
     }
 
-    public static ItemStack getItemInHand(PlayerEntity player, HandSide side) {
+    public static ItemStack getItemInHand(Player player, HumanoidArm side) {
         if (player.getMainArm() == side) {
             return player.getMainHandItem();
         }
@@ -344,7 +351,7 @@ public final class MekanismUtils {
      */
     public static FloatingLong getMaxEnergy(ItemStack stack, FloatingLong def) {
         float numUpgrades = 0;
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
             if (upgrades.containsKey(Upgrade.ENERGY)) {
                 numUpgrades = upgrades.get(Upgrade.ENERGY);
@@ -376,17 +383,12 @@ public final class MekanismUtils {
         if (!tile.supportsRedstone()) {
             return true;
         }
-        switch (tile.getControlType()) {
-            case DISABLED:
-                return true;
-            case HIGH:
-                return tile.isPowered();
-            case LOW:
-                return !tile.isPowered();
-            case PULSE:
-                return tile.isPowered() && !tile.wasPowered();
-        }
-        return false;
+        return switch (tile.getControlType()) {
+            case DISABLED -> true;
+            case HIGH -> tile.isPowered();
+            case LOW -> !tile.isPowered();
+            case PULSE -> tile.isPowered() && !tile.wasPowered();
+        };
     }
 
     /**
@@ -396,23 +398,23 @@ public final class MekanismUtils {
      *
      * @return raytraced value
      */
-    public static BlockRayTraceResult rayTrace(PlayerEntity player) {
-        return rayTrace(player, FluidMode.NONE);
+    public static BlockHitResult rayTrace(Player player) {
+        return rayTrace(player, ClipContext.Fluid.NONE);
     }
 
-    public static BlockRayTraceResult rayTrace(PlayerEntity player, FluidMode fluidMode) {
+    public static BlockHitResult rayTrace(Player player, ClipContext.Fluid fluidMode) {
         return rayTrace(player, player.getAttributeValue(ForgeMod.REACH_DISTANCE.get()), fluidMode);
     }
 
-    public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach) {
-        return rayTrace(player, reach, FluidMode.NONE);
+    public static BlockHitResult rayTrace(Player player, double reach) {
+        return rayTrace(player, reach, ClipContext.Fluid.NONE);
     }
 
-    public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach, FluidMode fluidMode) {
-        Vector3d headVec = getHeadVec(player);
-        Vector3d lookVec = player.getViewVector(1);
-        Vector3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-        return player.getCommandSenderWorld().clip(new RayTraceContext(headVec, endVec, BlockMode.OUTLINE, fluidMode, player));
+    public static BlockHitResult rayTrace(Player player, double reach, ClipContext.Fluid fluidMode) {
+        Vec3 headVec = getHeadVec(player);
+        Vec3 lookVec = player.getViewVector(1);
+        Vec3 endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
+        return player.getCommandSenderWorld().clip(new ClipContext(headVec, endVec, ClipContext.Block.OUTLINE, fluidMode, player));
     }
 
     /**
@@ -422,31 +424,31 @@ public final class MekanismUtils {
      *
      * @return head location
      */
-    private static Vector3d getHeadVec(PlayerEntity player) {
+    private static Vec3 getHeadVec(Player player) {
         double posY = player.getY() + player.getEyeHeight();
         if (player.isCrouching()) {
             posY -= 0.08;
         }
-        return new Vector3d(player.getX(), posY, player.getZ());
+        return new Vec3(player.getX(), posY, player.getZ());
     }
 
     /**
      * @apiNote Only call on the client.
      */
-    public static void addFrequencyToTileTooltip(ItemStack stack, FrequencyType<?> frequencyType, List<ITextComponent> tooltip) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, NBT.TAG_COMPOUND)) {
-            CompoundNBT frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
-            if (frequencyComponent.contains(frequencyType.getName(), NBT.TAG_COMPOUND)) {
+    public static void addFrequencyToTileTooltip(ItemStack stack, FrequencyType<?> frequencyType, List<Component> tooltip) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
+            CompoundTag frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
+            if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
                 Frequency frequency = frequencyType.create(frequencyComponent.getCompound(frequencyType.getName()));
                 frequency.setValid(false);
                 tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
                 if (frequency.getOwner() != null) {
-                    String owner = OwnerDisplay.getOwnerName(MekanismClient.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
+                    String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
                     if (owner != null) {
                         tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
                     }
                 }
-                tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? MekanismLang.PUBLIC : MekanismLang.PRIVATE));
+                tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? APILang.PUBLIC : APILang.PRIVATE));
             }
         }
     }
@@ -454,23 +456,23 @@ public final class MekanismUtils {
     /**
      * @apiNote Only call on the client.
      */
-    public static void addFrequencyItemTooltip(ItemStack stack, List<ITextComponent> tooltip) {
+    public static void addFrequencyItemTooltip(ItemStack stack, List<Component> tooltip) {
         FrequencyIdentity frequency = ((IFrequencyItem) stack.getItem()).getFrequencyIdentity(stack);
         if (frequency != null) {
-            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getKey()));
-            CompoundNBT frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
+            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.key()));
+            CompoundTag frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
             if (frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
-                String owner = OwnerDisplay.getOwnerName(MekanismClient.tryGetClientPlayer(), frequencyCompound.getUUID(NBTConstants.OWNER_UUID), null);
+                String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequencyCompound.getUUID(NBTConstants.OWNER_UUID), null);
                 if (owner != null) {
                     tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
                 }
             }
-            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? MekanismLang.PUBLIC : MekanismLang.PRIVATE));
+            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? APILang.PUBLIC : APILang.PRIVATE));
         }
     }
 
-    public static void addUpgradesToTooltip(ItemStack stack, List<ITextComponent> tooltip) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+    public static void addUpgradesToTooltip(ItemStack stack, List<Component> tooltip) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                 tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
@@ -478,16 +480,9 @@ public final class MekanismUtils {
         }
     }
 
-    public static ITextComponent getEnergyDisplayShort(FloatingLong energy) {
-        switch (MekanismConfig.general.energyUnit.get()) {
-            case J:
-                return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
-            case FE:
-                return UnitDisplayUtils.getDisplayShort(EnergyType.FORGE.convertToAsFloatingLong(energy), ElectricUnit.FORGE_ENERGY);
-            case EU:
-                return UnitDisplayUtils.getDisplayShort(EnergyType.EU.convertToAsFloatingLong(energy), ElectricUnit.ELECTRICAL_UNITS);
-        }
-        return MekanismLang.ERROR.translate();
+    public static Component getEnergyDisplayShort(FloatingLong energy) {
+        EnergyUnit configured = EnergyUnit.getConfigured();
+        return UnitDisplayUtils.getDisplayShort(configured.convertToAsFloatingLong(energy), configured);
     }
 
     /**
@@ -498,14 +493,7 @@ public final class MekanismUtils {
      * @return energy converted to joules
      */
     public static FloatingLong convertToJoules(FloatingLong energy) {
-        switch (MekanismConfig.general.energyUnit.get()) {
-            case FE:
-                return EnergyType.FORGE.convertFrom(energy);
-            case EU:
-                return EnergyType.EU.convertFrom(energy);
-            default:
-                return energy;
-        }
+        return EnergyUnit.getConfigured().convertFrom(energy);
     }
 
     /**
@@ -516,14 +504,7 @@ public final class MekanismUtils {
      * @return energy converted to configured unit
      */
     public static FloatingLong convertToDisplay(FloatingLong energy) {
-        switch (MekanismConfig.general.energyUnit.get()) {
-            case FE:
-                return EnergyType.FORGE.convertToAsFloatingLong(energy);
-            case EU:
-                return EnergyType.EU.convertToAsFloatingLong(energy);
-            default:
-                return energy;
-        }
+        return EnergyUnit.getConfigured().convertToAsFloatingLong(energy);
     }
 
     /**
@@ -533,31 +514,19 @@ public final class MekanismUtils {
      *
      * @return rounded energy display
      */
-    public static ITextComponent getTemperatureDisplay(double temp, TemperatureUnit unit, boolean shift) {
+    public static Component getTemperatureDisplay(double temp, TemperatureUnit unit, boolean shift) {
         double tempKelvin = unit.convertToK(temp, true);
-        switch (MekanismConfig.general.tempUnit.get()) {
-            case K:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.KELVIN, shift);
-            case C:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.CELSIUS, shift);
-            case R:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.RANKINE, shift);
-            case F:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.FAHRENHEIT, shift);
-            case STP:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.AMBIENT, shift);
-        }
-        return MekanismLang.ERROR.translate();
+        return UnitDisplayUtils.getDisplayShort(tempKelvin, MekanismConfig.common.tempUnit.get(), shift);
     }
 
-    public static CraftingInventory getDummyCraftingInv() {
-        Container tempContainer = new Container(ContainerType.CRAFTING, 1) {
+    public static CraftingContainer getDummyCraftingInv() {
+        AbstractContainerMenu tempContainer = new AbstractContainerMenu(MenuType.CRAFTING, 1) {
             @Override
-            public boolean stillValid(@Nonnull PlayerEntity player) {
+            public boolean stillValid(@Nonnull Player player) {
                 return false;
             }
         };
-        return new CraftingInventory(tempContainer, 3, 3);
+        return new CraftingContainer(tempContainer, 3, 3);
     }
 
     /**
@@ -566,12 +535,10 @@ public final class MekanismUtils {
     public static boolean canUseAsWrench(ItemStack stack) {
         if (stack.isEmpty()) {
             return false;
+        } else if (stack.getItem() instanceof ItemConfigurator configurator) {
+            return configurator.getMode(stack) == ConfiguratorMode.WRENCH;
         }
-        Item item = stack.getItem();
-        if (item instanceof ItemConfigurator) {
-            return ((ItemConfigurator) item).getMode(stack) == ConfiguratorMode.WRENCH;
-        }
-        return item.is(MekanismTags.Items.CONFIGURATORS);
+        return stack.is(MekanismTags.Items.CONFIGURATORS);
     }
 
     @Nonnull
@@ -581,9 +548,9 @@ public final class MekanismUtils {
         }
         String ret = UsernameCache.getLastKnownUsername(uuid);
         if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
-            GameProfile gp = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
-            if (gp != null) {
-                ret = gp.getName();
+            Optional<GameProfile> gp = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
+            if (gp.isPresent()) {
+                ret = gp.get().getName();
             }
         }
         if (ret == null && !warnedFails.contains(uuid)) {
@@ -594,9 +561,9 @@ public final class MekanismUtils {
     }
 
     /**
-     * Copy of {@link EffectInstance#tick(LivingEntity, Runnable)}, but modified to not apply the effect to avoid extra damage and the like.
+     * Copy of {@link MobEffectInstance#tick(LivingEntity, Runnable)}, but modified to not apply the effect to avoid extra damage and the like.
      */
-    public static void speedUpEffectSafely(LivingEntity entity, EffectInstance effectInstance) {
+    public static void speedUpEffectSafely(LivingEntity entity, MobEffectInstance effectInstance) {
         if (effectInstance.getDuration() > 0) {
             int remainingDuration = effectInstance.tickDownDuration();
             if (remainingDuration == 0 && effectInstance.hiddenEffect != null) {
@@ -610,20 +577,20 @@ public final class MekanismUtils {
     /**
      * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the method as it is protected.
      */
-    private static void onChangedPotionEffect(LivingEntity entity, EffectInstance effectInstance, boolean reapply) {
+    private static void onChangedPotionEffect(LivingEntity entity, MobEffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;
         if (reapply && !entity.level.isClientSide) {
-            Effect effect = effectInstance.getEffect();
+            MobEffect effect = effectInstance.getEffect();
             effect.removeAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
             effect.addAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
         }
-        if (entity instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) entity).connection.send(new SPlayEntityEffectPacket(entity.getId(), effectInstance));
-            CriteriaTriggers.EFFECTS_CHANGED.trigger(((ServerPlayerEntity) entity));
+        if (entity instanceof ServerPlayer player) {
+            player.connection.send(new ClientboundUpdateMobEffectPacket(entity.getId(), effectInstance));
+            CriteriaTriggers.EFFECTS_CHANGED.trigger(player, null);
         }
     }
 
-    public static boolean isSameTypeFactory(Block block, TileEntityType<?> factoryTileType) {
+    public static boolean isSameTypeFactory(Block block, BlockEntityType<?> factoryTileType) {
         AttributeFactoryType attribute = Attribute.get(block, AttributeFactoryType.class);
         if (attribute == null) {
             return false;
@@ -644,25 +611,25 @@ public final class MekanismUtils {
      * @implNote Only returns that we failed if all the tested actions failed.
      */
     @SafeVarargs
-    public static ActionResultType performActions(ActionResultType firstAction, Supplier<ActionResultType>... secondaryActions) {
-        if (firstAction == ActionResultType.SUCCESS) {
-            return ActionResultType.SUCCESS;
+    public static InteractionResult performActions(InteractionResult firstAction, Supplier<InteractionResult>... secondaryActions) {
+        if (firstAction.consumesAction()) {
+            return firstAction;
         }
-        ActionResultType result = firstAction;
-        boolean hasFailed = result == ActionResultType.FAIL;
-        for (Supplier<ActionResultType> secondaryAction : secondaryActions) {
+        InteractionResult result = firstAction;
+        boolean hasFailed = result == InteractionResult.FAIL;
+        for (Supplier<InteractionResult> secondaryAction : secondaryActions) {
             result = secondaryAction.get();
-            if (result == ActionResultType.SUCCESS) {
+            if (result.consumesAction()) {
                 //If we were successful
-                return ActionResultType.SUCCESS;
+                return result;
             }
-            hasFailed &= result == ActionResultType.FAIL;
+            hasFailed &= result == InteractionResult.FAIL;
         }
         if (hasFailed) {
             //If at least one step failed, consider ourselves unsuccessful
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     /**
@@ -673,7 +640,7 @@ public final class MekanismUtils {
      */
     public static int redstoneLevelFromContents(long amount, long capacity) {
         double fractionFull = capacity == 0 ? 0 : amount / (double) capacity;
-        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return Mth.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
     }
 
     /**
@@ -718,28 +685,52 @@ public final class MekanismUtils {
      *
      * @return true if the player is neither in creative mode, nor in spectator mode.
      */
-    public static boolean isPlayingMode(PlayerEntity player) {
+    public static boolean isPlayingMode(Player player) {
         return !player.isCreative() && !player.isSpectator();
     }
 
     /**
-     * Similar in concept to {@link net.minecraft.entity.Entity#updateFluidHeightAndDoFluidPushing(ITag, double)} except calculates if a given portion of the player is in
-     * the fluids.
+     * Helper to read the parameter names from the format saved by our annotation processor param name mapper.
      */
-    public static Map<Fluid, FluidInDetails> getFluidsIn(PlayerEntity player, UnaryOperator<AxisAlignedBB> modifyBoundingBox) {
-        AxisAlignedBB bb = modifyBoundingBox.apply(player.getBoundingBox().deflate(0.001));
-        int xMin = MathHelper.floor(bb.minX);
-        int xMax = MathHelper.ceil(bb.maxX);
-        int yMin = MathHelper.floor(bb.minY);
-        int yMax = MathHelper.ceil(bb.maxY);
-        int zMin = MathHelper.floor(bb.minZ);
-        int zMax = MathHelper.ceil(bb.maxZ);
+    public static List<String> getParameterNames(@Nullable JsonObject classMethods, String method, String signature) {
+        if (classMethods != null) {
+            JsonObject signatures = classMethods.getAsJsonObject(method);
+            if (signatures != null) {
+                JsonElement params = signatures.get(signature);
+                if (params != null) {
+                    if (params.isJsonArray()) {
+                        JsonArray paramArray = params.getAsJsonArray();
+                        List<String> paramNames = new ArrayList<>(paramArray.size());
+                        for (JsonElement param : paramArray) {
+                            paramNames.add(param.getAsString());
+                        }
+                        return Collections.unmodifiableList(paramNames);
+                    }
+                    return Collections.singletonList(params.getAsString());
+                }
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing(net.minecraft.tags.TagKey, double)} except calculates if a given
+     * portion of the player is in the fluids.
+     */
+    public static Map<Fluid, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
+        AABB bb = modifyBoundingBox.apply(player.getBoundingBox().deflate(0.001));
+        int xMin = Mth.floor(bb.minX);
+        int xMax = Mth.ceil(bb.maxX);
+        int yMin = Mth.floor(bb.minY);
+        int yMax = Mth.ceil(bb.maxY);
+        int zMin = Mth.floor(bb.minZ);
+        int zMax = Mth.ceil(bb.maxZ);
         if (!player.level.hasChunksAt(xMin, yMin, zMin, xMax, yMax, zMax)) {
             //If the position isn't actually loaded, just return there isn't any fluids
             return Collections.emptyMap();
         }
         Map<Fluid, FluidInDetails> fluidsIn = new HashMap<>();
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = xMin; x < xMax; ++x) {
             for (int y = yMin; y < yMax; ++y) {
                 for (int z = zMin; z < zMax; ++z) {
@@ -750,10 +741,10 @@ public final class MekanismUtils {
                         if (bb.minY <= fluidY) {
                             //The fluid intersects the bounding box
                             Fluid fluid = fluidState.getType();
-                            if (fluid instanceof FlowingFluid) {
+                            if (fluid instanceof FlowingFluid flowingFluid) {
                                 //Almost always will be flowing fluid but check just in case
                                 // and if it is grab the source state to not have duplicates
-                                fluid = ((FlowingFluid) fluid).getSource();
+                                fluid = flowingFluid.getSource();
                             }
                             FluidInDetails details = fluidsIn.computeIfAbsent(fluid, f -> new FluidInDetails());
                             details.positions.add(mutablePos.immutable());
@@ -777,9 +768,8 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, World world, BlockPos pos, ServerPlayerEntity player, ItemStack stack, Item usedTool,
-          Collection<BlockPos> found, boolean shears, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier,
-          BlockState sourceState) {
+    public static void veinMineArea(IEnergyContainer energyContainer, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
+          Collection<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier, BlockState sourceState) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
@@ -803,24 +793,19 @@ public final class MekanismUtils {
                 //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
                 continue;
             }
-            //If we have the shears module installed, and it is a tripwire, disarm it first
-            if (shears && targetState.is(Blocks.TRIPWIRE) && !targetState.getValue(TripWireBlock.DISARMED)) {
-                targetState = targetState.setValue(TripWireBlock.DISARMED, true);
-                world.setBlock(foundPos, targetState, BlockFlags.NO_RERENDER);
-            }
             //Otherwise, break the block
             Block block = targetState.getBlock();
             //Get the tile now so that we have it for when we try to harvest the block
-            TileEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
+            BlockEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
             //Remove the block
-            if (targetState.removedByPlayer(world, foundPos, player, true, targetState.getFluidState())) {
+            if (targetState.onDestroyedByPlayer(world, foundPos, player, true, targetState.getFluidState())) {
                 block.destroy(world, foundPos, targetState);
                 //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
                 block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
                 player.awardStat(Stats.ITEM_USED.get(usedTool));
                 if (exp > 0) {
                     //If we have xp drop it
-                    block.popExperience((ServerWorld) world, foundPos, exp);
+                    block.popExperience((ServerLevel) world, foundPos, exp);
                 }
                 //Mark that we used that portion of the energy
                 energyUsed = energyUsed.plusEqual(destroyEnergy);
@@ -868,7 +853,7 @@ public final class MekanismUtils {
         }
 
         public double getMaxHeight() {
-            return heights.values().stream().mapToDouble(value -> value).max().orElse(0);
+            return heights.values().doubleStream().max().orElse(0);
         }
     }
 }

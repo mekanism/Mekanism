@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.capabilities.holder.BasicHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class EnergyContainerHolder extends BasicHolder<IEnergyContainer> implements IEnergyContainerHolder {
 

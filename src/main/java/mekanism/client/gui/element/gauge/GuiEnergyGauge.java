@@ -10,7 +10,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GuiEnergyGauge extends GuiGauge<Void> {
 
@@ -71,12 +71,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     }
 
     @Override
-    public ITextComponent getLabel() {
+    public Component getLabel() {
         return null;
     }
 
     @Override
-    public List<ITextComponent> getTooltipText() {
+    public List<Component> getTooltipText() {
         if (dummy) {
             return Collections.emptyList();
         } else if (infoHandler.getEnergy().isZero()) {

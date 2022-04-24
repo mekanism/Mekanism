@@ -8,14 +8,13 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
 
 /**
  * Used for informing the server that an action happened in a GUI
@@ -26,11 +25,11 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
     private final BlockPos tilePosition;
     private final double extra;
 
-    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile) {
+    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockEntity tile) {
         this(interaction, tile.getBlockPos());
     }
 
-    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile, double extra) {
+    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockEntity tile, double extra) {
         this(interaction, tile.getBlockPos(), extra);
     }
 
@@ -46,7 +45,7 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
@@ -56,44 +55,44 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(interaction);
         buffer.writeBlockPos(tilePosition);
         buffer.writeDouble(extra);
     }
 
-    public static PacketGeneratorsGuiInteract decode(PacketBuffer buffer) {
+    public static PacketGeneratorsGuiInteract decode(FriendlyByteBuf buffer) {
         return new PacketGeneratorsGuiInteract(buffer.readEnum(GeneratorsGuiInteraction.class), buffer.readBlockPos(), buffer.readDouble());
     }
 
     public enum GeneratorsGuiInteraction {
         INJECTION_RATE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFusionReactorBlock) {
-                ((TileEntityFusionReactorController) tile).setInjectionRateFromPacket((int) Math.round(extra));
-            } else if (tile instanceof TileEntityFissionReactorCasing) {
-                ((TileEntityFissionReactorCasing) tile).setRateLimitFromPacket(extra);
+            if (tile instanceof TileEntityFusionReactorBlock reactorBlock) {
+                reactorBlock.setInjectionRateFromPacket((int) Math.round(extra));
+            } else if (tile instanceof TileEntityFissionReactorCasing reactorCasing) {
+                reactorCasing.setRateLimitFromPacket(extra);
             }
         }),
         LOGIC_TYPE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFissionReactorLogicAdapter) {
-                ((TileEntityFissionReactorLogicAdapter) tile).setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic((int) Math.round(extra)));
-            } else if (tile instanceof TileEntityFusionReactorLogicAdapter) {
-                ((TileEntityFusionReactorLogicAdapter) tile).setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic((int) Math.round(extra)));
+            if (tile instanceof TileEntityFissionReactorLogicAdapter logicAdapter) {
+                logicAdapter.setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic((int) Math.round(extra)));
+            } else if (tile instanceof TileEntityFusionReactorLogicAdapter logicAdapter) {
+                logicAdapter.setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic((int) Math.round(extra)));
             }
         }),
         FISSION_ACTIVE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFissionReactorCasing) {
-                ((TileEntityFissionReactorCasing) tile).setReactorActive(Math.round(extra) == 1);
+            if (tile instanceof TileEntityFissionReactorCasing reactorCasing) {
+                reactorCasing.setReactorActive(Math.round(extra) == 1);
             }
         });
 
-        private final TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile;
+        private final TriConsumer<TileEntityMekanism, Player, Double> consumerForTile;
 
-        GeneratorsGuiInteraction(TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile) {
+        GeneratorsGuiInteraction(TriConsumer<TileEntityMekanism, Player, Double> consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, PlayerEntity player, double extra) {
+        public void consume(TileEntityMekanism tile, Player player, double extra) {
             consumerForTile.accept(tile, player, extra);
         }
     }

@@ -54,20 +54,19 @@ import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IntReferenceHolder;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public abstract class MekanismContainer extends Container implements ISecurityContainer {
+public abstract class MekanismContainer extends AbstractContainerMenu implements ISecurityContainer {
 
     public static final int BASE_Y_OFFSET = 84;
     public static final int TRANSPORTER_CONFIG_WINDOW = 0;
@@ -75,7 +74,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     public static final int UPGRADE_WINDOW = 2;
     public static final int SKIN_SELECT_WINDOW = 3;
 
-    protected final PlayerInventory inv;
+    protected final Inventory inv;
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
     protected final List<ArmorSlot> armorSlots = new ArrayList<>();
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
@@ -96,8 +95,8 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
      */
     private Map<UUID, SelectedWindowData> selectedWindows;
 
-    protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv) {
-        super(type.getContainerType(), id);
+    protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv) {
+        super(type.get(), id);
         this.inv = inv;
         if (!isRemote()) {
             //Only keep track of uuid based selected grids on the server (we use a size of one as for the most part containers are actually 1:1)
@@ -116,26 +115,21 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     @Nonnull
     @Override
     protected Slot addSlot(@Nonnull Slot slot) {
-        //Manually handle the code that is in super.addSlot so that we do not end up adding extra elements to
-        // inventoryItemStacks as we handle the tracking/sync changing via the below track call. This way we are
-        // able to minimize the amount of overhead that we end up with due to keeping track of the stack in SyncableItemStack
-        slot.index = slots.size();
-        slots.add(slot);
-        track(SyncableItemStack.create(slot::getItem, slot::set));
-        if (slot instanceof IHasExtraData) {
+        super.addSlot(slot);
+        if (slot instanceof IHasExtraData hasExtraData) {
             //If the slot has any extra data, allow it to add any trackers it may have
-            ((IHasExtraData) slot).addTrackers(inv.player, this::track);
+            hasExtraData.addTrackers(inv.player, this::track);
         }
-        if (slot instanceof InventoryContainerSlot) {
-            inventoryContainerSlots.add((InventoryContainerSlot) slot);
-        } else if (slot instanceof ArmorSlot) {
-            armorSlots.add((ArmorSlot) slot);
-        } else if (slot instanceof MainInventorySlot) {
-            mainInventorySlots.add((MainInventorySlot) slot);
-        } else if (slot instanceof HotBarSlot) {
-            hotBarSlots.add((HotBarSlot) slot);
-        } else if (slot instanceof OffhandSlot) {
-            offhandSlots.add((OffhandSlot) slot);
+        if (slot instanceof InventoryContainerSlot inventorySlot) {
+            inventoryContainerSlots.add(inventorySlot);
+        } else if (slot instanceof ArmorSlot armorSlot) {
+            armorSlots.add(armorSlot);
+        } else if (slot instanceof MainInventorySlot inventorySlot) {
+            mainInventorySlots.add(inventorySlot);
+        } else if (slot instanceof HotBarSlot hotBarSlot) {
+            hotBarSlots.add(hotBarSlot);
+        } else if (slot instanceof OffhandSlot offhandSlot) {
+            offhandSlots.add(offhandSlot);
         }
         return slot;
     }
@@ -164,7 +158,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     }
 
     @Override
-    public boolean stillValid(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull Player player) {
         //Is this the proper default
         //TODO: Re-evaluate this and maybe add in some distance based checks??
         return true;
@@ -172,8 +166,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     @Override
     public boolean canTakeItemForPickAll(@Nonnull ItemStack stack, @Nonnull Slot slot) {
-        if (slot instanceof IInsertableSlot) {
-            IInsertableSlot insertableSlot = (IInsertableSlot) slot;
+        if (slot instanceof IInsertableSlot insertableSlot) {
             if (!insertableSlot.canMergeWith(stack)) {
                 return false;
             }
@@ -184,18 +177,18 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     }
 
     @Override
-    public void removed(@Nonnull PlayerEntity player) {
+    public void removed(@Nonnull Player player) {
         super.removed(player);
         closeInventory(player);
     }
 
-    protected void closeInventory(@Nonnull PlayerEntity player) {
+    protected void closeInventory(@Nonnull Player player) {
         if (!player.level.isClientSide()) {
             clearSelectedWindow(player.getUUID());
         }
     }
 
-    protected void openInventory(@Nonnull PlayerInventory inv) {
+    protected void openInventory(@Nonnull Inventory inv) {
     }
 
     protected int getInventoryYOffset() {
@@ -206,7 +199,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         return 8;
     }
 
-    protected void addInventorySlots(@Nonnull PlayerInventory inv) {
+    protected void addInventorySlots(@Nonnull Inventory inv) {
         if (this instanceof IEmptyContainer) {
             //Don't include the player's inventory slots
             return;
@@ -215,18 +208,18 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         int xOffset = getInventoryXOffset();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new MainInventorySlot(inv, PlayerInventory.getSelectionSize() + slotX + slotY * 9, xOffset + slotX * 18, yOffset + slotY * 18));
+                addSlot(new MainInventorySlot(inv, Inventory.getSelectionSize() + slotX + slotY * 9, xOffset + slotX * 18, yOffset + slotY * 18));
             }
         }
         yOffset += 58;
-        for (int slotX = 0; slotX < PlayerInventory.getSelectionSize(); slotX++) {
+        for (int slotX = 0; slotX < Inventory.getSelectionSize(); slotX++) {
             addSlot(createHotBarSlot(inv, slotX, xOffset + slotX * 18, yOffset));
         }
     }
 
-    protected void addArmorSlots(@Nonnull PlayerInventory inv, int x, int y, int offhandOffset) {
+    protected void addArmorSlots(@Nonnull Inventory inv, int x, int y, int offhandOffset) {
         for (int index = 0; index < inv.armor.size(); index++) {
-            final EquipmentSlotType slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armor.size() - index - 1];
+            final EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armor.size() - index - 1];
             addSlot(new ArmorSlot(inv, 36 + inv.armor.size() - index - 1, x, y, slotType));
             y += 18;
         }
@@ -235,7 +228,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         }
     }
 
-    protected HotBarSlot createHotBarSlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
         return new HotBarSlot(inv, index, x, y);
     }
 
@@ -261,13 +254,13 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
      */
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotID) {
+    public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
         if (currentSlot == null || !currentSlot.hasItem()) {
             return ItemStack.EMPTY;
         }
         SelectedWindowData selectedWindow = player.level.isClientSide ? getSelectedWindow() : getSelectedWindow(player.getUUID());
-        if (currentSlot instanceof IInsertableSlot && !((IInsertableSlot) currentSlot).exists(selectedWindow)) {
+        if (currentSlot instanceof IInsertableSlot insertableSlot && !insertableSlot.exists(selectedWindow)) {
             return ItemStack.EMPTY;
         }
         ItemStack slotStack = currentSlot.getItem();
@@ -408,7 +401,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     }
 
     @Nonnull
-    protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull PlayerEntity player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
+    protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull Player player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
         int difference = slotStack.getCount() - stackToInsert.getCount();
         currentSlot.remove(difference);
         ItemStack newStack = StackUtils.size(slotStack, difference);
@@ -438,7 +431,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     public void setSelectedWindow(@Nullable SelectedWindowData selectedWindow) {
         if (!Objects.equals(this.selectedWindow, selectedWindow)) {
             this.selectedWindow = selectedWindow;
-            Mekanism.packetHandler.sendToServer(new PacketWindowSelect(this.selectedWindow));
+            Mekanism.packetHandler().sendToServer(new PacketWindowSelect(this.selectedWindow));
         }
     }
 
@@ -467,7 +460,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     @Nonnull
     @Override
-    protected IntReferenceHolder addDataSlot(@Nonnull IntReferenceHolder referenceHolder) {
+    protected DataSlot addDataSlot(@Nonnull DataSlot referenceHolder) {
         //Override vanilla's int tracking so that if for some reason this method gets called for our container
         // it properly adds it to our tracking
         track(SyncableInt.create(referenceHolder::get, referenceHolder::set));
@@ -518,81 +511,81 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     public void handleWindowProperty(short property, boolean value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableBoolean) {
-            ((SyncableBoolean) data).set(value);
+        if (data instanceof SyncableBoolean syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, byte value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableByte) {
-            ((SyncableByte) data).set(value);
+        if (data instanceof SyncableByte syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, short value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableShort) {
-            ((SyncableShort) data).set(value);
-        } else if (data instanceof SyncableFloatingLong) {
-            ((SyncableFloatingLong) data).setDecimal(value);
+        if (data instanceof SyncableShort syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableFloatingLong syncable) {
+            syncable.setDecimal(value);
         }
     }
 
     public void handleWindowProperty(short property, int value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableInt) {
-            ((SyncableInt) data).set(value);
-        } else if (data instanceof SyncableEnum) {
-            ((SyncableEnum<?>) data).set(value);
-        } else if (data instanceof SyncableFluidStack) {
-            ((SyncableFluidStack) data).set(value);
-        } else if (data instanceof SyncableItemStack) {
-            ((SyncableItemStack) data).set(value);
+        if (data instanceof SyncableInt syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableEnum<?> syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableFluidStack syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableItemStack syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, long value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableLong) {
-            ((SyncableLong) data).set(value);
-        } else if (data instanceof SyncableChemicalStack) {
-            ((SyncableChemicalStack<?, ?>) data).set(value);
+        if (data instanceof SyncableLong syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableChemicalStack<?, ?> syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, float value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableFloat) {
-            ((SyncableFloat) data).set(value);
+        if (data instanceof SyncableFloat syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, double value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableDouble) {
-            ((SyncableDouble) data).set(value);
+        if (data instanceof SyncableDouble syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nonnull ItemStack value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableItemStack) {
-            ((SyncableItemStack) data).set(value);
+        if (data instanceof SyncableItemStack syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nonnull FluidStack value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableFluidStack) {
-            ((SyncableFluidStack) data).set(value);
+        if (data instanceof SyncableFluidStack syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nullable BlockPos value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableBlockPos) {
-            ((SyncableBlockPos) data).set(value);
+        if (data instanceof SyncableBlockPos syncable) {
+            syncable.set(value);
         }
     }
 
@@ -605,14 +598,14 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     public <STACK extends ChemicalStack<?>> void handleWindowProperty(short property, @Nonnull STACK value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableGasStack && value instanceof GasStack) {
-            ((SyncableGasStack) data).set((GasStack) value);
-        } else if (data instanceof SyncableInfusionStack && value instanceof InfusionStack) {
-            ((SyncableInfusionStack) data).set((InfusionStack) value);
-        } else if (data instanceof SyncablePigmentStack && value instanceof PigmentStack) {
-            ((SyncablePigmentStack) data).set((PigmentStack) value);
-        } else if (data instanceof SyncableSlurryStack && value instanceof SlurryStack) {
-            ((SyncableSlurryStack) data).set((SlurryStack) value);
+        if (data instanceof SyncableGasStack syncable && value instanceof GasStack stack) {
+            syncable.set(stack);
+        } else if (data instanceof SyncableInfusionStack syncable && value instanceof InfusionStack stack) {
+            syncable.set(stack);
+        } else if (data instanceof SyncablePigmentStack syncable && value instanceof PigmentStack stack) {
+            syncable.set(stack);
+        } else if (data instanceof SyncableSlurryStack syncable && value instanceof SlurryStack stack) {
+            syncable.set(stack);
         }
     }
 
@@ -625,8 +618,8 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     public void handleWindowProperty(short property, @Nonnull FloatingLong value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableFloatingLong) {
-            ((SyncableFloatingLong) data).set(value);
+        if (data instanceof SyncableFloatingLong syncable) {
+            syncable.set(value);
         }
     }
 
@@ -639,10 +632,11 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     @Override
     public void broadcastChanges() {
-        //Note: We do not call super.detectAndSendChanges() because we intercept and track the
-        // stack changes and int changes ourselves. This allows for us to have more accurate syncing
-        // and also batch various sync packets
-        if (!containerListeners.isEmpty()) {
+        super.broadcastChanges();
+        //Note: We don't bother firing data changed listeners as we have no use for them,
+        // and if someone wants to attach one to our containers they can explain what use
+        // they need it for before we add a bunch of extra logic to handle them
+        if (inv.player instanceof ServerPlayer player) {
             //Only check tracked data for changes if we actually have any listeners
             List<PropertyData> dirtyData = new ArrayList<>();
             for (short i = 0; i < trackedData.size(); i++) {
@@ -653,31 +647,22 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
                 }
             }
             if (!dirtyData.isEmpty()) {
-                sendChange(new PacketUpdateContainer((short) containerId, dirtyData));
-            }
-        }
-    }
-
-    private <MSG> void sendChange(MSG packet) {
-        for (IContainerListener listener : containerListeners) {
-            if (listener instanceof ServerPlayerEntity) {
-                Mekanism.packetHandler.sendTo(packet, (ServerPlayerEntity) listener);
+                Mekanism.packetHandler().sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
             }
         }
     }
 
     @Override
-    public void addSlotListener(@Nonnull IContainerListener listener) {
-        boolean alreadyHas = containerListeners.contains(listener);
-        super.addSlotListener(listener);
-        if (!alreadyHas && listener instanceof ServerPlayerEntity) {
+    public void sendAllDataToRemote() {
+        super.sendAllDataToRemote();
+        if (inv.player instanceof ServerPlayer player) {
             //Send all contents to the listener when it first gets added
             List<PropertyData> dirtyData = new ArrayList<>();
             for (short i = 0; i < trackedData.size(); i++) {
                 dirtyData.add(trackedData.get(i).getPropertyData(i, DirtyType.DIRTY));
             }
             if (!dirtyData.isEmpty()) {
-                Mekanism.packetHandler.sendTo(new PacketUpdateContainer((short) containerId, dirtyData), (ServerPlayerEntity) listener);
+                Mekanism.packetHandler().sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
             }
         }
     }

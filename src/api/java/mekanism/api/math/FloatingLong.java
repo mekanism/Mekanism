@@ -7,8 +7,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * A class representing a positive number with an internal value defined by an unsigned long, and a floating point number stored in a short
@@ -155,11 +155,11 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * Reads a mutable {@link FloatingLong} from a buffer
      *
-     * @param buffer The {@link PacketBuffer} to read from
+     * @param buffer The {@link FriendlyByteBuf} to read from
      *
      * @return A mutable {@link FloatingLong}
      */
-    public static FloatingLong readFromBuffer(PacketBuffer buffer) {
+    public static FloatingLong readFromBuffer(FriendlyByteBuf buffer) {
         return new FloatingLong(buffer.readVarLong(), buffer.readShort(), false);
     }
 
@@ -788,13 +788,41 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        return this == other || other instanceof FloatingLong && equals((FloatingLong) other);
+    public boolean equals(Object o) {
+        return this == o || o instanceof FloatingLong other && equals(other);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(value, decimal);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote We clamp the value to MAX_BYTE rather than having it overflow into the negatives.
+     */
+    @Override
+    public byte byteValue() {
+        int v = intValue();
+        if (v < Byte.MAX_VALUE) {
+            return (byte) v;
+        }
+        return Byte.MAX_VALUE;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote We clamp the value to MAX_SHORT rather than having it overflow into the negatives.
+     */
+    @Override
+    public short shortValue() {
+        int v = intValue();
+        if (v < Short.MAX_VALUE) {
+            return (short) v;
+        }
+        return Short.MAX_VALUE;
     }
 
     /**
@@ -854,9 +882,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * Writes this {@link FloatingLong} to the given buffer
      *
-     * @param buffer The {@link PacketBuffer} to write to.
+     * @param buffer The {@link FriendlyByteBuf} to write to.
      */
-    public void writeToBuffer(PacketBuffer buffer) {
+    public void writeToBuffer(FriendlyByteBuf buffer) {
         buffer.writeVarLong(value);
         buffer.writeShort(decimal);
     }
@@ -978,11 +1006,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @param number The number of zeros to put in the string.
      */
     private static String getZeros(int number) {
-        StringBuilder zeros = new StringBuilder();
-        for (int i = 0; i < number; i++) {
-            zeros.append('0');
-        }
-        return zeros.toString();
+        return "0".repeat(Math.max(0, number));
     }
 
     /**

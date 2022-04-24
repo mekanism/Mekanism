@@ -5,13 +5,15 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFusionReactorController extends TileEntityFusionReactorBlock {
 
-    public TileEntityFusionReactorController() {
-        super(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER);
+    public TileEntityFusionReactorController(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, pos, state);
         //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
         addDisabledCapabilities(Capabilities.GAS_HANDLER_CAPABILITY, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Capabilities.HEAT_HANDLER_CAPABILITY);
         addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());

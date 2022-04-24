@@ -1,55 +1,63 @@
 package mekanism.client.render.armor;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
-public class JetpackArmor extends CustomArmor {
+public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener {
 
-    public static final JetpackArmor JETPACK = new JetpackArmor(0.5F, false);
-    public static final JetpackArmor ARMORED_JETPACK = new JetpackArmor(0.5F, true);
-    private static final ModelJetpack model = new ModelJetpack();
-    private static final ModelArmoredJetpack armoredModel = new ModelArmoredJetpack();
+    public static final JetpackArmor JETPACK = new JetpackArmor(false);
+    public static final JetpackArmor ARMORED_JETPACK = new JetpackArmor(true);
 
     private final boolean armored;
+    private ModelJetpack model;
 
-    private JetpackArmor(float size, boolean armored) {
-        super(size);
+    private JetpackArmor(boolean armored) {
         this.armored = armored;
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
-          LivingEntity entity, ItemStack stack) {
-        if (!body.visible) {
-            //If the body model shouldn't show don't bother displaying it
-            return;
-        }
-        if (young) {
-            matrix.pushPose();
-            float f1 = 1.0F / babyBodyScale;
-            matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, bodyYOffset / 16.0F, 0.0D);
-            renderJetpack(matrix, renderer, light, overlayLight, hasEffect);
-            matrix.popPose();
+    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+        if (armored) {
+            model = new ModelArmoredJetpack(Minecraft.getInstance().getEntityModels());
         } else {
-            renderJetpack(matrix, renderer, light, overlayLight, hasEffect);
+            model = new ModelJetpack(Minecraft.getInstance().getEntityModels());
         }
     }
 
-    private void renderJetpack(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        matrix.pushPose();
-        body.translateAndRotate(matrix);
-        matrix.translate(0, 0, 0.06);
-        if (armored) {
-            armoredModel.render(matrix, renderer, light, overlayLight, hasEffect);
-        } else {
-            model.render(matrix, renderer, light, overlayLight, hasEffect);
+    @Override
+    public void render(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+          int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
+        if (!baseModel.body.visible) {
+            //If the body model shouldn't show don't bother displaying it
+            return;
         }
+        if (baseModel.young) {
+            matrix.pushPose();
+            float f1 = 1.0F / baseModel.babyBodyScale;
+            matrix.scale(f1, f1, f1);
+            matrix.translate(0.0D, baseModel.bodyYOffset / 16.0F, 0.0D);
+            renderJetpack(baseModel, matrix, renderer, light, overlayLight, hasEffect);
+            matrix.popPose();
+        } else {
+            renderJetpack(baseModel, matrix, renderer, light, overlayLight, hasEffect);
+        }
+    }
+
+    private void renderJetpack(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light,
+          int overlayLight, boolean hasEffect) {
+        matrix.pushPose();
+        baseModel.body.translateAndRotate(matrix);
+        matrix.translate(0, 0, 0.06);
+        model.render(matrix, renderer, light, overlayLight, hasEffect);
         matrix.popPose();
     }
 }

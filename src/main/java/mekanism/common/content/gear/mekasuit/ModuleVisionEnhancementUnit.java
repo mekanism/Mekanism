@@ -10,9 +10,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNonnullByDefault
 public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEnhancementUnit> {
@@ -20,12 +20,12 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "vision_enhancement_unit.png");
 
     @Override
-    public void tickServer(IModule<ModuleVisionEnhancementUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleVisionEnhancementUnit> module, Player player) {
         module.useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleVisionEnhancementUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleVisionEnhancementUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElementEnabled(icon, module.isEnabled()));
     }
 
@@ -35,7 +35,7 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
     }
 
     @Override
-    public void changeMode(IModule<ModuleVisionEnhancementUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(IModule<ModuleVisionEnhancementUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
         module.toggleEnabled(player, MekanismLang.MODULE_VISION_ENHANCEMENT.translate());
     }
 }

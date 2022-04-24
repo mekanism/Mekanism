@@ -10,7 +10,7 @@ import mekanism.common.network.to_client.container.property.list.FrequencyListPr
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling frequency lists
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling frequency lists
  */
 public class SyncableFrequencyList<FREQUENCY extends Frequency> extends SyncableList<FREQUENCY> {
 

@@ -11,7 +11,7 @@ import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling lists
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling lists
  */
 public abstract class SyncableList<TYPE> implements ISyncableData {
 

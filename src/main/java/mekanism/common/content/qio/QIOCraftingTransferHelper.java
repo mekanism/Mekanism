@@ -17,7 +17,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -25,9 +25,9 @@ import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class QIOCraftingTransferHelper {
@@ -43,7 +43,7 @@ public class QIOCraftingTransferHelper {
     private boolean isValid;
 
     public QIOCraftingTransferHelper(Object2LongMap<UUIDAwareHashedItem> cachedInventory, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots,
-          QIOCraftingWindow craftingWindow, PlayerEntity player) {
+          QIOCraftingWindow craftingWindow, Player player) {
         isValid = true;
         reverseLookup = new HashMap<>();
         for (Object2LongMap.Entry<UUIDAwareHashedItem> entry : cachedInventory.object2LongEntrySet()) {
@@ -71,7 +71,7 @@ public class QIOCraftingTransferHelper {
         addSlotsToMap(player, mainInventorySlots, inventorySlotIndex);
     }
 
-    private byte addSlotsToMap(PlayerEntity player, List<? extends Slot> slots, byte inventorySlotIndex) {
+    private byte addSlotsToMap(Player player, List<? extends Slot> slots, byte inventorySlotIndex) {
         for (Slot slot : slots) {
             if (slot.hasItem()) {
                 if (slot.mayPickup(player)) {

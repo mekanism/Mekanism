@@ -1,16 +1,16 @@
 package mekanism.common.lib.transmitter.acceptor;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class AbstractAcceptorInfo {
 
-    private final TileEntity tile;
+    private final BlockEntity tile;
 
-    protected AbstractAcceptorInfo(TileEntity tile) {
+    protected AbstractAcceptorInfo(BlockEntity tile) {
         this.tile = tile;
     }
 
-    public TileEntity getTile() {
+    public BlockEntity getTile() {
         return tile;
     }
 }

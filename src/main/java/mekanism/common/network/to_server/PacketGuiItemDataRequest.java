@@ -3,9 +3,9 @@ package mekanism.common.network.to_server;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketGuiItemDataRequest implements IMekanismPacket {
 
@@ -21,11 +21,10 @@ public class PacketGuiItemDataRequest implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player != null) {
             if (type == Type.QIO_ITEM_VIEWER) {
-                if (player.containerMenu instanceof QIOItemViewerContainer) {
-                    QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
+                if (player.containerMenu instanceof QIOItemViewerContainer container) {
                     QIOFrequency freq = container.getFrequency();
                     if (!player.level.isClientSide() && freq != null) {
                         freq.openItemViewer(player);
@@ -36,11 +35,11 @@ public class PacketGuiItemDataRequest implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
     }
 
-    public static PacketGuiItemDataRequest decode(PacketBuffer buffer) {
+    public static PacketGuiItemDataRequest decode(FriendlyByteBuf buffer) {
         Type type = buffer.readEnum(Type.class);
         return new PacketGuiItemDataRequest(type);
     }

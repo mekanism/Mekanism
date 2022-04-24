@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -25,8 +25,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
 
@@ -40,18 +40,18 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos())), getOnHover(MekanismLang.STRICT_INPUT)));
+              () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos())), getOnHover(MekanismLang.STRICT_INPUT)));
         addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16,
               () -> this.tile.getEjector().getOutputColor(),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), Screen.hasShiftDown() ? 2 : 0)),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), 1))));
+              () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), Screen.hasShiftDown() ? 2 : 0)),
+              () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), 1))));
         addSideDataButton(RelativeSide.BOTTOM, 44, 64);
         addSideDataButton(RelativeSide.TOP, 44, 34);
         addSideDataButton(RelativeSide.FRONT, 44, 49);
         addSideDataButton(RelativeSide.BACK, 29, 64);
         addSideDataButton(RelativeSide.LEFT, 29, 49);
         addSideDataButton(RelativeSide.RIGHT, 59, 49);
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW, this.tile.getEjector());
     }
 
@@ -67,26 +67,25 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     public void close() {
         super.close();
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW);
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, matrix, xAxis, yAxis) -> {
-            if (onHover instanceof SideDataButton) {
-                SideDataButton button = (SideDataButton) onHover;
+        return (onHover, matrix, mouseX, mouseY) -> {
+            if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     EnumColor color = button.getColor();
-                    ITextComponent colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
-                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side), xAxis, yAxis);
+                    Component colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side));
                 }
             }
         };
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
         drawCenteredText(matrix, MekanismLang.INPUT.translate(), relativeX + 51, relativeY + 81, subheadingTextColor());

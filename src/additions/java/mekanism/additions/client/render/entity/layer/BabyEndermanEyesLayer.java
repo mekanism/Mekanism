@@ -4,15 +4,15 @@ import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.AbstractEyesLayer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EyesLayer;
+import net.minecraft.resources.ResourceLocation;
 
-public class BabyEndermanEyesLayer extends AbstractEyesLayer<EntityBabyEnderman, ModelBabyEnderman> {
+public class BabyEndermanEyesLayer extends EyesLayer<EntityBabyEnderman, ModelBabyEnderman> {
 
     private static final RenderType RENDER_TYPE = RenderType.eyes(new ResourceLocation("textures/entity/enderman/enderman_eyes.png"));
 
-    public BabyEndermanEyesLayer(IEntityRenderer<EntityBabyEnderman, ModelBabyEnderman> renderer) {
+    public BabyEndermanEyesLayer(RenderLayerParent<EntityBabyEnderman, ModelBabyEnderman> renderer) {
         super(renderer);
     }
 

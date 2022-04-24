@@ -2,21 +2,16 @@ package mekanism.tools.common.material;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import net.minecraft.item.ItemTier;
+import net.minecraft.world.item.Tiers;
 
 public abstract class VanillaPaxelMaterial implements IPaxelMaterial {
 
     @Nonnull
-    public abstract ItemTier getVanillaTier();
+    public abstract Tiers getVanillaTier();
 
     @Nonnull
     public String getRegistryPrefix() {
         return getVanillaTier().name().toLowerCase(Locale.ROOT);
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return getVanillaTier().getLevel();
     }
 
     @Override

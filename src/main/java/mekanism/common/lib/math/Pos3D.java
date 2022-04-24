@@ -3,24 +3,23 @@ package mekanism.common.lib.math;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Pos3D - a way of performing operations on objects in a three-dimensional environment.
  *
  * @author aidancbrady
  */
-public class Pos3D extends Vector3d {
+public class Pos3D extends Vec3 {
     //TODO - 1.18: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
     // Though it seems like at least our yRot method is subtly different than the Vector3D yrot method
 
@@ -28,7 +27,7 @@ public class Pos3D extends Vector3d {
         this(0, 0, 0);
     }
 
-    public Pos3D(Vector3d vec) {
+    public Pos3D(Vec3 vec) {
         super(vec.x, vec.y, vec.z);
     }
 
@@ -49,12 +48,12 @@ public class Pos3D extends Vector3d {
         this(entity.getX(), entity.getY(), entity.getZ());
     }
 
-    public static Pos3D create(TileEntity tile) {
+    public static Pos3D create(BlockEntity tile) {
         return create(tile.getBlockPos());
     }
 
-    public static Pos3D create(Vector3i vec) {
-        return new Pos3D(Vector3d.atLowerCornerOf(vec));
+    public static Pos3D create(Vec3i vec) {
+        return new Pos3D(Vec3.atLowerCornerOf(vec));
     }
 
     /**
@@ -64,7 +63,7 @@ public class Pos3D extends Vector3d {
      *
      * @return the Pos3D from the tag compound
      */
-    public static Pos3D read(CompoundNBT tag) {
+    public static Pos3D read(CompoundTag tag) {
         return new Pos3D(tag.getDouble(NBTConstants.X), tag.getDouble(NBTConstants.Y), tag.getDouble(NBTConstants.Z));
     }
 
@@ -83,8 +82,8 @@ public class Pos3D extends Vector3d {
         return Math.acos(pos1.dot(pos2));
     }
 
-    public static AxisAlignedBB getAABB(Vector3d pos1, Vector3d pos2) {
-        return new AxisAlignedBB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
+    public static AABB getAABB(Vec3 pos1, Vec3 pos2) {
+        return new AABB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
     }
 
     /**
@@ -94,7 +93,7 @@ public class Pos3D extends Vector3d {
      *
      * @return the tag compound with this Pos3D's data
      */
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         nbtTags.putDouble(NBTConstants.X, x);
         nbtTags.putDouble(NBTConstants.Y, y);
         nbtTags.putDouble(NBTConstants.Z, z);
@@ -108,7 +107,7 @@ public class Pos3D extends Vector3d {
      *
      * @return difference of the two Pos3Ds
      */
-    public Pos3D diff(Vector3d vec) {
+    public Pos3D diff(Vec3 vec) {
         return new Pos3D(x - vec.x, y - vec.y, z - vec.z);
     }
 
@@ -119,7 +118,7 @@ public class Pos3D extends Vector3d {
      *
      * @return Coord4D representing this Pos3D
      */
-    public Coord4D getCoord(RegistryKey<World> dimension) {
+    public Coord4D getCoord(ResourceKey<Level> dimension) {
         return new Coord4D((int) x, (int) y, (int) z, dimension);
     }
 
@@ -150,7 +149,7 @@ public class Pos3D extends Vector3d {
      *
      * @return translated Pos3D
      */
-    public Pos3D translate(Vector3d pos) {
+    public Pos3D translate(Vec3 pos) {
         return translate(pos.x, pos.y, pos.z);
     }
 
@@ -161,11 +160,11 @@ public class Pos3D extends Vector3d {
      *
      * @return translated Pos3D
      */
-    public Pos3D translate(Vector3d... positions) {
+    public Pos3D translate(Vec3... positions) {
         double x = this.x;
         double y = this.y;
         double z = this.z;
-        for (Vector3d position : positions) {
+        for (Vec3 position : positions) {
             x += position.x;
             y += position.y;
             z += position.z;
@@ -216,11 +215,11 @@ public class Pos3D extends Vector3d {
      *
      * @return the distance between this and the defined Pos3D
      */
-    public double distance(Vector3d pos) {
+    public double distance(Vec3 pos) {
         double subX = x - pos.x;
         double subY = y - pos.y;
         double subZ = z - pos.z;
-        return MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
+        return Math.sqrt(subX * subX + subY * subY + subZ * subZ);
     }
 
     /**
@@ -281,7 +280,7 @@ public class Pos3D extends Vector3d {
 
     @Nonnull
     @Override
-    public Pos3D multiply(Vector3d pos) {
+    public Pos3D multiply(Vec3 pos) {
         return multiply(pos.x, pos.y, pos.z);
     }
 
@@ -320,7 +319,7 @@ public class Pos3D extends Vector3d {
     public double[] getRotationMatrix(float angle) {
         double[] matrix = new double[16];
         //Note: We don't need to bother cloning it here as normalize will return a new object regardless
-        Vector3d axis = normalize();
+        Vec3 axis = normalize();
 
         double x = axis.x;
         double y = axis.y;
@@ -384,7 +383,7 @@ public class Pos3D extends Vector3d {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Vector3d && ((Vector3d) obj).x == x && ((Vector3d) obj).y == y && ((Vector3d) obj).z == z;
+        return obj instanceof Vec3 other && other.x == x && other.y == y && other.z == z;
     }
 
     @Override

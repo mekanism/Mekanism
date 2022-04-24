@@ -3,7 +3,7 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
 
 //Adds a Painting Recipe that uses 256 mB Red Pigment to convert Clear Sand into Red Sand.
 
-// <recipetype:mekanism:painting>.addRecipe(name as string, itemInput as ItemStackIngredient, chemicalInput as IChemicalStackIngredient, output as IItemStack)
+// <recipetype:mekanism:painting>.addRecipe(name as string, itemInput as ItemStackIngredient, chemicalInput as ChemicalStackIngredient, output as IItemStack)
 
 <recipetype:mekanism:painting>.addRecipe("paint_sand", ItemStackIngredient.from(<tag:items:forge:sand/colorless>), PigmentStackIngredient.from(<pigment:mekanism:red> * 256), <item:minecraft:red_sand>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:

@@ -9,7 +9,7 @@ import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
@@ -40,9 +40,14 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
-            return TagCache.getBlockTagStacks(filter.getTagName());
+            return TagCache.getBlockTagStacks(filter.getTagName()).stacks();
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    protected boolean hasMatchingTargets(String name) {
+        return TagCache.getBlockTagStacks(name).hasMatch();
     }
 
     @Override

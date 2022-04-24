@@ -12,9 +12,9 @@ import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 public class TransporterManager {
@@ -28,11 +28,11 @@ public class TransporterManager {
         flowingStacks.clear();
     }
 
-    public static void add(World world, TransporterStack stack) {
+    public static void add(Level world, TransporterStack stack) {
         flowingStacks.computeIfAbsent(new Coord4D(stack.getDest(), world), k -> new ObjectOpenHashSet<>()).add(stack);
     }
 
-    public static void remove(World world, TransporterStack stack) {
+    public static void remove(Level world, TransporterStack stack) {
         if (stack.hasPath() && stack.getPathType() != Path.NONE) {
             flowingStacks.get(new Coord4D(stack.getDest(), world)).remove(stack);
         }

@@ -5,16 +5,16 @@ import javax.annotation.Nonnull;
 import mekanism.api.gear.IHUDElement;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class HUDElement implements IHUDElement {
 
     private final ResourceLocation icon;
-    private final ITextComponent text;
+    private final Component text;
     private final HUDColor color;
 
-    private HUDElement(ResourceLocation icon, ITextComponent text, HUDColor color) {
+    private HUDElement(ResourceLocation icon, Component text, HUDColor color) {
         this.icon = icon;
         this.text = text;
         this.color = color;
@@ -28,7 +28,7 @@ public class HUDElement implements IHUDElement {
 
     @Nonnull
     @Override
-    public ITextComponent getText() {
+    public Component getText() {
         return text;
     }
 
@@ -37,7 +37,7 @@ public class HUDElement implements IHUDElement {
         return color.getColorARGB();
     }
 
-    public static HUDElement of(ResourceLocation icon, ITextComponent text, HUDColor color) {
+    public static HUDElement of(ResourceLocation icon, Component text, HUDColor color) {
         return new HUDElement(icon, text, color);
     }
 
@@ -62,17 +62,12 @@ public class HUDElement implements IHUDElement {
         }
 
         public static HUDColor from(IHUDElement.HUDColor apiColor) {
-            switch (apiColor) {
-                default:
-                case REGULAR:
-                    return REGULAR;
-                case FADED:
-                    return FADED;
-                case WARNING:
-                    return WARNING;
-                case DANGER:
-                    return DANGER;
-            }
+            return switch (apiColor) {
+                case REGULAR -> REGULAR;
+                case FADED -> FADED;
+                case WARNING -> WARNING;
+                case DANGER -> DANGER;
+            };
         }
     }
 }

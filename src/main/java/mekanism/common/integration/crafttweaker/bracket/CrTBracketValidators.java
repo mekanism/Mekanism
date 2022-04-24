@@ -1,11 +1,11 @@
 package mekanism.common.integration.crafttweaker.bracket;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.BracketValidator;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.BracketValidator;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.MekanismAPI;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
@@ -95,18 +95,18 @@ public class CrTBracketValidators {
     private static boolean validate(String bracket, String tokens, IForgeRegistry<?> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
-            CraftTweakerAPI.logError("Could not get BEP <%s:%s>. Syntax is <%1$s:modid:%1$s_name>", bracket, tokens);
+            CraftTweakerAPI.LOGGER.error("Could not get BEP <{}:{}>. Syntax is <{}:modid:{}_name>", bracket, tokens, bracket, bracket);
             return false;
         }
         if (isRegistryUnlocked(registry) || registry.containsKey(registryName)) {
             return true;
         }
         String typeName = bracket.replace("_", " ");
-        CraftTweakerAPI.logError("Could not get %s for <%s:%s" + tokens + ">, %1$s does not appear to exist!", typeName, bracket, tokens);
+        CraftTweakerAPI.LOGGER.error("Could not get {} for <{}:{}>, {} does not appear to exist!", typeName, bracket, tokens, typeName);
         return false;
     }
 
     private static boolean isRegistryUnlocked(IForgeRegistry<?> registry) {
-        return registry instanceof ForgeRegistry && !((ForgeRegistry<?>) registry).isLocked();
+        return registry instanceof ForgeRegistry<?> forgeRegistry && !forgeRegistry.isLocked();
     }
 }

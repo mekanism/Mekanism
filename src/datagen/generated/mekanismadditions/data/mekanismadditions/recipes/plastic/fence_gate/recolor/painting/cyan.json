@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "forge:fence_gates/plastic"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:cyan_plastic_fence_gate"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:cyan"
+  },
+  "output": {
+    "item": "mekanismadditions:cyan_plastic_fence_gate"
+  }
+}

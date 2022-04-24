@@ -3,13 +3,13 @@ package mekanism.common.content.oredictionificator;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.FilterType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.ItemTags;
+import mekanism.common.tags.TagUtils;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.tags.ITagManager;
 
 //TODO - V11: Rewrite/refactor usages of this to better handle tags for fluids and chemicals by allowing them to make use of the super OredictionificatorFilter class
 public class OredictionificatorItemFilter extends OredictionificatorFilter<Item, ItemStack, OredictionificatorItemFilter> {
@@ -32,8 +32,8 @@ public class OredictionificatorItemFilter extends OredictionificatorFilter<Item,
     }
 
     @Override
-    protected ITagCollection<Item> getTagCollection() {
-        return ItemTags.getAllTags();
+    protected ITagManager<Item> getTagManager() {
+        return TagUtils.manager(ForgeRegistries.ITEMS);
     }
 
     @Override

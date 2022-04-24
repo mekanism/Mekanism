@@ -119,6 +119,8 @@ files:
         yo: yo_ng
         zh-CN: zh_cn
         zh-TW: zh_tw
+        zh-HK: zh_hk
+        fur-IT: fur_it
   - source: >-
       /src/datagen/generated/mekanismadditions/assets/mekanismadditions/lang/en_us.json
     translation: >-
@@ -237,6 +239,8 @@ files:
         yo: yo_ng
         zh-CN: zh_cn
         zh-TW: zh_tw
+        zh-HK: zh_hk
+        fur-IT: fur_it
   - source: >-
       /src/datagen/generated/mekanismgenerators/assets/mekanismgenerators/lang/en_us.json
     translation: >-
@@ -355,6 +359,8 @@ files:
         yo: yo_ng
         zh-CN: zh_cn
         zh-TW: zh_tw
+        zh-HK: zh_hk
+        fur-IT: fur_it
   - source: /src/datagen/generated/mekanismtools/assets/mekanismtools/lang/en_us.json
     translation: >-
       /src/tools/resources/assets/mekanismtools/lang/%locale_with_underscore%.json
@@ -472,3 +478,5 @@ files:
         yo: yo_ng
         zh-CN: zh_cn
         zh-TW: zh_tw
+        zh-HK: zh_hk
+        fur-IT: fur_it

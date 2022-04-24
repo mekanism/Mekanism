@@ -6,6 +6,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 
 /**
  * Specialized version of {@link IOutputHandler} for handling boxed chemicals.
@@ -13,10 +15,12 @@ import mekanism.api.chemical.merged.MergedChemicalTank;
 @ParametersAreNonnullByDefault
 public class BoxedChemicalOutputHandler {
 
+    private final RecipeError notEnoughSpaceError;
     private final MergedChemicalTank chemicalTank;
 
-    public BoxedChemicalOutputHandler(MergedChemicalTank chemicalTank) {
+    public BoxedChemicalOutputHandler(MergedChemicalTank chemicalTank, RecipeError notEnoughSpaceError) {
         this.chemicalTank = Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null.");
+        this.notEnoughSpaceError = Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
     }
 
     /**
@@ -34,18 +38,17 @@ public class BoxedChemicalOutputHandler {
     }
 
     /**
-     * Calculates how many operations the output has room for.
+     * Calculates how many operations the output has room for and updates the given operation tracker. It can be assumed that when this method is called {@link
+     * OperationTracker#shouldContinueChecking()} is {@code true}.
      *
-     * @param toOutput   Output result.
-     * @param currentMax The current maximum number of operations that can happen.
-     *
-     * @return The number of operations the output has room for.
+     * @param tracker  Tracker of current errors and max operations.
+     * @param toOutput Output result.
      */
-    public int operationsRoomFor(BoxedChemicalStack toOutput, int currentMax) {
-        return operationsRoomFor(chemicalTank.getTankForType(toOutput.getChemicalType()), toOutput.getChemicalStack(), currentMax);
+    public void calculateOperationsRoomFor(OperationTracker tracker, BoxedChemicalStack toOutput) {
+        calculateOperationsRoomFor(tracker, chemicalTank.getTankForType(toOutput.getChemicalType()), toOutput.getChemicalStack());
     }
 
-    private <STACK extends ChemicalStack<?>> int operationsRoomFor(IChemicalTank<?, ?> tank, STACK stack, int currentMax) {
-        return OutputHelper.operationsRoomFor((IChemicalTank<?, STACK>) tank, stack, currentMax);
+    private <STACK extends ChemicalStack<?>> void calculateOperationsRoomFor(OperationTracker tracker, IChemicalTank<?, ?> tank, STACK stack) {
+        OutputHelper.calculateOperationsCanSupport(tracker, notEnoughSpaceError, (IChemicalTank<?, STACK>) tank, stack);
     }
 }

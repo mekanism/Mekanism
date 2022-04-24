@@ -1,9 +1,9 @@
 package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 
 public interface IEntityTypeProvider extends IBaseProvider {
 
@@ -19,7 +19,7 @@ public interface IEntityTypeProvider extends IBaseProvider {
     }
 
     @Override
-    default ITextComponent getTextComponent() {
+    default Component getTextComponent() {
         return getEntityType().getDescription();
     }
 

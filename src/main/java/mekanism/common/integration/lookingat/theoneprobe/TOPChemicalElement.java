@@ -1,89 +1,111 @@
 package mekanism.common.integration.lookingat.theoneprobe;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mcjty.theoneprobe.api.IElement;
+import mcjty.theoneprobe.api.IElementFactory;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.lookingat.ChemicalElement;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
-public abstract class TOPChemicalElement extends ChemicalElement implements IElement {
+public class TOPChemicalElement extends ChemicalElement implements IElement {
 
-    protected TOPChemicalElement(@Nonnull ChemicalStack<?> stored, long capacity) {
+    private final ResourceLocation id;
+
+    protected TOPChemicalElement(ResourceLocation id, @Nonnull ChemicalStack<?> stored, long capacity) {
         super(stored, capacity);
+        this.id = id;
+    }
+
+    @Nullable
+    public static TOPChemicalElement create(ChemicalStack<?> stored, long capacity) {
+        if (stored instanceof GasStack) {
+            return new TOPChemicalElement(GasElementFactory.ID, stored, capacity);
+        } else if (stored instanceof InfusionStack) {
+            return new TOPChemicalElement(InfuseTypeElementFactory.ID, stored, capacity);
+        } else if (stored instanceof PigmentStack) {
+            return new TOPChemicalElement(PigmentElementFactory.ID, stored, capacity);
+        } else if (stored instanceof SlurryStack) {
+            return new TOPChemicalElement(SlurryElementFactory.ID, stored, capacity);
+        }
+        return null;
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         ChemicalUtils.writeChemicalStack(buf, stored);
         buf.writeVarLong(capacity);
     }
 
-    public static class GasElement extends TOPChemicalElement {
+    @Override
+    public ResourceLocation getID() {
+        return id;
+    }
 
-        public GasElement(@Nonnull GasStack stored, long capacity) {
-            super(stored, capacity);
-        }
+    public static class GasElementFactory implements IElementFactory {
 
-        public GasElement(PacketBuffer buf) {
-            this(ChemicalUtils.readGasStack(buf), buf.readVarLong());
+        private static final ResourceLocation ID = Mekanism.rl("gas");
+
+        @Override
+        public TOPChemicalElement createElement(FriendlyByteBuf buf) {
+            return new TOPChemicalElement(ID, ChemicalUtils.readGasStack(buf), buf.readVarLong());
         }
 
         @Override
-        public int getID() {
-            return TOPProvider.GAS_ELEMENT_ID;
+        public ResourceLocation getId() {
+            return ID;
         }
     }
 
-    public static class InfuseTypeElement extends TOPChemicalElement {
+    public static class InfuseTypeElementFactory implements IElementFactory {
 
-        public InfuseTypeElement(@Nonnull InfusionStack stored, long capacity) {
-            super(stored, capacity);
-        }
+        private static final ResourceLocation ID = Mekanism.rl("infuse_type");
 
-        public InfuseTypeElement(PacketBuffer buf) {
-            this(ChemicalUtils.readInfusionStack(buf), buf.readVarLong());
+        @Override
+        public TOPChemicalElement createElement(FriendlyByteBuf buf) {
+            return new TOPChemicalElement(ID, ChemicalUtils.readInfusionStack(buf), buf.readVarLong());
         }
 
         @Override
-        public int getID() {
-            return TOPProvider.INFUSION_ELEMENT_ID;
+        public ResourceLocation getId() {
+            return ID;
         }
     }
 
-    public static class PigmentElement extends TOPChemicalElement {
+    public static class PigmentElementFactory implements IElementFactory {
 
-        public PigmentElement(@Nonnull PigmentStack stored, long capacity) {
-            super(stored, capacity);
-        }
+        private static final ResourceLocation ID = Mekanism.rl("pigment");
 
-        public PigmentElement(PacketBuffer buf) {
-            this(ChemicalUtils.readPigmentStack(buf), buf.readVarLong());
+        @Override
+        public TOPChemicalElement createElement(FriendlyByteBuf buf) {
+            return new TOPChemicalElement(ID, ChemicalUtils.readPigmentStack(buf), buf.readVarLong());
         }
 
         @Override
-        public int getID() {
-            return TOPProvider.PIGMENT_ELEMENT_ID;
+        public ResourceLocation getId() {
+            return ID;
         }
     }
 
-    public static class SlurryElement extends TOPChemicalElement {
+    public static class SlurryElementFactory implements IElementFactory {
 
-        public SlurryElement(@Nonnull SlurryStack stored, long capacity) {
-            super(stored, capacity);
-        }
+        private static final ResourceLocation ID = Mekanism.rl("slurry");
 
-        public SlurryElement(PacketBuffer buf) {
-            this(ChemicalUtils.readSlurryStack(buf), buf.readVarLong());
+        @Override
+        public TOPChemicalElement createElement(FriendlyByteBuf buf) {
+            return new TOPChemicalElement(ID, ChemicalUtils.readSlurryStack(buf), buf.readVarLong());
         }
 
         @Override
-        public int getID() {
-            return TOPProvider.SLURRY_ELEMENT_ID;
+        public ResourceLocation getId() {
+            return ID;
         }
     }
 }

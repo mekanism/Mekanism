@@ -1,7 +1,5 @@
 package mekanism.api.chemical.attribute;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -74,7 +72,7 @@ public interface ChemicalAttributeValidator {
         private final boolean allowNoValidation;
 
         SimpleAttributeValidator(Class<? extends ChemicalAttribute>[] attributeTypes, boolean allowNoValidation) {
-            this.validTypes = new HashSet<>(Arrays.asList(attributeTypes));
+            this.validTypes = Set.of(attributeTypes);
             this.allowNoValidation = allowNoValidation;
         }
 

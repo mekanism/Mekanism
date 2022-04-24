@@ -13,12 +13,12 @@ import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public abstract class CuboidStructureValidator<T extends MultiblockData> implements IStructureValidator<T> {
 
@@ -28,7 +28,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     protected VoxelCuboid cuboid;
     protected Structure structure;
 
-    protected World world;
+    protected Level world;
     protected MultiblockManager<T> manager;
 
     public CuboidStructureValidator() {
@@ -41,16 +41,16 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     }
 
     @Override
-    public void init(World world, MultiblockManager<T> manager, Structure structure) {
+    public void init(Level world, MultiblockManager<T> manager, Structure structure) {
         this.world = world;
         this.manager = manager;
         this.structure = structure;
     }
 
     @Override
-    public FormationResult validate(FormationProtocol<T> ctx, Long2ObjectMap<IChunk> chunkMap) {
+    public FormationResult validate(FormationProtocol<T> ctx, Long2ObjectMap<ChunkAccess> chunkMap) {
         BlockPos min = cuboid.getMinPos(), max = cuboid.getMaxPos();
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = min.getX(); x <= max.getX(); x++) {
             for (int y = min.getY(); y <= max.getY(); y++) {
                 for (int z = min.getZ(); z <= max.getZ(); z++) {
@@ -68,9 +68,9 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     /**
      * @param pos Mutable BlockPos
      */
-    protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
+    protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         Optional<BlockState> optionalState = WorldUtils.getBlockState(world, chunkMap, pos);
-        if (!optionalState.isPresent()) {
+        if (optionalState.isEmpty()) {
             //If the position is not in a loaded chunk or out of bounds of the world, fail
             return FormationResult.FAIL;
         }
@@ -84,7 +84,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
             }
         } else if (!validateInner(state, chunkMap, pos)) {
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
-        } else if (!state.isAir(world, pos)) {
+        } else if (!state.isAir()) {
             //Make sure the position is immutable before we store it
             ctx.innerNodes.add(pos.immutable());
         }
@@ -94,14 +94,14 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     /**
      * @param pos Mutable BlockPos
      */
-    protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
-        return state.isAir(world, pos);
+    protected boolean validateInner(BlockState state, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
+        return state.isAir();
     }
 
     protected abstract CasingType getCasingType(BlockState state);
 
-    protected boolean isFrameCompatible(TileEntity tile) {
-        if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(manager)) {
+    protected boolean isFrameCompatible(BlockEntity tile) {
+        if (tile instanceof IStructuralMultiblock multiblock && multiblock.canInterface(manager)) {
             return true;
         }
         return manager.isCompatible(tile);
@@ -113,7 +113,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     protected FormationResult validateFrame(FormationProtocol<T> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
         IMultiblockBase tile = structure.getTile(pos);
         // terminate if we encounter a node that already failed this tick
-        if (!isFrameCompatible((TileEntity) tile) || (needsFrame && !type.isFrame())) {
+        if (!isFrameCompatible((BlockEntity) tile) || (needsFrame && !type.isFrame())) {
             //If it is not a valid node or if it is supposed to be a frame but is invalid
             // then we are not valid over all
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos);
@@ -140,7 +140,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     }
 
     @Override
-    public FormationResult postcheck(T structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
+    public FormationResult postcheck(T structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
         return FormationResult.SUCCESS;
     }
 

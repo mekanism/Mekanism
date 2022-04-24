@@ -127,16 +127,7 @@ public class LambdaMetaFactoryUtil {
                                        : (BiConsumer<O, V>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);
     }
 
-    private static class CallSiteInfo {
-
-        private final CallSite site;
-        @Nullable
-        private final MethodHandle handle;
-
-        public CallSiteInfo(CallSite site, @Nullable MethodHandle handle) {
-            this.site = site;
-            this.handle = handle;
-        }
+    private record CallSiteInfo(CallSite site, @Nullable MethodHandle handle) {
     }
 
     @FunctionalInterface

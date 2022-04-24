@@ -17,11 +17,11 @@ import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -180,8 +180,8 @@ public class TransmitterNetworkRegistry {
         return "Network Registry:\n" + networks;
     }
 
-    public ITextComponent[] toComponents() {
-        ITextComponent[] components = new ITextComponent[networks.size()];
+    public Component[] toComponents() {
+        Component[] components = new Component[networks.size()];
         int i = 0;
         for (DynamicNetwork<?, ?, ?> network : networks) {
             components[i++] = network.getTextComponent();
@@ -194,12 +194,12 @@ public class TransmitterNetworkRegistry {
 
         private final CompatibleTransmitterValidator<ACCEPTOR, NETWORK, TRANSMITTER> transmitterValidator;
         private final Set<TRANSMITTER> connectedTransmitters = new ObjectOpenHashSet<>();
-        private final Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        private final Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
         private final Set<NETWORK> networksFound = new ObjectOpenHashSet<>();
         private final Set<BlockPos> iterated = new ObjectOpenHashSet<>();
         private final Deque<BlockPos> queue = new LinkedList<>();
         private final TRANSMITTER startPoint;
-        private final World world;
+        private final Level world;
 
         OrphanPathFinder(Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> start) {
             startPoint = (TRANSMITTER) start;

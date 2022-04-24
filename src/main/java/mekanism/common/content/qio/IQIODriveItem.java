@@ -4,22 +4,22 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap.Entry;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 
 public interface IQIODriveItem {
 
     default boolean hasStoredItemMap(ItemStack stack) {
-        return ItemDataUtils.hasData(stack, NBTConstants.QIO_ITEM_MAP, NBT.TAG_LIST);
+        return ItemDataUtils.hasData(stack, NBTConstants.QIO_ITEM_MAP, Tag.TAG_LIST);
     }
 
     default void loadItemMap(ItemStack stack, QIODriveData data) {
         if (hasStoredItemMap(stack)) {
-            ListNBT list = ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP);
+            ListTag list = ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP);
             for (int i = 0; i < list.size(); i++) {
-                CompoundNBT tag = list.getCompound(i);
+                CompoundTag tag = list.getCompound(i);
                 ItemStack itemType = ItemStack.of(tag.getCompound(NBTConstants.ITEM));
                 if (!itemType.isEmpty()) {
                     //Only add the item if the item could be read. If it can't that means the mod adding the item was probably removed
@@ -32,10 +32,10 @@ public interface IQIODriveItem {
     }
 
     default void writeItemMap(ItemStack stack, QIODriveData map) {
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
         for (Entry<HashedItem> entry : map.getItemMap().object2LongEntrySet()) {
-            CompoundNBT tag = new CompoundNBT();
-            tag.put(NBTConstants.ITEM, entry.getKey().getStack().save(new CompoundNBT()));
+            CompoundTag tag = new CompoundTag();
+            tag.put(NBTConstants.ITEM, entry.getKey().getStack().save(new CompoundTag()));
             tag.putLong(NBTConstants.AMOUNT, entry.getLongValue());
             list.add(tag);
         }
@@ -46,15 +46,7 @@ public interface IQIODriveItem {
 
     int getTypeCapacity(ItemStack stack);
 
-    class DriveMetadata {
-
-        private final long count;
-        private final int types;
-
-        public DriveMetadata(long count, int types) {
-            this.count = count;
-            this.types = types;
-        }
+    record DriveMetadata(long count, int types) {
 
         public void write(ItemStack stack) {
             ItemDataUtils.setLong(stack, NBTConstants.QIO_META_COUNT, count);
@@ -63,14 +55,6 @@ public interface IQIODriveItem {
 
         public static DriveMetadata load(ItemStack stack) {
             return new DriveMetadata(ItemDataUtils.getLong(stack, NBTConstants.QIO_META_COUNT), ItemDataUtils.getInt(stack, NBTConstants.QIO_META_TYPES));
-        }
-
-        public long getCount() {
-            return count;
-        }
-
-        public int getTypes() {
-            return types;
         }
     }
 }

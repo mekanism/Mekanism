@@ -1,28 +1,29 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelQuantumEntangloporter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderQuantumEntangloporter extends MekanismTileEntityRenderer<TileEntityQuantumEntangloporter> {
 
-    private final ModelQuantumEntangloporter model = new ModelQuantumEntangloporter();
+    private final ModelQuantumEntangloporter model;
 
-    public RenderQuantumEntangloporter(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderQuantumEntangloporter(BlockEntityRendererProvider.Context context) {
+        super(context);
+        model = new ModelQuantumEntangloporter(context.getModelSet());
     }
 
     @Override
-    protected void render(TileEntityQuantumEntangloporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
-          IProfiler profiler) {
+    protected void render(TileEntityQuantumEntangloporter tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
+          ProfilerFiller profiler) {
         matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);

@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -8,9 +7,7 @@ import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -34,11 +31,11 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Items;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -47,7 +44,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     static final char DIAMOND_CHAR = 'D';
     static final char GLASS_CHAR = 'G';
-    static final char PERSONAL_CHEST_CHAR = 'P';
+    static final char PERSONAL_STORAGE_CHAR = 'P';
     static final char ROBIT_CHAR = 'R';
     static final char SORTER_CHAR = 'S';
     static final char TELEPORTATION_CORE_CHAR = 'T';
@@ -71,7 +68,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void addRecipes(Consumer<FinishedRecipe> consumer) {
         addMiscRecipes(consumer);
         addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
@@ -79,7 +76,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected List<ISubRecipeProvider> getSubRecipeProviders() {
-        return Arrays.asList(
+        return List.of(
               new BinRecipeProvider(),
               new ChemicalInfuserRecipeProvider(),
               new ChemicalInjectorRecipeProvider(),
@@ -123,7 +120,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         );
     }
 
-    private void addMiscRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addMiscRecipes(Consumer<FinishedRecipe> consumer) {
         //Atomic disassembler
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ATOMIC_DISASSEMBLER)
               .pattern(RecipePattern.createPattern(
@@ -183,7 +180,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .build(consumer);
         //Chemical crystallizer
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
@@ -230,13 +227,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_OXIDIZER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
-                    TripleLine.of(PERSONAL_CHEST_CHAR, Pattern.CONSTANT, Pattern.TANK),
+                    TripleLine.of(PERSONAL_STORAGE_CHAR, Pattern.CONSTANT, Pattern.TANK),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
               ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
-              .key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
+              .key(PERSONAL_STORAGE_CHAR, MekanismTags.Items.PERSONAL_STORAGE)
               .build(consumer);
         //Chemical washer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
@@ -256,7 +253,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.STEEL_CASING, Pattern.COBBLESTONE),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
-              ).key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE)
+              ).key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE_NORMAL)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_REINFORCED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -361,7 +358,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .build(consumer);
         //Electric pump
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.BUCKET, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
@@ -565,7 +562,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
               .build(consumer);
         //Industrial Alarm
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUSTRIAL_ALARM)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUSTRIAL_ALARM)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
@@ -607,7 +604,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_DIAMOND)
               .build(consumer);
         //HDPE Elytra
-        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.HDPE_CHAR, Pattern.ALLOY),
                     TripleLine.of(Pattern.HDPE_CHAR, Pattern.PREVIOUS, Pattern.HDPE_CHAR),
@@ -640,9 +637,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Laser tractor beam
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_TRACTOR_BEAM)
               .pattern(RecipePattern.createPattern(
-                    PERSONAL_CHEST_CHAR,
+                    PERSONAL_STORAGE_CHAR,
                     Pattern.CONSTANT)
-              ).key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
+              ).key(PERSONAL_STORAGE_CHAR, MekanismTags.Items.PERSONAL_STORAGE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER_AMPLIFIER)
               .build(consumer);
         //Logistical sorter
@@ -706,6 +703,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismTags.Items.SAWDUST)
               .build(consumer, Mekanism.rl("paper"));
+        //Personal barrel
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_BARREL)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.CIRCUIT, Pattern.PREVIOUS),
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
+              ).key(Pattern.PREVIOUS, Tags.Items.BARRELS_WOODEN)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(GLASS_CHAR, Tags.Items.GLASS)
+              .build(consumer);
         //Personal chest
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_CHEST)
               .pattern(RecipePattern.createPattern(
@@ -808,12 +816,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
-                    TripleLine.of(Pattern.INGOT, PERSONAL_CHEST_CHAR, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, PERSONAL_STORAGE_CHAR, Pattern.INGOT))
               ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
-              .key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
+              .key(PERSONAL_STORAGE_CHAR, MekanismTags.Items.PERSONAL_STORAGE)
               .build(consumer);
         //Rotary condensentrator
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR)
@@ -908,7 +916,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
                     TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
-              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
+              ).key(Pattern.INGOT, Tags.Items.INGOTS_COPPER)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .build(consumer);
@@ -988,7 +996,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.GLASS, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
-              ).key(Pattern.CONSTANT, MekanismBlocks.PERSONAL_CHEST)
+              ).key(Pattern.CONSTANT, MekanismTags.Items.PERSONAL_STORAGE)
               .key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.GLASS, Tags.Items.GLASS_PANES)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
@@ -1139,7 +1147,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER)
-              .key('c', MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
+              .key('c', Tags.Items.INGOTS_COPPER)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
               .build(consumer);
         //Nutritional Liquifier
@@ -1220,7 +1228,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
     }
 
-    private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addGearModuleRecipes(Consumer<FinishedRecipe> consumer) {
         //Module Base
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BASE, 2)
               .pattern(RecipePattern.createPattern(
@@ -1461,34 +1469,34 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
     }
 
-    private void addLateGameRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addLateGameRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "processing/lategame/";
 
         //plutonium
         GasToGasRecipeBuilder.centrifuging(
-              GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+              IngredientCreatorAccess.gas().from(MekanismGases.NUCLEAR_WASTE, 10),
               MekanismGases.PLUTONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "plutonium"));
         //polonium
         GasToGasRecipeBuilder.activating(
-              GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+              IngredientCreatorAccess.gas().from(MekanismGases.NUCLEAR_WASTE, 10),
               MekanismGases.POLONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "polonium"));
 
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-              FluidStackIngredient.from(FluidTags.WATER, 1_000),
-              GasStackIngredient.from(MekanismGases.PLUTONIUM, 1_000),
+              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_FLUORITE),
+              IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
+              IngredientCreatorAccess.gas().from(MekanismGases.PLUTONIUM, 1_000),
               100,
               MekanismItems.PLUTONIUM_PELLET.getItemStack(),
               MekanismGases.SPENT_NUCLEAR_WASTE.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-              FluidStackIngredient.from(FluidTags.WATER, 1_000),
-              GasStackIngredient.from(MekanismGases.POLONIUM, 1_000),
+              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_FLUORITE),
+              IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
+              IngredientCreatorAccess.gas().from(MekanismGases.POLONIUM, 1_000),
               100,
               MekanismItems.POLONIUM_PELLET.getItemStack(),
               MekanismGases.SPENT_NUCLEAR_WASTE.getStack(1_000)
@@ -1496,13 +1504,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //antimatter pellet
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              GasStackIngredient.from(MekanismGases.ANTIMATTER, 1_000),
+              IngredientCreatorAccess.gas().from(MekanismGases.ANTIMATTER, 1_000),
               MekanismItems.ANTIMATTER_PELLET.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
+              IngredientCreatorAccess.item().from(MekanismTags.Items.PELLETS_ANTIMATTER),
               MekanismGases.ANTIMATTER.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }

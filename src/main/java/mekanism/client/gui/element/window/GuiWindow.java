@@ -1,8 +1,7 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.datafixers.util.Pair;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
@@ -14,10 +13,11 @@ import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement {
@@ -34,10 +34,9 @@ public class GuiWindow extends GuiTexturedElement {
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
-    //TODO - 1.18: Switch this method to returning a record instead of a pair
-    private static Pair<Integer, Integer> calculateOpenPosition(IGuiWrapper gui, SelectedWindowData windowData, int x, int y, int width, int height) {
-        Pair<Integer, Integer> lastPosition = windowData.getLastPosition();
-        int lastX = lastPosition.getFirst();
+    private static WindowPosition calculateOpenPosition(IGuiWrapper gui, SelectedWindowData windowData, int x, int y, int width, int height) {
+        WindowPosition lastPosition = windowData.getLastPosition();
+        int lastX = lastPosition.x();
         if (lastX != Integer.MAX_VALUE) {
             int guiLeft = gui.getLeft();
             if (guiLeft + lastX < 0) {
@@ -48,7 +47,7 @@ public class GuiWindow extends GuiTexturedElement {
                 lastX = minecraft.getWindow().getGuiScaledWidth() - guiLeft - width;
             }
         }
-        int lastY = lastPosition.getSecond();
+        int lastY = lastPosition.y();
         if (lastY != Integer.MAX_VALUE) {
             int guiTop = gui.getTop();
             if (guiTop + lastY < 0) {
@@ -59,7 +58,7 @@ public class GuiWindow extends GuiTexturedElement {
                 lastY = minecraft.getWindow().getGuiScaledHeight() - guiTop - height;
             }
         }
-        return Pair.of(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY);
+        return new WindowPosition(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY);
     }
 
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, WindowType windowType) {
@@ -71,8 +70,8 @@ public class GuiWindow extends GuiTexturedElement {
         this(gui, calculateOpenPosition(gui, windowData, x, y, width, height), width, height, windowData);
     }
 
-    private GuiWindow(IGuiWrapper gui, Pair<Integer, Integer> calculatedPosition, int width, int height, SelectedWindowData windowData) {
-        super(GuiMekanism.BASE_BACKGROUND, gui, calculatedPosition.getFirst(), calculatedPosition.getSecond(), width, height);
+    private GuiWindow(IGuiWrapper gui, WindowPosition calculatedPosition, int width, int height, SelectedWindowData windowData) {
+        super(GuiMekanism.BASE_BACKGROUND, gui, calculatedPosition.x(), calculatedPosition.y(), width, height);
         this.windowData = windowData;
         isOverlay = true;
         active = true;
@@ -105,8 +104,8 @@ public class GuiWindow extends GuiTexturedElement {
                 prevDY = 0;
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
-            if (gui() instanceof GuiMekanism) {
-                Container c = ((GuiMekanism<?>) gui()).getMenu();
+            if (gui() instanceof GuiMekanism<?> gui) {
+                AbstractContainerMenu c = gui.getMenu();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
                     if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {
@@ -139,17 +138,16 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
             MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight(), OVERLAY_COLOR.rgba());
         } else {
-            RenderSystem.color4f(1, 1, 1, 0.75F);
+            RenderSystem.setShaderColor(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
             MekanismRenderer.resetColor();
         }
-        minecraft.textureManager.bind(getResource());
         renderBackgroundTexture(matrix, getResource(), 4, 4);
     }
 
@@ -182,8 +180,8 @@ public class GuiWindow extends GuiTexturedElement {
         }
     }
 
-    public void renderBlur(MatrixStack matrix) {
-        RenderSystem.color4f(1, 1, 1, 0.3F);
+    public void renderBlur(PoseStack matrix) {
+        RenderSystem.setShaderColor(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
@@ -205,7 +203,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
+    public void drawTitleText(PoseStack matrix, Component text, float y) {
         if (isFocusOverlay()) {
             super.drawTitleText(matrix, text, y);
         } else {

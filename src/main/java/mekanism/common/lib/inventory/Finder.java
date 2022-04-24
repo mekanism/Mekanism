@@ -2,12 +2,12 @@ package mekanism.common.lib.inventory;
 
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public interface Finder {
@@ -27,7 +27,7 @@ public interface Finder {
     }
 
     static Finder tag(String tagName) {
-        return stack -> !stack.isEmpty() && stack.getItem().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
+        return stack -> !stack.isEmpty() && stack.getTags().anyMatch(tag -> WildcardMatcher.matches(tagName, tag));
     }
 
     static Finder modID(String modID) {

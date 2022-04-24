@@ -46,10 +46,10 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
 
@@ -146,20 +146,20 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             //Lazy init outputData
                             outputData = new HashMap<>();
                         }
-                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo) {
-                            for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) slotInfo).getTanks()) {
+                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo) {
+                            for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
                                 if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
                                     outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
                                 }
                             }
-                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
-                            for (IExtendedFluidTank tank : ((FluidSlotInfo) slotInfo).getTanks()) {
+                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo fluidSlotInfo) {
+                            for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
                                 if (!tank.isEmpty()) {
                                     outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
                                 }
                             }
-                        } else if (type == TransmissionType.ENERGY && slotInfo instanceof EnergySlotInfo) {
-                            for (IEnergyContainer container : ((EnergySlotInfo) slotInfo).getContainers()) {
+                        } else if (type == TransmissionType.ENERGY && slotInfo instanceof EnergySlotInfo energySlotInfo) {
+                            for (IEnergyContainer container : energySlotInfo.getContainers()) {
                                 if (!container.isEmpty()) {
                                     outputData.computeIfAbsent(container, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
                                 }
@@ -200,14 +200,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                           ((InventorySlotInfo) slotInfo).getSlots());
                     if (!ejectMap.isEmpty()) {
                         for (Direction side : outputs) {
-                            TileEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
+                            BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
                             if (target != null) {
                                 //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
                                 ejectMap.side = side;
                                 //If the spot is not loaded just skip trying to eject to it
                                 TransitResponse response;
-                                if (target instanceof TileEntityLogisticalTransporterBase) {
-                                    response = ((TileEntityLogisticalTransporterBase) target).getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
+                                if (target instanceof TileEntityLogisticalTransporterBase transporter) {
+                                    response = transporter.getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
                                 } else {
                                     response = ejectMap.addToInventory(target, side, 0, false);
                                 }
@@ -274,9 +274,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_EJECTOR, NBT.TAG_COMPOUND)) {
-            CompoundNBT ejectorNBT = nbtTags.getCompound(NBTConstants.COMPONENT_EJECTOR);
+    public void read(CompoundTag nbtTags) {
+        if (nbtTags.contains(NBTConstants.COMPONENT_EJECTOR, Tag.TAG_COMPOUND)) {
+            CompoundTag ejectorNBT = nbtTags.getCompound(NBTConstants.COMPONENT_EJECTOR);
             strictInput = ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT);
             NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor, color -> outputColor = color);
             //Input colors
@@ -288,8 +288,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        CompoundNBT ejectorNBT = new CompoundNBT();
+    public void write(CompoundTag nbtTags) {
+        CompoundTag ejectorNBT = new CompoundTag();
         ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, strictInput);
         if (outputColor != null) {
             ejectorNBT.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(outputColor));
@@ -395,7 +395,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
         public Direction side;
 
-        public EjectTransitRequest(TileEntity tile, Direction side) {
+        public EjectTransitRequest(BlockEntity tile, Direction side) {
             super(tile, side);
             this.side = side;
         }

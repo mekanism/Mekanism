@@ -16,11 +16,11 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
@@ -30,7 +30,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
 
     private final List<IExtendedFluidTank> fluidTanks;
 
-    FluidRecipeData(ListNBT tanks) {
+    FluidRecipeData(ListTag tanks) {
         int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         fluidTanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
@@ -66,8 +66,8 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
                 int tank = i;
                 fluidTanks.add(BasicFluidTank.create(fluidHandler.getTankCapacity(tank), fluid -> fluidHandler.isFluidValid(tank, fluid), null));
             }
-        } else if (item instanceof BlockItem) {
-            TileEntityMekanism tile = getTileFromBlock(((BlockItem) item).getBlock());
+        } else if (item instanceof BlockItem blockItem) {
+            TileEntityMekanism tile = getTileFromBlock(blockItem.getBlock());
             if (tile == null || !tile.handles(SubstanceType.FLUID)) {
                 //Something went wrong
                 return false;

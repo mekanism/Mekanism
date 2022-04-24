@@ -5,9 +5,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
-public enum ChemicalTankTier implements ITier, IStringSerializable {
+public enum ChemicalTankTier implements ITier, StringRepresentable {
     BASIC(BaseTier.BASIC, 64_000, 1_000),
     ADVANCED(BaseTier.ADVANCED, 256_000, 16_000),
     ELITE(BaseTier.ELITE, 1_024_000, 128_000),

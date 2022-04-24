@@ -6,7 +6,7 @@
       "tag": "forge:ingots/copper"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:tin"
   },

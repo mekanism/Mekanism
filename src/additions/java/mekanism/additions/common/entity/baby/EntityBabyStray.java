@@ -2,31 +2,31 @@ package mekanism.additions.common.entity.baby;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.monster.StrayEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.monster.Stray;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraftforge.network.NetworkHooks;
 
-public class EntityBabyStray extends StrayEntity implements IBabyEntity {
+public class EntityBabyStray extends Stray implements IBabyEntity {
 
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.defineId(EntityBabyStray.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_CHILD = SynchedEntityData.defineId(EntityBabyStray.class, EntityDataSerializers.BOOLEAN);
 
     //Copy of stray spawn restrictions
-    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random random) {
-        return checkMonsterSpawnRules(type, world, reason, pos, random) && (reason == SpawnReason.SPAWNER || world.canSeeSky(pos));
+    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, Random random) {
+        return checkMonsterSpawnRules(type, world, reason, pos, random) && (reason == MobSpawnType.SPAWNER || world.canSeeSky(pos));
     }
 
-    public EntityBabyStray(EntityType<EntityBabyStray> type, World world) {
+    public EntityBabyStray(EntityType<EntityBabyStray> type, Level world) {
         super(type, world);
         setBaby(true);
     }
@@ -48,7 +48,7 @@ public class EntityBabyStray extends StrayEntity implements IBabyEntity {
     }
 
     @Override
-    public void onSyncedDataUpdated(@Nonnull DataParameter<?> key) {
+    public void onSyncedDataUpdated(@Nonnull EntityDataAccessor<?> key) {
         if (IS_CHILD.equals(key)) {
             refreshDimensions();
         }
@@ -56,7 +56,7 @@ public class EntityBabyStray extends StrayEntity implements IBabyEntity {
     }
 
     @Override
-    protected int getExperienceReward(@Nonnull PlayerEntity player) {
+    protected int getExperienceReward(@Nonnull Player player) {
         if (isBaby()) {
             xpReward = (int) (xpReward * 2.5F);
         }
@@ -69,13 +69,13 @@ public class EntityBabyStray extends StrayEntity implements IBabyEntity {
     }
 
     @Override
-    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
+    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntityDimensions size) {
         return this.isBaby() ? 0.93F : super.getStandingEyeHeight(pose, size);
     }
 
     @Nonnull
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

@@ -3,15 +3,14 @@ package mekanism.common.registration;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryObject;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> implements INamedEntry {
+public class DoubleWrappedRegistryObject<PRIMARY, SECONDARY> implements INamedEntry {
 
-    private final RegistryObject<PRIMARY> primaryRO;
-    private final RegistryObject<SECONDARY> secondaryRO;
+    protected final RegistryObject<PRIMARY> primaryRO;
+    protected final RegistryObject<SECONDARY> secondaryRO;
 
     public DoubleWrappedRegistryObject(RegistryObject<PRIMARY> primaryRO, RegistryObject<SECONDARY> secondaryRO) {
         this.primaryRO = primaryRO;

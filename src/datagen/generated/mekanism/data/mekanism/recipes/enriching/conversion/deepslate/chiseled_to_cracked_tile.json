@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:chiseled_deepslate"
+    }
+  },
+  "output": {
+    "item": "minecraft:cracked_deepslate_tiles"
+  }
+}

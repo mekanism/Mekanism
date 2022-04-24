@@ -1,17 +1,19 @@
 package mekanism.api.gear;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.providers.IModuleDataProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Helper class for interacting with and creating custom modules. Get an instance from {@link mekanism.api.MekanismAPI#getModuleHelper()}.
@@ -100,7 +102,7 @@ public interface IModuleHelper {
      *
      * @return Module types on an item.
      */
-    Collection<ModuleData<?>> loadAllTypes(ItemStack container);
+    List<ModuleData<?>> loadAllTypes(ItemStack container);
 
     /**
      * Helper method to create a HUD element with a given icon, text, and color.
@@ -111,7 +113,7 @@ public interface IModuleHelper {
      *
      * @return A new HUD element.
      */
-    IHUDElement hudElement(ResourceLocation icon, ITextComponent text, HUDColor color);
+    IHUDElement hudElement(ResourceLocation icon, Component text, HUDColor color);
 
     /**
      * Helper method to create a HUD element representing an enabled state with a given icon.
@@ -133,4 +135,41 @@ public interface IModuleHelper {
      * @return A new HUD element.
      */
     IHUDElement hudElementPercent(ResourceLocation icon, double ratio);
+
+    /**
+     * Adds a file that contains overrides and models for some custom modules.
+     *
+     * @param location Asset location assumed to be for an obj file. The {@link ResourceLocation} for the modules Mekanism adds is {@code
+     *                 mekanism:models/entity/mekasuit_modules.obj}
+     *
+     * @apiNote Must only be called on the client side and from {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}.
+     */
+    void addMekaSuitModuleModels(ResourceLocation location);
+
+    /**
+     * Adds a model spec for a specific MekaSuit Module to allow it to render as part of the MekaSuit when installed and enabled. This method causes the "active" model to
+     * always be selected.
+     *
+     * @param name               Unique name that will be checked for in all the module model files. For third party mods it is recommended this contains your modid.
+     * @param moduleDataProvider {@link ModuleData} to associate this spec with.
+     * @param slotType           Equipment position the spec will be used for.
+     *
+     * @apiNote Must only be called on the client side and from {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}.
+     * @see #addMekaSuitModuleModelSpec(String, IModuleDataProvider, EquipmentSlot, Predicate)
+     */
+    default void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType) {
+        addMekaSuitModuleModelSpec(name, moduleDataProvider, slotType, entity -> true);
+    }
+
+    /**
+     * Adds a model spec for a specific MekaSuit Module to allow it to render as part of the MekaSuit when installed and enabled.
+     *
+     * @param name               Unique name that will be checked for in all the module model files. For third party mods it is recommended this contains your modid.
+     * @param moduleDataProvider {@link ModuleData} to associate this spec with.
+     * @param slotType           Equipment position the spec will be used for.
+     * @param isActive           Predicate to check if an entity should use the active or inactive model.
+     *
+     * @apiNote Must only be called on the client side and from {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}.
+     */
+    void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive);
 }

@@ -24,6 +24,7 @@ import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -31,7 +32,8 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -46,11 +48,11 @@ public class LookingAtUtils {
     }
 
     @Nullable
-    private static MultiblockData getMultiblock(@Nonnull TileEntity tile) {
-        if (tile instanceof IMultiblock) {
-            return ((IMultiblock<?>) tile).getMultiblock();
-        } else if (tile instanceof IStructuralMultiblock) {
-            for (Entry<MultiblockManager<?>, Structure> entry : ((IStructuralMultiblock) tile).getStructureMap().entrySet()) {
+    private static MultiblockData getMultiblock(@Nonnull BlockEntity tile) {
+        if (tile instanceof IMultiblock<?> multiblock) {
+            return multiblock.getMultiblock();
+        } else if (tile instanceof IStructuralMultiblock multiblock) {
+            for (Entry<MultiblockManager<?>, Structure> entry : multiblock.getStructureMap().entrySet()) {
                 if (entry.getKey() != null) {
                     //TODO: Figure out if the structure map is supposed to be able to have nulls in it (in which handling it like this is correct)
                     // if it is not meant to have nulls then we should modify how Structure#getManager handles things
@@ -64,7 +66,13 @@ public class LookingAtUtils {
         return null;
     }
 
-    public static void addInfo(LookingAtHelper info, @Nonnull TileEntity tile, boolean displayTanks, boolean displayFluidTanks) {
+    public static void addInfo(LookingAtHelper info, @Nonnull Entity entity) {
+        if (entity instanceof EntityRobit robit) {
+            displayEnergy(info, robit);
+        }
+    }
+
+    public static void addInfo(LookingAtHelper info, @Nonnull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         MultiblockData structure = getMultiblock(tile);
         Optional<IStrictEnergyHandler> energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null).resolve();
         if (energyCapability.isPresent()) {
@@ -93,11 +101,10 @@ public class LookingAtUtils {
     }
 
     private static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler) {
-        if (fluidHandler instanceof IMekanismFluidHandler) {
-            IMekanismFluidHandler mekFluidHandler = (IMekanismFluidHandler) fluidHandler;
+        if (fluidHandler instanceof IMekanismFluidHandler mekFluidHandler) {
             for (IExtendedFluidTank fluidTank : mekFluidHandler.getFluidTanks(null)) {
-                if (fluidTank instanceof FluidTankWrapper) {
-                    MergedTank mergedTank = ((FluidTankWrapper) fluidTank).getMergedTank();
+                if (fluidTank instanceof FluidTankWrapper wrapper) {
+                    MergedTank mergedTank = wrapper.getMergedTank();
                     CurrentType currentType = mergedTank.getCurrentType();
                     if (currentType != CurrentType.EMPTY && currentType != CurrentType.FLUID) {
                         //Skip if the tank is on a chemical
@@ -129,7 +136,7 @@ public class LookingAtUtils {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(TileEntity tile, @Nullable MultiblockData structure, Capability<HANDLER> capability,
+          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(BlockEntity tile, @Nullable MultiblockData structure, Capability<HANDLER> capability,
           Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info, ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
         Optional<HANDLER> cap = CapabilityUtils.getCapability(tile, capability, null).resolve();
         if (cap.isPresent()) {
@@ -166,9 +173,9 @@ public class LookingAtUtils {
           LookingAtHelper info, ILangEntry langEntry, TANK chemicalTank, Current matchingCurrent, CurrentType matchingCurrentType) {
         if (chemicalTank instanceof ChemicalTankWrapper) {
             MergedChemicalTank mergedTank = ((ChemicalTankWrapper<CHEMICAL, STACK>) chemicalTank).getMergedTank();
-            if (mergedTank instanceof MergedTank) {
+            if (mergedTank instanceof MergedTank tank) {
                 //If we are also support fluid, only show if we are the correct type
-                if (((MergedTank) mergedTank).getCurrentType() != matchingCurrentType) {
+                if (tank.getCurrentType() != matchingCurrentType) {
                     //Skip if the tank is not the correct chemical type (fluid is default for merged tanks when empty)
                     return;
                 }

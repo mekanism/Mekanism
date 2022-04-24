@@ -13,8 +13,8 @@ import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiTextFilter<FILTER, TILE> {
@@ -29,8 +29,8 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     @Override
-    protected List<ITextComponent> getScreenText() {
-        List<ITextComponent> list = super.getScreenText();
+    protected List<Component> getScreenText() {
+        List<Component> list = super.getScreenText();
         list.add(MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName()));
         return list;
     }
@@ -47,13 +47,20 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
             filterSaveFailed(getNoFilterSaveError());
         } else if (name.equals(filter.getTagName())) {
             filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
+        } else if (!hasMatchingTargets(name)) {
+            filterSaveFailed(MekanismLang.TEXT_FILTER_NO_MATCHES);
         } else {
             filter.setTagName(name);
             slotDisplay.updateStackList();
             text.setText("");
+            filterSaveSuccess();
             return true;
         }
         return false;
+    }
+
+    protected boolean hasMatchingTargets(String name) {
+        return !TagCache.getItemTagStacks(name).isEmpty();
     }
 
     @Nonnull

@@ -4,10 +4,10 @@ import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import net.minecraft.tileentity.TileEntityType;
 
 public class BlockUniversalCable extends BlockSmallTransmitter implements ITypeBlock, IHasTileEntity<TileEntityUniversalCable> {
 
@@ -23,17 +23,12 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITypeB
     }
 
     @Override
-    public TileEntityType<TileEntityUniversalCable> getTileType() {
-        switch (tier) {
-            case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE.getTileEntityType();
-            case ELITE:
-                return MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE.getTileEntityType();
-            case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE.getTileEntityType();
-            case BASIC:
-            default:
-                return MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE.getTileEntityType();
-        }
+    public TileEntityTypeRegistryObject<TileEntityUniversalCable> getTileType() {
+        return switch (tier) {
+            case ADVANCED -> MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE;
+            case ELITE -> MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE;
+            case ULTIMATE -> MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE;
+            case BASIC -> MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE;
+        };
     }
 }

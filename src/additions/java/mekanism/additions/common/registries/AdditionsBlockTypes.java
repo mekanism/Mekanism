@@ -6,7 +6,7 @@ import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeStateFacing.FacePlacementType;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockType.BlockTypeBuilder;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class AdditionsBlockTypes {
 

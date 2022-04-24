@@ -11,8 +11,7 @@ public final class NBTConstants {
     //Ones that also are used for interacting with forge/vanilla
     public static final String BASE = "Base";
     public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
-    public static final String CHUNK_DATA_LEVEL = "Level";
-    public static final String ENTITY_TAG = "EntityTag";
+    public static final String CUSTOM_NAME = "CustomName";
     public static final String ID = "id";
     public static final String X = "x";
     public static final String Y = "y";
@@ -193,8 +192,6 @@ public final class NBTConstants {
     public static final String STOCK_CONTROL = "stockControl";
     public static final String STORED = "stored";
     public static final String STRICT_INPUT = "strictInput";
-    @Deprecated//TODO - 1.18: Remove
-    public static final String SUCKED_LAST_OPERATION = "suckedLastOperation";
     public static final String TAG_NAME = "tagName";
     public static final String TANK = "Tank";
     public static final String TEMPERATURE = "temperature";
@@ -206,5 +203,5 @@ public final class NBTConstants {
     public static final String UPGRADES = "upgrades";
     public static final String USED_NODES = "usedNodes";
     public static final String USED_SO_FAR = "usedSoFar";
-    public static final String WORLD_GEN_VERSION = "worldGenVersion";
+    public static final String WORLD_GEN_VERSION = "mekWorldGenVersion";
 }

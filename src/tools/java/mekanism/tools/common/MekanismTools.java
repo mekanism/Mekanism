@@ -1,5 +1,9 @@
 package mekanism.tools.common;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -8,21 +12,26 @@ import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.config.ToolsConfig.ArmorSpawnChanceConfig;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -57,21 +66,43 @@ public class MekanismTools implements IModModule {
         return new ResourceLocation(MekanismTools.MODID, path);
     }
 
-    private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+    private void onConfigLoad(ModConfigEvent configEvent) {
         //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
-        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {
-            ((MekanismModConfig) config).clearCache();
+        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
+            mekConfig.clearCache();
         }
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            //Ensure our tags are all initialized
+            ToolsTags.init();
+        });
+        registerTiers(MekanismToolsConfig.tools.bronze, MekanismToolsConfig.tools.lapisLazuli, MekanismToolsConfig.tools.osmium, MekanismToolsConfig.tools.steel,
+              MekanismToolsConfig.tools.refinedGlowstone, MekanismToolsConfig.tools.refinedObsidian);
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }
 
-    private void setStackIfEmpty(LivingEntity entity, EquipmentSlotType slot, ItemStack item) {
+    private void registerTiers(BaseMekanismMaterial... tiers) {
+        Multimap<Integer, Tier> vanillaTiers = HashMultimap.create();
+        for (Tiers vanillaTier : Tiers.values()) {
+            vanillaTiers.put(vanillaTier.getLevel(), vanillaTier);
+        }
+        for (BaseMekanismMaterial tier : tiers) {
+            int level = tier.getLevel();
+            Collection<Tier> equivalent = vanillaTiers.get(level);
+            Collection<Tier> vanillaNext = vanillaTiers.get(level + 1);
+            //If the tier is equivalent to another tier then the equivalent one should be placed in the after list
+            // and if it is equivalent to a vanilla tier (like all ours are when equivalent), the next tier
+            // should also specify the next tier in the before list
+            TierSortingRegistry.registerTier(tier, rl(tier.getRegistryPrefix()), new ArrayList<>(equivalent), new ArrayList<>(vanillaNext));
+        }
+    }
+
+    private void setStackIfEmpty(LivingEntity entity, EquipmentSlot slot, ItemStack item) {
         if (entity.getItemBySlot(slot).isEmpty()) {
             entity.setItemSlot(slot, item);
         }
@@ -79,32 +110,32 @@ public class MekanismTools implements IModModule {
 
     private void setEntityArmorWithChance(Random random, LivingEntity entity, IItemProvider sword, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
           IItemProvider boots, ArmorSpawnChanceConfig chanceConfig) {
-        if (entity instanceof ZombieEntity && random.nextDouble() < chanceConfig.swordChance.get()) {
-            setStackIfEmpty(entity, EquipmentSlotType.MAINHAND, sword.getItemStack());
+        if (entity instanceof Zombie && random.nextDouble() < chanceConfig.swordChance.get()) {
+            setStackIfEmpty(entity, EquipmentSlot.MAINHAND, sword.getItemStack());
         }
         if (random.nextDouble() < chanceConfig.helmetChance.get()) {
-            setStackIfEmpty(entity, EquipmentSlotType.HEAD, helmet.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlot.HEAD, helmet.getItemStack());
         }
         if (random.nextDouble() < chanceConfig.chestplateChance.get()) {
-            setStackIfEmpty(entity, EquipmentSlotType.CHEST, chestplate.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlot.CHEST, chestplate.getItemStack());
         }
         if (random.nextDouble() < chanceConfig.leggingsChance.get()) {
-            setStackIfEmpty(entity, EquipmentSlotType.LEGS, leggings.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlot.LEGS, leggings.getItemStack());
         }
         if (random.nextDouble() < chanceConfig.bootsChance.get()) {
-            setStackIfEmpty(entity, EquipmentSlotType.FEET, boots.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlot.FEET, boots.getItemStack());
         }
     }
 
     private void onLivingSpecialSpawn(LivingSpawnEvent.SpecialSpawn event) {
         LivingEntity entity = event.getEntityLiving();
-        if (entity instanceof ZombieEntity || entity instanceof SkeletonEntity || entity instanceof PiglinEntity) {
+        if (entity instanceof Zombie || entity instanceof Skeleton || entity instanceof Piglin) {
             //Don't bother calculating random numbers unless the instanceof checks pass
             Random random = event.getWorld().getRandom();
             double chance = random.nextDouble();
             if (chance < MekanismToolsConfig.tools.armorSpawnRate.get()) {
                 //We can only spawn refined glowstone armor on piglins
-                int armorType = entity instanceof PiglinEntity ? 0 : random.nextInt(6);
+                int armorType = entity instanceof Piglin ? 0 : random.nextInt(6);
                 if (armorType == 0) {
                     setEntityArmorWithChance(random, entity, ToolsItems.REFINED_GLOWSTONE_SWORD, ToolsItems.REFINED_GLOWSTONE_HELMET, ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
                           ToolsItems.REFINED_GLOWSTONE_LEGGINGS, ToolsItems.REFINED_GLOWSTONE_BOOTS, MekanismToolsConfig.tools.refinedGlowstoneSpawnRate);

@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.data.TransmitterModelData;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.network.transmitter.DiversionTransporter;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
@@ -11,15 +10,15 @@ import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporterBase implements IComputerTile {
 
-    public TileEntityDiversionTransporter() {
-        super(MekanismBlocks.DIVERSION_TRANSPORTER);
-        if (Mekanism.hooks.computerCompatEnabled()) {
-            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
-        }
+    public TileEntityDiversionTransporter(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.DIVERSION_TRANSPORTER, pos, state);
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override

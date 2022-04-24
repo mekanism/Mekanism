@@ -166,6 +166,5 @@
   "item.mekanismtools.steel_shovel": "Spade o' Steel",
   "item.mekanismtools.steel_sword": "Cutlass o' Steel",
   "item.mekanismtools.stone_paxel": "Paxel o' Rock",
-  "item.mekanismtools.wood_paxel": "Paxel o' Timber",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "item.mekanismtools.wood_paxel": "Paxel o' Timber"
 }

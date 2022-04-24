@@ -1,8 +1,8 @@
 package mekanism.common.lib.math.voxel;
 
 import mekanism.common.lib.multiblock.Structure.Axis;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 public class VoxelCuboid implements IShape {
 
@@ -15,7 +15,7 @@ public class VoxelCuboid implements IShape {
     }
 
     public VoxelCuboid(int length, int height, int width) {
-        this(new BlockPos(0, 0, 0), new BlockPos(length - 1, height - 1, width - 1));
+        this(BlockPos.ZERO, new BlockPos(length - 1, height - 1, width - 1));
     }
 
     public int length() {
@@ -143,11 +143,7 @@ public class VoxelCuboid implements IShape {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof VoxelCuboid)) {
-            return false;
-        }
-        VoxelCuboid other = (VoxelCuboid) obj;
-        return minPos.equals(other.minPos) && maxPos.equals(other.maxPos);
+        return obj instanceof VoxelCuboid other && minPos.equals(other.minPos) && maxPos.equals(other.maxPos);
     }
 
     public static VoxelCuboid from(VoxelPlane p1, VoxelPlane p2, int p1Pos, int p2Pos) {

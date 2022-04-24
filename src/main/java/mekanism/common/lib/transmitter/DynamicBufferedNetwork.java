@@ -8,10 +8,10 @@ import java.util.UUID;
 import java.util.function.LongConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Range3D;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
+import mekanism.common.lib.math.Range3D;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.eventbus.api.Event;
 
 public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,

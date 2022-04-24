@@ -8,15 +8,17 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.security.ISecurityObject;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
-import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
@@ -25,12 +27,12 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidUtil;
 
 @ParametersAreNonnullByDefault
@@ -53,10 +55,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         Set<RecipeUpgradeType> supportedTypes = EnumSet.noneOf(RecipeUpgradeType.class);
         Item item = stack.getItem();
         TileEntityMekanism tile = null;
-        if (item instanceof BlockItem) {
-            Block block = ((BlockItem) item).getBlock();
-            if (block instanceof IHasTileEntity) {
-                TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
+        if (item instanceof BlockItem blockItem) {
+            Block block = blockItem.getBlock();
+            if (block instanceof IHasTileEntity<?> hasTileEntity) {
+                BlockEntity tileEntity = hasTileEntity.createDummyBlockEntity();
                 if (tileEntity instanceof TileEntityMekanism) {
                     tile = (TileEntityMekanism) tileEntity;
                 }
@@ -92,7 +94,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (item instanceof ISustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (item instanceof ISecurityItem) {
+        if (stack.getCapability(Capabilities.OWNER_OBJECT).isPresent() || tile != null && tile.hasSecurity()) {
+            //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
+            // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
         }
         if (item instanceof IQIODriveItem) {
@@ -123,15 +127,20 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case ITEM:
                 return new ItemRecipeData(((ISustainedInventory) item).getInventory(stack));
             case SECURITY:
-                ISecurityItem securityItem = (ISecurityItem) item;
-                UUID ownerUUID = securityItem.getOwnerUUID(stack);
-                return ownerUUID == null ? null : new SecurityRecipeData(ownerUUID, securityItem.getSecurity(stack));
+                UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
+                if (ownerUUID == null) {
+                    return null;
+                }
+                //Treat owner items as public even though they are private as we don't want to lower the output
+                // item's security just because it has one item that is owned
+                SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
+                return new SecurityRecipeData(ownerUUID, securityMode);
             case UPGRADE:
-                CompoundNBT componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
+                CompoundTag componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                 return componentUpgrade.isEmpty() ? null : new UpgradesRecipeData(Upgrade.buildMap(componentUpgrade));
             case QIO_DRIVE:
                 DriveMetadata data = DriveMetadata.load(stack);
-                if (data.getCount() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
+                if (data.count() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
                     //If we don't have any stored items don't actually grab any recipe data
                     return new QIORecipeData(data, ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP));
                 }
@@ -157,8 +166,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
     @Nullable
     default TileEntityMekanism getTileFromBlock(Block block) {
-        if (block instanceof IHasTileEntity) {
-            TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
+        if (block instanceof IHasTileEntity<?> hasTileEntity) {
+            BlockEntity tileEntity = hasTileEntity.createDummyBlockEntity();
             if (tileEntity instanceof TileEntityMekanism) {
                 return (TileEntityMekanism) tileEntity;
             }

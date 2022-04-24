@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
@@ -40,20 +39,22 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
-public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER> {
+public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER, CraftingRecipe> {
 
     private final IRecipeTransferHandlerHelper handlerHelper;
     private final Class<CONTAINER> containerClass;
@@ -70,17 +71,15 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         return containerClass;
     }
 
+    @Override
+    public Class<CraftingRecipe> getRecipeClass() {
+        return CraftingRecipe.class;
+    }
+
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(CONTAINER container, Object rawRecipe, IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer,
+    public IRecipeTransferError transferRecipe(CONTAINER container, CraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer,
           boolean doTransfer) {
-        if (!(rawRecipe instanceof ICraftingRecipe)) {
-            //Ensure that we actually have an IRecipe as if we succeed we will be using the id it provides
-            // to inform the server what recipe is being autofilled transfer the data to the server
-            //Note: Technically we could check this as IRecipe, but we do ICraftingRecipe as it really should be
-            // a crafting recipe, and if it isn't the server won't know how to transfer it anyway
-            return handlerHelper.createInternalError();
-        }
         byte selectedCraftingGrid = container.getSelectedCraftingGrid();
         if (selectedCraftingGrid == -1) {
             //Note: While the java docs recommend logging a message to the console when returning an internal error,
@@ -88,12 +87,11 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             // as there are no crafting grids being shown
             return handlerHelper.createInternalError();
         }
-        ICraftingRecipe recipe = (ICraftingRecipe) rawRecipe;
         QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
         //Note: This variable is only used for when doTransfer is false
         byte nonEmptyCraftingSlots = 0;
         if (!doTransfer) {
-            CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
+            CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
             for (int slot = 0; slot < 9; slot++) {
                 CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 if (!inputSlot.isEmpty()) {
@@ -117,52 +115,48 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         // inventory, QIO, and crafting window that if one changes it invalidates the cache of what ingredients are stored, though then
         // we wouldn't be able to directly modify the map as we find inputs, and also we still would have to do a lot of this comparison
         // logic, unless we can also somehow cache the recipe layout and how it interacts with the other information
-        int inputCount = 0;
-        Byte2ObjectMap<Set<HashedItem>> hashedIngredients = new Byte2ObjectArrayMap<>();
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : recipeLayout.getItemStacks().getGuiIngredients().entrySet()) {
-            IGuiIngredient<ItemStack> ingredient = entry.getValue();
-            if (ingredient.isInput()) {
-                List<ItemStack> validIngredients = ingredient.getAllIngredients();
-                if (!validIngredients.isEmpty()) {
-                    //If there are valid ingredients, increment the count
-                    inputCount++;
-                    // and convert them to HashedItems
-                    // Note: we use a linked hash set to preserve the order of the ingredients as done in JEI
-                    LinkedHashSet<HashedItem> representations = new LinkedHashSet<>();
-                    //Note: We shouldn't need to convert the item that is part of the recipe to a "reduced" stack form based
-                    // on what the server would send, as the item should already be like that from when the server sent the
-                    // client the recipe. If this turns out to be incorrect due to how some mod does recipes, then we may need
-                    // to change this
-                    ItemStack displayed = ingredient.getDisplayedIngredient();
-                    //Note: We use raw hashed items as none of this stuff should or will be modified while doing these checks,
-                    // so we may as well remove some unneeded copies
-                    if (displayed != null) {
-                        //Start by adding the displayed ingredient if there is one to prioritize it
-                        representations.add(HashedItem.raw(displayed));
-                    }
-                    //Then add all valid ingredients in the order they appear in JEI. Because we are using a set
-                    // we will just end up merging with the displayed ingredient when we get to it as a valid ingredient
-                    for (ItemStack validIngredient : validIngredients) {
-                        representations.add(HashedItem.raw(validIngredient));
-                    }
-                    //Note: We decrement the index by one because JEI uses the first index for the output
-                    int actualIndex = entry.getKey() - 1;
-                    if (actualIndex > Byte.MAX_VALUE || actualIndex < Byte.MIN_VALUE) {
-                        //Note: This should not happen, but validate it doesn't just to ensure if it does, we gracefully error
-                        Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had unexpected index: {}", recipe.getId(), actualIndex);
-                        return handlerHelper.createInternalError();
-                    }
-                    hashedIngredients.put((byte) actualIndex, representations);
-                }
-            }
-        }
-        if (inputCount > 9) {
+        List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
+        int maxInputCount = slotViews.size();
+        if (maxInputCount > 9) {
             //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
-            // if we have more than nine inputs, we check it as an extra validation step, but we don't hold off on
-            // converting input ingredients to HashedItems, until we have validated this, as there should never be
+            // if we have more than nine inputs, as there should never be
             // a case where this actually happens except potentially with some really obscure modded recipe
-            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe.getId(), inputCount);
+            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe.getId(), maxInputCount);
             return handlerHelper.createInternalError();
+        }
+        int inputCount = 0;
+        record TrackedIngredients(IRecipeSlotView view, Set<HashedItem> representations) {
+        }
+        //We will have at most the same number of ingredients as we have input slot views
+        Byte2ObjectMap<TrackedIngredients> hashedIngredients = new Byte2ObjectArrayMap<>(maxInputCount);
+        for (int index = 0; index < maxInputCount; index++) {
+            IRecipeSlotView slotView = slotViews.get(index);
+            List<ItemStack> validIngredients = slotView.getIngredients(VanillaTypes.ITEM_STACK).toList();
+            if (!validIngredients.isEmpty()) {
+                //If there are valid ingredients, increment the count
+                inputCount++;
+                // and convert them to HashedItems
+                // Note: we use a linked hash set to preserve the order of the ingredients as done in JEI
+                LinkedHashSet<HashedItem> representations = new LinkedHashSet<>(validIngredients.size());
+                //Note: We shouldn't need to convert the item that is part of the recipe to a "reduced" stack form based
+                // on what the server would send, as the item should already be like that from when the server sent the
+                // client the recipe. If this turns out to be incorrect due to how some mod does recipes, then we may need
+                // to change this
+                // Unchecked cast as we only requested views for item types
+                ItemStack displayed = slotView.getDisplayedIngredient(VanillaTypes.ITEM_STACK).orElse(ItemStack.EMPTY);
+                //Note: We use raw hashed items as none of this stuff should or will be modified while doing these checks,
+                // so we may as well remove some unneeded copies
+                if (!displayed.isEmpty()) {
+                    //Start by adding the displayed ingredient if there is one to prioritize it
+                    representations.add(HashedItem.raw(displayed));
+                }
+                //Then add all valid ingredients in the order they appear in JEI. Because we are using a set
+                // we will just end up merging with the displayed ingredient when we get to it as a valid ingredient
+                for (ItemStack validIngredient : validIngredients) {
+                    representations.add(HashedItem.raw(validIngredient));
+                }
+                hashedIngredients.put((byte) index, new TrackedIngredients(slotView, representations));
+            }
         }
         //Get all our available items in the QIO frequency, we flatten the cache to stack together items that
         // as far as the client is concerned are the same instead of keeping them UUID separated, and add all
@@ -176,7 +170,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         // calculate the split for how we handle maxTransfer by quickly being able to see how many of each type we have
         Map<HashedItem, ByteList> matchedItems = new HashMap<>(inputCount);
         ByteSet missingSlots = new ByteArraySet(inputCount);
-        for (Byte2ObjectMap.Entry<Set<HashedItem>> entry : hashedIngredients.byte2ObjectEntrySet()) {
+        for (Byte2ObjectMap.Entry<TrackedIngredients> entry : hashedIngredients.byte2ObjectEntrySet()) {
             //TODO: Eventually we probably will want to add in some handling for if an item is valid for more than one slot and one combination
             // has it being valid and one combination it is not valid. For example if we have a single piece of stone and it is valid in either
             // slot 1 or 2 but slot 2 only allows for stone, and slot 1 can accept granite instead and we have granite available. When coming
@@ -186,7 +180,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             // table don't currently handle this, though it is something that would be nice to handle and is something I believe vanilla's recipe
             // book transfer handler is able to do (RecipeItemHelper/ServerRecipePlayer)
             boolean matchFound = false;
-            for (HashedItem validInput : entry.getValue()) {
+            for (HashedItem validInput : entry.getValue().representations()) {
                 HashedItemSource source = qioTransferHelper.getSource(validInput);
                 if (source != null && source.hasMoreRemaining()) {
                     //We found a match for this slot, reduce how much of the item we have as an input
@@ -219,7 +213,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                     String storedItemUUID = null;
                     for (ByteIterator missingIterator = missingSlots.iterator(); missingIterator.hasNext(); ) {
                         byte index = missingIterator.nextByte();
-                        for (HashedItem validIngredient : hashedIngredients.get(index)) {
+                        for (HashedItem validIngredient : hashedIngredients.get(index).representations()) {
                             //Compare the raw item types
                             if (storedItemType == validIngredient.getStack().getItem()) {
                                 //If they match, compute the identifiers for both stacks as needed
@@ -257,8 +251,8 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             }
             if (!missingSlots.isEmpty()) {
                 //If we have any missing slots, report that they are missing to the user and don't allow transferring
-                // Note: We have to shift this back up by one as we shifted the indices earlier to make them easier to work with
-                return handlerHelper.createUserErrorForSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), missingSlots.stream().map(i -> i + 1).collect(Collectors.toList()));
+                List<IRecipeSlotView> missing = missingSlots.intStream().mapToObj(slot -> hashedIngredients.get((byte) slot).view()).toList();
+                return handlerHelper.createUserErrorForMissingSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), missing);
             }
         }
         if (doTransfer || (nonEmptyCraftingSlots > 0 && nonEmptyCraftingSlots >= qioTransferHelper.getEmptyInventorySlots())) {
@@ -331,7 +325,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.
                 //TODO: If the sources are all from the crafting window and are already in the correct spots, there is no need to send this packet
-                Mekanism.packetHandler.sendToServer(new PacketQIOFillCraftingWindow(recipe.getId(), maxTransfer, sources));
+                Mekanism.packetHandler().sendToServer(new PacketQIOFillCraftingWindow(recipe.getId(), maxTransfer, sources));
             }
         }
         return null;

@@ -1,7 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -14,10 +13,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectType;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.Player;
 
 @ParametersAreNonnullByDefault
 public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInhalationPurificationUnit> {
@@ -37,7 +36,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
     }
 
     @Override
-    public void tickClient(IModule<ModuleInhalationPurificationUnit> module, PlayerEntity player) {
+    public void tickClient(IModule<ModuleInhalationPurificationUnit> module, Player player) {
         //Messy rough estimate version of tickServer so that the timer actually properly updates
         if (!player.isSpectator()) {
             FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
@@ -46,9 +45,8 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
             if (free || energy.greaterOrEqual(usage)) {
                 //Gather all the active effects that we can handle, so that we have them in their own list and
                 // don't run into any issues related to CMEs
-                List<EffectInstance> effects = player.getActiveEffects().stream().filter(effect -> canHandle(effect.getEffect().getCategory()))
-                      .collect(Collectors.toList());
-                for (EffectInstance effect : effects) {
+                List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(effect -> canHandle(effect.getEffect().getCategory())).toList();
+                for (MobEffectInstance effect : effects) {
                     if (free) {
                         speedupEffect(player, effect);
                     } else {
@@ -65,17 +63,16 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
     }
 
     @Override
-    public void tickServer(IModule<ModuleInhalationPurificationUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleInhalationPurificationUnit> module, Player player) {
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
         boolean free = usage.isZero() || player.isCreative();
         IEnergyContainer energyContainer = free ? null : module.getEnergyContainer();
         if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
             //Gather all the active effects that we can handle, so that we have them in their own list and
             // don't run into any issues related to CMEs
-            List<EffectInstance> effects = player.getActiveEffects().stream()
-                  .filter(effect -> canHandle(effect.getEffect().getCategory()))
-                  .collect(Collectors.toList());
-            for (EffectInstance effect : effects) {
+            List<MobEffectInstance> effects = player.getActiveEffects().stream()
+                  .filter(effect -> canHandle(effect.getEffect().getCategory())).toList();
+            for (MobEffectInstance effect : effects) {
                 if (free) {
                     speedupEffect(player, effect);
                 } else if (module.useEnergy(player, energyContainer, usage, true).isZero()) {
@@ -98,21 +95,17 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
         return damageSource.isMagic() ? INHALATION_ABSORB_INFO : null;
     }
 
-    private void speedupEffect(PlayerEntity player, EffectInstance effect) {
+    private void speedupEffect(Player player, MobEffectInstance effect) {
         for (int i = 0; i < 9; i++) {
             MekanismUtils.speedUpEffectSafely(player, effect);
         }
     }
 
-    private boolean canHandle(EffectType effectType) {
-        switch (effectType) {
-            case BENEFICIAL:
-                return beneficialEffects.get();
-            case HARMFUL:
-                return harmfulEffects.get();
-            case NEUTRAL:
-                return neutralEffects.get();
-        }
-        return false;
+    private boolean canHandle(MobEffectCategory effectType) {
+        return switch (effectType) {
+            case BENEFICIAL -> beneficialEffects.get();
+            case HARMFUL -> harmfulEffects.get();
+            case NEUTRAL -> neutralEffects.get();
+        };
     }
 }

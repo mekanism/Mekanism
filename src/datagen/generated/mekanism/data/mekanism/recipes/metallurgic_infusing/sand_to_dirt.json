@@ -5,7 +5,7 @@
       "tag": "forge:sand"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:bio"
   },

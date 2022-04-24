@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cracked_deepslate_tiles"
+    }
+  },
+  "output": {
+    "item": "minecraft:chiseled_deepslate"
+  }
+}

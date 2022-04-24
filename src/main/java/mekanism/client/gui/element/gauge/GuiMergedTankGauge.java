@@ -13,7 +13,7 @@ import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> extends GuiGauge<Void>
       implements IJEIIngredientHelper {
@@ -27,7 +27,7 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
     private final GuiPigmentGauge pigmentGauge;
     private final GuiSlurryGauge slurryGauge;
 
-    private ITextComponent label;
+    private Component label;
 
     public GuiMergedTankGauge(Supplier<MergedTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int width,
           int height) {
@@ -41,7 +41,7 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
         slurryGauge = addPositionOnlyChild(new GuiSlurryGauge(() -> this.mergedTankSupplier.get().getSlurryTank(), () -> this.handlerSupplier.get().getSlurryTanks(null), type, gui, x, y, width, height));
     }
 
-    public GuiMergedTankGauge<HANDLER> setLabel(ITextComponent label) {
+    public GuiMergedTankGauge<HANDLER> setLabel(Component label) {
         this.label = label;
         return this;
     }
@@ -80,9 +80,9 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
-        return currentGauge == null ? null : currentGauge.getIngredient();
+        return currentGauge == null ? null : currentGauge.getIngredient(mouseX, mouseY);
     }
 
     @Override
@@ -97,12 +97,12 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
     }
 
     @Override
-    public List<ITextComponent> getTooltipText() {
+    public List<Component> getTooltipText() {
         return getCurrentGauge().getTooltipText();
     }
 
     @Override
-    public ITextComponent getLabel() {
+    public Component getLabel() {
         return label;
     }
 
@@ -120,18 +120,13 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
     @Nullable
     private GuiTankGauge<?, ?> getCurrentGaugeNoFallback() {
         MergedTank mergedTank = mergedTankSupplier.get();
-        switch (mergedTank.getCurrentType()) {
-            case FLUID:
-                return fluidGauge;
-            case GAS:
-                return gasGauge;
-            case INFUSION:
-                return infusionGauge;
-            case PIGMENT:
-                return pigmentGauge;
-            case SLURRY:
-                return slurryGauge;
-        }
-        return null;
+        return switch (mergedTank.getCurrentType()) {
+            case FLUID -> fluidGauge;
+            case GAS -> gasGauge;
+            case INFUSION -> infusionGauge;
+            case PIGMENT -> pigmentGauge;
+            case SLURRY -> slurryGauge;
+            default -> null;
+        };
     }
 }

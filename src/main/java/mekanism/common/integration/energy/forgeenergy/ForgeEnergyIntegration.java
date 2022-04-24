@@ -3,7 +3,7 @@ package mekanism.common.integration.energy.forgeenergy;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyIntegration implements IEnergyStorage {
@@ -19,13 +19,13 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         if (maxReceive <= 0) {
             return 0;
         }
-        FloatingLong toInsert = EnergyType.FORGE.convertFrom(maxReceive);
-        return EnergyType.FORGE.convertToAsInt(toInsert.subtract(handler.insertEnergy(toInsert, Action.get(!simulate))));
+        FloatingLong toInsert = EnergyUnit.FORGE_ENERGY.convertFrom(maxReceive);
+        return EnergyUnit.FORGE_ENERGY.convertToAsInt(toInsert.subtract(handler.insertEnergy(toInsert, Action.get(!simulate))));
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        return maxExtract <= 0 ? 0 : EnergyType.FORGE.convertToAsInt(handler.extractEnergy(EnergyType.FORGE.convertFrom(maxExtract), Action.get(!simulate)));
+        return maxExtract <= 0 ? 0 : EnergyUnit.FORGE_ENERGY.convertToAsInt(handler.extractEnergy(EnergyUnit.FORGE_ENERGY.convertFrom(maxExtract), Action.get(!simulate)));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         if (containers > 0) {
             int energy = 0;
             for (int container = 0; container < containers; container++) {
-                int total = EnergyType.FORGE.convertToAsInt(handler.getEnergy(container));
+                int total = EnergyUnit.FORGE_ENERGY.convertToAsInt(handler.getEnergy(container));
                 if (total > Integer.MAX_VALUE - energy) {
                     //Ensure we don't overflow
                     energy = Integer.MAX_VALUE;
@@ -54,7 +54,7 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         if (containers > 0) {
             int maxEnergy = 0;
             for (int container = 0; container < containers; container++) {
-                int max = EnergyType.FORGE.convertToAsInt(handler.getMaxEnergy(container));
+                int max = EnergyUnit.FORGE_ENERGY.convertToAsInt(handler.getMaxEnergy(container));
                 if (max > Integer.MAX_VALUE - maxEnergy) {
                     //Ensure we don't overflow
                     maxEnergy = Integer.MAX_VALUE;

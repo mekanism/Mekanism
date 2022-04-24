@@ -6,7 +6,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ItemStackToInfuseTypeRecipeSerializer<RECIPE extends ItemStackToInfuseTypeRecipe> extends ItemStackToChemicalRecipeSerializer<InfuseType, InfusionStack, RECIPE> {
 
@@ -20,7 +20,7 @@ public class ItemStackToInfuseTypeRecipeSerializer<RECIPE extends ItemStackToInf
     }
 
     @Override
-    protected InfusionStack fromBuffer(@Nonnull PacketBuffer buffer) {
+    protected InfusionStack fromBuffer(@Nonnull FriendlyByteBuf buffer) {
         return InfusionStack.readFromPacket(buffer);
     }
 }

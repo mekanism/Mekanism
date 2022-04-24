@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/reinforced"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:light_gray_reinforced_plastic"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:light_gray"
+  },
+  "output": {
+    "item": "mekanismadditions:light_gray_reinforced_plastic"
+  }
+}

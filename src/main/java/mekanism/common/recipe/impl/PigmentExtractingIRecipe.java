@@ -3,14 +3,14 @@ package mekanism.common.recipe.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
 
@@ -20,14 +20,14 @@ public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackToPigmentRecipe> getType() {
-        return MekanismRecipeType.PIGMENT_EXTRACTING;
+    public RecipeType<ItemStackToPigmentRecipe> getType() {
+        return MekanismRecipeType.PIGMENT_EXTRACTING.get();
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackToPigmentRecipe> getSerializer() {
-        return MekanismRecipeSerializers.PIGMENT_EXTRACTING.getRecipeSerializer();
+    public RecipeSerializer<ItemStackToPigmentRecipe> getSerializer() {
+        return MekanismRecipeSerializers.PIGMENT_EXTRACTING.get();
     }
 
     @Nonnull

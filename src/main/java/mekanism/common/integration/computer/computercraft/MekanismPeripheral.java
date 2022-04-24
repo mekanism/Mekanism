@@ -13,14 +13,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.IComputerTile;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> extends CCMethodCaller implements IDynamicPeripheral {
+public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extends CCMethodCaller implements IDynamicPeripheral {
 
     /**
      * Only call this if the given tile actually has computer support as it won't be double-checked.
      */
-    public static <TILE extends TileEntity & IComputerTile> MekanismPeripheral<TILE> create(TILE tile) {
+    public static <TILE extends BlockEntity & IComputerTile> MekanismPeripheral<TILE> create(TILE tile) {
         //Linked map to ensure that the order is persisted
         Map<String, BoundComputerMethod> boundMethods = new LinkedHashMap<>();
         tile.getComputerMethods(boundMethods);

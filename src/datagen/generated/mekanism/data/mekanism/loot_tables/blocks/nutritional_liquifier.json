@@ -3,11 +3,16 @@
   "pools": [
     {
       "name": "main",
-      "rolls": 1,
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
             {
               "function": "minecraft:copy_nbt",
               "source": "block_entity",
@@ -48,8 +53,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "GasTanks",
-                  "target": "mekData.GasTanks",
+                  "source": "FluidTanks",
+                  "target": "mekData.FluidTanks",
                   "op": "replace"
                 },
                 {

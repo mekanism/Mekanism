@@ -8,19 +8,19 @@ import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketLightningRender implements IMekanismPacket {
 
     private final LightningPreset preset;
-    private final Vector3d start;
-    private final Vector3d end;
+    private final Vec3 start;
+    private final Vec3 end;
     private final int renderer;
     private final int segments;
 
-    public PacketLightningRender(LightningPreset preset, int renderer, Vector3d start, Vector3d end, int segments) {
+    public PacketLightningRender(LightningPreset preset, int renderer, Vec3 start, Vec3 end, int segments) {
         this.preset = preset;
         this.renderer = renderer;
         this.start = start;
@@ -36,7 +36,7 @@ public class PacketLightningRender implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(preset);
         buffer.writeVarInt(renderer);
         BasePacketHandler.writeVector3d(buffer, start);
@@ -44,11 +44,11 @@ public class PacketLightningRender implements IMekanismPacket {
         buffer.writeVarInt(segments);
     }
 
-    public static PacketLightningRender decode(PacketBuffer buffer) {
+    public static PacketLightningRender decode(FriendlyByteBuf buffer) {
         LightningPreset preset = buffer.readEnum(LightningPreset.class);
         int renderer = buffer.readVarInt();
-        Vector3d start = BasePacketHandler.readVector3d(buffer);
-        Vector3d end = BasePacketHandler.readVector3d(buffer);
+        Vec3 start = BasePacketHandler.readVector3d(buffer);
+        Vec3 end = BasePacketHandler.readVector3d(buffer);
         int segments = buffer.readVarInt();
         return new PacketLightningRender(preset, renderer, start, end, segments);
     }
@@ -56,7 +56,7 @@ public class PacketLightningRender implements IMekanismPacket {
     @FunctionalInterface
     public interface BoltCreator {
 
-        BoltEffect create(Vector3d start, Vector3d end, int segments);
+        BoltEffect create(Vec3 start, Vec3 end, int segments);
     }
 
     public enum LightningPreset {

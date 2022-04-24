@@ -1,4 +1,4 @@
-package mekanism.common.integration.energy.fluxnetworks;
+/*package mekanism.common.integration.energy.fluxnetworks;
 
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -101,4 +101,4 @@ public class FNIntegration implements IFNEnergyStorage {
         }
         return true;
     }
-}
+}*/

@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.tab.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
@@ -21,9 +21,9 @@ public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConf
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, MekanismLang.SIDE_CONFIG.translate(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, MekanismLang.SIDE_CONFIG.translate());
     }
 
     @Override

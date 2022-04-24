@@ -5,23 +5,24 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 public class RecipeFormula {
 
     public final NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
     @Nullable
-    public ICraftingRecipe recipe;
-    private final CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
+    public CraftingRecipe recipe;
+    private final CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
 
-    public RecipeFormula(World world, NonNullList<ItemStack> inv) {
+    public RecipeFormula(Level world, NonNullList<ItemStack> inv) {
         for (int i = 0; i < 9; i++) {
             input.set(i, StackUtils.size(inv.get(i), 1));
         }
@@ -29,7 +30,7 @@ public class RecipeFormula {
         recipe = getRecipeFromGrid(dummy, world);
     }
 
-    public RecipeFormula(World world, List<IInventorySlot> craftingGridSlots) {
+    public RecipeFormula(Level world, List<IInventorySlot> craftingGridSlots) {
         //Should always be 9 for the size
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot craftingSlot = craftingGridSlots.get(i);
@@ -51,7 +52,7 @@ public class RecipeFormula {
         }
     }
 
-    public boolean matches(World world, List<IInventorySlot> craftingGridSlots) {
+    public boolean matches(Level world, List<IInventorySlot> craftingGridSlots) {
         if (recipe == null) {
             return false;
         }
@@ -73,7 +74,7 @@ public class RecipeFormula {
         return recipe == null ? NonNullList.create() : recipe.getRemainingItems(dummy);
     }
 
-    public boolean isIngredientInPos(World world, ItemStack stack, int i) {
+    public boolean isIngredientInPos(Level world, ItemStack stack, int i) {
         if (recipe == null) {
             return false;
         } else if (stack.isEmpty() && !input.get(i).isEmpty()) {
@@ -86,7 +87,7 @@ public class RecipeFormula {
         return recipe.matches(dummy, world);
     }
 
-    public IntList getIngredientIndices(World world, ItemStack stack) {
+    public IntList getIngredientIndices(Level world, ItemStack stack) {
         IntList ret = new IntArrayList();
         if (recipe != null) {
             for (int i = 0; i < 9; i++) {
@@ -105,7 +106,7 @@ public class RecipeFormula {
     }
 
     @Nullable
-    public ICraftingRecipe getRecipe() {
+    public CraftingRecipe getRecipe() {
         return recipe;
     }
 
@@ -113,14 +114,14 @@ public class RecipeFormula {
         return formula.getRecipe() == getRecipe();
     }
 
-    public void setStack(World world, int index, ItemStack stack) {
+    public void setStack(Level world, int index, ItemStack stack) {
         input.set(index, stack);
         resetToRecipe();
         recipe = getRecipeFromGrid(dummy, world);
     }
 
     @Nullable
-    private static ICraftingRecipe getRecipeFromGrid(CraftingInventory inv, World world) {
-        return world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, inv, world).orElse(null);
+    private static CraftingRecipe getRecipeFromGrid(CraftingContainer inv, Level world) {
+        return MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, inv, world).orElse(null);
     }
 }

@@ -10,7 +10,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.ShortPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling floating long
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling floating long
  */
 public class SyncableFloatingLong implements ISyncableData {
 

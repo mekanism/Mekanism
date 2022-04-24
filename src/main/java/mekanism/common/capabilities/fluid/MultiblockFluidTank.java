@@ -6,13 +6,13 @@ import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
 
 @FieldsAreNonnullByDefault
@@ -76,7 +76,7 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
     public void onContentsChanged() {
         super.onContentsChanged();
         if (tile.hasLevel() && !tile.getLevel().isClientSide()) {
-            tile.markDirty(false);
+            tile.markForSave();
             multiblock.markDirtyComparator(tile.getLevel());
         }
     }

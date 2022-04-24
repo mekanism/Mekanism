@@ -1,13 +1,9 @@
 package mekanism.common.recipe;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.gas.Gas;
@@ -18,7 +14,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -45,7 +40,9 @@ import mekanism.api.recipes.chemical.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.SmeltingIRecipe;
@@ -60,128 +57,124 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import mekanism.common.registration.impl.RecipeTypeDeferredRegister;
+import mekanism.common.registration.impl.RecipeTypeRegistryObject;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
-public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> implements IRecipeType<RECIPE_TYPE> {
+public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> implements RecipeType<RECIPE>,
+      IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> {
 
-    private static final List<MekanismRecipeType<?, ?>> types = new ArrayList<>();
+    public static final RecipeTypeDeferredRegister RECIPE_TYPES = new RecipeTypeDeferredRegister(Mekanism.MODID);
 
-    public static final MekanismRecipeType<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> CRUSHING =
-          create("crushing", recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
-    public static final MekanismRecipeType<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> ENRICHING =
-          create("enriching", recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
-    public static final MekanismRecipeType<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> SMELTING =
-          create("smelting", recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+    public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> CRUSHING =
+          register("crushing", recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+    public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> ENRICHING =
+          register("enriching", recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
+    public static final RecipeTypeRegistryObject<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> SMELTING =
+          register("smelting", recipeType -> new SingleItem<>(recipeType, ItemStackToItemStackRecipe::getInput));
 
-    public static final MekanismRecipeType<ChemicalInfuserRecipe, EitherSideChemical<Gas, GasStack, ChemicalInfuserRecipe>> CHEMICAL_INFUSING =
-          create("chemical_infusing", EitherSideChemical::new);
+    public static final RecipeTypeRegistryObject<ChemicalInfuserRecipe, EitherSideChemical<Gas, GasStack, ChemicalInfuserRecipe>> CHEMICAL_INFUSING =
+          register("chemical_infusing", EitherSideChemical::new);
 
-    public static final MekanismRecipeType<CombinerRecipe, DoubleItem<CombinerRecipe>> COMBINING =
-          create("combining", recipeType -> new DoubleItem<>(recipeType, CombinerRecipe::getMainInput, CombinerRecipe::getExtraInput));
+    public static final RecipeTypeRegistryObject<CombinerRecipe, DoubleItem<CombinerRecipe>> COMBINING =
+          register("combining", recipeType -> new DoubleItem<>(recipeType, CombinerRecipe::getMainInput, CombinerRecipe::getExtraInput));
 
-    public static final MekanismRecipeType<ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> SEPARATING =
-          create("separating", recipeType -> new SingleFluid<>(recipeType, ElectrolysisRecipe::getInput));
+    public static final RecipeTypeRegistryObject<ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> SEPARATING =
+          register("separating", recipeType -> new SingleFluid<>(recipeType, ElectrolysisRecipe::getInput));
 
-    public static final MekanismRecipeType<FluidSlurryToSlurryRecipe, FluidChemical<Slurry, SlurryStack, FluidSlurryToSlurryRecipe>> WASHING =
-          create("washing", recipeType -> new FluidChemical<>(recipeType, FluidChemicalToChemicalRecipe::getFluidInput,
+    public static final RecipeTypeRegistryObject<FluidSlurryToSlurryRecipe, FluidChemical<Slurry, SlurryStack, FluidSlurryToSlurryRecipe>> WASHING =
+          register("washing", recipeType -> new FluidChemical<>(recipeType, FluidChemicalToChemicalRecipe::getFluidInput,
                 FluidChemicalToChemicalRecipe::getChemicalInput));
 
-    public static final MekanismRecipeType<FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> EVAPORATING =
-          create("evaporating", recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
+    public static final RecipeTypeRegistryObject<FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> EVAPORATING =
+          register("evaporating", recipeType -> new SingleFluid<>(recipeType, FluidToFluidRecipe::getInput));
 
-    public static final MekanismRecipeType<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> ACTIVATING =
-          create("activating", recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
-    public static final MekanismRecipeType<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> CENTRIFUGING =
-          create("centrifuging", recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> ACTIVATING =
+          register("activating", recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> CENTRIFUGING =
+          register("centrifuging", recipeType -> new SingleChemical<>(recipeType, ChemicalToChemicalRecipe::getInput));
 
-    public static final MekanismRecipeType<ChemicalCrystallizerRecipe, ChemicalCrystallizerInputRecipeCache> CRYSTALLIZING = create("crystallizing",
+    public static final RecipeTypeRegistryObject<ChemicalCrystallizerRecipe, ChemicalCrystallizerInputRecipeCache> CRYSTALLIZING = register("crystallizing",
           ChemicalCrystallizerInputRecipeCache::new);
 
-    public static final MekanismRecipeType<ChemicalDissolutionRecipe, ItemChemical<Gas, GasStack, ChemicalDissolutionRecipe>> DISSOLUTION =
-          create("dissolution", recipeType -> new ItemChemical<>(recipeType, ChemicalDissolutionRecipe::getItemInput, ChemicalDissolutionRecipe::getGasInput));
+    public static final RecipeTypeRegistryObject<ChemicalDissolutionRecipe, ItemChemical<Gas, GasStack, ChemicalDissolutionRecipe>> DISSOLUTION =
+          register("dissolution", recipeType -> new ItemChemical<>(recipeType, ChemicalDissolutionRecipe::getItemInput, ChemicalDissolutionRecipe::getGasInput));
 
-    public static final MekanismRecipeType<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> COMPRESSING =
-          create("compressing", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
+    public static final RecipeTypeRegistryObject<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> COMPRESSING =
+          register("compressing", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
                 ItemStackChemicalToItemStackRecipe::getChemicalInput));
-    public static final MekanismRecipeType<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> PURIFYING =
-          create("purifying", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
+    public static final RecipeTypeRegistryObject<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> PURIFYING =
+          register("purifying", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
                 ItemStackChemicalToItemStackRecipe::getChemicalInput));
-    public static final MekanismRecipeType<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> INJECTING =
-          create("injecting", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
-                ItemStackChemicalToItemStackRecipe::getChemicalInput));
-
-    public static final MekanismRecipeType<NucleosynthesizingRecipe, ItemChemical<Gas, GasStack, NucleosynthesizingRecipe>> NUCLEOSYNTHESIZING =
-          create("nucleosynthesizing", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
+    public static final RecipeTypeRegistryObject<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> INJECTING =
+          register("injecting", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
                 ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final MekanismRecipeType<ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION =
-          create("energy_conversion", recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
-
-    public static final MekanismRecipeType<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> GAS_CONVERSION =
-          create("gas_conversion", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
-    public static final MekanismRecipeType<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> OXIDIZING =
-          create("oxidizing", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
-
-    public static final MekanismRecipeType<ItemStackToInfuseTypeRecipe, SingleItem<ItemStackToInfuseTypeRecipe>> INFUSION_CONVERSION =
-          create("infusion_conversion", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
-
-    public static final MekanismRecipeType<ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> PIGMENT_EXTRACTING =
-          create("pigment_extracting", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
-
-    public static final MekanismRecipeType<PigmentMixingRecipe, EitherSideChemical<Pigment, PigmentStack, PigmentMixingRecipe>> PIGMENT_MIXING =
-          create("pigment_mixing", EitherSideChemical::new);
-
-    public static final MekanismRecipeType<MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> METALLURGIC_INFUSING =
-          create("metallurgic_infusing", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
+    public static final RecipeTypeRegistryObject<NucleosynthesizingRecipe, ItemChemical<Gas, GasStack, NucleosynthesizingRecipe>> NUCLEOSYNTHESIZING =
+          register("nucleosynthesizing", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
                 ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final MekanismRecipeType<PaintingRecipe, ItemChemical<Pigment, PigmentStack, PaintingRecipe>> PAINTING =
-          create("painting", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
+    public static final RecipeTypeRegistryObject<ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION =
+          register("energy_conversion", recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
+
+    public static final RecipeTypeRegistryObject<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> GAS_CONVERSION =
+          register("gas_conversion", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> OXIDIZING =
+          register("oxidizing", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+
+    public static final RecipeTypeRegistryObject<ItemStackToInfuseTypeRecipe, SingleItem<ItemStackToInfuseTypeRecipe>> INFUSION_CONVERSION =
+          register("infusion_conversion", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+
+    public static final RecipeTypeRegistryObject<ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> PIGMENT_EXTRACTING =
+          register("pigment_extracting", recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+
+    public static final RecipeTypeRegistryObject<PigmentMixingRecipe, EitherSideChemical<Pigment, PigmentStack, PigmentMixingRecipe>> PIGMENT_MIXING =
+          register("pigment_mixing", EitherSideChemical::new);
+
+    public static final RecipeTypeRegistryObject<MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> METALLURGIC_INFUSING =
+          register("metallurgic_infusing", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
                 ItemStackChemicalToItemStackRecipe::getChemicalInput));
 
-    public static final MekanismRecipeType<PressurizedReactionRecipe, ItemFluidChemical<Gas, GasStack, PressurizedReactionRecipe>> REACTION =
-          create("reaction", recipeType -> new ItemFluidChemical<>(recipeType, PressurizedReactionRecipe::getInputSolid,
+    public static final RecipeTypeRegistryObject<PaintingRecipe, ItemChemical<Pigment, PigmentStack, PaintingRecipe>> PAINTING =
+          register("painting", recipeType -> new ItemChemical<>(recipeType, ItemStackChemicalToItemStackRecipe::getItemInput,
+                ItemStackChemicalToItemStackRecipe::getChemicalInput));
+
+    public static final RecipeTypeRegistryObject<PressurizedReactionRecipe, ItemFluidChemical<Gas, GasStack, PressurizedReactionRecipe>> REACTION =
+          register("reaction", recipeType -> new ItemFluidChemical<>(recipeType, PressurizedReactionRecipe::getInputSolid,
                 PressurizedReactionRecipe::getInputFluid, PressurizedReactionRecipe::getInputGas));
 
-    public static final MekanismRecipeType<RotaryRecipe, RotaryInputRecipeCache> ROTARY = create("rotary", RotaryInputRecipeCache::new);
+    public static final RecipeTypeRegistryObject<RotaryRecipe, RotaryInputRecipeCache> ROTARY = register("rotary", RotaryInputRecipeCache::new);
 
-    public static final MekanismRecipeType<SawmillRecipe, SingleItem<SawmillRecipe>> SAWING =
-          create("sawing", recipeType -> new SingleItem<>(recipeType, SawmillRecipe::getInput));
+    public static final RecipeTypeRegistryObject<SawmillRecipe, SingleItem<SawmillRecipe>> SAWING =
+          register("sawing", recipeType -> new SingleItem<>(recipeType, SawmillRecipe::getInput));
 
-    private static <RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> MekanismRecipeType<RECIPE_TYPE, INPUT_CACHE> create(String name,
-          Function<MekanismRecipeType<RECIPE_TYPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
-        MekanismRecipeType<RECIPE_TYPE, INPUT_CACHE> type = new MekanismRecipeType<>(name, inputCacheCreator);
-        types.add(type);
-        return type;
-    }
-
-    //TODO: Convert this to using the proper forge registry once we stop needing to directly use the vanilla registry as a work around
-    public static void registerRecipeTypes(IForgeRegistry<IRecipeSerializer<?>> registry) {
-        types.forEach(type -> Registry.register(Registry.RECIPE_TYPE, type.registryName, type));
+    private static <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> register(String name,
+          Function<MekanismRecipeType<RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
+        return RECIPE_TYPES.register(name, () -> new MekanismRecipeType<>(name, inputCacheCreator));
     }
 
     public static void clearCache() {
-        types.forEach(MekanismRecipeType::clearCaches);
+        for (IMekanismRecipeTypeProvider<?, ?> recipeTypeProvider : RECIPE_TYPES.getAllRecipeTypes()) {
+            recipeTypeProvider.getRecipeType().clearCaches();
+        }
     }
 
-    private List<RECIPE_TYPE> cachedRecipes = Collections.emptyList();
+    private List<RECIPE> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
     private final INPUT_CACHE inputCache;
 
-    private MekanismRecipeType(String name, Function<MekanismRecipeType<RECIPE_TYPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
+    private MekanismRecipeType(String name, Function<MekanismRecipeType<RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
         this.registryName = Mekanism.rl(name);
         this.inputCache = inputCacheCreator.apply(this);
     }
@@ -191,21 +184,29 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
         return registryName.toString();
     }
 
+    @Override
     public ResourceLocation getRegistryName() {
         return registryName;
     }
 
+    @Override
+    public MekanismRecipeType<RECIPE, INPUT_CACHE> getRecipeType() {
+        return this;
+    }
+
     private void clearCaches() {
-        cachedRecipes.clear();
+        cachedRecipes = Collections.emptyList();
         inputCache.clear();
     }
 
+    @Override
     public INPUT_CACHE getInputCache() {
         return inputCache;
     }
 
     @Nonnull
-    public List<RECIPE_TYPE> getRecipes(@Nullable World world) {
+    @Override
+    public List<RECIPE> getRecipes(@Nullable Level world) {
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
@@ -217,57 +218,51 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
         }
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
-            //TODO: Should we use the byType(RecipeType) that we ATd so that our recipes don't have to always return true for matching?
-            List<RECIPE_TYPE> recipes = recipeManager.getRecipesFor(this, IgnoredIInventory.INSTANCE, world);
-            if (this == SMELTING) {
-                Map<ResourceLocation, IRecipe<IInventory>> smeltingRecipes = recipeManager.byType(IRecipeType.SMELTING);
-                //Copy recipes our recipes to make sure it is mutable
-                recipes = new ArrayList<>(recipes);
-                for (Entry<ResourceLocation, IRecipe<IInventory>> entry : smeltingRecipes.entrySet()) {
-                    IRecipe<IInventory> smeltingRecipe = entry.getValue();
+            //Note: This is a fresh mutable list that gets returned
+            List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
+            if (this == SMELTING.get()) {
+                for (SmeltingRecipe smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
                     ItemStack recipeOutput = smeltingRecipe.getResultItem();
-                    if (!smeltingRecipe.isSpecial() && !recipeOutput.isEmpty()) {
+                    if (!smeltingRecipe.isSpecial() && !smeltingRecipe.isIncomplete() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
                         NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();
-                        int ingredientCount = ingredients.size();
                         ItemStackIngredient input;
-                        if (ingredientCount == 0) {
+                        if (ingredients.size() == 0) {
                             //Something went wrong
                             continue;
-                        } else if (ingredientCount == 1) {
-                            input = ItemStackIngredient.from(ingredients.get(0));
                         } else {
-                            ItemStackIngredient[] itemIngredients = new ItemStackIngredient[ingredientCount];
-                            for (int i = 0; i < ingredientCount; i++) {
-                                itemIngredients[i] = ItemStackIngredient.from(ingredients.get(i));
-                            }
-                            input = ItemStackIngredient.createMulti(itemIngredients);
+                            IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
+                            input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        recipes.add((RECIPE_TYPE) new SmeltingIRecipe(entry.getKey(), input, recipeOutput));
+                        recipes.add((RECIPE) new SmeltingIRecipe(smeltingRecipe.getId(), input, recipeOutput));
                     }
                 }
             }
-            cachedRecipes = recipes;
+            //Make the list of cached recipes immutable and filter out any incomplete recipes
+            // as there is no reason to potentially look the partial complete piece up if
+            // the other portion of the recipe is incomplete
+            cachedRecipes = recipes.stream()
+                  .filter(recipe -> !recipe.isIncomplete())
+                  .toList();
         }
         return cachedRecipes;
     }
 
-    public Stream<RECIPE_TYPE> stream(@Nullable World world) {
-        return getRecipes(world).stream();
+    /**
+     * Helper for getting a recipe from a world's recipe manager.
+     */
+    public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
+        //Only allow looking up complete recipes
+        return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
+              .filter(recipe -> !recipe.isIncomplete());
     }
 
     /**
-     * Finds the first recipe that matches the given criteria, or null if no matching recipe is found. Prefer using the find recipe methods in {@link #getInputCache()}.
+     * Helper for getting a recipe from a world's recipe manager.
      */
-    @Nullable
-    public RECIPE_TYPE findFirst(@Nullable World world, Predicate<RECIPE_TYPE> matchCriteria) {
-        return stream(world).filter(matchCriteria).findFirst().orElse(null);
-    }
-
-    /**
-     * Checks if this recipe type contains a recipe that matches the given criteria. Prefer using the contains recipe methods in {@link #getInputCache()}.
-     */
-    public boolean contains(@Nullable World world, Predicate<RECIPE_TYPE> matchCriteria) {
-        return stream(world).anyMatch(matchCriteria);
+    public static Optional<? extends Recipe<?>> byKey(Level level, ResourceLocation id) {
+        //Only allow looking up complete recipes
+        return level.getRecipeManager().byKey(id)
+              .filter(recipe -> !recipe.isIncomplete());
     }
 }

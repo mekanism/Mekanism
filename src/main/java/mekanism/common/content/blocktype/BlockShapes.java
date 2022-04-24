@@ -1,13 +1,13 @@
 package mekanism.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
-import static net.minecraft.block.Block.box;
+import static net.minecraft.world.level.block.Block.box;
 
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public final class BlockShapes {
 

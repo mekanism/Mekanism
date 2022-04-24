@@ -4,11 +4,11 @@ import java.util.Objects;
 import java.util.function.DoubleSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -41,7 +41,7 @@ public class MultiblockHeatCapacitor<MULTIBLOCK extends MultiblockData> extends 
     public void onContentsChanged() {
         super.onContentsChanged();
         if (tile.hasLevel() && !tile.isRemote()) {
-            tile.markDirty(false);
+            tile.markForSave();
         }
     }
 }

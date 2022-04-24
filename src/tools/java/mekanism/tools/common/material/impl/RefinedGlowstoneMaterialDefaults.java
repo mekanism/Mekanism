@@ -1,12 +1,16 @@
 package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.tags.MekanismTags;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
@@ -56,33 +60,25 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 221;
-            case LEGS:
-                return 255;
-            case CHEST:
-                return 272;
-            case HEAD:
-                return 187;
-        }
-        return 0;
+    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 221;
+            case LEGS -> 255;
+            case CHEST -> 272;
+            case HEAD -> 187;
+            default -> 0;
+        };
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 3;
-            case LEGS:
-                return 6;
-            case CHEST:
-                return 8;
-            case HEAD:
-                return 3;
-        }
-        return 0;
+    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 3;
+            case LEGS -> 6;
+            case CHEST -> 8;
+            case HEAD -> 3;
+            default -> 0;
+        };
     }
 
     @Nonnull
@@ -95,6 +91,12 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return "refined_glowstone";
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Block> getTag() {
+        return ToolsTags.Blocks.NEEDS_REFINED_GLOWSTONE_TOOL;
     }
 
     @Nonnull

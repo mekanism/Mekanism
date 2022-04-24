@@ -4,5 +4,5 @@
 package mekanism.client.jei;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;

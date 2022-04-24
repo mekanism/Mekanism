@@ -35,9 +35,9 @@ import mekanism.common.network.to_client.container.property.chemical.InfusionSta
 import mekanism.common.network.to_client.container.property.chemical.PigmentStackPropertyData;
 import mekanism.common.network.to_client.container.property.chemical.SlurryStackPropertyData;
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -81,12 +81,12 @@ public enum PropertyType {
     private final Class<?> type;
     private final Object defaultValue;
     private final BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction;
-    private final BiFunction<Short, PacketBuffer, PropertyData> dataCreatorFunction;
+    private final BiFunction<Short, FriendlyByteBuf, PropertyData> dataCreatorFunction;
 
     private static final PropertyType[] VALUES = values();
 
     PropertyType(Class<?> type, Object defaultValue, BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction,
-          BiFunction<Short, PacketBuffer, PropertyData> dataCreatorFunction) {
+          BiFunction<Short, FriendlyByteBuf, PropertyData> dataCreatorFunction) {
         this.type = type;
         this.defaultValue = defaultValue;
         this.creatorFunction = creatorFunction;
@@ -107,7 +107,7 @@ public enum PropertyType {
         return null;
     }
 
-    public PropertyData createData(short property, PacketBuffer buffer) {
+    public PropertyData createData(short property, FriendlyByteBuf buffer) {
         return dataCreatorFunction.apply(property, buffer);
     }
 

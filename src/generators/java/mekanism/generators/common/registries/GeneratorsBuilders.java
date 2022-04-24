@@ -3,10 +3,10 @@ package mekanism.generators.common.registries;
 import mekanism.common.command.builders.StructureBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public class GeneratorsBuilders {
 
@@ -20,7 +20,7 @@ public class GeneratorsBuilders {
         }
 
         @Override
-        protected void build(World world, BlockPos start) {
+        protected void build(Level world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
             //Clear out the inside
@@ -57,7 +57,7 @@ public class GeneratorsBuilders {
         }
 
         @Override
-        protected void build(World world, BlockPos start) {
+        protected void build(Level world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
             for (int x = 1; x < sizeX - 1; x++) {
@@ -90,7 +90,7 @@ public class GeneratorsBuilders {
         }
 
         @Override
-        protected void build(World world, BlockPos start) {
+        protected void build(Level world, BlockPos start) {
             buildPartialFrame(world, start, 1);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 3, Blocks.AIR);

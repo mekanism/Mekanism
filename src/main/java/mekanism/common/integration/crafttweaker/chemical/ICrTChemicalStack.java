@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -12,18 +12,18 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.bracket.IBracketSupport;
 import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -214,19 +214,19 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     }
 
     /**
-     * Casts this chemical stack to a generic {@link IChemicalStackIngredient} for use in recipes that support any chemical type as an input.
+     * Casts this chemical stack to a generic {@link ChemicalStackIngredient} for use in recipes that support any chemical type as an input.
      *
      * @apiNote We declare this as generic so that ZenCode can properly match this to the places where we declare all the subtypes as generic.
      */
     @ZenCodeType.Caster(implicit = true)
-    IChemicalStackIngredient<?, ?> asChemicalStackIngredient();
+    ChemicalStackIngredient<?, ?> asChemicalStackIngredient();
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS_STACK)
     interface ICrTGasStack extends ICrTChemicalStack<Gas, GasStack, ICrTGasStack>, IGasBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<Gas, GasStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<Gas, GasStack> asChemicalStackIngredient() {
             return asGasStackIngredient();
         }
 
@@ -244,7 +244,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     interface ICrTInfusionStack extends ICrTChemicalStack<InfuseType, InfusionStack, ICrTInfusionStack>, IInfuseTypeBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<InfuseType, InfusionStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<InfuseType, InfusionStack> asChemicalStackIngredient() {
             return asInfusionStackIngredient();
         }
 
@@ -262,7 +262,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     interface ICrTPigmentStack extends ICrTChemicalStack<Pigment, PigmentStack, ICrTPigmentStack>, IPigmentBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<Pigment, PigmentStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<Pigment, PigmentStack> asChemicalStackIngredient() {
             return asPigmentStackIngredient();
         }
 
@@ -280,7 +280,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     interface ICrTSlurryStack extends ICrTChemicalStack<Slurry, SlurryStack, ICrTSlurryStack>, ISlurryBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<Slurry, SlurryStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<Slurry, SlurryStack> asChemicalStackIngredient() {
             return asSlurryStackIngredient();
         }
 

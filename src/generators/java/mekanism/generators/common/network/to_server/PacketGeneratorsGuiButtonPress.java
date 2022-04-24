@@ -9,12 +9,12 @@ import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
  * Used for informing the server that a click happened in a GUI and the gui window needs to change
@@ -37,11 +37,11 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player != null) {//If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
-                INamedContainerProvider provider = tileButton.getProvider(tile, extra);
+                MenuProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {
                     //Ensure valid data
                     NetworkHooks.openGui(player, provider, buf -> {
@@ -54,13 +54,13 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(tileButton);
         buffer.writeBlockPos(tilePosition);
         buffer.writeVarInt(extra);
     }
 
-    public static PacketGeneratorsGuiButtonPress decode(PacketBuffer buffer) {
+    public static PacketGeneratorsGuiButtonPress decode(FriendlyByteBuf buffer) {
         return new PacketGeneratorsGuiButtonPress(buffer.readEnum(ClickedGeneratorsTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
     }
 
@@ -73,26 +73,26 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
             }
             return null;
         }),
-        TAB_HEAT((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_HEAT.getProvider(GeneratorsLang.HEAT_TAB, tile)),
-        TAB_FUEL((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_FUEL.getProvider(GeneratorsLang.FUEL_TAB, tile)),
+        TAB_HEAT((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_HEAT.getProvider(GeneratorsLang.FUSION_REACTOR, tile)),
+        TAB_FUEL((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_FUEL.getProvider(GeneratorsLang.FUSION_REACTOR, tile)),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityTurbineCasing) {
                 return GeneratorsContainerTypes.TURBINE_STATS.getProvider(GeneratorsLang.TURBINE_STATS, tile);
             } else if (tile instanceof TileEntityFusionReactorController) {
-                return GeneratorsContainerTypes.FUSION_REACTOR_STATS.getProvider(GeneratorsLang.STATS_TAB, tile);
+                return GeneratorsContainerTypes.FUSION_REACTOR_STATS.getProvider(GeneratorsLang.FUSION_REACTOR, tile);
             } else if (tile instanceof TileEntityFissionReactorCasing) {
-                return GeneratorsContainerTypes.FISSION_REACTOR_STATS.getProvider(GeneratorsLang.STATS_TAB, tile);
+                return GeneratorsContainerTypes.FISSION_REACTOR_STATS.getProvider(GeneratorsLang.FISSION_REACTOR_STATS, tile);
             }
             return null;
         });
 
-        private final BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile;
+        private final BiFunction<TileEntityMekanism, Integer, MenuProvider> providerFromTile;
 
-        ClickedGeneratorsTileButton(BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile) {
+        ClickedGeneratorsTileButton(BiFunction<TileEntityMekanism, Integer, MenuProvider> providerFromTile) {
             this.providerFromTile = providerFromTile;
         }
 
-        public INamedContainerProvider getProvider(TileEntityMekanism tile, int extra) {
+        public MenuProvider getProvider(TileEntityMekanism tile, int extra) {
             return providerFromTile.apply(tile, extra);
         }
     }

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:waxed_exposed_copper"
+    }
+  },
+  "output": {
+    "item": "minecraft:exposed_copper"
+  }
+}

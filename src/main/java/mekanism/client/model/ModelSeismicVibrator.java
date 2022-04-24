@@ -1,408 +1,239 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelSeismicVibrator extends MekanismJavaModel {
 
+    public static final ModelLayerLocation VIBRATOR_LAYER = new ModelLayerLocation(Mekanism.rl("seismic_vibrator"), "main");
     private static final ResourceLocation VIBRATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png");
-    private final RenderType RENDER_TYPE = renderType(VIBRATOR_TEXTURE);
 
-    private final ExtendedModelRenderer plate3;
-    private final ExtendedModelRenderer baseBack;
-    private final ExtendedModelRenderer motor;
-    private final ExtendedModelRenderer port;
-    private final ExtendedModelRenderer pole4;
-    private final ExtendedModelRenderer shaft2;
-    private final ExtendedModelRenderer shaft1;
-    private final ExtendedModelRenderer arm3;
-    private final ExtendedModelRenderer plate2;
-    private final ExtendedModelRenderer arm2;
-    private final ExtendedModelRenderer arm1;
-    private final ExtendedModelRenderer top;
-    private final ExtendedModelRenderer frameBack5;
-    private final ExtendedModelRenderer pole3;
-    private final ExtendedModelRenderer frameRight5;
-    private final ExtendedModelRenderer baseRight;
-    private final ExtendedModelRenderer baseFront;
-    private final ExtendedModelRenderer baseLeft;
-    private final ExtendedModelRenderer frameRight3;
-    private final ExtendedModelRenderer pole1;
-    private final ExtendedModelRenderer frameRight4;
-    private final ExtendedModelRenderer frameRight1;
-    private final ExtendedModelRenderer frameRight2;
-    private final ExtendedModelRenderer frameLeft5;
-    private final ExtendedModelRenderer frameLeft4;
-    private final ExtendedModelRenderer frameBack3;
-    private final ExtendedModelRenderer frameLeft2;
-    private final ExtendedModelRenderer frameLeft1;
-    private final ExtendedModelRenderer pole2;
-    private final ExtendedModelRenderer frameBack1;
-    private final ExtendedModelRenderer frameBack2;
-    private final ExtendedModelRenderer frameBack4;
-    private final ExtendedModelRenderer frameLeft3;
-    private final ExtendedModelRenderer conduit;
-    private final ExtendedModelRenderer plate1;
-    private final ExtendedModelRenderer rivet10;
-    private final ExtendedModelRenderer rivet5;
-    private final ExtendedModelRenderer rivet1;
-    private final ExtendedModelRenderer rivet6;
-    private final ExtendedModelRenderer rivet2;
-    private final ExtendedModelRenderer rivet7;
-    private final ExtendedModelRenderer rivet3;
-    private final ExtendedModelRenderer rivet8;
-    private final ExtendedModelRenderer rivet4;
-    private final ExtendedModelRenderer rivet9;
+    private static final ModelPartData PLATE_3 = new ModelPartData("plate3", CubeListBuilder.create()
+          .texOffs(36, 42)
+          .addBox(0F, 0F, 0F, 8, 2, 8),
+          PartPose.offset(-4F, 22F, -4F));
+    private static final ModelPartData BASE_BACK = new ModelPartData("baseBack", CubeListBuilder.create()
+          .texOffs(0, 26)
+          .addBox(0F, 0F, 0F, 16, 5, 3),
+          PartPose.offset(-8F, 19F, 5F));
+    private static final ModelPartData MOTOR = new ModelPartData("motor", CubeListBuilder.create()
+          .texOffs(76, 13)
+          .addBox(0F, 0F, 0F, 6, 4, 10),
+          PartPose.offset(-3F, -5F, -3F));
+    private static final ModelPartData PORT = new ModelPartData("port", CubeListBuilder.create()
+          .texOffs(38, 33)
+          .addBox(0F, 0F, 0F, 8, 8, 1),
+          PartPose.offset(-4F, 12F, 7.01F));
+    private static final ModelPartData POLE_4 = new ModelPartData("pole4", CubeListBuilder.create()
+          .texOffs(0, 34)
+          .addBox(0F, 0F, 0F, 1, 25, 1),
+          PartPose.offset(6.5F, -6F, 6.5F));
+    private static final ModelPartData SHAFT_2 = new ModelPartData("shaft2", CubeListBuilder.create()
+          .texOffs(16, 34)
+          .addBox(0F, 0F, 0F, 3, 11, 3),
+          PartPose.offset(-1.5F, -5F, -1.5F));
+    private static final ModelPartData SHAFT_1 = new ModelPartData("shaft1", CubeListBuilder.create()
+          .texOffs(8, 34)
+          .addBox(0F, 0F, 0F, 2, 15, 2),
+          PartPose.offset(-1F, 6F, -1F));
+    private static final ModelPartData ARM_3 = new ModelPartData("arm3", CubeListBuilder.create()
+          .texOffs(0, 6)
+          .addBox(0F, 0F, 0F, 2, 2, 4),
+          PartPose.offsetAndRotation(-1F, 7F, 3F, -0.3665191F, 0F, 0F));
+    private static final ModelPartData PLATE_2 = new ModelPartData("plate2", CubeListBuilder.create()
+          .texOffs(48, 0)
+          .addBox(0F, 0F, 0F, 4, 2, 4),
+          PartPose.offset(-2F, 21F, -2F));
+    private static final ModelPartData ARM_2 = new ModelPartData("arm2", CubeListBuilder.create()
+          .texOffs(48, 6)
+          .addBox(0F, 0F, 0F, 4, 2, 4),
+          PartPose.offset(-2F, 7F, -2F));
+    private static final ModelPartData ARM_1 = new ModelPartData("arm1", CubeListBuilder.create()
+          .texOffs(56, 33)
+          .addBox(0F, 0F, 0F, 3, 2, 4),
+          PartPose.offset(-1.5F, 7F, 2F));
+    private static final ModelPartData TOP = new ModelPartData("top", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 16, 2, 16),
+          PartPose.offset(-8F, -8F, -8F));
+    private static final ModelPartData FRAME_BACK_5 = new ModelPartData("frameBack5", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(-1F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(7.5F, 7F, 6.49F, 0F, 0F, 0.837758F));
+    private static final ModelPartData POLE_3 = new ModelPartData("pole3", CubeListBuilder.create()
+          .texOffs(0, 34)
+          .addBox(0F, 0F, 0F, 1, 25, 1),
+          PartPose.offset(6.5F, -6F, -7.5F));
+    private static final ModelPartData FRAME_RIGHT_5 = new ModelPartData("frameRight5", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(6.485F, 7F, -7.5F, 0.837758F, 0F, 0F));
+    private static final ModelPartData BASE_RIGHT = new ModelPartData("baseRight", CubeListBuilder.create()
+          .texOffs(38, 18)
+          .mirror()
+          .addBox(0F, 0F, 0F, 3, 5, 10),
+          PartPose.offset(5F, 19F, -5F));
+    private static final ModelPartData BASE_FRONT = new ModelPartData("baseFront", CubeListBuilder.create()
+          .texOffs(0, 18)
+          .addBox(0F, 0F, 0F, 16, 5, 3),
+          PartPose.offset(-8F, 19F, -8F));
+    private static final ModelPartData BASE_LEFT = new ModelPartData("baseLeft", CubeListBuilder.create()
+          .texOffs(38, 18)
+          .addBox(0F, 0F, 0F, 3, 5, 10),
+          PartPose.offset(-8F, 19F, -5F));
+    private static final ModelPartData FRAME_RIGHT_3 = new ModelPartData("frameRight3", CubeListBuilder.create()
+          .texOffs(64, 27)
+          .addBox(0F, 0F, 0F, 1, 1, 13),
+          PartPose.offset(6.5F, 6F, -6.5F));
+    private static final ModelPartData POLE_1 = new ModelPartData("pole1", CubeListBuilder.create()
+          .texOffs(0, 34)
+          .addBox(0F, 0F, 0F, 1, 25, 1),
+          PartPose.offset(-7.5F, -6F, -7.5F));
+    private static final ModelPartData FRAME_RIGHT_4 = new ModelPartData("frameRight4", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, -1F, 1, 19, 1),
+          PartPose.offsetAndRotation(6.49F, 7F, 7.5F, -0.837758F, 0F, 0F));
+    private static final ModelPartData FRAME_RIGHT_1 = new ModelPartData("frameRight1", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(6.485F, -6F, -7.5F, 0.837758F, 0F, 0F));
+    private static final ModelPartData FRAME_RIGHT_2 = new ModelPartData("frameRight2", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, -1F, 1, 19, 1),
+          PartPose.offsetAndRotation(6.49F, -6F, 7.5F, -0.837758F, 0F, 0F));
+    private static final ModelPartData FRAME_LEFT_5 = new ModelPartData("frameLeft5", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(-7.485F, 7F, -7.5F, 0.837758F, 0F, 0F));
+    private static final ModelPartData FRAME_LEFT_4 = new ModelPartData("frameLeft4", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, -1F, 1, 19, 1),
+          PartPose.offsetAndRotation(-7.49F, 7F, 7.5F, -0.837758F, 0F, 0F));
+    private static final ModelPartData FRAME_BACK_3 = new ModelPartData("frameBack3", CubeListBuilder.create()
+          .texOffs(36, 52)
+          .addBox(0F, 0F, 0F, 13, 1, 1),
+          PartPose.offset(-6.5F, 6F, 6.5F));
+    private static final ModelPartData FRAME_LEFT_2 = new ModelPartData("frameLeft2", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(-7.485F, -6F, -7.5F, 0.837758F, 0F, 0F));
+    private static final ModelPartData FRAME_LEFT_1 = new ModelPartData("frameLeft1", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, -1F, 1, 19, 1),
+          PartPose.offsetAndRotation(-7.49F, -6F, 7.5F, -0.837758F, 0F, 0F));
+    private static final ModelPartData POLE_2 = new ModelPartData("pole2", CubeListBuilder.create()
+          .texOffs(0, 34)
+          .addBox(0F, 0F, 0F, 1, 25, 1),
+          PartPose.offset(-7.5F, -6F, 6.5F));
+    private static final ModelPartData FRAME_BACK_1 = new ModelPartData("frameBack1", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(-1F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(7.5F, -6F, 6.49F, 0F, 0F, 0.837758F));
+    private static final ModelPartData FRAME_BACK_2 = new ModelPartData("frameBack2", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(-7.5F, -6F, 6.49F, 0F, 0F, -0.837758F));
+    private static final ModelPartData FRAME_BACK_4 = new ModelPartData("frameBack4", CubeListBuilder.create()
+          .texOffs(4, 34)
+          .addBox(0F, 0F, 0F, 1, 19, 1),
+          PartPose.offsetAndRotation(-7.5F, 7F, 6.49F, 0F, 0F, -0.837758F));
+    private static final ModelPartData FRAME_LEFT_3 = new ModelPartData("frameLeft3", CubeListBuilder.create()
+          .texOffs(64, 27)
+          .addBox(0F, 0F, 0F, 1, 1, 13),
+          PartPose.offset(-7.5F, 6F, -6.5F));
+    private static final ModelPartData CONDUIT = new ModelPartData("conduit", CubeListBuilder.create()
+          .texOffs(64, 0)
+          .addBox(0F, 0F, 0F, 4, 25, 2),
+          PartPose.offset(-2F, -6F, 6F));
+    private static final ModelPartData PLATE_1 = new ModelPartData("plate1", CubeListBuilder.create()
+          .texOffs(76, 0)
+          .addBox(0F, 0F, 0F, 10, 1, 12),
+          PartPose.offset(-5F, -6F, -5F));
+    private static final ModelPartData RIVET_10 = new ModelPartData("rivet10", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3.5F, -5.5F, 3.5F));
+    private static final ModelPartData RIVET_5 = new ModelPartData("rivet5", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4.5F, -5.5F, 3.5F));
+    private static final ModelPartData RIVET_1 = new ModelPartData("rivet1", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4.5F, -5.5F, -4.5F));
+    private static final ModelPartData RIVET_6 = new ModelPartData("rivet6", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3.5F, -5.5F, -4.5F));
+    private static final ModelPartData RIVET_2 = new ModelPartData("rivet2", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4.5F, -5.5F, -2.5F));
+    private static final ModelPartData RIVET_7 = new ModelPartData("rivet7", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3.5F, -5.5F, -2.5F));
+    private static final ModelPartData RIVET_3 = new ModelPartData("rivet3", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4.5F, -5.5F, -0.5F));
+    private static final ModelPartData RIVET_8 = new ModelPartData("rivet8", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3.5F, -5.5F, -0.5F));
+    private static final ModelPartData RIVET_4 = new ModelPartData("rivet4", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4.5F, -5.5F, 1.5F));
+    private static final ModelPartData RIVET_9 = new ModelPartData("rivet9", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3.5F, -5.5F, 1.5F));
 
-    public ModelSeismicVibrator() {
-        super(RenderType::entitySolid);
-        texWidth = 128;
-        texHeight = 64;
-
-        plate3 = new ExtendedModelRenderer(this, 36, 42);
-        plate3.addBox(0F, 0F, 0F, 8, 2, 8, false);
-        plate3.setPos(-4F, 22F, -4F);
-        plate3.setTexSize(128, 64);
-        plate3.mirror = true;
-        setRotation(plate3, 0F, 0F, 0F);
-        baseBack = new ExtendedModelRenderer(this, 0, 26);
-        baseBack.addBox(0F, 0F, 0F, 16, 5, 3, false);
-        baseBack.setPos(-8F, 19F, 5F);
-        baseBack.setTexSize(128, 64);
-        baseBack.mirror = true;
-        setRotation(baseBack, 0F, 0F, 0F);
-        motor = new ExtendedModelRenderer(this, 76, 13);
-        motor.addBox(0F, 0F, 0F, 6, 4, 10, false);
-        motor.setPos(-3F, -5F, -3F);
-        motor.setTexSize(128, 64);
-        motor.mirror = true;
-        setRotation(motor, 0F, 0F, 0F);
-        port = new ExtendedModelRenderer(this, 38, 33);
-        port.addBox(0F, 0F, 0F, 8, 8, 1, false);
-        port.setPos(-4F, 12F, 7.01F);
-        port.setTexSize(128, 64);
-        port.mirror = true;
-        setRotation(port, 0F, 0F, 0F);
-        pole4 = new ExtendedModelRenderer(this, 0, 34);
-        pole4.addBox(0F, 0F, 0F, 1, 25, 1, false);
-        pole4.setPos(6.5F, -6F, 6.5F);
-        pole4.setTexSize(128, 64);
-        pole4.mirror = true;
-        setRotation(pole4, 0F, 0F, 0F);
-        shaft2 = new ExtendedModelRenderer(this, 16, 34);
-        shaft2.addBox(0F, 0F, 0F, 3, 11, 3, false);
-        shaft2.setPos(-1.5F, -5F, -1.5F);
-        shaft2.setTexSize(128, 64);
-        shaft2.mirror = true;
-        setRotation(shaft2, 0F, 0F, 0F);
-        shaft1 = new ExtendedModelRenderer(this, 8, 34);
-        shaft1.addBox(0F, 0F, 0F, 2, 15, 2, false);
-        shaft1.setPos(-1F, 6F, -1F);
-        shaft1.setTexSize(128, 64);
-        shaft1.mirror = true;
-        setRotation(shaft1, 0F, 0F, 0F);
-        arm3 = new ExtendedModelRenderer(this, 0, 6);
-        arm3.addBox(0F, 0F, 0F, 2, 2, 4, false);
-        arm3.setPos(-1F, 7F, 3F);
-        arm3.setTexSize(128, 64);
-        arm3.mirror = true;
-        setRotation(arm3, -0.3665191F, 0F, 0F);
-        plate2 = new ExtendedModelRenderer(this, 48, 0);
-        plate2.addBox(0F, 0F, 0F, 4, 2, 4, false);
-        plate2.setPos(-2F, 21F, -2F);
-        plate2.setTexSize(128, 64);
-        plate2.mirror = true;
-        setRotation(plate2, 0F, 0F, 0F);
-        arm2 = new ExtendedModelRenderer(this, 48, 6);
-        arm2.addBox(0F, 0F, 0F, 4, 2, 4, false);
-        arm2.setPos(-2F, 7F, -2F);
-        arm2.setTexSize(128, 64);
-        arm2.mirror = true;
-        setRotation(arm2, 0F, 0F, 0F);
-        arm1 = new ExtendedModelRenderer(this, 56, 33);
-        arm1.addBox(0F, 0F, 0F, 3, 2, 4, false);
-        arm1.setPos(-1.5F, 7F, 2F);
-        arm1.setTexSize(128, 64);
-        arm1.mirror = true;
-        setRotation(arm1, 0F, 0F, 0F);
-        top = new ExtendedModelRenderer(this, 0, 0);
-        top.addBox(0F, 0F, 0F, 16, 2, 16, false);
-        top.setPos(-8F, -8F, -8F);
-        top.setTexSize(128, 64);
-        top.mirror = true;
-        setRotation(top, 0F, 0F, 0F);
-        frameBack5 = new ExtendedModelRenderer(this, 4, 34);
-        frameBack5.addBox(-1F, 0F, 0F, 1, 19, 1, false);
-        frameBack5.setPos(7.5F, 7F, 6.49F);
-        frameBack5.setTexSize(128, 64);
-        frameBack5.mirror = true;
-        setRotation(frameBack5, 0F, 0F, 0.837758F);
-        pole3 = new ExtendedModelRenderer(this, 0, 34);
-        pole3.addBox(0F, 0F, 0F, 1, 25, 1, false);
-        pole3.setPos(6.5F, -6F, -7.5F);
-        pole3.setTexSize(128, 64);
-        pole3.mirror = true;
-        setRotation(pole3, 0F, 0F, 0F);
-        frameRight5 = new ExtendedModelRenderer(this, 4, 34);
-        frameRight5.addBox(0F, 0F, 0F, 1, 19, 1, false);
-        frameRight5.setPos(6.485F, 7F, -7.5F);
-        frameRight5.setTexSize(128, 64);
-        frameRight5.mirror = true;
-        setRotation(frameRight5, 0.837758F, 0F, 0F);
-        baseRight = new ExtendedModelRenderer(this, 38, 18);
-        baseRight.mirror = true;
-        baseRight.addBox(0F, 0F, 0F, 3, 5, 10, false);
-        baseRight.setPos(5F, 19F, -5F);
-        baseRight.setTexSize(128, 64);
-        setRotation(baseRight, 0F, 0F, 0F);
-        baseFront = new ExtendedModelRenderer(this, 0, 18);
-        baseFront.addBox(0F, 0F, 0F, 16, 5, 3, false);
-        baseFront.setPos(-8F, 19F, -8F);
-        baseFront.setTexSize(128, 64);
-        baseFront.mirror = true;
-        setRotation(baseFront, 0F, 0F, 0F);
-        baseLeft = new ExtendedModelRenderer(this, 38, 18);
-        baseLeft.addBox(0F, 0F, 0F, 3, 5, 10, false);
-        baseLeft.setPos(-8F, 19F, -5F);
-        baseLeft.setTexSize(128, 64);
-        baseLeft.mirror = true;
-        setRotation(baseLeft, 0F, 0F, 0F);
-        frameRight3 = new ExtendedModelRenderer(this, 64, 27);
-        frameRight3.addBox(0F, 0F, 0F, 1, 1, 13, false);
-        frameRight3.setPos(6.5F, 6F, -6.5F);
-        frameRight3.setTexSize(128, 64);
-        frameRight3.mirror = true;
-        setRotation(frameRight3, 0F, 0F, 0F);
-        pole1 = new ExtendedModelRenderer(this, 0, 34);
-        pole1.addBox(0F, 0F, 0F, 1, 25, 1, false);
-        pole1.setPos(-7.5F, -6F, -7.5F);
-        pole1.setTexSize(128, 64);
-        pole1.mirror = true;
-        setRotation(pole1, 0F, 0F, 0F);
-        frameRight4 = new ExtendedModelRenderer(this, 4, 34);
-        frameRight4.addBox(0F, 0F, -1F, 1, 19, 1, false);
-        frameRight4.setPos(6.49F, 7F, 7.5F);
-        frameRight4.setTexSize(128, 64);
-        frameRight4.mirror = true;
-        setRotation(frameRight4, -0.837758F, 0F, 0F);
-        frameRight1 = new ExtendedModelRenderer(this, 4, 34);
-        frameRight1.addBox(0F, 0F, 0F, 1, 19, 1, false);
-        frameRight1.setPos(6.485F, -6F, -7.5F);
-        frameRight1.setTexSize(128, 64);
-        frameRight1.mirror = true;
-        setRotation(frameRight1, 0.837758F, 0F, 0F);
-        frameRight2 = new ExtendedModelRenderer(this, 4, 34);
-        frameRight2.addBox(0F, 0F, -1F, 1, 19, 1, false);
-        frameRight2.setPos(6.49F, -6F, 7.5F);
-        frameRight2.setTexSize(128, 64);
-        frameRight2.mirror = true;
-        setRotation(frameRight2, -0.837758F, 0F, 0F);
-        frameLeft5 = new ExtendedModelRenderer(this, 4, 34);
-        frameLeft5.addBox(0F, 0F, 0F, 1, 19, 1, false);
-        frameLeft5.setPos(-7.485F, 7F, -7.5F);
-        frameLeft5.setTexSize(128, 64);
-        frameLeft5.mirror = true;
-        setRotation(frameLeft5, 0.837758F, 0F, 0F);
-        frameLeft4 = new ExtendedModelRenderer(this, 4, 34);
-        frameLeft4.addBox(0F, 0F, -1F, 1, 19, 1, false);
-        frameLeft4.setPos(-7.49F, 7F, 7.5F);
-        frameLeft4.setTexSize(128, 64);
-        frameLeft4.mirror = true;
-        setRotation(frameLeft4, -0.837758F, 0F, 0F);
-        frameBack3 = new ExtendedModelRenderer(this, 36, 52);
-        frameBack3.addBox(0F, 0F, 0F, 13, 1, 1, false);
-        frameBack3.setPos(-6.5F, 6F, 6.5F);
-        frameBack3.setTexSize(128, 64);
-        frameBack3.mirror = true;
-        setRotation(frameBack3, 0F, 0F, 0F);
-        frameLeft2 = new ExtendedModelRenderer(this, 4, 34);
-        frameLeft2.addBox(0F, 0F, 0F, 1, 19, 1, false);
-        frameLeft2.setPos(-7.485F, -6F, -7.5F);
-        frameLeft2.setTexSize(128, 64);
-        frameLeft2.mirror = true;
-        setRotation(frameLeft2, 0.837758F, 0F, 0F);
-        frameLeft1 = new ExtendedModelRenderer(this, 4, 34);
-        frameLeft1.addBox(0F, 0F, -1F, 1, 19, 1, false);
-        frameLeft1.setPos(-7.49F, -6F, 7.5F);
-        frameLeft1.setTexSize(128, 64);
-        frameLeft1.mirror = true;
-        setRotation(frameLeft1, -0.837758F, 0F, 0F);
-        pole2 = new ExtendedModelRenderer(this, 0, 34);
-        pole2.addBox(0F, 0F, 0F, 1, 25, 1, false);
-        pole2.setPos(-7.5F, -6F, 6.5F);
-        pole2.setTexSize(128, 64);
-        pole2.mirror = true;
-        setRotation(pole2, 0F, 0F, 0F);
-        frameBack1 = new ExtendedModelRenderer(this, 4, 34);
-        frameBack1.addBox(-1F, 0F, 0F, 1, 19, 1, false);
-        frameBack1.setPos(7.5F, -6F, 6.49F);
-        frameBack1.setTexSize(128, 64);
-        frameBack1.mirror = true;
-        setRotation(frameBack1, 0F, 0F, 0.837758F);
-        frameBack2 = new ExtendedModelRenderer(this, 4, 34);
-        frameBack2.addBox(0F, 0F, 0F, 1, 19, 1, false);
-        frameBack2.setPos(-7.5F, -6F, 6.49F);
-        frameBack2.setTexSize(128, 64);
-        frameBack2.mirror = true;
-        setRotation(frameBack2, 0F, 0F, -0.837758F);
-        frameBack4 = new ExtendedModelRenderer(this, 4, 34);
-        frameBack4.addBox(0F, 0F, 0F, 1, 19, 1, false);
-        frameBack4.setPos(-7.5F, 7F, 6.49F);
-        frameBack4.setTexSize(128, 64);
-        frameBack4.mirror = true;
-        setRotation(frameBack4, 0F, 0F, -0.837758F);
-        frameLeft3 = new ExtendedModelRenderer(this, 64, 27);
-        frameLeft3.addBox(0F, 0F, 0F, 1, 1, 13, false);
-        frameLeft3.setPos(-7.5F, 6F, -6.5F);
-        frameLeft3.setTexSize(128, 64);
-        frameLeft3.mirror = true;
-        setRotation(frameLeft3, 0F, 0F, 0F);
-        conduit = new ExtendedModelRenderer(this, 64, 0);
-        conduit.addBox(0F, 0F, 0F, 4, 25, 2, false);
-        conduit.setPos(-2F, -6F, 6F);
-        conduit.setTexSize(128, 64);
-        conduit.mirror = true;
-        setRotation(conduit, 0F, 0F, 0F);
-        plate1 = new ExtendedModelRenderer(this, 76, 0);
-        plate1.addBox(0F, 0F, 0F, 10, 1, 12, false);
-        plate1.setPos(-5F, -6F, -5F);
-        plate1.setTexSize(128, 64);
-        plate1.mirror = true;
-        setRotation(plate1, 0F, 0F, 0F);
-        rivet10 = new ExtendedModelRenderer(this, 0, 0);
-        rivet10.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet10.setPos(3.5F, -5.5F, 3.5F);
-        rivet10.setTexSize(128, 64);
-        rivet10.mirror = true;
-        setRotation(rivet10, 0F, 0F, 0F);
-        rivet5 = new ExtendedModelRenderer(this, 0, 0);
-        rivet5.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet5.setPos(-4.5F, -5.5F, 3.5F);
-        rivet5.setTexSize(128, 64);
-        rivet5.mirror = true;
-        setRotation(rivet5, 0F, 0F, 0F);
-        rivet1 = new ExtendedModelRenderer(this, 0, 0);
-        rivet1.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet1.setPos(-4.5F, -5.5F, -4.5F);
-        rivet1.setTexSize(128, 64);
-        rivet1.mirror = true;
-        setRotation(rivet1, 0F, 0F, 0F);
-        rivet6 = new ExtendedModelRenderer(this, 0, 0);
-        rivet6.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet6.setPos(3.5F, -5.5F, -4.5F);
-        rivet6.setTexSize(128, 64);
-        rivet6.mirror = true;
-        setRotation(rivet6, 0F, 0F, 0F);
-        rivet2 = new ExtendedModelRenderer(this, 0, 0);
-        rivet2.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet2.setPos(-4.5F, -5.5F, -2.5F);
-        rivet2.setTexSize(128, 64);
-        rivet2.mirror = true;
-        setRotation(rivet2, 0F, 0F, 0F);
-        rivet7 = new ExtendedModelRenderer(this, 0, 0);
-        rivet7.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet7.setPos(3.5F, -5.5F, -2.5F);
-        rivet7.setTexSize(128, 64);
-        rivet7.mirror = true;
-        setRotation(rivet7, 0F, 0F, 0F);
-        rivet3 = new ExtendedModelRenderer(this, 0, 0);
-        rivet3.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet3.setPos(-4.5F, -5.5F, -0.5F);
-        rivet3.setTexSize(128, 64);
-        rivet3.mirror = true;
-        setRotation(rivet3, 0F, 0F, 0F);
-        rivet8 = new ExtendedModelRenderer(this, 0, 0);
-        rivet8.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet8.setPos(3.5F, -5.5F, -0.5F);
-        rivet8.setTexSize(128, 64);
-        rivet8.mirror = true;
-        setRotation(rivet8, 0F, 0F, 0F);
-        rivet4 = new ExtendedModelRenderer(this, 0, 0);
-        rivet4.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet4.setPos(-4.5F, -5.5F, 1.5F);
-        rivet4.setTexSize(128, 64);
-        rivet4.mirror = true;
-        setRotation(rivet4, 0F, 0F, 0F);
-        rivet9 = new ExtendedModelRenderer(this, 0, 0);
-        rivet9.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        rivet9.setPos(3.5F, -5.5F, 1.5F);
-        rivet9.setTexSize(128, 64);
-        rivet9.mirror = true;
-        setRotation(rivet9, 0F, 0F, 0F);
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(128, 64, PLATE_3, BASE_BACK, MOTOR, PORT, POLE_4, SHAFT_2, SHAFT_1, ARM_3, PLATE_2, ARM_2, ARM_1,
+              TOP, FRAME_BACK_5, POLE_3, FRAME_RIGHT_5, BASE_RIGHT, BASE_FRONT, BASE_LEFT, FRAME_RIGHT_3, POLE_1, FRAME_RIGHT_4, FRAME_RIGHT_1, FRAME_RIGHT_2,
+              FRAME_LEFT_5, FRAME_LEFT_4, FRAME_BACK_3, FRAME_LEFT_2, FRAME_LEFT_1, POLE_2, FRAME_BACK_1, FRAME_BACK_2, FRAME_BACK_4, FRAME_LEFT_3, CONDUIT,
+              PLATE_1, RIVET_10, RIVET_5, RIVET_1, RIVET_6, RIVET_2, RIVET_7, RIVET_3, RIVET_8, RIVET_4, RIVET_9);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float piston, boolean hasEffect) {
+    private final RenderType RENDER_TYPE = renderType(VIBRATOR_TEXTURE);
+    private final List<ModelPart> parts;
+    private final ModelPart shaft1;
+    private final ModelPart plate2;
+    private final ModelPart plate3;
+
+    public ModelSeismicVibrator(EntityModelSet entityModelSet) {
+        super(RenderType::entitySolid);
+        ModelPart root = entityModelSet.bakeLayer(VIBRATOR_LAYER);
+        parts = getRenderableParts(root, PLATE_3, BASE_BACK, MOTOR, PORT, POLE_4, SHAFT_2, SHAFT_1, ARM_3, PLATE_2, ARM_2, ARM_1,
+              TOP, FRAME_BACK_5, POLE_3, FRAME_RIGHT_5, BASE_RIGHT, BASE_FRONT, BASE_LEFT, FRAME_RIGHT_3, POLE_1, FRAME_RIGHT_4, FRAME_RIGHT_1, FRAME_RIGHT_2,
+              FRAME_LEFT_5, FRAME_LEFT_4, FRAME_BACK_3, FRAME_LEFT_2, FRAME_LEFT_1, POLE_2, FRAME_BACK_1, FRAME_BACK_2, FRAME_BACK_4, FRAME_LEFT_3, CONDUIT,
+              PLATE_1, RIVET_10, RIVET_5, RIVET_1, RIVET_6, RIVET_2, RIVET_7, RIVET_3, RIVET_8, RIVET_4, RIVET_9);
+        shaft1 = SHAFT_1.getFromRoot(root);
+        plate2 = PLATE_2.getFromRoot(root);
+        plate3 = PLATE_3.getFromRoot(root);
+    }
+
+    public void render(@Nonnull PoseStack poseStack, @Nonnull MultiBufferSource renderer, int light, int overlayLight, float piston, boolean hasEffect) {
         shaft1.y = 6 - (piston * 12);
         plate2.y = 21 - (piston * 12);
         plate3.y = 22 - (piston * 12);
-        renderToBuffer(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        renderToBuffer(poseStack, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, false);
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderWireFrame(MatrixStack matrix, IVertexBuilder vertexBuilder, float piston, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(PoseStack poseStack, VertexConsumer vertexConsumer, float piston, float red, float green, float blue, float alpha) {
         shaft1.y = 6 - (piston * 12);
         plate2.y = 21 - (piston * 12);
         plate3.y = 22 - (piston * 12);
-        render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, red, green, blue, alpha, true);
-    }
-
-    private void render(MatrixStack matrix, IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha, boolean wireFrame) {
-        plate3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        baseBack.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        motor.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        port.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        pole4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        shaft2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        shaft1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        arm3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        plate2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        arm2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        arm1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        top.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameBack5.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        pole3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameRight5.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        baseRight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        baseFront.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        baseLeft.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameRight3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        pole1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameRight4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameRight1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameRight2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameLeft5.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameLeft4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameBack3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameLeft2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameLeft1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        pole2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameBack1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameBack2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameBack4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        frameLeft3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        conduit.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        plate1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet10.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet5.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet6.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet7.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet8.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        rivet9.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
+        renderPartsAsWireFrame(parts, poseStack, vertexConsumer, red, green, blue, alpha);
     }
 }

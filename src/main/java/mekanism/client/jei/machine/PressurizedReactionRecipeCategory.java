@@ -1,10 +1,12 @@
 package mekanism.client.jei.machine;
 
-import java.util.Collections;
+import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.annotations.NonNull;
+import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -15,19 +17,20 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.ItemStack;
 
 public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
+
+    private static final String OUTPUT_GAS = "outputGas";
 
     private final GuiGauge<?> inputGas;
     private final GuiGauge<?> inputFluid;
@@ -35,8 +38,8 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     private final GuiSlot outputItem;
     private final GuiGauge<?> outputGas;
 
-    public PressurizedReactionRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 10, 170, 60);
+    public PressurizedReactionRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<PressurizedReactionRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 10, 170, 60);
         //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
         // we will eventually instead just make the text scale
         inputItem = addSlot(SlotType.INPUT, 54, 35);
@@ -50,29 +53,31 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     }
 
     @Override
-    public Class<? extends PressurizedReactionRecipe> getRecipeClass() {
-        return PressurizedReactionRecipe.class;
+    public void draw(PressurizedReactionRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrix, double mouseX, double mouseY) {
+        super.draw(recipe, recipeSlotsView, matrix, mouseX, mouseY);
+        if (recipeSlotsView.findSlotByName(OUTPUT_GAS).isEmpty()) {
+            //If we don't have an output gas at all for this recipe, draw the bar overlay manually
+            outputGas.drawBarOverlay(matrix);
+        }
     }
 
     @Override
-    public void setIngredients(PressurizedReactionRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInputSolid().getRepresentations()));
-        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getInputFluid().getRepresentations()));
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInputGas().getRepresentations()));
-        Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
-        ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(outputDefinition.getLeft()));
-        ingredients.setOutput(MekanismJEI.TYPE_GAS, outputDefinition.getRight());
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, PressurizedReactionRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        initItem(itemStacks, 0, true, inputItem, recipe.getInputSolid().getRepresentations());
-        Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
-        initItem(itemStacks, 1, false, outputItem, outputDefinition.getLeft());
-        initFluid(recipeLayout.getFluidStacks(), 0, true, inputFluid, recipe.getInputFluid().getRepresentations());
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, inputGas, recipe.getInputGas().getRepresentations());
-        initChemical(gasStacks, 1, false, outputGas, Collections.singletonList(outputDefinition.getRight()));
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PressurizedReactionRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
+        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());
+        List<ItemStack> itemOutputs = new ArrayList<>();
+        List<GasStack> gasOutputs = new ArrayList<>();
+        for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
+            itemOutputs.add(output.item());
+            gasOutputs.add(output.gas());
+        }
+        if (!itemOutputs.stream().allMatch(ItemStack::isEmpty)) {
+            initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
+        }
+        if (!gasOutputs.stream().allMatch(GasStack::isEmpty)) {
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs)
+                  .setSlotName(OUTPUT_GAS);
+        }
     }
 }

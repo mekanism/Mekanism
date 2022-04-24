@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/slick"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:red_slick_plastic"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:red"
+  },
+  "output": {
+    "item": "mekanismadditions:red_slick_plastic"
+  }
+}

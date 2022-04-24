@@ -10,20 +10,21 @@ import mekanism.api.NBTConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.tags.ITag;
+import net.minecraftforge.registries.tags.ITagManager;
 
 public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<TYPE>, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>>
       extends BaseFilter<FILTER> {
 
     @Nullable
-    private ResourceLocation filterLocation;
+    private TagKey<TYPE> filterLocation;
+    @Nullable
     private ITag<TYPE> filterTag;
     @Nonnull
     private TYPE selectedOutput = getFallbackElement();
@@ -32,7 +33,6 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     private boolean isValid;
 
     protected OredictionificatorFilter() {
-        filterTag = Tag.empty();
     }
 
     protected OredictionificatorFilter(OredictionificatorFilter<TYPE, STACK, FILTER> filter) {
@@ -45,10 +45,11 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
 
     public void flushCachedTag() {
         //If the filter doesn't exist (because we loaded a tag that is no longer valid), then just set the filter to being empty
-        filterTag = filterLocation == null ? Tag.empty() : getTagCollection().getTagOrEmpty(filterLocation);
-        if (!filterTag.contains(selectedOutput)) {
-            List<TYPE> elements = filterTag.getValues();
-            setSelectedOutput(elements.isEmpty() ? getFallbackElement() : elements.get(0));
+        filterTag = filterLocation == null ? null : getTagManager().getTag(filterLocation);
+        if (filterTag == null || !filterTag.isBound()) {
+            setSelectedOutput(getFallbackElement());
+        } else if (!filterTag.contains(selectedOutput)) {
+            filterTag.stream().findFirst().ifPresentOrElse(this::setSelectedOutput, () -> setSelectedOutput(getFallbackElement()));
         }
         //Note: Even though the tag instance may have changed, we don't need to reset the cached
         // stack if the tag still contains the selected output as that means it is not empty and
@@ -61,9 +62,9 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     public void checkValidity() {
-        if (filterLocation != null && getTagCollection().getAvailableTags().contains(filterLocation)) {
-            for (String filter : getValidValuesConfig().get().getOrDefault(filterLocation.getNamespace(), Collections.emptyList())) {
-                if (filterLocation.getPath().startsWith(filter)) {
+        if (filterLocation != null && getTagManager().isKnownTagName(filterLocation)) {
+            for (String filter : getValidValuesConfig().get().getOrDefault(filterLocation.location().getNamespace(), Collections.emptyList())) {
+                if (filterLocation.location().getPath().startsWith(filter)) {
                     isValid = true;
                     return;
                 }
@@ -73,14 +74,14 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     public String getFilterText() {
-        return filterLocation == null ? "" : filterLocation.toString();
+        return filterLocation == null ? "" : filterLocation.location().toString();
     }
 
     /**
      * This method should only be called if the filter is valid or if it isn't the validity should be rechecked afterwards
      */
-    public final void setFilter(ResourceLocation location) {
-        filterLocation = location;
+    public final void setFilter(@Nullable ResourceLocation location) {
+        filterLocation = location == null ? null : getTagManager().createTagKey(location);
         flushCachedTag();
         isValid = true;
     }
@@ -95,11 +96,11 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     public boolean filterMatches(ResourceLocation location) {
-        return filterLocation != null && filterLocation.equals(location);
+        return filterLocation != null && filterLocation.location().equals(location);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.FILTER, getFilterText());
         if (selectedOutput != getFallbackElement()) {
@@ -109,7 +110,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         NBTUtils.setResourceLocationIfPresentElse(nbtTags, NBTConstants.FILTER, this::setFilter, () -> setFilter(null));
         NBTUtils.setResourceLocationIfPresent(nbtTags, NBTConstants.SELECTED, this::setSelectedOrFallback);
         //Recheck filter validity after reading from nbt
@@ -117,20 +118,20 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         //Realistically the filter location shouldn't be null except when the filter is first being created
         // but handle it being null just in case
         buffer.writeBoolean(filterLocation != null);
         if (filterLocation != null) {
-            buffer.writeResourceLocation(filterLocation);
+            buffer.writeResourceLocation(filterLocation.location());
         }
         buffer.writeResourceLocation(selectedOutput.getRegistryName());
         buffer.writeBoolean(isValid);
     }
 
     @Override
-    public void read(PacketBuffer buffer) {
+    public void read(FriendlyByteBuf buffer) {
         setFilter(buffer.readBoolean() ? buffer.readResourceLocation() : null);
         setSelectedOrFallback(buffer.readResourceLocation());
         isValid = buffer.readBoolean();
@@ -144,8 +145,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     public STACK getResult() {
         //If we don't currently have a result stack cached, calculate what the result stack is
         if (cachedSelectedStack == null) {
-            //Note: if there is no filter filterTag will be empty
-            List<TYPE> matchingElements = filterTag.getValues();
+            List<TYPE> matchingElements = matchingElements();
             if (matchingElements.isEmpty()) {
                 cachedSelectedStack = getEmptyStack();
             } else {
@@ -179,8 +179,12 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
         });
     }
 
+    private List<TYPE> matchingElements() {
+        return filterTag == null || !filterTag.isBound() ? Collections.emptyList() : filterTag.stream().toList();
+    }
+
     private void adjustSelected(IntBinaryOperator calculateSelected) {
-        List<TYPE> matchingElements = filterTag.getValues();
+        List<TYPE> matchingElements = matchingElements();
         int size = matchingElements.size();
         //Check if there is more than one element as the selected output does not need to change if there is only one element
         if (size > 1) {
@@ -213,7 +217,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
 
     protected abstract IForgeRegistry<TYPE> getRegistry();
 
-    protected abstract ITagCollection<TYPE> getTagCollection();
+    protected abstract ITagManager<TYPE> getTagManager();
 
     protected abstract TYPE getFallbackElement();
 

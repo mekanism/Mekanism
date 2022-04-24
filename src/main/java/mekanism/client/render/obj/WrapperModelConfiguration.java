@@ -2,10 +2,10 @@ package mekanism.client.render.obj;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 
@@ -19,7 +19,7 @@ public class WrapperModelConfiguration implements IModelConfiguration {
 
     @Nullable
     @Override
-    public IUnbakedModel getOwnerModel() {
+    public UnbakedModel getOwnerModel() {
         return internal.getOwnerModel();
     }
 
@@ -36,7 +36,7 @@ public class WrapperModelConfiguration implements IModelConfiguration {
 
     @Nonnull
     @Override
-    public RenderMaterial resolveTexture(@Nonnull String name) {
+    public Material resolveTexture(@Nonnull String name) {
         return internal.resolveTexture(name);
     }
 
@@ -58,13 +58,13 @@ public class WrapperModelConfiguration implements IModelConfiguration {
     @Nonnull
     @Override
     @Deprecated
-    public ItemCameraTransforms getCameraTransforms() {
+    public ItemTransforms getCameraTransforms() {
         return internal.getCameraTransforms();
     }
 
     @Nonnull
     @Override
-    public IModelTransform getCombinedTransform() {
+    public ModelState getCombinedTransform() {
         return internal.getCombinedTransform();
     }
 

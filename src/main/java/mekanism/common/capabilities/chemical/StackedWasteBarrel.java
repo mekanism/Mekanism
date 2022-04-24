@@ -1,9 +1,11 @@
 package mekanism.common.capabilities.chemical;
 
 import java.util.Objects;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -12,27 +14,27 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
-    public static StackedWasteBarrel create(TileEntityRadioactiveWasteBarrel tile) {
+    public static StackedWasteBarrel create(TileEntityRadioactiveWasteBarrel tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Radioactive Waste Barrel tile entity cannot be null");
-        return new StackedWasteBarrel(tile);
+        return new StackedWasteBarrel(tile, listener);
     }
 
     private final TileEntityRadioactiveWasteBarrel tile;
 
-    protected StackedWasteBarrel(TileEntityRadioactiveWasteBarrel tile) {
+    protected StackedWasteBarrel(TileEntityRadioactiveWasteBarrel tile, @Nullable IContentsListener listener) {
         super(MekanismConfig.general.radioactiveWasteBarrelMaxGas, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              ChemicalTankBuilder.GAS.alwaysTrue, ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), tile);
+              ChemicalTankBuilder.GAS.alwaysTrue, ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), listener);
         this.tile = tile;
     }
 

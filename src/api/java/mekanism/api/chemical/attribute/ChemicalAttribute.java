@@ -1,7 +1,7 @@
 package mekanism.api.chemical.attribute;
 
 import java.util.List;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 /**
  * All chemical attributes should inherit from this class. No specific implementation is required.
@@ -26,7 +26,7 @@ public abstract class ChemicalAttribute {
      *
      * @return updated list of tooltips
      */
-    public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
+    public List<Component> addTooltipText(List<Component> list) {
         return list;
     }
 }

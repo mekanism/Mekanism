@@ -13,7 +13,7 @@
       "item": "mekanism:basic_bin"
     },
     "_": {
-      "tag": "forge:cobblestone"
+      "tag": "forge:cobblestone/normal"
     },
     "C": {
       "tag": "forge:circuits/advanced"

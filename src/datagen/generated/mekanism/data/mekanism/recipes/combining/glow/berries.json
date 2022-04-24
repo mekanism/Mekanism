@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "ingredient": {
+      "item": "minecraft:sweet_berries"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:dusts/glowstone"
+    }
+  },
+  "output": {
+    "item": "minecraft:glow_berries"
+  }
+}

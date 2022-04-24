@@ -9,7 +9,7 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -89,8 +89,8 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue seismicReaderChargeRate;
     public final CachedFloatingLongValue seismicReaderEnergyUsage;
     //Canteen
-    public final CachedLongValue canteenMaxStorage;
-    public final CachedLongValue canteenTransferRate;
+    public final CachedIntValue canteenMaxStorage;
+    public final CachedIntValue canteenTransferRate;
     //Meka-Tool
     public final CachedFloatingLongValue mekaToolEnergyUsageWeapon;
     public final CachedFloatingLongValue mekaToolEnergyUsageTeleport;
@@ -104,7 +104,6 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsageHoe;
     public final CachedFloatingLongValue mekaToolEnergyUsageShovel;
     public final CachedFloatingLongValue mekaToolEnergyUsageAxe;
-    public final CachedFloatingLongValue mekaToolEnergyUsageShearBlock;
     public final CachedFloatingLongValue mekaToolEnergyUsageShearEntity;
     public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
@@ -123,8 +122,8 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
     public final CachedFloatingLongValue mekaSuitEnergyUsageDamage;
     public final CachedFloatingLongValue mekaSuitEnergyUsageItemAttraction;
-    public final CachedLongValue mekaSuitNutritionalMaxStorage;
-    public final CachedLongValue mekaSuitNutritionalTransferRate;
+    public final CachedIntValue mekaSuitNutritionalMaxStorage;
+    public final CachedIntValue mekaSuitNutritionalTransferRate;
     public final CachedLongValue mekaSuitJetpackMaxStorage;
     public final CachedLongValue mekaSuitJetpackTransferRate;
     public final Map<DamageSource, CachedFloatValue> mekaSuitDamageRatios = new LinkedHashMap<>();
@@ -255,10 +254,10 @@ public class GearConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Canteen Settings").push(CANTEEN_CATEGORY);
-        canteenMaxStorage = CachedLongValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the Canteen.")
-              .defineInRange("maxStorage", 64_000, 1, Long.MAX_VALUE));
-        canteenTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into a Canteen.")
-              .defineInRange("transferRate", 128, 1, Long.MAX_VALUE));
+        canteenMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the Canteen.")
+              .defineInRange("maxStorage", 64_000, 1, Integer.MAX_VALUE));
+        canteenTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into a Canteen.")
+              .defineInRange("transferRate", 128, 1, Integer.MAX_VALUE));
         builder.pop();
 
         builder.comment("Meka-Tool Settings").push(MEKATOOL_CATEGORY);
@@ -272,7 +271,7 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageTeleport", FloatingLong.createConst(1_000));
         mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the Meka-Tool.")
               .define("maxTeleportReach", 100));
-        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Damage applied by Meka-Tool without using any energy.")
+        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base damage applied by the Meka-Tool without using any energy.")
               .define("baseDamage", 4));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the Meka-Tool with energy but without any upgrades.")
               .define("baseEfficiency", 4D));
@@ -282,12 +281,10 @@ public class GearConfig extends BaseMekanismConfig {
               "chargeRate", FloatingLong.createConst(100_000));
         mekaToolEnergyUsageHoe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a hoe.",
               "energyUsageHoe", FloatingLong.createConst(10));
-        mekaToolEnergyUsageShovel = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a shovel for making paths.",
+        mekaToolEnergyUsageShovel = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as a shovel for making paths and dowsing campfires.",
               "energyUsageShovel", FloatingLong.createConst(10));
-        mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs.",
+        mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs, scraping, or removing wax.",
               "energyUsageAxe", FloatingLong.createConst(10));
-        mekaToolEnergyUsageShearBlock = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear blocks (beehives, pumpkins).",
-              "energyUsageShearBlock", FloatingLong.createConst(10));
         mekaToolEnergyUsageShearEntity = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear entities.",
               "energyUsageShearEntity", FloatingLong.createConst(10));
         mekaToolExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)")
@@ -325,10 +322,10 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageDamage", FloatingLong.createConst(100_000));
         mekaSuitEnergyUsageItemAttraction = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
               "energyUsageItemAttraction", FloatingLong.createConst(250));
-        mekaSuitNutritionalMaxStorage = CachedLongValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the nutritional injection unit.")
-              .defineInRange("nutritionalMaxStorage", 128_000, 1, Long.MAX_VALUE));
-        mekaSuitNutritionalTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into the nutritional injection unit.")
-              .defineInRange("nutritionalTransferRate", 256, 1, Long.MAX_VALUE));
+        mekaSuitNutritionalMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the nutritional injection unit.")
+              .defineInRange("nutritionalMaxStorage", 128_000, 1, Integer.MAX_VALUE));
+        mekaSuitNutritionalTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into the nutritional injection unit.")
+              .defineInRange("nutritionalTransferRate", 256, 1, Integer.MAX_VALUE));
         mekaSuitJetpackMaxStorage = CachedLongValue.wrap(this, builder.comment("Maximum amount of Hydrogen storable in the jetpack unit.")
               .defineInRange("jetpackMaxStorage", 48_000, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")

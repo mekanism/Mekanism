@@ -1,28 +1,30 @@
 package mekanism.common.capabilities.energy;
 
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ElectrolyticSeparatorEnergyContainer extends MachineEnergyContainer<TileEntityElectrolyticSeparator> {
 
-    public static ElectrolyticSeparatorEnergyContainer input(TileEntityElectrolyticSeparator tile) {
+    public static ElectrolyticSeparatorEnergyContainer input(TileEntityElectrolyticSeparator tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new ElectrolyticSeparatorEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
+        return new ElectrolyticSeparatorEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
     }
 
-    private ElectrolyticSeparatorEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
-          TileEntityElectrolyticSeparator tile) {
-        super(maxEnergy, energyPerTick, canExtract, canInsert, tile);
+    private ElectrolyticSeparatorEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
+          Predicate<@NonNull AutomationType> canInsert, TileEntityElectrolyticSeparator tile, @Nullable IContentsListener listener) {
+        super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
     }
 
     @Override

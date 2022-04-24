@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -11,14 +12,16 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
-import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.text.ITextComponent;
+import mekanism.common.registration.WrappedForgeDeferredRegister;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
+public class ItemDeferredRegister extends WrappedForgeDeferredRegister<Item> {
 
     private final List<IItemProvider> allItems = new ArrayList<>();
 
@@ -46,7 +49,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return register(name, properties -> new Item(properties) {
             @Nonnull
             @Override
-            public ITextComponent getName(@Nonnull ItemStack stack) {
+            public Component getName(@Nonnull ItemStack stack) {
                 return TextComponentUtil.build(color, super.getName(stack));
             }
         });
@@ -72,7 +75,13 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return registeredItem;
     }
 
+    public <ENTITY extends Mob> ItemRegistryObject<ForgeSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
+          int primaryColor, int secondaryColor) {
+        return register(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", props -> new ForgeSpawnEggItem(entityTypeProvider, primaryColor,
+              secondaryColor, props));
+    }
+
     public List<IItemProvider> getAllItems() {
-        return allItems;
+        return Collections.unmodifiableList(allItems);
     }
 }

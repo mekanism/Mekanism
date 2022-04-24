@@ -1,15 +1,15 @@
 package mekanism.common.block.transmitter;
 
 import mekanism.common.block.attribute.AttributeTier;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.TransporterTier;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import net.minecraft.tileentity.TileEntityType;
 
-public class BlockLogisticalTransporter extends BlockLargeTransmitter implements ITypeBlock, IHasTileEntity<TileEntityLogisticalTransporterBase> {
+public class BlockLogisticalTransporter extends BlockLogisticalTransporterBase<TileEntityLogisticalTransporterBase> implements ITypeBlock {
 
     private final TransporterTier tier;
 
@@ -23,17 +23,12 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     }
 
     @Override
-    public TileEntityType<TileEntityLogisticalTransporterBase> getTileType() {
-        switch (tier) {
-            case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER.getTileEntityType();
-            case ELITE:
-                return MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER.getTileEntityType();
-            case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER.getTileEntityType();
-            case BASIC:
-            default:
-                return MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER.getTileEntityType();
-        }
+    public TileEntityTypeRegistryObject<TileEntityLogisticalTransporter> getTileType() {
+        return switch (tier) {
+            case ADVANCED -> MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER;
+            case ELITE -> MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER;
+            case ULTIMATE -> MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER;
+            case BASIC -> MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER;
+        };
     }
 }

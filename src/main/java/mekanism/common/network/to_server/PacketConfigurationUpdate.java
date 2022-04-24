@@ -12,11 +12,11 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketConfigurationUpdate implements IMekanismPacket {
 
@@ -62,13 +62,12 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player == null) {
             return;
         }
-        TileEntity tile = WorldUtils.getTileEntity(player.level, pos);
-        if (tile instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tile;
+        BlockEntity tile = WorldUtils.getTileEntity(player.level, pos);
+        if (tile instanceof ISideConfiguration config) {
             if (packetType == ConfigurationPacket.EJECT) {
                 ConfigInfo info = config.getConfig().getConfig(transmission);
                 if (info != null) {
@@ -131,7 +130,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(packetType);
         buffer.writeBlockPos(pos);
         if (packetType == ConfigurationPacket.EJECT || packetType == ConfigurationPacket.CLEAR_ALL) {
@@ -148,7 +147,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
         }
     }
 
-    public static PacketConfigurationUpdate decode(PacketBuffer buffer) {
+    public static PacketConfigurationUpdate decode(FriendlyByteBuf buffer) {
         ConfigurationPacket packetType = buffer.readEnum(ConfigurationPacket.class);
         BlockPos pos = buffer.readBlockPos();
         int clickType = 0;

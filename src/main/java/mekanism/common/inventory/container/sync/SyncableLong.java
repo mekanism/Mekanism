@@ -5,7 +5,7 @@ import java.util.function.LongSupplier;
 import mekanism.common.network.to_client.container.property.LongPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling longs
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling longs
  */
 public abstract class SyncableLong implements ISyncableData {
 

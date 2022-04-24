@@ -4,16 +4,16 @@ import com.google.gson.JsonObject;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -21,10 +21,10 @@ import net.minecraft.util.ResourceLocation;
 public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder> {
 
     private final ChemicalType chemicalType;
-    private final IChemicalStackIngredient<?, ?> input;
+    private final ChemicalStackIngredient<?, ?> input;
     private final ItemStack output;
 
-    protected ChemicalCrystallizerRecipeBuilder(ResourceLocation serializerName, IChemicalStackIngredient<?, ?> input, ItemStack output) {
+    protected ChemicalCrystallizerRecipeBuilder(ResourceLocation serializerName, ChemicalStackIngredient<?, ?> input, ItemStack output) {
         super(serializerName);
         this.input = input;
         this.chemicalType = ChemicalType.getTypeFor(input);
@@ -37,7 +37,7 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
      * @param input  Input.
      * @param output Output.
      */
-    public static ChemicalCrystallizerRecipeBuilder crystallizing(IChemicalStackIngredient<?, ?> input, ItemStack output) {
+    public static ChemicalCrystallizerRecipeBuilder crystallizing(ChemicalStackIngredient<?, ?> input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This crystallizing recipe requires a non empty item output.");
         }
@@ -54,7 +54,7 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
      *
      * @param consumer Finished Recipe Consumer.
      */
-    public void build(Consumer<IFinishedRecipe> consumer) {
+    public void build(Consumer<FinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
 

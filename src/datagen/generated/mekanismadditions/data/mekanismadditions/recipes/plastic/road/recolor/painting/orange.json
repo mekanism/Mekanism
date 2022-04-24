@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/road"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:orange_plastic_road"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:orange"
+  },
+  "output": {
+    "item": "mekanismadditions:orange_plastic_road"
+  }
+}

@@ -8,18 +8,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
 public class TileTransitRequest extends TransitRequest {
 
-    private final TileEntity tile;
+    private final BlockEntity tile;
     private final Direction side;
     private final Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
 
-    public TileTransitRequest(TileEntity tile, Direction side) {
+    public TileTransitRequest(BlockEntity tile, Direction side) {
         this.tile = tile;
         this.side = side;
     }

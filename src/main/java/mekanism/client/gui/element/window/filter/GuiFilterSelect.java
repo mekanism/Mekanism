@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window.filter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
@@ -62,7 +62,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.CREATE_FILTER_TITLE.translate(), 6);
     }

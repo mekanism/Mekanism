@@ -1,19 +1,18 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
-import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute.ICrTSlurryAttribute;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
+@ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_SLURRY)
-public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, ICrTSlurryAttribute, CrTSlurryBuilder> {
+public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, CrTSlurryBuilder> {
 
     /**
      * Creates a builder for registering a custom {@link Slurry}, using our default clean {@link Slurry} texture.
@@ -71,11 +70,12 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
      * @param oreTag Tag representing the ore.
      *
      * @implNote We add the tag by its internal id instead of getting the internal tag as the internal tag would currently be {@code null} when this gets called, as the
-     * collection is empty, and the goal of this method is to let the slurry have an {@link net.minecraft.tags.ITag.INamedTag}
+     * collection is empty, and the goal of this method is to let the slurry have a {@link net.minecraft.tags.TagKey}
      */
     @ZenCodeType.Method
-    public CrTSlurryBuilder ore(MCTag<Item> oreTag) {
-        return ore(oreTag.getIdInternal());
+    public CrTSlurryBuilder ore(KnownTag<Item> oreTag) {
+        getInternal().ore(oreTag.getTagKey());
+        return this;
     }
 
     @Override

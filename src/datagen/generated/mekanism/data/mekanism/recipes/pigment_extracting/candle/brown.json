@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:brown_candle"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:brown",
+    "amount": 224
+  }
+}

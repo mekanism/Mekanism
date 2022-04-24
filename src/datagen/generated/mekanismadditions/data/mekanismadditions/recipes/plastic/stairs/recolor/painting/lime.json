@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "forge:stairs/plastic"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:lime_plastic_stairs"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:lime"
+  },
+  "output": {
+    "item": "mekanismadditions:lime_plastic_stairs"
+  }
+}

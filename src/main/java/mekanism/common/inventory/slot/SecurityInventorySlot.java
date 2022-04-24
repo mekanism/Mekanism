@@ -6,32 +6,32 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.lib.security.IOwnerItem;
-import mekanism.common.lib.security.ISecurityItem;
+import mekanism.api.security.SecurityMode;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.lib.security.SecurityMode;
-import net.minecraft.item.ItemStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {
 
-    private static final Predicate<@NonNull ItemStack> validator = stack -> stack.getItem() instanceof IOwnerItem;
+    private static final Predicate<@NonNull ItemStack> validator = stack -> stack.getCapability(Capabilities.OWNER_OBJECT).isPresent();
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
-        return new SecurityInventorySlot(stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) == null, stack -> {
-            UUID ownerUUID = ((IOwnerItem) stack.getItem()).getOwnerUUID(stack);
+        return new SecurityInventorySlot(stack -> MekanismAPI.getSecurityUtils().getOwnerUUID(stack) == null, stack -> {
+            UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
             return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
         }, listener, x, y);
     }
 
     public static SecurityInventorySlot lock(@Nullable IContentsListener listener, int x, int y) {
-        return new SecurityInventorySlot(stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) != null,
-              stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) == null, listener, x, y);
+        Predicate<@NonNull ItemStack> insertPredicate = stack -> MekanismAPI.getSecurityUtils().getOwnerUUID(stack) == null;
+        return new SecurityInventorySlot(insertPredicate.negate(), insertPredicate, listener, x, y);
     }
 
     private SecurityInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
@@ -39,30 +39,28 @@ public class SecurityInventorySlot extends BasicInventorySlot {
     }
 
     public void unlock(UUID ownerUUID) {
-        if (!isEmpty() && current.getItem() instanceof IOwnerItem) {
-            IOwnerItem item = (IOwnerItem) current.getItem();
-            UUID stackOwner = item.getOwnerUUID(current);
-            if (stackOwner != null && stackOwner.equals(ownerUUID)) {
-                item.setOwnerUUID(current, null);
-                if (item instanceof ISecurityItem) {
-                    ((ISecurityItem) item).setSecurity(current, SecurityMode.PUBLIC);
+        if (!isEmpty()) {
+            current.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject -> {
+                UUID stackOwner = ownerObject.getOwnerUUID();
+                if (stackOwner != null && stackOwner.equals(ownerUUID)) {
+                    ownerObject.setOwnerUUID(null);
+                    current.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(securityObject -> securityObject.setSecurityMode(SecurityMode.PUBLIC));
                 }
-            }
+            });
         }
     }
 
     public void lock(UUID ownerUUID, SecurityFrequency frequency) {
-        if (!isEmpty() && current.getItem() instanceof IOwnerItem) {
-            IOwnerItem item = (IOwnerItem) current.getItem();
-            UUID stackOwner = item.getOwnerUUID(current);
-            if (stackOwner == null) {
-                item.setOwnerUUID(current, stackOwner = ownerUUID);
-            }
-            if (stackOwner.equals(ownerUUID)) {
-                if (item instanceof ISecurityItem) {
-                    ((ISecurityItem) item).setSecurity(current, frequency.getSecurityMode());
+        if (!isEmpty()) {
+            current.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject -> {
+                UUID stackOwner = ownerObject.getOwnerUUID();
+                if (stackOwner == null) {
+                    ownerObject.setOwnerUUID(stackOwner = ownerUUID);
                 }
-            }
+                if (stackOwner.equals(ownerUUID)) {
+                    current.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(securityObject -> securityObject.setSecurityMode(frequency.getSecurityMode()));
+                }
+            });
         }
     }
 }

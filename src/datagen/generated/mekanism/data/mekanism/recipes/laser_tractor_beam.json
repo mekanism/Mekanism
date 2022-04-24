@@ -9,7 +9,7 @@
   ],
   "key": {
     "P": {
-      "item": "mekanism:personal_chest"
+      "tag": "mekanism:personal_storage"
     },
     "#": {
       "item": "mekanism:laser_amplifier"

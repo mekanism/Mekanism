@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.holder.BasicHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class FluidTankHolder extends BasicHolder<IExtendedFluidTank> implements IFluidTankHolder {
 

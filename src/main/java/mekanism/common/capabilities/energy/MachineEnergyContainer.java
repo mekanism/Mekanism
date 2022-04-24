@@ -2,33 +2,35 @@ package mekanism.common.capabilities.energy;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.level.block.Block;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
-    public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile) {
+    public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile);
+        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
     }
 
-    public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> internal(TILE tile) {
+    public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> internal(TILE tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
-        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), internalOnly, internalOnly, tile);
+        return new MachineEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), internalOnly, internalOnly, tile, listener);
     }
 
     public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
@@ -46,8 +48,8 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     protected FloatingLong currentEnergyPerTick;
 
     protected MachineEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
-          Predicate<@NonNull AutomationType> canInsert, TILE tile) {
-        super(maxEnergy, canExtract, canInsert, tile);
+          Predicate<@NonNull AutomationType> canInsert, TILE tile, @Nullable IContentsListener listener) {
+        super(maxEnergy, canExtract, canInsert, listener);
         this.baseEnergyPerTick = energyPerTick.copyAsConst();
         this.tile = tile;
         currentMaxEnergy = getBaseMaxEnergy();

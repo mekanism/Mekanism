@@ -8,8 +8,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemFluidChemical;
 import mekanism.common.recipe.lookup.cache.TripleInputRecipeCache;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.TriPredicate;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -28,8 +28,8 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(World, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(World, Object, Object,
-     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(World, Object, Object, Object)} for more details about when this method should be called versus when
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object,
+     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)} for more details about when this method should be called versus when
      * {@link #containsRecipeBAC(Object, Object, Object)} or {@link #containsRecipeCAB(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeABC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
@@ -45,8 +45,8 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(World, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(World, Object, Object,
-     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(World, Object, Object, Object)} for more details about when this method should be called versus when
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object,
+     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)} for more details about when this method should be called versus when
      * {@link #containsRecipeABC(Object, Object, Object)} or {@link #containsRecipeCAB(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeBAC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
@@ -62,8 +62,8 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(World, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(World, Object, Object,
-     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(World, Object, Object, Object)} for more details about when this method should be called versus when
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object,
+     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)} for more details about when this method should be called versus when
      * {@link #containsRecipeABC(Object, Object, Object)} or {@link #containsRecipeBAC(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {

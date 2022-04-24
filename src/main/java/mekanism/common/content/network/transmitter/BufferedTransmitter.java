@@ -7,8 +7,8 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 
 public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> {
@@ -43,19 +43,16 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
 
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
-        if (canHaveIncompatibleNetworks() && transmitter.getTransmitter() instanceof BufferedTransmitter) {
-            BufferedTransmitter<?, ?, ?, ?> other = (BufferedTransmitter<?, ?, ?, ?>) transmitter.getTransmitter();
-            if (other.canHaveIncompatibleNetworks()) {
-                //If it is a transmitter, only declare it as valid, if we don't have a combination
-                // of a transmitter with a network and an orphaned transmitter, but only bother if
-                // we can have incompatible networks
-                // This makes it so that we don't let a network connect to an orphan until the orphan has had a chance
-                // to figure out where it belongs
-                //TODO: Because of the reworks done and the creation of CompatibleTransmitterValidator, this potentially
-                // should just fail if either transmitter is an orphan as it is not needed otherwise??
-                if (hasTransmitterNetwork() && other.isOrphan() || other.hasTransmitterNetwork() && isOrphan()) {
-                    return false;
-                }
+        if (canHaveIncompatibleNetworks() && transmitter.getTransmitter() instanceof BufferedTransmitter<?, ?, ?, ?> other && other.canHaveIncompatibleNetworks()) {
+            //If it is a transmitter, only declare it as valid, if we don't have a combination
+            // of a transmitter with a network and an orphaned transmitter, but only bother if
+            // we can have incompatible networks
+            // This makes it so that we don't let a network connect to an orphan until the orphan has had a chance
+            // to figure out where it belongs
+            //TODO: Because of the reworks done and the creation of CompatibleTransmitterValidator, this potentially
+            // should just fail if either transmitter is an orphan as it is not needed otherwise??
+            if (hasTransmitterNetwork() && other.isOrphan() || other.hasTransmitterNetwork() && isOrphan()) {
+                return false;
             }
         }
         return super.isValidTransmitter(transmitter, side);
@@ -173,7 +170,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     }
 
     @Override
-    protected void handleContentsUpdateTag(@Nonnull NETWORK network, @Nonnull CompoundNBT tag) {
+    protected void handleContentsUpdateTag(@Nonnull NETWORK network, @Nonnull CompoundTag tag) {
         network.updateCapacity();
     }
 

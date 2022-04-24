@@ -4,10 +4,10 @@ import mekanism.api.gear.ModuleData;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRemoveModule implements IMekanismPacket {
 
@@ -21,7 +21,7 @@ public class PacketRemoveModule implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.level, pos);
             if (tile != null) {
@@ -31,12 +31,12 @@ public class PacketRemoveModule implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeRegistryId(moduleType);
     }
 
-    public static PacketRemoveModule decode(PacketBuffer buffer) {
+    public static PacketRemoveModule decode(FriendlyByteBuf buffer) {
         return new PacketRemoveModule(buffer.readBlockPos(), buffer.readRegistryId());
     }
 }

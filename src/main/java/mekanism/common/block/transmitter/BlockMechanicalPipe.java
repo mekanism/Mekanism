@@ -4,10 +4,10 @@ import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import net.minecraft.tileentity.TileEntityType;
 
 public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITypeBlock, IHasTileEntity<TileEntityMechanicalPipe> {
 
@@ -23,17 +23,12 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITypeB
     }
 
     @Override
-    public TileEntityType<TileEntityMechanicalPipe> getTileType() {
-        switch (tier) {
-            case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE.getTileEntityType();
-            case ELITE:
-                return MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE.getTileEntityType();
-            case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE.getTileEntityType();
-            case BASIC:
-            default:
-                return MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE.getTileEntityType();
-        }
+    public TileEntityTypeRegistryObject<TileEntityMechanicalPipe> getTileType() {
+        return switch (tier) {
+            case ADVANCED -> MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE;
+            case ELITE -> MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE;
+            case ULTIMATE -> MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE;
+            case BASIC -> MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE;
+        };
     }
 }

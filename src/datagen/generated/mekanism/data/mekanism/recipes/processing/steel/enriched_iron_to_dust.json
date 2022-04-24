@@ -5,7 +5,7 @@
       "item": "mekanism:enriched_iron"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:carbon"
   },

@@ -1,7 +1,8 @@
 package mekanism.client.render.lib.effect;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
@@ -12,10 +13,9 @@ import java.util.Set;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltQuads;
+import mekanism.common.lib.effect.BoltEffect.FadeFunction.RenderBounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.math.vector.Matrix4f;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 public class BoltRenderer {
 
@@ -37,8 +37,8 @@ public class BoltRenderer {
         }
     }
 
-    public void render(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn) {
-        IVertexBuilder buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
+    public void render(float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn) {
+        VertexConsumer buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
         Matrix4f matrix = matrixStack.last().pose();
         Timestamp timestamp = new Timestamp(minecraft.level.getGameTime(), partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
@@ -107,10 +107,10 @@ public class BoltRenderer {
             this.createdTimestamp = timestamp;
         }
 
-        public void render(Matrix4f matrix, IVertexBuilder buffer, Timestamp timestamp) {
+        public void render(Matrix4f matrix, VertexConsumer buffer, Timestamp timestamp) {
             float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
-            Pair<Integer, Integer> bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
-            for (int i = bounds.getLeft(); i < bounds.getRight(); i++) {
+            RenderBounds bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
+            for (int i = bounds.start(); i < bounds.end(); i++) {
                 renderQuads.get(i).getVecs().forEach(v -> buffer.vertex(matrix, (float) v.x, (float) v.y, (float) v.z)
                       .color(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a())
                       .endVertex());

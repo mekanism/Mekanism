@@ -8,16 +8,18 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;//does not tick!
 
-    public TileEntityConfigurableMachine(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityConfigurableMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
@@ -32,15 +34,15 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
+    public CompoundTag getConfigurationData(Player player) {
+        CompoundTag data = super.getConfigurationData(player);
         getConfig().write(data);
         getEjector().write(data);
         return data;
     }
 
     @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+    public void setConfigurationData(Player player, CompoundTag data) {
         super.setConfigurationData(player, data);
         getConfig().read(data);
         getEjector().read(data);

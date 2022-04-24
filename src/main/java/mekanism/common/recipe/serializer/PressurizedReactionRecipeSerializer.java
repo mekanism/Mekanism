@@ -9,18 +9,19 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReactionRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
+public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReactionRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
 
@@ -31,15 +32,15 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
     @Nonnull
     @Override
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isArrayNode(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                JSONUtils.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient solidIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement fluidInput = JSONUtils.isArrayNode(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
-                                 JSONUtils.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
-        FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(fluidInput);
-        JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
-                               JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
-        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
+        JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
+                                GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
+        ItemStackIngredient solidIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
+        JsonElement fluidInput = GsonHelper.isArrayNode(json, JsonConstants.FLUID_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
+                                 GsonHelper.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
+        FluidStackIngredient fluidIngredient = IngredientCreatorAccess.fluid().deserialize(fluidInput);
+        JsonElement gasInput = GsonHelper.isArrayNode(json, JsonConstants.GAS_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
+                               GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
+        GasStackIngredient gasIngredient = IngredientCreatorAccess.gas().deserialize(gasInput);
         FloatingLong energyRequired = FloatingLong.ZERO;
         if (json.has(JsonConstants.ENERGY_REQUIRED)) {
             energyRequired = SerializerHelper.getFloatingLong(json, JsonConstants.ENERGY_REQUIRED);
@@ -47,7 +48,7 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
 
         int duration;
         JsonElement ticks = json.get(JsonConstants.DURATION);
-        if (!JSONUtils.isNumberValue(ticks)) {
+        if (!GsonHelper.isNumberValue(ticks)) {
             throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
         }
         duration = ticks.getAsJsonPrimitive().getAsInt();
@@ -79,11 +80,11 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
     }
 
     @Override
-    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
-            FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
-            GasStackIngredient inputGas = GasStackIngredient.read(buffer);
+            ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
+            FluidStackIngredient inputFluid = IngredientCreatorAccess.fluid().read(buffer);
+            GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
             FloatingLong energyRequired = FloatingLong.readFromBuffer(buffer);
             int duration = buffer.readVarInt();
             ItemStack outputItem = buffer.readItem();
@@ -96,7 +97,7 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
     }
 
     @Override
-    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

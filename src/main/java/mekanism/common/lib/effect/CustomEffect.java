@@ -2,8 +2,8 @@ package mekanism.common.lib.effect;
 
 import java.util.Random;
 import mekanism.common.lib.Color;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 public class CustomEffect {
 
@@ -12,7 +12,7 @@ public class CustomEffect {
 
     protected final Random rand = new Random();
 
-    protected Vector3d pos = new Vector3d(0, 0, 0);
+    protected Vec3 pos = new Vec3(0, 0, 0);
     protected Color color = Color.rgbai(255, 255, 255, 255);
     protected float scale = 1F;
 
@@ -27,8 +27,8 @@ public class CustomEffect {
         this.GRID_SIZE = gridSize;
     }
 
-    protected Vector3d randVec() {
-        return new Vector3d(rand.nextDouble() - 0.5, rand.nextDouble() - 0.5, rand.nextDouble() - 0.5).normalize();
+    protected Vec3 randVec() {
+        return new Vec3(rand.nextDouble() - 0.5, rand.nextDouble() - 0.5, rand.nextDouble() - 0.5).normalize();
     }
 
     public boolean tick() {
@@ -36,7 +36,7 @@ public class CustomEffect {
         return false;
     }
 
-    public void setPos(Vector3d pos) {
+    public void setPos(Vec3 pos) {
         this.pos = pos;
     }
 
@@ -52,7 +52,7 @@ public class CustomEffect {
         return color;
     }
 
-    public Vector3d getPos(float partialTick) {
+    public Vec3 getPos(float partialTick) {
         return pos;
     }
 

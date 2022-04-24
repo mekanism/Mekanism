@@ -3,15 +3,13 @@ package mekanism.common.content.gear;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
 import mekanism.api.NBTConstants;
@@ -23,18 +21,23 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
+import mekanism.client.model.MekanismModelCache;
+import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.InterModComms;
 
 @ParametersAreNonnullByDefault
@@ -43,19 +46,11 @@ public class ModuleHelper implements IModuleHelper {
 
     public static final ModuleHelper INSTANCE = new ModuleHelper();
 
-    private final Map<String, ModuleData<?>> legacyModuleLookup = new Object2ObjectOpenHashMap<>();
+    private ModuleHelper() {
+    }
+
     private final Map<Item, Set<ModuleData<?>>> supportedModules = new Object2ObjectOpenHashMap<>(5);
     private final Map<ModuleData<?>, Set<Item>> supportedContainers = new Object2ObjectOpenHashMap<>();
-
-    @Deprecated//TODO - 1.18: Remove this
-    public void gatherLegacyModules() {
-        for (ModuleData<?> moduleData : MekanismAPI.moduleRegistry()) {
-            String legacyName = moduleData.getLegacyName();
-            if (legacyName != null) {
-                legacyModuleLookup.put(legacyName, moduleData);
-            }
-        }
-    }
 
     public void processIMC() {
         Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap = new Object2ObjectOpenHashMap<>();
@@ -72,23 +67,22 @@ public class ModuleHelper implements IModuleHelper {
     private void mapSupportedModules(String imcMethod, IItemProvider moduleContainer, Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap) {
         ImmutableSet.Builder<ModuleData<?>> supportedModulesBuilder = ImmutableSet.builder();
         InterModComms.getMessages(Mekanism.MODID, imcMethod::equals).forEach(message -> {
-            Object body = message.getMessageSupplier().get();
-            if (body instanceof IModuleDataProvider) {
-                IModuleDataProvider<?> moduleDataProvider = (IModuleDataProvider<?>) body;
+            Object body = message.messageSupplier().get();
+            if (body instanceof IModuleDataProvider moduleDataProvider) {
                 supportedModulesBuilder.add(moduleDataProvider.getModuleData());
-                logDebugReceivedIMC(imcMethod, message.getSenderModId(), moduleDataProvider);
-            } else if (body instanceof IModuleDataProvider[]) {
-                for (IModuleDataProvider<?> moduleDataProvider : ((IModuleDataProvider<?>[]) body)) {
+                logDebugReceivedIMC(imcMethod, message.senderModId(), moduleDataProvider);
+            } else if (body instanceof IModuleDataProvider<?>[] providers) {
+                for (IModuleDataProvider<?> moduleDataProvider : providers) {
                     supportedModulesBuilder.add(moduleDataProvider.getModuleData());
-                    logDebugReceivedIMC(imcMethod, message.getSenderModId(), moduleDataProvider);
+                    logDebugReceivedIMC(imcMethod, message.senderModId(), moduleDataProvider);
                 }
             } else {
-                Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.getSenderModId());
+                Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
             }
         });
         Set<ModuleData<?>> supported = supportedModulesBuilder.build();
         if (!supported.isEmpty()) {
-            Item item = moduleContainer.getItem();
+            Item item = moduleContainer.asItem();
             supportedModules.put(item, supported);
             for (ModuleData<?> data : supported) {
                 supportedContainersBuilderMap.computeIfAbsent(data, d -> ImmutableSet.builder()).add(item);
@@ -125,7 +119,7 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     public <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, IModuleDataProvider<MODULE> typeProvider) {
         if (container.getItem() instanceof IModuleContainerItem) {
-            CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+            CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
             return load(container, typeProvider.getModuleData(), modulesTag, null);
         }
         return null;
@@ -135,7 +129,7 @@ public class ModuleHelper implements IModuleHelper {
     public List<Module<?>> loadAll(ItemStack container) {
         if (container.getItem() instanceof IModuleContainerItem) {
             List<Module<?>> modules = new ArrayList<>();
-            CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+            CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
             for (ModuleData<?> moduleType : loadAllTypes(modulesTag)) {
                 Module<?> module = load(container, moduleType, modulesTag, null);
                 if (module != null) {
@@ -151,7 +145,7 @@ public class ModuleHelper implements IModuleHelper {
     public <MODULE extends ICustomModule<?>> List<Module<? extends MODULE>> loadAll(ItemStack container, Class<MODULE> moduleClass) {
         if (container.getItem() instanceof IModuleContainerItem) {
             List<Module<? extends MODULE>> modules = new ArrayList<>();
-            CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+            CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
             for (ModuleData<?> moduleType : loadAllTypes(modulesTag)) {
                 Module<?> module = load(container, moduleType, modulesTag, moduleClass);
                 if (module != null) {
@@ -164,18 +158,15 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Override
-    public Collection<ModuleData<?>> loadAllTypes(ItemStack container) {
+    public List<ModuleData<?>> loadAllTypes(ItemStack container) {
         if (container.getItem() instanceof IModuleContainerItem) {
             return loadAllTypes(ItemDataUtils.getCompound(container, NBTConstants.MODULES));
         }
         return Collections.emptyList();
     }
 
-    private Set<ModuleData<?>> loadAllTypes(CompoundNBT modulesTag) {
-        //We use a set so in case there is a duplicate entry somehow between legacy and non legacy,
-        // we only include it once in the returned set. This shouldn't happen, but it is a just in case thing
-        //TODO - 1.18: After removing legacy types we might as well change this to a list
-        Set<ModuleData<?>> moduleTypes = new HashSet<>();
+    private List<ModuleData<?>> loadAllTypes(CompoundTag modulesTag) {
+        List<ModuleData<?>> moduleTypes = new ArrayList<>();
         for (String name : modulesTag.getAllKeys()) {
             ModuleData<?> moduleType = getModuleTypeFromName(name);
             if (moduleType != null) {
@@ -187,39 +178,21 @@ public class ModuleHelper implements IModuleHelper {
 
     @Nullable
     private ModuleData<?> getModuleTypeFromName(String name) {
-        //Try looking up by legacy name first as they are all valid resource locations they just would end up in minecraft's domain
-        ModuleData<?> legacy = legacyModuleLookup.get(name);
-        if (legacy != null) {
-            //If we found one return it
-            return legacy;
-        }
         //Otherwise, try getting the registry name and then looking it up in the module registry
         ResourceLocation registryName = ResourceLocation.tryParse(name);
         return registryName == null ? null : MekanismAPI.moduleRegistry().getValue(registryName);
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, ModuleData<MODULE> type, CompoundNBT modulesTag,
+    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, ModuleData<MODULE> type, CompoundTag modulesTag,
           @Nullable Class<? extends ICustomModule<?>> typeFilter) {
         String registryName = type.getRegistryName().toString();
-        if (modulesTag.contains(registryName, NBT.TAG_COMPOUND)) {
-            return load(type, container, modulesTag, registryName, typeFilter);
-        }
-        String legacyName = type.getLegacyName();
-        if (legacyName != null && modulesTag.contains(legacyName, NBT.TAG_COMPOUND)) {
-            return load(type, container, modulesTag, legacyName, typeFilter);
-        }
-        return null;
-    }
-
-    @Nullable
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ModuleData<MODULE> type, ItemStack container, CompoundNBT modulesTag, String key,
-          @Nullable Class<? extends ICustomModule<?>> typeFilter) {
-        //TODO - 1.18: When removing the legacy handling from the above method just inline this method
-        Module<MODULE> module = new Module<>(type, container);
-        if (typeFilter == null || typeFilter.isInstance(module.getCustomInstance())) {
-            module.read(modulesTag.getCompound(key));
-            return module;
+        if (modulesTag.contains(registryName, Tag.TAG_COMPOUND)) {
+            Module<MODULE> module = new Module<>(type, container);
+            if (typeFilter == null || typeFilter.isInstance(module.getCustomInstance())) {
+                module.read(modulesTag.getCompound(registryName));
+                return module;
+            }
         }
         return null;
     }
@@ -235,7 +208,17 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Override
-    public IHUDElement hudElement(ResourceLocation icon, ITextComponent text, HUDColor color) {
+    public IHUDElement hudElement(ResourceLocation icon, Component text, HUDColor color) {
         return HUDElement.of(icon, text, HUDElement.HUDColor.from(color));
+    }
+
+    @Override
+    public synchronized void addMekaSuitModuleModels(ResourceLocation location) {
+        MekanismModelCache.INSTANCE.registerMekaSuitModuleModel(location);
+    }
+
+    @Override
+    public synchronized void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
+        MekaSuitArmor.registerModule(name, moduleDataProvider, slotType, isActive);
     }
 }

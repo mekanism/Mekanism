@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Contract;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NonNull STACK, @NonNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NonNull STACK, @NonNull STACK> {
 
     private final INGREDIENT leftInput;
     private final INGREDIENT rightInput;
@@ -100,7 +100,12 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return leftInput.hasNoMatchingInstances() || rightInput.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         leftInput.write(buffer);
         rightInput.write(buffer);
         output.writeToPacket(buffer);

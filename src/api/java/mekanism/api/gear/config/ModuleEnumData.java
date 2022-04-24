@@ -1,14 +1,13 @@
 package mekanism.api.gear.config;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * Enum based implementation of {@link ModuleConfigData}.
@@ -29,9 +28,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
      */
     public ModuleEnumData(Class<TYPE> enumClass, TYPE def) {
         TYPE[] constants = Objects.requireNonNull(enumClass, "Enum Class cannot be null.").getEnumConstants();
-        this.enumConstants = ImmutableList.<TYPE>builder()
-              .addAll(Arrays.asList(constants))
-              .build();
+        this.enumConstants = List.of(constants);
         this.value = Objects.requireNonNull(def, "Default value cannot be null.");
     }
 
@@ -52,7 +49,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
             throw new IllegalArgumentException("Selectable count is larger than the number of elements in " + enumClass.getSimpleName());
         } else if (constants.length == selectableCount) {
             this.enumConstants = ImmutableList.<TYPE>builder()
-                  .addAll(Arrays.asList(constants))
+                  .add(constants)
                   .build();
             this.value = def;
         } else {
@@ -60,7 +57,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
                 throw new IllegalArgumentException("Invalid default, it is out of range of the selectable values.");
             }
             this.enumConstants = ImmutableList.<TYPE>builder()
-                  .addAll(Arrays.asList(constants).subList(0, selectableCount))
+                  .addAll(List.of(constants).subList(0, selectableCount))
                   .build();
             this.value = def;
         }
@@ -92,14 +89,14 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
     }
 
     @Override
-    public void read(String name, CompoundNBT tag) {
+    public void read(String name, CompoundTag tag) {
         Objects.requireNonNull(tag, "Tag cannot be null.");
         Objects.requireNonNull(name, "Name cannot be null.");
         value = MathUtils.getByIndexMod(enumConstants, tag.getInt(name));
     }
 
     @Override
-    public void write(String name, CompoundNBT tag) {
+    public void write(String name, CompoundTag tag) {
         Objects.requireNonNull(tag, "Tag cannot be null.");
         Objects.requireNonNull(name, "Name cannot be null.");
         tag.putInt(name, value.ordinal());

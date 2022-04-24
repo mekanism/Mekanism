@@ -3,11 +3,10 @@ package mekanism.common.block.attribute;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.world.MenuProvider;
 
 public class AttributeGui implements Attribute {
 
@@ -20,7 +19,14 @@ public class AttributeGui implements Attribute {
         this.customName = customName;
     }
 
-    public <TILE extends TileEntityMekanism> INamedContainerProvider getProvider(TILE tile) {
-        return containerRegistrar.get().getProvider(customName == null ? TextComponentUtil.build(tile.getBlockType()) : customName.translate(), tile);
+    public <TILE extends TileEntityMekanism> MenuProvider getProvider(TILE tile) {
+        return containerRegistrar.get().getProvider(customName == null ? tile.getDisplayName() : customName.translate(), tile);
+    }
+
+    /**
+     * @return if this GUI has another name other than the default "container."
+     */
+    public boolean hasCustomName() {
+        return customName != null;
     }
 }

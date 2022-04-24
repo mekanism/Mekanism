@@ -11,11 +11,11 @@
   ],
   "key": {
     "#": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanismadditions:plastic_blocks/reinforced"
       },
-      "without": {
+      "subtracted": {
         "item": "mekanismadditions:light_gray_reinforced_plastic"
       }
     },

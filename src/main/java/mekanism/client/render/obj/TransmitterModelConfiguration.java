@@ -9,8 +9,8 @@ import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.util.Direction;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -118,7 +118,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
 
     @Nonnull
     @Override
-    public RenderMaterial resolveTexture(@Nonnull String name) {
+    public Material resolveTexture(@Nonnull String name) {
         return internal.resolveTexture(adjustTextureName(name));
     }
 

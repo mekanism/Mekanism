@@ -1,10 +1,10 @@
 package mekanism.common.command.builders;
 
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public class Builders {
 
@@ -18,7 +18,7 @@ public class Builders {
         }
 
         @Override
-        public void build(World world, BlockPos start) {
+        public void build(Level world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayer(world, start, 1, MekanismBlocks.SUPERHEATING_ELEMENT.getBlock());
@@ -40,7 +40,7 @@ public class Builders {
         }
 
         @Override
-        public void build(World world, BlockPos start) {
+        public void build(Level world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 16, Blocks.AIR);
@@ -59,7 +59,7 @@ public class Builders {
         }
 
         @Override
-        public void build(World world, BlockPos start) {
+        public void build(Level world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 15, MekanismBlocks.ULTIMATE_INDUCTION_CELL.getBlock());
@@ -79,7 +79,7 @@ public class Builders {
         }
 
         @Override
-        public void build(World world, BlockPos start) {
+        public void build(Level world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 17, Blocks.AIR);
@@ -99,7 +99,7 @@ public class Builders {
         }
 
         @Override
-        protected void build(World world, BlockPos start) {
+        protected void build(Level world, BlockPos start) {
             buildPartialFrame(world, start, 1);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 5, Blocks.AIR);

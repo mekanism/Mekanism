@@ -5,7 +5,7 @@
       "tag": "mekanism:alloys/reinforced"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 40,
     "tag": "mekanism:refined_obsidian"
   },

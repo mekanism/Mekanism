@@ -23,7 +23,7 @@ import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.Con
 import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigPigmentTankHolder;
 import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
@@ -55,28 +55,30 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         return new ChemicalTankHelper<>(new ConfigSlurryTankHolder(facingSupplier, configSupplier));
     }
 
-    public void addTank(@Nonnull TANK tank) {
+    public TANK addTank(@Nonnull TANK tank) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder) {
-            ((ChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank);
-        } else if (slotHolder instanceof ConfigChemicalTankHolder) {
-            ((ConfigChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank);
+        if (slotHolder instanceof ChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
+            slotHolder.addTank(tank);
+        } else if (slotHolder instanceof ConfigChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
+            slotHolder.addTank(tank);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
+        return tank;
     }
 
-    public void addTank(@Nonnull TANK tank, RelativeSide... sides) {
+    public TANK addTank(@Nonnull TANK tank, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder) {
-            ((ChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank, sides);
+        if (slotHolder instanceof ChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
+            slotHolder.addTank(tank, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }
+        return tank;
     }
 
     public IChemicalTankHolder<CHEMICAL, STACK, TANK> build() {

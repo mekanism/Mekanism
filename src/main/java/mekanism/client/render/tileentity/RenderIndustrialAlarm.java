@@ -1,28 +1,29 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntityIndustrialAlarm> {
 
     private static final float ROTATE_SPEED = 10F;
-    private final ModelIndustrialAlarm model = new ModelIndustrialAlarm();
+    private final ModelIndustrialAlarm model;
 
-    public RenderIndustrialAlarm(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderIndustrialAlarm(BlockEntityRendererProvider.Context context) {
+        super(context);
+        model = new ModelIndustrialAlarm(context.getModelSet());
     }
 
     @Override
-    protected void render(TileEntityIndustrialAlarm tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityIndustrialAlarm tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         performTranslations(tile, matrix);
         float rotation = (tile.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360;
         model.render(matrix, renderer, light, overlayLight, Attribute.isActive(tile.getBlockState()), rotation, false, false);
@@ -40,34 +41,32 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
     }
 
     /**
-     * Make sure to call {@link MatrixStack#popPose()} afterwards
+     * Make sure to call {@link PoseStack#popPose()} afterwards
      */
-    private void performTranslations(TileEntityIndustrialAlarm tile, MatrixStack matrix) {
+    private void performTranslations(TileEntityIndustrialAlarm tile, PoseStack matrix) {
         matrix.pushPose();
         matrix.translate(0.5, 0, 0.5);
         switch (tile.getDirection()) {
-            case DOWN:
+            case DOWN -> {
                 matrix.translate(0, 1, 0);
                 matrix.mulPose(Vector3f.XP.rotationDegrees(180));
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 matrix.translate(0, 0.5, 0.5);
                 matrix.mulPose(Vector3f.XN.rotationDegrees(90));
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 matrix.translate(0, 0.5, -0.5);
                 matrix.mulPose(Vector3f.XP.rotationDegrees(90));
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 matrix.translate(-0.5, 0.5, 0);
                 matrix.mulPose(Vector3f.ZN.rotationDegrees(90));
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 matrix.translate(0.5, 0.5, 0);
                 matrix.mulPose(Vector3f.ZP.rotationDegrees(90));
-                break;
-            default:
-                break;
+            }
         }
     }
 }

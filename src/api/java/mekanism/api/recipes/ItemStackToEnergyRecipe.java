@@ -1,16 +1,18 @@
 package mekanism.api.recipes;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Input: ItemStack
@@ -75,13 +77,17 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public FloatingLong getOutputDefinition() {
-        //TODO - 1.18: Re-evaluate this method not being a list
-        return output;
+    public List<FloatingLong> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToBuffer(buffer);
     }

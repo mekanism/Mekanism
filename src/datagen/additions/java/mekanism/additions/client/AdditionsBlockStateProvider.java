@@ -10,14 +10,14 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.client.state.BaseBlockStateProvider;
 import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import net.minecraft.block.FenceGateBlock;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
+import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.properties.Half;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.state.properties.StairsShape;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -82,9 +82,9 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
             BlockPlasticStairs block = stair.getBlock();
             //Copy of BlockStateProvider#stairsBlock, except also ignores our fluid logging extension
             getVariantBuilder(block).forAllStatesExcept(state -> {
-                Direction facing = state.getValue(StairsBlock.FACING);
-                Half half = state.getValue(StairsBlock.HALF);
-                StairsShape shape = state.getValue(StairsBlock.SHAPE);
+                Direction facing = state.getValue(StairBlock.FACING);
+                Half half = state.getValue(StairBlock.HALF);
+                StairsShape shape = state.getValue(StairBlock.SHAPE);
                 int yRot = (int) facing.getClockWise().toYRot(); // Stairs model is rotated 90 degrees clockwise for some reason
                 if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) {
                     yRot += 270; // Left facing stairs are rotated 90 degrees clockwise
@@ -100,7 +100,7 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
                       .rotationY(yRot)
                       .uvLock(uvlock)
                       .build();
-            }, StairsBlock.WATERLOGGED, block.getFluidLoggedProperty());
+            }, StairBlock.WATERLOGGED, block.getFluidLoggedProperty());
         }
     }
 

@@ -2,14 +2,17 @@ package mekanism.tools.common.material;
 
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 @FieldsAreNonnullByDefault
@@ -29,7 +32,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
     public final CachedFloatValue pickaxeAtkSpeed;
     public final CachedFloatValue hoeDamage;
     public final CachedFloatValue hoeAtkSpeed;
-    private final CachedIntValue paxelHarvestLevel;
     public final CachedFloatValue paxelDamage;
     public final CachedFloatValue paxelAtkSpeed;
     private final CachedFloatValue paxelEfficiency;
@@ -38,7 +40,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
     private final CachedIntValue toolMaxUses;
     private final CachedFloatValue efficiency;
     public final CachedFloatValue attackDamage;
-    private final CachedIntValue harvestLevel;
     private final CachedIntValue enchantability;
     public final CachedFloatValue toughness;
     public final CachedFloatValue knockbackResistance;
@@ -104,8 +105,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .defineInRange(toolKey + "ToolMaxUses", materialDefaults.getUses(), 1, Integer.MAX_VALUE));
         efficiency = CachedFloatValue.wrap(config, builder.comment("Efficiency of " + name + " tools.")
               .define(toolKey + "Efficiency", (double) materialDefaults.getSpeed()));
-        paxelHarvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + name + " paxels.")
-              .defineInRange(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel(), 0, Integer.MAX_VALUE));
         paxelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + name + " paxels.")
               .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage(), damageModifierPredicate));
         paxelAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + name + " paxels.")
@@ -116,8 +115,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
         paxelMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " paxels.")
               .defineInRange(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses(), 1, Integer.MAX_VALUE));
-        harvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + name + " tools.")
-              .defineInRange(toolKey + "HarvestLevel", materialDefaults.getLevel(), 0, Integer.MAX_VALUE));
         enchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + name + " items.")
               .defineInRange(toolKey + "Enchantability", materialDefaults.getCommonEnchantability(), 0, Integer.MAX_VALUE));
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + name + " armor.")
@@ -125,21 +122,21 @@ public class MaterialCreator extends BaseMekanismMaterial {
         knockbackResistance = CachedFloatValue.wrap(config, builder.comment("Base armor knockback resistance value of " + name + " armor.")
               .defineInRange(toolKey + "KnockbackResistance", materialDefaults.getKnockbackResistance(), 0, Float.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " boots.")
-              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.FEET), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.FEET), 1, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " leggings.")
-              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.LEGS), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.LEGS), 1, Integer.MAX_VALUE));
         chestplateDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " chestplates.")
-              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.CHEST), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.CHEST), 1, Integer.MAX_VALUE));
         helmetDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " helmets.")
-              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.HEAD), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.HEAD), 1, Integer.MAX_VALUE));
         bootArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " boots.")
-              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.FEET), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.FEET), 0, Integer.MAX_VALUE));
         leggingArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " leggings.")
-              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.LEGS), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.LEGS), 0, Integer.MAX_VALUE));
         chestplateArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " chestplates.")
-              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.CHEST), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.CHEST), 0, Integer.MAX_VALUE));
         helmetArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " helmets.")
-              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.HEAD), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.HEAD), 0, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -199,11 +196,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPaxelHarvestLevel() {
-        return paxelHarvestLevel.get();
-    }
-
-    @Override
     public int getPaxelMaxUses() {
         return paxelMaxUses.get();
     }
@@ -239,38 +231,37 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
+    @Deprecated
     public int getLevel() {
-        return harvestLevel.get();
+        return fallBack.getLevel();
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Block> getTag() {
+        return fallBack.getTag();
     }
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return bootDurability.get();
-            case LEGS:
-                return leggingDurability.get();
-            case CHEST:
-                return chestplateDurability.get();
-            case HEAD:
-                return helmetDurability.get();
-        }
-        return fallBack.getDurabilityForSlot(slotType);
+    public int getDurabilityForSlot(EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> bootDurability.get();
+            case LEGS -> leggingDurability.get();
+            case CHEST -> chestplateDurability.get();
+            case HEAD -> helmetDurability.get();
+            default -> fallBack.getDurabilityForSlot(slotType);
+        };
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return bootArmor.get();
-            case LEGS:
-                return leggingArmor.get();
-            case CHEST:
-                return chestplateArmor.get();
-            case HEAD:
-                return helmetArmor.get();
-        }
-        return fallBack.getDefenseForSlot(slotType);
+    public int getDefenseForSlot(EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> bootArmor.get();
+            case LEGS -> leggingArmor.get();
+            case CHEST -> chestplateArmor.get();
+            case HEAD -> helmetArmor.get();
+            default -> fallBack.getDefenseForSlot(slotType);
+        };
     }
 
     @Override

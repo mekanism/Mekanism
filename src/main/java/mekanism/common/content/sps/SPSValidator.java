@@ -17,10 +17,10 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import mekanism.common.lib.multiblock.StructureHelper;
 import mekanism.common.registries.MekanismBlockTypes;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
 
@@ -60,7 +60,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     }
 
     @Override
-    protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
+    protected boolean validateInner(BlockState state, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         if (super.validateInner(state, chunkMap, pos)) {
             return true;
         }
@@ -75,7 +75,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     }
 
     @Override
-    public FormationResult postcheck(SPSMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
+    public FormationResult postcheck(SPSMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
         Set<BlockPos> validCoils = new ObjectOpenHashSet<>();
         for (ValveData valve : structure.valves) {
             BlockPos pos = valve.location.relative(valve.side.getOpposite());

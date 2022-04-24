@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:deepslate_tile_wall"
+    }
+  },
+  "output": {
+    "item": "minecraft:deepslate_brick_wall"
+  }
+}

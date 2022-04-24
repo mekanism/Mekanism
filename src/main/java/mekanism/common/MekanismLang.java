@@ -1,8 +1,8 @@
 package mekanism.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy-pasted all over the place
@@ -169,6 +169,7 @@ public enum MekanismLang implements ILangEntry {
     INVALID("tooltip", "invalid"),
     HAS_INVENTORY("tooltip", "inventory"),
     NO_GAS("tooltip", "no_gas"),
+    NO_FLUID_TOOLTIP("tooltip", "no_fluid"),
     FREE_RUNNERS_MODE("tooltip", "mode.free_runners"),
     JETPACK_MODE("tooltip", "mode.jetpack"),
     SCUBA_TANK_MODE("tooltip", "mode.scuba_tank"),
@@ -215,8 +216,6 @@ public enum MekanismLang implements ILangEntry {
     ENERGY("gui", "energy"),
     RESISTIVE_HEATER_USAGE("gui", "usage"),
     DYNAMIC_TANK("gui", "dynamic_tank"),
-    CHEMICAL_DISSOLUTION_CHAMBER_SHORT("gui", "chemical_dissolution_chamber.short"),
-    CHEMICAL_INFUSER_SHORT("gui", "chemical_infuser.short"),
     MOVE_UP("gui", "move_up"),
     MOVE_DOWN("gui", "move_down"),
     SET("gui", "set"),
@@ -286,7 +285,7 @@ public enum MekanismLang implements ILangEntry {
     DICTIONARY_BLOCK_TAGS_FOUND("dictionary", "tags_found.block"),
     DICTIONARY_FLUID_TAGS_FOUND("dictionary", "tags_found.fluid"),
     DICTIONARY_ENTITY_TYPE_TAGS_FOUND("dictionary", "tags_found.entity_type"),
-    DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND("dictionary", "tags_found.tile_entity_type"),
+    DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND("dictionary", "tags_found.block_entity_type"),
     DICTIONARY_TAG_TYPE("dictionary", "tag_type"),
     DICTIONARY_ITEM("dictionary", "item"),
     DICTIONARY_ITEM_DESC("dictionary", "item.desc"),
@@ -296,12 +295,16 @@ public enum MekanismLang implements ILangEntry {
     DICTIONARY_FLUID_DESC("dictionary", "fluid.desc"),
     DICTIONARY_ENTITY_TYPE("dictionary", "entity_type"),
     DICTIONARY_ENTITY_TYPE_DESC("dictionary", "entity_type.desc"),
+    DICTIONARY_ATTRIBUTE("dictionary", "attribute"),
+    DICTIONARY_ATTRIBUTE_DESC("dictionary", "attribute.desc"),
     DICTIONARY_POTION("dictionary", "potion"),
     DICTIONARY_POTION_DESC("dictionary", "potion.desc"),
+    DICTIONARY_MOB_EFFECT("dictionary", "mob_effect"),
+    DICTIONARY_MOB_EFFECT_DESC("dictionary", "mob_effect.desc"),
     DICTIONARY_ENCHANTMENT("dictionary", "enchantment"),
     DICTIONARY_ENCHANTMENT_DESC("dictionary", "enchantment.desc"),
-    DICTIONARY_TILE_ENTITY_TYPE("dictionary", "tile_entity_type"),
-    DICTIONARY_TILE_ENTITY_TYPE_DESC("dictionary", "tile_entity_type.desc"),
+    DICTIONARY_BLOCK_ENTITY_TYPE("dictionary", "block_entity_type"),
+    DICTIONARY_BLOCK_ENTITY_TYPE_DESC("dictionary", "block_entity_type.desc"),
     DICTIONARY_GAS("dictionary", "gas"),
     DICTIONARY_GAS_DESC("dictionary", "gas.desc"),
     DICTIONARY_INFUSE_TYPE("dictionary", "infuse_type"),
@@ -340,7 +343,7 @@ public enum MekanismLang implements ILangEntry {
     //Cardboard box
     BLOCK_DATA("cardboard_box", "block_data"),
     BLOCK("cardboard_box", "block"),
-    TILE("cardboard_box", "tile"),
+    BLOCK_ENTITY("cardboard_box", "block_entity"),
     //Crafting Formula
     INGREDIENTS("crafting_formula", "ingredients"),
     ENCODED("crafting_formula", "encoded"),
@@ -391,6 +394,7 @@ public enum MekanismLang implements ILangEntry {
     FILTER("filter", "filter"),
     FILTER_NEW("filter", "new"),
     FILTER_EDIT("filter", "edit"),
+    TEXT_FILTER_NO_MATCHES("filter", "no_matches"),
     MATERIAL_FILTER("filter", "material"),
     MATERIAL_FILTER_DETAILS("filter", "material.details"),
     TAG_FILTER("filter", "tag"),
@@ -437,9 +441,6 @@ public enum MekanismLang implements ILangEntry {
     SECURITY_OVERRIDE("security", "override"),
     NO_ACCESS("security", "no_access"),
     TRUSTED_PLAYERS("security", "trusted_players"),
-    PUBLIC("security", "public"),
-    TRUSTED("security", "trusted"),
-    PRIVATE("security", "private"),
     PUBLIC_MODE("security", "public.mode"),
     TRUSTED_MODE("security", "trusted.mode"),
     PRIVATE_MODE("security", "private.mode"),
@@ -693,6 +694,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_ENERGIZED_SMELTER("description", "energized_smelter"),
     DESCRIPTION_TELEPORTER("description", "teleporter"),
     DESCRIPTION_ELECTRIC_PUMP("description", "electric_pump"),
+    DESCRIPTION_PERSONAL_BARREL("description", "personal_barrel"),
     DESCRIPTION_PERSONAL_CHEST("description", "personal_chest"),
     DESCRIPTION_CHARGEPAD("description", "chargepad"),
     DESCRIPTION_LOGISTICAL_SORTER("description", "logistical_sorter"),
@@ -762,7 +764,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_HANDLE_MODE_CHANGE("module", "handle_mode_change"),
     MODULE_RENDER_HUD("module", "render_hud"),
     MODULE_MODE("module", "mode"),
-    MODULE_ATTACK_DAMAGE("module", "attack_damage"),
+    MODULE_BONUS_ATTACK_DAMAGE("module", "bonus_attack_damage"),
     MODULE_FARMING_RADIUS("module", "farming_radius"),
     MODULE_JUMP_BOOST("module", "jump_boost"),
     MODULE_STEP_ASSIST("module", "step_assist"),
@@ -806,21 +808,14 @@ public enum MekanismLang implements ILangEntry {
         return key;
     }
 
-    public static MekanismLang get(EquipmentSlotType type) {
-        switch (type) {
-            case HEAD:
-                return HEAD;
-            case CHEST:
-                return BODY;
-            case LEGS:
-                return LEGS;
-            case FEET:
-                return FEET;
-            case MAINHAND:
-                return MAINHAND;
-            case OFFHAND:
-                return OFFHAND;
-        }
-        return null;
+    public static MekanismLang get(EquipmentSlot type) {
+        return switch (type) {
+            case HEAD -> HEAD;
+            case CHEST -> BODY;
+            case LEGS -> LEGS;
+            case FEET -> FEET;
+            case MAINHAND -> MAINHAND;
+            case OFFHAND -> OFFHAND;
+        };
     }
 }

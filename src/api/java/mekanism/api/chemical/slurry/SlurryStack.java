@@ -2,18 +2,18 @@ package mekanism.api.chemical.slurry;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.ISlurryProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SlurryStack extends ChemicalStack<Slurry> {
+public final class SlurryStack extends ChemicalStack<Slurry> {
 
     /**
      * Empty SlurryStack instance.
@@ -56,7 +56,7 @@ public class SlurryStack extends ChemicalStack<Slurry> {
      *
      * @return SlurryStack stored in the tag compound
      */
-    public static SlurryStack readFromNBT(@Nullable CompoundNBT nbtTags) {
+    public static SlurryStack readFromNBT(@Nullable CompoundTag nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return EMPTY;
         }
@@ -71,7 +71,7 @@ public class SlurryStack extends ChemicalStack<Slurry> {
         return new SlurryStack(type, amount);
     }
 
-    public static SlurryStack readFromPacket(PacketBuffer buf) {
+    public static SlurryStack readFromPacket(FriendlyByteBuf buf) {
         Slurry slurry = buf.readRegistryId();
         long amount = buf.readVarLong();
         if (slurry.isEmptyType()) {

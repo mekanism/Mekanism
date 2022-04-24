@@ -5,7 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public enum GaugeInfo {
     STANDARD("normal.png", 2, 2, null),
@@ -46,19 +46,12 @@ public enum GaugeInfo {
     }
 
     public static GaugeInfo get(DataType type) {
-        switch (type) {
-            case OUTPUT:
-            case OUTPUT_1:
-                return BLUE;
-            case INPUT:
-            case INPUT_1:
-                return RED;
-            case OUTPUT_2:
-                return AQUA;
-            case INPUT_2:
-                return ORANGE;
-            default:
-                return STANDARD;
-        }
+        return switch (type) {
+            case OUTPUT, OUTPUT_1 -> BLUE;
+            case INPUT, INPUT_1 -> RED;
+            case OUTPUT_2 -> AQUA;
+            case INPUT_2 -> ORANGE;
+            default -> STANDARD;
+        };
     }
 }

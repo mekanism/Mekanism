@@ -1,6 +1,6 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import javax.annotation.Nonnull;
@@ -9,20 +9,22 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
+import mekanism.client.render.item.MekanismISTER;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
+public class RenderFluidTankItem extends MekanismISTER {
 
-    private static final ModelFluidTank modelFluidTank = new ModelFluidTank();
+    public static final RenderFluidTankItem RENDERER = new RenderFluidTankItem();
     private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
     private static final int stages = 1_400;
 
@@ -30,21 +32,23 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
         cachedCenterFluids.clear();
     }
 
+    private ModelFluidTank modelFluidTank;
+
     @Override
-    public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
+    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+        modelFluidTank = new ModelFluidTank(getEntityModels());
+    }
+
+    @Override
+    public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
           int light, int overlayLight) {
         FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
         FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluid.isEmpty()) {
             float fluidScale = (float) fluid.getAmount() / tier.getStorage();
             if (fluidScale > 0) {
-                int modelNumber;
-                if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                    modelNumber = stages - 1;
-                } else {
-                    modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
-                }
-                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
+                int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
+                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
                       MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT,
                       transformType != TransformType.GUI);
             }

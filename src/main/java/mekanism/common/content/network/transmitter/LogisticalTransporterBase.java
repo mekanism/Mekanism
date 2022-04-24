@@ -28,13 +28,13 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -85,8 +85,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @Override
     public boolean isValidTransmitterBasic(TileEntityTransmitter transmitter, Direction side) {
-        if (transmitter.getTransmitter() instanceof LogisticalTransporterBase) {
-            LogisticalTransporterBase transporter = (LogisticalTransporterBase) transmitter.getTransmitter();
+        if (transmitter.getTransmitter() instanceof LogisticalTransporterBase transporter) {
             if (getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor()) {
                 return super.isValidTransmitterBasic(transmitter, side);
             }
@@ -95,16 +94,18 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity tile, Direction side) {
+    public boolean isValidAcceptor(BlockEntity tile, Direction side) {
         return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
-    public void tick() {
-        if (isRemote()) {
-            for (TransporterStack stack : transit.values()) {
-                stack.progress = Math.min(100, stack.progress + tier.getSpeed());
-            }
-        } else if (getTransmitterNetwork() != null) {
+    public void onUpdateClient() {
+        for (TransporterStack stack : transit.values()) {
+            stack.progress = Math.min(100, stack.progress + tier.getSpeed());
+        }
+    }
+
+    public void onUpdateServer() {
+        if (getTransmitterNetwork() != null) {
             //Pull items into the transporter
             if (delay > 0) {
                 //If a delay has been imposed, wait a bit
@@ -114,7 +115,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 delay = 3;
                 //Attempt to pull
                 for (Direction side : getConnections(ConnectionType.PULL)) {
-                    TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
+                    BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
                     if (tile != null) {
                         TransitRequest request = TransitRequest.anyItem(tile, side.getOpposite(), tier.getPullAmount());
                         //There's a stack available to insert into the network...
@@ -172,7 +173,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                     }
                                     prevSet = next;
                                 } else if (stack.getPathType() != Path.NONE) {
-                                    TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), next);
+                                    BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), next);
                                     if (tile != null) {
                                         TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this), 0,
                                               stack.getPathType() == Path.HOME);
@@ -235,7 +236,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
-                    Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), getTransmitterTile());
+                    Mekanism.packetHandler().sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
                     deletes.forEach((IntConsumer) (this::deleteStack));
 
@@ -252,16 +253,6 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public void remove() {
         super.remove();
-        if (!isRemote() && !isUpgrading) {
-            for (TransporterStack stack : getTransit()) {
-                TransporterUtils.drop(this, stack);
-            }
-        }
-    }
-
-    @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
         if (!isRemote()) {
             for (TransporterStack stack : getTransit()) {
                 TransporterManager.remove(getTileWorld(), stack);
@@ -281,11 +272,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag(CompoundNBT updateTag) {
+    public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(updateTag);
-        ListNBT stacks = new ListNBT();
+        ListTag stacks = new ListTag();
         for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
-            CompoundNBT tagCompound = new CompoundNBT();
+            CompoundTag tagCompound = new CompoundTag();
             tagCompound.putInt(NBTConstants.INDEX, entry.getIntKey());
             entry.getValue().writeToUpdateTag(this, tagCompound);
             stacks.add(tagCompound);
@@ -297,13 +288,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
         super.handleUpdateTag(tag);
         transit.clear();
-        if (tag.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
-            ListNBT tagList = tag.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
+        if (tag.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
+            ListTag tagList = tag.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                CompoundNBT compound = tagList.getCompound(i);
+                CompoundTag compound = tagList.getCompound(i);
                 TransporterStack stack = TransporterStack.readFromUpdate(compound);
                 addStack(compound.getInt(NBTConstants.INDEX), stack);
             }
@@ -311,14 +302,14 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundTag nbtTags) {
         super.read(nbtTags);
         readFromNBT(nbtTags);
     }
 
-    protected void readFromNBT(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
+    protected void readFromNBT(CompoundTag nbtTags) {
+        if (nbtTags.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
+            ListTag tagList = nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 addStack(nextId++, TransporterStack.readFromNBT(tagList.getCompound(i)));
             }
@@ -327,18 +318,18 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
+    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
         super.write(nbtTags);
         writeToNBT(nbtTags);
         return nbtTags;
     }
 
-    public void writeToNBT(CompoundNBT nbtTags) {
+    public void writeToNBT(CompoundTag nbtTags) {
         Collection<TransporterStack> transit = getTransit();
         if (!transit.isEmpty()) {
-            ListNBT stacks = new ListNBT();
+            ListTag stacks = new ListTag();
             for (TransporterStack stack : transit) {
-                CompoundNBT tagCompound = new CompoundNBT();
+                CompoundTag tagCompound = new CompoundTag();
                 stack.write(tagCompound);
                 stacks.add(tagCompound);
             }
@@ -381,7 +372,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return true;
     }
 
-    public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+    public TransitResponse insert(BlockEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         return insert(outputter, request, color, doEmit, stack -> stack.recalculatePath(request, this, min));
     }
 
@@ -389,7 +380,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return insert(outputter, request, color, doEmit, stack -> stack.recalculateRRPath(request, outputter, this, min));
     }
 
-    private TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit,
+    private TransitResponse insert(BlockEntity outputter, TransitRequest request, EnumColor color, boolean doEmit,
           Function<TransporterStack, TransitResponse> pathCalculator) {
         BlockPos outputterPos = outputter.getBlockPos();
         Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
@@ -417,7 +408,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
             if (doEmit) {
                 int stackId = nextId++;
                 addStack(stackId, stack);
-                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, stackId, stack), getTransmitterTile());
+                Mekanism.packetHandler().sendToAllTracking(new PacketTransporterUpdate(this, stackId, stack), getTransmitterTile());
                 WorldUtils.saveChunk(getTransmitterTile());
             }
         }

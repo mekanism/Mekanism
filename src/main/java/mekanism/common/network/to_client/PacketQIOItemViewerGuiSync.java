@@ -6,9 +6,9 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
 
@@ -38,25 +38,18 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
             switch (type) {
-                case BATCH:
-                    container.handleBatchUpdate(itemMap, countCapacity, typeCapacity);
-                    break;
-                case UPDATE:
-                    container.handleUpdate(itemMap, countCapacity, typeCapacity);
-                    break;
-                case KILL:
-                    container.handleKill();
-                    break;
+                case BATCH -> container.handleBatchUpdate(itemMap, countCapacity, typeCapacity);
+                case UPDATE -> container.handleUpdate(itemMap, countCapacity, typeCapacity);
+                case KILL -> container.handleKill();
             }
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
         if (type == Type.BATCH || type == Type.UPDATE) {
             buffer.writeVarLong(countCapacity);
@@ -76,7 +69,7 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
         }
     }
 
-    public static PacketQIOItemViewerGuiSync decode(PacketBuffer buffer) {
+    public static PacketQIOItemViewerGuiSync decode(FriendlyByteBuf buffer) {
         Type type = buffer.readEnum(Type.class);
         long countCapacity = 0;
         int typeCapacity = 0;

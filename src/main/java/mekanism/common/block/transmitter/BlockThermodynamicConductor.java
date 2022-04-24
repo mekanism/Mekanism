@@ -4,10 +4,10 @@ import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
-import net.minecraft.tileentity.TileEntityType;
 
 public class BlockThermodynamicConductor extends BlockSmallTransmitter implements ITypeBlock, IHasTileEntity<TileEntityThermodynamicConductor> {
 
@@ -23,17 +23,12 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter implement
     }
 
     @Override
-    public TileEntityType<TileEntityThermodynamicConductor> getTileType() {
-        switch (tier) {
-            case ADVANCED:
-                return MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
-            case ELITE:
-                return MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
-            case ULTIMATE:
-                return MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
-            case BASIC:
-            default:
-                return MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR.getTileEntityType();
-        }
+    public TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> getTileType() {
+        return switch (tier) {
+            case ADVANCED -> MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR;
+            case ELITE -> MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR;
+            case ULTIMATE -> MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR;
+            case BASIC -> MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR;
+        };
     }
 }

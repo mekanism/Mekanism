@@ -3,18 +3,20 @@ package mekanism.additions.client.render.entity.layer;
 import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyCreeper;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.EnergyLayer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
+import net.minecraft.resources.ResourceLocation;
 
-public class BabyCreeperChargeLayer extends EnergyLayer<EntityBabyCreeper, ModelBabyCreeper> {
+public class BabyCreeperChargeLayer extends EnergySwirlLayer<EntityBabyCreeper, ModelBabyCreeper> {
 
-    private static final ResourceLocation LIGHTNING_TEXTURE = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
-    private final ModelBabyCreeper creeperModel = new ModelBabyCreeper(1);//Note: Use 1 instead of 2 for size
+    private static final ResourceLocation POWER_LOCATION = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    private final ModelBabyCreeper creeperModel;
 
-    public BabyCreeperChargeLayer(IEntityRenderer<EntityBabyCreeper, ModelBabyCreeper> renderer) {
+    public BabyCreeperChargeLayer(RenderLayerParent<EntityBabyCreeper, ModelBabyCreeper> renderer, EntityModelSet entityModelSet) {
         super(renderer);
+        creeperModel = new ModelBabyCreeper(entityModelSet.bakeLayer(ModelBabyCreeper.ARMOR_LAYER));
     }
 
     @Override
@@ -25,7 +27,7 @@ public class BabyCreeperChargeLayer extends EnergyLayer<EntityBabyCreeper, Model
     @Nonnull
     @Override
     protected ResourceLocation getTextureLocation() {
-        return LIGHTNING_TEXTURE;
+        return POWER_LOCATION;
     }
 
     @Nonnull

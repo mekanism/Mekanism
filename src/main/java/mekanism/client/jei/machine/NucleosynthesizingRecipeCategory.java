@@ -3,6 +3,7 @@ package mekanism.client.jei.machine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
@@ -18,19 +19,20 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<NucleosynthesizingRecipe> {
 
@@ -40,8 +42,8 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     private final GuiSlot output;
     private final GuiGauge<?> gasInput;
 
-    public NucleosynthesizingRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, 6, 18, 182, 80);
+    public NucleosynthesizingRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<NucleosynthesizingRecipe> recipeType) {
+        super(helper, recipeType, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, 6, 18, 182, 80);
         input = addSlot(SlotType.INPUT, 26, 40);
         extra = addSlot(SlotType.EXTRA, 6, 69);
         output = addSlot(SlotType.OUTPUT, 152, 40);
@@ -64,12 +66,7 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     }
 
     @Override
-    public Class<? extends NucleosynthesizingRecipe> getRecipeClass() {
-        return NucleosynthesizingRecipe.class;
-    }
-
-    @Override
-    public List<ITextComponent> getTooltipStrings(NucleosynthesizingRecipe recipe, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(NucleosynthesizingRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (rateBar.isMouseOver(mouseX, mouseY)) {
             return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipe.getDuration()));
         }
@@ -77,23 +74,15 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     }
 
     @Override
-    public void setIngredients(NucleosynthesizingRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getChemicalInput().getRepresentations()));
-        ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, NucleosynthesizingRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        initItem(itemStacks, 0, true, input, recipe.getItemInput().getRepresentations());
-        initItem(itemStacks, 1, false, output, recipe.getOutputDefinition());
-        List<ItemStack> gasItemProviders = new ArrayList<>();
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, NucleosynthesizingRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        List<ItemStack> gasItemProviders = new ArrayList<>();
         for (GasStack gas : gasInputs) {
             gasItemProviders.addAll(MekanismJEI.GAS_STACK_HELPER.getStacksFor(gas.getType(), true));
         }
-        initItem(itemStacks, 2, true, extra, gasItemProviders);
-        initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS), 0, true, gasInput, gasInputs);
+        initItem(builder, RecipeIngredientRole.CATALYST, extra, gasItemProviders);
     }
 }

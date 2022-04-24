@@ -8,10 +8,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Similar in concept to {@link DoubleInputRecipeCache} except that it requires both input types to be the same and also allows for them to be in any order.
@@ -47,7 +47,7 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable World world, INPUT input) {
+    public boolean containsInput(@Nullable Level world, INPUT input) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return false;
@@ -59,8 +59,8 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
 
     /**
      * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
-     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(World, Object, Object)} and {@link
-     * DoubleInputRecipeCache#containsInputBA(World, Object, Object)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type and
+     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(Level, Object, Object)} and {@link
+     * DoubleInputRecipeCache#containsInputBA(Level, Object, Object)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type and
      * that the order doesn't matter we just have one method and require the inputs to be passed in the corresponding order instead.
      *
      * @param world  World.
@@ -71,7 +71,7 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
      *
      * @apiNote Pass the input you are trying to insert as inputA and the input you already have as inputB.
      */
-    public boolean containsInput(@Nullable World world, INPUT inputA, INPUT inputB) {
+    public boolean containsInput(@Nullable Level world, INPUT inputA, INPUT inputB) {
         if (cache.isEmpty(inputA)) {
             //Note: We don't bother checking if b is empty here as it will be verified in containsInputB
             return containsInput(world, inputB);
@@ -109,7 +109,7 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
      * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RECIPE findFirstRecipe(@Nullable World world, INPUT inputA, INPUT inputB) {
+    public RECIPE findFirstRecipe(@Nullable Level world, INPUT inputA, INPUT inputB) {
         if (cache.isEmpty(inputA) || cache.isEmpty(inputB)) {
             //Don't allow empty inputs
             return null;

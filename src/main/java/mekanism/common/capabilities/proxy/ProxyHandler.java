@@ -4,7 +4,7 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.capabilities.holder.IHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 @FieldsAreNonnullByDefault
 public class ProxyHandler {

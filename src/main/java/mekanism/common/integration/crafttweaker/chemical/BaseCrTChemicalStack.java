@@ -27,7 +27,7 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
     @Override
     public String getCommandString() {
         StringBuilder builder = getBracket();
-        if (stack.getAmount() != 1) {
+        if (!stack.isEmpty() && stack.getAmount() != 1) {
             builder.append(" * ").append(stack.getAmount());
         }
         return builder.toString();

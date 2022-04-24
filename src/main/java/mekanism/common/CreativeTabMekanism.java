@@ -2,11 +2,11 @@ package mekanism.common;
 
 import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
-public class CreativeTabMekanism extends ItemGroup {
+public class CreativeTabMekanism extends CreativeModeTab {
 
     public CreativeTabMekanism() {
         super(Mekanism.MODID);
@@ -20,7 +20,7 @@ public class CreativeTabMekanism extends ItemGroup {
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName() {
+    public Component getDisplayName() {
         //Overwrite the lang key to match the one representing Mekanism
         return MekanismLang.MEKANISM.translate();
     }

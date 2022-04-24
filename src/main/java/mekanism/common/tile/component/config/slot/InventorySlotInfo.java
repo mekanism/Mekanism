@@ -1,6 +1,5 @@
 package mekanism.common.tile.component.config.slot;
 
-import java.util.Arrays;
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
 
@@ -13,7 +12,7 @@ public class InventorySlotInfo extends BaseSlotInfo {
     private final List<IInventorySlot> inventorySlots;
 
     public InventorySlotInfo(boolean canInput, boolean canOutput, IInventorySlot... slots) {
-        this(canInput, canOutput, Arrays.asList(slots));
+        this(canInput, canOutput, List.of(slots));
     }
 
     public InventorySlotInfo(boolean canInput, boolean canOutput, List<IInventorySlot> slots) {

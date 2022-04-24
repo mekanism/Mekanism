@@ -4,23 +4,23 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.BannerItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 
-public class MekBannerShieldRecipe extends SpecialRecipe {
+public class MekBannerShieldRecipe extends CustomRecipe {
 
     public MekBannerShieldRecipe(ResourceLocation id) {
         super(id);
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, @Nonnull World world) {
+    public boolean matches(CraftingContainer inv, @Nonnull Level world) {
         ItemStack shieldStack = ItemStack.EMPTY;
         ItemStack bannerStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -44,7 +44,7 @@ public class MekBannerShieldRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public ItemStack assemble(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         ItemStack bannerStack = ItemStack.EMPTY;
         ItemStack shieldStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -60,8 +60,8 @@ public class MekBannerShieldRecipe extends SpecialRecipe {
         if (shieldStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        CompoundNBT blockEntityTag = bannerStack.getTagElement(NBTConstants.BLOCK_ENTITY_TAG);
-        CompoundNBT tag = blockEntityTag == null ? new CompoundNBT() : blockEntityTag.copy();
+        CompoundTag blockEntityTag = bannerStack.getTagElement(NBTConstants.BLOCK_ENTITY_TAG);
+        CompoundTag tag = blockEntityTag == null ? new CompoundTag() : blockEntityTag.copy();
         tag.putInt(NBTConstants.BASE, ((BannerItem) bannerStack.getItem()).getColor().getId());
         shieldStack.addTagElement(NBTConstants.BLOCK_ENTITY_TAG, tag);
         return shieldStack;
@@ -74,7 +74,7 @@ public class MekBannerShieldRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return ToolsRecipeSerializers.BANNER_SHIELD.get();
     }
 }

@@ -12,8 +12,8 @@ import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, MatrixTab> {
 
@@ -44,11 +44,11 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
 
         @Override
         public void onClick(TileEntityInductionCasing tile) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile));
+            Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(button, tile));
         }
 
         @Override
-        public ITextComponent getDescription() {
+        public Component getDescription() {
             return description.translate();
         }
 

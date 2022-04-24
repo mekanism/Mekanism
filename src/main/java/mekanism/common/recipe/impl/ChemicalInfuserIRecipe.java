@@ -3,14 +3,14 @@ package mekanism.common.recipe.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class ChemicalInfuserIRecipe extends ChemicalInfuserRecipe {
 
@@ -20,14 +20,14 @@ public class ChemicalInfuserIRecipe extends ChemicalInfuserRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ChemicalInfuserRecipe> getType() {
-        return MekanismRecipeType.CHEMICAL_INFUSING;
+    public RecipeType<ChemicalInfuserRecipe> getType() {
+        return MekanismRecipeType.CHEMICAL_INFUSING.get();
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ChemicalInfuserRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CHEMICAL_INFUSING.getRecipeSerializer();
+    public RecipeSerializer<ChemicalInfuserRecipe> getSerializer() {
+        return MekanismRecipeSerializers.CHEMICAL_INFUSING.get();
     }
 
     @Nonnull

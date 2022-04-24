@@ -1,18 +1,18 @@
 package mekanism.common.recipe.bin;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -23,7 +23,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World world) {
+    public boolean matches(CraftingContainer inv, Level world) {
         ItemStack binStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack stackInSlot = inv.getItem(i);
@@ -49,7 +49,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         ItemStack binStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack stackInSlot = inv.getItem(i);
@@ -75,7 +75,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
         NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
         for (int i = 0; i < remaining.size(); ++i) {
             ItemStack stackInSlot = inv.getItem(i);
@@ -95,7 +95,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
-        return MekanismRecipeSerializers.BIN_EXTRACT.getRecipeSerializer();
+    public RecipeSerializer<?> getSerializer() {
+        return MekanismRecipeSerializers.BIN_EXTRACT.get();
     }
 }

@@ -5,11 +5,11 @@ import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends IContentsListener {
 
@@ -17,11 +17,11 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @return The world for this {@link IRecipeLookupHandler}.
      */
     @Nullable
-    default World getHandlerWorld() {
-        if (this instanceof TileEntity) {
-            return ((TileEntity) this).getLevel();
-        } else if (this instanceof Entity) {
-            return ((Entity) this).level;
+    default Level getHandlerWorld() {
+        if (this instanceof BlockEntity tile) {
+            return tile.getLevel();
+        } else if (this instanceof Entity entity) {
+            return entity.level;
         }
         return null;
     }
@@ -30,7 +30,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @return The recipe type this {@link IRecipeLookupHandler} handles.
      */
     @Nonnull
-    MekanismRecipeType<RECIPE, ?> getRecipeType();
+    IMekanismRecipeTypeProvider<RECIPE, ?> getRecipeType();
 
     /**
      * Returns how many operating ticks were saved for purposes of persisting through saves how far a cached recipe is through processing.
@@ -71,6 +71,15 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @param cacheIndex   The "recipe index" for which cache to interact with.
      */
     default void onCachedRecipeChanged(@Nullable CachedRecipe<RECIPE> cachedRecipe, int cacheIndex) {
+        clearRecipeErrors(cacheIndex);
+    }
+
+    /**
+     * Called by {@link #onCachedRecipeChanged(CachedRecipe, int)} when the list of cached errors should be reset due to the recipe not being valid any more.
+     *
+     * @param cacheIndex The "recipe index" for which cache to interact with.
+     */
+    default void clearRecipeErrors(int cacheIndex) {
     }
 
     /**
@@ -82,7 +91,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
 
         @Nonnull
         @Override
-        MekanismRecipeType<RECIPE, INPUT_CACHE> getRecipeType();
+        IMekanismRecipeTypeProvider<RECIPE, INPUT_CACHE> getRecipeType();
     }
 
     interface ConstantUsageRecipeLookupHandler {

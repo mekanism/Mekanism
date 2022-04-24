@@ -7,10 +7,10 @@ import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -35,7 +35,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     public abstract Finder getFinder();
 
-    public TransitRequest mapInventory(TileEntity tile, Direction side, boolean singleItem) {
+    public TransitRequest mapInventory(BlockEntity tile, Direction side, boolean singleItem) {
         if (sizeMode && !singleItem) {
             return TransitRequest.definedItem(tile, side, min, max, getFinder());
         }
@@ -43,7 +43,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.ALLOW_DEFAULT, allowDefault);
         nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
@@ -54,7 +54,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.ALLOW_DEFAULT, value -> allowDefault = value);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.SIZE_MODE, value -> sizeMode = value);
@@ -63,7 +63,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeBoolean(allowDefault);
         buffer.writeVarInt(TransporterUtils.getColorIndex(color));
@@ -73,7 +73,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
+    public void read(FriendlyByteBuf dataStream) {
         allowDefault = dataStream.readBoolean();
         color = TransporterUtils.readColor(dataStream.readVarInt());
         sizeMode = dataStream.readBoolean();
@@ -92,8 +92,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return filter instanceof SorterFilter && ((SorterFilter<?>) filter).color == color && ((SorterFilter<?>) filter).sizeMode == sizeMode
-               && ((SorterFilter<?>) filter).min == min && ((SorterFilter<?>) filter).max == max;
+    public boolean equals(Object o) {
+        return o instanceof SorterFilter<?> filter && filter.color == color && filter.sizeMode == sizeMode && filter.min == min && filter.max == max;
     }
 }

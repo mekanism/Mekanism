@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class EnergyContainerHelper {
 
@@ -24,28 +24,30 @@ public class EnergyContainerHelper {
         return new EnergyContainerHelper(new ConfigEnergyContainerHolder(facingSupplier, configSupplier));
     }
 
-    public void addContainer(@Nonnull IEnergyContainer container) {
+    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@Nonnull CONTAINER container) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof EnergyContainerHolder) {
-            ((EnergyContainerHolder) slotHolder).addContainer(container);
-        } else if (slotHolder instanceof ConfigEnergyContainerHolder) {
-            ((ConfigEnergyContainerHolder) slotHolder).addContainer(container);
+        if (slotHolder instanceof EnergyContainerHolder slotHolder) {
+            slotHolder.addContainer(container);
+        } else if (slotHolder instanceof ConfigEnergyContainerHolder slotHolder) {
+            slotHolder.addContainer(container);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add containers");
         }
+        return container;
     }
 
-    public void addContainer(@Nonnull IEnergyContainer container, RelativeSide... sides) {
+    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@Nonnull CONTAINER container, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof EnergyContainerHolder) {
-            ((EnergyContainerHolder) slotHolder).addContainer(container, sides);
+        if (slotHolder instanceof EnergyContainerHolder slotHolder) {
+            slotHolder.addContainer(container, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add containers on specific sides");
         }
+        return container;
     }
 
     public IEnergyContainerHolder build() {

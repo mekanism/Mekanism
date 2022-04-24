@@ -1,15 +1,15 @@
 package mekanism.common.inventory;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiComponents {
 
     public interface IDropdownEnum<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> {
 
-        ITextComponent getShortName();
+        Component getShortName();
 
-        ITextComponent getTooltip();
+        Component getTooltip();
 
         default ResourceLocation getIcon() {
             return null;
@@ -18,7 +18,7 @@ public class GuiComponents {
 
     public interface IToggleEnum<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> {
 
-        ITextComponent getTooltip();
+        Component getTooltip();
 
         ResourceLocation getIcon();
     }

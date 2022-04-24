@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.slot;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
@@ -9,7 +9,7 @@ import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
 
@@ -42,7 +42,7 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
     }
 
     @Override
-    protected void drawContents(@Nonnull MatrixStack matrix) {
+    protected void drawContents(@Nonnull PoseStack matrix) {
         if (virtualSlot != null) {
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {
@@ -60,9 +60,9 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
             IGuiWrapper gui = gui();
-            if (gui instanceof VirtualSlotContainerScreen && virtualSlot != null) {
+            if (gui instanceof VirtualSlotContainerScreen<?> screen && virtualSlot != null) {
                 //Redirect to a copy of vanilla logic
-                return ((VirtualSlotContainerScreen<?>) gui).slotClicked(virtualSlot.getSlot(), button);
+                return screen.slotClicked(virtualSlot.getSlot(), button);
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -70,7 +70,7 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         //Note: We can get away with just using the stack to render
         return virtualSlot == null ? null : virtualSlot.getStackToRender();
     }

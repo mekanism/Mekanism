@@ -13,9 +13,9 @@ import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * QIO Drive merging data helper. Duplicates a fair bit of code from {@link QIODriveData}, but without requiring a {@link QIODriveKey}, and not validating the total size
@@ -28,11 +28,11 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     private final Object2LongMap<HashedItem> itemMap;
     private final long itemCount;
 
-    QIORecipeData(DriveMetadata data, ListNBT nbtItemMap) {
-        itemCount = data.getCount();
-        itemMap = new Object2LongOpenHashMap<>(data.getTypes());
+    QIORecipeData(DriveMetadata data, ListTag nbtItemMap) {
+        itemCount = data.count();
+        itemMap = new Object2LongOpenHashMap<>(data.types());
         for (int i = 0; i < nbtItemMap.size(); i++) {
-            CompoundNBT tag = nbtItemMap.getCompound(i);
+            CompoundTag tag = nbtItemMap.getCompound(i);
             ItemStack itemType = ItemStack.of(tag.getCompound(NBTConstants.ITEM));
             itemMap.put(HashedItem.create(itemType), tag.getLong(NBTConstants.AMOUNT));
         }
@@ -67,10 +67,10 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             // then return that we are not able to actually apply them to the stack
             return false;
         }
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
         for (Entry<HashedItem> entry : itemMap.object2LongEntrySet()) {
-            CompoundNBT tag = new CompoundNBT();
-            tag.put(NBTConstants.ITEM, entry.getKey().getStack().save(new CompoundNBT()));
+            CompoundTag tag = new CompoundTag();
+            tag.put(NBTConstants.ITEM, entry.getKey().getStack().save(new CompoundTag()));
             tag.putLong(NBTConstants.AMOUNT, entry.getLongValue());
             list.add(tag);
         }

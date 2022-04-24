@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=down,open=false": {
+      "model": "mekanism:block/personal_barrel",
+      "x": 180
+    },
+    "facing=up,open=false": {
+      "model": "mekanism:block/personal_barrel"
+    },
+    "facing=north,open=false": {
+      "model": "mekanism:block/personal_barrel",
+      "x": 90
+    },
+    "facing=south,open=false": {
+      "model": "mekanism:block/personal_barrel",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,open=false": {
+      "model": "mekanism:block/personal_barrel",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,open=false": {
+      "model": "mekanism:block/personal_barrel",
+      "x": 90,
+      "y": 90
+    },
+    "facing=down,open=true": {
+      "model": "mekanism:block/personal_barrel_open",
+      "x": 180
+    },
+    "facing=up,open=true": {
+      "model": "mekanism:block/personal_barrel_open"
+    },
+    "facing=north,open=true": {
+      "model": "mekanism:block/personal_barrel_open",
+      "x": 90
+    },
+    "facing=south,open=true": {
+      "model": "mekanism:block/personal_barrel_open",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,open=true": {
+      "model": "mekanism:block/personal_barrel_open",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,open=true": {
+      "model": "mekanism:block/personal_barrel_open",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

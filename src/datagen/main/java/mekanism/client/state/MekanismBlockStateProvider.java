@@ -7,10 +7,13 @@ import mekanism.common.block.BlockOre;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.resource.OreType;
-import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.IResource;
+import mekanism.common.resource.ore.OreBlockType;
+import mekanism.common.resource.ore.OreType;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -26,32 +29,46 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
 
         ResourceLocation basicCube = modLoc("block/basic_cube");
 
-        // blocks
-        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            ResourceLocation texture = modLoc("block/block_" + entry.getKey().getName());
+        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            String registrySuffix = entry.getKey().getRegistrySuffix();
+            ResourceLocation texture = modLoc("block/block_" + registrySuffix);
             ModelFile file;
             if (models().textureExists(texture)) {
                 //If we have an override we can just use a basic cube that has no color tints in it
-                file = models().withExistingParent("block/storage/" + entry.getKey().getName(), basicCube)
+                file = models().withExistingParent("block/storage/" + registrySuffix, basicCube)
                       .texture("all", texture);
             } else {
                 //If the texture does not exist fallback to the default texture and use a colorable base model
-                file = models().withExistingParent("block/storage/" + entry.getKey().getName(), modLoc("block/colored_cube"))
+                file = models().withExistingParent("block/storage/" + registrySuffix, modLoc("block/colored_cube"))
                       .texture("all", modLoc("block/resource_block"));
             }
             simpleBlock(entry.getValue().getBlock(), file);
+
+            models().withExistingParent("item/block_" + registrySuffix, modLoc("block/storage/" + registrySuffix));
         }
-        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
-            ModelFile file = models().withExistingParent("block/ore/" + entry.getKey().getResource().getRegistrySuffix(), basicCube)
-                  .texture("all", modLoc("block/" + entry.getValue().getName()));
-            simpleBlock(entry.getValue().getBlock(), file);
+        for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
+            String registrySuffix = entry.getKey().getResource().getRegistrySuffix();
+            OreBlockType oreBlockType = entry.getValue();
+            addOreBlock(basicCube, oreBlockType.stone(), "block/ore/" + registrySuffix);
+            addOreBlock(basicCube, oreBlockType.deepslate(), "block/deepslate_ore/" + registrySuffix);
         }
-        // block items
-        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            models().withExistingParent("item/block_" + entry.getKey().getName(), modLoc("block/storage/" + entry.getKey().getName()));
-        }
-        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
-            models().withExistingParent("item/" + entry.getKey().getResource().getRegistrySuffix() + "_ore", modLoc("block/ore/" + entry.getKey().getResource().getRegistrySuffix()));
-        }
+
+        BlockModelBuilder barrelModel = models().cubeBottomTop(MekanismBlocks.PERSONAL_BARREL.getName(),
+              Mekanism.rl("block/personal_barrel/side"),
+              Mekanism.rl("block/personal_barrel/bottom"),
+              Mekanism.rl("block/personal_barrel/top")
+        );
+        BlockModelBuilder openBarrel = models().getBuilder(MekanismBlocks.PERSONAL_BARREL.getName() + "_open").parent(barrelModel)
+              .texture("top", Mekanism.rl("block/personal_barrel/top_open"));
+        directionalBlock(MekanismBlocks.PERSONAL_BARREL.getBlock(), state -> state.getValue(BlockStateProperties.OPEN) ? openBarrel : barrelModel);
+        models().withExistingParent("item/" + MekanismBlocks.PERSONAL_BARREL.getName(), modLoc("block/" + MekanismBlocks.PERSONAL_BARREL.getName()));
+    }
+
+    private void addOreBlock(ResourceLocation basicCube, BlockRegistryObject<BlockOre, ?> oreBlock, String path) {
+        String name = oreBlock.getName();
+        ModelFile file = models().withExistingParent(path, basicCube)
+              .texture("all", modLoc("block/" + name));
+        simpleBlock(oreBlock.getBlock(), file);
+        models().withExistingParent("item/" + name, modLoc(path));
     }
 }

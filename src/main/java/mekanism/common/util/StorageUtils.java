@@ -24,6 +24,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -34,12 +35,11 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class StorageUtils {
@@ -47,32 +47,29 @@ public class StorageUtils {
     private StorageUtils() {
     }
 
-    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
+    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap) {
         addStoredEnergy(stack, tooltip, showMissingCap, MekanismLang.STORED_ENERGY);
     }
 
-    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, ILangEntry langEntry) {
-        if (Capabilities.STRICT_ENERGY_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
-            if (capability.isPresent()) {
-                IStrictEnergyHandler energyHandlerItem = capability.get();
-                int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
-                for (int container = 0; container < energyContainerCount; container++) {
-                    tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
-                          EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
-                }
-            } else if (showMissingCap) {
-                tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
+    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+        if (capability.isPresent()) {
+            IStrictEnergyHandler energyHandlerItem = capability.get();
+            int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
+            for (int container = 0; container < energyContainerCount; container++) {
+                tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
+                      EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
             }
+        } else if (showMissingCap) {
+            tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
         }
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes) {
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes) {
         addStoredGas(stack, tooltip, showMissingCap, showAttributes, MekanismLang.NO_GAS);
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes,
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes,
           ILangEntry emptyLangEntry) {
         addStoredChemical(stack, tooltip, showMissingCap, showAttributes, emptyLangEntry, stored -> {
             if (stored.isEmpty()) {
@@ -84,36 +81,54 @@ public class StorageUtils {
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    void addStoredChemical(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
-          Function<STACK, ITextComponent> storedFunction, Capability<HANDLER> capability) {
-        if (capability != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<HANDLER> cap = stack.getCapability(capability).resolve();
-            if (cap.isPresent()) {
-                HANDLER handler = cap.get();
-                int tanks = handler.getTanks();
-                for (int tank = 0; tank < tanks; tank++) {
-                    STACK chemicalInTank = handler.getChemicalInTank(tank);
-                    tooltip.add(storedFunction.apply(chemicalInTank));
-                    if (showAttributes) {
-                        ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getType());
-                    }
+    void addStoredChemical(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
+          Function<STACK, Component> storedFunction, Capability<HANDLER> capability) {
+        Optional<HANDLER> cap = stack.getCapability(capability).resolve();
+        if (cap.isPresent()) {
+            HANDLER handler = cap.get();
+            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                STACK chemicalInTank = handler.getChemicalInTank(tank);
+                tooltip.add(storedFunction.apply(chemicalInTank));
+                if (showAttributes) {
+                    ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getType());
                 }
-            } else if (showMissingCap) {
-                tooltip.add(emptyLangEntry.translate());
             }
+        } else if (showMissingCap) {
+            tooltip.add(emptyLangEntry.translate());
+        }
+    }
+
+    public static void addStoredFluid(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap) {
+        addStoredFluid(stack, tooltip, showMissingCap, MekanismLang.NO_FLUID_TOOLTIP);
+    }
+
+    public static void addStoredFluid(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry) {
+        addStoredFluid(stack, tooltip, showMissingCap, emptyLangEntry, stored -> {
+            if (stored.isEmpty()) {
+                return emptyLangEntry.translateColored(EnumColor.GRAY);
+            }
+            return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
+                  MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
+        });
+    }
+
+    public static void addStoredFluid(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
+          Function<FluidStack, Component> storedFunction) {
+        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+        if (cap.isPresent()) {
+            IFluidHandlerItem handler = cap.get();
+            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                tooltip.add(storedFunction.apply(handler.getFluidInTank(tank)));
+            }
+        } else if (showMissingCap) {
+            tooltip.add(emptyLangEntry.translate());
         }
     }
 
     /**
      * @implNote Assumes there is only one "tank"
      */
-    public static void addStoredSubstance(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean isCreative) {
-        //Note we ensure the capabilities are not null, as the first call to addInformation happens before capability injection
-        if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
-            Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) {
-            return;
-        }
+    public static void addStoredSubstance(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean isCreative) {
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
@@ -235,8 +250,8 @@ public class StorageUtils {
             Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
             if (energyCapability.isPresent()) {
                 IStrictEnergyHandler energyHandlerItem = energyCapability.get();
-                if (energyHandlerItem instanceof IMekanismStrictEnergyHandler) {
-                    return ((IMekanismStrictEnergyHandler) energyHandlerItem).getEnergyContainer(container, null);
+                if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
+                    return energyHandler.getEnergyContainer(container, null);
                 }
             }
         }
@@ -252,12 +267,12 @@ public class StorageUtils {
         return ratio;
     }
 
-    public static ITextComponent getEnergyPercent(ItemStack stack, boolean colorText) {
+    public static Component getEnergyPercent(ItemStack stack, boolean colorText) {
         return getStoragePercent(getEnergyRatio(stack), colorText);
     }
 
-    public static ITextComponent getStoragePercent(double ratio, boolean colorText) {
-        ITextComponent text = TextUtils.getPercent(ratio);
+    public static Component getStoragePercent(double ratio, boolean colorText) {
+        Component text = TextUtils.getPercent(ratio);
         if (!colorText) {
             return text;
         }
@@ -276,12 +291,11 @@ public class StorageUtils {
         return TextComponentUtil.build(color, text);
     }
 
-    public static double getDurabilityForDisplay(ItemStack stack) {
-        //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
-        if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
-            Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) {
-            return 1;
-        }
+    public static int getBarWidth(ItemStack stack) {
+        return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getDurabilityForDisplay(stack)));
+    }
+
+    private static double getDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER_CAPABILITY);
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER_CAPABILITY);
@@ -298,11 +312,11 @@ public class StorageUtils {
         return 1 - bestRatio;
     }
 
-    public static double getEnergyDurabilityForDisplay(ItemStack stack) {
-        //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
-        if (Capabilities.STRICT_ENERGY_CAPABILITY == null) {
-            return 1;
-        }
+    public static int getEnergyBarWidth(ItemStack stack) {
+        return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getEnergyDurabilityForDisplay(stack)));
+    }
+
+    private static double getEnergyDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
         Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
         if (energyCapability.isPresent()) {
@@ -353,8 +367,8 @@ public class StorageUtils {
 
     public static void mergeContainers(IHeatCapacitor capacitor, IHeatCapacitor mergeCapacitor) {
         capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
-        if (capacitor instanceof BasicHeatCapacitor) {
-            ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
+        if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
+            heatCapacitor.setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
         }
     }
 }

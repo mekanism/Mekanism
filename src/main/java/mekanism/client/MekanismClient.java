@@ -14,10 +14,10 @@ import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.recipe.MekanismRecipeType;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class MekanismClient {
 
@@ -30,7 +30,7 @@ public class MekanismClient {
 
     public static long ticksPassed = 0;
 
-    public static void updateKey(KeyBinding key, int type) {
+    public static void updateKey(KeyMapping key, int type) {
         updateKey(key.isDown(), type);
     }
 
@@ -39,7 +39,7 @@ public class MekanismClient {
             UUID playerUUID = Minecraft.getInstance().player.getUUID();
             boolean down = Minecraft.getInstance().screen == null && pressed;
             if (down != Mekanism.keyMap.has(playerUUID, type)) {
-                Mekanism.packetHandler.sendToServer(new PacketKey(type, down));
+                Mekanism.packetHandler().sendToServer(new PacketKey(type, down));
                 Mekanism.keyMap.update(playerUUID, type, down);
             }
         }
@@ -73,12 +73,12 @@ public class MekanismClient {
     }
 
     @Nullable
-    public static World tryGetClientWorld() {
+    public static Level tryGetClientWorld() {
         return Minecraft.getInstance().level;
     }
 
     @Nullable
-    public static PlayerEntity tryGetClientPlayer() {
+    public static Player tryGetClientPlayer() {
         return Minecraft.getInstance().player;
     }
 }

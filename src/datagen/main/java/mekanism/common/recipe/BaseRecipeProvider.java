@@ -9,14 +9,15 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.crafting.DifferenceIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 @ParametersAreNonnullByDefault
@@ -38,14 +39,14 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected final void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
-        Consumer<IFinishedRecipe> trackingConsumer = consumer.andThen(recipe ->
-              existingFileHelper.trackGenerated(recipe.getId(), ResourcePackType.SERVER_DATA, ".json", "recipes"));
+    protected final void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+        Consumer<FinishedRecipe> trackingConsumer = consumer.andThen(recipe ->
+              existingFileHelper.trackGenerated(recipe.getId(), PackType.SERVER_DATA, ".json", "recipes"));
         addRecipes(trackingConsumer);
         getSubRecipeProviders().forEach(subRecipeProvider -> subRecipeProvider.addRecipes(trackingConsumer));
     }
 
-    protected abstract void addRecipes(Consumer<IFinishedRecipe> consumer);
+    protected abstract void addRecipes(Consumer<FinishedRecipe> consumer);
 
     /**
      * Gets all the sub/offloaded recipe providers that this recipe provider has.
@@ -56,14 +57,23 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         return Collections.emptyList();
     }
 
-    public static Ingredient createIngredient(ITag<Item> itemTag, IItemProvider... items) {
+    public static Ingredient createIngredient(TagKey<Item> itemTag, ItemLike... items) {
         return createIngredient(Collections.singleton(itemTag), items);
     }
 
-    public static Ingredient createIngredient(Collection<ITag<Item>> itemTags, IItemProvider... items) {
+    public static Ingredient createIngredient(Collection<TagKey<Item>> itemTags, ItemLike... items) {
         return Ingredient.fromValues(Stream.concat(
-              itemTags.stream().map(Ingredient.TagList::new),
-              Arrays.stream(items).map(item -> new Ingredient.SingleItemList(new ItemStack(item)))
+              itemTags.stream().map(Ingredient.TagValue::new),
+              Arrays.stream(items).map(item -> new Ingredient.ItemValue(new ItemStack(item)))
         ));
+    }
+
+    @SafeVarargs
+    public static Ingredient createIngredient(TagKey<Item>... tags) {
+        return Ingredient.fromValues(Arrays.stream(tags).map(Ingredient.TagValue::new));
+    }
+
+    public static Ingredient difference(TagKey<Item> base, ItemLike subtracted) {
+        return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted));
     }
 }

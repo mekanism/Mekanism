@@ -5,7 +5,7 @@
       "tag": "forge:ingots/iron"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:carbon"
   },

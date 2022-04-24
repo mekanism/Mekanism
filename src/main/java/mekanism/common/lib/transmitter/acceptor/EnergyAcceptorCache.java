@@ -2,7 +2,6 @@ package mekanism.common.lib.transmitter.acceptor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.content.network.transmitter.Transmitter;
@@ -11,8 +10,9 @@ import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.integration.energy.StrictEnergyCompat;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 @FieldsAreNonnullByDefault
@@ -27,7 +27,7 @@ public class EnergyAcceptorCache extends AcceptorCache<IStrictEnergyHandler> {
     /**
      * @apiNote Only call this from the server side
      */
-    public boolean hasStrictEnergyHandlerAndListen(@Nullable TileEntity tile, Direction side) {
+    public boolean hasStrictEnergyHandlerAndListen(@Nullable BlockEntity tile, Direction side) {
         if (tile != null && !tile.isRemoved() && tile.hasLevel()) {
             Direction opposite = side.getOpposite();
             for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {

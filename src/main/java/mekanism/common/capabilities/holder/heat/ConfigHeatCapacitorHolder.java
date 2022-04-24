@@ -10,7 +10,7 @@ import mekanism.common.capabilities.holder.ConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.slot.HeatSlotInfo;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ConfigHeatCapacitorHolder extends ConfigHolder<IHeatCapacitor> implements IHeatCapacitorHolder {
 
@@ -26,7 +26,7 @@ public class ConfigHeatCapacitorHolder extends ConfigHolder<IHeatCapacitor> impl
     @Nonnull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction direction) {
-        return getSlots(direction, slotInfo -> slotInfo instanceof HeatSlotInfo ? ((HeatSlotInfo) slotInfo).getHeatCapacitors() : Collections.emptyList());
+        return getSlots(direction, slotInfo -> slotInfo instanceof HeatSlotInfo info ? info.getHeatCapacitors() : Collections.emptyList());
     }
 
     void addCapacitor(@Nonnull IHeatCapacitor capacitor) {

@@ -11,26 +11,26 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.BlockType;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements IHasDescription, ITypeBlock {
 
     protected final TYPE type;
 
-    public BlockBase(TYPE type, UnaryOperator<AbstractBlock.Properties> propertyModifier) {
-        this(type, propertyModifier.apply(AbstractBlock.Properties.of(Material.METAL).requiresCorrectToolForDrops()));
+    public BlockBase(TYPE type, UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
+        this(type, propertyModifier.apply(BlockBehaviour.Properties.of(Material.METAL).requiresCorrectToolForDrops()));
     }
 
-    public BlockBase(TYPE type, AbstractBlock.Properties properties) {
+    public BlockBase(TYPE type, BlockBehaviour.Properties properties) {
         super(hack(type, properties));
         this.type = type;
     }
@@ -38,7 +38,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     // ugly hack but required to have a reference to our block type before setting state info; assumes single-threaded startup
     private static BlockType cacheType;
 
-    private static <TYPE extends BlockType> AbstractBlock.Properties hack(TYPE type, AbstractBlock.Properties props) {
+    private static <TYPE extends BlockType> BlockBehaviour.Properties hack(TYPE type, BlockBehaviour.Properties props) {
         cacheType = type;
         type.getAll().forEach(a -> a.adjustProperties(props));
         return props;
@@ -56,14 +56,14 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     }
 
     @Override
-    public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
+    public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion) {
         return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance()
                                                          : super.getExplosionResistance(state, world, pos, explosion);
     }
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType pathType) {
+    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType pathType) {
         //If we have a custom shape which means we are not a full block then mark that movement is not
         // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
         return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, world, pos, pathType);
@@ -72,7 +72,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         if (type.has(AttributeCustomShape.class)) {
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
             int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateProperties.FACING ? 0 : 2));
@@ -83,11 +83,11 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     public static class BlockBaseModel<BLOCK extends BlockType> extends BlockBase<BLOCK> implements IStateFluidLoggable {
 
-        public BlockBaseModel(BLOCK blockType, UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+        public BlockBaseModel(BLOCK blockType, UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
             super(blockType, propertyModifier);
         }
 
-        public BlockBaseModel(BLOCK blockType, AbstractBlock.Properties properties) {
+        public BlockBaseModel(BLOCK blockType, BlockBehaviour.Properties properties) {
             super(blockType, properties);
         }
     }

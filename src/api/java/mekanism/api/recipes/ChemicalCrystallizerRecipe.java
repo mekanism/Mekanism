@@ -6,17 +6,17 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Contract;
 public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implements Predicate<@NonNull BoxedChemicalStack> {
 
     private final ChemicalType chemicalType;
-    private final IChemicalStackIngredient<?, ?> input;
+    private final ChemicalStackIngredient<?, ?> input;
     private final ItemStack output;
 
     /**
@@ -40,7 +40,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      * @param input  Input.
      * @param output Output.
      */
-    public ChemicalCrystallizerRecipe(ResourceLocation id, IChemicalStackIngredient<?, ?> input, ItemStack output) {
+    public ChemicalCrystallizerRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, ItemStack output) {
         super(id);
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.chemicalType = ChemicalType.getTypeFor(input);
@@ -125,22 +125,27 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testInternal(STACK stack) {
-        return ((IChemicalStackIngredient<CHEMICAL, STACK>) input).test(stack);
+        return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).test(stack);
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testTypeInternal(STACK stack) {
-        return ((IChemicalStackIngredient<CHEMICAL, STACK>) input).testType(stack);
+        return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).testType(stack);
     }
 
     /**
      * Gets the input ingredient.
      */
-    public IChemicalStackIngredient<?, ?> getInput() {
+    public ChemicalStackIngredient<?, ?> getInput() {
         return input;
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
         input.write(buffer);
         buffer.writeItem(output);

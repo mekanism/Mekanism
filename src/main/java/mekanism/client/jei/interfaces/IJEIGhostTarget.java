@@ -2,8 +2,8 @@ package mekanism.client.jei.interfaces;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 
 public interface IJEIGhostTarget {
 
@@ -29,7 +29,7 @@ public interface IJEIGhostTarget {
 
         @Override
         default boolean supportsIngredient(Object ingredient) {
-            return ingredient instanceof ItemStack && !((ItemStack) ingredient).isEmpty();
+            return ingredient instanceof ItemStack stack && !stack.isEmpty();
         }
     }
 

@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -10,7 +10,8 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
-import net.minecraft.util.Direction;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 
 @MethodsReturnNonnullByDefault
 public interface IInfusionTile extends IInfusionTracker {
@@ -20,15 +21,16 @@ public interface IInfusionTile extends IInfusionTracker {
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default InfusionHandlerManager getInitialInfusionManager() {
-        return new InfusionHandlerManager(getInitialInfusionTanks(), new DynamicInfusionHandler(this::getInfusionTanks, this::extractInfusionCheck, this::insertInfusionCheck, this));
+    default InfusionHandlerManager getInitialInfusionManager(IContentsListener listener) {
+        return new InfusionHandlerManager(getInitialInfusionTanks(listener), new DynamicInfusionHandler(this::getInfusionTanks, this::extractInfusionCheck,
+              this::insertInfusionCheck, listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+    default IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
         return null;
     }
 

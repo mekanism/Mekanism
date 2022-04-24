@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
@@ -11,32 +12,33 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.tags.TagUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDictionary extends Item {
 
@@ -45,8 +47,7 @@ public class ItemDictionary extends Item {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltip.add(MekanismLang.DESCRIPTION_DICTIONARY.translate());
         } else {
@@ -56,69 +57,77 @@ public class ItemDictionary extends Item {
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
         if (player != null) {
-            World world = context.getLevel();
+            Level world = context.getLevel();
             BlockPos pos = context.getClickedPos();
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null || !player.isShiftKeyDown()) {
                 //If there is a tile at the position or the player is not sneaking
                 // grab the tags of the block and the tile
                 if (!world.isClientSide) {
-                    Set<ResourceLocation> blockTags = world.getBlockState(pos).getBlock().getTags();
-                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : tile.getType().getTags();
-                    if (blockTags.isEmpty() && tileTags.isEmpty()) {
+                    BlockState blockState = world.getBlockState(pos);
+                    FluidState fluidState = blockState.getFluidState();
+                    Set<ResourceLocation> blockTags = TagUtils.tagNames(blockState.getTags());
+                    Set<ResourceLocation> fluidTags = fluidState.isEmpty() ? Collections.emptySet() : TagUtils.tagNames(fluidState.getTags());
+                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : TagUtils.tagNames(ForgeRegistries.BLOCK_ENTITIES, tile.getType());
+                    if (blockTags.isEmpty() && fluidTags.isEmpty() && tileTags.isEmpty()) {
                         player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
                     } else {
                         //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
-                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND, tileTags);
+                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidTags);
+                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags);
                     }
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.sidedSuccess(world.isClientSide);
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Nonnull
     @Override
-    public ActionResultType interactLivingEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
+    public InteractionResult interactLivingEntity(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull LivingEntity entity, @Nonnull InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
             if (!player.level.isClientSide) {
                 sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, entity.getType().getTags());
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.sidedSuccess(player.level.isClientSide);
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayerEntity) player, hand, stack);
+                MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayer) player, hand, stack);
             }
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         } else {
-            BlockRayTraceResult result = MekanismUtils.rayTrace(player, FluidMode.ANY);
+            BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
             if (result.getType() != Type.MISS) {
-                Block block = world.getBlockState(result.getBlockPos()).getBlock();
-                if (block instanceof FlowingFluidBlock) {
+                FluidState fluidState = world.getFluidState(result.getBlockPos());
+                if (!fluidState.isEmpty()) {
                     if (!world.isClientSide()) {
-                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, ((FlowingFluidBlock) block).getFluid().getTags());
+                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.getTags());
                     }
-                    return new ActionResult<>(ActionResultType.SUCCESS, stack);
+                    return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
                 }
             }
         }
-        return new ActionResult<>(ActionResultType.PASS, stack);
+        return InteractionResultHolder.pass(stack);
     }
 
-    private void sendTagsOrEmptyToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
+    private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<? extends TagKey<?>> tags) {
+        sendTagsOrEmptyToPlayer(player, tagsFoundEntry, TagUtils.tagNames(tags));
+    }
+
+    private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (tags.isEmpty()) {
             player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
         } else {
@@ -126,7 +135,7 @@ public class ItemDictionary extends Item {
         }
     }
 
-    private void sendTagsToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
+    private void sendTagsToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (!tags.isEmpty()) {
             player.sendMessage(MekanismUtils.logFormat(tagsFoundEntry), Util.NIL_UUID);
             for (ResourceLocation tag : tags) {

@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Contract;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull STACK> {
 
     private final FluidStackIngredient fluidInput;
     private final INGREDIENT chemicalInput;
@@ -76,14 +76,6 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     }
 
     /**
-     * @deprecated Use {@link #getOutputDefinition()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public STACK getOutputRepresentation() {
-        return output;
-    }
-
-    /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
@@ -110,7 +102,12 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return fluidInput.hasNoMatchingInstances() || chemicalInput.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         fluidInput.write(buffer);
         chemicalInput.write(buffer);
         output.writeToPacket(buffer);

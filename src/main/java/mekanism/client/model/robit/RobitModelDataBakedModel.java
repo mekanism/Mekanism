@@ -1,6 +1,6 @@
 package mekanism.client.model.robit;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import java.util.Collections;
 import java.util.List;
@@ -8,26 +8,26 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.RobitSpriteUploader;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
-public class RobitModelDataBakedModel implements IBakedModel {
+public class RobitModelDataBakedModel implements BakedModel {
 
-    private final IBakedModel original;
+    private final BakedModel original;
     private final IModelData modelData;
 
-    public RobitModelDataBakedModel(@Nonnull IBakedModel original, @Nonnull IModelData data) {
+    public RobitModelDataBakedModel(@Nonnull BakedModel original, @Nonnull IModelData data) {
         this.original = original;
         this.modelData = data;
     }
@@ -63,20 +63,20 @@ public class RobitModelDataBakedModel implements IBakedModel {
     @Override
     @Deprecated
     public TextureAtlasSprite getParticleIcon() {
-        return getParticleTexture(modelData);
+        return getParticleIcon(modelData);
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public ItemCameraTransforms getTransforms() {
+    public ItemTransforms getTransforms() {
         return original.getTransforms();
     }
 
     @Nonnull
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 
     @Nonnull
@@ -86,8 +86,8 @@ public class RobitModelDataBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion(BlockState state) {
-        return original.isAmbientOcclusion(state);
+    public boolean useAmbientOcclusion(BlockState state) {
+        return original.useAmbientOcclusion(state);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class RobitModelDataBakedModel implements IBakedModel {
     }
 
     @Override
-    public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat) {
         // have the original model apply any perspective transforms onto the MatrixStack
         original.handlePerspective(cameraTransformType, mat);
         // return this model, as we want to draw the item variant quads ourselves
@@ -105,13 +105,13 @@ public class RobitModelDataBakedModel implements IBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
         return original.getModelData(world, pos, state, tileData);
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
-        return original.getParticleTexture(data);
+    public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data) {
+        return original.getParticleIcon(data);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class RobitModelDataBakedModel implements IBakedModel {
     }
 
     @Override
-    public List<Pair<IBakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
+    public List<Pair<BakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
         //TODO: Handle the original model being layered properly as currently we don't have any way to properly bounce them
         return Collections.singletonList(Pair.of(this, RobitSpriteUploader.RENDER_TYPE));
     }

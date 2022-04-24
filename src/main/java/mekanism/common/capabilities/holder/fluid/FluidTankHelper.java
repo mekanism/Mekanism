@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class FluidTankHelper {
 
@@ -24,28 +24,30 @@ public class FluidTankHelper {
         return new FluidTankHelper(new ConfigFluidTankHolder(facingSupplier, configSupplier));
     }
 
-    public void addTank(@Nonnull IExtendedFluidTank tank) {
+    public <TANK extends IExtendedFluidTank> TANK addTank(@Nonnull TANK tank) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof FluidTankHolder) {
-            ((FluidTankHolder) slotHolder).addTank(tank);
-        } else if (slotHolder instanceof ConfigFluidTankHolder) {
-            ((ConfigFluidTankHolder) slotHolder).addTank(tank);
+        if (slotHolder instanceof FluidTankHolder slotHolder) {
+            slotHolder.addTank(tank);
+        } else if (slotHolder instanceof ConfigFluidTankHolder slotHolder) {
+            slotHolder.addTank(tank);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
+        return tank;
     }
 
-    public void addTank(@Nonnull IExtendedFluidTank tank, RelativeSide... sides) {
+    public <TANK extends IExtendedFluidTank> TANK addTank(@Nonnull TANK tank, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof FluidTankHolder) {
-            ((FluidTankHolder) slotHolder).addTank(tank, sides);
+        if (slotHolder instanceof FluidTankHolder slotHolder) {
+            slotHolder.addTank(tank, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }
+        return tank;
     }
 
     public IFluidTankHolder build() {

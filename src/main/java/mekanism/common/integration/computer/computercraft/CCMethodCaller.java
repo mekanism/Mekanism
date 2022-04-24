@@ -47,7 +47,7 @@ public abstract class CCMethodCaller {
         CCArgumentWrapper argumentWrapper = new CCArgumentWrapper(arguments);
         //Our argument type validator should be thread-safe, so can be run on the ComputerCraft Lua thread
         SelectedMethodInfo selectedImplementation = method.findMatchingImplementation(argumentWrapper);
-        if (selectedImplementation.isThreadSafe()) {
+        if (selectedImplementation.getMethod().threadSafe()) {
             //If our selected implementation is thread-safe, run it directly
             return method.run(argumentWrapper, selectedImplementation);
         }
@@ -74,13 +74,13 @@ public abstract class CCMethodCaller {
         @Nonnull
         @Override
         public MethodResult resume(Object[] response) throws LuaException {
-            if (response.length >= 3 && response[1] instanceof Number && response[2] instanceof Boolean) {
-                if (((Number) response[1]).longValue() != this.task) {
+            if (response.length >= 3 && response[1] instanceof Number number && response[2] instanceof Boolean bool) {
+                if (number.longValue() != this.task) {
                     return this.pull;
-                } else if ((Boolean) response[2]) {
+                } else if (bool) {
                     return MethodResult.of(Arrays.copyOfRange(response, 3, response.length));
-                } else if (response.length >= 4 && response[3] instanceof String) {
-                    throw new LuaException((String) response[3]);
+                } else if (response.length >= 4 && response[3] instanceof String string) {
+                    throw new LuaException(string);
                 }
                 throw new LuaException("error");
             }

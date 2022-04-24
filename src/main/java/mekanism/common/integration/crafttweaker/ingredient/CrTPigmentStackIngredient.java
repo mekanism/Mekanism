@@ -1,17 +1,20 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.List;
 import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
-import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,7 +35,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient from(Pigment instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "PigmentStackIngredients", "pigment");
-        return PigmentStackIngredient.from(instance, amount);
+        return IngredientCreatorAccess.pigment().from(instance, amount);
     }
 
     /**
@@ -45,7 +48,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient from(ICrTPigmentStack instance) {
         CrTIngredientHelper.assertValid(instance, "PigmentStackIngredients");
-        return PigmentStackIngredient.from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.pigment().from(instance.getImmutableInternal());
     }
 
     /**
@@ -57,9 +60,9 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(MCTag<Pigment> pigmentTag, long amount) {
-        ITag<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
-        return PigmentStackIngredient.from(tag, amount);
+    public static PigmentStackIngredient from(KnownTag<Pigment> pigmentTag, long amount) {
+        TagKey<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, "PigmentStackIngredients");
+        return IngredientCreatorAccess.pigment().from(tag, amount);
     }
 
     /**
@@ -70,8 +73,8 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(MCTagWithAmount<Pigment> pigmentTag) {
-        return from(pigmentTag.getTag(), pigmentTag.getAmount());
+    public static PigmentStackIngredient from(Many<KnownTag<Pigment>> pigmentTag) {
+        return from(pigmentTag.getData(), pigmentTag.getAmount());
     }
 
     /**
@@ -83,7 +86,7 @@ public class CrTPigmentStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient createMulti(PigmentStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("PigmentStackIngredients", PigmentStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("PigmentStackIngredients", IngredientCreatorAccess.pigment(), ingredients);
     }
 
     /**
@@ -98,6 +101,40 @@ public class CrTPigmentStackIngredient {
     }
 
     /**
+     * Checks if a given {@link ICrTPigmentStack} has a type match for this {@link PigmentStackIngredient}. Type matches ignore stack size.
+     *
+     * @param type Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link PigmentStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(PigmentStackIngredient _this, ICrTPigmentStack type) {
+        return _this.testType(type.getInternal());
+    }
+
+    /**
+     * Checks if a given {@link ICrTPigmentStack} matches this {@link PigmentStackIngredient}. (Checks size for >=)
+     *
+     * @param stack Stack to check for a match
+     *
+     * @return {@code true} if the stack fulfills the requirements for this {@link PigmentStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean test(PigmentStackIngredient _this, ICrTPigmentStack stack) {
+        return _this.test(stack.getInternal());
+    }
+
+    /**
+     * Gets a list of valid instances for this {@link PigmentStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the
+     * internal version is mostly used for JEI display purposes.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("representations")
+    public static List<ICrTPigmentStack> getRepresentations(PigmentStackIngredient _this) {
+        return CrTUtils.convert(_this.getRepresentations(), CrTPigmentStack::new);
+    }
+
+    /**
      * OR's this {@link PigmentStackIngredient} with another {@link PigmentStackIngredient} to create a multi {@link PigmentStackIngredient}
      *
      * @param other {@link PigmentStackIngredient} to combine with.
@@ -107,6 +144,6 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static PigmentStackIngredient or(PigmentStackIngredient _this, PigmentStackIngredient other) {
-        return PigmentStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.pigment().createMulti(_this, other);
     }
 }

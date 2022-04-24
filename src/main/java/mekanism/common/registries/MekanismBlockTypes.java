@@ -7,12 +7,14 @@ import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeStateFacing.FacePlacementType;
+import mekanism.common.block.attribute.AttributeStateOpen;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
@@ -53,6 +55,7 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
+import mekanism.common.tile.TileEntityPersonalBarrel;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -117,19 +120,18 @@ import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.state.properties.BlockStateProperties;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class MekanismBlockTypes {
 
     private MekanismBlockTypes() {
     }
 
-    //TODO: Name these a lot better
-    private static final FloatingLong LARGE_LASER = FloatingLong.createConst(5_000_000_000L);
-    private static final FloatingLong TELEPORTER_USAGE = FloatingLong.createConst(12_500);
-    private static final FloatingLong HUNDRED = FloatingLong.createConst(100);
+    private static final FloatingLong RESISTIVE_HEATER_BASE_USAGE = FloatingLong.createConst(100);
 
     private static final Table<FactoryTier, FactoryType, Factory<?>> FACTORIES = HashBasedTable.create();
 
@@ -289,6 +291,17 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR, Upgrade.STONE_GENERATOR))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .with(AttributeCustomSelectionBox.JSON)
+          .withBounding((pos, state, builder) -> {
+              for (int x = -1; x <= 1; x++) {
+                  for (int y = 0; y <= 1; y++) {
+                      for (int z = -1; z <= 1; z++) {
+                          if (x != 0 || y != 0 || z != 0) {
+                              builder.add(pos.offset(x, y, z));
+                          }
+                      }
+                  }
+              }
+          })
           .withComputerSupport("digitalMiner")
           .replace(Attributes.ACTIVE)
           .build();
@@ -327,6 +340,7 @@ public class MekanismBlockTypes {
           .without(AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
           .with(AttributeCustomSelectionBox.JAVA)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("solarNeutronActivator")
           .replace(Attributes.ACTIVE)
           .build();
@@ -334,7 +348,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.TELEPORTER, MekanismLang.DESCRIPTION_TELEPORTER)
           .withGui(() -> MekanismContainerTypes.TELEPORTER)
-          .withEnergyConfig(() -> TELEPORTER_USAGE, MekanismConfig.storage.teleporter)
+          .withEnergyConfig(MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
           .withLight(10)
@@ -360,7 +374,8 @@ public class MekanismBlockTypes {
           .build();
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
-          .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> LARGE_LASER)
+          .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER)
+          .withEnergyConfig(MekanismConfig.storage.laserAmplifier)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE),
                 new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
@@ -370,7 +385,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
           .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
-          .withEnergyConfig(null, () -> LARGE_LASER)
+          .withEnergyConfig(MekanismConfig.storage.laserTractorBeam)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .withComputerSupport("laserTractorBeam")
@@ -379,7 +394,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
-          .withEnergyConfig(() -> HUNDRED, null)
+          .withEnergyConfig(() -> RESISTIVE_HEATER_BASE_USAGE, null)
           .without(AttributeComparator.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)
@@ -393,13 +408,20 @@ public class MekanismBlockTypes {
           .without(AttributeComparator.class, AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SEISMIC_VIBRATOR)
           .with(AttributeCustomSelectionBox.JAVA)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("seismicVibrator")
+          .build();
+    // Personal Barrel
+    public static final BlockTypeTile<TileEntityPersonalBarrel> PERSONAL_BARREL = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.PERSONAL_BARREL, MekanismLang.DESCRIPTION_PERSONAL_BARREL)
+          .withGui(() -> MekanismContainerTypes.PERSONAL_STORAGE_BLOCK)
+          .with(Attributes.SECURITY, Attributes.INVENTORY, AttributeStateOpen.INSTANCE, new AttributeStateFacing(BlockStateProperties.FACING), new AttributeCustomResistance(-1))
           .build();
     // Personal Chest
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
-          .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
-          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(-1))
+          .withGui(() -> MekanismContainerTypes.PERSONAL_STORAGE_BLOCK)
+          .with(Attributes.SECURITY, Attributes.INVENTORY, new AttributeStateFacing(), new AttributeCustomResistance(-1))
           .withCustomShape(BlockShapes.PERSONAL_CHEST)
           .build();
     // Fuelwood Heater
@@ -408,7 +430,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
           .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
-                .add(RedstoneParticleData.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
+                .add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
           .withComputerSupport("fuelwoodHeater")
           .build();
     // Oredictionificator
@@ -422,7 +444,6 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
           .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
-          .withEnergyConfig(null, null)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .with(new AttributeStateFacing(BlockStateProperties.FACING))
           .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
@@ -447,6 +468,7 @@ public class MekanismBlockTypes {
           .with(Attributes.INVENTORY, new AttributeStateFacing(), new AttributeCustomResistance(-1), Attributes.SECURITY)
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .with(AttributeCustomSelectionBox.JSON)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .build();
     // Modification Station
     public static final BlockTypeTile<TileEntityModificationStation> MODIFICATION_STATION = BlockTileBuilder
@@ -456,6 +478,12 @@ public class MekanismBlockTypes {
           .with(Attributes.INVENTORY, new AttributeStateFacing(false), Attributes.REDSTONE, Attributes.SECURITY)
           .withCustomShape(BlockShapes.MODIFICATION_STATION)
           .with(AttributeCustomSelectionBox.JSON)
+          .withBounding((pos, state, builder) -> {
+              builder.add(pos.above());
+              BlockPos rightPos = pos.relative(MekanismUtils.getRight(Attribute.getFacing(state)));
+              builder.add(rightPos);
+              builder.add(rightPos.above());
+          })
           .withComputerSupport("modificationStation")
           .build();
     // Isotopic Centrifuge
@@ -465,6 +493,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
           .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
           .withCustomShape(BlockShapes.ISOTOPIC_CENTRIFUGE)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("isotopicCentrifuge")
           .build();
     // Nutritional Liquifier
@@ -503,6 +532,7 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
           .withCustomShape(BlockShapes.PIGMENT_MIXER)
           .with(AttributeCustomSelectionBox.JAVA)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("pigmentMixer")
           .build();
     // Painting Machine
@@ -611,7 +641,7 @@ public class MekanismBlockTypes {
     // Thermal Evaporation Controller
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
-          .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
+          .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.EVAPORATION_PLANT)
           .with(Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(9), Attributes.MULTIBLOCK,
                 AttributeMobSpawn.WHEN_NOT_FORMED)
           .withComputerSupport("thermalEvaporationController")
@@ -657,16 +687,16 @@ public class MekanismBlockTypes {
     // SPS Casing
     public static final BlockTypeTile<TileEntitySPSCasing> SPS_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_CASING, MekanismLang.DESCRIPTION_SPS_CASING)
-          .withGui(() -> MekanismContainerTypes.SPS)
+          .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // SPS Port
     public static final BlockTypeTile<TileEntitySPSPort> SPS_PORT = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_PORT, MekanismLang.DESCRIPTION_SPS_PORT)
-          .withGui(() -> MekanismContainerTypes.SPS)
+          .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
-          .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
+          .withEnergyConfig(MekanismConfig.storage.spsPort)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.ACTIVE)
           .withComputerSupport("spsPort")
           .build();

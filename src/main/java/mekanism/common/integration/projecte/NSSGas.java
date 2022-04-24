@@ -1,18 +1,19 @@
 package mekanism.common.integration.projecte;
 
+import com.mojang.datafixers.util.Either;
+import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.ChemicalTags;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IGasProvider;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraftforge.registries.tags.ITag;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Gas}s.
@@ -69,11 +70,11 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
     }
 
     /**
-     * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
+     * Helper method to create an {@link NSSGas} representing a tag from a {@link TagKey<Gas>}
      */
     @Nonnull
-    public static NSSGas createTag(@Nonnull ITag<Gas> tag) {
-        return createTag(ChemicalTags.GAS.lookupTag(tag));
+    public static NSSGas createTag(@Nonnull TagKey<Gas> tag) {
+        return createTag(tag.location());
     }
 
     @Override
@@ -95,8 +96,8 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
 
     @Nonnull
     @Override
-    protected ITagCollection<Gas> getTagCollection() {
-        return ChemicalTags.GAS.getCollection();
+    protected Optional<Either<Named<Gas>, ITag<Gas>>> getTag() {
+        return getTag(MekanismAPI.gasRegistry());
     }
 
     @Override

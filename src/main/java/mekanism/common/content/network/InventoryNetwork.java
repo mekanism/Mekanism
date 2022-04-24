@@ -27,12 +27,12 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
@@ -49,12 +49,12 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
         adoptAllAndRegister(networks);
     }
 
-    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
+    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (Map.Entry<BlockPos, Map<Direction, LazyOptional<IItemHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = entry.getKey();
             if (!pos.equals(stack.homeLocation)) {
-                TileEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
+                BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
                 if (acceptor == null) {
                     continue;
                 }
@@ -66,9 +66,8 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
                         Direction side = acceptorEntry.getKey();
                         //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
                         // actually need to even query the TE
-                        if (acceptor instanceof ISideConfiguration) {
+                        if (acceptor instanceof ISideConfiguration config) {
                             //If the acceptor in question implements the mekanism interface, check that the color matches and bail fast if it doesn't
-                            ISideConfiguration config = (ISideConfiguration) acceptor;
                             if (config.getEjector().hasStrictInput()) {
                                 EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(config.getDirection(), side));
                                 if (configColor != null && configColor != stack.color) {
@@ -133,7 +132,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
         if (currentTransmitter != null) {
             //This shouldn't be null but if it is, don't bother attempting to remove
             if (currentTransmitter != transmitter) {
-                World world = this.world;
+                Level world = this.world;
                 if (world == null) {
                     //If the world is null, grab it from the transmitter
                     world = transmitter.getTileWorld();
@@ -191,7 +190,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmittersSize(), getAcceptorCount());
     }
 

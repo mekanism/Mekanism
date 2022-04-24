@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -24,8 +23,9 @@ import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.Rate
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -46,7 +46,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
 
     private GaugeDropperContentsHandler() {
         mergedTank = MergedTank.create(
-              new RateLimitFluidTank(TRANSFER_RATE, () -> CAPACITY, this),
+              new RateLimitFluidTank(() -> TRANSFER_RATE, () -> CAPACITY, this),
               new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
                     ChemicalTankBuilder.GAS.alwaysTrue, null, gasHandler = new DynamicGasHandler(side -> gasTanks, InteractPredicate.ALWAYS_TRUE,
                     InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),

@@ -1,19 +1,20 @@
 package mekanism.api.recipes;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -68,23 +69,12 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     }
 
     /**
-     * For JEI, gets the left output representations to display.
+     * For JEI, gets the output representations to display.
      *
-     * @return Representation of the left output, <strong>MUST NOT</strong> be modified.
+     * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public GasStack getLeftGasOutputRepresentation() {
-        //TODO - 1.18: Re-evaluate this method and the other output representation method not being lists.
-        // Strictly speaking it should be a list of pairs of gas stacks
-        return leftGasOutput;
-    }
-
-    /**
-     * For JEI, gets the right output representations to display.
-     *
-     * @return Representation of the right output, <strong>MUST NOT</strong> be modified.
-     */
-    public GasStack getRightGasOutputRepresentation() {
-        return rightGasOutput;
+    public List<ElectrolysisRecipeOutput> getOutputDefinition() {
+        return Collections.singletonList(new ElectrolysisRecipeOutput(leftGasOutput, rightGasOutput));
     }
 
     @Override
@@ -104,8 +94,8 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public Pair<@NonNull GasStack, @NonNull GasStack> getOutput(FluidStack input) {
-        return Pair.of(leftGasOutput.copy(), rightGasOutput.copy());
+    public ElectrolysisRecipeOutput getOutput(FluidStack input) {
+        return new ElectrolysisRecipeOutput(leftGasOutput.copy(), rightGasOutput.copy());
     }
 
     /**
@@ -116,10 +106,28 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         energyMultiplier.writeToBuffer(buffer);
         leftGasOutput.writeToPacket(buffer);
         rightGasOutput.writeToPacket(buffer);
+    }
+
+    public record ElectrolysisRecipeOutput(@Nonnull GasStack left, @Nonnull GasStack right) {
+
+        public ElectrolysisRecipeOutput {
+            Objects.requireNonNull(left, "Left output cannot be null.");
+            Objects.requireNonNull(right, "Right output cannot be null.");
+            if (left.isEmpty()) {
+                throw new IllegalArgumentException("Left output cannot be empty.");
+            } else if (right.isEmpty()) {
+                throw new IllegalArgumentException("Right output cannot be empty.");
+            }
+        }
     }
 }

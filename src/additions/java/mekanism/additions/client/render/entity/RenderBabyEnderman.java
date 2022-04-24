@@ -1,17 +1,18 @@
 package mekanism.additions.client.render.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Copy of vanilla's enderman render, modified to use our own model/layer that is properly scaled, so that the block is held in the correct spot and the head is in the
@@ -22,14 +23,14 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
     private static final ResourceLocation ENDERMAN_TEXTURES = new ResourceLocation("textures/entity/enderman/enderman.png");
     private final Random rnd = new Random();
 
-    public RenderBabyEnderman(EntityRendererManager renderManager) {
-        super(renderManager, new ModelBabyEnderman(), 0.5F);
+    public RenderBabyEnderman(EntityRendererProvider.Context context) {
+        super(context, new ModelBabyEnderman(context.bakeLayer(ModelLayers.ENDERMAN)), 0.5F);
         this.addLayer(new BabyEndermanEyesLayer(this));
         this.addLayer(new BabyEndermanHeldBlockLayer(this));
     }
 
     @Override
-    public void render(EntityBabyEnderman enderman, float entityYaw, float partialTicks, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int packedLightIn) {
+    public void render(EntityBabyEnderman enderman, float entityYaw, float partialTicks, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int packedLightIn) {
         ModelBabyEnderman model = getModel();
         model.carrying = enderman.getCarriedBlock() != null;
         model.creepy = enderman.isCreepy();
@@ -38,9 +39,9 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
 
     @Nonnull
     @Override
-    public Vector3d getRenderOffset(EntityBabyEnderman enderman, float partialTicks) {
+    public Vec3 getRenderOffset(EntityBabyEnderman enderman, float partialTicks) {
         if (enderman.isCreepy()) {
-            return new Vector3d(this.rnd.nextGaussian() * 0.02, 0, this.rnd.nextGaussian() * 0.02);
+            return new Vec3(this.rnd.nextGaussian() * 0.02, 0, this.rnd.nextGaussian() * 0.02);
         }
         return super.getRenderOffset(enderman, partialTicks);
     }

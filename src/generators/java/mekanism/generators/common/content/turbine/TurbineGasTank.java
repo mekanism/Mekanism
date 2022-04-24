@@ -2,13 +2,13 @@ package mekanism.generators.common.content.turbine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder.MultiblockGasTank;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

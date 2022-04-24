@@ -1,9 +1,12 @@
 package mekanism.common.integration.crafttweaker;
 
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
+import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -23,8 +26,11 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
 public class CrTUtils {
 
@@ -77,18 +83,12 @@ public class CrTUtils {
         if (stack.isEmpty()) {
             return null;
         }
-        switch (stack.getChemicalType()) {
-            case GAS:
-                return new CrTGasStack((GasStack) stack.getChemicalStack());
-            case INFUSION:
-                return new CrTInfusionStack((InfusionStack) stack.getChemicalStack());
-            case PIGMENT:
-                return new CrTPigmentStack((PigmentStack) stack.getChemicalStack());
-            case SLURRY:
-                return new CrTSlurryStack((SlurryStack) stack.getChemicalStack());
-            default:
-                return null;
-        }
+        return switch (stack.getChemicalType()) {
+            case GAS -> new CrTGasStack((GasStack) stack.getChemicalStack());
+            case INFUSION -> new CrTInfusionStack((InfusionStack) stack.getChemicalStack());
+            case PIGMENT -> new CrTPigmentStack((PigmentStack) stack.getChemicalStack());
+            case SLURRY -> new CrTSlurryStack((SlurryStack) stack.getChemicalStack());
+        };
     }
 
     /**
@@ -115,11 +115,59 @@ public class CrTUtils {
     /**
      * Helper to convert a CraftTweaker type tag to a regular tag and validate it exists
      */
-    public static <TYPE, CRT_TYPE> ITag<TYPE> validateTagAndGet(MCTag<CRT_TYPE> crtTag, Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter) {
-        ITag<TYPE> tag = getter.apply(crtTag);
-        if (tag == null) {
-            throw new IllegalArgumentException("Tag " + crtTag.getCommandString() + " does not exist.");
+    public static <TYPE> TagKey<TYPE> validateTagAndGet(KnownTag<TYPE> tag) {
+        if (tag.exists()) {
+            return tag.getTagKey();
         }
-        return tag;
+        throw new IllegalArgumentException("Tag " + tag.getCommandString() + " does not exist.");
+    }
+
+    /**
+     * Helper to convert a list of one type to a list of another.
+     */
+    public static <TYPE, CRT_TYPE> List<CRT_TYPE> convert(List<TYPE> elements, Function<TYPE, CRT_TYPE> converter) {
+        return elements.stream().map(converter).toList();
+    }
+
+    /**
+     * Helper to get CraftTweaker's item tag manager.
+     */
+    public static KnownTagManager<Item> itemTags() {
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registry.ITEM_REGISTRY);
+    }
+
+    /**
+     * Helper to get CraftTweaker's fluid tag manager.
+     */
+    public static KnownTagManager<Fluid> fluidTags() {
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registry.FLUID_REGISTRY);
+    }
+
+    /**
+     * Helper to get CraftTweaker's gas tag manager.
+     */
+    public static KnownTagManager<Gas> gasTags() {
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.gasRegistryName());
+    }
+
+    /**
+     * Helper to get CraftTweaker's infuse type tag manager.
+     */
+    public static KnownTagManager<InfuseType> infuseTypeTags() {
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.infuseTypeRegistryName());
+    }
+
+    /**
+     * Helper to get CraftTweaker's pigment tag manager.
+     */
+    public static KnownTagManager<Pigment> pigmentTags() {
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.pigmentRegistryName());
+    }
+
+    /**
+     * Helper to get CraftTweaker's slurry tag manager.
+     */
+    public static KnownTagManager<Slurry> slurryTags() {
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.slurryRegistryName());
     }
 }

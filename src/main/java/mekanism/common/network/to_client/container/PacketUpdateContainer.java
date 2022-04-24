@@ -6,9 +6,9 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketUpdateContainer implements IMekanismPacket {
 
@@ -23,16 +23,16 @@ public class PacketUpdateContainer implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         //Ensure that the container is one of ours and that the window id is the same as we expect it to be
-        if (player != null && player.containerMenu instanceof MekanismContainer && player.containerMenu.containerId == windowId) {
+        if (player != null && player.containerMenu instanceof MekanismContainer container && container.containerId == windowId) {
             //If so then handle the packet
-            data.forEach(data -> data.handleWindowProperty((MekanismContainer) player.containerMenu));
+            data.forEach(data -> data.handleWindowProperty(container));
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeByte(windowId);
         buffer.writeVarInt(data.size());
         for (PropertyData data : data) {
@@ -40,7 +40,7 @@ public class PacketUpdateContainer implements IMekanismPacket {
         }
     }
 
-    public static PacketUpdateContainer decode(PacketBuffer buffer) {
+    public static PacketUpdateContainer decode(FriendlyByteBuf buffer) {
         short windowId = buffer.readUnsignedByte();
         int size = buffer.readVarInt();
         List<PropertyData> data = new ArrayList<>(size);

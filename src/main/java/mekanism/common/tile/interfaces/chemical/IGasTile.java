@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -10,7 +10,8 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
-import net.minecraft.util.Direction;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 
 @MethodsReturnNonnullByDefault
 public interface IGasTile extends IGasTracker {
@@ -20,15 +21,15 @@ public interface IGasTile extends IGasTracker {
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default GasHandlerManager getInitialGasManager() {
-        return new GasHandlerManager(getInitialGasTanks(), new DynamicGasHandler(this::getGasTanks, this::extractGasCheck, this::insertGasCheck, this));
+    default GasHandlerManager getInitialGasManager(IContentsListener listener) {
+        return new GasHandlerManager(getInitialGasTanks(listener), new DynamicGasHandler(this::getGasTanks, this::extractGasCheck, this::insertGasCheck, listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    default IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         return null;
     }
 

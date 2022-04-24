@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "forge:slabs/plastic/transparent"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:orange_plastic_transparent_slab"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:orange"
+  },
+  "output": {
+    "item": "mekanismadditions:orange_plastic_transparent_slab"
+  }
+}

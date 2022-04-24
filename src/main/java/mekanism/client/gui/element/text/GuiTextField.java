@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
@@ -14,9 +14,9 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -31,7 +31,7 @@ public class GuiTextField extends GuiElement {
     public static final IntSupplier SCREEN_COLOR = SpecialColors.TEXT_SCREEN::argb;
     public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 
-    private final TextFieldWidget textField;
+    private final EditBox textField;
     private Runnable enterHandler;
     private CharPredicate inputValidator;
     private CharUnaryOperator inputTransformer;
@@ -48,7 +48,7 @@ public class GuiTextField extends GuiElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
 
-        textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, StringTextComponent.EMPTY);
+        textField = new EditBox(getFont(), this.x, this.y, width, height, TextComponent.EMPTY);
         textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {
@@ -188,7 +188,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         backgroundType.render(this, matrix);
         if (textScale == 1F) {
@@ -205,17 +205,20 @@ public class GuiTextField extends GuiElement {
         }
         MekanismRenderer.resetColor();
         if (iconType != null) {
-            minecraft.textureManager.bind(iconType.getIcon());
+            RenderSystem.setShaderTexture(0, iconType.getIcon());
             blit(matrix, x + 2, y + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
     }
 
-    private void renderTextField(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    private void renderTextField(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Apply matrix via render system so that it applies to the highlight
-        RenderSystem.pushMatrix();
-        RenderSystem.multMatrix(matrix.last().pose());
-        textField.render(new MatrixStack(), mouseX, mouseY, partialTicks);
-        RenderSystem.popMatrix();
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+        modelViewStack.mulPoseMatrix(matrix.last().pose());
+        RenderSystem.applyModelViewMatrix();
+        textField.render(new PoseStack(), mouseX, mouseY, partialTicks);
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
 
     @Override
@@ -242,7 +245,7 @@ public class GuiTextField extends GuiElement {
                     enterHandler.run();
                 }
                 return true;
-            } else if (keyCode == GLFW.GLFW_KEY_TAB) {
+            } else if (keyCode == GLFW.GLFW_KEY_TAB && textField.canLoseFocus) {
                 gui().incrementFocus(this);
                 return true;
             } else if (Screen.isPaste(keyCode)) {
@@ -298,7 +301,7 @@ public class GuiTextField extends GuiElement {
         textField.setVisible(visible);
     }
 
-    public void setMaxStringLength(int length) {
+    public void setMaxLength(int length) {
         textField.setMaxLength(length);
     }
 
@@ -306,7 +309,11 @@ public class GuiTextField extends GuiElement {
         textField.setTextColor(color);
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setTextColorUneditable(int color) {
+        textField.setTextColorUneditable(color);
+    }
+
+    public void setEditable(boolean enabled) {
         textField.setEditable(enabled);
     }
 
@@ -321,6 +328,19 @@ public class GuiTextField extends GuiElement {
         textField.setFocus(focused);
         if (focused) {
             gui().focusChange(this);
+        }
+    }
+
+    @Override
+    public boolean changeFocus(boolean focused) {
+        return visible && textField.isEditable() && super.changeFocus(focused);
+    }
+
+    @Override
+    protected void onFocusedChanged(boolean focused) {
+        super.onFocusedChanged(focused);
+        if (focused) {
+            textField.frame = 0;
         }
     }
 

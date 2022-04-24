@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:personal_barrel"
+  },
+  "pattern": [
+    "SGS",
+    "PCP",
+    "SSS"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:barrels/wooden"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "G": {
+      "tag": "forge:glass"
+    }
+  }
+}

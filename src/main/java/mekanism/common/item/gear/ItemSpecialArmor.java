@@ -1,22 +1,28 @@
 package mekanism.common.item.gear;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.common.item.interfaces.ISpecialGear;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.integration.gender.GenderCapabilityHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public abstract class ItemSpecialArmor extends ArmorItem implements ISpecialGear {
+public abstract class ItemSpecialArmor extends ArmorItem {
 
-    protected ItemSpecialArmor(IArmorMaterial material, EquipmentSlotType slot, Properties properties) {
+    protected ItemSpecialArmor(ArmorMaterial material, EquipmentSlot slot, Properties properties) {
         super(material, slot, properties);
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return "mekanism:render/null_armor.png";
     }
 
@@ -33,5 +39,19 @@ public abstract class ItemSpecialArmor extends ArmorItem implements ISpecialGear
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return isEnchantable(stack) && super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
+        GenderCapabilityHelper.addGenderCapability(this, capabilities::add);
+    }
+
+    @Override
+    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        List<ItemCapability> capabilities = new ArrayList<>();
+        gatherCapabilities(capabilities, stack, nbt);
+        if (capabilities.isEmpty()) {
+            return super.initCapabilities(stack, nbt);
+        }
+        return new ItemCapabilityWrapper(stack, capabilities.toArray(ItemCapability[]::new));
     }
 }

@@ -10,7 +10,7 @@ import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.common.inventory.container.sync.ISyncableData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling chemical stacks
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling chemical stacks
  */
 public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ISyncableData,
       IEmptyStackProvider<CHEMICAL, STACK> {

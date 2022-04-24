@@ -1,12 +1,11 @@
 package mekanism.common.integration.crafttweaker;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.providers.IModuleDataProvider;
-import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 
 /**
  * Registers some "unused" and non instantiatable classes to ZenCode so that they can be resolved when ZenCode is resolving generics even if they don't need to be used on
@@ -27,19 +26,11 @@ public class DummyCrTNatives {
         }
     }
 
-    @ZenRegister
+    @ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
     @NativeTypeRegistration(value = ChemicalBuilder.class, zenCodeName = CrTConstants.CLASS_BUILDER_CHEMICAL + DUMMY)
     public static class CrTNativeChemicalBuilder {
 
         private CrTNativeChemicalBuilder() {
-        }
-    }
-
-    @ZenRegister
-    @NativeTypeRegistration(value = ItemStackChemicalToItemStackRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + DUMMY)
-    public static class CrTNativeItemStackChemicalToItemStackRecipe {
-
-        private CrTNativeItemStackChemicalToItemStackRecipe() {
         }
     }
 

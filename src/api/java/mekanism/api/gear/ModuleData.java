@@ -4,16 +4,16 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.Util;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -21,18 +21,6 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 @MethodsReturnNonnullByDefault
 public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegistryEntry<ModuleData<?>> implements IHasTranslationKey, IModuleDataProvider<MODULE> {
 
-    /**
-     * Helper method to get the Class "with" the generic for use in passing to {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} as just using
-     * {@code ModuleData.class} doesn't "work" as it doesn't have the generic that is expected based on what is passed as the forge registry entry.
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Class<ModuleData<?>> getClassWithGeneric() {
-        return (Class) ModuleData.class;
-    }
-
-    @Nullable
-    @Deprecated
-    private final String legacyName;
     private final NonNullSupplier<MODULE> supplier;
     private final IItemProvider itemProvider;
     private final int maxStackSize;
@@ -51,7 +39,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
      * Creates a new module data from the given builder.
      */
     public ModuleData(ModuleDataBuilder<MODULE> builder) {
-        this.legacyName = builder.legacyName;
         this.supplier = builder.supplier;
         this.itemProvider = builder.itemProvider;
         this.rarity = builder.rarity;
@@ -67,18 +54,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     @Override
     public final ModuleData<MODULE> getModuleData() {
         return this;
-    }
-
-    /**
-     * Gets the legacy name for this module. This is mainly used to be able to load legacy modules from before the module system was exposed to the API and modules had a
-     * slightly different naming scheme.
-     *
-     * @deprecated Will be removed in 1.18
-     */
-    @Nullable
-    @Deprecated//TODO - 1.18: Remove
-    public final String getLegacyName() {
-        return legacyName;
     }
 
     /**
@@ -213,9 +188,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
 
         private final NonNullSupplier<MODULE> supplier;
         private final IItemProvider itemProvider;
-        @Nullable
-        @Deprecated
-        private String legacyName;
         private Rarity rarity = Rarity.COMMON;
         private int maxStackSize = 1;
         private boolean exclusive;
@@ -227,20 +199,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         private ModuleDataBuilder(@Nonnull NonNullSupplier<MODULE> supplier, @Nonnull IItemProvider itemProvider) {
             this.supplier = Objects.requireNonNull(supplier, "Supplier cannot be null.");
             this.itemProvider = Objects.requireNonNull(itemProvider, "Item provider cannot be null.");
-        }
-
-        /**
-         * Sets the legacy name for this module. This should probably not ever be used outside of modules built into Mekanism, as it is mainly used to be able to load
-         * legacy modules from before the module system was exposed to the API and modules had a slightly different naming scheme.
-         *
-         * @param legacyName Legacy name of the module.
-         *
-         * @deprecated Will be removed in 1.18
-         */
-        @Deprecated//TODO - 1.18: Remove
-        public ModuleDataBuilder<MODULE> legacyName(@Nonnull String legacyName) {
-            this.legacyName = Objects.requireNonNull(legacyName, "Legacy name should not be null if specified.");
-            return this;
         }
 
         /**
@@ -275,8 +233,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Marks this module type as being able to handle mode changes. In addition to using this method {@link ICustomModule#changeMode(IModule, PlayerEntity, ItemStack,
-         * int, boolean)} should be implemented.
+         * Marks this module type as being able to handle mode changes. In addition to using this method {@link ICustomModule#changeMode(IModule, Player, ItemStack, int,
+         * boolean)} should be implemented.
          */
         public ModuleDataBuilder<MODULE> handlesModeChange() {
             handlesModeChange = true;
@@ -284,8 +242,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Marks this module type as having HUD elements to render. In addition to using this method {@link ICustomModule#addHUDElements(IModule, Consumer)} or {@link
-         * ICustomModule#addHUDStrings(IModule, Consumer)} should be implemented.
+         * Marks this module type as having HUD elements to render. In addition to using this method {@link ICustomModule#addHUDElements(IModule, Player, Consumer)} or
+         * {@link ICustomModule#addHUDStrings(IModule, Player, Consumer)} should be implemented.
          */
         public ModuleDataBuilder<MODULE> rendersHUD() {
             rendersHUD = true;

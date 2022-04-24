@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/plastic"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:brown_plastic"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:brown"
+  },
+  "output": {
+    "item": "mekanismadditions:brown_plastic"
+  }
+}

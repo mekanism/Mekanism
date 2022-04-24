@@ -1,17 +1,20 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.List;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,7 +35,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(Gas instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "GasStackIngredients", "gas");
-        return GasStackIngredient.from(instance, amount);
+        return IngredientCreatorAccess.gas().from(instance, amount);
     }
 
     /**
@@ -45,7 +48,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(ICrTGasStack instance) {
         CrTIngredientHelper.assertValid(instance, "GasStackIngredients");
-        return GasStackIngredient.from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.gas().from(instance.getImmutableInternal());
     }
 
     /**
@@ -57,9 +60,9 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(MCTag<Gas> gasTag, long amount) {
-        ITag<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, CrTGasTagManager.INSTANCE::getInternal, "GasStackIngredients");
-        return GasStackIngredient.from(tag, amount);
+    public static GasStackIngredient from(KnownTag<Gas> gasTag, long amount) {
+        TagKey<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, "GasStackIngredients");
+        return IngredientCreatorAccess.gas().from(tag, amount);
     }
 
     /**
@@ -70,8 +73,8 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(MCTagWithAmount<Gas> gasTag) {
-        return from(gasTag.getTag(), gasTag.getAmount());
+    public static GasStackIngredient from(Many<KnownTag<Gas>> gasTag) {
+        return from(gasTag.getData(), gasTag.getAmount());
     }
 
     /**
@@ -83,7 +86,7 @@ public class CrTGasStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient createMulti(GasStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("GasStackIngredients", GasStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("GasStackIngredients", IngredientCreatorAccess.gas(), ingredients);
     }
 
     /**
@@ -98,6 +101,40 @@ public class CrTGasStackIngredient {
     }
 
     /**
+     * Checks if a given {@link ICrTGasStack} has a type match for this {@link GasStackIngredient}. Type matches ignore stack size.
+     *
+     * @param type Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link GasStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(GasStackIngredient _this, ICrTGasStack type) {
+        return _this.testType(type.getInternal());
+    }
+
+    /**
+     * Checks if a given {@link ICrTGasStack} matches this {@link GasStackIngredient}. (Checks size for >=)
+     *
+     * @param stack Stack to check for a match
+     *
+     * @return {@code true} if the stack fulfills the requirements for this {@link GasStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean test(GasStackIngredient _this, ICrTGasStack stack) {
+        return _this.test(stack.getInternal());
+    }
+
+    /**
+     * Gets a list of valid instances for this {@link GasStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the internal
+     * version is mostly used for JEI display purposes.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("representations")
+    public static List<ICrTGasStack> getRepresentations(GasStackIngredient _this) {
+        return CrTUtils.convert(_this.getRepresentations(), CrTGasStack::new);
+    }
+
+    /**
      * OR's this {@link GasStackIngredient} with another {@link GasStackIngredient} to create a multi {@link GasStackIngredient}
      *
      * @param other {@link GasStackIngredient} to combine with.
@@ -107,6 +144,6 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static GasStackIngredient or(GasStackIngredient _this, GasStackIngredient other) {
-        return GasStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.gas().createMulti(_this, other);
     }
 }

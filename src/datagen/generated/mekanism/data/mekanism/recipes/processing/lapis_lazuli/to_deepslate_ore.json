@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 27,
+    "ingredient": {
+      "tag": "forge:dusts/lapis"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone/deepslate"
+    }
+  },
+  "output": {
+    "item": "minecraft:deepslate_lapis_ore"
+  }
+}

@@ -13,22 +13,28 @@ import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
+import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Specialized version of {@link ILongInputHandler} for handling boxed chemicals.
  */
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BoxedChemicalInputHandler {
 
     private final MergedChemicalTank chemicalTank;
+    private final RecipeError notEnoughError;
 
-    public BoxedChemicalInputHandler(MergedChemicalTank chemicalTank) {
-        this.chemicalTank = Objects.requireNonNull(chemicalTank);
+    public BoxedChemicalInputHandler(MergedChemicalTank chemicalTank, RecipeError notEnoughError) {
+        this.chemicalTank = Objects.requireNonNull(chemicalTank, "Tank cannot be null.");
+        this.notEnoughError = Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
     }
 
     /**
@@ -61,27 +67,27 @@ public class BoxedChemicalInputHandler {
      *
      * @return Matching instance. The returned value can be safely modified after.
      */
-    public BoxedChemicalStack getRecipeInput(IChemicalStackIngredient<?, ?> recipeIngredient) {
+    public BoxedChemicalStack getRecipeInput(ChemicalStackIngredient<?, ?> recipeIngredient) {
         BoxedChemicalStack input = getInput();
         if (input.isEmpty()) {
             //All recipes currently require that we have an input. If we don't then return that we failed
             return BoxedChemicalStack.EMPTY;
         }
-        if (recipeIngredient instanceof GasStackIngredient) {
+        if (recipeIngredient instanceof GasStackIngredient ingredient) {
             if (input.getChemicalType() == ChemicalType.GAS) {
-                return BoxedChemicalStack.box(((GasStackIngredient) recipeIngredient).getMatchingInstance((GasStack) input.getChemicalStack()));
+                return BoxedChemicalStack.box(ingredient.getMatchingInstance((GasStack) input.getChemicalStack()));
             }
-        } else if (recipeIngredient instanceof InfusionStackIngredient) {
+        } else if (recipeIngredient instanceof InfusionStackIngredient ingredient) {
             if (input.getChemicalType() == ChemicalType.INFUSION) {
-                return BoxedChemicalStack.box(((InfusionStackIngredient) recipeIngredient).getMatchingInstance((InfusionStack) input.getChemicalStack()));
+                return BoxedChemicalStack.box(ingredient.getMatchingInstance((InfusionStack) input.getChemicalStack()));
             }
-        } else if (recipeIngredient instanceof PigmentStackIngredient) {
+        } else if (recipeIngredient instanceof PigmentStackIngredient ingredient) {
             if (input.getChemicalType() == ChemicalType.PIGMENT) {
-                return BoxedChemicalStack.box(((PigmentStackIngredient) recipeIngredient).getMatchingInstance((PigmentStack) input.getChemicalStack()));
+                return BoxedChemicalStack.box(ingredient.getMatchingInstance((PigmentStack) input.getChemicalStack()));
             }
-        } else if (recipeIngredient instanceof SlurryStackIngredient) {
+        } else if (recipeIngredient instanceof SlurryStackIngredient ingredient) {
             if (input.getChemicalType() == ChemicalType.SLURRY) {
-                return BoxedChemicalStack.box(((SlurryStackIngredient) recipeIngredient).getMatchingInstance((SlurryStack) input.getChemicalStack()));
+                return BoxedChemicalStack.box(ingredient.getMatchingInstance((SlurryStack) input.getChemicalStack()));
             }
         } else {
             throw new IllegalStateException("Unknown Chemical Type");
@@ -110,65 +116,39 @@ public class BoxedChemicalInputHandler {
     }
 
     /**
-     * Calculates how many operations the input can sustain.
+     * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called {@link
+     * OperationTracker#shouldContinueChecking()} is {@code true}.
      *
-     * @param recipeIngredient Recipe ingredient.
-     * @param currentMax       The current maximum number of operations that can happen.
-     *
-     * @return The number of operations the input can sustain.
+     * @param tracker     Tracker of current errors and max operations.
+     * @param recipeInput Recipe input gotten from {@link #getRecipeInput(ChemicalStackIngredient)}.
      */
-    @Deprecated//TODO - 1.18: Remove this
-    public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax) {
-        return operationsCanSupport(recipeIngredient, currentMax, 1);
+    public void calculateOperationsCanSupport(OperationTracker tracker, BoxedChemicalStack recipeInput) {
+        calculateOperationsCanSupport(tracker, recipeInput, 1);
     }
 
     /**
-     * Calculates how many operations the input can sustain.
+     * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called {@link
+     * OperationTracker#shouldContinueChecking()} is {@code true}.
      *
-     * @param recipeIngredient Recipe ingredient.
-     * @param currentMax       The current maximum number of operations that can happen.
-     * @param usageMultiplier  Usage multiplier to multiply the recipeIngredient's amount by per operation.
-     *
-     * @return The number of operations the input can sustain.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax, long usageMultiplier) {
-        return operationsCanSupport(getRecipeInput(recipeIngredient), currentMax, usageMultiplier);
-    }
-
-    /**
-     * Calculates how many operations the input can sustain.
-     *
-     * @param recipeInput Recipe input gotten from {@link #getRecipeInput(IChemicalStackIngredient)}.
-     * @param currentMax  The current maximum number of operations that can happen.
-     *
-     * @return The number of operations the input can sustain.
-     */
-    public int operationsCanSupport(BoxedChemicalStack recipeInput, int currentMax) {
-        return operationsCanSupport(recipeInput, currentMax, 1);
-    }
-
-    /**
-     * Calculates how many operations the input can sustain.
-     *
-     * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(IChemicalStackIngredient)}.
-     * @param currentMax      The current maximum number of operations that can happen.
+     * @param tracker         Tracker of current errors and max operations.
+     * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(ChemicalStackIngredient)}.
      * @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
-     *
-     * @return The number of operations the input can sustain.
      */
-    public int operationsCanSupport(BoxedChemicalStack recipeInput, int currentMax, long usageMultiplier) {
-        if (currentMax <= 0 || usageMultiplier == 0) {
-            //Short circuit that if we already can't perform any operations or don't want to use any, just return
-            return currentMax;
+    public void calculateOperationsCanSupport(OperationTracker tracker, BoxedChemicalStack recipeInput, long usageMultiplier) {
+        //Only calculate if we need to use anything
+        if (usageMultiplier > 0) {
+            //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
+            if (!recipeInput.isEmpty()) {
+                //TODO: Simulate the drain?
+                int operations = MathUtils.clampToInt(getInput().getChemicalStack().getAmount() / (recipeInput.getChemicalStack().getAmount() * usageMultiplier));
+                if (operations > 0) {
+                    tracker.updateOperations(operations);
+                    return;
+                }
+            }
+            // Not enough input to match the recipe, reset the progress
+            tracker.resetProgress(notEnoughError);
         }
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
-        if (recipeInput.isEmpty()) {
-            //If the input is empty that means there is no ingredient that matches
-            return 0;
-        }
-        //TODO: Simulate the drain?
-        return Math.min(MathUtils.clampToInt(getInput().getChemicalStack().getAmount() / (recipeInput.getChemicalStack().getAmount() * usageMultiplier)), currentMax);
     }
 
     private static void logMismatchedStackSize(long actual, long expected) {

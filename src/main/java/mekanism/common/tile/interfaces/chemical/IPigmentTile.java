@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -10,7 +10,8 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
-import net.minecraft.util.Direction;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 
 @MethodsReturnNonnullByDefault
 public interface IPigmentTile extends IPigmentTracker {
@@ -20,15 +21,16 @@ public interface IPigmentTile extends IPigmentTracker {
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default PigmentHandlerManager getInitialPigmentManager() {
-        return new PigmentHandlerManager(getInitialPigmentTanks(), new DynamicPigmentHandler(this::getPigmentTanks, this::extractPigmentCheck, this::insertPigmentCheck, this));
+    default PigmentHandlerManager getInitialPigmentManager(IContentsListener listener) {
+        return new PigmentHandlerManager(getInitialPigmentTanks(listener), new DynamicPigmentHandler(this::getPigmentTanks, this::extractPigmentCheck,
+              this::insertPigmentCheck, listener));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+    default IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener) {
         return null;
     }
 

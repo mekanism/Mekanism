@@ -63,7 +63,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
         protected void saveShare() {
             if (currentStored.isEmpty() != transmitter.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(transmitter.saveShare))) {
                 transmitter.saveShare = currentStored;
-                transmitter.getTransmitterTile().markDirty(false);
+                transmitter.getTransmitterTile().markForSave();
             }
         }
     }

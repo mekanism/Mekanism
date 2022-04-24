@@ -1,26 +1,29 @@
 package mekanism.common.block.states;
 
-import java.util.Arrays;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IBucketPickupHandler;
-import net.minecraft.block.ILiquidContainer;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraftforge.common.util.Constants.BlockFlags;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
 
-public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContainer {
-
-    Fluid[] VANILLA_FLUIDS = new Fluid[]{Fluids.WATER, Fluids.LAVA};
+public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer {
 
     default boolean isValidFluid(@Nonnull Fluid fluid) {
-        return Arrays.stream(getSupportedFluids()).anyMatch(supportedFluid -> supportedFluid == fluid);
+        return getFluidLoggedProperty().getPossibleValues().stream().anyMatch(possibleValue -> possibleValue.getFluid() == fluid);
     }
 
     /**
@@ -28,30 +31,18 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
      * specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link
      * BlockState#getFluidState()} has position information.
      *
-     * @apiNote If overriding to a different amount of fluids, make sure to also override {@link #getFluidLoggedProperty()}
-     */
-    @Nonnull
-    default Fluid[] getSupportedFluids() {
-        return VANILLA_FLUIDS;
-    }
-
-    /**
      * @return BlockState property for representing fluid loggable blocks
-     *
-     * @apiNote Override this if changing the number of fluids {@link #getSupportedFluids()} returns.
      */
     @Nonnull
-    default IntegerProperty getFluidLoggedProperty() {
-        //TODO - 1.18: When removing CorrectingIntegerProperty, evaluate changing this entire thing to being an EnumProperty
-        // so that F3 can show slightly better debug of what it is fluid logged with
+    default EnumProperty<? extends IFluidLogType> getFluidLoggedProperty() {
         return BlockStateHelper.FLUID_LOGGED;
     }
 
     @Nonnull
     default FluidState getFluid(@Nonnull BlockState state) {
-        int fluidLogged = state.getValue(getFluidLoggedProperty());
-        if (fluidLogged > 0) {
-            Fluid fluid = getSupportedFluids()[fluidLogged - 1];
+        IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
+        if (!fluidLogged.isEmpty()) {
+            Fluid fluid = fluidLogged.getFluid();
             if (fluid instanceof FlowingFluid) {
                 return ((FlowingFluid) fluid).getSource(false);
             }
@@ -60,41 +51,42 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
         return Fluids.EMPTY.defaultFluidState();
     }
 
-    default void updateFluids(@Nonnull BlockState state, @Nonnull IWorld world, @Nonnull BlockPos currentPos) {
-        int fluidLogged = state.getValue(getFluidLoggedProperty());
-        if (fluidLogged > 0) {
-            Fluid fluid = getSupportedFluids()[fluidLogged - 1];
-            world.getLiquidTicks().scheduleTick(currentPos, fluid, fluid.getTickDelay(world));
+    default void updateFluids(@Nonnull BlockState state, @Nonnull LevelAccessor world, @Nonnull BlockPos currentPos) {
+        IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
+        if (!fluidLogged.isEmpty()) {
+            Fluid fluid = fluidLogged.getFluid();
+            world.scheduleTick(currentPos, fluid, fluid.getTickDelay(world));
         }
     }
 
     @Override
-    default boolean canPlaceLiquid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
-        return state.getValue(getFluidLoggedProperty()) == 0 && isValidFluid(fluid);
+    default boolean canPlaceLiquid(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
+        return state.getValue(getFluidLoggedProperty()).isEmpty() && isValidFluid(fluid);
     }
 
-    default int getSupportedFluidPropertyIndex(@Nonnull Fluid fluid) {
-        int fluidLogged = 0;
-        Fluid[] supportedFluids = getSupportedFluids();
-        for (int i = 0; i < supportedFluids.length; i++) {
-            if (supportedFluids[i] == fluid) {
-                fluidLogged = i + 1;
-                break;
+    default BlockState setState(BlockState state, Fluid fluid) {
+        return setState(state, fluid, getFluidLoggedProperty());
+    }
+
+    private static <T extends Enum<T> & StringRepresentable & IFluidLogType> BlockState setState(BlockState state, Fluid fluid, EnumProperty<T> property) {
+        for (T possibleValue : property.getPossibleValues()) {
+            if (possibleValue.getFluid() == fluid) {
+                return state.setValue(property, possibleValue);
             }
         }
-        return fluidLogged;
+        return state;
     }
 
     /**
      * Overwritten to check against canContainFluid instead of inlining the check to water directly.
      */
     @Override
-    default boolean placeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
+    default boolean placeLiquid(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
         Fluid fluid = fluidState.getType();
         if (canPlaceLiquid(world, pos, state, fluid)) {
             if (!world.isClientSide()) {
-                world.setBlock(pos, state.setValue(getFluidLoggedProperty(), getSupportedFluidPropertyIndex(fluid)), BlockFlags.DEFAULT);
-                world.getLiquidTicks().scheduleTick(pos, fluid, fluid.getTickDelay(world));
+                world.setBlock(pos, setState(state, fluid), Block.UPDATE_ALL);
+                world.scheduleTick(pos, fluid, fluid.getTickDelay(world));
             }
             return true;
         }
@@ -103,13 +95,28 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
 
     @Nonnull
     @Override
-    default Fluid takeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
-        IntegerProperty fluidLoggedProperty = getFluidLoggedProperty();
-        int fluidLogged = state.getValue(fluidLoggedProperty);
-        if (fluidLogged > 0) {
-            world.setBlock(pos, state.setValue(fluidLoggedProperty, 0), BlockFlags.DEFAULT);
-            return getSupportedFluids()[fluidLogged - 1];
+    default ItemStack pickupBlock(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+        IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
+        if (!fluidLogged.isEmpty()) {
+            Fluid fluid = fluidLogged.getFluid();
+            ItemStack bucket = fluid.getAttributes().getBucket(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
+            if (!bucket.isEmpty()) {
+                world.setBlock(pos, setState(state, Fluids.EMPTY), Block.UPDATE_ALL);
+                return bucket;
+            }
         }
-        return Fluids.EMPTY;
+        return ItemStack.EMPTY;
+    }
+
+    @Nonnull
+    @Override
+    default Optional<SoundEvent> getPickupSound() {
+        return Optional.empty();
+    }
+
+    @Nonnull
+    @Override
+    default Optional<SoundEvent> getPickupSound(BlockState state) {
+        return getFluid(state).getType().getPickupSound();
     }
 }

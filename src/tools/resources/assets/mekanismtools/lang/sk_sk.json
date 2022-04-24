@@ -166,6 +166,5 @@
   "item.mekanismtools.steel_shovel": "Oceľová Lopata",
   "item.mekanismtools.steel_sword": "Oceľový Meč",
   "item.mekanismtools.stone_paxel": "Kamenný Paxel",
-  "item.mekanismtools.wood_paxel": "Drevený Paxel",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "item.mekanismtools.wood_paxel": "Drevený Paxel"
 }

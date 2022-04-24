@@ -1,33 +1,33 @@
 package mekanism.client.render.obj;
 
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 import javax.annotation.Nonnull;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
-public class TransmitterModelTransform implements IModelTransform {
+public class TransmitterModelTransform implements ModelState {
 
     private final boolean isUvLock;
-    private final TransformationMatrix matrix;
+    private final Transformation matrix;
 
-    public TransmitterModelTransform(IModelTransform internal, Direction dir, float angle) {
-        TransformationMatrix matrix = new TransformationMatrix(null, new Quaternion(vecForDirection(dir), angle, true), null, null);
+    public TransmitterModelTransform(ModelState internal, Direction dir, float angle) {
+        Transformation matrix = new Transformation(null, new Quaternion(vecForDirection(dir), angle, true), null, null);
         this.matrix = internal.getRotation().compose(matrix);
         this.isUvLock = internal.isUvLocked();
     }
 
     private static Vector3f vecForDirection(Direction dir) {
-        Vector3f vec = new Vector3f(Vector3d.atLowerCornerOf(dir.getNormal()));
+        Vector3f vec = new Vector3f(Vec3.atLowerCornerOf(dir.getNormal()));
         vec.mul(-1);
         return vec;
     }
 
     @Nonnull
     @Override
-    public TransformationMatrix getRotation() {
+    public Transformation getRotation() {
         return matrix;
     }
 

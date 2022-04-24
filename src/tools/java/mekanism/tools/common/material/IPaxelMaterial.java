@@ -8,8 +8,6 @@ public interface IPaxelMaterial {
         return -2.4F;
     }
 
-    int getPaxelHarvestLevel();
-
     int getPaxelMaxUses();
 
     float getPaxelEfficiency();

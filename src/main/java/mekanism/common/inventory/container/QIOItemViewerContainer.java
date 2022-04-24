@@ -38,13 +38,13 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -78,7 +78,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     protected final IQIOCraftingWindowHolder craftingWindowHolder;
     private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS][10];
 
-    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder) {
+    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder) {
         super(type, id, inv);
         this.craftingWindowHolder = craftingWindowHolder;
         if (craftingWindowHolder == null) {
@@ -93,7 +93,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {
                 MekanismConfig.client.qioItemViewerSlotsY.set(maxY);
                 // save the updated config info
-                MekanismConfig.client.getConfigSpec().save();
+                MekanismConfig.client.save();
             }
         }
         if (!remote) {
@@ -157,20 +157,20 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void openInventory(@Nonnull PlayerInventory inv) {
+    protected void openInventory(@Nonnull Inventory inv) {
         super.openInventory(inv);
         if (isRemote()) {
-            Mekanism.packetHandler.sendToServer(PacketGuiItemDataRequest.qioItemViewer());
+            Mekanism.packetHandler().sendToServer(PacketGuiItemDataRequest.qioItemViewer());
         }
     }
 
     @Override
-    protected void closeInventory(@Nonnull PlayerEntity player) {
+    protected void closeInventory(@Nonnull Player player) {
         super.closeInventory(player);
         if (!player.level.isClientSide()) {
             QIOFrequency freq = getFrequency();
             if (freq != null) {
-                freq.closeItemViewer((ServerPlayerEntity) player);
+                freq.closeItemViewer((ServerPlayer) player);
             }
         }
     }
@@ -197,7 +197,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         lastStack = stack;
     }
 
-    private void doDoubleClickTransfer(PlayerEntity player) {
+    private void doDoubleClickTransfer(Player player) {
         QIOFrequency freq = getFrequency();
         mainInventorySlots.forEach(slot -> {
             if (freq != null && slot.hasItem() && slot.mayPickup(player) && InventoryUtils.areItemsStackable(lastStack, slot.getItem())) {
@@ -231,14 +231,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     @Nonnull
     @Override
-    public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotID) {
+    public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
         if (currentSlot == null) {
             return ItemStack.EMPTY;
         }
-        if (currentSlot instanceof VirtualCraftingOutputSlot) {
+        if (currentSlot instanceof VirtualCraftingOutputSlot virtualSlot) {
             //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
-            return ((VirtualCraftingOutputSlot) currentSlot).shiftClickSlot(player, hotBarSlots, mainInventorySlots);
+            return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
         } else if (currentSlot instanceof InventoryContainerSlot) {
             //Otherwise, if we are an inventory container slot (crafting input slots in this case)
             // use our normal handling to attempt and transfer the contents to the player's inventory
@@ -291,7 +291,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return ItemStack.EMPTY;
     }
 
-    private ItemStack updateSlot(PlayerEntity player, Slot currentSlot, ItemStack ret) {
+    private ItemStack updateSlot(Player player, Slot currentSlot, ItemStack ret) {
         return transferSuccess(currentSlot, player, currentSlot.getItem(), ret);
     }
 
@@ -322,7 +322,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         cachedInventory.clear();
     }
 
-    public QIOCraftingTransferHelper getTransferHelper(PlayerEntity player, QIOCraftingWindow craftingWindow) {
+    public QIOCraftingTransferHelper getTransferHelper(Player player, QIOCraftingWindow craftingWindow) {
         return new QIOCraftingTransferHelper(cachedInventory, hotBarSlots, mainInventorySlots, craftingWindow, player);
     }
 
@@ -352,7 +352,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public void setSortDirection(SortDirection sortDirection) {
         this.sortDirection = sortDirection;
         MekanismConfig.client.qioItemViewerSortDirection.set(sortDirection);
-        MekanismConfig.client.getConfigSpec().save();
+        MekanismConfig.client.save();
         sortItemList();
     }
 
@@ -363,7 +363,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public void setSortType(ListSortType sortType) {
         this.sortType = sortType;
         MekanismConfig.client.qioItemViewerSortType.set(sortType);
-        MekanismConfig.client.getConfigSpec().save();
+        MekanismConfig.client.save();
         sortItemList();
     }
 
@@ -456,24 +456,24 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem) {
         if (hasShiftDown) {
             if (slot != null) {
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItemUUID()));
+                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItemUUID()));
             }
             return;
         }
         if (button == 0) {
             if (heldItem.isEmpty() && slot != null) {
                 int toTake = Math.min(slot.getItem().getStack().getMaxStackSize(), MathUtils.clampToInt(slot.getCount()));
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
+                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.put(heldItem.getCount()));
+                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(heldItem.getCount()));
             }
         } else if (button == 1) {
             if (heldItem.isEmpty() && slot != null) {
                 //Cap it out at the max stack size of the item, but try to take half of what is stored (taking at least one if it is a single item)
                 int toTake = Math.min(slot.getItem().getStack().getMaxStackSize(), Math.max(1, MathUtils.clampToInt(slot.getCount() / 2)));
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
+                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.put(1));
+                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(1));
             }
         }
     }
@@ -534,7 +534,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
 
         @Override
-        public ITextComponent getTooltip() {
+        public Component getTooltip() {
             return tooltip.translate();
         }
 
@@ -571,12 +571,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
 
         @Override
-        public ITextComponent getTooltip() {
+        public Component getTooltip() {
             return tooltip.translate();
         }
 
         @Override
-        public ITextComponent getShortName() {
+        public Component getShortName() {
             return name.translate();
         }
     }

@@ -2,8 +2,9 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -16,12 +17,13 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
@@ -34,35 +36,21 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityWindGenerator() {
-        super(GeneratorsBlocks.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get().multiply(2));
+    public TileEntityWindGenerator(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.WIND_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.windGenerationMax.get().multiply(2));
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35));
         return builder.build();
     }
 
     @Override
     protected RelativeSide[] getEnergySides() {
         return new RelativeSide[]{RelativeSide.FRONT, RelativeSide.BOTTOM};
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (level != null) {
-            // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
-            // an initial activity status and the client (in MP) will show the windmills turning while not
-            // generating any power
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(level.dimension().location());
-            if (isBlacklistDimension) {
-                setActive(false);
-            }
-        }
     }
 
     @Override
@@ -99,8 +87,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             BlockPos top = getBlockPos().above(4);
             if (level.getFluidState(top).isEmpty() && level.canSeeSky(top)) {
                 //Validate it isn't fluid logged to help try and prevent https://github.com/mekanism/Mekanism/issues/7344
-                int minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
-                int maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
+                //Clamp the height limits as the logical bounds of the world
+                int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), level.getMinBuildHeight());
+                int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), level.dimensionType().logicalHeight());
                 float clampedY = Math.min(maxY, Math.max(minY, top.getY()));
                 FloatingLong minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
                 FloatingLong maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
@@ -113,27 +102,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    public void onPlace() {
-        super.onPlace();
-        if (level != null) {
-            BlockPos pos = getBlockPos();
-            WorldUtils.makeBoundingBlock(level, pos.above(), pos);
-            WorldUtils.makeBoundingBlock(level, pos.above(2), pos);
-            WorldUtils.makeBoundingBlock(level, pos.above(3), pos);
-            WorldUtils.makeBoundingBlock(level, pos.above(4), pos);
-            // Check to see if the placement is happening in a blacklisted dimension
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(level.dimension().location());
-        }
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null) {
-            level.removeBlock(getBlockPos().above(), false);
-            level.removeBlock(getBlockPos().above(2), false);
-            level.removeBlock(getBlockPos().above(3), false);
-            level.removeBlock(getBlockPos().above(4), false);
+    public void setLevel(@Nonnull Level world) {
+        super.setLevel(world);
+        // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
+        // an initial activity status and the client (in MP) will show the windmills turning while not
+        // generating any power
+        isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.dimension().location());
+        if (isBlacklistDimension) {
+            setActive(false);
         }
     }
 
@@ -151,8 +127,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    public SoundCategory getSoundCategory() {
-        return SoundCategory.WEATHER;
+    public SoundSource getSoundCategory() {
+        return SoundSource.WEATHER;
     }
 
     @Override
@@ -169,9 +145,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         //Note: we just extend it to the max size it could be ignoring what direction it is actually facing
-        return new AxisAlignedBB(worldPosition.offset(-2, 0, -2), worldPosition.offset(3, 7, 3));
+        return new AABB(worldPosition.offset(-2, 0, -2), worldPosition.offset(3, 7, 3));
     }
 
     //Methods relating to IComputerTile

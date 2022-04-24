@@ -10,14 +10,14 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {
 
     protected GuiTextField text;
 
-    protected GuiTextFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, @Nullable FILTER origFilter) {
+    protected GuiTextFilter(IGuiWrapper gui, int x, int y, int width, int height, Component filterName, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, filterName, tile, origFilter);
     }
 
@@ -25,10 +25,10 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     protected void init() {
         super.init();
         text = addChild(new GuiTextField(gui(), relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
-        text.setMaxStringLength(SorterFilter.MAX_LENGTH);
+        text.setMaxLength(SorterFilter.MAX_LENGTH);
         text.setInputValidator(getInputValidator());
         text.setInputTransformer(getInputTransformer());
-        text.setEnabled(true);
+        text.setEditable(true);
         text.setFocused(true);
         text.configureDigitalInput(this::setText);
     }

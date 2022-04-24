@@ -2,16 +2,16 @@ package mekanism.api.chemical.gas;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.IGasProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Gas - a class used to set specific properties of gases when used or seen in-game.
@@ -33,7 +33,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
      *
      * @return Gas stored in the tag compound
      */
-    public static Gas readFromNBT(@Nullable CompoundNBT nbtTags) {
+    public static Gas readFromNBT(@Nullable CompoundTag nbtTags) {
         return ChemicalUtils.readChemicalFromNBT(nbtTags, MekanismAPI.EMPTY_GAS, NBTConstants.GAS_NAME, Gas::getFromRegistry);
     }
 
@@ -42,7 +42,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         nbtTags.putString(NBTConstants.GAS_NAME, getRegistryName().toString());
         return nbtTags;
     }

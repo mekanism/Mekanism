@@ -1,55 +1,59 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraftforge.common.Tags;
 
 class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "injecting/";
         //Brick -> clay ball
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Tags.Items.INGOTS_BRICK),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(Tags.Items.INGOTS_BRICK),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Blocks.DIRT),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(Blocks.DIRT),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Blocks.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_clay"));
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Tags.Items.GUNPOWDER),
-              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+              IngredientCreatorAccess.item().from(Tags.Items.GUNPOWDER),
+              IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               MekanismItems.SULFUR_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
         //Terracotta -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Blocks.TERRACOTTA),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(Blocks.TERRACOTTA),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Blocks.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
         addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
         addChemicalInjectorCoralRevivalRecipes(consumer, basePath + "coral/");
+        addChemicalInjectorOxidizingRecipe(consumer, basePath + "oxidizing/");
     }
 
-    private void addChemicalInjectorConcreteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addChemicalInjectorConcreteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLACK_CONCRETE, "black");
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BLUE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE, "blue");
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BROWN_CONCRETE_POWDER, Blocks.BROWN_CONCRETE, "brown");
@@ -68,15 +72,15 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.YELLOW_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE, "yellow");
     }
 
-    private void addChemicalInjectorConcreteRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider powder, IItemProvider concrete, String name) {
+    private void addChemicalInjectorConcreteRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike powder, ItemLike concrete, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(powder),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(powder),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(concrete)
         ).build(consumer, Mekanism.rl(basePath + name));
     }
 
-    private void addChemicalInjectorCoralRevivalRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addChemicalInjectorCoralRevivalRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BRAIN_CORAL_BLOCK, Blocks.BRAIN_CORAL_BLOCK, 5);
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BUBBLE_CORAL_BLOCK, Blocks.BUBBLE_CORAL_BLOCK, 5);
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_FIRE_CORAL_BLOCK, Blocks.FIRE_CORAL_BLOCK, 5);
@@ -94,11 +98,24 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_TUBE_CORAL_FAN, Items.TUBE_CORAL_FAN, 3);
     }
 
-    private void addChemicalInjectorCoralRevivalRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider dead, IItemProvider living, int water) {
+    private void addChemicalInjectorCoralRevivalRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike dead, ItemLike living, int water) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(dead),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, water),
+              IngredientCreatorAccess.item().from(dead),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, water),
               new ItemStack(living)
         ).build(consumer, Mekanism.rl(basePath + living.asItem().getRegistryName().getPath()));
+    }
+
+    private void addChemicalInjectorOxidizingRecipe(Consumer<FinishedRecipe> consumer, String basePath) {
+        //Generate baseline recipes from weathering recipe set
+        GasStackIngredient oxygen = IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1);
+        for (Map.Entry<Block, Block> entry : WeatheringCopper.NEXT_BY_BLOCK.get().entrySet()) {
+            Block result = entry.getValue();
+            ItemStackChemicalToItemStackRecipeBuilder.injecting(
+                  IngredientCreatorAccess.item().from(entry.getKey()),
+                  oxygen,
+                  new ItemStack(result)
+            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+        }
     }
 }

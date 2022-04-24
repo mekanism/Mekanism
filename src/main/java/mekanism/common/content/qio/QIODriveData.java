@@ -2,10 +2,11 @@ package mekanism.common.content.qio;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import mekanism.api.Action;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.lib.inventory.HashedItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class QIODriveData {
 
@@ -25,37 +26,42 @@ public class QIODriveData {
         // load item map from drive stack
         item.loadItemMap(stack, this);
         // update cached item count value
-        itemCount = itemMap.values().stream().mapToLong(Long::longValue).sum();
+        itemCount = itemMap.values().longStream().sum();
 
         key.updateMetadata(this);
     }
 
-    public long add(HashedItem type, long amount) {
+    public long add(HashedItem type, long amount, Action action) {
         long stored = getStored(type);
         // fail if we've reached item count capacity or adding this item would make us exceed type capacity
         if (itemCount == countCapacity || (stored == 0 && itemMap.size() == typeCapacity)) {
             return amount;
         }
         long toAdd = Math.min(amount, countCapacity - itemCount);
-        itemMap.put(type, stored + toAdd);
-        itemCount += toAdd;
-        key.updateMetadata(this);
-        key.dataUpdate();
+        if (action.execute()) {
+            itemMap.put(type, stored + toAdd);
+            itemCount += toAdd;
+            key.updateMetadata(this);
+            key.dataUpdate();
+        }
         return amount - toAdd;
     }
 
-    public ItemStack remove(HashedItem type, int amount) {
+    public long remove(HashedItem type, long amount, Action action) {
         long stored = getStored(type);
-        ItemStack ret = type.createStack(Math.min(amount, (int) stored));
-        if (stored - ret.getCount() > 0) {
-            itemMap.put(type, stored - ret.getCount());
-        } else {
-            itemMap.removeLong(type);
+        long removed = Math.min(amount, stored);
+        if (action.execute()) {
+            long remaining = stored - removed;
+            if (remaining > 0) {
+                itemMap.put(type, remaining);
+            } else {
+                itemMap.removeLong(type);
+            }
+            itemCount -= removed;
+            key.updateMetadata(this);
+            key.dataUpdate();
         }
-        itemCount -= ret.getCount();
-        key.updateMetadata(this);
-        key.dataUpdate();
-        return ret;
+        return removed;
     }
 
     public long getStored(HashedItem type) {
@@ -129,7 +135,7 @@ public class QIODriveData {
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof QIODriveKey && ((QIODriveKey) obj).holder == holder && ((QIODriveKey) obj).driveSlot == driveSlot;
+            return obj instanceof QIODriveKey filter && filter.holder == holder && filter.driveSlot == driveSlot;
         }
     }
 }

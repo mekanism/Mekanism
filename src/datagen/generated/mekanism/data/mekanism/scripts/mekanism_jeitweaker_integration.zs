@@ -24,9 +24,9 @@ JEI.hideIngredient(<slurry:mekanism:clean_gold> * 1000);
 
 //Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.
 
-//JEI.addDescription(stack as ICrTGasStack, MCTextComponent...)
-//JEI.addDescription(stack as ICrTInfusionStack, MCTextComponent...)
-//JEI.addDescription(stack as ICrTPigmentStack, MCTextComponent...)
-//JEI.addDescription(stack as ICrTSlurryStack, MCTextComponent...)
+//JEI.addDescription(stack as ICrTGasStack, Component...)
+//JEI.addDescription(stack as ICrTInfusionStack, Component...)
+//JEI.addDescription(stack as ICrTPigmentStack, Component...)
+//JEI.addDescription(stack as ICrTSlurryStack, Component...)
 
 JEI.addDescription(<gas:mekanism:hydrogen> * 1000, "Hydrogen is a basic gas that is produced in an electrolytic separator");

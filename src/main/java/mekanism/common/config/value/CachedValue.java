@@ -2,6 +2,7 @@ package mekanism.common.config.value;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import mekanism.common.Mekanism;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -35,6 +36,10 @@ public abstract class CachedValue<T> {
         } else if (!invalidationListeners.remove(listener)) {
             Mekanism.logger.warn("Unable to remove specified invalidation listener.");
         }
+    }
+
+    public boolean removeInvalidationListenersMatching(Predicate<IConfigValueInvalidationListener> checker) {
+        return invalidationListeners != null && !invalidationListeners.isEmpty() && invalidationListeners.removeIf(checker);
     }
 
     protected abstract boolean clearCachedValue(boolean checkChanged);

@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,16 +18,17 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
-public abstract class GuiElement extends Widget implements IFancyFontRenderer {
+public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer {
 
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
     public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
@@ -51,14 +52,20 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public boolean isOverlay;
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height) {
-        this(gui, x, y, width, height, StringTextComponent.EMPTY);
+        this(gui, x, y, width, height, TextComponent.EMPTY);
     }
 
-    public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text) {
+    public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, Component text) {
         super(gui.getLeft() + x, gui.getTop() + y, width, height, text);
         this.relativeX = x;
         this.relativeY = y;
         this.guiObj = gui;
+    }
+
+    @Override
+    public void updateNarration(@Nonnull NarrationElementOutput output) {
+        //TODO: See GuiMekanism#addRenderableWidget for more details, and also figure out how to make this properly support nested narratables
+        // as some of our GuiElements have sub GuiElements and those are the ones we actually would want to narrate
     }
 
     public int getRelativeX() {
@@ -153,6 +160,17 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         super.setFocused(focused);
     }
 
+    @Override
+    public boolean changeFocus(boolean focused) {
+        if (this.active && this.visible) {
+            setFocused(!isFocused());
+            boolean isFocused = isFocused();
+            this.onFocusedChanged(isFocused);
+            return isFocused;
+        }
+        return false;
+    }
+
     public void move(int changeX, int changeY) {
         x += changeX;
         y += changeY;
@@ -173,11 +191,11 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     protected IHoverable getOnHover(ILangEntry translationHelper) {
-        return getOnHover((Supplier<ITextComponent>) translationHelper::translate);
+        return getOnHover((Supplier<Component>) translationHelper::translate);
     }
 
-    protected IHoverable getOnHover(Supplier<ITextComponent> componentSupplier) {
-        return (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, componentSupplier.get(), xAxis, yAxis);
+    protected IHoverable getOnHover(Supplier<Component> componentSupplier) {
+        return (onHover, matrix, mouseX, mouseY) -> displayTooltips(matrix, mouseX, mouseY, componentSupplier.get());
     }
 
     public boolean hasPersistentData() {
@@ -201,7 +219,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         }
     }
 
-    public final void onRenderForeground(MatrixStack matrix, int mouseX, int mouseY, int zOffset, int totalOffset) {
+    public final void onRenderForeground(PoseStack matrix, int mouseX, int mouseY, int zOffset, int totalOffset) {
         if (visible) {
             matrix.translate(0, 0, zOffset);
             // update the max total offset to prevent clashing of future overlays
@@ -227,33 +245,25 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         }
     }
 
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         drawButtonText(matrix, mouseX, mouseY);
     }
 
-    public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        children.stream().filter(child -> child.isMouseOver(mouseX + getGuiLeft(), mouseY + getGuiTop()))
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        children.stream().filter(child -> child.isMouseOver(mouseX, mouseY))
               .forEach(child -> child.renderToolTip(matrix, mouseX, mouseY));
     }
 
-    public void displayTooltip(MatrixStack matrix, ITextComponent component, int xAxis, int yAxis, int maxWidth) {
-        guiObj.displayTooltip(matrix, component, xAxis, yAxis, maxWidth);
+    public void displayTooltips(PoseStack matrix, int mouseX, int mouseY, Component... components) {
+        guiObj.displayTooltips(matrix, mouseX, mouseY, components);
     }
 
-    public void displayTooltip(MatrixStack matrix, ITextComponent component, int xAxis, int yAxis) {
-        guiObj.displayTooltip(matrix, component, xAxis, yAxis);
-    }
-
-    public void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis) {
-        guiObj.displayTooltips(matrix, components, xAxis, yAxis);
-    }
-
-    public void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
-        guiObj.displayTooltips(matrix, components, xAxis, yAxis, maxWidth);
+    public void displayTooltips(PoseStack matrix, int mouseX, int mouseY, List<Component> components) {
+        guiObj.displayTooltips(matrix, mouseX, mouseY, components);
     }
 
     @Override
@@ -289,7 +299,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public FontRenderer getFont() {
+    public Font getFont() {
         return guiObj.getFont();
     }
 
@@ -338,7 +348,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     /**
-     * Override this if you do not want {@link #drawButton(MatrixStack, int, int)} to reset the color before drawing.
+     * Override this if you do not want {@link #drawButton(PoseStack, int, int)} to reset the color before drawing.
      */
     protected boolean resetColorBeforeRender() {
         return true;
@@ -371,44 +381,44 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     //Based off how it is drawn in Widget, except that instead of drawing left half and right half, we draw all four corners individually
     // The benefit of drawing all four corners instead of just left and right halves, is that we ensure we include the bottom black bar of the texture
     // Math has also been added to fix rendering odd size buttons.
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (buttonBackground != ButtonBackground.NONE) {
             drawButton(matrix, mouseX, mouseY);
         }
     }
 
-    public final void onDrawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public final void onDrawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             drawBackground(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     protected int getButtonTextColor(int mouseX, int mouseY) {
         return getFGColor();
     }
 
-    protected void drawButtonText(MatrixStack matrix, int mouseX, int mouseY) {
-        ITextComponent text = getMessage();
+    protected void drawButtonText(PoseStack matrix, int mouseX, int mouseY) {
+        Component text = getMessage();
         //Only attempt to draw the message if we have a message to draw
         if (!text.getString().isEmpty()) {
-            int color = getButtonTextColor(mouseX, mouseY) | MathHelper.ceil(alpha * 255.0F) << 24;
+            int color = getButtonTextColor(mouseX, mouseY) | Mth.ceil(alpha * 255.0F) << 24;
             drawCenteredTextScaledBound(matrix, text, width - 4, height / 2F - 4, color);
         }
     }
 
     //This method exists so that we don't have to rely on having a path to super.renderWidget if we want to draw a background button
-    protected void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawButton(PoseStack matrix, int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
             //TODO: Support alpha like super? Is there a point
             MekanismRenderer.resetColor();
         }
         //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
         // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
-        MekanismRenderer.bindTexture(buttonBackground.getTexture());
+        RenderSystem.setShaderTexture(0, buttonBackground.getTexture());
         int i = getYImage(isMouseOverCheckWindows(mouseX, mouseY));
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -443,16 +453,16 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         RenderSystem.disableDepthTest();
     }
 
-    protected void renderExtendedTexture(MatrixStack matrix, ResourceLocation resource, int sideWidth, int sideHeight) {
+    protected void renderExtendedTexture(PoseStack matrix, ResourceLocation resource, int sideWidth, int sideHeight) {
         GuiUtils.renderExtendedTexture(matrix, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
-    protected void renderBackgroundTexture(MatrixStack matrix, ResourceLocation resource, int sideWidth, int sideHeight) {
+    protected void renderBackgroundTexture(PoseStack matrix, ResourceLocation resource, int sideWidth, int sideHeight) {
         GuiUtils.renderBackgroundTexture(matrix, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 256, 256);
     }
 
     @Override
-    public void playDownSound(@Nonnull SoundHandler soundHandler) {
+    public void playDownSound(@Nonnull SoundManager soundHandler) {
         if (playClickSound) {
             super.playDownSound(soundHandler);
         }
@@ -462,13 +472,13 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         super.playDownSound(minecraft.getSoundManager());
     }
 
-    protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+    protected void drawTiledSprite(PoseStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           TilingDirection tilingDirection) {
         GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset(), tilingDirection);
     }
 
     @Override
-    public void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float x, float y, int color) {
+    public void drawCenteredTextScaledBound(PoseStack matrix, Component text, float maxLength, float x, float y, int color) {
         IFancyFontRenderer.super.drawCenteredTextScaledBound(matrix, text, maxLength, relativeX + x, relativeY + y, color);
     }
 
@@ -491,7 +501,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     @FunctionalInterface
     public interface IHoverable {
 
-        void onHover(GuiElement element, MatrixStack matrix, int mouseX, int mouseY);
+        void onHover(GuiElement element, PoseStack matrix, int mouseX, int mouseY);
     }
 
     @FunctionalInterface

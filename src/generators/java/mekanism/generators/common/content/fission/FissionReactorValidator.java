@@ -22,14 +22,14 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
@@ -47,7 +47,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
     }
 
     @Override
-    protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
+    protected boolean validateInner(BlockState state, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         if (super.validateInner(state, chunkMap, pos)) {
             return true;
         }
@@ -55,13 +55,13 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
     }
 
     @Override
-    public FormationResult postcheck(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
+    public FormationResult postcheck(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
         Set<BlockPos> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
 
         for (BlockPos coord : innerNodes) {
-            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, coord);
+            BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, coord);
             AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
             FuelAssembly assembly = map.get(pos);
 
@@ -115,7 +115,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public static class FuelAssembly {
 
-        public final SortedSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vector3i::getY));
+        public final SortedSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vec3i::getY));
         public BlockPos controlRodAssembly;
 
         public FuelAssembly(BlockPos start, boolean isControlRod) {
@@ -153,18 +153,10 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
         }
     }
 
-    public static class FormedAssembly {
+    public record FormedAssembly(BlockPos pos, int height) {
 
-        private final BlockPos pos;
-        private final int height;
-
-        public FormedAssembly(BlockPos pos, int height) {
-            this.pos = pos;
-            this.height = height;
-        }
-
-        public CompoundNBT write() {
-            CompoundNBT ret = new CompoundNBT();
+        public CompoundTag write() {
+            CompoundTag ret = new CompoundTag();
             ret.putInt(NBTConstants.X, pos.getX());
             ret.putInt(NBTConstants.Y, pos.getY());
             ret.putInt(NBTConstants.Z, pos.getZ());
@@ -172,41 +164,12 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
             return ret;
         }
 
-        public BlockPos getPos() {
-            return pos;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public static FormedAssembly read(CompoundNBT nbt) {
+        public static FormedAssembly read(CompoundTag nbt) {
             return new FormedAssembly(new BlockPos(nbt.getInt(NBTConstants.X), nbt.getInt(NBTConstants.Y), nbt.getInt(NBTConstants.Z)),
                   nbt.getInt(NBTConstants.HEIGHT));
         }
     }
 
-    public static class AssemblyPos {
-
-        private final int x, z;
-
-        public AssemblyPos(int x, int z) {
-            this.x = x;
-            this.z = z;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + x;
-            result = prime * result + z;
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof AssemblyPos && ((AssemblyPos) obj).x == x && ((AssemblyPos) obj).z == z;
-        }
+    private record AssemblyPos(int x, int z) {
     }
 }

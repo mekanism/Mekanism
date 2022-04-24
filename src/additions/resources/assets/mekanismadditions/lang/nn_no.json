@@ -167,5 +167,6 @@
   "item.mekanismadditions.red_balloon": "Rød Ballong",
   "item.mekanismadditions.white_balloon": "Hvit Ballong",
   "item.mekanismadditions.yellow_balloon": "Gul Ballong",
-  "walkie.mekanismadditions.channel": "Kanal: %s"
+  "walkie.mekanismadditions.channel": "Kanal: %1$s",
+  "walkie.mekanismadditions.channel.change": "Kanal endret til: %1$s"
 }

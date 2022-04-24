@@ -1,7 +1,7 @@
 package mekanism.common.lib.math;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 public class Quaternion {
 
@@ -16,7 +16,7 @@ public class Quaternion {
         set(x, y, z, w);
     }
 
-    public Quaternion(Vector3d axis, double angle, boolean degrees) {
+    public Quaternion(Vec3 axis, double angle, boolean degrees) {
         if (degrees) {
             angle *= (Math.PI / 180F);
         }
@@ -47,11 +47,8 @@ public class Quaternion {
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (!(obj instanceof Quaternion)) {
-            return false;
         }
-        Quaternion other = (Quaternion) obj;
-        return x == other.x && y == other.y && z == other.z && w == other.w;
+        return obj instanceof Quaternion other && x == other.x && y == other.y && z == other.z && w == other.w;
     }
 
     @Override
@@ -113,7 +110,7 @@ public class Quaternion {
     public Quaternion normalize() {
         double mag = magnitude();
         if (mag > 1.0E-6F) {
-            multiply(MathHelper.fastInvSqrt(mag));
+            multiply(Mth.fastInvSqrt(mag));
         } else {
             multiply(0);
         }
@@ -124,11 +121,11 @@ public class Quaternion {
         return new Quaternion(x, y, z, w);
     }
 
-    public Pos3D rotate(Vector3d vec) {
+    public Pos3D rotate(Vec3 vec) {
         return new Pos3D(vec).transform(this);
     }
 
-    public static Pos3D rotate(Vector3d vec, Vector3d axis, double angle) {
+    public static Pos3D rotate(Vec3 vec, Vec3 axis, double angle) {
         return new Quaternion(axis, angle, true).rotate(vec);
     }
 }

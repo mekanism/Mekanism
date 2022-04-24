@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "result": "mekanism:ingot_tin",
+  "ingredient": {
+    "tag": "forge:raw_materials/tin"
+  },
+  "cookingtime": 100,
+  "experience": 0.6
+}

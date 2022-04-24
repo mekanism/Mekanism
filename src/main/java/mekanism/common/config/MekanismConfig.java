@@ -9,6 +9,7 @@ public class MekanismConfig {
     }
 
     public static final ClientConfig client = new ClientConfig();
+    public static final CommonConfig common = new CommonConfig();
     public static final GeneralConfig general = new GeneralConfig();
     public static final GearConfig gear = new GearConfig();
     public static final StorageConfig storage = new StorageConfig();
@@ -19,6 +20,7 @@ public class MekanismConfig {
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
         ModContainer modContainer = modLoadingContext.getActiveContainer();
         MekanismConfigHelper.registerConfig(modContainer, client);
+        MekanismConfigHelper.registerConfig(modContainer, common);
         MekanismConfigHelper.registerConfig(modContainer, general);
         MekanismConfigHelper.registerConfig(modContainer, gear);
         MekanismConfigHelper.registerConfig(modContainer, storage);

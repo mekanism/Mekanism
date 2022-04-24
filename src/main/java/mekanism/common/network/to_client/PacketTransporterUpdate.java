@@ -13,9 +13,9 @@ import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketTransporterUpdate implements IMekanismPacket {
 
@@ -77,15 +77,15 @@ public class PacketTransporterUpdate implements IMekanismPacket {
                     transporter.deleteStack(toDelete);
                 }
             }
-            if (isDiversion && transporter instanceof DiversionTransporter) {
+            if (isDiversion && transporter instanceof DiversionTransporter diversionTransporter) {
                 //Copy the values of modes, without replacing the actual array
-                System.arraycopy(modes, 0, ((DiversionTransporter) transporter).modes, 0, modes.length);
+                System.arraycopy(modes, 0, diversionTransporter.modes, 0, modes.length);
             }
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeBoolean(isSync);
         buffer.writeBoolean(isDiversion);
@@ -112,7 +112,7 @@ public class PacketTransporterUpdate implements IMekanismPacket {
         }
     }
 
-    public static PacketTransporterUpdate decode(PacketBuffer buffer) {
+    public static PacketTransporterUpdate decode(FriendlyByteBuf buffer) {
         PacketTransporterUpdate packet = new PacketTransporterUpdate(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean());
         if (packet.isSync) {
             //Sync

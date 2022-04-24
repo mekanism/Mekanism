@@ -3,8 +3,9 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -20,10 +21,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.RainType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.Precipitation;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
@@ -35,19 +37,19 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Nullable
     protected SolarCheck solarCheck;
 
-    public TileEntitySolarGenerator() {
-        this(GeneratorsBlocks.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get().multiply(2));
+    public TileEntitySolarGenerator(BlockPos pos, BlockState state) {
+        this(GeneratorsBlocks.SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.solarGeneration.get().multiply(2));
     }
 
-    public TileEntitySolarGenerator(IBlockProvider blockProvider, @Nonnull FloatingLong output) {
-        super(blockProvider, output);
+    protected TileEntitySolarGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @Nonnull FloatingLong output) {
+        super(blockProvider, pos, state, output);
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35));
         return builder.build();
     }
 
@@ -102,7 +104,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return getConfiguredMax().multiply(brightness * solarCheck.getGenerationMultiplier());
     }
 
-    protected float getBrightnessMultiplier(@Nonnull World world) {
+    protected float getBrightnessMultiplier(@Nonnull Level world) {
         //Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
         //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch).
@@ -142,14 +144,14 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         private final boolean needsRainCheck;
         private final float peakMultiplier;
         protected final BlockPos pos;
-        protected final World world;
+        protected final Level world;
         protected boolean canSeeSun;
 
-        public SolarCheck(World world, BlockPos pos) {
+        public SolarCheck(Level world, BlockPos pos) {
             this.world = world;
             this.pos = pos;
-            Biome b = this.world.getBiomeManager().getBiome(this.pos);
-            needsRainCheck = b.getPrecipitation() != RainType.NONE;
+            Biome b = this.world.getBiomeManager().getBiome(this.pos).value();
+            needsRainCheck = b.getPrecipitation() != Precipitation.NONE;
             // Consider the best temperature to be 0.8; biomes that are higher than that
             // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
             // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:waxed_exposed_cut_copper_slab"
+    }
+  },
+  "output": {
+    "item": "minecraft:exposed_cut_copper_slab"
+  }
+}

@@ -1,6 +1,5 @@
 package mekanism.common.upgrade;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
@@ -17,7 +16,7 @@ public class SawmillUpgradeData extends MachineUpgradeData {
     public SawmillUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, EnergyInventorySlot energySlot,
           InputInventorySlot inputSlot, OutputInventorySlot outputSlot, OutputInventorySlot secondaryOutputSlot, List<ITileComponent> components) {
         this(redstone, controlType, energyContainer, new int[]{operatingTicks},
-              energySlot, Collections.singletonList(inputSlot), Arrays.asList(outputSlot, secondaryOutputSlot), false, components);
+              energySlot, Collections.singletonList(inputSlot), List.of(outputSlot, secondaryOutputSlot), false, components);
     }
 
     //Sawing Factory Constructor

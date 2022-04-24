@@ -3,21 +3,21 @@ package mekanism.api.recipes;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.TriPredicate;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -128,12 +128,8 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
-        //TODO - 1.18: Re-evaluate the fact that this isn't a list of pairs
-        if (outputItem.isEmpty()) {
-            return Pair.of(Collections.emptyList(), this.outputGas);
-        }
-        return Pair.of(Collections.singletonList(this.outputItem), this.outputGas);
+    public List<PressurizedReactionRecipeOutput> getOutputDefinition() {
+        return Collections.singletonList(new PressurizedReactionRecipeOutput(outputItem, outputGas));
     }
 
     /**
@@ -150,12 +146,17 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _, _ -> new", pure = true)
-    public Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return Pair.of(this.outputItem.copy(), this.outputGas.copy());
+    public PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
+        return new PressurizedReactionRecipeOutput(this.outputItem.copy(), this.outputGas.copy());
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return inputSolid.hasNoMatchingInstances() || inputFluid.hasNoMatchingInstances() || inputGas.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         inputSolid.write(buffer);
         inputFluid.write(buffer);
         inputGas.write(buffer);
@@ -163,5 +164,19 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
         buffer.writeVarInt(duration);
         buffer.writeItem(outputItem);
         outputGas.writeToPacket(buffer);
+    }
+
+    /**
+     * @apiNote Both item and gas may be present or one may be empty.
+     */
+    public record PressurizedReactionRecipeOutput(@Nonnull ItemStack item, @Nonnull GasStack gas) {
+
+        public PressurizedReactionRecipeOutput {
+            Objects.requireNonNull(item, "Item output cannot be null.");
+            Objects.requireNonNull(gas, "Gas output cannot be null.");
+            if (item.isEmpty() && gas.isEmpty()) {
+                throw new IllegalArgumentException("At least one output must be present.");
+            }
+        }
     }
 }

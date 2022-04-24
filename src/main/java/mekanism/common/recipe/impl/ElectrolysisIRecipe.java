@@ -4,14 +4,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
@@ -21,14 +21,14 @@ public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ElectrolysisRecipe> getType() {
-        return MekanismRecipeType.SEPARATING;
+    public RecipeType<ElectrolysisRecipe> getType() {
+        return MekanismRecipeType.SEPARATING.get();
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ElectrolysisRecipe> getSerializer() {
-        return MekanismRecipeSerializers.SEPARATING.getRecipeSerializer();
+    public RecipeSerializer<ElectrolysisRecipe> getSerializer() {
+        return MekanismRecipeSerializers.SEPARATING.get();
     }
 
     @Nonnull

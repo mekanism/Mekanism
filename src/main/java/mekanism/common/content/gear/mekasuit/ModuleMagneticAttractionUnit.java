@@ -17,11 +17,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 @ParametersAreNonnullByDefault
 public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneticAttractionUnit> {
@@ -35,7 +35,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
     }
 
     @Override
-    public void tickServer(IModule<ModuleMagneticAttractionUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleMagneticAttractionUnit> module, Player player) {
         if (range.get() != Range.OFF) {
             float size = 4 + range.get().getRange();
             FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get().multiply(range.get().getRange());
@@ -67,12 +67,12 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
         }
     }
 
-    private void pullItem(PlayerEntity player, ItemEntity item) {
-        Vector3d diff = player.position().subtract(item.position());
-        Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
-        Vector3d motionDiff = motionNeeded.subtract(player.getDeltaMovement());
+    private void pullItem(Player player, ItemEntity item) {
+        Vec3 diff = player.position().subtract(item.position());
+        Vec3 motionNeeded = new Vec3(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
+        Vec3 motionDiff = motionNeeded.subtract(player.getDeltaMovement());
         item.setDeltaMovement(motionDiff.scale(0.2));
-        Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
+        Mekanism.packetHandler().sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
               player.position().add(0, 0.2, 0), item.position(), (int) (diff.length() * 4)), player);
     }
 
@@ -82,7 +82,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
     }
 
     @Override
-    public void changeMode(IModule<ModuleMagneticAttractionUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(IModule<ModuleMagneticAttractionUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
         module.toggleEnabled(player, MekanismLang.MODULE_MAGNETIC_ATTRACTION.translate());
     }
 
@@ -94,7 +94,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
         ULTRA(10);
 
         private final float range;
-        private final ITextComponent label;
+        private final Component label;
 
         Range(float boost) {
             this.range = boost;
@@ -102,7 +102,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return label;
         }
 

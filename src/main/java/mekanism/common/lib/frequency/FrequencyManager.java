@@ -13,13 +13,13 @@ import mekanism.api.NBTConstants;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.storage.DimensionSavedDataManager;
-import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class FrequencyManager<FREQ extends Frequency> {
 
@@ -81,7 +81,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         loaded = false;
     }
 
-    public FREQ update(TileEntity tile, FREQ freq) {
+    public FREQ update(BlockEntity tile, FREQ freq) {
         FREQ storedFreq = getFrequency(freq.getKey());
         if (storedFreq != null) {
             storedFreq.update(tile);
@@ -104,14 +104,14 @@ public class FrequencyManager<FREQ extends Frequency> {
         return false;
     }
 
-    public void deactivate(Frequency freq, TileEntity tile) {
+    public void deactivate(Frequency freq, BlockEntity tile) {
         if (freq != null) {
             freq.onDeactivate(tile);
             markDirty();
         }
     }
 
-    public FREQ validateFrequency(TileEntity tile, FREQ freq) {
+    public FREQ validateFrequency(BlockEntity tile, FREQ freq) {
         FREQ storedFreq = getFrequency(freq.getKey());
         if (storedFreq == null) {
             freq.setValid(true);
@@ -130,8 +130,12 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (dataHandler == null) {
             String name = getName();
             //Always associate the world with the over world as the frequencies are global
-            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
-            dataHandler = savedData.computeIfAbsent(() -> new FrequencyDataHandler(name), name);
+            DimensionDataStorage savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
+            dataHandler = savedData.computeIfAbsent(nbt -> {
+                FrequencyDataHandler handler = new FrequencyDataHandler();
+                handler.load(nbt);
+                return handler;
+            }, FrequencyDataHandler::new, name);
             dataHandler.syncManager();
         }
     }
@@ -145,9 +149,9 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ getOrCreateFrequency(FrequencyIdentity identity, @Nullable UUID ownerUUID) {
-        FREQ freq = getFrequency(identity.getKey());
+        FREQ freq = getFrequency(identity.key());
         if (freq == null) {
-            freq = frequencyType.create(identity.getKey(), ownerUUID);
+            freq = frequencyType.create(identity.key(), ownerUUID);
             freq.setPublic(identity.isPublic());
             addFrequency(freq);
         }
@@ -177,14 +181,10 @@ public class FrequencyManager<FREQ extends Frequency> {
         return ownerUUID != null ? (ownerUUID + "_" + frequencyType.getName() + "FrequencyHandler") : (frequencyType.getName() + "FrequencyHandler");
     }
 
-    public class FrequencyDataHandler extends WorldSavedData {
+    public class FrequencyDataHandler extends SavedData {
 
         public List<FREQ> loadedFrequencies;
         public UUID loadedOwner;
-
-        public FrequencyDataHandler(String tagName) {
-            super(tagName);
-        }
 
         public void syncManager() {
             if (loadedFrequencies != null) {
@@ -193,10 +193,9 @@ public class FrequencyManager<FREQ extends Frequency> {
             }
         }
 
-        @Override
-        public void load(@Nonnull CompoundNBT nbtTags) {
+        public void load(@Nonnull CompoundTag nbtTags) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
-            ListNBT list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, NBT.TAG_COMPOUND);
+            ListTag list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
             for (int i = 0; i < list.size(); i++) {
                 loadedFrequencies.add(frequencyType.create(list.getCompound(i)));
@@ -205,13 +204,13 @@ public class FrequencyManager<FREQ extends Frequency> {
 
         @Nonnull
         @Override
-        public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        public CompoundTag save(@Nonnull CompoundTag nbtTags) {
             if (ownerUUID != null) {
                 nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             }
-            ListNBT list = new ListNBT();
+            ListTag list = new ListTag();
             for (FREQ freq : getFrequencies()) {
-                CompoundNBT compound = new CompoundNBT();
+                CompoundTag compound = new CompoundTag();
                 freq.write(compound);
                 list.add(compound);
             }

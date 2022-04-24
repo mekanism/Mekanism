@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mekanism:block/storage/raw_uranium"
+    }
+  }
+}

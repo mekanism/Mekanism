@@ -8,7 +8,7 @@ import mekanism.common.network.to_client.container.property.FrequencyPropertyDat
 import mekanism.common.network.to_client.container.property.PropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling frequencies
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling frequencies
  */
 public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncableData {
 

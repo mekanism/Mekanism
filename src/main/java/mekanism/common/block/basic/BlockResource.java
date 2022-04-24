@@ -3,13 +3,11 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.resource.BlockResourceInfo;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
 
 public class BlockResource extends BlockMekanism {
 
@@ -18,8 +16,8 @@ public class BlockResource extends BlockMekanism {
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
     public BlockResource(@Nonnull BlockResourceInfo resource) {
-        super(AbstractBlock.Properties.of(Material.METAL).strength(resource.getHardness(), resource.getResistance())
-              .lightLevel(state -> resource.getLightValue()).requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).harvestLevel(resource.getHarvestLevel()));
+        super(BlockBehaviour.Properties.of(resource.getMaterial(), resource.getMaterialColor()).strength(resource.getHardness(), resource.getResistance())
+              .lightLevel(state -> resource.getLightValue()).requiresCorrectToolForDrops());
         this.resource = resource;
     }
 
@@ -36,7 +34,7 @@ public class BlockResource extends BlockMekanism {
     }
 
     @Override
-    public boolean isPortalFrame(BlockState state, IBlockReader world, BlockPos pos) {
+    public boolean isPortalFrame(BlockState state, BlockGetter world, BlockPos pos) {
         return resource.isPortalFrame();
     }
 }

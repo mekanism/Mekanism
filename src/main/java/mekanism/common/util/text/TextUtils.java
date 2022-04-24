@@ -2,7 +2,7 @@ package mekanism.common.util.text;
 
 import java.text.NumberFormat;
 import mekanism.common.MekanismLang;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public final class TextUtils {
 
@@ -14,7 +14,7 @@ public final class TextUtils {
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final NumberFormat doubleFormatter = NumberFormat.getNumberInstance();
 
-    public static ITextComponent getPercent(double ratio) {
+    public static Component getPercent(double ratio) {
         return MekanismLang.GENERIC_PERCENT.translate(Math.round(ratio * 100));
     }
 

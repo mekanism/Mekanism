@@ -75,7 +75,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
             }
             if (shouldSave) {
                 transmitter.saveShare = currentStored.isEmpty() ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(currentStored);
-                transmitter.getTransmitterTile().markDirty(false);
+                transmitter.getTransmitterTile().markForSave();
             }
         }
     }

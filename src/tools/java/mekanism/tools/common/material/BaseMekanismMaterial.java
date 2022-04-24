@@ -1,10 +1,17 @@
 package mekanism.tools.common.material;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 public abstract class BaseMekanismMaterial extends IItemTierHelper implements IArmorMaterialHelper, IPaxelMaterial {
+
+    @Nullable
+    @Override
+    public abstract TagKey<Block> getTag();//Force this to be implemented
 
     public abstract int getShieldDurability();
 
@@ -48,11 +55,6 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
     @Override
     public float getPaxelDamage() {
         return getAxeDamage() + 1;
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return getLevel();
     }
 
     @Override

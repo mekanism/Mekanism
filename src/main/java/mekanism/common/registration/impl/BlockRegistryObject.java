@@ -3,9 +3,9 @@ package mekanism.common.registration.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.RegistryObject;
 
 public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends DoubleWrappedRegistryObject<BLOCK, ITEM> implements IBlockProvider {
 
@@ -21,7 +21,7 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 
     @Nonnull
     @Override
-    public ITEM getItem() {
+    public ITEM asItem() {
         return getSecondary();
     }
 }

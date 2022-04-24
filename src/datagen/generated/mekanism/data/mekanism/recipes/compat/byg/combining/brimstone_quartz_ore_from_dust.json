@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:combining",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "mainInput": {
+    "amount": 14,
+    "ingredient": {
+      "tag": "forge:dusts/quartz"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "item": "byg:brimstone"
+    }
+  },
+  "output": {
+    "item": "byg:brimstone_nether_quartz_ore"
+  }
+}

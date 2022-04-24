@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -65,10 +65,10 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             configTabs.add(tab);
         }
         ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, this.tile.getBlockPos(), currentType)),
+              () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, this.tile.getBlockPos(), currentType)),
               getOnHover(MekanismLang.AUTO_EJECT)));
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.CLEAR_ALL, this.tile.getBlockPos(), currentType)),
+              () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.CLEAR_ALL, this.tile.getBlockPos(), currentType)),
               getOnHover(MekanismLang.SIDE_CONFIG_CLEAR)));
         addSideDataButton(RelativeSide.BOTTOM, 71, 74);
         addSideDataButton(RelativeSide.TOP, 71, 44);
@@ -77,7 +77,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         addSideDataButton(RelativeSide.LEFT, 56, 59);
         addSideDataButton(RelativeSide.RIGHT, 86, 59);
         updateTabs();
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.SIDE_CONFIG_WINDOW, this.tile.getConfig());
     }
 
@@ -92,17 +92,17 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     public void close() {
         super.close();
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.SIDE_CONFIG_WINDOW);
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, matrix, xAxis, yAxis) -> {
-            if (onHover instanceof SideDataButton) {
-                DataType dataType = ((SideDataButton) onHover).getDataType();
+        return (onHover, matrix, mouseX, mouseY) -> {
+            if (onHover instanceof SideDataButton button) {
+                DataType dataType = button.getDataType();
                 if (dataType != null) {
-                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
-                          dataType.getColor().getName(), side), xAxis, yAxis);
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
+                          dataType.getColor().getName(), side));
                 }
             }
         };
@@ -137,7 +137,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
         drawCenteredText(matrix, MekanismLang.SLOTS.translate(), relativeX + 80, relativeY + 96, subheadingTextColor());

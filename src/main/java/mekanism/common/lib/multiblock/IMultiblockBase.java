@@ -1,10 +1,10 @@
 package mekanism.common.lib.multiblock;
 
 import mekanism.common.tile.interfaces.ITileWrapper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public interface IMultiblockBase extends ITileWrapper {
 
@@ -22,7 +22,7 @@ public interface IMultiblockBase extends ITileWrapper {
 
     MultiblockData getDefaultData();
 
-    ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack);
+    InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack);
 
     Structure getStructure(MultiblockManager<?> manager);
 

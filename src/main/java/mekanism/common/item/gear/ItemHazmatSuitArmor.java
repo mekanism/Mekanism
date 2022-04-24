@@ -2,44 +2,48 @@ package mekanism.common.item.gear;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemStack.TooltipDisplayFlags;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
+import mekanism.common.integration.gender.GenderCapabilityHelper;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStack.TooltipPart;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemHazmatSuitArmor extends ArmorItem {
 
     private static final HazmatMaterial HAZMAT_MATERIAL = new HazmatMaterial();
 
-    public ItemHazmatSuitArmor(EquipmentSlotType slot, Properties properties) {
+    public ItemHazmatSuitArmor(EquipmentSlot slot, Properties properties) {
         super(HAZMAT_MATERIAL, slot, properties.rarity(Rarity.UNCOMMON));
     }
 
-    public static double getShieldingByArmor(EquipmentSlotType type) {
-        if (type == EquipmentSlotType.HEAD) {
-            return 0.25;
-        } else if (type == EquipmentSlotType.CHEST) {
-            return 0.4;
-        } else if (type == EquipmentSlotType.LEGS) {
-            return 0.2;
-        } else if (type == EquipmentSlotType.FEET) {
-            return 0.15;
-        }
-        return 0;
+    public static double getShieldingByArmor(EquipmentSlot type) {
+        return switch (type) {
+            case HEAD -> 0.25;
+            case CHEST -> 0.4;
+            case LEGS -> 0.2;
+            case FEET -> 0.15;
+            default -> 0;
+        };
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        stack.hideTooltipPart(TooltipDisplayFlags.MODIFIERS);
-        return new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
+    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
+        GenderCapabilityHelper.addGenderCapability(this, wrapper::add);
+        return wrapper;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package mekanism.additions.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 public enum AdditionsLang implements ILangEntry {
     CHANNEL("walkie", "channel"),

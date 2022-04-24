@@ -1,12 +1,16 @@
 package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.tags.MekanismTags;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
@@ -61,33 +65,25 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 975;
-            case LEGS:
-                return 1_125;
-            case CHEST:
-                return 1_200;
-            case HEAD:
-                return 825;
-        }
-        return 0;
+    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 975;
+            case LEGS -> 1_125;
+            case CHEST -> 1_200;
+            case HEAD -> 825;
+            default -> 0;
+        };
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
-        switch (slotType) {
-            case FEET:
-                return 5;
-            case LEGS:
-                return 8;
-            case CHEST:
-                return 12;
-            case HEAD:
-                return 6;
-        }
-        return 0;
+    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+        return switch (slotType) {
+            case FEET -> 5;
+            case LEGS -> 8;
+            case CHEST -> 12;
+            case HEAD -> 6;
+            default -> 0;
+        };
     }
 
     @Nonnull
@@ -100,6 +96,12 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return "refined_obsidian";
+    }
+
+    @Nullable
+    @Override
+    public TagKey<Block> getTag() {
+        return ToolsTags.Blocks.NEEDS_REFINED_OBSIDIAN_TOOL;
     }
 
     @Nonnull

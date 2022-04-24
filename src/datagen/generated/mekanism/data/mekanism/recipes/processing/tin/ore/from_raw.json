@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 8,
+    "ingredient": {
+      "tag": "forge:raw_materials/tin"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone/normal"
+    }
+  },
+  "output": {
+    "item": "mekanism:tin_ore"
+  }
+}

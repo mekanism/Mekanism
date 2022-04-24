@@ -1,22 +1,22 @@
 package mekanism.client.render.lib;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.common.lib.Color;
-import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
 public class Quad {
 
-    private static final VertexFormat FORMAT = DefaultVertexFormats.BLOCK;
-    private static final int SIZE = DefaultVertexFormats.BLOCK.getElements().size();
+    private static final VertexFormat FORMAT = DefaultVertexFormat.BLOCK;
+    private static final int SIZE = DefaultVertexFormat.BLOCK.getElements().size();
 
     private final Vertex[] vertices;
     private Direction side;
@@ -87,7 +87,7 @@ public class Quad {
         for (int v = 0; v < vertices.length; v++) {
             float[][] packed = vertices[v].pack(FORMAT);
             for (int e = 0; e < SIZE; e++) {
-                LightUtil.pack(packed[e], ret, DefaultVertexFormats.BLOCK, v, e);
+                LightUtil.pack(packed[e], ret, DefaultVertexFormat.BLOCK, v, e);
             }
         }
         return new BakedQuad(ret, tintIndex, side, sprite, applyDiffuseLighting);
@@ -150,10 +150,10 @@ public class Quad {
             float f3 = data.length >= 4 ? data[3] : 0;
             switch (element.getUsage()) {
                 case POSITION:
-                    vertex.pos(new Vector3d(f0, f1, f2));
+                    vertex.pos(new Vec3(f0, f1, f2));
                     break;
                 case NORMAL:
-                    vertex.normal(new Vector3d(f0, f1, f2));
+                    vertex.normal(new Vec3(f0, f1, f2));
                     break;
                 case COLOR:
                     vertex.color(Color.rgbad(f0, f1, f2, f3));
@@ -180,7 +180,7 @@ public class Quad {
         private TextureAtlasSprite texture;
         private final Direction side;
 
-        private Vector3d vec1, vec2, vec3, vec4;
+        private Vec3 vec1, vec2, vec3, vec4;
 
         private float minU, minV, maxU, maxV;
         private float lightU, lightV;
@@ -228,7 +228,7 @@ public class Quad {
             return this;
         }
 
-        public Builder pos(Vector3d tl, Vector3d bl, Vector3d br, Vector3d tr) {
+        public Builder pos(Vec3 tl, Vec3 bl, Vec3 br, Vec3 tr) {
             this.vec1 = tl;
             this.vec2 = bl;
             this.vec3 = br;
@@ -236,19 +236,19 @@ public class Quad {
             return this;
         }
 
-        public Builder rect(Vector3d start, double width, double height) {
+        public Builder rect(Vec3 start, double width, double height) {
             return rect(start, width, height, 1F / 16F); // default to 1/16 scale
         }
 
         // start = bottom left
-        public Builder rect(Vector3d start, double width, double height, double scale) {
+        public Builder rect(Vec3 start, double width, double height, double scale) {
             start = start.scale(scale);
             return pos(start.add(0, height * scale, 0), start, start.add(width * scale, 0, 0), start.add(width * scale, height * scale, 0));
         }
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
-            Vector3d normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize();
+            Vec3 normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize();
             vertices[0] = Vertex.create(vec1, normal, texture, minU, minV).light(lightU, lightV);
             vertices[1] = Vertex.create(vec2, normal, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, texture, maxU, maxV).light(lightU, lightV);

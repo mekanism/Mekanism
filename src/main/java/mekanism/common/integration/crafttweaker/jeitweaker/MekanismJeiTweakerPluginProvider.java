@@ -7,7 +7,6 @@ import com.blamejared.jeitweaker.api.IngredientTypeRegistration;
 import com.blamejared.jeitweaker.api.JeiTweakerPlugin;
 import com.blamejared.jeitweaker.api.JeiTweakerPluginProvider;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -61,7 +60,7 @@ public class MekanismJeiTweakerPluginProvider implements JeiTweakerPluginProvide
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>> void
     addEnumerators(IngredientEnumeratorRegistration registration, IngredientTypeHolder<CRT_STACK, STACK> typeHolder, IForgeRegistry<CHEMICAL> registry) {
         registration.registerEnumerator(typeHolder.get(), IngredientEnumerator.ofJei(typeHolder.get(),
-              registry.getValues().stream().map(chemical -> (STACK) chemical.getStack(FluidAttributes.BUCKET_VOLUME)).collect(Collectors.toList())
+              registry.getValues().stream().map(chemical -> (STACK) chemical.getStack(FluidAttributes.BUCKET_VOLUME)).toList()
         ));
     }
 }

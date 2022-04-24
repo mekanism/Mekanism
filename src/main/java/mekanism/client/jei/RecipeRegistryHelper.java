@@ -1,30 +1,25 @@
 package mekanism.client.jei;
 
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.Mekanism;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismGases;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mekanism.common.registries.MekanismFluids;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class RecipeRegistryHelper {
@@ -35,8 +30,7 @@ public class RecipeRegistryHelper {
     public static void registerCondensentrator(IRecipeRegistration registry) {
         List<RotaryRecipe> condensentratorRecipes = new ArrayList<>();
         List<RotaryRecipe> decondensentratorRecipes = new ArrayList<>();
-        List<RotaryRecipe> recipes = MekanismRecipeType.ROTARY.getRecipes(getWorld());
-        for (RotaryRecipe recipe : recipes) {
+        for (RotaryRecipe recipe : MekanismRecipeType.ROTARY.getRecipes(getWorld())) {
             if (recipe.hasGasToFluid()) {
                 condensentratorRecipes.add(recipe);
             }
@@ -44,32 +38,35 @@ public class RecipeRegistryHelper {
                 decondensentratorRecipes.add(recipe);
             }
         }
-        ResourceLocation condensentrating = Mekanism.rl("rotary_condensentrator_condensentrating");
-        ResourceLocation decondensentrating = Mekanism.rl("rotary_condensentrator_decondensentrating");
-        registry.addRecipes(condensentratorRecipes, condensentrating);
-        registry.addRecipes(decondensentratorRecipes, decondensentrating);
+        register(registry, MekanismJEIRecipeType.CONDENSENTRATING, condensentratorRecipes);
+        register(registry, MekanismJEIRecipeType.DECONDENSENTRATING, decondensentratorRecipes);
     }
 
-    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IBlockProvider mekanismBlock, MekanismRecipeType<RECIPE, ?> type) {
-        register(registry, mekanismBlock.getRegistryName(), type);
+    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, MekanismJEIRecipeType<RECIPE> recipeType,
+          IMekanismRecipeTypeProvider<RECIPE, ?> type) {
+        register(registry, recipeType, type.getRecipes(getWorld()));
     }
 
-    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, ResourceLocation id, MekanismRecipeType<RECIPE, ?> type) {
-        registry.addRecipes(type.getRecipes(getWorld()), id);
+    public static <RECIPE> void register(IRecipeRegistration registry, MekanismJEIRecipeType<RECIPE> recipeType, List<RECIPE> recipes) {
+        registry.addRecipes(MekanismJEI.recipeType(recipeType), recipes);
     }
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
-        List<NutritionalLiquifierIRecipe> list = new ArrayList<>();
+        List<ItemStackToFluidRecipe> list = new ArrayList<>();
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (item.isEdible()) {
-                Food food = item.getFoodProperties();
+                ItemStack stack = new ItemStack(item);
+                //TODO: If any mods adds presets to the creative menu we may want to consider gathering all
+                // deduplicating and then add recipes for them in JEI
+                FoodProperties food = stack.getFoodProperties(null);
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.getNutrition() > 0) {
-                    list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getNutrition() * 50L)));
+                    list.add(new NutritionalLiquifierIRecipe(item, IngredientCreatorAccess.item().from(stack),
+                          MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
                 }
             }
         }
-        registry.addRecipes(list, MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
+        register(registry, MekanismJEIRecipeType.NUTRITIONAL_LIQUIFICATION, list);
     }
 
     public static void addAnvilRecipes(IRecipeRegistration registry, IItemProvider item, Function<Item, ItemStack[]> repairMaterials) {
@@ -80,20 +77,18 @@ public class RecipeRegistryHelper {
         ItemStack damaged3 = item.getItemStack();
         damaged3.setDamageValue(damaged3.getMaxDamage() * 2 / 4);
         //Two damaged items combine to undamaged
-        registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))),
-              VanillaRecipeCategoryUid.ANVIL);
-        ItemStack[] repairStacks = repairMaterials.apply(item.getItem());
+        registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged2, List.of(damaged2), List.of(damaged3))));
+        ItemStack[] repairStacks = repairMaterials.apply(item.asItem());
         //Damaged item + the repair material
         if (repairStacks != null && repairStacks.length > 0) {
             //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
             ItemStack damaged1 = item.getItemStack();
             damaged1.setDamageValue(damaged1.getMaxDamage());
-            registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged1, Arrays.asList(repairStacks), Collections.singletonList(damaged2))),
-                  VanillaRecipeCategoryUid.ANVIL);
+            registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged1, List.of(repairStacks), List.of(damaged2))));
         }
     }
 
-    private static ClientWorld getWorld() {
+    private static ClientLevel getWorld() {
         return Minecraft.getInstance().level;
     }
 }

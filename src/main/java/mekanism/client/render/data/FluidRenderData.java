@@ -51,6 +51,6 @@ public class FluidRenderData extends RenderData {
 
     @Override
     public boolean equals(Object data) {
-        return super.equals(data) && data instanceof FluidRenderData && fluidType.isFluidEqual(((FluidRenderData) data).fluidType);
+        return super.equals(data) && data instanceof FluidRenderData other && fluidType.isFluidEqual(other.fluidType);
     }
 }

@@ -8,7 +8,7 @@ import mekanism.common.network.to_client.container.property.list.ListPropertyDat
 import mekanism.common.network.to_client.container.property.list.StringListPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling string lists
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling string lists
  */
 public class SyncableStringList extends SyncableList<String> {
 

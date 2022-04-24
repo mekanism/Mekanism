@@ -11,15 +11,11 @@ import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.registration.impl.FluidRegistryObject;
-import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.item.BucketItem;
-import net.minecraft.util.Util;
+import net.minecraft.data.HashCache;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
-import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
@@ -41,13 +37,23 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void add(IHasTranslationKey key, String value) {
-        if (key instanceof IBlockProvider) {
-            Block block = ((IBlockProvider) key).getBlock();
-            if (Attribute.has(block, AttributeGui.class)) {
+        if (key instanceof IBlockProvider blockProvider) {
+            Block block = blockProvider.getBlock();
+            if (Attribute.has(block, AttributeGui.class) && !Attribute.get(block, AttributeGui.class).hasCustomName()) {
                 add(Util.makeDescriptionId("container", block.getRegistryName()), value);
             }
         }
         add(key.getTranslationKey(), value);
+    }
+
+    protected void add(IBlockProvider blockProvider, String value, String containerName) {
+        Block block = blockProvider.getBlock();
+        if (Attribute.has(block, AttributeGui.class) && !Attribute.get(block, AttributeGui.class).hasCustomName()) {
+            add(Util.makeDescriptionId("container", block.getRegistryName()), containerName);
+            add(blockProvider.getTranslationKey(), value);
+        } else {
+            throw new IllegalArgumentException("Block " + blockProvider.getRegistryName() + " does not have a container name set.");
+        }
     }
 
     protected void add(IModuleDataProvider<?> moduleDataProvider, String name, String description) {
@@ -56,7 +62,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(moduleData.getDescriptionTranslationKey(), description);
     }
 
-    protected void addFluid(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, String name) {
+    protected void addFluid(FluidRegistryObject<?, ?, ?, ?> fluidRO, String name) {
         add(fluidRO.getStillFluid().getAttributes().getTranslationKey(), name);
         add(fluidRO.getFlowingFluid().getAttributes().getTranslationKey(), "Flowing " + name);
         add(fluidRO.getBlock(), name);
@@ -65,6 +71,9 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     @Override
     public void add(@Nonnull String key, @Nonnull String value) {
+        if (value.contains("%s")) {
+            throw new IllegalArgumentException("Values containing substitutions should use explicit numbered indices: "+key+" - "+value);
+        }
         super.add(key, value);
         if (altProviders.length > 0) {
             List<Component> splitEnglish = FormatSplitter.split(value);
@@ -75,7 +84,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void run(@Nonnull DirectoryCache cache) throws IOException {
+    public void run(@Nonnull HashCache cache) throws IOException {
         super.run(cache);
         if (altProviders.length > 0) {
             for (ConvertibleLanguageProvider provider : altProviders) {

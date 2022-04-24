@@ -1,33 +1,34 @@
 package mekanism.client.gui.element.progress;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
-import mekanism.client.gui.warning.WarningTracker.WarningType;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import org.lwjgl.opengl.GL11;
+import mekanism.common.inventory.warning.ISupportsWarning;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import net.minecraft.client.renderer.GameRenderer;
 
-public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress> {
+public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
 
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
-    private ResourceLocation[] recipeCategories;
+    private MekanismJEIRecipeType<?>[] recipeCategories;
     @Nullable
     private ColorDetails colorDetails;
     @Nullable
     private BooleanSupplier warningSupplier;
-    private boolean useFullProgressForWarning;
 
     public GuiProgress(IBooleanProgressInfoHandler handler, ProgressType type, IGuiWrapper gui, int x, int y) {
         this((IProgressInfoHandler) handler, type, gui, x, y);
@@ -44,26 +45,20 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         return this;
     }
 
-    //TODO - WARNING SYSTEM: Hook up usage of warnings
+    @Override
     public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
-        return warning(type, warningSupplier, true);
-    }
-
-    public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier, boolean useFullProgressForWarning) {
-        this.warningSupplier = gui().trackWarning(type, warningSupplier);
-        //TODO - WARNING SYSTEM: Evaluate if we even want this to be a thing?
-        this.useFullProgressForWarning = useFullProgressForWarning;
+        this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
-            minecraft.textureManager.bind(getResource());
+            RenderSystem.setShaderTexture(0, getResource());
             blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
-            double progress = warning && useFullProgressForWarning ? 1 : getProgress();
+            double progress = warning ? 1 : getProgress();
             if (type.isVertical()) {
                 int displayInt = (int) (progress * height);
                 if (displayInt > 0) {
@@ -98,24 +93,24 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     }
 
     @Override
-    public boolean isActive() {
+    public boolean isJEIAreaActive() {
         return handler.isActive();
     }
 
     @Nonnull
     @Override
-    public GuiProgress jeiCategories(@Nullable ResourceLocation... recipeCategories) {
+    public GuiProgress jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }
 
     @Nullable
     @Override
-    public ResourceLocation[] getRecipeCategories() {
+    public MekanismJEIRecipeType<?>[] getRecipeCategories() {
         return recipeCategories;
     }
 
-    private void blit(MatrixStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
+    private void blit(PoseStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
           boolean warning) {
         if (warning || colorDetails == null) {
             //If we are drawing a warning or don't have any color details just draw it normally
@@ -172,13 +167,12 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         }
         //Prep fill gradient
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(7425);
+        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
 
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder builder = tessellator.getBuilder();
-        builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
+        builder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
 
         if (type.isVertical()) {
             builder.vertex(matrix, x, y2, 0).color(redTo, greenTo, blueTo, alphaTo).uv(minU, maxV).endVertex();
@@ -194,9 +188,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
 
         tessellator.end();
         //Reset blit and fill gradient states
-        RenderSystem.shadeModel(7424);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
         MekanismRenderer.resetColor();
     }
 

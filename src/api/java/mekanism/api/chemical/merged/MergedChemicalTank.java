@@ -9,10 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -30,6 +28,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Class to help manage having a chemical tank that supports all the different types of chemicals, but only one type at a time.
@@ -69,7 +68,7 @@ public class MergedChemicalTank {
             for (IChemicalTank<?, ?> tank : allTanks) {
                 if (type.canHandle(tank)) {
                     //TODO: Improve this so it doesn't have to loop nearly as much?
-                    List<IChemicalTank<?, ?>> otherTanks = Arrays.stream(allTanks).filter(otherTank -> tank != otherTank).collect(Collectors.toList());
+                    List<IChemicalTank<?, ?>> otherTanks = Arrays.stream(allTanks).filter(otherTank -> tank != otherTank).toList();
                     BooleanSupplier insertionCheck;
                     if (extraCheck == null) {
                         insertionCheck = () -> otherTanks.stream().allMatch(IChemicalTank::isEmpty);
@@ -102,16 +101,12 @@ public class MergedChemicalTank {
      * @return Internal tank.
      */
     public IChemicalTank<?, ?> getTankForType(ChemicalType chemicalType) {
-        if (chemicalType == ChemicalType.GAS) {
-            return getGasTank();
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            return getInfusionTank();
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            return getPigmentTank();
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            return getSlurryTank();
-        }
-        throw new IllegalStateException("Unknown chemical type");
+        return switch (chemicalType) {
+            case GAS -> getGasTank();
+            case INFUSION -> getInfusionTank();
+            case PIGMENT -> getPigmentTank();
+            case SLURRY -> getSlurryTank();
+        };
     }
 
     /**
@@ -193,7 +188,8 @@ public class MergedChemicalTank {
         TANK create(MergedChemicalTank mergedTank, TANK tank, BooleanSupplier insertCheck);
     }
 
-    private static class ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
+    private record ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>(
+          String type, IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper, Predicate<IChemicalTank<?, ?>> tankValidator) {
 
         private static final List<ChemicalTankType<?, ?, ?>> TYPES = new ArrayList<>();
         private static final ChemicalTankType<Gas, GasStack, IGasTank> GAS = new ChemicalTankType<>("gas", GasTankWrapper::new, tank -> tank instanceof IGasTank);
@@ -201,14 +197,7 @@ public class MergedChemicalTank {
         private static final ChemicalTankType<Pigment, PigmentStack, IPigmentTank> PIGMENT = new ChemicalTankType<>("pigment", PigmentTankWrapper::new, tank -> tank instanceof IPigmentTank);
         private static final ChemicalTankType<Slurry, SlurryStack, ISlurryTank> SLURRY = new ChemicalTankType<>("slurry", SlurryTankWrapper::new, tank -> tank instanceof ISlurryTank);
 
-        private final IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper;
-        private final Predicate<IChemicalTank<?, ?>> tankValidator;
-        private final String type;
-
-        ChemicalTankType(String type, IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper, Predicate<IChemicalTank<?, ?>> tankValidator) {
-            this.type = type;
-            this.tankWrapper = tankWrapper;
-            this.tankValidator = tankValidator;
+        private ChemicalTankType {
             //Add to known types
             TYPES.add(this);
         }

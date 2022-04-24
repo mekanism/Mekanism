@@ -1,10 +1,10 @@
 package mekanism.common.lib.math.voxel;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import mekanism.common.lib.multiblock.Structure.Axis;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public class VoxelPlane {
 
@@ -114,16 +114,12 @@ public class VoxelPlane {
 
     @Override
     public String toString() {
-        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow) + ")";
+        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + List.of(minCol, minRow, maxCol, maxRow) + ")";
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof VoxelPlane)) {
-            return false;
-        }
-        VoxelPlane other = (VoxelPlane) obj;
-        return size == other.size && minCol == other.minCol && maxCol == other.maxCol && minRow == other.minRow && maxRow == other.maxRow;
+        return obj instanceof VoxelPlane other && size == other.size && minCol == other.minCol && maxCol == other.maxCol && minRow == other.minRow && maxRow == other.maxRow;
     }
 
     @Override

@@ -1,33 +1,33 @@
 package mekanism.client.render.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.culling.ClippingHelper;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 public class RenderFlame extends EntityRenderer<EntityFlame> {
 
-    public RenderFlame(EntityRendererManager renderManager) {
-        super(renderManager);
+    public RenderFlame(EntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    public boolean shouldRender(EntityFlame flame, @Nonnull ClippingHelper camera, double camX, double camY, double camZ) {
+    public boolean shouldRender(EntityFlame flame, @Nonnull Frustum camera, double camX, double camY, double camZ) {
         return flame.tickCount > 0 && super.shouldRender(flame, camera, camX, camY, camZ);
     }
 
     @Override
-    public void render(@Nonnull EntityFlame flame, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
+    public void render(@Nonnull EntityFlame flame, float entityYaw, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light) {
         float alpha = (flame.tickCount + partialTick) / EntityFlame.LIFESPAN;
         float actualAlpha = 1 - alpha;
         if (actualAlpha <= 0) {
@@ -37,12 +37,12 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float f5 = 5 / 32F;
         float scale = 0.05625F * (0.8F + size);
         matrix.pushPose();
-        matrix.mulPose(Vector3f.YP.rotationDegrees((flame.yRotO + (flame.yRot - flame.yRotO) * partialTick) - 90F));
-        matrix.mulPose(Vector3f.ZP.rotationDegrees(flame.xRotO + (flame.xRot - flame.xRotO) * partialTick));
+        matrix.mulPose(Vector3f.YP.rotationDegrees((flame.yRotO + (flame.getYRot() - flame.yRotO) * partialTick) - 90F));
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(flame.xRotO + (flame.getXRot() - flame.xRotO) * partialTick));
         matrix.mulPose(Vector3f.XP.rotationDegrees(45));
         matrix.scale(scale, scale, scale);
         matrix.translate(-4, 0, 0);
-        IVertexBuilder builder = renderer.getBuffer(MekanismRenderType.renderFlame(getTextureLocation(flame)));
+        VertexConsumer builder = renderer.getBuffer(MekanismRenderType.FLAME.apply(getTextureLocation(flame)));
         for (int j = 0; j < 4; j++) {
             matrix.mulPose(Vector3f.XP.rotationDegrees(90));
             builder.normal(matrix.last().normal(), 0, 0, scale);

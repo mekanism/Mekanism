@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
 
@@ -36,14 +36,14 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     public abstract void clearSelection();
 
-    protected abstract void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks);
+    protected abstract void renderElements(PoseStack matrix, int mouseX, int mouseY, float partialTicks);
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
         renderBackgroundTexture(matrix, background, backgroundSideSize, backgroundSideSize);
-        GuiElement.minecraft.textureManager.bind(getResource());
+        RenderSystem.setShaderTexture(0, getResource());
         //Draw Scroll
         //Top border
         blit(matrix, barX - 1, barY - 1, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);

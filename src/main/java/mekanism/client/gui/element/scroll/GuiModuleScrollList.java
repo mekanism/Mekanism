@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -22,9 +23,9 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiModuleScrollList extends GuiScrollList {
 
@@ -96,7 +97,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         ItemStack stack = itemSupplier.get();
         if (!ItemStack.matches(currentItem, stack)) {
@@ -112,23 +113,23 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1) {
+        if (mouseX >= x + 1 && mouseX < x + barXShift - 1) {
             forEachModule((module, multipliedElement) -> {
                 IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
-                if (instance != null && mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
-                    ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                    displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
+                if (instance != null && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
+                    Component t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.MODULE_INSTALLED.translate(t));
                 }
             });
         }
     }
 
     @Override
-    public void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
-        minecraft.textureManager.bind(MODULE_SELECTION);
+        RenderSystem.setShaderTexture(0, MODULE_SELECTION);
         forEachModule((module, multipliedElement) -> {
             int shiftedY = y + 1 + multipliedElement;
             int j = 1;

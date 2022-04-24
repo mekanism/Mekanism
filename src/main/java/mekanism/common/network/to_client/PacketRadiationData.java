@@ -5,10 +5,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRadiationData implements IMekanismPacket {
 
@@ -24,9 +24,9 @@ public class PacketRadiationData implements IMekanismPacket {
         return new PacketRadiationData(RadiationPacketType.ENVIRONMENTAL, radiation);
     }
 
-    public static void sync(ServerPlayerEntity player) {
+    public static void sync(ServerPlayer player) {
         player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
-              Mekanism.packetHandler.sendTo(new PacketRadiationData(RadiationPacketType.PLAYER, c.getRadiation()), player));
+              Mekanism.packetHandler().sendTo(new PacketRadiationData(RadiationPacketType.PLAYER, c.getRadiation()), player));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class PacketRadiationData implements IMekanismPacket {
         if (type == RadiationPacketType.ENVIRONMENTAL) {
             RadiationManager.INSTANCE.setClientEnvironmentalRadiation(radiation);
         } else if (type == RadiationPacketType.PLAYER) {
-            ClientPlayerEntity player = Minecraft.getInstance().player;
+            LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
                 player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(radiation));
             }
@@ -42,12 +42,12 @@ public class PacketRadiationData implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
         buffer.writeDouble(radiation);
     }
 
-    public static PacketRadiationData decode(PacketBuffer buffer) {
+    public static PacketRadiationData decode(FriendlyByteBuf buffer) {
         return new PacketRadiationData(buffer.readEnum(RadiationPacketType.class), buffer.readDouble());
     }
 

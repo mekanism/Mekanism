@@ -2,11 +2,11 @@ package mekanism.common.inventory.slot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -18,7 +18,7 @@ public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySl
     }
 
     private CraftingWindowOutputInventorySlot(QIOCraftingWindow window) {
-        super(manualOnly, internalOnly, window, null);
+        super(manualOnly, internalOnly, window, null, null);
     }
 
     @Nonnull

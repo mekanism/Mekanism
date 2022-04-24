@@ -5,7 +5,7 @@
       "tag": "mekanism:shards/copper"
     }
   },
-  "gasInput": {
+  "chemicalInput": {
     "amount": 1,
     "gas": "mekanism:oxygen"
   },

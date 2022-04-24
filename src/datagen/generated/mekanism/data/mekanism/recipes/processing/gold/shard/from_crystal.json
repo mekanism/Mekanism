@@ -5,7 +5,7 @@
       "tag": "mekanism:crystals/gold"
     }
   },
-  "gasInput": {
+  "chemicalInput": {
     "amount": 1,
     "gas": "mekanism:hydrogen_chloride"
   },

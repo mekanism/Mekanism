@@ -1,8 +1,8 @@
 package mekanism.tools.client;
 
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.Material;
 
 public enum ShieldTextures {
     BRONZE("bronze"),
@@ -12,17 +12,17 @@ public enum ShieldTextures {
     REFINED_OBSIDIAN("refined_obsidian"),
     STEEL("steel");
 
-    private final RenderMaterial base;
+    private final Material base;
 
     ShieldTextures(String name) {
         base = material("item/" + name + "/shield");
     }
 
-    public RenderMaterial getBase() {
+    public Material getBase() {
         return base;
     }
 
-    private static RenderMaterial material(String path) {
-        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, MekanismTools.rl(path));
+    private static Material material(String path) {
+        return new Material(TextureAtlas.LOCATION_BLOCKS, MekanismTools.rl(path));
     }
 }

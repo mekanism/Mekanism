@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:difference",
+      "base": {
+        "tag": "forge:fences/plastic"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:blue_plastic_fence"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:blue"
+  },
+  "output": {
+    "item": "mekanismadditions:blue_plastic_fence"
+  }
+}

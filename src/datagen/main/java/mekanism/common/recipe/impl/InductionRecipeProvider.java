@@ -15,9 +15,9 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 class InductionRecipeProvider implements ISubRecipeProvider {
 
@@ -31,7 +31,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT));
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "induction/";
         addInductionCellRecipes(consumer, basePath + "cell/");
         addInductionProviderRecipes(consumer, basePath + "provider/");
@@ -55,7 +55,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "port"));
     }
 
-    private void addInductionCellRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addInductionCellRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Basic needs to be handled slightly differently
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_INDUCTION_CELL)
               .pattern(RecipePattern.createPattern(
@@ -71,7 +71,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     }
 
-    private void addTieredInductionCellRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> cell,
+    private void addTieredInductionCellRecipe(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> cell,
           IItemProvider previousCell, IItemProvider energyCube) {
         String tierName = Attribute.getBaseTier(cell.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(cell)
@@ -82,7 +82,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + tierName));
     }
 
-    private void addInductionProviderRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addInductionProviderRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Basic needs to be handled slightly differently
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_INDUCTION_PROVIDER)
               .pattern(RecipePattern.createPattern(
@@ -98,8 +98,8 @@ class InductionRecipeProvider implements ISubRecipeProvider {
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ULTIMATE);
     }
 
-    private void addTieredInductionProviderRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> provider,
-          IItemProvider previousProvider, IItemProvider energyCube, ITag<Item> circuitTag) {
+    private void addTieredInductionProviderRecipe(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> provider,
+          IItemProvider previousProvider, IItemProvider energyCube, TagKey<Item> circuitTag) {
         String tierName = Attribute.getBaseTier(provider.getBlock()).getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)

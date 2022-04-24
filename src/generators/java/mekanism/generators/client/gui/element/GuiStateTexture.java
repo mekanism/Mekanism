@@ -1,13 +1,14 @@
 package mekanism.generators.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiStateTexture extends GuiTexturedElement {
 
@@ -25,10 +26,10 @@ public class GuiStateTexture extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bind(getResource());
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+        RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
-        minecraft.textureManager.bind(onSupplier.getAsBoolean() ? onTexture : offTexture);
+        RenderSystem.setShaderTexture(0, onSupplier.getAsBoolean() ? onTexture : offTexture);
         blit(matrix, x + 2, y + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);
     }
 }

@@ -1,8 +1,7 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -13,8 +12,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -23,7 +21,8 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.client.jei.machine.BoilerRecipeCategory.BoilerJEIRecipe;
+import mekanism.client.jei.MekanismJEIRecipeType;
+import mekanism.client.jei.recipe.BoilerJEIRecipe;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
@@ -33,13 +32,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextUtils;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ResourceLocation;
 
 public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
 
@@ -51,8 +50,8 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     @Nullable
     private BoilerJEIRecipe recipe;
 
-    public BoilerRecipeCategory(IGuiHelper helper, ResourceLocation id) {
-        super(helper, id, MekanismLang.BOILER.translate(), createIcon(helper, iconRL), 6, 13, 180, 60);
+    public BoilerRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<BoilerJEIRecipe> recipeType) {
+        super(helper, recipeType, MekanismLang.BOILER.translate(), createIcon(helper, iconRL), 6, 13, 180, 60);
         //Note: All these elements except for the heatedCoolantTank and waterTank are in slightly different x positions than in the normal GUI
         // so that they fit properly in JEI
         addElement(new GuiInnerScreen(this, 48, 23, 96, 40, () -> {
@@ -62,10 +61,10 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
                 temperature = HeatAPI.AMBIENT_TEMP;
                 boilRate = 0;
             } else {
-                temperature = recipe.temperature;
-                boilRate = MathUtils.clampToInt(recipe.steam.getAmount());
+                temperature = recipe.temperature();
+                boilRate = MathUtils.clampToInt(recipe.steam().getAmount());
             }
-            return Arrays.asList(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true)),
+            return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(boilRate)));
         }
         ));
@@ -75,18 +74,12 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         cooledCoolantTank = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 168, 13).setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA)));
     }
 
-    @Nonnull
     @Override
-    public Class<? extends BoilerJEIRecipe> getRecipeClass() {
-        return BoilerJEIRecipe.class;
-    }
-
-    @Override
-    public void draw(BoilerJEIRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(BoilerJEIRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrixStack, double mouseX, double mouseY) {
         //Update what the current recipe is so that we have the proper values for temperature and the like
         this.recipe = recipe;
-        super.draw(recipe, matrixStack, mouseX, mouseY);
-        if (recipe.superHeatedCoolant == null) {
+        super.draw(recipe, recipeSlotView, matrixStack, mouseX, mouseY);
+        if (recipe.superHeatedCoolant() == null) {
             superHeatedCoolantTank.drawBarOverlay(matrixStack);
             cooledCoolantTank.drawBarOverlay(matrixStack);
         }
@@ -94,26 +87,14 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     }
 
     @Override
-    public void setIngredients(BoilerJEIRecipe recipe, @Nonnull IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.water.getRepresentations()));
-        if (recipe.superHeatedCoolant == null) {
-            ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.steam);
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, BoilerJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations());
+        if (recipe.superHeatedCoolant() == null) {
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
         } else {
-            ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.superHeatedCoolant.getRepresentations()));
-            ingredients.setOutputs(MekanismJEI.TYPE_GAS, Arrays.asList(recipe.steam, recipe.cooledCoolant));
-        }
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, BoilerJEIRecipe recipe, @Nonnull IIngredients ingredients) {
-        initFluid(recipeLayout.getFluidStacks(), 0, true, waterTank, recipe.water.getRepresentations());
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        if (recipe.superHeatedCoolant == null) {
-            initChemical(gasStacks, 0, false, steamTank, Collections.singletonList(recipe.steam));
-        } else {
-            initChemical(gasStacks, 0, true, superHeatedCoolantTank, recipe.superHeatedCoolant.getRepresentations());
-            initChemical(gasStacks, 1, false, steamTank, Collections.singletonList(recipe.steam));
-            initChemical(gasStacks, 2, false, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant));
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
         }
     }
 
@@ -125,7 +106,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         //Special case heat only recipe
         double temperature = waterAmount * waterToSteamEfficiency / (BoilerMultiblockData.CASING_HEAT_CAPACITY * MekanismConfig.general.boilerWaterConductivity.get()) +
                              HeatUtils.BASE_BOIL_TEMP;
-        recipes.add(new BoilerJEIRecipe(null, FluidStackIngredient.from(FluidTags.WATER, waterAmount),
+        recipes.add(new BoilerJEIRecipe(null, IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
               MekanismGases.STEAM.getStack(waterAmount), GasStack.EMPTY, temperature));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.gasRegistry()) {
@@ -134,28 +115,10 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
                 //If it is a cooled coolant add a recipe for it
                 Gas cooledCoolant = heatedCoolant.getCooledGas();
                 long coolantAmount = Math.round(waterAmount * waterToSteamEfficiency / heatedCoolant.getThermalEnthalpy());
-                recipes.add(new BoilerJEIRecipe(GasStackIngredient.from(gas, coolantAmount), FluidStackIngredient.from(FluidTags.WATER, waterAmount),
+                recipes.add(new BoilerJEIRecipe(IngredientCreatorAccess.gas().from(gas, coolantAmount), IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
                       MekanismGases.STEAM.getStack(waterAmount), cooledCoolant.getStack(coolantAmount), HeatUtils.BASE_BOIL_TEMP));
             }
         }
         return recipes;
-    }
-
-    public static class BoilerJEIRecipe {
-
-        @Nullable
-        private final GasStackIngredient superHeatedCoolant;
-        private final FluidStackIngredient water;
-        private final GasStack steam;
-        private final GasStack cooledCoolant;
-        private final double temperature;
-
-        public BoilerJEIRecipe(@Nullable GasStackIngredient superHeatedCoolant, FluidStackIngredient water, GasStack steam, GasStack cooledCoolant, double temperature) {
-            this.superHeatedCoolant = superHeatedCoolant;
-            this.water = water;
-            this.steam = steam;
-            this.cooledCoolant = cooledCoolant;
-            this.temperature = temperature;
-        }
     }
 }

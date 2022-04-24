@@ -1,17 +1,16 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfuseTypeBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
-import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute.ICrTInfuseTypeAttribute;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
+@ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_INFUSE_TYPE)
-public class CrTInfuseTypeBuilder extends CrTChemicalBuilder<InfuseType, InfuseTypeBuilder, ICrTInfuseTypeAttribute, CrTInfuseTypeBuilder> {
+public class CrTInfuseTypeBuilder extends CrTChemicalBuilder<InfuseType, InfuseTypeBuilder, CrTInfuseTypeBuilder> {
 
     /**
      * Creates a builder for registering a custom {@link InfuseType}.

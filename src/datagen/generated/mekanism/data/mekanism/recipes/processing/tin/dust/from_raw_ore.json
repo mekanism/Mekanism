@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "amount": 3,
+    "ingredient": {
+      "tag": "forge:raw_materials/tin"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_tin",
+    "count": 4
+  }
+}

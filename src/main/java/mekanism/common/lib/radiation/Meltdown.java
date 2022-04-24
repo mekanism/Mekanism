@@ -7,22 +7,22 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class Meltdown {
@@ -48,10 +48,10 @@ public class Meltdown {
         this.ticksExisted = ticksExisted;
     }
 
-    public static Meltdown load(CompoundNBT tag) {
+    public static Meltdown load(CompoundTag tag) {
         return new Meltdown(
-              NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN)),
-              NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)),
+              NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MIN)),
+              NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MAX)),
               tag.getDouble(NBTConstants.MAGNITUDE),
               tag.getDouble(NBTConstants.CHANCE),
               tag.getUUID(NBTConstants.INVENTORY_ID),
@@ -59,23 +59,23 @@ public class Meltdown {
         );
     }
 
-    public void write(CompoundNBT tag) {
-        tag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(minPos));
-        tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(maxPos));
+    public void write(CompoundTag tag) {
+        tag.put(NBTConstants.MIN, NbtUtils.writeBlockPos(minPos));
+        tag.put(NBTConstants.MAX, NbtUtils.writeBlockPos(maxPos));
         tag.putDouble(NBTConstants.MAGNITUDE, magnitude);
         tag.putDouble(NBTConstants.CHANCE, chance);
         tag.putUUID(NBTConstants.INVENTORY_ID, multiblockID);
         tag.putInt(NBTConstants.AGE, ticksExisted);
     }
 
-    public boolean update(World world) {
+    public boolean update(Level world) {
         ticksExisted++;
 
         if (world.random.nextInt() % 10 == 0 && world.random.nextDouble() < magnitude * chance) {
-            int x = MathHelper.nextInt(world.random, minPos.getX(), maxPos.getX());
-            int y = MathHelper.nextInt(world.random, minPos.getY(), maxPos.getY());
-            int z = MathHelper.nextInt(world.random, minPos.getZ(), maxPos.getZ());
-            createExplosion(world, x, y, z, 8, true, Explosion.Mode.DESTROY);
+            int x = Mth.nextInt(world.random, minPos.getX(), maxPos.getX());
+            int y = Mth.nextInt(world.random, minPos.getY(), maxPos.getY());
+            int z = Mth.nextInt(world.random, minPos.getZ(), maxPos.getZ());
+            createExplosion(world, x, y, z, 8, true, Explosion.BlockInteraction.DESTROY);
         }
 
         if (!WorldUtils.isBlockLoaded(world, minPos) || !WorldUtils.isBlockLoaded(world, maxPos)) {
@@ -88,7 +88,7 @@ public class Meltdown {
     /**
      * Creates an explosion and ensures all blocks that are inside our meltdown radius actually get destroyed
      */
-    private void createExplosion(World world, double x, double y, double z, float radius, boolean causesFire, Explosion.Mode mode) {
+    private void createExplosion(Level world, double x, double y, double z, float radius, boolean causesFire, Explosion.BlockInteraction mode) {
         Explosion explosion = new MeltdownExplosion(world, x, y, z, radius, causesFire, mode, multiblockID);
         //Calculate which block positions should get broken based on the logic that would happen in Explosion#explode
         List<BlockPos> toBlow = new ArrayList<>();
@@ -112,7 +112,7 @@ public class Meltdown {
                             BlockPos pos = new BlockPos(d4, d6, d8);
                             BlockState blockstate = world.getBlockState(pos);
                             FluidState fluidstate = blockstate.getFluidState();
-                            if (!blockstate.isAir(world, pos) || !fluidstate.isEmpty()) {
+                            if (!blockstate.isAir() || !fluidstate.isEmpty()) {
                                 f -= (Math.max(blockstate.getExplosionResistance(world, pos, explosion),
                                       fluidstate.getExplosionResistance(world, pos, explosion)) + 0.3F) * 0.3F;
                             }
@@ -142,17 +142,17 @@ public class Meltdown {
         for (BlockPos toExplode : toBlow) {
             BlockState state = world.getBlockState(toExplode);
             //If the block didn't already get broken when running the normal explosion
-            if (!state.isAir(world, toExplode)) {
-                if (state.canDropFromExplosion(world, toExplode, explosion) && world instanceof ServerWorld) {
-                    TileEntity tileentity = state.hasTileEntity() ? world.getBlockEntity(toExplode) : null;
-                    LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) world)
+            if (!state.isAir()) {
+                if (state.canDropFromExplosion(world, toExplode, explosion) && world instanceof ServerLevel level) {
+                    BlockEntity tileentity = state.hasBlockEntity() ? world.getBlockEntity(toExplode) : null;
+                    LootContext.Builder lootContextBuilder = new LootContext.Builder(level)
                           .withRandom(world.random)
-                          .withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(toExplode))
-                          .withParameter(LootParameters.TOOL, ItemStack.EMPTY)
-                          .withOptionalParameter(LootParameters.BLOCK_ENTITY, tileentity)
-                          .withOptionalParameter(LootParameters.THIS_ENTITY, null);
-                    if (mode == Explosion.Mode.DESTROY) {
-                        lootContextBuilder.withParameter(LootParameters.EXPLOSION_RADIUS, radius);
+                          .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(toExplode))
+                          .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+                          .withOptionalParameter(LootContextParams.BLOCK_ENTITY, tileentity)
+                          .withOptionalParameter(LootContextParams.THIS_ENTITY, null);
+                    if (mode == Explosion.BlockInteraction.DESTROY) {
+                        lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
                     }
                     state.getDrops(lootContextBuilder).forEach(stack -> addBlockDrops(drops, stack, toExplode));
                 }
@@ -184,7 +184,7 @@ public class Meltdown {
 
         private final UUID multiblockID;
 
-        private MeltdownExplosion(World world, double x, double y, double z, float radius, boolean causesFire, Mode mode, UUID multiblockID) {
+        private MeltdownExplosion(Level world, double x, double y, double z, float radius, boolean causesFire, BlockInteraction mode, UUID multiblockID) {
             super(world, null, null, null, x, y, z, radius, causesFire, mode);
             this.multiblockID = multiblockID;
         }

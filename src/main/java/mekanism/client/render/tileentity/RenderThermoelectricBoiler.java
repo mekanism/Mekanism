@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -11,26 +11,26 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileEntityBoilerCasing> {
 
-    public RenderThermoelectricBoiler(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderThermoelectricBoiler(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    protected void render(TileEntityBoilerCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityBoilerCasing tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         if (tile.isMaster()) {
             BoilerMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null && multiblock.upperRenderLocation != null) {
                 BlockPos pos = tile.getBlockPos();
-                IVertexBuilder buffer = null;
+                VertexConsumer buffer = null;
                 if (!multiblock.waterTank.isEmpty()) {
                     int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
                     if (height >= 1) {
@@ -42,7 +42,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                         matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                        buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
+                        buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
                         Model3D model = ModelRenderer.getModel(data, multiblock.prevWaterScale);
                         MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevWaterScale), glow, overlayLight, getFaceDisplay(data, model));
                         matrix.popPose();
@@ -58,7 +58,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         data.length = multiblock.length();
                         data.width = multiblock.width();
                         if (buffer == null) {
-                            buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
+                            buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
                         }
                         int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                         matrix.pushPose();

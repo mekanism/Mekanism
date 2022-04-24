@@ -17,17 +17,16 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
@@ -37,8 +36,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     private String clientActiveMultiblock = null;
 
-    public TileEntityStructuralMultiblock(IBlockProvider provider) {
-        super(provider);
+    public TileEntityStructuralMultiblock(IBlockProvider provider, BlockPos pos, BlockState state) {
+        super(provider, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
@@ -130,7 +129,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
             Structure structure = entry.getValue();
             IMultiblock<?> master = structure.getController();
@@ -144,7 +143,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 }
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -174,30 +173,30 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onRightClick(Player player) {
         if (!isRemote()) {
             for (Structure s : structures.values()) {
                 if (s.getController() != null && !getMultiblockData(s).isFormed()) {
                     FormationResult result = s.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
                         player.sendMessage(result.getResultText(), Util.NIL_UUID);
-                        return ActionResultType.SUCCESS;
+                        return InteractionResult.sidedSuccess(isRemote());
                     }
                 }
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
+    public InteractionResult onSneakRightClick(Player player) {
+        return InteractionResult.PASS;
     }
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         if (clientActiveMultiblock != null) {
             updateTag.putString(NBTConstants.ACTIVE_STATE, clientActiveMultiblock);
         }
@@ -205,9 +204,9 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
-        clientActiveMultiblock = tag.contains(NBTConstants.ACTIVE_STATE, NBT.TAG_STRING) ? tag.getString(NBTConstants.ACTIVE_STATE) : null;
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        clientActiveMultiblock = tag.contains(NBTConstants.ACTIVE_STATE, Tag.TAG_STRING) ? tag.getString(NBTConstants.ACTIVE_STATE) : null;
     }
 
     @Override
@@ -219,16 +218,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    protected boolean shouldDumpRadiation() {
+    public boolean shouldDumpRadiation() {
         //We handle dumping radiation separately for multiblocks
         return false;
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        if (!isRemote()) {
-            structures.values().forEach(s -> s.invalidate(level));
-        }
     }
 }

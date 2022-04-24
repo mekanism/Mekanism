@@ -1,16 +1,19 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.ISlotClickHandler;
@@ -18,11 +21,11 @@ import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
-public class GuiSlotScroll extends GuiElement {
+public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
@@ -49,9 +52,9 @@ public class GuiSlotScroll extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bind(getSlotList() == null ? SLOTS_DARK : SLOTS);
+        RenderSystem.setShaderTexture(0, getSlotList() == null ? SLOTS_DARK : SLOTS);
         blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
@@ -70,7 +73,7 @@ public class GuiSlotScroll extends GuiElement {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
@@ -84,9 +87,9 @@ public class GuiSlotScroll extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        IScrollableSlot slot = getSlot(mouseX, mouseY, relativeX, relativeY);
+        IScrollableSlot slot = getSlot(mouseX, mouseY);
         if (slot != null) {
             renderSlotTooltip(matrix, slot, mouseX, mouseY);
         }
@@ -104,19 +107,19 @@ public class GuiSlotScroll extends GuiElement {
             return super.mouseReleased(mouseX, mouseY, button);
         }
         super.mouseReleased(mouseX, mouseY, button);
-        IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
-        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getCarried());
+        IScrollableSlot slot = getSlot(mouseX, mouseY);
+        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.containerMenu.getCarried());
         return true;
     }
 
-    private IScrollableSlot getSlot(double mouseX, double mouseY, int relativeX, int relativeY) {
+    private IScrollableSlot getSlot(double mouseX, double mouseY) {
         List<IScrollableSlot> list = getSlotList();
         if (list == null) {
             return null;
         }
-        int slotX = (int) ((mouseX - relativeX) / 18), slotY = (int) ((mouseY - relativeY) / 18);
+        int slotX = (int) ((mouseX - x) / 18), slotY = (int) ((mouseY - y) / 18);
         // terminate if we clicked the border of a slot
-        int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
+        int slotStartX = x + slotX * 18 + 1, slotStartY = y + slotY * 18 + 1;
         if (mouseX < slotStartX || mouseX >= slotStartX + 16 || mouseY < slotStartY || mouseY >= slotStartY + 16) {
             return null;
         }
@@ -132,7 +135,7 @@ public class GuiSlotScroll extends GuiElement {
         return list.get(slot);
     }
 
-    private void renderSlot(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlot(PoseStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
         if (isSlotEmpty(slot)) {
             return;
@@ -143,7 +146,7 @@ public class GuiSlotScroll extends GuiElement {
         }
     }
 
-    private void renderSlotTooltip(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlotTooltip(PoseStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
         if (isSlotEmpty(slot)) {
             return;
@@ -163,7 +166,7 @@ public class GuiSlotScroll extends GuiElement {
         return slot.getItem() == null || slot.getItem().getStack().isEmpty();
     }
 
-    private void renderSlotText(MatrixStack matrix, String text, int x, int y) {
+    private void renderSlotText(PoseStack matrix, String text, int x, int y) {
         matrix.pushPose();
         MekanismRenderer.resetColor();
         float scale = 0.6F;
@@ -197,5 +200,12 @@ public class GuiSlotScroll extends GuiElement {
 
     private List<IScrollableSlot> getSlotList() {
         return slotList.get();
+    }
+
+    @Nullable
+    @Override
+    public Object getIngredient(double mouseX, double mouseY) {
+        IScrollableSlot slot = getSlot(mouseX, mouseY);
+        return slot == null ? null : slot.getItem().getStack();
     }
 }

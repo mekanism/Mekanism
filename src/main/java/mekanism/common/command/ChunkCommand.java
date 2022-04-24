@@ -6,15 +6,15 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.ColumnPosArgument;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ColumnPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ColumnPos;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +26,7 @@ public class ChunkCommand {
 
     private static final LongSet chunkWatchers = new LongOpenHashSet();
 
-    static ArgumentBuilder<CommandSource, ?> register() {
+    static ArgumentBuilder<CommandSourceStack, ?> register() {
         MinecraftForge.EVENT_BUS.register(ChunkCommand.class);
         return Commands.literal("chunk")
               .requires(cs -> cs.hasPermission(2))
@@ -38,10 +38,10 @@ public class ChunkCommand {
 
     private static class WatchCommand {
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("watch")
                   .executes(ctx -> {
-                      CommandSource source = ctx.getSource();
+                      CommandSourceStack source = ctx.getSource();
                       return watch(source, new ChunkPos(new BlockPos(source.getPosition())));
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
@@ -50,7 +50,7 @@ public class ChunkCommand {
                         }));
         }
 
-        private static int watch(CommandSource source, ChunkPos chunkPos) {
+        private static int watch(CommandSourceStack source, ChunkPos chunkPos) {
             chunkWatchers.add(ChunkPos.asLong(chunkPos.x, chunkPos.z));
             source.sendSuccess(MekanismLang.COMMAND_CHUNK_WATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
             return 0;
@@ -59,10 +59,10 @@ public class ChunkCommand {
 
     private static class UnwatchCommand {
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("unwatch")
                   .executes(ctx -> {
-                      CommandSource source = ctx.getSource();
+                      CommandSourceStack source = ctx.getSource();
                       return unwatch(source, new ChunkPos(new BlockPos(source.getPosition())));
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
@@ -71,7 +71,7 @@ public class ChunkCommand {
                         }));
         }
 
-        private static int unwatch(CommandSource source, ChunkPos chunkPos) {
+        private static int unwatch(CommandSourceStack source, ChunkPos chunkPos) {
             chunkWatchers.remove(ChunkPos.asLong(chunkPos.x, chunkPos.z));
             source.sendSuccess(MekanismLang.COMMAND_CHUNK_UNWATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
             return 0;
@@ -80,7 +80,7 @@ public class ChunkCommand {
 
     private static class ClearCommand {
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("clear")
                   .executes(ctx -> {
                       int count = chunkWatchers.size();
@@ -93,15 +93,15 @@ public class ChunkCommand {
 
     private static class FlushCommand {
 
-        static ArgumentBuilder<CommandSource, ?> register() {
+        static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("flush")
                   .executes(ctx -> {
-                      CommandSource source = ctx.getSource();
-                      ServerChunkProvider sp = source.getLevel().getChunkSource();
+                      CommandSourceStack source = ctx.getSource();
+                      ServerChunkCache sp = source.getLevel().getChunkSource();
                       int startCount = sp.getLoadedChunksCount();
                       //TODO: Check this
                       //sp.queueUnloadAll();
-                      sp.tick(() -> false);
+                      sp.tick(() -> false, false);
                       source.sendSuccess(MekanismLang.COMMAND_CHUNK_FLUSH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, startCount - sp.getLoadedChunksCount()), true);
                       return 0;
                   });
@@ -124,12 +124,12 @@ public class ChunkCommand {
         }
         ChunkPos pos = event.getChunk().getPos();
         if (chunkWatchers.contains(pos.toLong())) {
-            ITextComponent message = direction.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(pos));
+            Component message = direction.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(pos));
             event.getWorld().players().forEach(player -> player.sendMessage(message, Util.NIL_UUID));
         }
     }
 
-    private static ITextComponent getPosition(ChunkPos pos) {
+    private static Component getPosition(ChunkPos pos) {
         return MekanismLang.GENERIC_WITH_COMMA.translate(pos.x, pos.z);
     }
 }

@@ -1,221 +1,161 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelJetpack extends MekanismJavaModel {
 
+    public static final ModelLayerLocation JETPACK_LAYER = new ModelLayerLocation(Mekanism.rl("jetpack"), "main");
     private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
-    private static final RenderType WING_RENDER_TYPE = MekanismRenderType.mekStandard(JETPACK_TEXTURE);
+
+    protected static final ModelPartData PACK_TOP = new ModelPartData("packTop", CubeListBuilder.create()
+          .texOffs(92, 28)
+          .addBox(-4, 0, 4, 8, 4, 1),
+          PartPose.rotation(0.2094395F, 0, 0));
+    protected static final ModelPartData PACK_BOTTOM = new ModelPartData("packBottom", CubeListBuilder.create()
+          .texOffs(92, 42)
+          .addBox(-4, 4.1F, 1.5F, 8, 4, 4),
+          PartPose.rotation(-0.0872665F, 0, 0));
+    protected static final ModelPartData PACK_MID = new ModelPartData("packMid", CubeListBuilder.create()
+          .texOffs(92, 34)
+          .addBox(-4, 3.3F, 1.5F, 8, 1, 4));
+    protected static final ModelPartData PACK_CORE = new ModelPartData("packCore", CubeListBuilder.create()
+          .texOffs(69, 2)
+          .addBox(-3.5F, 3, 2, 7, 1, 3));
+    protected static final ModelPartData WING_SUPPORT_L = new ModelPartData("wingSupportL", CubeListBuilder.create()
+          .texOffs(71, 55)
+          .addBox(3, -1, 2.2F, 7, 2, 2),
+          PartPose.rotation(0, 0, 0.2792527F));
+    protected static final ModelPartData WING_SUPPORT_R = new ModelPartData("wingSupportR", CubeListBuilder.create()
+          .texOffs(71, 55)
+          .addBox(-10, -1, 2.2F, 7, 2, 2),
+          PartPose.rotation(0, 0, -0.2792527F));
+    protected static final ModelPartData PACK_TOP_REAR = new ModelPartData("packTopRear", CubeListBuilder.create()
+          .texOffs(106, 28)
+          .addBox(-4, 1, 1, 8, 3, 3),
+          PartPose.rotation(0.2094395F, 0, 0));
+    protected static final ModelPartData EXTENDO_SUPPORT_L = new ModelPartData("extendoSupportL", CubeListBuilder.create()
+          .texOffs(94, 16)
+          .addBox(8, -0.2F, 2.5F, 9, 1, 1),
+          PartPose.rotation(0, 0, 0.2792527F));
+    protected static final ModelPartData EXTENDO_SUPPORT_R = new ModelPartData("extendoSupportR", CubeListBuilder.create()
+          .texOffs(94, 16)
+          .addBox(-17, -0.2F, 2.5F, 9, 1, 1),
+          PartPose.rotation(0, 0, -0.2792527F));
+    protected static final ModelPartData WING_BLADE_L = new ModelPartData("wingBladeL", CubeListBuilder.create()
+          .texOffs(62, 5)
+          .addBox(3.3F, 1.1F, 3, 14, 2, 0),
+          PartPose.rotation(0, 0, 0.2094395F));
+    protected static final ModelPartData WING_BLADE_R = new ModelPartData("wingBladeR", CubeListBuilder.create()
+          .texOffs(62, 5)
+          .addBox(-17.3F, 1.1F, 3, 14, 2, 0),
+          PartPose.rotation(0, 0, -0.2094395F));
+    protected static final ModelPartData PACK_DOODAD_2 = new ModelPartData("packDoodad2", CubeListBuilder.create()
+          .texOffs(116, 0)
+          .addBox(1, 0.5F, 4.2F, 2, 1, 1),
+          PartPose.rotation(0.2094395F, 0, 0));
+    protected static final ModelPartData PACK_DOODAD_3 = new ModelPartData("packDoodad3", CubeListBuilder.create()
+          .texOffs(116, 0)
+          .addBox(1, 2, 4.2F, 2, 1, 1),
+          PartPose.rotation(0.2094395F, 0, 0));
+    protected static final ModelPartData BOTTOM_THRUSTER = new ModelPartData("bottomThruster", CubeListBuilder.create()
+          .texOffs(68, 26)
+          .addBox(-3, 8, 2.333333F, 6, 1, 2));
+    protected static final ModelPartData LIGHT_1 = new ModelPartData("light1", CubeListBuilder.create()
+          .texOffs(55, 2)
+          .addBox(2, 6.55F, 4, 1, 1, 1));
+    protected static final ModelPartData LIGHT_2 = new ModelPartData("light2", CubeListBuilder.create()
+          .texOffs(55, 2)
+          .addBox(0, 6.55F, 4, 1, 1, 1));
+    protected static final ModelPartData LIGHT_3 = new ModelPartData("light3", CubeListBuilder.create()
+          .texOffs(55, 2)
+          .addBox(-3, 6.55F, 4, 1, 1, 1));
+
+    //Specific to the Jetpack, the armored jetpack uses different numbers
+    private static final ModelPartData THRUSTER_LEFT = thrusterLeft(-3);
+    private static final ModelPartData THRUSTER_RIGHT = thrusterRight(-3);
+    private static final ModelPartData FUEL_TUBE_RIGHT = fuelTubeRight(-3);
+    private static final ModelPartData FUEL_TUBE_LEFT = fuelTubeLeft(-3);
+
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(128, 64, PACK_TOP, PACK_BOTTOM, THRUSTER_LEFT, THRUSTER_RIGHT,
+              FUEL_TUBE_RIGHT, FUEL_TUBE_LEFT, PACK_MID, PACK_CORE, WING_SUPPORT_L, WING_SUPPORT_R, PACK_TOP_REAR,
+              EXTENDO_SUPPORT_L, EXTENDO_SUPPORT_R, WING_BLADE_L, WING_BLADE_R, PACK_DOODAD_2, PACK_DOODAD_3,
+              BOTTOM_THRUSTER, LIGHT_1, LIGHT_2, LIGHT_3);
+    }
+
     private final RenderType frameRenderType;
     private final RenderType wingRenderType;
+    private final List<ModelPart> parts;
+    private final List<ModelPart> litParts;
+    private final List<ModelPart> wingParts;
 
-    private final ModelRenderer packTop;
-    private final ModelRenderer packBottom;
-    private final ModelRenderer thrusterLeft;
-    private final ModelRenderer thrusterRight;
-    private final ModelRenderer fuelTubeRight;
-    private final ModelRenderer fuelTubeLeft;
-    private final ModelRenderer packMid;
-    private final ModelRenderer packCore;
-    private final ModelRenderer wingSupportL;
-    private final ModelRenderer wingSupportR;
-    private final ModelRenderer packTopRear;
-    private final ModelRenderer extendoSupportL;
-    private final ModelRenderer extendoSupportR;
-    private final ModelRenderer wingBladeL;
-    private final ModelRenderer wingBladeR;
-    private final ModelRenderer packDoodad2;
-    private final ModelRenderer packDoodad3;
-    private final ModelRenderer bottomThruster;
-    private final ModelRenderer light1;
-    private final ModelRenderer light2;
-    private final ModelRenderer light3;
-
-    public ModelJetpack() {
-        this(JETPACK_TEXTURE, WING_RENDER_TYPE, -3);
+    public ModelJetpack(EntityModelSet entityModelSet) {
+        this(entityModelSet.bakeLayer(JETPACK_LAYER), JETPACK_TEXTURE);
     }
 
-    /**
-     * @param fuelZ Z offset for the Fuel Tubes, thrusters are offset by {@code fuelZ - 0.5}
-     */
-    protected ModelJetpack(ResourceLocation texture, RenderType wingRenderType, float fuelZ) {
+    protected ModelJetpack(ModelPart root, ResourceLocation texture) {
         super(RenderType::entitySolid);
         this.frameRenderType = renderType(texture);
-        this.wingRenderType = wingRenderType;
-        texWidth = 128;
-        texHeight = 64;
-
-        packTop = new ModelRenderer(this, 92, 28);
-        packTop.addBox(-4F, 0F, 4F, 8, 4, 1, false);
-        packTop.setPos(0F, 0F, 0F);
-        packTop.setTexSize(128, 64);
-        packTop.mirror = true;
-        setRotation(packTop, 0.2094395F, 0F, 0F);
-        packBottom = new ModelRenderer(this, 92, 42);
-        packBottom.addBox(-4F, 4.1F, 1.5F, 8, 4, 4, false);
-        packBottom.setPos(0F, 0F, 0F);
-        packBottom.setTexSize(128, 64);
-        packBottom.mirror = true;
-        setRotation(packBottom, -0.0872665F, 0F, 0F);
-        thrusterLeft = new ModelRenderer(this, 69, 30);
-        thrusterLeft.addBox(7.8F, 1.5F, fuelZ - 0.5F, 3, 3, 3, false);
-        thrusterLeft.setPos(0F, 0F, 0F);
-        thrusterLeft.setTexSize(128, 64);
-        thrusterLeft.mirror = true;
-        setRotation(thrusterLeft, 0.7853982F, -0.715585F, 0.3490659F);
-        thrusterRight = new ModelRenderer(this, 69, 30);
-        thrusterRight.addBox(-10.8F, 1.5F, fuelZ - 0.5F, 3, 3, 3, false);
-        thrusterRight.setPos(0F, 0F, 0F);
-        thrusterRight.setTexSize(128, 64);
-        thrusterRight.mirror = true;
-        setRotation(thrusterRight, 0.7853982F, 0.715585F, -0.3490659F);
-        fuelTubeRight = new ModelRenderer(this, 92, 23);
-        fuelTubeRight.addBox(-11.2F, 2F, fuelZ, 8, 2, 2, false);
-        fuelTubeRight.setPos(0F, 0F, 0F);
-        fuelTubeRight.setTexSize(128, 64);
-        fuelTubeRight.mirror = true;
-        setRotation(fuelTubeRight, 0.7853982F, 0.715585F, -0.3490659F);
-        fuelTubeLeft = new ModelRenderer(this, 92, 23);
-        fuelTubeLeft.addBox(3.2F, 2F, fuelZ, 8, 2, 2, false);
-        fuelTubeLeft.setPos(0F, 0F, 0F);
-        fuelTubeLeft.setTexSize(128, 64);
-        fuelTubeLeft.mirror = true;
-        setRotation(fuelTubeLeft, 0.7853982F, -0.715585F, 0.3490659F);
-        packMid = new ModelRenderer(this, 92, 34);
-        packMid.addBox(-4F, 3.3F, 1.5F, 8, 1, 4, false);
-        packMid.setPos(0F, 0F, 0F);
-        packMid.setTexSize(128, 64);
-        packMid.mirror = true;
-        setRotation(packMid, 0F, 0F, 0F);
-        packCore = new ModelRenderer(this, 69, 2);
-        packCore.addBox(-3.5F, 3F, 2F, 7, 1, 3, false);
-        packCore.setPos(0F, 0F, 0F);
-        packCore.setTexSize(128, 64);
-        packCore.mirror = true;
-        setRotation(packCore, 0F, 0F, 0F);
-        wingSupportL = new ModelRenderer(this, 71, 55);
-        wingSupportL.addBox(3F, -1F, 2.2F, 7, 2, 2, false);
-        wingSupportL.setPos(0F, 0F, 0F);
-        wingSupportL.setTexSize(128, 64);
-        wingSupportL.mirror = true;
-        setRotation(wingSupportL, 0F, 0F, 0.2792527F);
-        wingSupportR = new ModelRenderer(this, 71, 55);
-        wingSupportR.addBox(-10F, -1F, 2.2F, 7, 2, 2, false);
-        wingSupportR.setPos(0F, 0F, 0F);
-        wingSupportR.setTexSize(128, 64);
-        wingSupportR.mirror = true;
-        setRotation(wingSupportR, 0F, 0F, -0.2792527F);
-        packTopRear = new ModelRenderer(this, 106, 28);
-        packTopRear.addBox(-4F, 1F, 1F, 8, 3, 3, false);
-        packTopRear.setPos(0F, 0F, 0F);
-        packTopRear.setTexSize(128, 64);
-        packTopRear.mirror = true;
-        setRotation(packTopRear, 0.2094395F, 0F, 0F);
-        extendoSupportL = new ModelRenderer(this, 94, 16);
-        extendoSupportL.addBox(8F, -0.2F, 2.5F, 9, 1, 1, false);
-        extendoSupportL.setPos(0F, 0F, 0F);
-        extendoSupportL.setTexSize(128, 64);
-        extendoSupportL.mirror = true;
-        setRotation(extendoSupportL, 0F, 0F, 0.2792527F);
-        extendoSupportR = new ModelRenderer(this, 94, 16);
-        extendoSupportR.addBox(-17F, -0.2F, 2.5F, 9, 1, 1, false);
-        extendoSupportR.setPos(0F, 0F, 0F);
-        extendoSupportR.setTexSize(128, 64);
-        extendoSupportR.mirror = true;
-        setRotation(extendoSupportR, 0F, 0F, -0.2792527F);
-        wingBladeL = new ModelRenderer(this, 62, 5);
-        wingBladeL.addBox(3.3F, 1.1F, 3F, 14, 2, 0, false);
-        wingBladeL.setPos(0F, 0F, 0F);
-        wingBladeL.setTexSize(128, 64);
-        wingBladeL.mirror = true;
-        setRotation(wingBladeL, 0F, 0F, 0.2094395F);
-        wingBladeR = new ModelRenderer(this, 62, 5);
-        wingBladeR.addBox(-17.3F, 1.1F, 3F, 14, 2, 0, false);
-        wingBladeR.setPos(0F, 0F, 0F);
-        wingBladeR.setTexSize(128, 64);
-        wingBladeR.mirror = true;
-        setRotation(wingBladeR, 0F, 0F, -0.2094395F);
-        packDoodad2 = new ModelRenderer(this, 116, 0);
-        packDoodad2.addBox(1F, 0.5F, 4.2F, 2, 1, 1, false);
-        packDoodad2.setPos(0F, 0F, 0F);
-        packDoodad2.setTexSize(128, 64);
-        packDoodad2.mirror = true;
-        setRotation(packDoodad2, 0.2094395F, 0F, 0F);
-        packDoodad3 = new ModelRenderer(this, 116, 0);
-        packDoodad3.addBox(1F, 2F, 4.2F, 2, 1, 1, false);
-        packDoodad3.setPos(0F, 0F, 0F);
-        packDoodad3.setTexSize(128, 64);
-        packDoodad3.mirror = true;
-        setRotation(packDoodad3, 0.2094395F, 0F, 0F);
-        bottomThruster = new ModelRenderer(this, 68, 26);
-        bottomThruster.addBox(-3F, 8F, 2.333333F, 6, 1, 2, false);
-        bottomThruster.setPos(0F, 0F, 0F);
-        bottomThruster.setTexSize(128, 64);
-        bottomThruster.mirror = true;
-        setRotation(bottomThruster, 0F, 0F, 0F);
-        light1 = new ModelRenderer(this, 55, 2);
-        light1.addBox(2F, 6.55F, 4F, 1, 1, 1, false);
-        light1.setPos(0F, 0F, 0F);
-        light1.setTexSize(128, 64);
-        light1.mirror = true;
-        setRotation(light1, 0F, 0F, 0F);
-        light2 = new ModelRenderer(this, 55, 2);
-        light2.addBox(0F, 6.55F, 4F, 1, 1, 1, false);
-        light2.setPos(0F, 0F, 0F);
-        light2.setTexSize(128, 64);
-        light2.mirror = true;
-        setRotation(light2, 0F, 0F, 0F);
-        light3 = new ModelRenderer(this, 55, 2);
-        light3.addBox(-3F, 6.55F, 4F, 1, 1, 1, false);
-        light3.setPos(0F, 0F, 0F);
-        light3.setTexSize(128, 64);
-        light3.mirror = true;
-        setRotation(light3, 0F, 0F, 0F);
+        this.wingRenderType = MekanismRenderType.standard(texture);
+        parts = getRenderableParts(root, PACK_TOP, PACK_BOTTOM, THRUSTER_LEFT, THRUSTER_RIGHT, FUEL_TUBE_RIGHT, FUEL_TUBE_LEFT, PACK_MID,
+              WING_SUPPORT_L, WING_SUPPORT_R, PACK_TOP_REAR, EXTENDO_SUPPORT_L, EXTENDO_SUPPORT_R, PACK_DOODAD_2, PACK_DOODAD_3, BOTTOM_THRUSTER);
+        litParts = getRenderableParts(root, LIGHT_1, LIGHT_2, LIGHT_3, PACK_CORE);
+        wingParts = getRenderableParts(root, WING_BLADE_L, WING_BLADE_R);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexBuilder(renderer, frameRenderType, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderWings(matrix, getVertexBuilder(renderer, wingRenderType, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
+    public void render(@Nonnull PoseStack poseStack, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
+        renderToBuffer(poseStack, getVertexConsumer(renderer, frameRenderType, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        renderPartsToBuffer(wingParts, poseStack, getVertexConsumer(renderer, wingRenderType, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        packTop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        packBottom.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        thrusterLeft.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        thrusterRight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        fuelTubeRight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        fuelTubeLeft.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        packMid.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        wingSupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        wingSupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        packTopRear.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        extendoSupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        extendoSupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        packDoodad2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        packDoodad3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bottomThruster.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-
-        //Stuff below here uses full bright for the lighting
-        light = MekanismRenderer.FULL_LIGHT;
-        light1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        light2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        light3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        packCore.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+        renderPartsToBuffer(litParts, poseStack, vertexConsumer, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        wingBladeL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        wingBladeR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    protected static ModelPartData thrusterLeft(float fuelZ) {
+        return new ModelPartData("thrusterLeft", CubeListBuilder.create()
+              .texOffs(69, 30)
+              .addBox(7.8F, 1.5F, fuelZ - 0.5F, 3, 3, 3),
+              PartPose.rotation(0.7853982F, -0.715585F, 0.3490659F));
+    }
+
+    protected static ModelPartData thrusterRight(float fuelZ) {
+        return new ModelPartData("thrusterRight", CubeListBuilder.create()
+              .texOffs(69, 30)
+              .addBox(-10.8F, 1.5F, fuelZ - 0.5F, 3, 3, 3),
+              PartPose.rotation(0.7853982F, 0.715585F, -0.3490659F));
+    }
+
+    protected static ModelPartData fuelTubeRight(float fuelZ) {
+        return new ModelPartData("fuelTubeRight", CubeListBuilder.create()
+              .texOffs(92, 23)
+              .addBox(-11.2F, 2, fuelZ, 8, 2, 2),
+              PartPose.rotation(0.7853982F, 0.715585F, -0.3490659F));
+    }
+
+    protected static ModelPartData fuelTubeLeft(float fuelZ) {
+        return new ModelPartData("fuelTubeLeft", CubeListBuilder.create()
+              .texOffs(92, 23)
+              .addBox(3.2F, 2, fuelZ, 8, 2, 2),
+              PartPose.rotation(0.7853982F, -0.715585F, 0.3490659F));
     }
 }

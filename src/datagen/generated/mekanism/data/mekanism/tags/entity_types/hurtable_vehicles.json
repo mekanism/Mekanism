@@ -1,0 +1,20 @@
+{
+  "values": [
+    "minecraft:boat",
+    "minecraft:minecart",
+    "minecraft:chest_minecart",
+    "minecraft:command_block_minecart",
+    "minecraft:furnace_minecart",
+    "minecraft:hopper_minecart",
+    "minecraft:spawner_minecart",
+    "minecraft:tnt_minecart",
+    {
+      "id": "biomesoplenty:boat",
+      "required": false
+    },
+    {
+      "id": "byg:boat",
+      "required": false
+    }
+  ]
+}

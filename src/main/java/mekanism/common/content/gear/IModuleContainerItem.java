@@ -18,14 +18,14 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public interface IModuleContainerItem extends IItemHUDProvider {
 
@@ -38,11 +38,11 @@ public interface IModuleContainerItem extends IItemHUDProvider {
         return MekanismAPI.getModuleHelper().load(stack, typeProvider);
     }
 
-    default void addModuleDetails(ItemStack stack, List<ITextComponent> tooltip) {
+    default void addModuleDetails(ItemStack stack, List<Component> tooltip) {
         for (Module<?> module : getModules(stack)) {
             ModuleData<?> data = module.getData();
             if (module.getInstalledCount() > 1) {
-                ITextComponent amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), data.getMaxStackSize());
+                Component amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), data.getMaxStackSize());
                 tooltip.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, data, amount));
             } else {
                 tooltip.add(TextComponentUtil.build(EnumColor.GRAY, data));
@@ -51,12 +51,8 @@ public interface IModuleContainerItem extends IItemHUDProvider {
     }
 
     default boolean hasModule(ItemStack stack, IModuleDataProvider<?> type) {
-        CompoundNBT modules = ItemDataUtils.getCompound(stack, NBTConstants.MODULES);
-        if (modules.contains(type.getRegistryName().toString(), NBT.TAG_COMPOUND)) {
-            return true;
-        }
-        String legacyName = type.getModuleData().getLegacyName();
-        return legacyName != null && modules.contains(legacyName, NBT.TAG_COMPOUND);
+        CompoundTag modules = ItemDataUtils.getCompound(stack, NBTConstants.MODULES);
+        return modules.contains(type.getRegistryName().toString(), Tag.TAG_COMPOUND);
     }
 
     default boolean isModuleEnabled(ItemStack stack, IModuleDataProvider<?> type) {
@@ -72,13 +68,8 @@ public interface IModuleContainerItem extends IItemHUDProvider {
                 module.save(null);
                 module.onRemoved(false);
             } else {
-                CompoundNBT modules = ItemDataUtils.getCompound(stack, NBTConstants.MODULES);
-                //Just do the "easy" to check method and remove both the proper entry and the legacy one if there is one
+                CompoundTag modules = ItemDataUtils.getCompound(stack, NBTConstants.MODULES);
                 modules.remove(type.getRegistryName().toString());
-                String legacyName = type.getLegacyName();
-                if (legacyName != null) {
-                    modules.remove(legacyName);
-                }
                 module.onRemoved(true);
             }
         }
@@ -87,10 +78,10 @@ public interface IModuleContainerItem extends IItemHUDProvider {
     default void addModule(ItemStack stack, ModuleData<?> type) {
         Module<?> module = ModuleHelper.INSTANCE.load(stack, type);
         if (module == null) {
-            if (!ItemDataUtils.hasData(stack, NBTConstants.MODULES, NBT.TAG_COMPOUND)) {
-                ItemDataUtils.setCompound(stack, NBTConstants.MODULES, new CompoundNBT());
+            if (!ItemDataUtils.hasData(stack, NBTConstants.MODULES, Tag.TAG_COMPOUND)) {
+                ItemDataUtils.setCompound(stack, NBTConstants.MODULES, new CompoundTag());
             }
-            ItemDataUtils.getCompound(stack, NBTConstants.MODULES).put(type.getRegistryName().toString(), new CompoundNBT());
+            ItemDataUtils.getCompound(stack, NBTConstants.MODULES).put(type.getRegistryName().toString(), new CompoundTag());
             ModuleHelper.INSTANCE.load(stack, type).onAdded(true);
         } else {
             module.setInstalledCount(module.getInstalledCount() + 1);
@@ -100,7 +91,7 @@ public interface IModuleContainerItem extends IItemHUDProvider {
     }
 
     @Override
-    default void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
+    default void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         for (Module<?> module : getModules(stack)) {
             if (module.renderHUD()) {
                 module.addHUDStrings(player, list);
@@ -108,7 +99,7 @@ public interface IModuleContainerItem extends IItemHUDProvider {
         }
     }
 
-    default List<IHUDElement> getHUDElements(PlayerEntity player, ItemStack stack) {
+    default List<IHUDElement> getHUDElements(Player player, ItemStack stack) {
         List<IHUDElement> ret = new ArrayList<>();
         for (Module<?> module : getModules(stack)) {
             if (module.renderHUD()) {
@@ -120,13 +111,13 @@ public interface IModuleContainerItem extends IItemHUDProvider {
 
     static boolean hasOtherEnchants(ItemStack stack) {
         MatchedEnchants enchants = new MatchedEnchants(stack);
-        IModuleContainerItem.forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++);
+        forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++);
         return enchants.enchantments == null || enchants.matchedCount < enchants.enchantments.size();
     }
 
-    default void filterTooltips(ItemStack stack, List<ITextComponent> tooltips) {
-        List<ITextComponent> enchantsToRemove = new ArrayList<>();
-        IModuleContainerItem.forMatchingEnchants(stack, new MatchedEnchants(stack),
+    default void filterTooltips(ItemStack stack, List<Component> tooltips) {
+        List<Component> enchantsToRemove = new ArrayList<>();
+        forMatchingEnchants(stack, new MatchedEnchants(stack),
               (e, module) -> enchantsToRemove.add(module.getCustomInstance().getEnchantment().getFullname(module.getInstalledCount())));
         tooltips.removeAll(enchantsToRemove);
     }

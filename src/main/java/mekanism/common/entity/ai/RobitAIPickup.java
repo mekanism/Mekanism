@@ -3,17 +3,17 @@ package mekanism.common.entity.ai;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.AABB;
 
 public class RobitAIPickup extends RobitAIBase {
 
     private static final int SEARCH_RADIUS = 10;
     private static final int SEARCH_RADIUS_SQ = SEARCH_RADIUS * SEARCH_RADIUS;
 
-    private final Predicate<Entity> itemPredicate = entity -> !entity.isSpectator() && entity instanceof ItemEntity && theRobit.isItemValid((ItemEntity) entity);
+    private final Predicate<Entity> itemPredicate = entity -> !entity.isSpectator() && entity instanceof ItemEntity item && theRobit.isItemValid(item);
     private ItemEntity closest;
 
     public RobitAIPickup(EntityRobit entityRobit, float speed) {
@@ -25,7 +25,7 @@ public class RobitAIPickup extends RobitAIBase {
         if (!theRobit.getDropPickup()) {
             return false;
         }
-        PathNavigator navigator = getNavigator();
+        PathNavigation navigator = getNavigator();
         if (validateClosest() && navigator.createPath(closest, 0) != null) {
             return true;
         }
@@ -35,7 +35,7 @@ public class RobitAIPickup extends RobitAIBase {
         double closestDistance = -1;
         //TODO: Look at and potentially mimic the way piglins search for items to pickup once their AI has mappings
         List<ItemEntity> items = theRobit.level.getEntitiesOfClass(ItemEntity.class,
-              new AxisAlignedBB(theRobit.getX() - SEARCH_RADIUS, theRobit.getY() - SEARCH_RADIUS, theRobit.getZ() - SEARCH_RADIUS,
+              new AABB(theRobit.getX() - SEARCH_RADIUS, theRobit.getY() - SEARCH_RADIUS, theRobit.getZ() - SEARCH_RADIUS,
                     theRobit.getX() + SEARCH_RADIUS, theRobit.getY() + SEARCH_RADIUS, theRobit.getZ() + SEARCH_RADIUS), itemPredicate);
         for (ItemEntity entity : items) {
             double distance = theRobit.distanceToSqr(entity);

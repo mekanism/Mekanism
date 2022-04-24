@@ -36,8 +36,8 @@ license="MIT"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.mekanism]]
-    modId="jeitweaker"
+    modId="wildfire_gender"
     mandatory=false
-    versionRange="${jeitweaker_version}"
+    versionRange="${wildfire_gender_version}"
     ordering="AFTER"
     side="BOTH"

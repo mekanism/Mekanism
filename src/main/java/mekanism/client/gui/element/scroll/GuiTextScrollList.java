@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -57,7 +57,7 @@ public class GuiTextScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         if (!textEntries.isEmpty()) {
             //Render the text into the entries
@@ -75,7 +75,7 @@ public class GuiTextScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw Selected
         int scrollIndex = getCurrentSelection();
         if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {

@@ -7,12 +7,15 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
@@ -29,42 +32,49 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.FormulaInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
+    private static final Predicate<@NonNull ItemStack> formulaSlotValidator = stack -> stack.getItem() instanceof ItemCraftingFormula;
 
     private static final int BASE_TICKS_REQUIRED = 40;
 
-    private final CraftingInventory dummyInv = MekanismUtils.getDummyCraftingInv();
+    private final CraftingContainer dummyInv = MekanismUtils.getDummyCraftingInv();
 
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operatingTicks;
@@ -78,7 +88,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     public RecipeFormula formula;
     @Nullable
-    private ICraftingRecipe cachedRecipe = null;
+    private CraftingRecipe cachedRecipe = null;
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
@@ -90,36 +100,42 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem")
-    private FormulaInventorySlot formulaSlot;
+    private BasicInventorySlot formulaSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityFormulaicAssemblicator() {
-        super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR);
+    public TileEntityFormulaicAssemblicator(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlots, outputSlots, energySlot, false);
+        ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
+        if (itemConfig != null) {
+            //Expose formula slot via extra
+            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, formulaSlot));
+            itemConfig.setDefaults();
+        }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
-
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 
     @Nonnull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers() {
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @Nonnull
     @Override
-    protected IInventorySlotHolder getInitialInventory() {
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         craftingGridSlots = new ArrayList<>();
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(formulaSlot = FormulaInventorySlot.at(this, 6, 26));
+        builder.addSlot(formulaSlot = BasicInventorySlot.at(formulaSlotValidator, listener, 6, 26))
+              .setSlotOverlay(SlotOverlay.FORMULA);
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 int index = slotY * 9 + slotX;
@@ -137,31 +153,31 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         return ItemHandlerHelper.canItemStacksStack(stockItem.getStack(), stack);
                     }
                     return false;
-                }, item -> true, this, 8 + slotX * 18, 98 + slotY * 18);
+                }, item -> true, listener, 8 + slotX * 18, 98 + slotY * 18);
                 builder.addSlot(inputSlot);
                 inputSlots.add(inputSlot);
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
-                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, this, 26 + slotX * 18, 17 + slotY * 18);
+                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, listener, 26 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(craftingSlot);
                 craftingGridSlots.add(craftingSlot);
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
-                OutputInventorySlot outputSlot = OutputInventorySlot.at(this, 116 + slotX * 18, 17 + slotY * 18);
+                OutputInventorySlot outputSlot = OutputInventorySlot.at(listener, 116 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(outputSlot);
                 outputSlots.add(outputSlot);
             }
         }
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 76));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
         return builder.build();
     }
 
-    public FormulaInventorySlot getFormulaSlot() {
+    public BasicInventorySlot getFormulaSlot() {
         return formulaSlot;
     }
 
@@ -266,9 +282,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void markDirty(boolean recheckBlockState) {
-        super.markDirty(recheckBlockState);
-        //TODO: Should this be changed to being in onContentsChanged instead of markDirty?
+    protected void setChanged(boolean updateComparator) {
+        super.setChanged(updateComparator);
+        //TODO: Should this be changed to being in onContentsChanged instead of setChanged?
         recalculateRecipe();
     }
 
@@ -281,7 +297,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 }
                 lastRemainingItems = EMPTY_LIST;
                 if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, level)) {
-                    cachedRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, dummyInv, level).orElse(null);
+                    cachedRecipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, dummyInv, level).orElse(null);
                 }
                 if (cachedRecipe == null) {
                     lastOutputStack = ItemStack.EMPTY;
@@ -328,7 +344,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             if (formula != null) {
                 moveItemsToGrid();
             }
-            markDirty(false);
+            markForSave();
             return true;
         }
         return false;
@@ -366,7 +382,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         if (formula.isIngredientInPos(level, stockStack, i)) {
                             recipeSlot.setStack(StackUtils.size(stockStack, 1));
                             MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
-                            markDirty(false);
+                            markForSave();
                             found = true;
                             break;
                         }
@@ -378,7 +394,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             } else {
                 //Update recipeStack as well, so we can check if it is empty without having to get it again
                 recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
-                markDirty(false);
+                markForSave();
                 if (!recipeStack.isEmpty()) {
                     ret = false;
                 }
@@ -408,7 +424,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 recipeSlot.setStack(tryMoveToInput(recipeStack));
             }
         }
-        markDirty(false);
+        markForSave();
     }
 
     @Override
@@ -416,11 +432,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (autoMode) {
             operatingTicks = 0;
             autoMode = false;
-            markDirty(false);
+            markForSave();
         } else if (formula != null) {
             moveItemsToInput(false);
             autoMode = true;
-            markDirty(false);
+            markForSave();
         }
     }
 
@@ -599,37 +615,32 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     public void encodeFormula() {
         if (!formulaSlot.isEmpty()) {
             ItemStack formulaStack = formulaSlot.getStack();
-            if (formulaStack.getItem() instanceof ItemCraftingFormula) {
-                ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
-                if (item.getInventory(formulaStack) == null) {
-                    RecipeFormula formula = new RecipeFormula(level, craftingGridSlots);
-                    if (formula.isValidFormula()) {
-                        item.setInventory(formulaStack, formula.input);
-                        markDirty(false);
-                    }
+            if (formulaStack.getItem() instanceof ItemCraftingFormula item && item.getInventory(formulaStack) == null) {
+                RecipeFormula formula = new RecipeFormula(level, craftingGridSlots);
+                if (formula.isValidFormula()) {
+                    item.setInventory(formulaStack, formula.input);
+                    markForSave();
                 }
             }
         }
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        autoMode = nbtTags.getBoolean(NBTConstants.AUTO);
-        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
-        pulseOperations = nbtTags.getInt(NBTConstants.PULSE);
-        stockControl = nbtTags.getBoolean(NBTConstants.STOCK_CONTROL);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        autoMode = nbt.getBoolean(NBTConstants.AUTO);
+        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
+        pulseOperations = nbt.getInt(NBTConstants.PULSE);
+        stockControl = nbt.getBoolean(NBTConstants.STOCK_CONTROL);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putInt(NBTConstants.PULSE, pulseOperations);
         nbtTags.putBoolean(NBTConstants.STOCK_CONTROL, stockControl);
-        return nbtTags;
     }
 
     @Override
@@ -646,7 +657,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
@@ -734,9 +745,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
         ItemStack formulaStack = formulaSlot.getStack();
-        if (formulaStack.isEmpty() || !(formulaStack.getItem() instanceof ItemCraftingFormula)) {
+        if (formulaStack.isEmpty() || !(formulaStack.getItem() instanceof ItemCraftingFormula craftingFormula)) {
             throw new ComputerException("No formula found.");
-        } else if (formula != null && formula.isValidFormula() || ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) != null) {
+        } else if (formula != null && formula.isValidFormula() || craftingFormula.getInventory(formulaStack) != null) {
             throw new ComputerException("Formula has already been encoded.");
         } else if (!hasRecipe()) {
             throw new ComputerException("Encoding formulas require that there is a valid recipe to actually encode.");

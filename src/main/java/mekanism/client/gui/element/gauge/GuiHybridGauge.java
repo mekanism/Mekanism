@@ -9,7 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelper {
 
@@ -18,7 +18,7 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
     private final GuiGasGauge gasGauge;
     private final GuiFluidGauge fluidGauge;
 
-    private ITextComponent label;
+    private Component label;
 
     public GuiHybridGauge(Supplier<IGasTank> gasTankSupplier, Supplier<List<IGasTank>> gasTanksSupplier,
           Supplier<IExtendedFluidTank> fluidTankSupplier, Supplier<List<IExtendedFluidTank>> fluidTanksSupplier, GaugeType type,
@@ -36,7 +36,7 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
         fluidGauge = addPositionOnlyChild(new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height));
     }
 
-    public GuiHybridGauge setLabel(ITextComponent label) {
+    public GuiHybridGauge setLabel(Component label) {
         this.label = label;
         return this;
     }
@@ -56,8 +56,9 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
 
     @Nullable
     @Override
-    public Object getIngredient() {
-        return gasGauge.getIngredient() == null ? fluidGauge.getIngredient() : gasGauge.getIngredient();
+    public Object getIngredient(double mouseX, double mouseY) {
+        Object gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
+        return gasIngredient == null ? fluidGauge.getIngredient(mouseX, mouseY) : gasIngredient;
     }
 
     @Override
@@ -71,12 +72,12 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
     }
 
     @Override
-    public List<ITextComponent> getTooltipText() {
+    public List<Component> getTooltipText() {
         return gasTankSupplier.get() == null || gasTankSupplier.get().isEmpty() ? fluidGauge.getTooltipText() : gasGauge.getTooltipText();
     }
 
     @Override
-    public ITextComponent getLabel() {
+    public Component getLabel() {
         return label;
     }
 

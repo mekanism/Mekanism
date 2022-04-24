@@ -6,14 +6,14 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
@@ -40,27 +40,25 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
@@ -69,33 +67,31 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Nonnull
     @Override
-    public ITextComponent getName(@Nonnull ItemStack stack) {
+    public Component getName(@Nonnull ItemStack stack) {
         return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
     }
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
-        World world = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
+        Level world = context.getLevel();
         if (!world.isClientSide && player != null) {
             BlockPos pos = context.getClickedPos();
             Direction side = context.getClickedFace();
             ItemStack stack = context.getItemInHand();
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
-                if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig().supports(transmissionType)) {
-                    ISideConfiguration config = (ISideConfiguration) tile;
+                if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
                     ConfigInfo info = config.getConfig().getConfig(transmissionType);
                     if (info != null) {
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
@@ -103,12 +99,14 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                         if (!player.isShiftKeyDown()) {
                             player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
                                   dataType.getColor().getColoredName())), Util.NIL_UUID);
-                        } else if (SecurityUtils.canAccess(player, tile)) {
+                        } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                            return InteractionResult.FAIL;
+                        } else {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                                 FloatingLong energyPerConfigure = MekanismConfig.gear.configuratorEnergyPerConfigure.get();
                                 if (energyContainer == null || energyContainer.extract(energyPerConfigure, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerConfigure)) {
-                                    return ActionResultType.FAIL;
+                                    return InteractionResult.FAIL;
                                 }
                                 energyContainer.extract(energyPerConfigure, Action.EXECUTE, AutomationType.MANUAL);
                             }
@@ -119,77 +117,66 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                                       dataType.getColor().getColoredName())), Util.NIL_UUID);
                                 config.getConfig().sideChanged(transmissionType, relativeSide);
                             }
-                        } else {
-                            SecurityUtils.displayNoAccess(player);
                         }
                     }
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
-                if (SecurityUtils.canAccess(player, tile)) {
-                    Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
-                    if (capability.isPresent()) {
-                        IConfigurable config = capability.get();
-                        if (player.isShiftKeyDown()) {
-                            return config.onSneakRightClick(player, side);
-                        }
-                        return config.onRightClick(player, side);
+                if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                    return InteractionResult.FAIL;
+                }
+                Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
+                if (capability.isPresent()) {
+                    IConfigurable config = capability.get();
+                    if (player.isShiftKeyDown()) {
+                        return config.onSneakRightClick(player);
                     }
-                } else {
-                    SecurityUtils.displayNoAccess(player);
-                    return ActionResultType.SUCCESS;
+                    return config.onRightClick(player);
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof IMekanismInventory) {
-                    IMekanismInventory inv = (IMekanismInventory) tile;
-                    if (inv.hasInventory()) {
-                        if (SecurityUtils.canAccess(player, tile)) {
-                            boolean creative = player.isCreative();
-                            IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
-                            if (!creative && energyContainer == null) {
-                                return ActionResultType.FAIL;
-                            }
-                            //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                            FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
-                            for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
-                                if (!inventorySlot.isEmpty()) {
-                                    if (!creative) {
-                                        if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
-                                            break;
-                                        }
-                                        energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
-                                    }
-                                    Block.popResource(world, pos, inventorySlot.getStack().copy());
-                                    inventorySlot.setEmpty();
+                if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
+                    if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                        return InteractionResult.FAIL;
+                    }
+                    boolean creative = player.isCreative();
+                    IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
+                    if (!creative && energyContainer == null) {
+                        return InteractionResult.FAIL;
+                    }
+                    //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
+                    FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
+                    for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
+                        if (!inventorySlot.isEmpty()) {
+                            if (!creative) {
+                                if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
+                                    break;
                                 }
+                                energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
                             }
-                            return ActionResultType.SUCCESS;
-                        } else {
-                            SecurityUtils.displayNoAccess(player);
-                            return ActionResultType.FAIL;
+                            Block.popResource(world, pos, inventorySlot.getStack().copy());
+                            inventorySlot.setEmpty();
                         }
                     }
+                    return InteractionResult.SUCCESS;
                 }
             } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
-                if (tile instanceof TileEntityMekanism) {
-                    if (SecurityUtils.canAccess(player, tile)) {
-                        TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
-                        if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
-                            if (!player.isShiftKeyDown()) {
-                                tileMekanism.setFacing(side);
-                            } else if (player.isShiftKeyDown()) {
-                                tileMekanism.setFacing(side.getOpposite());
-                            }
+                if (tile instanceof TileEntityMekanism tileMekanism) {
+                    if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                        return InteractionResult.FAIL;
+                    }
+                    if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
+                        if (!player.isShiftKeyDown()) {
+                            tileMekanism.setFacing(side);
+                        } else if (player.isShiftKeyDown()) {
+                            tileMekanism.setFacing(side.getOpposite());
                         }
-                    } else {
-                        SecurityUtils.displayNoAccess(player);
                     }
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else if (mode == ConfiguratorMode.WRENCH) { //Wrench
-                return ActionResultType.PASS;
+                return InteractionResult.PASS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     public EnumColor getColor(ConfiguratorMode mode) {
@@ -197,17 +184,17 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
     }
 
     @Override
-    public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
         return getMode(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
+    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Override
-    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
         ConfiguratorMode mode = getMode(stack);
         ConfiguratorMode newMode = mode.adjust(shift);
         if (mode != newMode) {
@@ -220,12 +207,12 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
 
     @Nonnull
     @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+    public Component getScrollTextComponent(@Nonnull ItemStack stack) {
         return getMode(stack).getTextComponent();
     }
 
     @Override
-    public void setMode(ItemStack stack, PlayerEntity player, ConfiguratorMode mode) {
+    public void setMode(ItemStack stack, Player player, ConfiguratorMode mode) {
         ItemDataUtils.setInt(stack, NBTConstants.STATE, mode.ordinal());
     }
 
@@ -281,7 +268,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             if (transmissionType != null) {
                 return langEntry.translateColored(color, transmissionType);
             }
@@ -299,26 +286,17 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
 
         @Nullable
         public TransmissionType getTransmission() {
-            switch (this) {
-                case CONFIGURATE_ITEMS:
-                    return TransmissionType.ITEM;
-                case CONFIGURATE_FLUIDS:
-                    return TransmissionType.FLUID;
-                case CONFIGURATE_GASES:
-                    return TransmissionType.GAS;
-                case CONFIGURATE_INFUSE_TYPES:
-                    return TransmissionType.INFUSION;
-                case CONFIGURATE_PIGMENTS:
-                    return TransmissionType.PIGMENT;
-                case CONFIGURATE_SLURRIES:
-                    return TransmissionType.SLURRY;
-                case CONFIGURATE_ENERGY:
-                    return TransmissionType.ENERGY;
-                case CONFIGURATE_HEAT:
-                    return TransmissionType.HEAT;
-                default:
-                    return null;
-            }
+            return switch (this) {
+                case CONFIGURATE_ITEMS -> TransmissionType.ITEM;
+                case CONFIGURATE_FLUIDS -> TransmissionType.FLUID;
+                case CONFIGURATE_GASES -> TransmissionType.GAS;
+                case CONFIGURATE_INFUSE_TYPES -> TransmissionType.INFUSION;
+                case CONFIGURATE_PIGMENTS -> TransmissionType.PIGMENT;
+                case CONFIGURATE_SLURRIES -> TransmissionType.SLURRY;
+                case CONFIGURATE_ENERGY -> TransmissionType.ENERGY;
+                case CONFIGURATE_HEAT -> TransmissionType.HEAT;
+                default -> null;
+            };
         }
 
         @Nonnull
@@ -332,7 +310,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
         }
 
         @Override
-        public ITextComponent getShortText() {
+        public Component getShortText() {
             return configurating && transmissionType != null ? transmissionType.getLangEntry().translateColored(color) : getTextComponent();
         }
 

@@ -18,12 +18,12 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
       extends GuiTankGauge<CHEMICAL, TANK> {
 
-    protected ITextComponent label;
+    protected Component label;
 
     public GuiChemicalGauge(ITankInfoHandler<TANK> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY, TankType tankType) {
         super(type, gui, x, y, sizeX, sizeY, handler, tankType);
@@ -35,7 +35,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     public GuiChemicalGauge(Supplier<TANK> tankSupplier, Supplier<List<TANK>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY,
           TankType tankType) {
-        this(new ITankInfoHandler<TANK>() {
+        this(new ITankInfoHandler<>() {
             @Nullable
             @Override
             public TANK getTank() {
@@ -50,7 +50,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         }, type, gui, x, y, sizeX, sizeY, tankType);
     }
 
-    public GuiChemicalGauge<CHEMICAL, STACK, TANK> setLabel(ITextComponent label) {
+    public GuiChemicalGauge<CHEMICAL, STACK, TANK> setLabel(Component label) {
         this.label = label;
         return this;
     }
@@ -77,12 +77,12 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
     }
 
     @Override
-    public ITextComponent getLabel() {
+    public Component getLabel() {
         return label;
     }
 
     @Override
-    public List<ITextComponent> getTooltipText() {
+    public List<Component> getTooltipText() {
         if (dummy) {
             return Collections.singletonList(TextComponentUtil.build(dummyType));
         }
@@ -90,7 +90,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         if (tank == null || tank.isEmpty()) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
-        List<ITextComponent> list = new ArrayList<>();
+        List<Component> list = new ArrayList<>();
         long amount = tank.getStored();
         if (amount == Long.MAX_VALUE) {
             list.add(MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE));
@@ -112,7 +112,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     @Nullable
     @Override
-    public Object getIngredient() {
+    public Object getIngredient(double mouseX, double mouseY) {
         return getTank().isEmpty() ? null : getTank().getStack();
     }
 }

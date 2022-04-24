@@ -11,7 +11,7 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;
 import mekanism.common.recipe.lookup.cache.type.FluidInputCache;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -46,7 +46,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable World world, FluidStack input) {
+    public boolean containsInput(@Nullable Level world, FluidStack input) {
         return containsInput(world, input, RotaryRecipe::getFluidInput, fluidInputCache, complexFluidInputRecipes);
     }
 
@@ -58,7 +58,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable World world, GasStack input) {
+    public boolean containsInput(@Nullable Level world, GasStack input) {
         return containsInput(world, input, RotaryRecipe::getGasInput, gasInputCache, complexGasInputRecipes);
     }
 
@@ -71,7 +71,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      * @return Recipe matching the given fluid input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RotaryRecipe findFirstRecipe(@Nullable World world, FluidStack input) {
+    public RotaryRecipe findFirstRecipe(@Nullable Level world, FluidStack input) {
         if (fluidInputCache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
@@ -91,7 +91,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      * @return Recipe matching the given gas input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RotaryRecipe findFirstRecipe(@Nullable World world, GasStack input) {
+    public RotaryRecipe findFirstRecipe(@Nullable Level world, GasStack input) {
         if (gasInputCache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;

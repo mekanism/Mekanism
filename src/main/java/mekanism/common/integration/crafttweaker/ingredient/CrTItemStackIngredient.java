@@ -1,23 +1,25 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.impl.item.MCIngredientList;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerItem;
+import com.blamejared.crafttweaker.api.item.MCItemStack;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import mekanism.common.integration.crafttweaker.CrTUtils;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -65,7 +67,7 @@ public class CrTItemStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient from(Item item, int amount) {
         CrTIngredientHelper.assertValidAmount("ItemStackIngredients", amount);
-        return ItemStackIngredient.from(item, amount);
+        return IngredientCreatorAccess.item().from(item, amount);
     }
 
     /**
@@ -77,9 +79,9 @@ public class CrTItemStackIngredient {
      * @return A {@link ItemStackIngredient} that matches a given item tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCTag<Item> itemTag, int amount) {
-        ITag<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
-        return ItemStackIngredient.from(tag, amount);
+    public static ItemStackIngredient from(KnownTag<Item> itemTag, int amount) {
+        TagKey<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, "ItemStackIngredients");
+        return IngredientCreatorAccess.item().from(tag, amount);
     }
 
     /**
@@ -90,7 +92,7 @@ public class CrTItemStackIngredient {
      * @return A {@link ItemStackIngredient} that matches a given item tag with an amount of one.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCTag<Item> itemTag) {
+    public static ItemStackIngredient from(KnownTag<Item> itemTag) {
         return from(itemTag, 1);
     }
 
@@ -102,8 +104,8 @@ public class CrTItemStackIngredient {
      * @return A {@link ItemStackIngredient} that matches a given item tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCTagWithAmount<Item> itemTag) {
-        return from(itemTag.getTag(), itemTag.getAmount());
+    public static ItemStackIngredient from(Many<KnownTag<Item>> itemTag) {
+        return from(itemTag.getData(), itemTag.getAmount());
     }
 
     /**
@@ -146,18 +148,18 @@ public class CrTItemStackIngredient {
         if (vanillaIngredient == Ingredient.EMPTY) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be made using the empty ingredient: " + amount);
         }
-        return ItemStackIngredient.from(vanillaIngredient, amount);
+        return IngredientCreatorAccess.item().from(vanillaIngredient, amount);
     }
 
     /**
-     * Creates a {@link ItemStackIngredient} out of all the ingredients in the given {@link MCIngredientList}.
+     * Creates a {@link ItemStackIngredient} out of all the ingredients in the given {@link IIngredientList}.
      *
      * @param ingredientList Ingredients to match
      *
-     * @return A {@link ItemStackIngredient} made up of all the ingredients in the given {@link MCIngredientList}.
+     * @return A {@link ItemStackIngredient} made up of all the ingredients in the given {@link IIngredientList}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCIngredientList ingredientList) {
+    public static ItemStackIngredient from(IIngredientList ingredientList) {
         IIngredient[] ingredients = ingredientList.getIngredients();
         if (ingredients.length == 0) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created from an empty ingredient list!");
@@ -169,12 +171,12 @@ public class CrTItemStackIngredient {
 
     private static void addIngredients(List<ItemStackIngredient> itemStackIngredients, IIngredient[] ingredients) {
         for (IIngredient ingredient : ingredients) {
-            if (ingredient instanceof IItemStack) {
+            if (ingredient instanceof IItemStack stack) {
                 //If the ingredient is an IItemStack make sure to process it as such so
-                itemStackIngredients.add(from((IItemStack) ingredient));
-            } else if (ingredient instanceof MCIngredientList) {
+                itemStackIngredients.add(from(stack));
+            } else if (ingredient instanceof IIngredientList ingredientList) {
                 //If it is another multi ingredient add the different components
-                addIngredients(itemStackIngredients, ((MCIngredientList) ingredient).getIngredients());
+                addIngredients(itemStackIngredients, ingredientList.getIngredients());
             } else {
                 itemStackIngredients.add(from(ingredient));
             }
@@ -190,7 +192,7 @@ public class CrTItemStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient createMulti(ItemStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("ItemStackIngredients", ItemStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("ItemStackIngredients", IngredientCreatorAccess.item(), ingredients);
     }
 
     /**
@@ -205,6 +207,40 @@ public class CrTItemStackIngredient {
     }
 
     /**
+     * Checks if a given {@link IItemStack} has a type match for this {@link ItemStackIngredient}. Type matches ignore stack size.
+     *
+     * @param type Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link ItemStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(ItemStackIngredient _this, IItemStack type) {
+        return _this.testType(type.getInternal());
+    }
+
+    /**
+     * Checks if a given {@link IItemStack} matches this {@link ItemStackIngredient}. (Checks size for >=)
+     *
+     * @param stack Stack to check for a match
+     *
+     * @return {@code true} if the stack fulfills the requirements for this {@link ItemStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean test(ItemStackIngredient _this, IItemStack stack) {
+        return _this.test(stack.getInternal());
+    }
+
+    /**
+     * Gets a list of valid instances for this {@link ItemStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the internal
+     * version is mostly used for JEI display purposes.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("representations")
+    public static List<IItemStack> getRepresentations(ItemStackIngredient _this) {
+        return CrTUtils.convert(_this.getRepresentations(), MCItemStack::new);
+    }
+
+    /**
      * OR's this {@link ItemStackIngredient} with another {@link ItemStackIngredient} to create a multi {@link ItemStackIngredient}
      *
      * @param other {@link ItemStackIngredient} to combine with.
@@ -214,6 +250,6 @@ public class CrTItemStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static ItemStackIngredient or(ItemStackIngredient _this, ItemStackIngredient other) {
-        return ItemStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.item().createMulti(_this, other);
     }
 }

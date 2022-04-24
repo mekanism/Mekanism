@@ -3,11 +3,11 @@ package mekanism.common.block.attribute;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.block.states.BlockStateHelper;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.Property;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public class AttributeStateActive implements AttributeState {
 
@@ -46,7 +46,7 @@ public class AttributeStateActive implements AttributeState {
     }
 
     @Override
-    public void adjustProperties(AbstractBlock.Properties props) {
+    public void adjustProperties(BlockBehaviour.Properties props) {
         if (ambientLight > 0) {
             //If we have ambient light, adjust the light level to factor in the ambient light level when it is active
             BlockStateHelper.applyLightLevelAdjustments(props, state -> isActive(state) ? ambientLight : 0);

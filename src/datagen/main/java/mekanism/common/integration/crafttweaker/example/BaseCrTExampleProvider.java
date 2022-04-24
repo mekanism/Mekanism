@@ -1,26 +1,25 @@
 package mekanism.common.integration.crafttweaker.example;
 
-import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
+import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.impl.fluid.MCFluidStack;
-import com.blamejared.crafttweaker.impl.helper.ItemStackHelper;
-import com.blamejared.crafttweaker.impl.item.MCItemStack;
-import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
+import com.blamejared.crafttweaker.api.item.MCItemStack;
+import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
+import com.blamejared.crafttweaker.api.util.ItemStackUtil;
+import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -29,10 +28,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -40,16 +40,16 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
@@ -61,32 +61,34 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.recipe.handler.MekanismRecipeHandler;
-import mekanism.common.integration.crafttweaker.tag.CrTChemicalTagManager;
-import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
-import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
-import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
-import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
+import mekanism.common.recipe.ingredient.IMultiIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
+import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class BaseCrTExampleProvider implements IDataProvider {
+public abstract class BaseCrTExampleProvider implements DataProvider {
 
-    public static final Map<String, Map<String, List<String>>> PARAMETER_NAMES = new HashMap<>();
+    @Nullable
+    public static JsonObject PARAMETER_NAMES;
 
-    private final Map<Class<?>, List<ClassConversionInfo<?>>> supportedConversions = new HashMap<>();
+    private final Map<Class<?>, ConversionTracker> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
     private final ExistingFileHelper existingFileHelper;
@@ -108,13 +110,13 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         addPrimitiveInfo(Boolean.TYPE, Boolean.class, "bool");
         addNameLookupOverride(Character.class, "char");
         addSupportedConversion(Character.TYPE, Character.class, (imports, c) -> "'" + c + "'");
-        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackHelper.getCommandString(stack));
+        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackUtil.getCommandString(stack));
         addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> new MCFluidStack(stack).getCommandString());
-        addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class,
-              (imports, stack) -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString(),
+        addSupportedConversion(Percentaged.class, IItemStack.class, WeightedItemStack.class,
+              (imports, stack) -> new MCItemStack(stack.stack).percent(stack.chance).getCommandString(),
               (imports, stack) -> {
                   if (stack.chance == 1) {
-                      return ItemStackHelper.getCommandString(stack.stack);
+                      return ItemStackUtil.getCommandString(stack.stack);
                   }
                   return null;
               }
@@ -136,29 +138,22 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         addItemStackIngredientSupport();
         addFluidStackIngredientSupport();
         addSupportedChemical(GasStack.class, ICrTGasStack.class, GasStackIngredient.class, CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasStack::new,
-              CrTGasTagManager.INSTANCE, ChemicalIngredientDeserializer.GAS);
+              CrTUtils.gasTags(), ChemicalIngredientDeserializer.GAS);
         addSupportedChemical(InfusionStack.class, ICrTInfusionStack.class, InfusionStackIngredient.class, CrTConstants.CLASS_INFUSION_STACK_INGREDIENT,
-              CrTInfusionStack::new, CrTInfuseTypeTagManager.INSTANCE, ChemicalIngredientDeserializer.INFUSION);
+              CrTInfusionStack::new, CrTUtils.infuseTypeTags(), ChemicalIngredientDeserializer.INFUSION);
         addSupportedChemical(PigmentStack.class, ICrTPigmentStack.class, PigmentStackIngredient.class, CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT,
-              CrTPigmentStack::new, CrTPigmentTagManager.INSTANCE, ChemicalIngredientDeserializer.PIGMENT);
+              CrTPigmentStack::new, CrTUtils.pigmentTags(), ChemicalIngredientDeserializer.PIGMENT);
         addSupportedChemical(SlurryStack.class, ICrTSlurryStack.class, SlurryStackIngredient.class, CrTConstants.CLASS_SLURRY_STACK_INGREDIENT,
-              CrTSlurryStack::new, CrTSlurryTagManager.INSTANCE, ChemicalIngredientDeserializer.SLURRY);
-        if (PARAMETER_NAMES.isEmpty()) {
+              CrTSlurryStack::new, CrTUtils.slurryTags(), ChemicalIngredientDeserializer.SLURRY);
+        if (PARAMETER_NAMES == null) {
             //Lazy initialize the parameter names, ideally we would find a better time to do this and
             // support multiple instances better but for now this will work
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("crafttweaker_param_names.txt")))) {
-                String line;
-                Map<String, List<String>> methods = null;
-                while ((line = reader.readLine()) != null) {
-                    if (!line.isEmpty()) {
-                        if (line.startsWith("Class: ")) {
-                            methods = new HashMap<>();
-                            PARAMETER_NAMES.put(line.substring(7), methods);
-                        } else {
-                            String[] parts = line.split("=");
-                            methods.put(parts[0], Arrays.stream(parts[1].split(",")).collect(Collectors.toList()));
-                        }
-                    }
+            try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("crafttweaker_parameter_names.json");
+                 InputStreamReader reader = stream == null ? null : new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+                if (reader != null) {
+                    PARAMETER_NAMES = GsonHelper.parse(reader);
+                } else {
+                    throw new RuntimeException("Unable to locate CraftTweaker parameter name file.");
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -181,24 +176,36 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
     @SafeVarargs
     protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<? extends ACTUAL> actualClass,
           BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
-        supportedConversions.computeIfAbsent(crtClass, clazz -> new ArrayList<>()).add(new ClassConversionInfo<>(actualClass, Arrays.asList(conversions)));
+        addSupportedConversion(crtClass, null, actualClass, conversions);
     }
 
     @SafeVarargs
-    protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<?> altCrTClass, Class<? extends ACTUAL> actualClass,
+    protected final <ACTUAL> void addSupportedConversionWithAlt(Class<?> crtClass, Class<?> altCrTClass, Class<? extends ACTUAL> actualClass,
           BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
         addSupportedConversion(crtClass, actualClass, conversions);
         addSupportedConversion(altCrTClass, actualClass, conversions);
     }
 
-    public boolean supportsConversion(Class<?> crtClass, Class<?> actualClass) {
-        List<ClassConversionInfo<?>> conversions = supportedConversions.get(crtClass);
+    @SafeVarargs
+    protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, @Nullable Class<?> generic, Class<? extends ACTUAL> actualClass,
+          BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
+        supportedConversions.computeIfAbsent(crtClass, clazz -> new ConversionTracker()).add(generic, new ClassConversionInfo<>(actualClass, List.of(conversions)));
+    }
+
+    @Nullable
+    private List<ClassConversionInfo<?>> getConversions(Class<?> crtClass, @Nullable Class<?> crtGenerics) {
+        ConversionTracker conversionTracker = supportedConversions.get(crtClass);
+        return conversionTracker != null ? conversionTracker.getConversions(crtGenerics) : null;
+    }
+
+    public boolean supportsConversion(Class<?> crtClass, @Nullable Class<?> crtGenerics, Class<?> actualClass) {
+        List<ClassConversionInfo<?>> conversions = getConversions(crtClass, crtGenerics);
         return conversions != null && conversions.stream().anyMatch(conversionInfo -> conversionInfo.actualClass.isAssignableFrom(actualClass));
     }
 
-    public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, CrTImportsComponent imports, ACTUAL actual) {
+    public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, @Nullable Class<?> crtGenerics, CrTImportsComponent imports, ACTUAL actual) {
         Class<?> actualClass = actual.getClass();
-        List<ClassConversionInfo<?>> conversions = supportedConversions.get(crtClass);
+        List<ClassConversionInfo<?>> conversions = getConversions(crtClass, crtGenerics);
         if (conversions != null) {
             List<String> representations = new ArrayList<>();
             for (ClassConversionInfo<?> conversionInfo : conversions) {
@@ -236,7 +243,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
     }
 
     public boolean recipeExists(ResourceLocation location) {
-        return existingFileHelper.exists(location, ResourcePackType.SERVER_DATA, ".json", "recipes");
+        return existingFileHelper.exists(location, PackType.SERVER_DATA, ".json", "recipes");
     }
 
     protected abstract void addExamples();
@@ -258,12 +265,12 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         }
         CrTExampleBuilder<?> exampleBuilder = new CrTExampleBuilder<>(this, fileName);
         examples.put(fileName, exampleBuilder);
-        existingFileHelper.trackGenerated(new ResourceLocation(modid, fileName), ResourcePackType.SERVER_DATA, ".zs", "scripts");
+        existingFileHelper.trackGenerated(new ResourceLocation(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
         return exampleBuilder;
     }
 
     @Override
-    public void run(@Nonnull DirectoryCache cache) {
+    public void run(@Nonnull HashCache cache) {
         examples.clear();
         addExamples();
         for (Map.Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
@@ -283,43 +290,30 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         return "CraftTweaker Examples: " + modid;
     }
 
-    private String getTagWithExplicitAmount(MCTag<?> tag, int amount) {
-        //Explicitly include the amount rather than doing tag.withAmount(amount).getCommandString() as we want to make the values
-        // that need an amount specified to be able to be implicit, have them
-        return tag.getCommandString() + " * " + amount;
-    }
-
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
-                  if (ingredient instanceof ItemStackIngredient.Single) {
+                  if (ingredient instanceof SingleItemStackIngredient single) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return MekanismRecipeHandler.basicImplicitIngredient(((ItemStackIngredient.Single) ingredient).getInputRaw(),
-                            JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1), serialized.get(JsonConstants.INGREDIENT));
+                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw(), GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1),
+                            serialized.get(JsonConstants.INGREDIENT));
                   }
                   return null;
               });
     }
 
+    @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
-        if (ingredient instanceof ItemStackIngredient.Single) {
+        if (ingredient instanceof SingleItemStackIngredient single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            //While it is easier to compare types of some stuff using the inner ingredient, some things
-            // are easier to get the information of out of the serialized ingredient
-            JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
-            Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();
-            int amount = JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1);
+            Ingredient vanillaIngredient = single.getInputRaw();
+            int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
             String representation = null;
             if (amount > 1) {
                 //Special case handling for when we would want to use a different constructor
-                if (vanillaIngredient.isVanilla() && !serializedIngredient.isJsonArray() && serializedIngredient.has(JsonConstants.ITEM)) {
-                    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(serializedIngredient, JsonConstants.ITEM)));
-                    representation = ItemStackHelper.getCommandString(new ItemStack(item, amount));
-                    amount = 1;
-                } else if (vanillaIngredient instanceof NBTIngredient) {
-                    ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
-                    stack.setCount(amount);
-                    representation = ItemStackHelper.getCommandString(stack);
+                JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
+                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, amount, serializedIngredient, false);
+                if (representation != null) {
                     amount = 1;
                 }
             }
@@ -331,22 +325,8 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                 return path + ".from(" + representation + ")";
             }
             return path + ".from(" + representation + ", " + amount + ")";
-        } else if (ingredient instanceof ItemStackIngredient.Multi) {
-            ItemStackIngredient.Multi multiIngredient = (ItemStackIngredient.Multi) ingredient;
-            StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT) + ".createMulti(");
-            if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(imports, i);
-                if (rep == null) {
-                    return true;
-                }
-                builder.append(rep).append(", ");
-                return false;
-            })) {
-                //Remove trailing comma and space
-                builder.setLength(builder.length() - 2);
-                builder.append(")");
-                return builder.toString();
-            }
+        } else if (ingredient instanceof MultiItemStackIngredient multiIngredient) {
+            return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_ITEM_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
         return null;
     }
@@ -354,106 +334,105 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
     private void addFluidStackIngredientSupport() {
         addSupportedConversion(FluidStackIngredient.class, FluidStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
-                  if (ingredient instanceof FluidStackIngredient.Single) {
+                  if (ingredient instanceof SingleFluidStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
-                  } else if (ingredient instanceof FluidStackIngredient.Tagged) {
+                  } else if (ingredient instanceof TaggedFluidStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return getTagWithExplicitAmount(TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()),
-                            serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt());
+                      return CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString())
+                            .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
                   }
                   return null;
               });
     }
 
+    @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
-        if (ingredient instanceof FluidStackIngredient.Single) {
+        if (ingredient instanceof SingleFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String stackRepresentation = new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof FluidStackIngredient.Tagged) {
+        } else if (ingredient instanceof TaggedFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            String tagRepresentation = TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
+            String tagRepresentation = CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
-        } else if (ingredient instanceof FluidStackIngredient.Multi) {
-            FluidStackIngredient.Multi multiIngredient = (FluidStackIngredient.Multi) ingredient;
-            StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".createMulti(");
-            if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(imports, i);
-                if (rep == null) {
-                    return true;
-                }
-                builder.append(rep).append(", ");
-                return false;
-            })) {
-                //Remove trailing comma and space
-                builder.setLength(builder.length() - 2);
-                builder.append(")");
-                return builder.toString();
-            }
+        } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
+            return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
         return null;
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addSupportedChemical(Class<STACK> stackClass,
-          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends IChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
-          String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager,
+          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends ChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
+          String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager,
           ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer) {
-        addSupportedConversion(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
-        addSupportedConversion(IChemicalStackIngredient.class, ingredientClass, ingredientClass,
+        addSupportedConversionWithAlt(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
+        addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), deserializer, singleDescription, tagManager),
               (imports, ingredient) -> {
-                  if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
+                  if (ingredient instanceof SingleChemicalStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
-                  } else if (ingredient instanceof ChemicalStackIngredient.TaggedIngredient) {
+                  } else if (ingredient instanceof TaggedChemicalStackIngredient) {
                       JsonObject serialized = (JsonObject) ingredient.serialize();
                       long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return getTagWithExplicitAmount(tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()), (int) amount);
+                          return tagManager.tag(serialized.get(JsonConstants.TAG).getAsString()).withAmount((int) amount).getCommandString();
                       }
                   }
                   return null;
               });
     }
 
+    @Nullable
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
-          IChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
-          Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager) {
-        if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
+          ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
+          Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager) {
+        if (ingredient instanceof SingleChemicalStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String stackRepresentation = singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof ChemicalStackIngredient.TaggedIngredient) {
+        } else if (ingredient instanceof TaggedChemicalStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            String tagRepresentation = tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
+            String tagRepresentation = tagManager.tag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
-        } else if (ingredient instanceof ChemicalStackIngredient.MultiIngredient) {
-            ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?> multiIngredient = (ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?>) ingredient;
-            StringBuilder builder = new StringBuilder(ingredientType + ".createMulti(");
-            if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(i, ingredientType, deserializer, singleDescription, tagManager);
-                if (rep == null) {
-                    return true;
-                }
-                builder.append(rep).append(", ");
-                return false;
-            })) {
-                //Remove trailing comma and space
-                builder.setLength(builder.length() - 2);
-                builder.append(")");
-                return builder.toString();
+        } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
+            return getMultiIngredientRepresentation(ingredientType, multiIngredient, i -> getIngredientRepresentation(i, ingredientType, deserializer,
+                  singleDescription, tagManager));
+        }
+        return null;
+    }
+
+    @Nullable
+    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String getMultiIngredientRepresentation(CrTImportsComponent imports, String crtClass,
+          IMultiIngredient<TYPE, INGREDIENT> multiIngredient, BiFunction<CrTImportsComponent, INGREDIENT, String> basicRepresentation) {
+        return getMultiIngredientRepresentation(imports.addImport(crtClass), multiIngredient, ingredient -> basicRepresentation.apply(imports, ingredient));
+    }
+
+    @Nullable
+    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String getMultiIngredientRepresentation(String type,
+          IMultiIngredient<TYPE, INGREDIENT> multiIngredient, Function<INGREDIENT, String> basicRepresentation) {
+        StringBuilder builder = new StringBuilder(type + ".createMulti(");
+        if (!multiIngredient.forEachIngredient(i -> {
+            String rep = basicRepresentation.apply(i);
+            if (rep == null) {
+                return true;
             }
+            builder.append(rep).append(", ");
+            return false;
+        })) {
+            //Remove trailing comma and space
+            builder.setLength(builder.length() - 2);
+            builder.append(")");
+            return builder.toString();
         }
         return null;
     }
 
     /**
-     * Basically a copy of {@link IDataProvider#save(Gson, DirectoryCache, JsonElement, Path)} but it takes the contents as a string instead of serializes json using
-     * GSON.
+     * Basically a copy of {@link DataProvider#save(Gson, HashCache, JsonElement, Path)} but it takes the contents as a string instead of serializes json using GSON.
      */
-    @SuppressWarnings("UnstableApiUsage")
-    private static void save(DirectoryCache cache, String contents, Path path) throws IOException {
+    private static void save(HashCache cache, String contents, Path path) throws IOException {
         String sha1 = SHA1.hashUnencodedChars(contents).toString();
         if (!Objects.equals(cache.getHash(path), sha1) || !Files.exists(path)) {
             Files.createDirectories(path.getParent());
@@ -478,11 +457,11 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         private final ItemStack stack;
         private final double chance;
 
-        public WeightedItemStack(IItemProvider item) {
+        public WeightedItemStack(ItemLike item) {
             this(item, 1);
         }
 
-        public WeightedItemStack(IItemProvider item, double chance) {
+        public WeightedItemStack(ItemLike item, double chance) {
             this(new ItemStack(item), chance);
         }
 
@@ -492,14 +471,31 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         }
     }
 
-    private static class ClassConversionInfo<ACTUAL> {
+    private record ClassConversionInfo<ACTUAL>(Class<? extends ACTUAL> actualClass, List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions) {
+    }
 
-        private final Class<? extends ACTUAL> actualClass;
-        private final List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions;
+    private static class ConversionTracker {
 
-        public ClassConversionInfo(Class<? extends ACTUAL> actualClass, List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions) {
-            this.actualClass = actualClass;
-            this.conversions = conversions;
+        private final Map<Class<?>, List<ClassConversionInfo<?>>> genericConversions = new HashMap<>();
+        private final List<ClassConversionInfo<?>> conversions = new ArrayList<>();
+
+        public void add(@Nullable Class<?> generic, ClassConversionInfo<?> conversionInfo) {
+            if (generic == null) {
+                conversions.add(conversionInfo);
+            } else {
+                genericConversions.computeIfAbsent(generic, g -> new ArrayList<>()).add(conversionInfo);
+            }
+        }
+
+        @Nullable
+        public List<ClassConversionInfo<?>> getConversions(@Nullable Class<?> generic) {
+            if (generic != null) {
+                List<ClassConversionInfo<?>> conversions = genericConversions.get(generic);
+                if (conversions != null) {
+                    return conversions;
+                }
+            }
+            return conversions;
         }
     }
 }

@@ -3,8 +3,7 @@
   "conditions": [
     {
       "modid": "biomesoplenty",
-      "minVersion": "1.16.3-12.0.0.404",
-      "type": "mekanism:mod_version_loaded"
+      "type": "forge:mod_loaded"
     }
   ],
   "input": {

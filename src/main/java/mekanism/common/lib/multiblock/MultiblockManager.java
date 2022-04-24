@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class MultiblockManager<T extends MultiblockData> {
 
@@ -58,9 +58,9 @@ public class MultiblockManager<T extends MultiblockData> {
         return tile.getMultiblock().inventoryID;
     }
 
-    public boolean isCompatible(TileEntity tile) {
-        if (tile instanceof IMultiblock) {
-            return ((IMultiblock<?>) tile).getManager() == this;
+    public boolean isCompatible(BlockEntity tile) {
+        if (tile instanceof IMultiblock<?> multiblock) {
+            return multiblock.getManager() == this;
         }
         return false;
     }
@@ -90,12 +90,12 @@ public class MultiblockManager<T extends MultiblockData> {
      *
      * @return correct multiblock inventory cache
      */
-    public MultiblockCache<T> pullInventory(World world, UUID id) {
+    public MultiblockCache<T> pullInventory(Level world, UUID id) {
         CacheWrapper toReturn = inventories.get(id);
         for (Coord4D obj : toReturn.locations) {
-            TileEntity tile = WorldUtils.getTileEntity(TileEntity.class, world, obj.getPos());
-            if (tile instanceof IMultiblock) {
-                ((IMultiblock<?>) tile).resetCache();
+            BlockEntity tile = WorldUtils.getTileEntity(BlockEntity.class, world, obj.getPos());
+            if (tile instanceof IMultiblock<?> multiblock) {
+                multiblock.resetCache();
             }
         }
         inventories.remove(id);

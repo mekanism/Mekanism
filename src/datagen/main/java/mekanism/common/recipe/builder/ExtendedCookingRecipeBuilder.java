@@ -2,14 +2,14 @@ package mekanism.common.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.common.DataGenJsonConstants;
-import net.minecraft.item.crafting.CookingRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCookingSerializer;
+import net.minecraft.world.level.ItemLike;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -19,42 +19,42 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     private final int cookingTime;
     private float experience;
 
-    private ExtendedCookingRecipeBuilder(CookingRecipeSerializer<?> serializer, IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
+    private ExtendedCookingRecipeBuilder(SimpleCookingSerializer<?> serializer, ItemLike result, int count, Ingredient ingredient, int cookingTime) {
         super(serializer, result, count);
         this.ingredient = ingredient;
         this.cookingTime = cookingTime;
     }
 
-    public static ExtendedCookingRecipeBuilder blasting(IItemProvider result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder blasting(ItemLike result, Ingredient ingredient, int cookingTime) {
         return blasting(result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder blasting(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.BLASTING_RECIPE, result, count, ingredient, cookingTime);
+    public static ExtendedCookingRecipeBuilder blasting(ItemLike result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder(RecipeSerializer.BLASTING_RECIPE, result, count, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder campfire(IItemProvider result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder campfire(ItemLike result, Ingredient ingredient, int cookingTime) {
         return campfire(result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder campfire(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.CAMPFIRE_COOKING_RECIPE, result, count, ingredient, cookingTime);
+    public static ExtendedCookingRecipeBuilder campfire(ItemLike result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder(RecipeSerializer.CAMPFIRE_COOKING_RECIPE, result, count, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder smelting(IItemProvider result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder smelting(ItemLike result, Ingredient ingredient, int cookingTime) {
         return smelting(result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder smelting(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.SMELTING_RECIPE, result, count, ingredient, cookingTime);
+    public static ExtendedCookingRecipeBuilder smelting(ItemLike result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder(RecipeSerializer.SMELTING_RECIPE, result, count, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder smoking(IItemProvider result, Ingredient ingredient, int cookingTime) {
+    public static ExtendedCookingRecipeBuilder smoking(ItemLike result, Ingredient ingredient, int cookingTime) {
         return smoking(result, 1, ingredient, cookingTime);
     }
 
-    public static ExtendedCookingRecipeBuilder smoking(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.SMOKING_RECIPE, result, count, ingredient, cookingTime);
+    public static ExtendedCookingRecipeBuilder smoking(ItemLike result, int count, Ingredient ingredient, int cookingTime) {
+        return new ExtendedCookingRecipeBuilder(RecipeSerializer.SMOKING_RECIPE, result, count, ingredient, cookingTime);
     }
 
     public ExtendedCookingRecipeBuilder experience(float experience) {

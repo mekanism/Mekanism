@@ -13,17 +13,18 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolutionRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>>
-      implements IRecipeSerializer<RECIPE> {
+public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolutionRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>>
+      implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
 
@@ -34,12 +35,12 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     @Nonnull
     @Override
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isArrayNode(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                JSONUtils.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
-                               JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
-        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
+        JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
+                                GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
+        ItemStackIngredient itemIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
+        JsonElement gasInput = GsonHelper.isArrayNode(json, JsonConstants.GAS_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
+                               GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
+        GasStackIngredient gasIngredient = IngredientCreatorAccess.gas().deserialize(gasInput);
         ChemicalStack<?> output = SerializerHelper.getBoxedChemicalStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -48,23 +49,17 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     }
 
     @Override
-    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
-            GasStackIngredient gasInput = GasStackIngredient.read(buffer);
+            ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
+            GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
             ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-            ChemicalStack<?> output;
-            if (chemicalType == ChemicalType.GAS) {
-                output = GasStack.readFromPacket(buffer);
-            } else if (chemicalType == ChemicalType.INFUSION) {
-                output = InfusionStack.readFromPacket(buffer);
-            } else if (chemicalType == ChemicalType.PIGMENT) {
-                output = PigmentStack.readFromPacket(buffer);
-            } else if (chemicalType == ChemicalType.SLURRY) {
-                output = SlurryStack.readFromPacket(buffer);
-            } else {
-                throw new IllegalStateException("Unknown chemical type");
-            }
+            ChemicalStack<?> output = switch (chemicalType) {
+                case GAS -> GasStack.readFromPacket(buffer);
+                case INFUSION -> InfusionStack.readFromPacket(buffer);
+                case PIGMENT -> PigmentStack.readFromPacket(buffer);
+                case SLURRY -> SlurryStack.readFromPacket(buffer);
+            };
             return this.factory.create(recipeId, itemInput, gasInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack gas to gas recipe from packet.", e);
@@ -73,7 +68,7 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     }
 
     @Override
-    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

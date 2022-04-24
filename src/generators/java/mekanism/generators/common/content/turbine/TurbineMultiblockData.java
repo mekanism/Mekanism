@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -26,17 +26,17 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineMultiblockData extends MultiblockData {
@@ -93,7 +93,7 @@ public class TurbineMultiblockData extends MultiblockData {
         gasTanks.add(gasTank = new TurbineGasTank(this, tile));
         ventTank = VariableCapacityFluidTank.create(() -> !isFormed() ? 1_000 : condensers * MekanismGeneratorsConfig.generators.condenserRate.get(),
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), BasicFluidTank.internalOnly,
-              fluid -> fluid.getFluid().is(FluidTags.WATER), null);
+              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), null);
         ventTanks = Collections.singletonList(ventTank);
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity,
               automationType -> automationType != AutomationType.EXTERNAL || isFormed(), BasicEnergyContainer.internalOnly, null);
@@ -101,7 +101,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
 
         lastSteamInput = newSteamInput;
@@ -165,7 +165,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
@@ -177,13 +177,13 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
         tag.putFloat(NBTConstants.SCALE, prevSteamScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
         tag.putInt(NBTConstants.LOWER_VOLUME, lowerVolume);
-        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().write(new CompoundNBT()));
-        tag.put(NBTConstants.COMPLEX, NBTUtil.writeBlockPos(complex));
+        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
         tag.putFloat(NBTConstants.ROTATION, clientRotation);
     }
 

@@ -7,13 +7,13 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -56,15 +56,8 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
         } else if (secondaryChance < 0 || secondaryChance > 1) {
             throw new IllegalArgumentException("Secondary output chance must be at least zero and at most one.");
         } else if (mainOutput.isEmpty()) {
-            if (secondaryChance == 0) {
-                throw new IllegalArgumentException("Secondary output must have a chance greater than zero.");
-            } else if (secondaryChance == 1) {
-                //TODO - 1.18: Replace this handling that moves the secondary output to the main output with an exception
-                // This will also need to be double checked in the recipe serializer and in the CrT integration
-                this.mainOutput = secondaryOutput.copy();
-                this.secondaryOutput = ItemStack.EMPTY;
-                this.secondaryChance = 0;
-                return;
+            if (secondaryChance == 0 || secondaryChance == 1) {
+                throw new IllegalArgumentException("Secondary output must have a chance greater than zero and less than one.");
             }
         } else if (secondaryOutput.isEmpty() && secondaryChance != 0) {
             throw new IllegalArgumentException("If there is no secondary output, the chance of getting the secondary output should be zero.");
@@ -128,7 +121,12 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return input.hasNoMatchingInstances();
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         buffer.writeItem(mainOutput);
         buffer.writeItem(secondaryOutput);
@@ -143,7 +141,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
 
         protected final double rand;
 
-        public ChanceOutput(double rand) {
+        protected ChanceOutput(double rand) {
             this.rand = rand;
         }
 

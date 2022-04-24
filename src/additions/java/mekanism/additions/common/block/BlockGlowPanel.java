@@ -10,18 +10,18 @@ import mekanism.common.block.prefab.BlockBase.BlockBaseModel;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColoredBlock {
 
@@ -34,7 +34,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     private final EnumColor color;
 
     public BlockGlowPanel(EnumColor color) {
-        super(AdditionsBlockTypes.GLOW_PANEL, AbstractBlock.Properties.of(Material.PISTON, color.getMapColor()).strength(1, 6));
+        super(AdditionsBlockTypes.GLOW_PANEL, BlockBehaviour.Properties.of(Material.PISTON, color.getMapColor()).strength(1, 6));
         this.color = color;
     }
 
@@ -46,7 +46,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         if (facing.getOpposite() == Attribute.get(state, AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
             return Blocks.AIR.defaultBlockState();
@@ -56,7 +56,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
 
     @Override
     @Deprecated
-    public boolean canSurvive(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
+    public boolean canSurvive(@Nonnull BlockState state, @Nonnull LevelReader world, @Nonnull BlockPos pos) {
         Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);
@@ -64,6 +64,6 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
         //hasEnoughSolidSide does not quite work for us, as the shape is incorrect
         //Don't allow placing on leaves or a block that is too small
         // same restrictions as vanilla except we have a better check for placing against the side
-        return !state.is(BlockTags.LEAVES) && !VoxelShapes.joinIsNotEmpty(projected, MIN_SHAPES[sideOn.ordinal()], IBooleanFunction.ONLY_SECOND);
+        return !state.is(BlockTags.LEAVES) && !Shapes.joinIsNotEmpty(projected, MIN_SHAPES[sideOn.ordinal()], BooleanOp.ONLY_SECOND);
     }
 }

@@ -2,11 +2,11 @@
   "type": "mekanism:painting",
   "itemInput": {
     "ingredient": {
-      "type": "mekanism:without",
+      "type": "forge:difference",
       "base": {
         "tag": "mekanism:colorable/glass_panes"
       },
-      "without": {
+      "subtracted": {
         "item": "minecraft:blue_stained_glass_pane"
       }
     }

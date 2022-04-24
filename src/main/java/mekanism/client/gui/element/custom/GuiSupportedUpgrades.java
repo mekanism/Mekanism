@@ -1,9 +1,7 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.Arrays;
-import java.util.List;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
@@ -15,8 +13,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.opengl.GL11;
 
 public class GuiSupportedUpgrades extends GuiElement {
@@ -42,7 +40,7 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
         renderBackgroundTexture(matrix, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE);
@@ -56,34 +54,32 @@ public class GuiSupportedUpgrades extends GuiElement {
             if (!supportedUpgrades.contains(upgrade)) {
                 //Make the upgrade appear faded if it is not supported
                 RenderSystem.depthFunc(GL11.GL_GREATER);
-                AbstractGui.fill(matrix, xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+                GuiComponent.fill(matrix, xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
                 RenderSystem.depthFunc(GL11.GL_LEQUAL);
             }
         }
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTextScaledBound(matrix, MekanismLang.UPGRADES_SUPPORTED.translate(), relativeX + 2, relativeY + 3, titleTextColor(), 54);
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             UpgradePos pos = getUpgradePos(i);
-            if (mouseX >= relativeX + 1 + pos.x && mouseX < relativeX + 1 + pos.x + ELEMENT_SIZE &&
-                mouseY >= relativeY + 1 + pos.y && mouseY < relativeY + 1 + pos.y + ELEMENT_SIZE) {
+            if (mouseX >= x + 1 + pos.x && mouseX < x + 1 + pos.x + ELEMENT_SIZE &&
+                mouseY >= y + 1 + pos.y && mouseY < y + 1 + pos.y + ELEMENT_SIZE) {
                 Upgrade upgrade = EnumUtils.UPGRADES[i];
-                ITextComponent upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
-                List<ITextComponent> tooltip;
+                Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
                 if (supportedUpgrades.contains(upgrade)) {
-                    tooltip = Arrays.asList(upgradeName, upgrade.getDescription());
+                    displayTooltips(matrix, mouseX, mouseY, upgradeName, upgrade.getDescription());
                 } else {
-                    tooltip = Arrays.asList(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
                 }
-                displayTooltips(matrix, tooltip, mouseX, mouseY, getGuiWidth());
                 //We can break once we managed to find a tooltip to render
                 break;
             }
@@ -101,14 +97,6 @@ public class GuiSupportedUpgrades extends GuiElement {
         return new UpgradePos((index % ROW_ROOM) * ELEMENT_SIZE, row * ELEMENT_SIZE);
     }
 
-    private static class UpgradePos {
-
-        private final int x;
-        private final int y;
-
-        public UpgradePos(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
+    private record UpgradePos(int x, int y) {
     }
 }

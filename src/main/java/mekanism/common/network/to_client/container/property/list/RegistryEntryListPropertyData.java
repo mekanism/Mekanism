@@ -3,7 +3,7 @@ package mekanism.common.network.to_client.container.property.list;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class RegistryEntryListPropertyData<V extends IForgeRegistryEntry<V>> extends ListPropertyData<V> {
@@ -12,7 +12,7 @@ public class RegistryEntryListPropertyData<V extends IForgeRegistryEntry<V>> ext
         super(property, ListType.REGISTRY_ENTRY, values);
     }
 
-    public static <V extends IForgeRegistryEntry<V>> RegistryEntryListPropertyData<V> read(short property, int elements, PacketBuffer buffer) {
+    public static <V extends IForgeRegistryEntry<V>> RegistryEntryListPropertyData<V> read(short property, int elements, FriendlyByteBuf buffer) {
         List<V> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
             values.add(buffer.readRegistryId());
@@ -21,7 +21,7 @@ public class RegistryEntryListPropertyData<V extends IForgeRegistryEntry<V>> ext
     }
 
     @Override
-    protected void writeListElement(PacketBuffer buffer, V value) {
+    protected void writeListElement(FriendlyByteBuf buffer, V value) {
         buffer.writeRegistryId(value);
     }
 }

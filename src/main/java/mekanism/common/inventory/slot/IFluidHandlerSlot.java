@@ -4,14 +4,14 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.lib.HashedFluid;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -173,7 +173,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      *
      * @return True if we can drain the fluid from the item and the item after being drained can (and was) moved to the output slot, false otherwise
      */
-    default boolean drainItemAndMove(IInventorySlot outputSlot, FluidStack fluidToTransfer) {
+    private boolean drainItemAndMove(IInventorySlot outputSlot, FluidStack fluidToTransfer) {
         FluidStack simulatedRemainder = getFluidTank().insert(fluidToTransfer, Action.SIMULATE, AutomationType.INTERNAL);
         int remainder = simulatedRemainder.getAmount();
         int toTransfer = fluidToTransfer.getAmount();
@@ -184,7 +184,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
 
         ItemStack input = StackUtils.size(getStack(), 1);
         Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(input).resolve();
-        if (!cap.isPresent()) {
+        if (cap.isEmpty()) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit
             return false;
         }
@@ -226,7 +226,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      *
      * @return True if we are able to move the stack and did so, false otherwise
      */
-    default boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove) {
+    private boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove) {
         if (outputSlot.isEmpty()) {
             outputSlot.setStack(stackToMove);
         } else {
@@ -288,8 +288,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         return false;
     }
 
-    //TODO - 1.18: Make this private as java 16 allows for privates in interface
-    default Map<HashedFluid, FluidStack> gatherKnownFluids(IFluidHandlerItem itemFluidHandler, int tanks) {
+    private Map<HashedFluid, FluidStack> gatherKnownFluids(IFluidHandlerItem itemFluidHandler, int tanks) {
         Map<HashedFluid, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
         for (int tank = 0; tank < tanks; tank++) {
             FluidStack fluidInItem = itemFluidHandler.getFluidInTank(tank);
@@ -320,7 +319,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      *
      * @return True if we managed to transfer any contents, false otherwise
      */
-    default boolean fillHandlerFromOther(IExtendedFluidTank handlerToFill, IFluidHandler handlerToDrain, FluidStack fluid) {
+    private boolean fillHandlerFromOther(IExtendedFluidTank handlerToFill, IFluidHandler handlerToDrain, FluidStack fluid) {
         //Check how much of this fluid type we are actually able to drain from the handler we are draining
         FluidStack simulatedDrain = handlerToDrain.drain(fluid, FluidAction.SIMULATE);
         if (!simulatedDrain.isEmpty()) {

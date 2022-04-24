@@ -2,13 +2,13 @@ package mekanism.api.chemical.gas;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IGasProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 /**
@@ -18,7 +18,7 @@ import net.minecraftforge.registries.IRegistryDelegate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class GasStack extends ChemicalStack<Gas> {
+public final class GasStack extends ChemicalStack<Gas> {
 
     /**
      * Empty GasStack instance.
@@ -60,7 +60,7 @@ public class GasStack extends ChemicalStack<Gas> {
      *
      * @return GasStack stored in the tag compound
      */
-    public static GasStack readFromNBT(@Nullable CompoundNBT nbtTags) {
+    public static GasStack readFromNBT(@Nullable CompoundTag nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return EMPTY;
         }
@@ -75,7 +75,7 @@ public class GasStack extends ChemicalStack<Gas> {
         return new GasStack(type, amount);
     }
 
-    public static GasStack readFromPacket(PacketBuffer buf) {
+    public static GasStack readFromPacket(FriendlyByteBuf buf) {
         Gas gas = buf.readRegistryId();
         long amount = buf.readVarLong();
         if (gas.isEmptyType()) {

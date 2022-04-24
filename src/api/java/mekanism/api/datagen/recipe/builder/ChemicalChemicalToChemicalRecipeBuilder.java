@@ -1,10 +1,12 @@
 package mekanism.api.datagen.recipe.builder;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -13,25 +15,25 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.resources.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
 
-    private final ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> outputSerializer;
+    private final Function<STACK, JsonElement> outputSerializer;
     private final INGREDIENT leftInput;
     private final INGREDIENT rightInput;
     private final STACK output;
 
     protected ChemicalChemicalToChemicalRecipeBuilder(ResourceLocation serializerName, INGREDIENT leftInput, INGREDIENT rightInput, STACK output,
-          ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> outputSerializer) {
+          Function<STACK, JsonElement> outputSerializer) {
         super(serializerName);
         this.leftInput = leftInput;
         this.rightInput = rightInput;
@@ -51,7 +53,7 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This chemical infusing recipe requires a non empty gas output.");
         }
-        return new ChemicalChemicalToChemicalRecipeBuilder<>(mekSerializer("chemical_infusing"), leftInput, rightInput, output, ChemicalIngredientDeserializer.GAS);
+        return new ChemicalChemicalToChemicalRecipeBuilder<>(mekSerializer("chemical_infusing"), leftInput, rightInput, output, SerializerHelper::serializeGasStack);
     }
 
     /**
@@ -66,7 +68,7 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This pigment mixing recipe requires a non empty gas output.");
         }
-        return new ChemicalChemicalToChemicalRecipeBuilder<>(mekSerializer("pigment_mixing"), leftInput, rightInput, output, ChemicalIngredientDeserializer.PIGMENT);
+        return new ChemicalChemicalToChemicalRecipeBuilder<>(mekSerializer("pigment_mixing"), leftInput, rightInput, output, SerializerHelper::serializePigmentStack);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
         public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.LEFT_INPUT, leftInput.serialize());
             json.add(JsonConstants.RIGHT_INPUT, rightInput.serialize());
-            json.add(JsonConstants.OUTPUT, outputSerializer.serializeStack(output));
+            json.add(JsonConstants.OUTPUT, outputSerializer.apply(output));
         }
     }
 }

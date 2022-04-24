@@ -10,7 +10,7 @@ import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class ChemicalTankUpgradeData implements IUpgradeData {
 
@@ -23,7 +23,7 @@ public class ChemicalTankUpgradeData implements IUpgradeData {
     public final InfusionStack storedInfusion;
     public final PigmentStack storedPigment;
     public final SlurryStack storedSlurry;
-    public final CompoundNBT components;
+    public final CompoundTag components;
 
     public ChemicalTankUpgradeData(boolean redstone, RedstoneControl controlType, MergedChemicalInventorySlot<MergedChemicalTank> drainSlot,
           MergedChemicalInventorySlot<MergedChemicalTank> fillSlot, GasMode dumping, GasStack storedGas, InfusionStack storedInfusion, PigmentStack storedPigment,
@@ -37,7 +37,7 @@ public class ChemicalTankUpgradeData implements IUpgradeData {
         this.storedInfusion = storedInfusion;
         this.storedPigment = storedPigment;
         this.storedSlurry = storedSlurry;
-        this.components = new CompoundNBT();
+        this.components = new CompoundTag();
         for (ITileComponent component : components) {
             component.write(this.components);
         }

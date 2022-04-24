@@ -2,8 +2,8 @@ package mekanism.common.network.to_client.container.property;
 
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class BlockPosPropertyData extends PropertyData {
 
@@ -21,7 +21,7 @@ public class BlockPosPropertyData extends PropertyData {
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
         if (value == null) {
             buffer.writeBoolean(false);

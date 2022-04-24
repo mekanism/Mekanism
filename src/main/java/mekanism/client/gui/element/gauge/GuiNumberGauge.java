@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GuiNumberGauge extends GuiGauge<Void> {
 
@@ -32,12 +32,12 @@ public class GuiNumberGauge extends GuiGauge<Void> {
     }
 
     @Override
-    public ITextComponent getLabel() {
+    public Component getLabel() {
         return null;
     }
 
     @Override
-    public List<ITextComponent> getTooltipText() {
+    public List<Component> getTooltipText() {
         return Collections.singletonList(infoHandler.getText());
     }
 
@@ -49,6 +49,6 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
         double getScaledLevel();
 
-        ITextComponent getText();
+        Component getText();
     }
 }

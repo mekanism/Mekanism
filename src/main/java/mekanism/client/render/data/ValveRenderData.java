@@ -2,8 +2,8 @@ package mekanism.client.render.data;
 
 import javax.annotation.Nonnull;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ValveRenderData extends FluidRenderData {
@@ -28,7 +28,7 @@ public class ValveRenderData extends FluidRenderData {
 
     @Override
     public boolean equals(Object data) {
-        return data instanceof ValveRenderData && super.equals(data) && ((ValveRenderData) data).side.equals(side);
+        return data instanceof ValveRenderData other && super.equals(data) && other.side.equals(side);
     }
 
     @Override

@@ -1,47 +1,50 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.matrix.MatrixStack.Entry;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.MathUtils;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.ParticleStatus;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.settings.ParticleStatus;
-import net.minecraft.item.ItemStack;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
 public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileEntityNutritionalLiquifier> {
 
-    //Expect size of one as it is likely to just be nutritional paste, but support more in case the recipe system changes
-    private static final Map<Gas, Model3D> cachedModels = new HashMap<>(1);
+    private static final Int2ObjectMap<Model3D> cachedModels = new Int2ObjectOpenHashMap<>();
     private static final Map<TileEntityNutritionalLiquifier, PseudoParticleData> particles = new WeakHashMap<>();
+    private static final int stages = 40;
     private static final float BLADE_SPEED = 25F;
     private static final float ROTATE_SPEED = 10F;
 
@@ -49,18 +52,19 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         cachedModels.clear();
     }
 
-    public RenderNutritionalLiquifier(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderNutritionalLiquifier(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    protected void render(TileEntityNutritionalLiquifier tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
-          IProfiler profiler) {
-        if (!tile.gasTank.isEmpty()) {
-            GasStack paste = tile.gasTank.getStack();
-            float gasScale = paste.getAmount() / (float) tile.gasTank.getCapacity();
-            MekanismRenderer.renderObject(getPasteModel(paste), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
-                  MekanismRenderer.getColorARGB(paste, gasScale, true), light, overlayLight, FaceDisplay.FRONT);
+    protected void render(TileEntityNutritionalLiquifier tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
+          ProfilerFiller profiler) {
+        if (!tile.fluidTank.isEmpty()) {
+            FluidStack paste = tile.fluidTank.getFluid();
+            float fluidScale = paste.getAmount() / (float) tile.fluidTank.getCapacity();
+            int modelNumber = ModelRenderer.getStage(paste, stages, fluidScale);
+            MekanismRenderer.renderObject(getPasteModel(modelNumber), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+                  MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT);
         }
         boolean active = tile.getActive();
         matrix.pushPose();
@@ -69,10 +73,10 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             matrix.mulPose(Vector3f.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * BLADE_SPEED % 360));
             matrix.translate(-0.5, -0.5, -0.5);
         }
-        Entry entry = matrix.last();
-        IVertexBuilder bladeBuffer = renderer.getBuffer(Atlases.solidBlockSheet());
+        Pose entry = matrix.last();
+        VertexConsumer bladeBuffer = renderer.getBuffer(Sheets.solidBlockSheet());
         for (BakedQuad quad : MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
-            bladeBuffer.addVertexData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
+            bladeBuffer.putBulkData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
         }
         matrix.popPose();
         //Render the item and particle
@@ -84,7 +88,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                 //Make the item rotate if the liquifier is active
                 matrix.mulPose(Vector3f.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360));
             }
-            Minecraft.getInstance().getItemRenderer().renderStatic(stack, TransformType.GROUND, light, overlayLight, matrix, renderer);
+            Minecraft.getInstance().getItemRenderer().renderStatic(stack, TransformType.GROUND, light, overlayLight, matrix, renderer,
+                  MathUtils.clampToInt(tile.getBlockPos().asLong()));
             matrix.popPose();
             if (active && Minecraft.getInstance().options.particles != ParticleStatus.MINIMAL) {
                 //Render eating particles
@@ -98,20 +103,10 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                     int rate = Minecraft.getInstance().options.particles == ParticleStatus.DECREASED ? 12 : 4;
                     if (tile.getLevel().getGameTime() % rate == 0) {
                         pseudoParticles.particles.add(new PseudoParticle(tile.getLevel(), stack));
-                        //TODO - 1.18: Try using this instead of our pseudo particles as maybe it will be able to render properly
-                        // behind translucent glass and our contents in fast
-                        /*Vector3d motion = new Vector3d((world.random.nextFloat() - 0.5D) * 0.075D,
-                              world.random.nextDouble() * 0.1D,
-                              (world.random.nextFloat() - 0.5D) * 0.075D);
-                        Vector3d position = new Vector3d((world.random.nextFloat() - 0.5D) * 0.3D,
-                              (world.random.nextFloat() - 0.5D) * 0.3D,
-                              (world.random.nextFloat() - 0.5D) * 0.3D);
-                        position = position.add(pos.getX() + 0.5, pos.getY() + 0.55, pos.getZ() + 0.5);
-                        world.addParticle(new ItemParticleData(ParticleTypes.ITEM, stack), position.x, position.y, position.z, motion.x, motion.y + 0.05D, motion.z);*/
                     }
                 }
                 //Render particles
-                IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.nutritionalParticle());
+                VertexConsumer buffer = renderer.getBuffer(MekanismRenderType.NUTRITIONAL_PARTICLE);
                 matrix.pushPose();
                 matrix.translate(0.5, 0.55, 0.5);
                 Matrix4f matrix4f = matrix.last().pose();
@@ -130,19 +125,21 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         return ProfilerConstants.NUTRITIONAL_LIQUIFIER;
     }
 
-    private Model3D getPasteModel(@Nonnull GasStack stack) {
-        return cachedModels.computeIfAbsent(stack.getType(), gas -> {
-            Model3D model = new Model3D();
-            model.setTexture(MekanismRenderer.getChemicalTexture(gas));
-            model.minX = 0.001F;
-            model.minY = 0.313F;
-            model.minZ = 0.001F;
+    private Model3D getPasteModel(int stage) {
+        if (cachedModels.containsKey(stage)) {
+            return cachedModels.get(stage);
+        }
+        Model3D model = new Model3D();
+        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidType.STILL));
+        model.minX = 0.001F;
+        model.minY = 0.313F;
+        model.minZ = 0.001F;
 
-            model.maxX = 0.999F;
-            model.maxY = 0.937F;
-            model.maxZ = 0.999F;
-            return model;
-        });
+        model.maxX = 0.999F;
+        model.maxY = 0.313F + 0.624F * (stage / (float) stages);
+        model.maxZ = 0.999F;
+        cachedModels.putIfAbsent(stage, model);
+        return model;
     }
 
     private static class PseudoParticleData {
@@ -153,7 +150,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
 
     private static class PseudoParticle {
 
-        private static final AxisAlignedBB INITIAL_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+        private static final AABB INITIAL_AABB = new AABB(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
 
         private final TextureAtlasSprite sprite;
         private final float quadSize;
@@ -172,11 +169,11 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         protected int age;
         protected float gravity;
 
-        private AxisAlignedBB bb = INITIAL_AABB;
+        private AABB bb = INITIAL_AABB;
         protected float bbWidth = 0.6F;
         protected float bbHeight = 1.8F;
 
-        protected PseudoParticle(World world, ItemStack stack) {
+        protected PseudoParticle(Level world, ItemStack stack) {
             setSize(0.2F, 0.2F);
             this.x = (world.random.nextFloat() - 0.5D) * 0.3D;
             this.y = (world.random.nextFloat() - 0.5D) * 0.3D;
@@ -190,12 +187,12 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             this.yd = (Math.random() * 2.0D - 1.0D) * 0.4;
             this.zd = (Math.random() * 2.0D - 1.0D) * 0.4;
             float f = (float) (Math.random() + Math.random() + 1.0D) * 0.15F;
-            float f1 = MathHelper.sqrt(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
+            float f1 = (float) Math.sqrt(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
             this.xd = (this.xd / f1) * f * 0.4;
             this.yd = (this.yd / f1) * f * 0.4 + 0.1;
             this.zd = (this.zd / f1) * f * 0.4;
 
-            sprite = Minecraft.getInstance().getItemRenderer().getModel(stack, world, null).getParticleIcon();
+            sprite = Minecraft.getInstance().getItemRenderer().getModel(stack, world, null, 0).getParticleIcon();
             this.gravity = 1.0F;
             this.quadSize = 0.1F * (world.random.nextFloat() * 0.5F + 0.5F);
             this.uo = world.random.nextFloat() * 3.0F;
@@ -229,10 +226,10 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             return false;
         }
 
-        public void render(Matrix4f matrix, IVertexBuilder buffer, float partialTicks, int light) {
-            float f = (float) MathHelper.lerp(partialTicks, this.xo, this.x);
-            float f1 = (float) MathHelper.lerp(partialTicks, this.yo, this.y);
-            float f2 = (float) MathHelper.lerp(partialTicks, this.zo, this.z);
+        public void render(Matrix4f matrix, VertexConsumer buffer, float partialTicks, int light) {
+            float f = (float) Mth.lerp(partialTicks, this.xo, this.x);
+            float f1 = (float) Mth.lerp(partialTicks, this.yo, this.y);
+            float f2 = (float) Mth.lerp(partialTicks, this.zo, this.z);
             Quaternion quaternion = Minecraft.getInstance().getEntityRenderDispatcher().camera.rotation();
 
             //Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
@@ -253,27 +250,23 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float f5 = this.getV0();
             float f6 = this.getV1();
             buffer.vertex(matrix, vectors[0].x(), vectors[0].y(), vectors[0].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f8, f6)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[1].x(), vectors[1].y(), vectors[1].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f8, f5)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[2].x(), vectors[2].y(), vectors[2].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f7, f5)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[3].x(), vectors[3].y(), vectors[3].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f7, f6)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
         }
@@ -300,7 +293,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                 this.bbHeight = particleHeight;
                 double d0 = (bb.minX + bb.maxX - particleWidth) / 2.0D;
                 double d1 = (bb.minZ + bb.maxZ - particleWidth) / 2.0D;
-                bb = new AxisAlignedBB(d0, bb.minY, d1, d0 + this.bbWidth, bb.minY + this.bbHeight, d1 + this.bbWidth);
+                bb = new AABB(d0, bb.minY, d1, d0 + this.bbWidth, bb.minY + this.bbHeight, d1 + this.bbWidth);
             }
         }
     }

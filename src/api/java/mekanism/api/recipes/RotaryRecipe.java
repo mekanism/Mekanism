@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -31,9 +31,6 @@ import org.jetbrains.annotations.Contract;
 @MethodsReturnNonnullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
-    //TODO - 1.18: Evaluate making ingredients not able to even be built from empty stacks and just switch these to being null here
-    private static final GasStackIngredient EMPTY_GAS_INPUT = GasStackIngredient.from(GasStack.EMPTY);
-    private static final FluidStackIngredient EMPTY_FLUID_INPUT = FluidStackIngredient.from(FluidStack.EMPTY);
     private final GasStackIngredient gasInput;
     private final FluidStackIngredient fluidInput;
     private final FluidStack fluidOutput;
@@ -60,7 +57,8 @@ public abstract class RotaryRecipe extends MekanismRecipe {
             throw new IllegalArgumentException("Gas output cannot be empty.");
         }
         this.gasOutput = gasOutput.copy();
-        this.gasInput = EMPTY_GAS_INPUT;
+        //noinspection ConstantConditions we safety check it being null behind require hasGasToFluid
+        this.gasInput = null;
         this.fluidOutput = FluidStack.EMPTY;
         this.hasGasToFluid = false;
         this.hasFluidToGas = true;
@@ -85,7 +83,8 @@ public abstract class RotaryRecipe extends MekanismRecipe {
             throw new IllegalArgumentException("Fluid output cannot be empty.");
         }
         this.fluidOutput = fluidOutput.copy();
-        this.fluidInput = EMPTY_FLUID_INPUT;
+        //noinspection ConstantConditions we safety check it being null behind require hasFluidToGas
+        this.fluidInput = null;
         this.gasOutput = GasStack.EMPTY;
         this.hasGasToFluid = true;
         this.hasFluidToGas = false;
@@ -135,6 +134,24 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     }
 
     /**
+     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
+     */
+    protected void assertHasGasToFluid() {
+        if (!hasGasToFluid()) {
+            throw new IllegalStateException("This recipe has no gas to fluid conversion.");
+        }
+    }
+
+    /**
+     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
+     */
+    protected void assertHasFluidToGas() {
+        if (!hasFluidToGas()) {
+            throw new IllegalStateException("This recipe has no fluid to gas conversion.");
+        }
+    }
+
+    /**
      * Checks if this recipe can convert fluids to gases, and evaluates this recipe on the given input.
      *
      * @param fluidStack Fluid input.
@@ -157,87 +174,92 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     }
 
     /**
-     * Gets the fluid input ingredient. This method assumes {@link #hasFluidToGas()} is {@code true}.
+     * Gets the fluid input ingredient.
+     *
+     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
      */
     public FluidStackIngredient getFluidInput() {
+        assertHasFluidToGas();
         return fluidInput;
     }
 
     /**
-     * Gets the gas input ingredient. This method assumes {@link #hasGasToFluid()} is {@code true}.
+     * Gets the gas input ingredient.
+     *
+     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
      */
     public GasStackIngredient getGasInput() {
+        assertHasGasToFluid();
         return gasInput;
     }
 
     /**
-     * @deprecated Use {@link #getGasOutputDefinition()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public GasStack getGasOutputRepresentation() {
-        return gasOutput;
-    }
-
-    /**
-     * For JEI, gets the gas output representations to display. This method assumes {@link #hasFluidToGas()} is {@code true}.
+     * For JEI, gets the gas output representations to display.
      *
      * @return Representation of the gas output, <strong>MUST NOT</strong> be modified.
+     *
+     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
      */
     public List<GasStack> getGasOutputDefinition() {
+        assertHasFluidToGas();
         return Collections.singletonList(gasOutput);
     }
 
     /**
-     * @deprecated Use {@link #getFluidOutputDefinition()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public FluidStack getFluidOutputRepresentation() {
-        return fluidOutput;
-    }
-
-    /**
-     * For JEI, gets the fluid output representations to display. This method assumes {@link #hasGasToFluid()} is {@code true}.
+     * For JEI, gets the fluid output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
+     *
+     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
      */
     public List<FluidStack> getFluidOutputDefinition() {
+        assertHasGasToFluid();
         return Collections.singletonList(fluidOutput);
     }
 
     /**
-     * Gets a new gas output based on the given input. This method assumes {@link #hasFluidToGas()} is {@code true}.
+     * Gets a new gas output based on the given input.
      *
      * @param input Specific fluid input.
      *
      * @return New gas output.
      *
+     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
      * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
     public GasStack getGasOutput(FluidStack input) {
+        assertHasFluidToGas();
         return gasOutput.copy();
     }
 
     /**
-     * Gets a new fluid output based on the given input. This method assumes {@link #hasGasToFluid()} is {@code true}.
+     * Gets a new fluid output based on the given input.
      *
      * @param input Specific gas input.
      *
      * @return New fluid output.
      *
+     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
      * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
     public FluidStack getFluidOutput(GasStack input) {
+        assertHasGasToFluid();
         return fluidOutput.copy();
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public boolean isIncomplete() {
+        return (hasFluidToGas && fluidInput.hasNoMatchingInstances()) || (hasGasToFluid && gasInput.hasNoMatchingInstances());
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(hasFluidToGas);
         if (hasFluidToGas) {
             fluidInput.write(buffer);

@@ -8,7 +8,7 @@ import mekanism.common.network.to_client.container.property.RegistryEntryPropert
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling registry entries.
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling registry entries.
  */
 public class SyncableRegistryEntry<V extends IForgeRegistryEntry<V>> implements ISyncableData {
 

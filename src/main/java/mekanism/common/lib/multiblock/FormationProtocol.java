@@ -15,11 +15,11 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class FormationProtocol<T extends MultiblockData> {
 
@@ -49,7 +49,7 @@ public class FormationProtocol<T extends MultiblockData> {
             return fail(FormationResult.FAIL);
         }
 
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
         FormationResult result = validator.validate(this, chunkMap);
         if (!result.isFormed()) {
             return fail(result);
@@ -103,7 +103,7 @@ public class FormationProtocol<T extends MultiblockData> {
         return result.getFormationResult();
     }
 
-    protected static ITextComponent text(BlockPos pos) {
+    protected static Component text(BlockPos pos) {
         return MekanismLang.GENERIC_PARENTHESIS.translate(MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ()));
     }
 
@@ -142,10 +142,10 @@ public class FormationProtocol<T extends MultiblockData> {
         public static final FormationResult SUCCESS = new FormationResult(true, null);
         public static final FormationResult FAIL = new FormationResult(false, null);
 
-        private final ITextComponent resultText;
+        private final Component resultText;
         private final boolean formed;
 
-        private FormationResult(boolean formed, ITextComponent resultText) {
+        private FormationResult(boolean formed, Component resultText) {
             this.formed = formed;
             this.resultText = resultText;
         }
@@ -158,7 +158,7 @@ public class FormationProtocol<T extends MultiblockData> {
             return fail(text.translateColored(EnumColor.GRAY));
         }
 
-        public static FormationResult fail(ITextComponent text) {
+        public static FormationResult fail(Component text) {
             return new FormationResult(false, text);
         }
 
@@ -166,7 +166,7 @@ public class FormationProtocol<T extends MultiblockData> {
             return formed;
         }
 
-        public ITextComponent getResultText() {
+        public Component getResultText() {
             return resultText;
         }
     }

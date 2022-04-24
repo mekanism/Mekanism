@@ -2,15 +2,15 @@ package mekanism.common.network.to_client;
 
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketLaserHitBlock implements IMekanismPacket {
 
-    private final BlockRayTraceResult result;
+    private final BlockHitResult result;
 
-    public PacketLaserHitBlock(BlockRayTraceResult result) {
+    public PacketLaserHitBlock(BlockHitResult result) {
         this.result = result;
     }
 
@@ -22,11 +22,11 @@ public class PacketLaserHitBlock implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockHitResult(result);
     }
 
-    public static PacketLaserHitBlock decode(PacketBuffer buffer) {
+    public static PacketLaserHitBlock decode(FriendlyByteBuf buffer) {
         return new PacketLaserHitBlock(buffer.readBlockHitResult());
     }
 }

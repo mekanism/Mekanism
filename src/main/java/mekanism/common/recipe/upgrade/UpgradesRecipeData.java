@@ -12,9 +12,9 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -60,7 +60,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
         }
         //Only transfer upgrades if we were able to find any
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         Upgrade.saveMap(upgrades, nbt);
         ItemDataUtils.setCompound(stack, NBTConstants.COMPONENT_UPGRADE, nbt);
         return true;

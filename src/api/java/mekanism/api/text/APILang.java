@@ -1,8 +1,8 @@
 package mekanism.api.text;
 
 import mekanism.api.MekanismAPI;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Lang entries declared in the API and provided by Mekanism.
@@ -25,9 +25,6 @@ public enum APILang implements ILangEntry {
     UPGRADE_ANCHOR_DESCRIPTION("upgrade", "anchor.description"),
     UPGRADE_STONE_GENERATOR("upgrade", "stone_generator"),
     UPGRADE_STONE_GENERATOR_DESCRIPTION("upgrade", "stone_generator.description"),
-    //Generic
-    @Deprecated//TODO - 1.18: Remove this generic lang entry in favor of just having string text components be used
-          GENERIC("generic", "format"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),
@@ -67,6 +64,10 @@ public enum APILang implements ILangEntry {
     CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY("chemical", "attribute.coolant.heat_capacity"),
     CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS("chemical", "attribute.fuel.burn_ticks"),
     CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY("chemical", "attribute.fuel.energy_density"),
+    //Security
+    PUBLIC("security", "public"),
+    TRUSTED("security", "trusted"),
+    PRIVATE("security", "private"),
     ;
 
     private final String key;

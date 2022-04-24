@@ -1,11 +1,17 @@
 package mekanism.common.integration.computer;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,11 +33,17 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod.WrappingComputerMethodIndex;
 import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
+import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.IModFileInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
+import net.minecraftforge.forgespi.locating.IModFile;
 import org.objectweb.asm.Type;
 
 public class ComputerMethodMapper extends BaseAnnotationScanner {
@@ -57,13 +70,49 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         return supportedTypes;
     }
 
+    private static JsonObject collectParamNames(Set<IModFileInfo> modFileData) {
+        //Collects all known parameter names from mods with one of our annotations in them so that we can split it across
+        // multiple classes, and if some addon decides to access our internals to use our computer system, then they are
+        // able to provide parameter names as well
+        List<JsonObject> rootNodes = new ArrayList<>();
+        for (IModFileInfo info : modFileData) {
+            IModFile modFile = info.getFile();
+            for (IModInfo mod : info.getMods()) {
+                Path resource = modFile.findResource("data", mod.getModId(), "parameter_names", "computer.json");
+                if (Files.exists(resource)) {
+                    //Check if there is a parameter name mapping for the mod, as it is not required, especially if the
+                    // mod does not expose any methods that have parameters
+                    try (BufferedReader reader = Files.newBufferedReader(resource)) {
+                        rootNodes.add(GsonHelper.parse(reader));
+                    } catch (IOException e) {
+                        Mekanism.logger.warn("Failed to read computer parameter name file for mod '{} ({})', some methods may be missing clean names.",
+                              mod.getDisplayName(), mod.getModId());
+                    }
+                }
+            }
+        }
+        if (rootNodes.isEmpty()) {
+            return new JsonObject();
+        }
+        JsonObject root = rootNodes.get(0);
+        for (int i = 1, nodes = rootNodes.size(); i < nodes; i++) {
+            //We assume each class is only provided by one mod, so we can just merge the elements at a top level
+            for (Map.Entry<String, JsonElement> entry : rootNodes.get(i).entrySet()) {
+                root.add(entry.getKey(), entry.getValue());
+            }
+        }
+        return root;
+    }
+
     @Override
-    protected void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses) {
+    protected void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData) {
+        JsonObject allParamNames = collectParamNames(modFileData);
         Type wrappingType = Type.getType(WrappingComputerMethod.class);
         Map<Class<?>, List<WrappingMethodHelper>> cachedWrappers = new Object2ObjectOpenHashMap<>();
         Map<Class<?>, List<MethodDetails>> rawMethodDetails = new Object2ObjectOpenHashMap<>();
         for (Entry<Class<?>, List<AnnotationData>> entry : knownClasses.entrySet()) {
             Class<?> annotatedClass = entry.getKey();
+            JsonObject classParamNames = allParamNames.getAsJsonObject(annotatedClass.getName());
             List<MethodDetails> methodDetails = new ArrayList<>();
             rawMethodDetails.put(annotatedClass, methodDetails);
             for (AnnotationData data : entry.getValue()) {
@@ -71,18 +120,19 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                     //If the required mods are not loaded, skip this annotation as the restrictions are not met
                     continue;
                 }
-                if (data.getTargetType() == ElementType.FIELD) {
+                if (data.targetType() == ElementType.FIELD) {
                     //Synthetic Computer Method(s) need to be generated for the field
-                    String fieldName = data.getMemberName();
+                    String fieldName = data.memberName();
                     Field field = getField(annotatedClass, fieldName);
                     if (field == null) {
                         continue;
                     }
-                    if (data.getAnnotationType().equals(wrappingType)) {
+                    if (data.annotationType().equals(wrappingType)) {
                         //Wrapping computer method
                         try {
                             MethodHandle methodHandle = LOOKUP.unreflectGetter(field);
-                            wrapMethodHandle(classNameCache, methodHandle, data, methodDetails, cachedWrappers, annotatedClass, fieldName);
+                            wrapMethodHandle(classNameCache, methodHandle, data, methodDetails, cachedWrappers, annotatedClass, classParamNames,
+                                  methodHandle.type().descriptorString(), fieldName);
                         } catch (IllegalAccessException e) {
                             Mekanism.logger.error("Failed to create getter for field '{}' in class '{}'.", fieldName, annotatedClass.getSimpleName());
                         }
@@ -103,7 +153,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                 } else {//data.getTargetType() == ElementType.METHOD
                     //Note: Signature is methodName followed by the method descriptor
                     // For example this method is: collectScanDataUnsafe(Ljava/util/Map;Ljava/util/Map;)V
-                    String methodSignature = data.getMemberName();
+                    String methodSignature = data.memberName();
                     int descriptorStart = methodSignature.indexOf('(');
                     if (descriptorStart == -1) {
                         Mekanism.logger.error("Method '{}' in class '{}' does not have a method descriptor.", methodSignature, annotatedClass.getSimpleName());
@@ -121,9 +171,9 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                                       annotatedClass.getSimpleName());
                                 continue;
                             }
-                            if (data.getAnnotationType().equals(wrappingType)) {
+                            if (data.annotationType().equals(wrappingType)) {
                                 //Wrapping computer method
-                                wrapMethodHandle(classNameCache, methodHandle, data, methodDetails, cachedWrappers, annotatedClass, methodName);
+                                wrapMethodHandle(classNameCache, methodHandle, data, methodDetails, cachedWrappers, annotatedClass, classParamNames, methodDescriptor, methodName);
                             } else {//ComputerMethod
                                 //See if there is a name override defined for the method, or fallback
                                 String methodNameOverride = getAnnotationValue(data, "nameOverride", methodName, name -> {
@@ -138,8 +188,8 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                                     }
                                     return false;
                                 });
-                                methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, getAnnotationValue(data, "restriction", MethodRestriction.NONE),
-                                      getAnnotationValue(data, "threadSafe", false)));
+                                methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, MekanismUtils.getParameterNames(classParamNames, methodName, methodDescriptor),
+                                      getAnnotationValue(data, "restriction", MethodRestriction.NONE), getAnnotationValue(data, "threadSafe", false)));
                             }
                         }
                     }
@@ -150,15 +200,15 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         for (ClassBasedInfo<MethodDetails> details : methodDetails) {
             //Linked map to preserve order
             Map<String, List<MethodHandleInfo>> cache = new LinkedHashMap<>();
-            details.infoList.sort(Comparator.comparing(info -> info.methodName));
-            for (MethodDetails handle : details.infoList) {
+            details.infoList().sort(Comparator.comparing(info -> info.methodName));
+            for (MethodDetails handle : details.infoList()) {
                 //Add the method handle to the list of methods with that method name for our computer handler
                 // Note: we construct the list with an initial capacity of one, as that is likely how many we
                 // actually have per methodName, we just support using a list
                 cache.computeIfAbsent(handle.methodName, methodName -> new ArrayList<>(1))
-                      .add(new MethodHandleInfo(handle.method, handle.restriction, handle.threadSafe));
+                      .add(new MethodHandleInfo(handle.method, handle.paramNames, handle.restriction, handle.threadSafe));
             }
-            namedMethodHandleCache.put(details.clazz, cache);
+            namedMethodHandleCache.put(details.clazz(), cache);
         }
     }
 
@@ -167,8 +217,16 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         if (!methodName.isEmpty()) {
             if (validMethodName(methodName)) {
                 try {
-                    MethodHandle methodHandle = isGetter ? LOOKUP.unreflectGetter(field) : LOOKUP.unreflectSetter(field);
-                    methodDetails.add(new MethodDetails(methodName, methodHandle, restriction, threadSafe));
+                    List<String> paramNames;
+                    MethodHandle methodHandle;
+                    if (isGetter) {
+                        methodHandle = LOOKUP.unreflectGetter(field);
+                        paramNames = Collections.emptyList();
+                    } else {
+                        methodHandle = LOOKUP.unreflectSetter(field);
+                        paramNames = Collections.singletonList(fieldName);
+                    }
+                    methodDetails.add(new MethodDetails(methodName, methodHandle, paramNames, restriction, threadSafe));
                 } catch (IllegalAccessException e) {
                     Mekanism.logger.error("Failed to create {} for field '{}' in class '{}'.", isGetter ? "getter" : "setter", fieldName,
                           annotatedClass.getSimpleName());
@@ -181,7 +239,8 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
     }
 
     private static void wrapMethodHandle(Map<String, Class<?>> classNameCache, MethodHandle methodHandle, AnnotationData data, List<MethodDetails> methodDetails,
-          Map<Class<?>, List<WrappingMethodHelper>> cachedWrappers, Class<?> annotatedClass, String identifier) {
+          Map<Class<?>, List<WrappingMethodHelper>> cachedWrappers, Class<?> annotatedClass, @Nullable JsonObject classParamNames, String methodSignature,
+          String identifier) {
         Class<?> wrapperClass = getAnnotationValue(classNameCache, data, "wrapper");
         if (wrapperClass != null) {
             List<String> methodNames = getAnnotationValue(data, "methodNames", Collections.emptyList());
@@ -228,10 +287,13 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                 } else {
                     MethodRestriction restriction = getAnnotationValue(data, "restriction", MethodRestriction.NONE);
                     boolean threadSafe = getAnnotationValue(data, "threadSafe", false);
+                    //Calculate param names based off of the original method, as those are the parameters that actually will be used,
+                    // and we are just wrapping the output into multiple methods
+                    List<String> paramNames = MekanismUtils.getParameterNames(classParamNames, identifier, methodSignature);
                     for (int index = 0; index < methodNameCount; index++) {
                         //If there is an error at dev time it should crash with an IllegalArgumentException
                         MethodHandle newHandle = MethodHandles.filterReturnValue(methodHandle, wrapperHandles.get(index).asType(methodHandle.type().returnType()));
-                        methodDetails.add(new MethodDetails(methodNames.get(index), newHandle, restriction, threadSafe));
+                        methodDetails.add(new MethodDetails(methodNames.get(index), newHandle, paramNames, restriction, threadSafe));
                     }
                 }
             }
@@ -313,35 +375,13 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         }
     }
 
-    private static class MethodDetails {
-
-        private final MethodRestriction restriction;
-        private final MethodHandle method;
-        private final String methodName;
-        private final boolean threadSafe;
-
-        private MethodDetails(String methodName, MethodHandle method, MethodRestriction restriction, boolean threadSafe) {
-            this.method = method;
-            this.methodName = methodName;
-            this.restriction = restriction;
-            this.threadSafe = threadSafe;
-        }
+    private record MethodDetails(String methodName, MethodHandle method, List<String> paramNames, MethodRestriction restriction, boolean threadSafe) {
     }
 
-    private static class MethodHandleInfo {
-
-        private final MethodRestriction restriction;
-        private final MethodHandle methodHandle;
-        private final boolean threadSafe;
-
-        public MethodHandleInfo(MethodHandle methodHandle, MethodRestriction restriction, boolean threadSafe) {
-            this.methodHandle = methodHandle;
-            this.restriction = restriction;
-            this.threadSafe = threadSafe;
-        }
+    private record MethodHandleInfo(MethodHandle methodHandle, List<String> paramNames, MethodRestriction restriction, boolean threadSafe) {
 
         public ThreadAwareMethodHandle bindTo(@Nullable Object handler) {
-            return new ThreadAwareMethodHandle(handler == null ? methodHandle : methodHandle.bindTo(handler), threadSafe);
+            return new ThreadAwareMethodHandle(handler == null ? methodHandle : methodHandle.bindTo(handler), paramNames, threadSafe);
         }
     }
 
@@ -353,19 +393,23 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         /**
          * Handler is a directional tile that is actually directional.
          */
-        DIRECTIONAL(handler -> handler instanceof ITileDirectional && ((ITileDirectional) handler).isDirectional()),
+        DIRECTIONAL(handler -> handler instanceof ITileDirectional directional && directional.isDirectional()),
         /**
          * Handler is an energy handler that can handle energy.
          */
-        ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler && ((IMekanismStrictEnergyHandler) handler).canHandleEnergy()),
+        ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler energyHandler && energyHandler.canHandleEnergy()),
         /**
          * Handler is a multiblock that can expose the multiblock.
          */
-        MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) handler).exposesMultiblockToComputer()),
+        MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock multiblock && multiblock.exposesMultiblockToComputer()),
         /**
          * Handler is a tile that can support redstone.
          */
-        REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone && ((ITileRedstone) handler).supportsRedstone());
+        REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone redstone && redstone.supportsRedstone()),
+        /**
+         * Handler is a tile that has comparator support.
+         */
+        COMPARATOR(handler -> handler instanceof IComparatorSupport comparatorSupport && comparatorSupport.supportsComparator());
 
         private final Predicate<Object> validator;
 

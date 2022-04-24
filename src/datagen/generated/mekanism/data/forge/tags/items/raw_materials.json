@@ -1,0 +1,8 @@
+{
+  "values": [
+    "#forge:raw_materials/osmium",
+    "#forge:raw_materials/tin",
+    "#forge:raw_materials/lead",
+    "#forge:raw_materials/uranium"
+  ]
+}

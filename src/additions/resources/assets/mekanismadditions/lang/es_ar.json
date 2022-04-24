@@ -305,7 +305,7 @@
   "item.mekanismadditions.yellow_balloon": "Amarillo Globo",
   "key.mekanismadditions.voice": "Voz",
   "sound_event.mekanismadditions.entity.balloon.pop": "Globo reventó",
-  "walkie.mekanismadditions.channel": "Canal: %s",
-  "walkie.mekanismadditions.channel.change": "Canal cambiado a: %s",
+  "walkie.mekanismadditions.channel": "Canal: %1$s",
+  "walkie.mekanismadditions.channel.change": "Canal cambiado a: %1$s",
   "walkie.mekanismadditions.disabled": "Sevidor de voz desactivado."
 }

@@ -1,19 +1,19 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
+import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
+@ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_CHEMICAL)
 public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>,
-      ATTRIBUTE extends ICrTChemicalAttribute, CRT_BUILDER extends CrTChemicalBuilder<CHEMICAL, BUILDER, ATTRIBUTE, CRT_BUILDER>> {
+      CRT_BUILDER extends CrTChemicalBuilder<CHEMICAL, BUILDER, CRT_BUILDER>> {
 
     private final BUILDER builder;
     @Nullable
@@ -29,8 +29,8 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
      * @param attribute Attribute to add.
      */
     @ZenCodeType.Method
-    public CRT_BUILDER with(ATTRIBUTE attribute) {
-        getInternal().with(attribute.getInternal());
+    public CRT_BUILDER with(ChemicalAttribute attribute) {
+        getInternal().with(attribute);
         return getThis();
     }
 

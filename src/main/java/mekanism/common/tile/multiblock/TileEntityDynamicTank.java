@@ -9,37 +9,39 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.FluidUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager {
 
-    public TileEntityDynamicTank() {
-        this(MekanismBlocks.DYNAMIC_TANK);
+    public TileEntityDynamicTank(BlockPos pos, BlockState state) {
+        this(MekanismBlocks.DYNAMIC_TANK, pos, state);
         //Disable item handler caps if we are the dynamic tank, don't disable it for the subclassed valve though
         addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
-    public TileEntityDynamicTank(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityDynamicTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override
-    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (!player.isShiftKeyDown()) {
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 if (manageInventory(multiblock, player, hand, stack)) {
-                    player.inventory.setChanged();
-                    return ActionResultType.SUCCESS;
+                    player.getInventory().setChanged();
+                    return InteractionResult.SUCCESS;
                 }
                 return openGui(player);
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Nonnull
@@ -64,7 +66,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         multiblock.setContainerEditMode(multiblock.editMode.getNext());
     }
 
-    private boolean manageInventory(TankMultiblockData multiblock, PlayerEntity player, Hand hand, ItemStack itemStack) {
+    private boolean manageInventory(TankMultiblockData multiblock, Player player, InteractionHand hand, ItemStack itemStack) {
         if (multiblock.isFormed()) {
             return FluidUtils.handleTankInteraction(player, hand, itemStack, multiblock.getFluidTank());
         }

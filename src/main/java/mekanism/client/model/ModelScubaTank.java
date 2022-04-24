@@ -1,106 +1,81 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelScubaTank extends MekanismJavaModel {
 
+    public static final ModelLayerLocation TANK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_tank"), "main");
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
-    private final RenderType RENDER_TYPE = renderType(TANK_TEXTURE);
 
-    private final ModelRenderer tankL;
-    private final ModelRenderer tankR;
-    private final ModelRenderer tankDock;
-    private final ModelRenderer capL;
-    private final ModelRenderer capR;
-    private final ModelRenderer tankBridge;
-    private final ModelRenderer tankPipeLower;
-    private final ModelRenderer tankPipeUpper;
-    private final ModelRenderer tankBackBrace;
+    private static final ModelPartData TANK_L = new ModelPartData("tankL", CubeListBuilder.create()
+          .texOffs(23, 54)
+          .addBox(-1F, 2F, 4F, 3, 7, 3),
+          PartPose.rotation(-0.2443461F, 0.5235988F, 0F));
+    private static final ModelPartData TANK_R = new ModelPartData("tankR", CubeListBuilder.create()
+          .texOffs(23, 54)
+          .addBox(-2F, 2F, 4F, 3, 7, 3),
+          PartPose.rotation(-0.2443461F, -0.5235988F, 0F));
+    private static final ModelPartData TANK_DOCK = new ModelPartData("tankDock", CubeListBuilder.create()
+          .texOffs(0, 55)
+          .addBox(-2F, 5F, 1F, 4, 4, 5));
+    private static final ModelPartData CAP_L = new ModelPartData("capL", CubeListBuilder.create()
+          .texOffs(23, 51)
+          .addBox(-0.5F, 1F, 4.5F, 2, 1, 2),
+          PartPose.rotation(-0.2443461F, 0.5235988F, 0F));
+    private static final ModelPartData CAP_R = new ModelPartData("capR", CubeListBuilder.create()
+          .texOffs(23, 51)
+          .addBox(-1.5F, 1F, 4.5F, 2, 1, 2),
+          PartPose.rotation(-0.2443461F, -0.5235988F, 0F));
+    private static final ModelPartData TANK_BRIDGE = new ModelPartData("tankBridge", CubeListBuilder.create()
+          .texOffs(0, 47)
+          .addBox(-1F, 3F, -1.5F, 2, 5, 3),
+          PartPose.rotation(0.5934119F, 0F, 0F));
+    private static final ModelPartData TANK_PIPE_LOWER = new ModelPartData("tankPipeLower", CubeListBuilder.create()
+          .texOffs(0, 37)
+          .addBox(-0.5F, 2F, 3F, 1, 4, 1),
+          PartPose.rotation(0.2094395F, 0F, 0F));
+    private static final ModelPartData TANK_PIPE_UPPER = new ModelPartData("tankPipeUpper", CubeListBuilder.create()
+          .texOffs(4, 38)
+          .addBox(-0.5F, 1F, 1.5F, 1, 1, 3));
+    private static final ModelPartData TANK_BACK_BRACE = new ModelPartData("tankBackBrace", CubeListBuilder.create()
+          .texOffs(0, 42)
+          .addBox(-3F, 2F, 0.5F, 6, 3, 2),
+          PartPose.rotation(0.2443461F, 0F, 0F));
 
-    public ModelScubaTank() {
-        super(RenderType::entitySolid);
-        texWidth = 128;
-        texHeight = 64;
-
-        tankL = new ModelRenderer(this, 23, 54);
-        tankL.addBox(-1F, 2F, 4F, 3, 7, 3, false);
-        tankL.setPos(0F, 0F, 0F);
-        tankL.setTexSize(128, 64);
-        tankL.mirror = true;
-        setRotation(tankL, -0.2443461F, 0.5235988F, 0F);
-        tankR = new ModelRenderer(this, 23, 54);
-        tankR.addBox(-2F, 2F, 4F, 3, 7, 3, false);
-        tankR.setPos(0F, 0F, 0F);
-        tankR.setTexSize(128, 64);
-        tankR.mirror = true;
-        setRotation(tankR, -0.2443461F, -0.5235988F, 0F);
-        tankR.mirror = false;
-        tankDock = new ModelRenderer(this, 0, 55);
-        tankDock.addBox(-2F, 5F, 1F, 4, 4, 5, false);
-        tankDock.setPos(0F, 0F, 0F);
-        tankDock.setTexSize(128, 64);
-        tankDock.mirror = true;
-        setRotation(tankDock, 0F, 0F, 0F);
-        capL = new ModelRenderer(this, 23, 51);
-        capL.addBox(-0.5F, 1F, 4.5F, 2, 1, 2, false);
-        capL.setPos(0F, 0F, 0F);
-        capL.setTexSize(128, 64);
-        capL.mirror = true;
-        setRotation(capL, -0.2443461F, 0.5235988F, 0F);
-        capR = new ModelRenderer(this, 23, 51);
-        capR.addBox(-1.5F, 1F, 4.5F, 2, 1, 2, false);
-        capR.setPos(0F, 0F, 0F);
-        capR.setTexSize(128, 64);
-        capR.mirror = true;
-        setRotation(capR, -0.2443461F, -0.5235988F, 0F);
-        tankBridge = new ModelRenderer(this, 0, 47);
-        tankBridge.addBox(-1F, 3F, -1.5F, 2, 5, 3, false);
-        tankBridge.setPos(0F, 0F, 0F);
-        tankBridge.setTexSize(128, 64);
-        tankBridge.mirror = true;
-        setRotation(tankBridge, 0.5934119F, 0F, 0F);
-        tankPipeLower = new ModelRenderer(this, 0, 37);
-        tankPipeLower.addBox(-0.5F, 2F, 3F, 1, 4, 1, false);
-        tankPipeLower.setPos(0F, 0F, 0F);
-        tankPipeLower.setTexSize(128, 64);
-        tankPipeLower.mirror = true;
-        setRotation(tankPipeLower, 0.2094395F, 0F, 0F);
-        tankPipeUpper = new ModelRenderer(this, 4, 38);
-        tankPipeUpper.addBox(-0.5F, 1F, 1.5F, 1, 1, 3, false);
-        tankPipeUpper.setPos(0F, 0F, 0F);
-        tankPipeUpper.setTexSize(128, 64);
-        tankPipeUpper.mirror = true;
-        setRotation(tankPipeUpper, 0F, 0F, 0F);
-        tankBackBrace = new ModelRenderer(this, 0, 42);
-        tankBackBrace.addBox(-3F, 2F, 0.5F, 6, 3, 2, false);
-        tankBackBrace.setPos(0F, 0F, 0F);
-        tankBackBrace.setTexSize(128, 64);
-        tankBackBrace.mirror = true;
-        setRotation(tankBackBrace, 0.2443461F, 0F, 0F);
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(128, 64, TANK_L, TANK_R, TANK_DOCK, CAP_L, CAP_R, TANK_BRIDGE, TANK_PIPE_LOWER, TANK_PIPE_UPPER, TANK_BACK_BRACE);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+    private final RenderType RENDER_TYPE = renderType(TANK_TEXTURE);
+    private final List<ModelPart> parts;
+
+    public ModelScubaTank(EntityModelSet entityModelSet) {
+        super(RenderType::entitySolid);
+        ModelPart root = entityModelSet.bakeLayer(TANK_LAYER);
+        parts = getRenderableParts(root, TANK_L, TANK_R, TANK_DOCK, CAP_L, CAP_R, TANK_BRIDGE, TANK_PIPE_LOWER, TANK_PIPE_UPPER, TANK_BACK_BRACE);
+    }
+
+    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        tankL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankDock.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        capL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        capR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankBridge.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankPipeLower.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankPipeUpper.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankBackBrace.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 }

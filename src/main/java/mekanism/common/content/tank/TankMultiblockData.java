@@ -29,8 +29,8 @@ import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
@@ -76,7 +76,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
         CurrentType type = mergedTank.getCurrentType();
         if (type == CurrentType.EMPTY) {
@@ -98,7 +98,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
         mergedTank.readFromUpdateTag(tag);
@@ -106,7 +106,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
         tag.putFloat(NBTConstants.SCALE, prevScale);
         mergedTank.addToUpdateTag(tag);
@@ -114,19 +114,14 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     private float getScale() {
-        switch (mergedTank.getCurrentType()) {
-            case FLUID:
-                return MekanismUtils.getScale(prevScale, getFluidTank());
-            case GAS:
-                return MekanismUtils.getScale(prevScale, getGasTank());
-            case INFUSION:
-                return MekanismUtils.getScale(prevScale, getInfusionTank());
-            case PIGMENT:
-                return MekanismUtils.getScale(prevScale, getPigmentTank());
-            case SLURRY:
-                return MekanismUtils.getScale(prevScale, getSlurryTank());
-        }
-        return MekanismUtils.getScale(prevScale, 0, getChemicalTankCapacity(), true);
+        return switch (mergedTank.getCurrentType()) {
+            case FLUID -> MekanismUtils.getScale(prevScale, getFluidTank());
+            case GAS -> MekanismUtils.getScale(prevScale, getGasTank());
+            case INFUSION -> MekanismUtils.getScale(prevScale, getInfusionTank());
+            case PIGMENT -> MekanismUtils.getScale(prevScale, getPigmentTank());
+            case SLURRY -> MekanismUtils.getScale(prevScale, getSlurryTank());
+            default -> MekanismUtils.getScale(prevScale, 0, getChemicalTankCapacity(), true);
+        };
     }
 
     @ComputerMethod
@@ -153,19 +148,14 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     private long getStoredAmount() {
-        switch (mergedTank.getCurrentType()) {
-            case FLUID:
-                return getFluidTank().getFluidAmount();
-            case GAS:
-                return getGasTank().getStored();
-            case INFUSION:
-                return getInfusionTank().getStored();
-            case PIGMENT:
-                return getPigmentTank().getStored();
-            case SLURRY:
-                return getSlurryTank().getStored();
-        }
-        return 0;
+        return switch (mergedTank.getCurrentType()) {
+            case FLUID -> getFluidTank().getFluidAmount();
+            case GAS -> getGasTank().getStored();
+            case INFUSION -> getInfusionTank().getStored();
+            case PIGMENT -> getPigmentTank().getStored();
+            case SLURRY -> getSlurryTank().getStored();
+            default -> 0;
+        };
     }
 
     public IExtendedFluidTank getFluidTank() {
@@ -213,19 +203,14 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     @ComputerMethod
     private Object getStored() {
-        switch (mergedTank.getCurrentType()) {
-            case FLUID:
-                return getFluidTank().getFluid();
-            case GAS:
-                return getGasTank().getStack();
-            case INFUSION:
-                return getInfusionTank().getStack();
-            case PIGMENT:
-                return getPigmentTank().getStack();
-            case SLURRY:
-                return getSlurryTank().getStack();
-        }
-        return FluidStack.EMPTY;
+        return switch (mergedTank.getCurrentType()) {
+            case FLUID -> getFluidTank().getFluid();
+            case GAS -> getGasTank().getStack();
+            case INFUSION -> getInfusionTank().getStack();
+            case PIGMENT -> getPigmentTank().getStack();
+            case SLURRY -> getSlurryTank().getStack();
+            default -> FluidStack.EMPTY;
+        };
     }
 
     @ComputerMethod

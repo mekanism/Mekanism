@@ -1,13 +1,15 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalStack;
@@ -28,22 +30,28 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tags.TagUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITagManager;
 
 public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
 
@@ -63,16 +71,14 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        if (target instanceof ItemStack) {
-            gui().renderItem(matrix, (ItemStack) target, x, y);
-        } else if (target instanceof FluidStack) {
-            FluidStack stack = (FluidStack) this.target;
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+        if (target instanceof ItemStack stack) {
+            gui().renderItem(matrix, stack, x, y);
+        } else if (target instanceof FluidStack stack) {
             MekanismRenderer.color(stack);
             drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
-        } else if (target instanceof ChemicalStack) {
-            ChemicalStack<?> stack = (ChemicalStack<?>) this.target;
+        } else if (target instanceof ChemicalStack<?> stack) {
             MekanismRenderer.color(stack);
             drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
@@ -80,12 +86,12 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        if (target instanceof ItemStack) {
-            gui().renderItemTooltip(matrix, (ItemStack) target, mouseX, mouseY);
+        if (target instanceof ItemStack stack) {
+            gui().renderItemTooltip(matrix, stack, mouseX, mouseY);
         } else if (target != null) {
-            displayTooltip(matrix, TextComponentUtil.build(target), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, TextComponentUtil.build(target));
         }
     }
 
@@ -94,7 +100,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         if (Screen.hasShiftDown()) {
             setTargetSlot(null, false);
         } else {
-            ItemStack stack = minecraft.player.inventory.getCarried();
+            ItemStack stack = minecraft.player.containerMenu.getCarried();
             if (!stack.isEmpty()) {
                 setTargetSlot(stack, false);
             }
@@ -110,8 +116,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         tags.clear();
         if (newTarget == null) {
             target = null;
-        } else if (newTarget instanceof ItemStack) {
-            ItemStack itemStack = (ItemStack) newTarget;
+        } else if (newTarget instanceof ItemStack itemStack) {
             if (itemStack.isEmpty()) {
                 target = null;
             } else {
@@ -119,41 +124,57 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 target = stack;
                 Item item = stack.getItem();
                 tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));
-                if (item instanceof BlockItem) {
-                    Block block = ((BlockItem) item).getBlock();
-                    tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.getTags()));
-                    if (block instanceof IHasTileEntity || block.hasTileEntity(block.defaultBlockState())) {
-                        tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
+                if (item instanceof BlockItem blockItem) {
+                    Block block = blockItem.getBlock();
+                    tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.BLOCKS, block)));
+                    if (block instanceof IHasTileEntity || block.defaultBlockState().hasBlockEntity()) {
+                        tags.put(DictionaryTagType.BLOCK_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
                 }
                 //Entity type tags
-                if (item instanceof SpawnEggItem) {
-                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(((SpawnEggItem) item).getType(stack.getTag()).getTags()));
+                if (item instanceof SpawnEggItem spawnEggItem) {
+                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(spawnEggItem.getType(stack.getTag()).getTags()));
                 }
                 //Enchantment tags
                 Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
                 if (!enchantments.isEmpty()) {
-                    Set<ResourceLocation> enchantmentTags = new HashSet<>();
-                    for (Enchantment enchantment : enchantments.keySet()) {
-                        enchantmentTags.addAll(enchantment.getTags());
-                    }
-                    tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantmentTags));
+                    ITagManager<Enchantment> manager = TagUtils.manager(ForgeRegistries.ENCHANTMENTS);
+                    tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream()
+                          .flatMap(enchantment -> TagUtils.tagsStream(manager, enchantment))
+                          .distinct()
+                    ));
                 }
                 //Get any potion tags
                 Potion potion = PotionUtils.getPotion(itemStack);
                 if (potion != Potions.EMPTY) {
-                    tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.getTags()));
+                    tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.POTIONS, potion)));
+                    ITagManager<MobEffect> effectManager = TagUtils.manager(ForgeRegistries.MOB_EFFECTS);
+                    tags.put(DictionaryTagType.MOB_EFFECT, TagCache.getTagsAsStrings(potion.getEffects().stream()
+                          .flatMap(effect -> TagUtils.tagsStream(effectManager, effect.getEffect()))
+                          .distinct()
+                    ));
+                }
+                //Get any attribute tags
+                Set<Attribute> attributes = Arrays.stream(EnumUtils.EQUIPMENT_SLOT_TYPES)
+                      .flatMap(slot -> itemStack.getAttributeModifiers(slot).keySet().stream())
+                      .collect(Collectors.toSet());
+                if (!attributes.isEmpty()) {
+                    //Only add them though if it has any attributes at all
+                    ITagManager<Attribute> attributeManager = TagUtils.manager(ForgeRegistries.ATTRIBUTES);
+                    tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(attributes.stream()
+                          .flatMap(attribute -> TagUtils.tagsStream(attributeManager, attribute))
+                          .distinct()
+                    ));
                 }
                 //Get tags of any contained fluids
                 FluidUtil.getFluidHandler(stack).ifPresent(fluidHandler -> {
-                    Set<ResourceLocation> fluidTags = new HashSet<>();
-                    for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
-                        FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
-                        if (!fluidInTank.isEmpty()) {
-                            fluidTags.addAll(fluidInTank.getFluid().getTags());
-                        }
-                    }
-                    tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidTags));
+                    ITagManager<Fluid> fluidManager = TagUtils.manager(ForgeRegistries.FLUIDS);
+                    tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
+                          .mapToObj(fluidHandler::getFluidInTank)
+                          .filter(fluidInTank -> !fluidInTank.isEmpty())
+                          .flatMap(fluidInTank -> TagUtils.tagsStream(fluidManager, fluidInTank.getFluid()))
+                          .distinct()
+                    ));
                 });
                 //Get tags of any contained chemicals
                 addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS_HANDLER_CAPABILITY);
@@ -162,16 +183,14 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY_HANDLER_CAPABILITY);
                 //TODO: Support other types of things?
             }
-        } else if (newTarget instanceof FluidStack) {
-            FluidStack fluidStack = (FluidStack) newTarget;
+        } else if (newTarget instanceof FluidStack fluidStack) {
             if (fluidStack.isEmpty()) {
                 target = null;
             } else {
                 target = fluidStack.copy();
-                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(((FluidStack) target).getFluid().getTags()));
+                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.FLUIDS, ((FluidStack) target).getFluid())));
             }
-        } else if (newTarget instanceof ChemicalStack) {
-            ChemicalStack<?> chemicalStack = (ChemicalStack<?>) newTarget;
+        } else if (newTarget instanceof ChemicalStack<?> chemicalStack) {
             if (chemicalStack.isEmpty()) {
                 target = null;
             } else {
@@ -198,17 +217,17 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         }
     }
 
-    private <HANDLER extends IChemicalHandler<?, ?>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack, Capability<HANDLER> capability) {
-        stack.getCapability(capability).ifPresent(handler -> {
-            Set<ResourceLocation> chemicalTags = new HashSet<>();
-            for (int tank = 0; tank < handler.getTanks(); tank++) {
-                ChemicalStack<?> chemicalInTank = handler.getChemicalInTank(tank);
-                if (!chemicalInTank.isEmpty()) {
-                    chemicalTags.addAll(chemicalInTank.getType().getTags());
-                }
-            }
-            tags.put(tagType, TagCache.getTagsAsStrings(chemicalTags));
-        });
+    private <STACK extends ChemicalStack<?>, HANDLER extends IChemicalHandler<?, STACK>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
+          Capability<HANDLER> capability) {
+        stack.getCapability(capability).ifPresent(handler ->
+              tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getTanks())
+                          .mapToObj(handler::getChemicalInTank)
+                          .filter(chemicalInTank -> !chemicalInTank.isEmpty())
+                          .flatMap(chemicalInTank -> chemicalInTank.getType().getTags())
+                          .distinct()
+                    )
+              )
+        );
     }
 
     @Override
@@ -230,12 +249,12 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         return new IGhostIngredientConsumer() {
             @Override
             public boolean supportsIngredient(Object ingredient) {
-                if (ingredient instanceof ItemStack) {
-                    return !((ItemStack) ingredient).isEmpty();
-                } else if (ingredient instanceof FluidStack) {
-                    return !((FluidStack) ingredient).isEmpty();
-                } else if (ingredient instanceof ChemicalStack) {
-                    return !((ChemicalStack<?>) ingredient).isEmpty();
+                if (ingredient instanceof ItemStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof FluidStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                    return !stack.isEmpty();
                 }
                 return false;
             }

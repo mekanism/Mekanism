@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:waxed_weathered_cut_copper"
+    }
+  },
+  "output": {
+    "item": "minecraft:weathered_cut_copper"
+  }
+}

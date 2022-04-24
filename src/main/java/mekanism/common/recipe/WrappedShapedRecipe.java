@@ -1,20 +1,20 @@
 package mekanism.common.recipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class WrappedShapedRecipe implements ICraftingRecipe, IShapedRecipe<CraftingInventory> {
+public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedRecipe<CraftingContainer> {
 
     private final ShapedRecipe internal;
 
@@ -27,10 +27,10 @@ public abstract class WrappedShapedRecipe implements ICraftingRecipe, IShapedRec
     }
 
     @Override
-    public abstract ItemStack assemble(CraftingInventory inv);
+    public abstract ItemStack assemble(CraftingContainer inv);
 
     @Override
-    public boolean matches(CraftingInventory inv, World world) {
+    public boolean matches(CraftingContainer inv, Level world) {
         //Note: We do not override the matches method if it matches ignoring NBT,
         // to ensure that we return the proper value for if there is a match that gives a proper output
         return internal.matches(inv, world) && !assemble(inv).isEmpty();
@@ -47,7 +47,7 @@ public abstract class WrappedShapedRecipe implements ICraftingRecipe, IShapedRec
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
         return internal.getRemainingItems(inv);
     }
 
@@ -84,5 +84,10 @@ public abstract class WrappedShapedRecipe implements ICraftingRecipe, IShapedRec
     @Override
     public int getRecipeHeight() {
         return internal.getRecipeHeight();
+    }
+
+    @Override
+    public boolean isIncomplete() {
+        return internal.isIncomplete();
     }
 }

@@ -2,77 +2,68 @@ package mekanism.tools.common.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.IHasRepairType;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.IPaxelMaterial;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.item.ToolItem;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.util.Constants.BlockFlags;
-import net.minecraftforge.common.util.Constants.WorldEvents;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
-public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttributeRefresher {
+public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAttributeRefresher {
 
-    private static final ToolType PAXEL_TOOL_TYPE = ToolType.get("paxel");
-
-    private static Item.Properties addHarvestLevel(Item.Properties properties, IPaxelMaterial material) {
-        int harvestLevel = material.getPaxelHarvestLevel();
-        return properties.addToolType(ToolType.AXE, harvestLevel).addToolType(ToolType.PICKAXE, harvestLevel)
-              .addToolType(ToolType.SHOVEL, harvestLevel).addToolType(PAXEL_TOOL_TYPE, harvestLevel);
-    }
+    private static final ToolAction PAXEL_DIG = ToolAction.get("paxel_dig");
 
     private final IPaxelMaterial material;
     private final AttributeCache attributeCache;
 
     public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), addHarvestLevel(properties, material));
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.paxelDamage, material.paxelAtkSpeed);
     }
 
     public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, Item.Properties properties) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material.getVanillaTier(), Collections.emptySet(), addHarvestLevel(properties, material));
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material.getVanillaTier(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties);
         this.material = material;
         //Don't add the material's damage as a listener as the vanilla component is not configurable
         this.attributeCache = new AttributeCache(this, material.paxelDamage, material.paxelAtkSpeed);
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
@@ -82,93 +73,88 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         return material.getPaxelDamage() + getTier().getAttackDamageBonus();
     }
 
-    private int getHarvestLevel() {
-        return material.getPaxelHarvestLevel();
+    @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+        return action == PAXEL_DIG || ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(action) ||
+               ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action);
     }
 
     @Override
-    public boolean isCorrectToolForDrops(BlockState state) {
-        ToolType harvestTool = state.getHarvestTool();
-        if (harvestTool == ToolType.AXE || harvestTool == ToolType.PICKAXE || harvestTool == ToolType.SHOVEL) {
-            if (getHarvestLevel() >= state.getHarvestLevel()) {
-                //If the required tool type is one of the tools we "support" then return that we can harvest it if
-                // we have an equal or higher harvest level
-                return true;
-            }
-        }
-        if (state.is(Blocks.SNOW) || state.is(Blocks.SNOW_BLOCK)) {
-            //Extra hardcoded shovel checks
-            return true;
-        }
-        //Extra hardcoded pickaxe checks
-        Material material = state.getMaterial();
-        return material == Material.STONE || material == Material.METAL || material == Material.HEAVY_METAL;
+    public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+        return super.getDestroySpeed(stack, state) == 1 ? 1 : material.getPaxelEfficiency();
     }
 
     /**
      * {@inheritDoc}
      *
-     * @implNote Include hardcoded checks from other items and wrap {@link net.minecraft.item.ToolItem#getDestroySpeed(ItemStack, BlockState)} to return our efficiency
-     * level
-     */
-    @Override
-    public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
-        Material material = state.getMaterial();
-        //If pickaxe hardcoded shortcut, or axe hardcoded shortcut or ToolItem#getDestroySpeed checks
-        //Note: We do it this way so that we don't need to check if the AxeItem material set contains the material if one of the pickaxe checks match
-        if (material == Material.METAL || material == Material.HEAVY_METAL || material == Material.STONE || AxeItem.DIGGABLE_MATERIALS.contains(material) ||
-            getToolTypes(stack).stream().anyMatch(state::isToolEffective) || blocks.contains(state.getBlock())) {
-            return this.material.getPaxelEfficiency();
-        }
-        return 1;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Merged version of {@link AxeItem#useOn(ItemUseContext)} and {@link ShovelItem#useOn(ItemUseContext)}
+     * Merged version of {@link AxeItem#useOn(UseOnContext)} and {@link net.minecraft.world.item.ShovelItem#useOn(UseOnContext)}
      */
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World world = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
-        PlayerEntity player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
+        Player player = context.getPlayer();
         BlockState blockstate = world.getBlockState(blockpos);
-        BlockState resultToSet = blockstate.getToolModifiedState(world, blockpos, player, stack, ToolType.AXE);
-        if (resultToSet != null) {
-            //We can strip the item as an axe
-            world.playSound(player, blockpos, SoundEvents.AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-        } else {
+        BlockState resultToSet = useAsAxe(blockstate, context);
+        if (resultToSet == null) {
             //We cannot strip the item that was right-clicked, so attempt to use the paxel as a shovel
             if (context.getClickedFace() == Direction.DOWN) {
-                return ActionResultType.PASS;
+                return InteractionResult.PASS;
             }
-            BlockState foundResult = blockstate.getToolModifiedState(world, blockpos, player, stack, ToolType.SHOVEL);
+            BlockState foundResult = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
             if (foundResult != null && world.isEmptyBlock(blockpos.above())) {
                 //We can flatten the item as a shovel
-                world.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
                 resultToSet = foundResult;
             } else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
                 //We can use the paxel as a shovel to extinguish a campfire
                 if (!world.isClientSide) {
-                    world.levelEvent(null, WorldEvents.FIRE_EXTINGUISH_SOUND, blockpos, 0);
+                    world.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, blockpos, 0);
                 }
-                CampfireBlock.dowse(world, blockpos, blockstate);
+                CampfireBlock.dowse(player, world, blockpos, blockstate);
                 resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
             }
-        }
-        if (resultToSet == null) {
-            return ActionResultType.PASS;
+            if (resultToSet == null) {
+                return InteractionResult.PASS;
+            }
         }
         if (!world.isClientSide) {
-            world.setBlock(blockpos, resultToSet, BlockFlags.DEFAULT_AND_RERENDER);
+            ItemStack stack = context.getItemInHand();
+            if (player instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockpos, stack);
+            }
+            world.setBlock(blockpos, resultToSet, Block.UPDATE_ALL_IMMEDIATE);
             if (player != null) {
                 stack.hurtAndBreak(1, player, onBroken -> onBroken.broadcastBreakEvent(context.getHand()));
             }
         }
-        return ActionResultType.sidedSuccess(world.isClientSide);
+        return InteractionResult.sidedSuccess(world.isClientSide);
+    }
+
+    @Nullable
+    private BlockState useAsAxe(BlockState state, UseOnContext context) {
+        Level world = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
+        Player player = context.getPlayer();
+        BlockState resultToSet = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
+        if (resultToSet != null) {
+            world.playSound(player, blockpos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
+            return resultToSet;
+        }
+        resultToSet = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
+        if (resultToSet != null) {
+            world.playSound(player, blockpos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            world.levelEvent(player, LevelEvent.PARTICLES_SCRAPE, blockpos, 0);
+            return resultToSet;
+        }
+        resultToSet = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
+        if (resultToSet != null) {
+            world.playSound(player, blockpos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+            world.levelEvent(player, LevelEvent.PARTICLES_WAX_OFF, blockpos, 0);
+            return resultToSet;
+        }
+        return null;
     }
 
     @Override
@@ -192,18 +178,10 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         return material.getPaxelMaxUses() > 0;
     }
 
-    @Override
-    public int getHarvestLevel(@Nonnull ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState) {
-        if (tool == ToolType.AXE || tool == ToolType.PICKAXE || tool == ToolType.SHOVEL || tool == PAXEL_TOOL_TYPE) {
-            return getHarvestLevel();
-        }
-        return super.getHarvestLevel(stack, tool, player, blockState);
-    }
-
     @Nonnull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
-        return slot == EquipmentSlotType.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, @Nonnull ItemStack stack) {
+        return slot == EquipmentSlot.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
     }
 
     @Override

@@ -1,17 +1,16 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
-import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute.ICrTPigmentAttribute;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
+@ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_PIGMENT)
-public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilder, ICrTPigmentAttribute, CrTPigmentBuilder> {
+public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilder, CrTPigmentBuilder> {
 
     /**
      * Creates a builder for registering a custom {@link Pigment}.

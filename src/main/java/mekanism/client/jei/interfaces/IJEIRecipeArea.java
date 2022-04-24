@@ -1,36 +1,32 @@
 package mekanism.client.jei.interfaces;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.common.Mekanism;
+import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 
-public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends IGuiEventListener {
+public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends GuiEventListener {
 
     /**
      * @return null if not an active recipe area, otherwise the category
      */
     @Nullable
-    ResourceLocation[] getRecipeCategories();
+    MekanismJEIRecipeType<?>[] getRecipeCategories();
 
-    default boolean isActive() {
+    default boolean isJEIAreaActive() {
         return true;
     }
 
-    ELEMENT jeiCategories(@Nullable ResourceLocation... recipeCategories);
+    ELEMENT jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories);
 
     default ELEMENT jeiCategory(TileEntityMekanism tile) {
-        return jeiCategories(tile.getBlockType().getRegistryName());
+        return jeiCategories(MekanismJEIRecipeType.findType(tile.getBlockType().getRegistryName()));
     }
 
     default ELEMENT jeiCrafting() {
-        if (Mekanism.hooks.JEILoaded) {
-            return jeiCategories(VanillaRecipeCategoryUid.CRAFTING);
-        }
-        return jeiCategories((ResourceLocation) null);
+        return jeiCategories(MekanismJEIRecipeType.VANILLA_CRAFTING);
     }
 
     default boolean isMouseOverJEIArea(double mouseX, double mouseY) {

@@ -12,6 +12,10 @@ public interface IMekanismConfig {
 
     ModConfig.Type getConfigType();
 
+    default void save() {
+        getConfigSpec().save();
+    }
+
     void clearCache();
 
     void addCachedValue(CachedValue<?> configValue);

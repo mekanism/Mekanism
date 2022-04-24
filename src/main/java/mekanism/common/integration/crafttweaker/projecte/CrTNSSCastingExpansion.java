@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.projecte;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -64,10 +64,10 @@ public class CrTNSSCastingExpansion {
         }
 
         /**
-         * Allows for casting {@link MCTag<Gas>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
+         * Allows for casting {@link KnownTag<Gas>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static NormalizedSimpleStack asNormalizedSimpleStack(MCTag<Gas> _this) {
+        public static NormalizedSimpleStack asNormalizedSimpleStack(KnownTag<Gas> _this) {
             return CrTNSSResolverExpansion.fromGasTag(_this);
         }
     }
@@ -112,10 +112,10 @@ public class CrTNSSCastingExpansion {
         }
 
         /**
-         * Allows for casting {@link MCTag<InfuseType>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
+         * Allows for casting {@link KnownTag<InfuseType>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static NormalizedSimpleStack asNormalizedSimpleStack(MCTag<InfuseType> _this) {
+        public static NormalizedSimpleStack asNormalizedSimpleStack(KnownTag<InfuseType> _this) {
             return CrTNSSResolverExpansion.fromInfuseTypeTag(_this);
         }
     }
@@ -160,10 +160,10 @@ public class CrTNSSCastingExpansion {
         }
 
         /**
-         * Allows for casting {@link MCTag<Pigment>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
+         * Allows for casting {@link KnownTag<Pigment>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static NormalizedSimpleStack asNormalizedSimpleStack(MCTag<Pigment> _this) {
+        public static NormalizedSimpleStack asNormalizedSimpleStack(KnownTag<Pigment> _this) {
             return CrTNSSResolverExpansion.fromPigmentTag(_this);
         }
     }
@@ -208,10 +208,10 @@ public class CrTNSSCastingExpansion {
         }
 
         /**
-         * Allows for casting {@link MCTag<Slurry>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
+         * Allows for casting {@link KnownTag<Slurry>}s to {@link NormalizedSimpleStack} without needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static NormalizedSimpleStack asNormalizedSimpleStack(MCTag<Slurry> _this) {
+        public static NormalizedSimpleStack asNormalizedSimpleStack(KnownTag<Slurry> _this) {
             return CrTNSSResolverExpansion.fromSlurryTag(_this);
         }
     }

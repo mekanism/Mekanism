@@ -1,6 +1,6 @@
 package mekanism.client.gui.qio;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -8,20 +8,19 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.ITileGuiFrequencySelector;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComponent, EmptyTileContainer<TileEntityQIOComponent>> implements
       IGuiColorFrequencySelector<QIOFrequency>, ITileGuiFrequencySelector<QIOFrequency, TileEntityQIOComponent> {
 
-    public GuiQIOTileFrequencySelect(EmptyTileContainer<TileEntityQIOComponent> container, PlayerInventory inv, ITextComponent title) {
+    public GuiQIOTileFrequencySelect(EmptyTileContainer<TileEntityQIOComponent> container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight -= 11;
         titleLabelY = 5;
@@ -30,9 +29,9 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiFrequencySelector<>(this, 17));
-        addButton(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
+        addRenderableWidget(new GuiFrequencySelector<>(this, 17));
+        addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
+              () -> Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
     }
 
     @Override
@@ -41,8 +40,8 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), titleLabelY);
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
@@ -57,7 +56,7 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     }
 
     @Override
-    public void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
+    public void drawTitleText(PoseStack matrix, Component text, float y) {
         //Adjust spacing for back button
         int leftShift = 15;
         int xSize = getXSize() - leftShift;

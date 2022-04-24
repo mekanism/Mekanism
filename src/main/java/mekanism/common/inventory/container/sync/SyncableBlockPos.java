@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.common.network.to_client.container.property.BlockPosPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public class SyncableBlockPos implements ISyncableData {
 

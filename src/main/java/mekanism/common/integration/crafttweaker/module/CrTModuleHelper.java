@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.module;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import java.util.Collection;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.MekanismAPI;
@@ -9,8 +8,8 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -76,6 +75,7 @@ public class CrTModuleHelper {
      * @return List of modules on an item, or an empty list if the item doesn't support modules.
      */
     @ZenCodeType.Method
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static List<IModule> loadAll(ItemStack container) {
         //ZenCode does not like ? extends IModule<?> so we need to just cast it to a type without any generics specified
         return (List) MekanismAPI.getModuleHelper().loadAll(container);
@@ -89,7 +89,7 @@ public class CrTModuleHelper {
      * @return Module types on an item.
      */
     @ZenCodeType.Method
-    public static Collection<ModuleData<?>> loadAllTypes(ItemStack container) {
+    public static List<ModuleData<?>> loadAllTypes(ItemStack container) {
         return MekanismAPI.getModuleHelper().loadAllTypes(container);
     }
 }

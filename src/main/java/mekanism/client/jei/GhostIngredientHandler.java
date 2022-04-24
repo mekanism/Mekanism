@@ -17,9 +17,9 @@ import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.lib.collection.LRU;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.renderer.Rect2i;
 
 public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhostIngredientHandler<GUI> {
 
@@ -28,7 +28,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
         boolean hasTargets = false;
         int depth = 0;
         Int2ObjectLinkedOpenHashMap<List<TargetInfo<INGREDIENT>>> depthBasedTargets = new Int2ObjectLinkedOpenHashMap<>();
-        Int2ObjectMap<List<Rectangle2d>> layerIntersections = new Int2ObjectOpenHashMap<>();
+        Int2ObjectMap<List<Rect2i>> layerIntersections = new Int2ObjectOpenHashMap<>();
         List<TargetInfo<INGREDIENT>> ghostTargets = getTargets(gui.children(), ingredient);
         if (!ghostTargets.isEmpty()) {
             //If we found any targets increment the layer count and add them to our depth based target list
@@ -41,8 +41,8 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
             depth++;
             if (hasTargets) {
                 //If we have at least one layer with targets grab the intersection information for this window's layer
-                List<Rectangle2d> areas = new ArrayList<>();
-                areas.add(new Rectangle2d(window.x, window.y, window.getWidth(), window.getHeight()));
+                List<Rect2i> areas = new ArrayList<>();
+                areas.add(new Rect2i(window.x, window.y, window.getWidth(), window.getHeight()));
                 areas.addAll(GuiElementHandler.getAreasFor(window.x, window.y, window.getWidth(), window.getHeight(), window.children()));
                 layerIntersections.put(depth, areas);
             }
@@ -58,7 +58,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
             return Collections.emptyList();
         }
         List<Target<INGREDIENT>> targets = new ArrayList<>();
-        List<Rectangle2d> coveredArea = new ArrayList<>();
+        List<Rect2i> coveredArea = new ArrayList<>();
         //Note: we iterate the target info in reverse so that we are able to more easily build up a list of the area that is covered
         // in front of the level of targets we are currently adding to
         FastSortedEntrySet<List<TargetInfo<INGREDIENT>>> depthEntries = depthBasedTargets.int2ObjectEntrySet();
@@ -76,20 +76,18 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
         return targets;
     }
 
-    private <INGREDIENT> List<TargetInfo<INGREDIENT>> getTargets(List<? extends IGuiEventListener> children, INGREDIENT ingredient) {
+    private <INGREDIENT> List<TargetInfo<INGREDIENT>> getTargets(List<? extends GuiEventListener> children, INGREDIENT ingredient) {
         List<TargetInfo<INGREDIENT>> ghostTargets = new ArrayList<>();
-        for (IGuiEventListener child : children) {
-            if (child instanceof Widget) {
-                Widget widget = (Widget) child;
+        for (GuiEventListener child : children) {
+            if (child instanceof AbstractWidget widget) {
                 if (widget.visible) {
-                    if (widget instanceof GuiElement) {
+                    if (widget instanceof GuiElement element) {
                         //Start by adding any grandchild ghost targets we have as they are the "top" layer, and we want them
                         // to get checked/interacted with first
-                        ghostTargets.addAll(getTargets(((GuiElement) widget).children(), ingredient));
+                        ghostTargets.addAll(getTargets(element.children(), ingredient));
                     }
                     //Then go ahead and check if our element is a ghost target and if it is, and it supports the ingredient add it
-                    if (widget instanceof IJEIGhostTarget) {
-                        IJEIGhostTarget ghostTarget = (IJEIGhostTarget) widget;
+                    if (widget instanceof IJEIGhostTarget ghostTarget) {
                         IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
                         if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
                             ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, widget.x, widget.y, widget.getWidth(), widget.getHeight()));
@@ -105,7 +103,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
     public void onComplete() {
     }
 
-    private static void addVisibleAreas(List<Rectangle2d> visible, Rectangle2d area, List<Rectangle2d> coveredArea) {
+    private static void addVisibleAreas(List<Rect2i> visible, Rect2i area, List<Rect2i> coveredArea) {
         boolean intersected = false;
         int x = area.getX();
         int x2 = x + area.getWidth();
@@ -113,7 +111,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
         int y2 = y + area.getHeight();
         int size = coveredArea.size();
         for (int i = 0; i < size; i++) {
-            Rectangle2d covered = coveredArea.get(i);
+            Rect2i covered = coveredArea.get(i);
             int cx = covered.getX();
             int cx2 = cx + covered.getWidth();
             int cy = covered.getY();
@@ -123,15 +121,15 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
                 intersected = true;
                 if (x < cx || y < cy || x2 > cx2 || y2 > cy2) {
                     //If the area is not fully covered then get the parts of it that are not covered
-                    List<Rectangle2d> uncoveredArea = getVisibleArea(area, covered);
+                    List<Rect2i> uncoveredArea = getVisibleArea(area, covered);
                     if (i + 1 == size) {
                         //If there are no more elements left, just add all the remaining visible parts
                         visible.addAll(uncoveredArea);
                     } else {
                         //Otherwise, grab the remaining unchecked elements from the covering layer
-                        List<Rectangle2d> coveredAreas = coveredArea.subList(i + 1, size);
+                        List<Rect2i> coveredAreas = coveredArea.subList(i + 1, size);
                         //And check each of our sub visible areas
-                        for (Rectangle2d visibleArea : uncoveredArea) {
+                        for (Rect2i visibleArea : uncoveredArea) {
                             addVisibleAreas(visible, visibleArea, coveredAreas);
                         }
                     }
@@ -146,7 +144,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
         }
     }
 
-    private static List<Rectangle2d> getVisibleArea(Rectangle2d area, Rectangle2d coveredArea) {
+    private static List<Rect2i> getVisibleArea(Rect2i area, Rect2i coveredArea) {
         //Useful tool for visualizing overlaps: https://silentmatt.com/rectangle-intersection/
         //TODO: Look into further cleaning this up so that it is less "hardcoded" manner for adding the various components
         // started out as more hardcoded to actually figure out the different pieces
@@ -163,99 +161,99 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
         boolean intersectsLeft = x >= cx && x <= cx2;
         boolean intersectsBottom = y2 >= cy && y2 <= cy2;
         boolean intersectsRight = x2 >= cx && x2 <= cx2;
-        List<Rectangle2d> areas = new ArrayList<>();
+        List<Rect2i> areas = new ArrayList<>();
         if (intersectsTop && intersectsBottom) {
             //Intersects three sides (even if the perpendicular one may only have the top and bottom point intersected), we have one rectangle
             if (intersectsLeft) {
                 //Right section
-                areas.add(new Rectangle2d(cx2, y, x2 - cx2, area.getHeight()));
+                areas.add(new Rect2i(cx2, y, x2 - cx2, area.getHeight()));
             } else if (intersectsRight) {
                 //Left section
-                areas.add(new Rectangle2d(x, y, cx - x, area.getHeight()));
+                areas.add(new Rect2i(x, y, cx - x, area.getHeight()));
             } else {
                 //Intersects two parallel sides, we have two rectangles
                 //Left section
-                areas.add(new Rectangle2d(x, y, cx - x, area.getHeight()));
+                areas.add(new Rect2i(x, y, cx - x, area.getHeight()));
                 //Right section
-                areas.add(new Rectangle2d(cx2, y, x2 - cx2, area.getHeight()));
+                areas.add(new Rect2i(cx2, y, x2 - cx2, area.getHeight()));
             }
         } else if (intersectsLeft && intersectsRight) {
             //Intersects three sides (even if the perpendicular one may only have the top and bottom point intersected), we have one rectangle
             if (intersectsTop) {
                 //Bottom section
-                areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+                areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
             } else if (intersectsBottom) {
                 //Top section
-                areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+                areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
             } else {
                 //Intersects two parallel sides, we have two rectangles
                 //Top section
-                areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+                areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
                 //Bottom section
-                areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+                areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
             }
         }
         //Intersects two perpendicular sides, we have two rectangles
         else if (intersectsTop && intersectsLeft) {
             //Bottom section
-            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
             //Right section
-            areas.add(new Rectangle2d(cx2, y, x2 - cx2, cy2 - y));
+            areas.add(new Rect2i(cx2, y, x2 - cx2, cy2 - y));
         } else if (intersectsTop && intersectsRight) {
             //Left section
-            areas.add(new Rectangle2d(x, y, cx - x, cy2 - y));
+            areas.add(new Rect2i(x, y, cx - x, cy2 - y));
             //Bottom section
-            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
         } else if (intersectsBottom && intersectsLeft) {
             //Top section
-            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
             //Right section
-            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, y2 - cy));
+            areas.add(new Rect2i(cx2, cy, x2 - cx2, y2 - cy));
         } else if (intersectsBottom && intersectsRight) {
             //Top section
-            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
             //Left section
-            areas.add(new Rectangle2d(x, cy, cx - x, y2 - cy));
+            areas.add(new Rect2i(x, cy, cx - x, y2 - cy));
         }
         //Intersects a single side, we have three rectangles
         else if (intersectsTop) {
             //Left section
-            areas.add(new Rectangle2d(x, y, cx - x, cy2 - y));
+            areas.add(new Rect2i(x, y, cx - x, cy2 - y));
             //Bottom section
-            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
             //Right section
-            areas.add(new Rectangle2d(cx2, y, x2 - cx2, cy2 - y));
+            areas.add(new Rect2i(cx2, y, x2 - cx2, cy2 - y));
         } else if (intersectsLeft) {
             //Top section
-            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
             //Bottom section
-            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
             //Right section
-            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, coveredArea.getHeight()));
+            areas.add(new Rect2i(cx2, cy, x2 - cx2, coveredArea.getHeight()));
         } else if (intersectsBottom) {
             //Top section
-            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
             //Left section
-            areas.add(new Rectangle2d(x, cy, cx - x, y2 - cy));
+            areas.add(new Rect2i(x, cy, cx - x, y2 - cy));
             //Right section
-            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, y2 - cy));
+            areas.add(new Rect2i(cx2, cy, x2 - cx2, y2 - cy));
         } else if (intersectsRight) {
             //Top section
-            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
             //Left section
-            areas.add(new Rectangle2d(x, cy, cx - x, coveredArea.getHeight()));
+            areas.add(new Rect2i(x, cy, cx - x, coveredArea.getHeight()));
             //Bottom section
-            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
         } else {
             //The covered area is entirely contained by the main area, we have four rectangles
             //Top section
-            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            areas.add(new Rect2i(x, y, area.getWidth(), cy - y));
             //Left section
-            areas.add(new Rectangle2d(x, cy, cx - x, coveredArea.getHeight()));
+            areas.add(new Rect2i(x, cy, cx - x, coveredArea.getHeight()));
             //Bottom section
-            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            areas.add(new Rect2i(x, cy2, area.getWidth(), y2 - cy2));
             //Right section
-            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, coveredArea.getHeight()));
+            areas.add(new Rect2i(cx2, cy, x2 - cx2, coveredArea.getHeight()));
         }
         return areas;
     }
@@ -274,12 +272,12 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
             this.height = height - 2 * borderSize;
         }
 
-        public List<Target<INGREDIENT>> convertToTargets(List<Rectangle2d> coveredArea) {
-            List<Rectangle2d> visibleAreas = new ArrayList<>();
-            addVisibleAreas(visibleAreas, new Rectangle2d(x, y, width, height), coveredArea);
+        public List<Target<INGREDIENT>> convertToTargets(List<Rect2i> coveredArea) {
+            List<Rect2i> visibleAreas = new ArrayList<>();
+            addVisibleAreas(visibleAreas, new Rect2i(x, y, width, height), coveredArea);
             return visibleAreas.stream().map(visibleArea -> new Target<INGREDIENT>() {
                 @Override
-                public Rectangle2d getArea() {
+                public Rect2i getArea() {
                     return visibleArea;
                 }
 
