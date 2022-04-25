@@ -3,7 +3,6 @@ import groovy.json.JsonSlurper
 import mekanism.MergeJars
 
 buildscript {
-    ext.kotlin_version = '1.4.31'
     repositories {
         maven {
             name 'thiakil'
@@ -132,12 +131,6 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
     }
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
@@ -210,6 +203,11 @@ group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "Mekanism"
 java.toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of("${java_version}"))
+    }
+}
 
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
@@ -468,10 +466,10 @@ dependencies {
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
-    datagenmainCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    datagengeneratorsCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    datagenadditionsCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    datagentoolsCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    datagenmainImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}"
+    datagengeneratorsImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}"
+    datagenadditionsImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}"
+    datagentoolsImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}"
 }
 
 if (project.hasProperty('UPDATE_MAPPINGS')) {
@@ -947,17 +945,5 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             addGameVersion "Java ${java_version}"
             addGameVersion "${minecraft_version}"
         }
-    }
-}
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        languageVersion = "1.6"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        languageVersion = "1.6"
     }
 }
