@@ -17,7 +17,7 @@ enum class GuideCategory : IGuideCategory {
     LIQUIDS
     ;
 
-    override val id: String = name.toLowerCase(Locale.ROOT)
+    override val id: String = name.lowercase(Locale.ROOT)
     private val translationKey: String = Util.makeDescriptionId("guidebook", Mekanism.rl("category.$id"))
     override val translationKeyName: String = "$translationKey.name"
     override val translationKeyDescription: String = "$translationKey.description"

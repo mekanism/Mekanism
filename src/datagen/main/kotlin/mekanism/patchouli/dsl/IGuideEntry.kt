@@ -6,6 +6,6 @@ interface IGuideEntry {
     val entryId: String
 
     companion object {
-        fun generate(folder: String?, name: String): String = (if (folder != null) "$folder/" else "") + name.toLowerCase(Locale.ROOT)
+        fun generate(folder: String?, name: String): String = (if (folder != null) "$folder/" else "") + name.lowercase(Locale.ROOT)
     }
 }
