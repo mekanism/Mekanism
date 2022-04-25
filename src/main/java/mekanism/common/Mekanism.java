@@ -68,6 +68,8 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
+import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
+import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
@@ -106,9 +108,11 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
 import mekanism.common.world.GenHandler;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -406,8 +410,8 @@ public class Mekanism {
             ForgeChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
             //Register dispenser behaviors
             MekanismFluids.FLUIDS.registerBucketDispenserBehavior();
-            registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK,
-                  MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
+            registerFluidTankBehaviors(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK,
+                  MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
             registerDispenseBehavior(new ModuleDispenseBehavior(), MekanismItems.MEKA_TOOL);
             registerDispenseBehavior(new MekaSuitDispenseBehavior(), MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS,
                   MekanismItems.MEKASUIT_BOOTS);
@@ -434,6 +438,16 @@ public class Mekanism {
     private static void registerDispenseBehavior(DispenseItemBehavior behavior, IItemProvider... itemProviders) {
         for (IItemProvider itemProvider : itemProviders) {
             DispenserBlock.registerBehavior(itemProvider.asItem(), behavior);
+        }
+    }
+
+    private static void registerFluidTankBehaviors(IItemProvider... itemProviders) {
+        registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE);
+        for (IItemProvider itemProvider : itemProviders) {
+            Item item = itemProvider.asItem();
+            CauldronInteraction.EMPTY.put(item, BasicCauldronInteraction.EMPTY);
+            CauldronInteraction.WATER.put(item, BasicDrainCauldronInteraction.WATER);
+            CauldronInteraction.LAVA.put(item, BasicDrainCauldronInteraction.LAVA);
         }
     }
 

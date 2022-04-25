@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.DataHandlerUtils;
@@ -36,10 +37,13 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -52,12 +56,15 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.client.IItemRenderProperties;
@@ -205,12 +212,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                             sound = bucketPickup.getPickupSound(blockState);
                         }
                         if (validFluid(fluidTank, fluidStack)) {
-                            if (fluidTank.isEmpty()) {
-                                fluidTank.setStack(fluidStack);
-                            } else {
-                                //Grow the stack
-                                MekanismUtils.logMismatchedStackSize(fluidTank.growStack(fluidStack.getAmount(), Action.EXECUTE), fluidStack.getAmount());
-                            }
+                            uncheckedGrow(fluidTank, fluidStack);
                             //Play the bucket fill sound
                             WorldUtils.playFillSound(player, world, pos, fluidStack, sound.orElse(null));
                             world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
@@ -225,6 +227,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                     }
                     if (WorldUtils.tryPlaceContainedLiquid(player, world, pos, fluidTank.getFluid(), result.getDirection())) {
                         if (!player.isCreative()) {
+                            //Manually shrink in case bucket volume is greater than tank input/output rate limit
                             MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
                         }
                         world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
@@ -234,6 +237,20 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
             }
         }
         return InteractionResultHolder.pass(stack);
+    }
+
+    //Used after simulation to insert the stack rather than just using the insert method to properly handle cases
+    // where the stack for a single bucket may be above the tank's configured rate limit
+    private void uncheckedGrow(IExtendedFluidTank fluidTank, FluidStack fluidStack) {
+        if (getTier() != FluidTankTier.CREATIVE) {
+            //No-OP creative handling as that is how insert would be handled for items
+            if (fluidTank.isEmpty()) {
+                fluidTank.setStack(fluidStack);
+            } else {
+                //Grow the stack
+                MekanismUtils.logMismatchedStackSize(fluidTank.growStack(fluidStack.getAmount(), Action.EXECUTE), fluidStack.getAmount());
+            }
+        }
     }
 
     private static boolean validFluid(@Nonnull IExtendedFluidTank fluidTank, @Nonnull FluidStack fluidStack) {
@@ -347,12 +364,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                         sound = bucketPickup.getPickupSound(blockState);
                     }
                     if (validFluid(fluidTank, fluidStack)) {
-                        if (fluidTank.isEmpty()) {
-                            fluidTank.setStack(fluidStack);
-                        } else {
-                            //Grow the stack
-                            MekanismUtils.logMismatchedStackSize(fluidTank.growStack(fluidStack.getAmount(), Action.EXECUTE), fluidStack.getAmount());
-                        }
+                        tank.uncheckedGrow(fluidTank, fluidStack);
                         //Play the bucket fill sound
                         WorldUtils.playFillSound(null, world, pos, fluidStack, sound.orElse(null));
                         world.gameEvent(GameEvent.FLUID_PICKUP, pos);
@@ -361,6 +373,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                     }
                 } else if (fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() >= FluidAttributes.BUCKET_VOLUME) {
                     if (WorldUtils.tryPlaceContainedLiquid(null, world, pos, fluidTank.getFluid(), null)) {
+                        //Manually shrink in case bucket volume is greater than tank input/output rate limit
                         MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
                         world.gameEvent(GameEvent.FLUID_PLACE, pos);
                         //Success, don't dispense anything just return our resulting stack
@@ -371,6 +384,114 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
             }
             //Otherwise, eject it as a normal item
             return super.execute(source, stack);
+        }
+    }
+
+    public abstract static class BasicCauldronInteraction implements CauldronInteraction {
+
+        public static final BasicCauldronInteraction EMPTY = new BasicCauldronInteraction() {
+            @Nullable
+            private BlockState getState(FluidStack current) {
+                Fluid type = current.getFluid();
+                if (type == Fluids.WATER) {
+                    return Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
+                } else if (type == Fluids.LAVA) {
+                    return Blocks.LAVA_CAULDRON.defaultBlockState();
+                }
+                return null;
+            }
+
+            @Nonnull
+            @Override
+            protected InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
+                  @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank) {
+                FluidStack fluidStack = fluidTank.getFluid();
+                BlockState endState = getState(fluidStack);
+                if (endState != null && fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() >= FluidAttributes.BUCKET_VOLUME) {
+                    if (!level.isClientSide) {
+                        if (!player.isCreative()) {
+                            //Manually shrink in case bucket volume is greater than tank input/output rate limit
+                            MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
+                        }
+                        player.awardStat(Stats.FILL_CAULDRON);
+                        player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+                        level.setBlockAndUpdate(pos, endState);
+                        level.playSound(null, pos, fluidStack.getFluid().getAttributes().getEmptySound(level, pos), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
+                    }
+                    return InteractionResult.sidedSuccess(level.isClientSide);
+                }
+                return InteractionResult.PASS;
+            }
+        };
+
+        @Nonnull
+        @Override
+        public final InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
+              @Nonnull InteractionHand hand, @Nonnull ItemStack stack) {
+            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getBucketMode(stack)) {
+                //If the fluid tank is in bucket mode allow for it to act as a bucket
+                IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
+                //Get the fluid tank for the stack
+                if (fluidTank == null) {
+                    //If there isn't one then there is something wrong with the stack, treat it as a normal stack and skip
+                    return InteractionResult.PASS;
+                }
+                return interact(state, level, pos, player, hand, stack, fluidTank);
+            }
+            //Otherwise skip
+            return InteractionResult.PASS;
+        }
+
+        @Nonnull
+        protected abstract InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
+              @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank);
+    }
+
+    public static class BasicDrainCauldronInteraction extends BasicCauldronInteraction {
+
+        public static final BasicDrainCauldronInteraction WATER = new BasicDrainCauldronInteraction(Fluids.WATER) {
+            @Nonnull
+            @Override
+            protected InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
+                  @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank) {
+                if (state.getValue(LayeredCauldronBlock.LEVEL) == 3) {
+                    //When emptying a water cauldron make sure it is full and just ignore handling of partial transfers
+                    // as while we can handle them, they come with the added complication of deciding what value to give bottles
+                    return super.interact(state, level, pos, player, hand, stack, fluidTank);
+                }
+                return InteractionResult.PASS;
+            }
+        };
+        public static final BasicDrainCauldronInteraction LAVA = new BasicDrainCauldronInteraction(Fluids.LAVA);
+
+        private final Fluid type;
+
+        private BasicDrainCauldronInteraction(Fluid type) {
+            this.type = type;
+        }
+
+        @Nonnull
+        @Override
+        protected InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
+              @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank) {
+            FluidStack fluidStack = new FluidStack(type, FluidAttributes.BUCKET_VOLUME);
+            FluidStack remainder = fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL);
+            if (remainder.isEmpty()) {
+                //We can fit all the fluid we would be removing
+                if (!level.isClientSide) {
+                    if (!player.isCreative()) {
+                        ((ItemBlockFluidTank) stack.getItem()).uncheckedGrow(fluidTank, fluidStack);
+                    }
+                    player.awardStat(Stats.USE_CAULDRON);
+                    player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+                    level.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
+                    level.playSound(null, pos, fluidStack.getFluid().getAttributes().getFillSound(level, pos), SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+            return InteractionResult.PASS;
         }
     }
 }
