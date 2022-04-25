@@ -1,11 +1,12 @@
 package mekanism.patchouli.content
 
-import mekanism.client.MekanismKeyHandler
-import mekanism.common.content.gear.Modules
+import mekanism.client.key.MekanismKeyHandler
 import mekanism.common.registries.MekanismBlocks.*
+import mekanism.common.registries.MekanismFluids.NUTRITIONAL_PASTE
 import mekanism.common.registries.MekanismGases.*
 import mekanism.common.registries.MekanismItems.*
-import mekanism.common.resource.OreType
+import mekanism.common.registries.MekanismModules
+import mekanism.common.resource.ore.OreType
 import mekanism.common.resource.PrimaryResource
 import mekanism.common.resource.ResourceType
 import mekanism.patchouli.GuideCategory
@@ -59,7 +60,7 @@ fun PatchouliBook.itemCategory() {
             ATOMIC_DISASSEMBLER("The Atomic Disassembler is Mekanism's an all-in-one tool, essentially the ultimate, electronic version of the Paxel (working at any mining level). Also functions as a Hoe & Scoop (Forestry)$(p)The Atomic Disassembler has multiple modes that can be cycled with $(k:sneak) + right click.") {
                 text {
                     title = "Normal Mode"
-                    text = "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool ${link(Modules.FARMING_UNIT, "Farming Unit")}"
+                    text = "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool ${link(MekanismModules.FARMING_UNIT, "Farming Unit")}"
                 }
                 text {
                     title = "Slow Mode"
@@ -176,7 +177,7 @@ fun PatchouliBook.itemCategory() {
         GuideCategory.ITEMS_METAL_AND_ORE {
             name = "Metals & Ores"
             description = "Ore/Metal processing based materials."
-            icon = PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)
+            icon = PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)!!
 
             entry(BRONZE_INGOT) {
                 name = "Bronze"
@@ -254,7 +255,7 @@ fun PatchouliBook.itemCategory() {
 
             DIRTY_NETHERITE_SCRAP("Dirty Netherite Scraps are part of the ore processing of Ancient Debris.")
 
-            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)) {
+            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)!!) {
                 name = "Osmium"
                 readByDefault = true
                 +"Osmium is a hard, brittle, bluish-white transition metal in the platinum group that is found as a trace element in alloys, mostly in platinum ores.$(p)Osmium is the densest stable element; it is approximately twice as dense as lead and slightly denser than iridium."
@@ -262,15 +263,7 @@ fun PatchouliBook.itemCategory() {
                 PROCESSED_RESOURCES.column(PrimaryResource.OSMIUM).values.forEach(this::spotlight)
             }
 
-            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER)) {
-                name = "Copper"
-                readByDefault = true
-                +"Copper is a soft, malleable, and ductile metal with very high thermal and electrical conductivity. A freshly exposed surface of pure copper has a pinkish-orange color."
-                spotlight(ORES[OreType.COPPER]!!)
-                PROCESSED_RESOURCES.column(PrimaryResource.COPPER).values.forEach(this::spotlight)
-            }
-
-            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)) {
+            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)!!) {
                 name = "Tin"
                 readByDefault = true
                 +"Tin is a silvery metal that characteristically has a faint yellow hue. Tin, like indium, is soft enough to be cut without much force."
@@ -278,7 +271,7 @@ fun PatchouliBook.itemCategory() {
                 PROCESSED_RESOURCES.column(PrimaryResource.TIN).values.forEach(this::spotlight)
             }
 
-            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)) {
+            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)!!) {
                 name = "Uranium"
                 readByDefault = true
                 +"Uranium is a silvery-grey metal in the actinide series of the periodic table. A uranium atom has 92 protons and 92 electrons, of which 6 are valence electrons. Uranium is weakly radioactive because all isotopes of uranium are unstable; the half-lives of its naturally occurring isotopes range between 159,200 years and 4.5 billion years."
@@ -286,7 +279,7 @@ fun PatchouliBook.itemCategory() {
                 PROCESSED_RESOURCES.column(PrimaryResource.URANIUM).values.forEach(this::spotlight)
             }
 
-            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD)) {
+            entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD)!!) {
                 name = "Lead"
                 readByDefault = true
                 +"Lead is a heavy metal that is denser than most common materials. Lead is soft and malleable, and also has a relatively low melting point."

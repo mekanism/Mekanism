@@ -3,8 +3,8 @@ package mekanism.patchouli.dsl
 import com.google.gson.GsonBuilder
 import com.mojang.serialization.Dynamic
 import com.mojang.serialization.JsonOps
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NBTDynamicOps
+import net.minecraft.nbt.NbtOps
+import net.minecraft.world.item.ItemStack
 import java.util.*
 
 object ItemStackUtils {
@@ -26,7 +26,7 @@ object ItemStackUtils {
             builder.append(count)
         }
         if (stack.hasTag()) {
-            val dyn: Dynamic<*> = Dynamic(NBTDynamicOps.INSTANCE, stack.tag)
+            val dyn: Dynamic<*> = Dynamic(NbtOps.INSTANCE, stack.tag)
             val j = dyn.convert(JsonOps.INSTANCE).value
             builder.append(GSON.toJson(j))
         }

@@ -1,7 +1,7 @@
 package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
-import net.minecraft.util.ResourceLocation
+import net.minecraft.resources.ResourceLocation
 
 class QuestPage: EntryPage("quest") {
     /**

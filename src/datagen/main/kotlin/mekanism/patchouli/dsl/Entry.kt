@@ -4,8 +4,9 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import mekanism.api.providers.IItemProvider
-import net.minecraft.item.ItemStack
-import net.minecraft.util.ResourceLocation
+import mekanism.common.resource.ore.OreBlockType
+import net.minecraft.world.item.ItemStack
+import net.minecraft.resources.ResourceLocation
 
 @PatchouliDSL
 class Entry(
@@ -144,6 +145,20 @@ class Entry(
     fun spotlight(item: IItemProvider, spotlightText: String? = null) {
         spotlight {
             this.item = item.itemStack
+            linkRecipe = true
+            text = spotlightText
+        }
+    }
+
+    @PatchouliDSL
+    fun spotlight(oreBlockType: OreBlockType, spotlightText: String? = null) {
+        spotlight {
+            this.item = ItemStack(oreBlockType.stoneBlock().asItem())
+            linkRecipe = true
+            text = spotlightText
+        }
+        spotlight {
+            this.item = ItemStack(oreBlockType.deepslateBlock().asItem())
             linkRecipe = true
             text = spotlightText
         }

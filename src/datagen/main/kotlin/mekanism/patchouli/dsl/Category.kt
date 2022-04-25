@@ -4,8 +4,9 @@ import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import mekanism.api.providers.IGasProvider
 import mekanism.api.providers.IItemProvider
+import mekanism.common.registration.impl.FluidRegistryObject
 import mekanism.common.registries.MekanismBlocks
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 interface ICategory {
     val id: String
@@ -71,6 +72,14 @@ interface ICategory {
     operator fun IGuideEntry.invoke(init: Entry.() -> Unit) {
         entry(this.entryId) {
             init()
+        }
+    }
+
+    @PatchouliDSL
+    operator fun FluidRegistryObject<*, *, *, *>.invoke(init: Entry.() -> Unit) {
+        entry(this.bookId) {
+            name = translationKey
+            iconItem = ItemStack(this@invoke.bucket, 1)
         }
     }
 }

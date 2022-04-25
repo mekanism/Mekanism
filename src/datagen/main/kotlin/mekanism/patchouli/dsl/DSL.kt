@@ -4,13 +4,14 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import mekanism.api.gear.ModuleData
 import mekanism.api.providers.IBlockProvider
 import mekanism.api.providers.IGasProvider
 import mekanism.api.providers.IItemProvider
-import net.minecraft.client.settings.KeyBinding
-import net.minecraft.item.ItemStack
-import net.minecraft.util.ResourceLocation
+import mekanism.common.registration.impl.FluidRegistryObject
+import mekanism.common.registration.impl.ModuleRegistryObject
+import net.minecraft.client.KeyMapping
+import net.minecraft.world.item.ItemStack
+import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 
 fun JsonObject.addProperty(name: String, res: ResourceLocation) {
@@ -53,7 +54,9 @@ val IItemProvider.bookId: String get() {
 
 val IGasProvider.bookId: String get() = "gas/" + this.registryName.path
 
-val ModuleData<*>.bookId: String get() = "items/modules/"+this.itemProvider.registryName
+val FluidRegistryObject<*,*,*,*>.bookId: String get() = "fluid/" + this.registryName.path
+
+val ModuleRegistryObject<*>.bookId: String get() = "item/modules/"+this.registryName
 
 private fun link(id:String, text:String): String = "$(l:${id})${text}$(/l)"
 
@@ -67,9 +70,12 @@ fun link(item: IGasProvider, text: String): String = link(item.bookId, text)
 fun link(guideEntry: IGuideEntry, text: String): String = link(guideEntry.entryId, text)
 
 @PatchouliDSL
-fun link(module: ModuleData<*>, text: String): String = link(module.bookId, text)
+fun link(module: ModuleRegistryObject<*>, text: String): String = link(module.bookId, text)
 
-operator fun KeyBinding.invoke(): String {
+@PatchouliDSL
+fun link(fluid: FluidRegistryObject<*,*,*,*>, text: String): String = link(fluid.bookId, text)
+
+operator fun KeyMapping.invoke(): String {
     return "$(k:${name})"
 }
 

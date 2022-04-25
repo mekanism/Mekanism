@@ -2,8 +2,8 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.util.ResourceLocation
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.resources.ResourceLocation
 
 class EntityPage: EntryPage("entity") {
     /**
@@ -11,7 +11,7 @@ class EntityPage: EntryPage("entity") {
      */
     lateinit var entity: ResourceLocation
 
-    var nbt: CompoundNBT? = null
+    var nbt: CompoundTag? = null
 
     /**
      * The scale to display the entity at. Defaults to 1.0. Values lower than 1.0 will have the entity be smaller than usual, while higher than 1.0 will have it be larger. Negative values will flip it upside down.

@@ -1,6 +1,5 @@
 package mekanism.patchouli.content
 
-import mekanism.common.content.gear.Modules
 import mekanism.common.registries.MekanismBlocks.*
 import mekanism.common.registries.MekanismGases.*
 import mekanism.common.registries.MekanismItems.*
@@ -117,7 +116,7 @@ fun PatchouliBook.chemicals() {
             +"Used to make ${link(FISSILE_FUEL, "Fissile Fuel")} in the ${link(ISOTOPIC_CENTRIFUGE, "Isotopic Centrifuge")}."
         }
 
-        LIQUID_OSMIUM {
+        OSMIUM {
             +"Chemical form of Osmium used in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}."
         }
 
@@ -149,10 +148,6 @@ fun PatchouliBook.chemicals() {
 
         ANTIMATTER {
             +"Late-game chemical used for advanced processes."
-        }
-
-        NUTRITIONAL_PASTE {
-            +"Food, tasty paste form. Used with the ${link(CANTEEN, "Canteen")}, or in the ${link(Modules.NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit")}."
         }
 
     }

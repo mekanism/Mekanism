@@ -5,7 +5,7 @@ import mekanism.common.registries.MekanismBlocks.*
 import mekanism.patchouli.GuideCategory
 import mekanism.patchouli.GuideEntry
 import mekanism.patchouli.dsl.PatchouliBook
-import net.minecraft.util.Direction
+import net.minecraft.core.Direction
 
 fun PatchouliBook.multiblocks() {
     GuideCategory.MULTIBLOCKS {

@@ -2,7 +2,7 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
 import mekanism.api.providers.IItemProvider
-import net.minecraft.util.ResourceLocation
+import net.minecraft.resources.ResourceLocation
 
 abstract class BaseCraftingPage(
         /** The ID of the first recipe you want to show. */

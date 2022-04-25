@@ -5,12 +5,12 @@ import com.google.gson.JsonObject
 import mekanism.common.block.attribute.Attribute
 import mekanism.common.block.attribute.AttributeStateFacing
 import mekanism.common.registration.impl.BlockRegistryObject
-import net.minecraft.block.Block
-import net.minecraft.block.BlockState
-import net.minecraft.item.Item
-import net.minecraft.state.StateHolder
-import net.minecraft.tags.ITag
-import net.minecraft.util.Direction
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.item.Item
+import net.minecraft.core.Direction
+import net.minecraft.tags.TagKey
+import net.minecraft.world.level.block.state.properties.Property
 import java.util.*
 
 class MultiblockInfo {
@@ -93,7 +93,7 @@ class MultiblockInfo {
         }
 
         private fun BlockRegistryObject<out Block, out Item>.toPattern(): String {
-            return block.block.registryName!!.toString()
+            return block.registryName!!.toString()
         }
 
         @PatchouliDSL
@@ -110,14 +110,19 @@ class MultiblockInfo {
 
         private fun BlockState.toPattern(): String {
             return if (values.isNotEmpty()) {
-                this.block.registryName!!.toString()+values.entries.joinToString(separator = ",", prefix = "[", postfix = "]", transform = StateHolder.field_235890_a_::apply)//+"["+(this.toString().substringAfter("["))
+                this.block.registryName!!.toString()+values.entries.joinToString(separator = ",", prefix = "[", postfix = "]") { entry ->
+                    @Suppress("UNCHECKED_CAST")
+                    entry.key.name + "=" + (entry as Map.Entry<Property<Comparable<Any>>, Comparable<Any>>).key.getName(
+                        entry.value
+                    )
+                }
             } else {
                 this.block.registryName!!.toString()
             }
         }
 
         private fun <BLOCK: Block> blockStatePattern(registryObject: BlockRegistryObject<BLOCK, out Item>, stateProvider: BLOCK.(defaultState: BlockState)-> BlockState): String {
-            return stateProvider(registryObject.block, registryObject.block.defaultState).toPattern()
+            return stateProvider(registryObject.block, registryObject.block.defaultBlockState()).toPattern()
         }
 
         @PatchouliDSL
@@ -126,11 +131,11 @@ class MultiblockInfo {
         }
 
         @PatchouliDSL
-        operator fun ITag.INamedTag<Block>.unaryPlus() {
+        operator fun TagKey<Block>.unaryPlus() {
             column.add(toPattern())
         }
 
-        private fun ITag.INamedTag<Block>.toPattern() = "#$name"
+        private fun TagKey<Block>.toPattern() = "#$location"
 
         @PatchouliDSL
         fun space() {
@@ -155,7 +160,7 @@ class MultiblockInfo {
         }
 
         @PatchouliDSL
-        fun center(tag: ITag.INamedTag<Block>) {
+        fun center(tag: TagKey<Block>) {
             center()
             zeroValue = tag.toPattern()
         }

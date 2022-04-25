@@ -2,9 +2,9 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
-import net.minecraft.item.ItemGroup
-import net.minecraft.item.ItemStack
-import net.minecraft.util.ResourceLocation
+import net.minecraft.world.item.ItemStack
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.CreativeModeTab
 
 @PatchouliDSL
 class PatchouliBook(val id: ResourceLocation) {
@@ -156,7 +156,7 @@ class PatchouliBook(val id: ResourceLocation) {
      * For modders, simply put in the same string you use when constructing your creative tab here, and the book will show up there.
      */
     @SerializedName("creative_tab")
-    var creativeTab: ItemGroup? = null
+    var creativeTab: String? = null
 
     /**
      * The name of the advancements tab you want this book to be associated to. If defined, an Advancements button will show up in the landing page that will open that tab.
@@ -252,7 +252,7 @@ class PatchouliBook(val id: ResourceLocation) {
             showProgress?.let { json.addProperty("show_progress", it) }
             version?.let { json.addProperty("version", it) }
             subtitle?.let { json.addProperty("subtitle", it) }
-            creativeTab?.let { json.addProperty("creative_tab", it.path) }
+            creativeTab?.let { json.addProperty("creative_tab", it) }
             advancementsTab?.let { json.addProperty("advancements_tab", it) }
             dontGenerateBook?.let { json.addProperty("dont_generate_book", it) }
             customBookItem?.let { json.addProperty("custom_book_item", it) }

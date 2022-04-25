@@ -5,7 +5,7 @@ import mekanism.generators.common.MekanismGenerators
 import mekanism.generators.common.registries.GeneratorsBlocks.*
 import mekanism.generators.common.registries.GeneratorsItems.*
 import net.minecraft.data.DataGenerator
-import net.minecraft.data.DirectoryCache
+import net.minecraft.data.HashCache
 
 import mekanism.patchouli.GeneratorsGuideCategory.*
 import mekanism.patchouli.GeneratorsGuideEntry.*
@@ -14,7 +14,7 @@ import mekanism.patchouli.GeneratorsGuideEntry.*
  * Created by Thiakil on 20/02/2021.
  */
 class GeneratorsBookProvider(generator: DataGenerator): BasePatchouliProvider(generator, MekanismGenerators.MODID) {
-    override fun act(output: DirectoryCache) {
+    override fun run(output: HashCache) {
         output("generators") {
             extend(Mekanism.MODID, MekanismMainBookProvider.bookId)
             locale = "en_us"

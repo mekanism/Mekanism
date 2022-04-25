@@ -2,7 +2,7 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
-import net.minecraft.util.ResourceLocation
+import net.minecraft.resources.ResourceLocation
 
 class MultiblockPage: EntryPage("multiblock"){
     /** The name of the multiblock you're displaying. Shows as a header above the multiblock display. */

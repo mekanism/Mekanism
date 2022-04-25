@@ -2,7 +2,7 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 class SpotlightPage: EntryPage("spotlight") {
     /**

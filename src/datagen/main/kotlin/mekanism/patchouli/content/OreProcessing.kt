@@ -2,16 +2,17 @@ package mekanism.patchouli.content
 
 import mekanism.common.registries.MekanismBlocks.*
 import mekanism.common.registries.MekanismGases.*
-import mekanism.common.resource.OreType
+import mekanism.common.resource.ore.OreType
 import mekanism.patchouli.GuideCategory
 import mekanism.patchouli.GuideEntry
 import mekanism.patchouli.dsl.*
+import net.minecraft.world.item.ItemStack
 
 fun PatchouliBook.oreProcessing() {
     GuideCategory.ORE_PROCESSING {
         name = "Ore Processing"
         description = "Get more ingots from your ore with these machine combinations."
-        icon = ORES[OreType.OSMIUM]!!
+        iconItem = ItemStack(ORES[OreType.OSMIUM]!!.stoneBlock())
 
         GuideEntry.ORE_DOUBLING {
             name = "2x - Ore Doubling"
