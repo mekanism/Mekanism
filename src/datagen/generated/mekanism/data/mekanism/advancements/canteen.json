@@ -1,0 +1,27 @@
+{
+  "display": {
+    "icon": {
+      "item": "mekanism:canteen"
+    },
+    "title": "Full to the brim",
+    "description": "Fully fill a canteen",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "parent": "mekansim:root",
+  "criteria": {
+    "isAnvil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tags": [
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

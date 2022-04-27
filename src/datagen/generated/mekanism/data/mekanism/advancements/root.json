@@ -1,1 +1,19 @@
-
+{
+  "display": {
+    "icon": {
+      "item": "mekanism:block_steel"
+    },
+    "title": "Mekansim",
+    "description": "Welcome to mekanism!",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "mekanism:textures/block/block_osmium.png"
+  },
+  "criteria": {
+    "isAnvil": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

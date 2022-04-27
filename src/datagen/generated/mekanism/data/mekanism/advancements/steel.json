@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "mekanism:ingot_steel"
+    },
+    "title": "Industrial revolution",
+    "description": "Create your first steel ingot",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "mekansim:metallurgic",
+  "criteria": {
+    "isAnvil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_steel"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

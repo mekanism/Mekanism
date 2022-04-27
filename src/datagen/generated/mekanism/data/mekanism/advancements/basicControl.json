@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "mekanism:basic_control_circuit"
+    },
+    "title": "Under control",
+    "description": "We have this all under control",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "mekansim:metallurgic_infuser",
+  "criteria": {
+    "isAnvil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_control_circuit"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
