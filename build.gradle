@@ -1,4 +1,4 @@
-defaultTasks 'fullBuild'
+
 
 buildscript {
   repositories {
@@ -11,8 +11,22 @@ buildscript {
         classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
             changing = true
         }
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.27.1"
     }
 }
+
+plugins {
+    id 'java-library'
+}
+
+apply plugin: 'forge'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: "com.jfrog.artifactory"
+apply plugin: "maven-publish"
+apply plugin: "maven"
+
+defaultTasks 'fullBuild'
 
 repositories {
     maven {
@@ -22,16 +36,12 @@ repositories {
 
 }
 
-apply plugin: 'idea'
-
 idea {
     module {
         // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
     }
 }
-
-apply plugin: 'forge'
 
 // Define properties file
 ext.configFile = file "build.properties"
@@ -59,7 +69,11 @@ targetCompatibility = '1.8'
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
-    runDir = "eclipse"
+    replaceIn "mekanism/common/Mekanism.java"
+    replaceIn "mekanism/generators/common/MekanismGenerators.java"
+    replaceIn "mekanism/tools/common/MekanismTools.java"
+    replace "GRADLE_MODVERSION", config.mod_version
+    replace "GRADLE_VERSIONMOD", config.alt_version
 }
 
 processResources
