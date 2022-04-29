@@ -11,7 +11,7 @@ buildscript {
         classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
             changing = true
         }
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.27.1"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
     }
 }
 
@@ -174,4 +174,59 @@ task fullBuild(type: Delete) {
 }
 
 fullBuild.dependsOn('releaseJars')
+
+artifactory {
+    contextUrl = System.getenv("MAVEN_URL")
+    publish {
+        repository {
+            repoKey = 'thorfusion'
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+        }
+        publishBuildInfo = false
+        publishArtifacts = true
+        publishPom = true
+    }
+    resolve {
+        repository {
+            repoKey = 'central'
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+            maven = true
+
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = rootProject.name
+            groupId = project.group
+            version = project.version
+            artifacts = [coreJar, toolsJar, generatorsJar, MDKZip, alltJar]
+            pom {
+                name.set("Mekanism Community Edition")
+                packaging = 'jar'
+                description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
+                url.set('https://aidancbrady.com/mekanism/')
+                issueManagement {
+                    system.set('github')
+                    url.set('https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues')
+                }
+                licenses {
+                    license {
+                        name.set('CC BY-NC-SA 4.0')
+                        distribution.set('repo')
+                    }
+                }
+            }
+        }
+    }
+}
 
