@@ -12,7 +12,7 @@ public interface IItemHUDProvider {
     void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType);
 
     default void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
-        if (this instanceof ArmorItem armour) {
+        if (this instanceof ArmorItem armor) {
             addHUDStrings(list, player, stack, armour.getSlot());
         }
     }

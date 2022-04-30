@@ -10,7 +10,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;

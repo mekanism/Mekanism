@@ -19,6 +19,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -79,7 +80,13 @@ public class MekanismKeyHandler {
                                 return isMode && !gas.getGas(r.stack()).isEmpty();
                             }
                             return isMode;
-                        })
+                        }).filter(r -> {
+							ItemStack stack = r.stack();
+							if (IModeItem.isModeItem(stack, slot)) {
+								return !(stack.getItem() instanceof IGasItem item) || !item.getGas(stack).isEmpty();
+							}
+							return false;
+						})
                         .findFirst()
                         .ifPresent(result -> {
                             Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(result.slotContext().index(), player.isShiftKeyDown()));
