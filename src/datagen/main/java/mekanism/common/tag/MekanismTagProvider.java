@@ -404,6 +404,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addGems() {
         addToTag(MekanismTags.Items.GEMS_FLUORITE, MekanismItems.FLUORITE_GEM);
+        getItemBuilder(Tags.Items.GEMS).add(MekanismTags.Items.GEMS_FLUORITE);
     }
 
     private void addPellets() {

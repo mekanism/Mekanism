@@ -273,6 +273,7 @@ b025339daf40a05c9c4215509f28cd9f6e29dff2 data/forge/tags/items/dusts/sulfur.json
 b025339daf40a05c9c4215509f28cd9f6e29dff2 data/forge/tags/items/dyes/yellow.json
 46597527b0415f3c8da763f0f006573366c6677b data/forge/tags/items/fuels.json
 be908a896ac1ca5f80ca305b8623b0656e0d1c20 data/forge/tags/items/fuels/bio.json
+0fcc41d648d2115b6dc268d388395d13c768616e data/forge/tags/items/gems.json
 5336551241d1142b654c86b59dc3cbca51c9d879 data/forge/tags/items/gems/fluorite.json
 95a50d71a52b64e6c8e35ed0d36f30e0f8524aa5 data/forge/tags/items/ingots.json
 7459b811d6555a99d26e498e970c5d120bc1543e data/forge/tags/items/ingots/bronze.json
