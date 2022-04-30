@@ -75,18 +75,11 @@ public class MekanismKeyHandler {
                 CuriosIntegration.findCurio(player, s -> s.canEquip(slot, player))
                         .stream()
                         .filter(r -> {
-                            final boolean isMode = IModeItem.isModeItem(r.stack(), slot);
-                            if (r.stack().getItem() instanceof IGasItem gas) {
-                                return isMode && !gas.getGas(r.stack()).isEmpty();
+                            if (IModeItem.isModeItem(stack, slot)) {
+                                return !(stack.getItem() instanceof IGasItem item) || !item.getGas(stack).isEmpty();
                             }
-                            return isMode;
-                        }).filter(r -> {
-							ItemStack stack = r.stack();
-							if (IModeItem.isModeItem(stack, slot)) {
-								return !(stack.getItem() instanceof IGasItem item) || !item.getGas(stack).isEmpty();
-							}
-							return false;
-						})
+                            return false;
+                        })
                         .findFirst()
                         .ifPresent(result -> {
                             Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(result.slotContext().index(), player.isShiftKeyDown()));
@@ -95,5 +88,4 @@ public class MekanismKeyHandler {
             }
         }
     }
-
 }
