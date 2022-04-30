@@ -197,7 +197,7 @@ publishing {
             version = project.version
             artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar]
             pom {
-                name.set("Mekanism Community Edition")
+                name.set("Mekanism 1.7.10 Community Edition")
                 description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
                 url.set('https://aidancbrady.com/mekanism/')
                 issueManagement {
