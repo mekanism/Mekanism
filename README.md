@@ -2,10 +2,15 @@
 
 ### This was made for Terralization Modpack and it's code is based on several other contributions I found on GitHub and fixes made by the community on this repo.
 
-It also should download dependencies now
-
 #### Download at curseforge
 https://www.curseforge.com/minecraft/mc-mods/mekanism-ce
+
+### Building Mekanism 1.7.10 Community Edition
+
+```bash
+./gradlew fullBuild
+```
+You will find the files inside ./output/
 
 ## Fixes by
 
