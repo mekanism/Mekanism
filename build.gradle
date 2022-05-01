@@ -196,6 +196,9 @@ publishing {
             groupId = project.group
             version = project.version
             artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar]
+            components.java.withVariantsFromConfiguration(configurations.runtimeElements) {
+                skip()
+            }
             pom {
                 name.set("Mekanism 1.7.10 Community Edition")
                 description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
