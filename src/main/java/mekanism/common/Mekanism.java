@@ -32,6 +32,8 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.IOwnerObject;
+import mekanism.api.security.ISecurityObject;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
@@ -393,6 +395,9 @@ public class Mekanism {
 
         event.register(IRadiationShielding.class);
         event.register(IRadiationEntity.class);
+
+        event.register(IOwnerObject.class);
+        event.register(ISecurityObject.class);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

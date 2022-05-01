@@ -27,11 +27,13 @@ public abstract class ItemStackMekanismChemicalHandler<CHEMICAL extends Chemical
 
     @Override
     protected void init() {
+        super.init();
         this.tanks = getInitialTanks();
     }
 
     @Override
     protected void load() {
+        super.load();
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
             DataHandlerUtils.readContainers(getChemicalTanks(null), ItemDataUtils.getList(stack, getNbtKey()));

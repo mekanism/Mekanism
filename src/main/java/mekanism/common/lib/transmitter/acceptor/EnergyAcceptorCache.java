@@ -32,7 +32,6 @@ public class EnergyAcceptorCache extends AcceptorCache<IStrictEnergyHandler> {
             Direction opposite = side.getOpposite();
             for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
                 if (energyCompat.isUsable()) {
-                    //Note: Capability should not be null due to us validating the compat is usable
                     LazyOptional<?> acceptor = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), opposite);
                     if (acceptor.isPresent()) {
                         if (energyCompat instanceof StrictEnergyCompat) {

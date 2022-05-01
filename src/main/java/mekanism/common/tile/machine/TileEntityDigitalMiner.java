@@ -999,7 +999,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!capability.isRegistered()) {
+            //Short circuit if a capability that is not registered is being queried
+            return true;
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);

@@ -35,14 +35,14 @@ public class EnergyCompatUtils {
     /**
      * Checks if it is a known and enabled energy capability
      */
-    public static boolean isEnergyCapability(Capability<?> capability) {
-        if (capability == null) {
-            //Should never be the case, but is when a capability does not exist due to a mod not being loaded
-            return false;
-        }
-        for (IEnergyCompat energyCompat : energyCompats) {
-            if (energyCompat.isMatchingCapability(capability)) {
-                return energyCompat.isUsable();
+    public static boolean isEnergyCapability(@Nonnull Capability<?> capability) {
+        //The capability may not be registered if the mod that adds it is not loaded. In which case we can just
+        // short circuit and not check if
+        if (capability.isRegistered()) {
+            for (IEnergyCompat energyCompat : energyCompats) {
+                if (energyCompat.isMatchingCapability(capability)) {
+                    return energyCompat.isUsable();
+                }
             }
         }
         return false;
@@ -111,16 +111,16 @@ public class EnergyCompatUtils {
      * @apiNote It is expected that isEnergyCapability is called before calling this method
      */
     @Nonnull
-    public static <T> LazyOptional<T> getEnergyCapability(Capability<T> capability, @Nonnull IStrictEnergyHandler handler) {
-        if (capability == null) {
-            //Should never be the case, but is when a capability does not exist due to a mod not being loaded
-            return LazyOptional.empty();
-        }
-        //Note: The methods that call this method cache the returned lazy optional properly
-        for (IEnergyCompat energyCompat : energyCompats) {
-            if (energyCompat.isUsable() && energyCompat.isMatchingCapability(capability)) {
-                //Note: This is a little ugly but this extra method ensures that the supplier's type does not get prematurely resolved
-                return energyCompat.getHandlerAs(handler).cast();
+    public static <T> LazyOptional<T> getEnergyCapability(@Nonnull Capability<T> capability, @Nonnull IStrictEnergyHandler handler) {
+        //The capability may not be registered if the mod that adds it is not loaded. In which case we can just
+        // short circuit and not check if
+        if (capability.isRegistered()) {
+            //Note: The methods that call this method cache the returned lazy optional properly
+            for (IEnergyCompat energyCompat : energyCompats) {
+                if (energyCompat.isUsable() && energyCompat.isMatchingCapability(capability)) {
+                    //Note: This is a little ugly but this extra method ensures that the supplier's type does not get prematurely resolved
+                    return energyCompat.getHandlerAs(handler).cast();
+                }
             }
         }
         return LazyOptional.empty();

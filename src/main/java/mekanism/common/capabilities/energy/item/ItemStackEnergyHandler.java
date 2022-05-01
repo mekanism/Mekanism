@@ -29,11 +29,13 @@ public abstract class ItemStackEnergyHandler extends ItemCapability implements I
 
     @Override
     protected void init() {
+        super.init();
         this.energyContainers = getInitialContainers();
     }
 
     @Override
     protected void load() {
+        super.load();
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
             DataHandlerUtils.readContainers(getEnergyContainers(null), ItemDataUtils.getList(stack, NBTConstants.ENERGY_CONTAINERS));

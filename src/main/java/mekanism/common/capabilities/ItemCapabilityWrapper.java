@@ -14,7 +14,6 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
 
     protected final ItemStack itemStack;
     private final List<ItemCapability> capabilities = new ArrayList<>();
-    private boolean capabilitiesInitialized;
 
     public ItemCapabilityWrapper(ItemStack stack, ItemCapability... caps) {
         itemStack = stack;
@@ -32,19 +31,9 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        //Note: The capability can technically be null if it is for a mod that is not loaded and another mod
-        // tries to check if we have it, so we just safety check to ensure that it is not, so we don't have
-        // issues when caching our lazy optionals
-        if (capability != null && !itemStack.isEmpty()) {
-            if (!capabilitiesInitialized) {
-                //If we haven't initialized the capabilities yet (due to them being null), go through and initialize all our handlers
-                // once we have at least one capability requested that is not null
-                capabilitiesInitialized = true;
-                for (ItemCapability cap : capabilities) {
-                    cap.addCapabilityResolvers(cap.capabilityCache);
-                }
-            }
-            //Only provide capabilities if we are not empty
+        if (!itemStack.isEmpty() && capability.isRegistered()) {
+            //Only provide capabilities if we are not empty and the capability is registered
+            // as if it isn't registered we can just short circuit and not look up the capability
             for (ItemCapability cap : capabilities) {
                 if (cap.capabilityCache.isCapabilityDisabled(capability, null)) {
                     //Note: Currently no item capabilities have toggleable capabilities, but check anyway to properly support our API
@@ -70,6 +59,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
         protected abstract void addCapabilityResolvers(CapabilityCache capabilityCache);
 
         protected void init() {
+            addCapabilityResolvers(capabilityCache);
         }
 
         protected void load() {

@@ -31,11 +31,13 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
 
     @Override
     protected void init() {
+        super.init();
         this.tanks = getInitialTanks();
     }
 
     @Override
     protected void load() {
+        super.load();
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
             DataHandlerUtils.readContainers(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
