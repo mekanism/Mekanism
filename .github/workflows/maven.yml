@@ -20,10 +20,8 @@ jobs:
         distribution: 'adopt'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew fullbuild
-    - name: Publish
-      run: ./gradlew artifactoryPublish
+    - name: Build and Publish
+      run: ./gradlew fullbuild artifactoryPublish
       env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
