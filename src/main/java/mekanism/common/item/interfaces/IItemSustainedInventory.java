@@ -22,4 +22,8 @@ public interface IItemSustainedInventory extends ISustainedInventory {
         }
         return null;
     }
+
+    default boolean canContentsDrop(ItemStack stack) {
+        return true;
+    }
 }
