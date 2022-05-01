@@ -26,54 +26,54 @@ import org.jetbrains.annotations.NotNull;
 @NBTProcessor
 public class MekanismContentsProcessor implements INBTProcessor {
 
-	@Override
-	public String getName() {
-		return "MekanismContentsProcessor";
-	}
+    @Override
+    public String getName() {
+        return "MekanismContentsProcessor";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Increases the EMC value of any Mekanism items by the value of the stored or installed contents.";
-	}
+    @Override
+    public String getDescription() {
+        return "Increases the EMC value of any Mekanism items by the value of the stored or installed contents.";
+    }
 
-	@Override
-	public long recalculateEMC(@NotNull ItemInfo info, long currentEMC) throws ArithmeticException {
-		IEMCProxy emcProxy = ProjectEAPI.getEMCProxy();
-		ItemStack stack = info.createStack();
-		//Stored items
-		if (stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
-			ListTag storedContents = sustainedInventory.getInventory(stack);
-			for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
-				if (!slot.isEmpty()) {
-					currentEMC = addEmc(emcProxy, currentEMC, slot.getStack());
-				}
-			}
-		}
-		if (stack.getItem() instanceof BlockItem blockItem) {
-			//Stored upgrades
-			if (Attribute.has(blockItem.getBlock(), AttributeUpgradeSupport.class) && ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-				Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-				for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-					currentEMC = addEmc(emcProxy, currentEMC, UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
-				}
-			}
-		}
-		//Stored modules
-		if (stack.getItem() instanceof IModuleContainerItem moduleContainerItem) {
-			for (Module<?> module : moduleContainerItem.getModules(stack)) {
-				ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
-				currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
-			}
-		}
-		return currentEMC;
-	}
+    @Override
+    public long recalculateEMC(@NotNull ItemInfo info, long currentEMC) throws ArithmeticException {
+        IEMCProxy emcProxy = ProjectEAPI.getEMCProxy();
+        ItemStack stack = info.createStack();
+        //Stored items
+        if (stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
+            ListTag storedContents = sustainedInventory.getInventory(stack);
+            for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
+                if (!slot.isEmpty()) {
+                    currentEMC = addEmc(emcProxy, currentEMC, slot.getStack());
+                }
+            }
+        }
+        if (stack.getItem() instanceof BlockItem blockItem) {
+            //Stored upgrades
+            if (Attribute.has(blockItem.getBlock(), AttributeUpgradeSupport.class) && ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
+                Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
+                for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
+                    currentEMC = addEmc(emcProxy, currentEMC, UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
+                }
+            }
+        }
+        //Stored modules
+        if (stack.getItem() instanceof IModuleContainerItem moduleContainerItem) {
+            for (Module<?> module : moduleContainerItem.getModules(stack)) {
+                ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
+                currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
+            }
+        }
+        return currentEMC;
+    }
 
-	private static long addEmc(IEMCProxy emcProxy, long currentEMC, ItemStack stack) throws ArithmeticException {
-		long itemEmc = emcProxy.getValue(stack);
-		if (itemEmc > 0) {
-			long stackEmc = Math.multiplyExact(itemEmc, stack.getCount());
-			currentEMC = Math.addExact(currentEMC, stackEmc);
-		}
-		return currentEMC;
-	}
+    private static long addEmc(IEMCProxy emcProxy, long currentEMC, ItemStack stack) throws ArithmeticException {
+        long itemEmc = emcProxy.getValue(stack);
+        if (itemEmc > 0) {
+            long stackEmc = Math.multiplyExact(itemEmc, stack.getCount());
+            currentEMC = Math.addExact(currentEMC, stackEmc);
+        }
+        return currentEMC;
+    }
 }
