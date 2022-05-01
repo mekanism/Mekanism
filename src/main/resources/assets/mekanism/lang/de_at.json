@@ -516,6 +516,7 @@
   "description.mekanism.modification_station": "Eine fortgeschrittene Werkbank, welche Module für Modulare Ausrüstung installieren oder entfernen kann (d.h. MekaSuit)",
   "description.mekanism.nutritional_injection_unit": "Füttert den Spieler bei Hunger automatisch mit Nährstoffpaste.",
   "description.mekanism.nutritional_liquifier": "Eine Maschine, die in der Lage ist, Nahrungsmittel zu ungefährlicher, leicht verdaulicher Nährstoffpaste zu verarbeiten.",
+  "description.mekanism.oredictionificator": "Eine Maschine, die dazu verwendet wird, zwischen verschieden Items und Blöcken mittels Tags zu unterscheiden und zu konvertieren.",
   "description.mekanism.osmium_compressor": "Eine ziemlich fortgeschrittene Maschine die für das komprimieren von Osmium in verschiedene Versionen von Pulvern benutzt wird um deren Barren-Gegenstück herzustellen.",
   "description.mekanism.osmium_ore": "Osmium Erz",
   "description.mekanism.painting_machine": "Eine Maschine, welche durch sorgfältige Anwedung von gespeicherten Pigmenten Blöcke färbt.",
