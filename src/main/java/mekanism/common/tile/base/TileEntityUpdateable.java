@@ -56,6 +56,14 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     /**
+     * Called when the tile is permanently removed
+     *
+     * @implNote We only need to handle logic that happens when removed and not unloaded as if it happens for both then setRemoved will handle it
+     */
+    public void blockRemoved() {
+    }
+
+    /**
      * Used for checking if we need to update comparators.
      *
      * @apiNote Only call on the server

@@ -609,6 +609,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
+    @Override
+    public void blockRemoved() {
+        super.blockRemoved();
+        for (ITileComponent component : components) {
+            component.removed();
+        }
+        if (!isRemote() && MekanismAPI.getRadiationManager().isRadiationEnabled() && shouldDumpRadiation()) {
+            //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
+            // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
+            MekanismAPI.getRadiationManager().dumpRadiation(getTileCoord(), getGasTanks(null), false);
+        }
+    }
+
     /**
      * Update call for machines. Use instead of updateEntity -- it's called every tick on the client side.
      */

@@ -198,7 +198,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void invalidate() {
+    public void removed() {
         if (!tile.isRemote() && hasRegistered && prevWorld != null && prevPos != null) {
             //If we have any chunks registered remove them. When hasRegistered is true
             // prevWorld and prevPos should both be nonnull, but validate them just in case

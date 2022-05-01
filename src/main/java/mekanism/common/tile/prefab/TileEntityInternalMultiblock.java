@@ -74,6 +74,16 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
         }
     }
 
+    @Override
+    public void blockRemoved() {
+        super.blockRemoved();
+        //If an internal multiblock is being removed then mark the multiblock it was in as needing to recheck the structure
+        if (!isRemote() && hasFormedMultiblock() && multiblock != null) {
+            //Multiblock shouldn't be null but validate it just in case
+            multiblock.recheckStructure = true;
+        }
+    }
+
     @Nonnull
     @Override
     public CompoundTag getReducedUpdateTag() {

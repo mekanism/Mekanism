@@ -25,7 +25,6 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.lib.multiblock.IInternalMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
@@ -34,6 +33,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -242,29 +242,10 @@ public abstract class BlockMekanism extends Block {
                 hasBounding.removeBoundingBlocks(world, pos, state);
             }
         }
-        if (!world.isClientSide) {
-            if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {
-                if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
-                    TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-                    if (tile != null && tile.shouldDumpRadiation()) {
-                        //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
-                        // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-                        MekanismAPI.getRadiationManager().dumpRadiation(tile.getTileCoord(), tile.getGasTanks(null), false);
-                    }
-                }
-            }
-            if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
-                AttributeMultiblock multiblockAttribute = Attribute.get(state, AttributeMultiblock.class);
-                if (multiblockAttribute == AttributeMultiblock.INTERNAL) {
-                    BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                    if (tile instanceof IInternalMultiblock internal && internal.hasFormedMultiblock()) {
-                        //If an internal multiblock is being removed then mark the multiblock it was in as needing to recheck the structure
-                        MultiblockData multiblock = internal.getMultiblock();
-                        if (multiblock != null) {//Shouldn't be null but validate it
-                            multiblock.recheckStructure = true;
-                        }
-                    }
-                }
+        if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
+            TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
+            if (tile != null) {
+                tile.blockRemoved();
             }
         }
         super.onRemove(state, world, pos, newState, isMoving);
