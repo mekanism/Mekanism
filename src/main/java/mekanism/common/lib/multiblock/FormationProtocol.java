@@ -33,7 +33,7 @@ public class FormationProtocol<T extends MultiblockData> {
     private final MultiblockManager<T> manager;
 
     public final Set<BlockPos> locations = new ObjectOpenHashSet<>();
-    public final Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
+    public final Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
     public final Set<ValveData> valves = new ObjectOpenHashSet<>();
     public final Set<UUID> idsFound = new ObjectOpenHashSet<>();
 
@@ -56,9 +56,9 @@ public class FormationProtocol<T extends MultiblockData> {
         }
 
         structure.locations = locations;
-        structure.innerNodes = innerNodes;
+        structure.internalLocations = internalLocations;
         structure.valves = valves;
-        result = validator.postcheck(structure, innerNodes, chunkMap);
+        result = validator.postcheck(structure, chunkMap);
         return result.isFormed() ? form(structure, idsFound) : fail(result);
     }
 

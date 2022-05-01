@@ -3,6 +3,7 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
+import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
@@ -29,7 +30,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     protected void render(TileEntityTurbineRotor tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        if (tile.getMultiblock() == null) {
+        if (tile.getMultiblockUUID() == null) {
             render(tile, matrix, model.getBuffer(renderer), light, overlayLight);
         }
     }
@@ -41,8 +42,9 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         }
         int baseIndex = tile.getPosition() * 2;
         if (!Minecraft.getInstance().isPaused()) {
-            if (tile.getMultiblock() != null && TurbineMultiblockData.clientRotationMap.containsKey(tile.getMultiblock())) {
-                float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(tile.getMultiblock()) * BASE_SPEED;
+            UUID multiblockUUID = tile.getMultiblockUUID();
+            if (multiblockUUID != null && TurbineMultiblockData.clientRotationMap.containsKey(multiblockUUID)) {
+                float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(multiblockUUID) * BASE_SPEED;
                 tile.rotationLower = (tile.rotationLower + rotateSpeed * (1F / (baseIndex + 1))) % 360;
                 tile.rotationUpper = (tile.rotationUpper + rotateSpeed * (1F / (baseIndex + 2))) % 360;
             } else {
@@ -73,6 +75,6 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityTurbineRotor tile) {
-        return tile.getMultiblock() == null && tile.getHousedBlades() > 0;
+        return tile.getMultiblockUUID() == null && tile.getHousedBlades() > 0;
     }
 }

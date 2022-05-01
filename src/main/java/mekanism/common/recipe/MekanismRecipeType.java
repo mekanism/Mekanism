@@ -210,7 +210,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
-            world = DistExecutor.safeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
+            world = DistExecutor.unsafeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
             if (world == null) {
                 //If we failed, then return no recipes
                 return Collections.emptyList();
@@ -227,7 +227,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
                         NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();
                         ItemStackIngredient input;
-                        if (ingredients.size() == 0) {
+                        if (ingredients.isEmpty()) {
                             //Something went wrong
                             continue;
                         } else {

@@ -2,7 +2,6 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.math.voxel.IShape;
@@ -86,7 +85,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
         } else if (!state.isAir()) {
             //Make sure the position is immutable before we store it
-            ctx.innerNodes.add(pos.immutable());
+            ctx.internalLocations.add(pos.immutable());
         }
         return FormationResult.SUCCESS;
     }
@@ -140,7 +139,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     }
 
     @Override
-    public FormationResult postcheck(T structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
+    public FormationResult postcheck(T structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         return FormationResult.SUCCESS;
     }
 

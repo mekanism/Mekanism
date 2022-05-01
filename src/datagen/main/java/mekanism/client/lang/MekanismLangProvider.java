@@ -633,6 +633,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_ERROR_TPOP_EMPTY, "No positions on stack.");
         add(MekanismLang.COMMAND_BUILD_REMOVED, "Build successfully removed.");
         add(MekanismLang.COMMAND_BUILD_BUILT, "Finished building: %1$s.");
+        add(MekanismLang.COMMAND_BUILD_BUILT_EMPTY, "Finished building empty: %1$s.");
         add(MekanismLang.COMMAND_ERROR_BUILD_MISS, "No valid target found.");
         add(MekanismLang.COMMAND_RADIATION_ADD, "Added %1$s radiation at (%2$s) in %3$s.");
         add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation at (%1$s) in %2$s: %3$s");

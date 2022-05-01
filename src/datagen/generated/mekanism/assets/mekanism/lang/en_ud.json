@@ -285,6 +285,7 @@
   "color.mekanism.white": "\u01DD\u0287\u1D09\u0265M",
   "color.mekanism.yellow": "\u028Do\uA781\uA781\u01DD\u2144",
   "command.mekanism.build.built": "\u02D9%s :\u1D77u\u1D09p\uA781\u1D09nq p\u01DD\u0265s\u1D09u\u1D09\u2132",
+  "command.mekanism.build.built.empty": "\u02D9%s :\u028E\u0287d\u026F\u01DD \u1D77u\u1D09p\uA781\u1D09nq p\u01DD\u0265s\u1D09u\u1D09\u2132",
   "command.mekanism.build.removed": "\u02D9p\u01DD\u028Co\u026F\u01DD\u0279 \u028E\uA781\uA781n\u025Fss\u01DD\u0254\u0254ns p\uA781\u1D09n\u15FA",
   "command.mekanism.chunk.clear": "\u02D9\u0287s\u1D09\uA781 \u0265\u0254\u0287\u0250\u028D \u026Fo\u0279\u025F p\u01DD\u028Co\u026F\u01DD\u0279 s\u029Eun\u0265\u0254 %s",
   "command.mekanism.chunk.flush": "\u02D9p\u01DDp\u0250o\uA781un s\u029Eun\u0265\u0254 %s",

@@ -82,7 +82,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @SyntheticComputerMethod(getter = "getMaxBoilRate")
     public int lastMaxBoil;
 
-    private boolean clientHot;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getSuperheaters")
     public int superheatingElements;
@@ -130,14 +129,15 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Override
+    public void remove(Level world) {
+        hotMap.removeBoolean(inventoryID);
+        super.remove(world);
+    }
+
+    @Override
     public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
-        boolean newHot = getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01;
-        if (newHot != clientHot) {
-            needsPacket = true;
-            clientHot = newHot;
-            BoilerMultiblockData.hotMap.put(inventoryID, clientHot);
-        }
+        hotMap.put(inventoryID, getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01);
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
         // update temperature
@@ -202,7 +202,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> waterTank.setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> steamTank.setStack(value));
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_Y, value -> upperRenderLocation = value);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> clientHot = value);
         readValves(tag);
     }
 
@@ -216,7 +215,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         tag.put(NBTConstants.FLUID_STORED, waterTank.getFluid().writeToNBT(new CompoundTag()));
         tag.put(NBTConstants.GAS_STORED, steamTank.getStack().write(new CompoundTag()));
         tag.put(NBTConstants.RENDER_Y, NbtUtils.writeBlockPos(upperRenderLocation));
-        tag.putBoolean(NBTConstants.HOT, clientHot);
         writeValves(tag);
     }
 

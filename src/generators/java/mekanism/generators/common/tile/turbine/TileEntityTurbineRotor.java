@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
@@ -170,16 +169,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
             return super.getRenderBoundingBox();
         }
         return new AABB(worldPosition.offset(-radius, 0, -radius), worldPosition.offset(1 + radius, 1, 1 + radius));
-    }
-
-    @Override
-    public void setMultiblock(UUID id) {
-        // Override the multiblock setter so that we can be sure to relay the ID down to the client; otherwise,
-        // the rendering won't work properly
-        super.setMultiblock(id);
-        if (!isRemote()) {
-            sendUpdatePacket();
-        }
     }
 
     @Nonnull

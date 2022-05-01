@@ -1,6 +1,7 @@
 package mekanism.common.command.builders;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -56,17 +57,24 @@ public class BuildCommand {
 
     public static void register(String name, ILangEntry localizedName, StructureBuilder builder) {
         COMMAND.then(Commands.literal(name)
-              .executes(ctx -> {
-                  CommandSourceStack source = ctx.getSource();
-                  BlockHitResult result = MekanismUtils.rayTrace(source.getPlayerOrException(), 100);
-                  if (result.getType() == HitResult.Type.MISS) {
-                      throw MISS.create();
-                  }
-                  BlockPos pos = result.getBlockPos().relative(Direction.UP);
-                  builder.build(source.getLevel(), pos);
-                  source.sendSuccess(MekanismLang.COMMAND_BUILD_BUILT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, localizedName), true);
-                  return 0;
-              }));
+              .executes(ctx -> build(ctx, localizedName, builder, false))
+              .then(Commands.literal("empty")
+                    .executes(ctx -> build(ctx, localizedName, builder, true))
+              )
+        );
+    }
+
+    private static int build(CommandContext<CommandSourceStack> ctx, ILangEntry localizedName, StructureBuilder builder, boolean empty) throws CommandSyntaxException {
+        CommandSourceStack source = ctx.getSource();
+        BlockHitResult result = MekanismUtils.rayTrace(source.getPlayerOrException(), 100);
+        if (result.getType() == HitResult.Type.MISS) {
+            throw MISS.create();
+        }
+        BlockPos pos = result.getBlockPos().relative(Direction.UP);
+        builder.build(source.getLevel(), pos, empty);
+        ILangEntry builtEntry = empty ? MekanismLang.COMMAND_BUILD_BUILT_EMPTY : MekanismLang.COMMAND_BUILD_BUILT;
+        source.sendSuccess(builtEntry.translateColored(EnumColor.GRAY, EnumColor.INDIGO, localizedName), true);
+        return 0;
     }
 
     private static void destroy(Level world, BlockPos pos) throws CommandSyntaxException {

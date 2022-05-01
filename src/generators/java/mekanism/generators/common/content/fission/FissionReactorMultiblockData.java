@@ -277,6 +277,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
+    @Override
     public void meltdownHappened(Level world) {
         if (isFormed()) {
             IRadiationManager radiationManager = MekanismAPI.getRadiationManager();

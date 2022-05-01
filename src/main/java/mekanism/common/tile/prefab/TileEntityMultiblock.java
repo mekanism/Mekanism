@@ -123,6 +123,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             structure.tick(this, ticker % 10 == 0);
         }
         T multiblock = getMultiblock();
+        if (isMaster() && multiblock.isFormed() && multiblock.recheckStructure) {
+            getStructure().markForUpdate(level, true);
+            multiblock.recheckStructure = false;
+            multiblock = getMultiblock();
+        }
         if (multiblock.isFormed()) {
             if (!prevStructure) {
                 structureChanged(multiblock);
@@ -385,19 +390,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void onNeighborChange(Block block, BlockPos neighborPos) {
         super.onNeighborChange(block, neighborPos);
-        //TODO - V11: Make this properly support removing blocks from the "inside" and rechecking the structure
-        // For now we "ignore" this case as the structure can be rechecked manually with a configurator
-        // and checking on every neighbor changed when we don't have a multiblock (so don't know its bounds)
-        // would not be very performant
+        //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         if (!isRemote()) {
             T multiblock = getMultiblock();
             if (multiblock.isPositionInsideBounds(getStructure(), neighborPos)) {
                 //If the neighbor change happened from inside the bounds of the multiblock,
-                if (!multiblock.innerNodes.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
+                if (!multiblock.internalLocations.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
                     //And we are not already an internal part of the structure, or we are changing an internal part to air
                     // then we mark the structure as needing to be re-validated
                     //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
-                    // it won't know to invalidate it but oh well. (See java docs on innerNode for more caveats)
+                    // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
                     getStructure().markForUpdate(level, true);
                 }
             }

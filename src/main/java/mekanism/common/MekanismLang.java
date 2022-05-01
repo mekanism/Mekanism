@@ -139,6 +139,7 @@ public enum MekanismLang implements ILangEntry {
     COMMAND_ERROR_TPOP_EMPTY("command", "error.tpop.empty"),
     COMMAND_BUILD_REMOVED("command", "build.removed"),
     COMMAND_BUILD_BUILT("command", "build.built"),
+    COMMAND_BUILD_BUILT_EMPTY("command", "build.built.empty"),
     COMMAND_ERROR_BUILD_MISS("command", "error.build.miss"),
     COMMAND_RADIATION_ADD("command", "radiation.add"),
     COMMAND_RADIATION_GET("command", "radiation.get"),

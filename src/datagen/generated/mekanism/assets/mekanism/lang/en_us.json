@@ -285,6 +285,7 @@
   "color.mekanism.white": "White",
   "color.mekanism.yellow": "Yellow",
   "command.mekanism.build.built": "Finished building: %1$s.",
+  "command.mekanism.build.built.empty": "Finished building empty: %1$s.",
   "command.mekanism.build.removed": "Build successfully removed.",
   "command.mekanism.chunk.clear": "%1$s chunks removed from watch list.",
   "command.mekanism.chunk.flush": "%1$s chunks unloaded.",

@@ -57,7 +57,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
     }
 
     @Override
-    public FormationResult postcheck(TurbineMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
+    public FormationResult postcheck(TurbineMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         if (structure.length() % 2 != 1 || structure.width() % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
@@ -72,13 +72,12 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         Set<BlockPos> condensers = new ObjectOpenHashSet<>();
 
         //Scan for complex
-        for (BlockPos pos : innerNodes) {
+        for (BlockPos pos : structure.internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityRotationalComplex) {
                 if (complex != null || pos.getX() != centerX || pos.getZ() != centerZ) {
                     return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, pos);
                 }
-                structure.internalLocations.add(pos);
                 complex = pos;
             } else if (tile instanceof TileEntityTurbineRotor) {
                 if (pos.getX() != centerX || pos.getZ() != centerZ) {
@@ -151,7 +150,6 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
             }
             turbineHeight++;
             blades += rotor.getHousedBlades();
-            structure.internalLocations.add(rotor.getBlockPos());
             turbines.remove(mutablePos);
         }
 

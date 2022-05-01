@@ -1,7 +1,6 @@
 package mekanism.common.tile.multiblock;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -19,7 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityInductionPort extends TileEntityInductionCasing implements IConfigurable {
+public class TileEntityInductionPort extends TileEntityInductionCasing {
 
     public TileEntityInductionPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.INDUCTION_PORT, pos, state);
