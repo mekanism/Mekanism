@@ -285,6 +285,7 @@
   "color.mekanism.white": "Білий",
   "color.mekanism.yellow": "Жовтий",
   "command.mekanism.build.built": "Будівництво завершено: %1$s.",
+  "command.mekanism.build.built.empty": "Будівництво порожнечі завершено: %1$s.",
   "command.mekanism.build.removed": "Конструкція успішно видалена.",
   "command.mekanism.chunk.clear": "%1$s чанків видалено зі списку спостереження.",
   "command.mekanism.chunk.flush": "%1$s чанків вивантажено.",
