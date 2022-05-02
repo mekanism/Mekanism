@@ -51,6 +51,7 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
         if (output.isEmpty()) {
             throw new IllegalArgumentException("Output cannot be empty.");
         }
+        //noinspection unchecked
         this.output = (STACK) output.copy();
     }
 
@@ -71,6 +72,7 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
      * outputs where things like NBT may be different.
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
+    @SuppressWarnings("unchecked")
     @Contract(value = "_, _ -> new", pure = true)
     public STACK getOutput(STACK input1, STACK input2) {
         return (STACK) output.copy();

@@ -610,12 +610,10 @@ public class MekaSuitArmor implements ICustomArmor {
         }
     }
 
-    private static class MekaSuitModelConfiguration implements IModelConfiguration {
+    private record MekaSuitModelConfiguration(Set<String> parts) implements IModelConfiguration {
 
-        private final Set<String> parts;
-
-        public MekaSuitModelConfiguration(Set<String> parts) {
-            this.parts = parts.isEmpty() ? Collections.emptySet() : Collections.unmodifiableSet(parts);
+        private MekaSuitModelConfiguration {
+            parts = parts.isEmpty() ? Collections.emptySet() : Collections.unmodifiableSet(parts);
         }
 
         @Nullable
@@ -678,21 +676,6 @@ public class MekaSuitArmor implements ICustomArmor {
         @Override
         public boolean getPartVisibility(@Nonnull IModelGeometryPart part) {
             return parts.contains(part.name());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == this) {
-                return true;
-            } else if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            return parts.equals(((MekaSuitModelConfiguration) o).parts);
-        }
-
-        @Override
-        public int hashCode() {
-            return parts.hashCode();
         }
     }
 }

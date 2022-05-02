@@ -19,7 +19,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
 
-    private static final float[][] DRIVE_PLACEMENTS = new float[][]{
+    private static final float[][] DRIVE_PLACEMENTS = {
           {0, 6F / 16}, {-2F / 16, 6F / 16}, {-4F / 16, 6F / 16}, {-7F / 16, 6F / 16}, {-9F / 16, 6F / 16}, {-11F / 16, 6F / 16},
           {0, 0}, {-2F / 16, 0}, {-4F / 16, 0}, {-7F / 16, 0}, {-9F / 16, 0}, {-11F / 16, 0}
     };

@@ -298,7 +298,7 @@ public class RenderTickHandler {
             return;
         }
         BlockHitResult rayTraceResult = event.getTarget();
-        if (!rayTraceResult.getType().equals(Type.MISS)) {
+        if (rayTraceResult.getType() != Type.MISS) {
             Level world = player.getCommandSenderWorld();
             BlockPos pos = rayTraceResult.getBlockPos();
             MultiBufferSource renderer = event.getMultiBufferSource();

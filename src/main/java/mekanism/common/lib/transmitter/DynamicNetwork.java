@@ -37,6 +37,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return uuid;
     }
 
+    @SuppressWarnings("unchecked")
     protected NETWORK getNetwork() {
         return (NETWORK) this;
     }

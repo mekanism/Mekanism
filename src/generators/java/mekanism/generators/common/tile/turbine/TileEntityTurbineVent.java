@@ -20,7 +20,10 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     @Nonnull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> !getMultiblock().isFormed() ? Collections.emptyList() : getMultiblock().ventTanks;
+        return side -> {
+            TurbineMultiblockData multiblock = getMultiblock();
+            return multiblock.isFormed() ? multiblock.ventTanks : Collections.emptyList();
+        };
     }
 
     @Override

@@ -150,6 +150,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
+    @SuppressWarnings("unchecked")
     static <TYPE extends RecipeUpgradeData<TYPE>> TYPE mergeUpgradeData(List<RecipeUpgradeData<?>> upgradeData) {
         if (upgradeData.isEmpty()) {
             return null;

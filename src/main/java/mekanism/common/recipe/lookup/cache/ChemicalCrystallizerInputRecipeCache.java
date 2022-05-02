@@ -15,6 +15,7 @@ import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.world.level.Level;
 
@@ -77,10 +78,11 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
         }
         initCacheIfNeeded(world);
         ChemicalType type = ChemicalType.getTypeFor(input);
-        STACK stack = (STACK) input.getStack(1);
+        STACK stack = ChemicalUtil.withAmount(input, 1);
         return containsInput(type, stack) || typeBasedComplexRecipes.get(type).stream().anyMatch(recipe -> recipe.testType(stack));
     }
 
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean containsInput(ChemicalType type, STACK stack) {
         return ((ChemicalInputCache<CHEMICAL, STACK, ChemicalCrystallizerRecipe>) typeBasedCache.get(type)).contains(stack);
     }
@@ -104,6 +106,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
     }
 
     @Nullable
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalCrystallizerRecipe findFirstRecipe(ChemicalType type, STACK stack) {
         Predicate<ChemicalCrystallizerRecipe> matchPredicate = recipe -> ((ChemicalStackIngredient<CHEMICAL, STACK>) recipe.getInput()).test(stack);
         ChemicalInputCache<CHEMICAL, STACK, ChemicalCrystallizerRecipe> cache = (ChemicalInputCache<CHEMICAL, STACK, ChemicalCrystallizerRecipe>) typeBasedCache.get(type);
@@ -122,6 +125,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> boolean mapInputs(
           ChemicalCrystallizerRecipe recipe, ChemicalType type, INGREDIENT ingredient) {
         return ((ChemicalInputCache<CHEMICAL, STACK, ChemicalCrystallizerRecipe>) typeBasedCache.get(type)).mapInputs(recipe, ingredient);

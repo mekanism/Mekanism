@@ -172,9 +172,9 @@ public class BoltEffect {
         Vec3 rightAdd = diff.cross(new Vec3(0.5, 0.5, 0.5)).normalize().scale(size);
         Vec3 backAdd = diff.cross(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
 
-        Vec3 start = cache != null ? cache.prevEnd : startPos;
-        Vec3 startRight = cache != null ? cache.prevEndRight : start.add(rightAdd);
-        Vec3 startBack = cache != null ? cache.prevEndBack : start.add(rightAddSplit).add(backAdd);
+        Vec3 start = cache == null ? startPos : cache.prevEnd;
+        Vec3 startRight = cache == null ? start.add(rightAdd) : cache.prevEndRight;
+        Vec3 startBack = cache == null ? start.add(rightAddSplit).add(backAdd) : cache.prevEndBack;
         Vec3 endRight = end.add(rightAdd), endBack = end.add(rightAddSplit).add(backAdd);
 
         BoltQuads quads = new BoltQuads();

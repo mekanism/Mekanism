@@ -298,6 +298,7 @@ public class SerializerHelper {
         if (chemical.isEmptyType()) {
             throw new JsonSyntaxException("Invalid " + serializationKey + " type '" + resourceLocation + "'");
         }
+        //noinspection unchecked
         return (STACK) chemical.getStack(amount);
     }
 
@@ -345,9 +346,8 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonElement serializeBoxedChemicalStack(@Nonnull BoxedChemicalStack stack) {
-        JsonObject json;
         ChemicalType chemicalType = stack.getChemicalType();
-        json = switch (chemicalType) {
+        JsonObject json = switch (chemicalType) {
             case GAS -> serializeGasStack((GasStack) stack.getChemicalStack());
             case INFUSION -> serializeInfusionStack((InfusionStack) stack.getChemicalStack());
             case PIGMENT -> serializePigmentStack((PigmentStack) stack.getChemicalStack());

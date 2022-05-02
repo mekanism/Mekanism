@@ -74,7 +74,7 @@ public class PacketDropperUse implements IMekanismPacket {
                         // check if the block the tank is in is a tiered block and if it is, and it is creative
                         // don't allow clearing the tank
                         Block block = tile.getBlockType();
-                        if (Attribute.has(block, AttributeTier.class) && Attribute.get(block, AttributeTier.class).getTier().getBaseTier() == BaseTier.CREATIVE) {
+                        if (Attribute.has(block, AttributeTier.class) && Attribute.get(block, AttributeTier.class).tier().getBaseTier() == BaseTier.CREATIVE) {
                             return;
                         }
                     }

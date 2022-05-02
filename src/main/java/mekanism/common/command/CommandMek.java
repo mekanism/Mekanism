@@ -5,8 +5,9 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Map;
-import java.util.Stack;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
@@ -29,7 +30,7 @@ public class CommandMek {
     private CommandMek() {
     }
 
-    private static final Map<UUID, Stack<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, Deque<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("mek")
@@ -88,9 +89,8 @@ public class CommandMek {
                             ServerPlayer player = source.getPlayerOrException();
                             // Save the current location on the stack
                             UUID uuid = player.getUUID();
-                            Stack<BlockPos> playerLocations = tpStack.getOrDefault(uuid, new Stack<>());
+                            Deque<BlockPos> playerLocations = tpStack.computeIfAbsent(uuid, u -> new ArrayDeque<>());
                             playerLocations.push(player.blockPosition());
-                            tpStack.put(uuid, playerLocations);
 
                             Coordinates location = Vec3Argument.getCoordinates(ctx, "location");
                             Vec3 position = location.getPosition(source);
@@ -121,12 +121,11 @@ public class CommandMek {
 
                       // Get stack of locations for the user; if there's at least one entry, pop it off
                       // and send the user back there
-                      Stack<BlockPos> playerLocations = tpStack.getOrDefault(uuid, new Stack<>());
+                      Deque<BlockPos> playerLocations = tpStack.computeIfAbsent(uuid, u -> new ArrayDeque<>());
                       if (playerLocations.isEmpty()) {
                           throw TPOP_EMPTY.create();
                       }
                       BlockPos lastPos = playerLocations.pop();
-                      tpStack.put(uuid, playerLocations);
                       player.connection.teleport(lastPos.getX(), lastPos.getY(), lastPos.getZ(), player.getYRot(), player.getXRot());
                       source.sendSuccess(MekanismLang.COMMAND_TPOP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(lastPos), EnumColor.INDIGO, playerLocations.size()), true);
                       return 0;

@@ -16,6 +16,7 @@ public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPrope
     public static <FILTER extends IFilter<?>> FilterListPropertyData<FILTER> read(short property, int elements, FriendlyByteBuf buffer) {
         List<FILTER> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
+            //noinspection unchecked
             values.add((FILTER) BaseFilter.readFromPacket(buffer));
         }
         return new FilterListPropertyData<>(property, values);

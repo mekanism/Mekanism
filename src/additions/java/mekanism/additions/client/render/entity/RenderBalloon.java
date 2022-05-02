@@ -56,7 +56,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         VertexConsumer builder = renderer.getBuffer(renderType);
         PoseStack.Pose last = matrix.last();
         for (BakedQuad quad : quads) {
-            float[] color = new float[]{1, 1, 1, 1};
+            float[] color = {1, 1, 1, 1};
             if (quad.getTintIndex() == 0) {
                 EnumColor balloonColor = balloon.getColor();
                 color[0] = balloonColor.getColor(0);

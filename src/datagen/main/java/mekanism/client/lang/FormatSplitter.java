@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -217,7 +218,7 @@ public class FormatSplitter {
                 // then this is not a valid
                 return null;
             }
-            int firstComma = contents.indexOf(",");
+            int firstComma = contents.indexOf(',');
             int argumentIndex;
             try {
                 argumentIndex = Integer.parseInt(contents.substring(1, firstComma == -1 ? length - 1 : firstComma));
@@ -234,7 +235,7 @@ public class FormatSplitter {
                 return new MessageFormatComponent(contents, argumentIndex, null, null, false);
             }
             //Look for the next comma
-            int secondComma = contents.indexOf(",", firstComma + 1);
+            int secondComma = contents.indexOf(',', firstComma + 1);
             String formatType = contents.substring(firstComma + 1, secondComma == -1 ? length - 1 : secondComma);
             //Set the format style based on the format type or to null if we do not have one
             String formatStyle = secondComma == -1 ? null : contents.substring(secondComma + 1, length - 1);
@@ -260,7 +261,7 @@ public class FormatSplitter {
                         //If it is not a valid format style for date or time check if it is a valid SubformatPattern
                         // time and date both use SimpleDateFormat as a SubformatPattern
                         try {
-                            new SimpleDateFormat(formatStyle);
+                            new SimpleDateFormat(formatStyle, Locale.ENGLISH);
                         } catch (IllegalArgumentException e) {
                             //If it is not a valid SimpleDateFormat then it is not a valid format overall, so return null
                             return null;

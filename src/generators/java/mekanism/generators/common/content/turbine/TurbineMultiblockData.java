@@ -91,7 +91,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         super(tile);
         gasTanks.add(gasTank = new TurbineGasTank(this, tile));
-        ventTank = VariableCapacityFluidTank.create(() -> !isFormed() ? 1_000 : condensers * MekanismGeneratorsConfig.generators.condenserRate.get(),
+        ventTank = VariableCapacityFluidTank.create(() -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : 1_000,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), BasicFluidTank.internalOnly,
               fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), null);
         ventTanks = Collections.singletonList(ventTank);

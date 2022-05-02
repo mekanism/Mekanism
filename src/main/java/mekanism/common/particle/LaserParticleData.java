@@ -13,7 +13,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class LaserParticleData implements ParticleOptions {
+public record LaserParticleData(Direction direction, double distance, float energyScale) implements ParticleOptions {
 
     public static final Deserializer<LaserParticleData> DESERIALIZER = new Deserializer<>() {
         @Nonnull
@@ -39,16 +39,6 @@ public class LaserParticleData implements ParticleOptions {
           Codec.DOUBLE.fieldOf("distance").forGetter(data -> data.distance),
           Codec.FLOAT.fieldOf("energyScale").forGetter(data -> data.energyScale)
     ).apply(val, LaserParticleData::new));
-
-    public final Direction direction;
-    public final double distance;
-    public final float energyScale;
-
-    public LaserParticleData(Direction direction, double distance, float energyScale) {
-        this.direction = direction;
-        this.distance = distance;
-        this.energyScale = energyScale;
-    }
 
     @Nonnull
     @Override

@@ -53,7 +53,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
         if (upgrades.isEmpty()) {
             return true;
         }
-        Set<Upgrade> supportedUpgrades = Attribute.get(((BlockItem) stack.getItem()).getBlock(), AttributeUpgradeSupport.class).getSupportedUpgrades();
+        Set<Upgrade> supportedUpgrades = Attribute.get(((BlockItem) stack.getItem()).getBlock(), AttributeUpgradeSupport.class).supportedUpgrades();
         for (Upgrade upgrade : upgrades.keySet()) {
             if (!supportedUpgrades.contains(upgrade)) {
                 return false;

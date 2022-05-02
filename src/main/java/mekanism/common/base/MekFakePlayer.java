@@ -2,6 +2,7 @@ package mekanism.common.base;
 
 import com.mojang.authlib.GameProfile;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -17,8 +18,8 @@ import net.minecraftforge.common.util.FakePlayer;
 /**
  * Global, shared FakePlayer for Mekanism-specific uses
  *
- * This was introduced to fix https://github.com/dizzyd/Mekanism/issues/2. In that issue, another mod was trying to apply a potion to the fake player and causing the
- * whole system to crash due to essential potion related structures not being initialized for a fake player.
+ * This was introduced to fix <a href="https://github.com/dizzyd/Mekanism/issues/2">https://github.com/dizzyd/Mekanism/issues/2</a>. In that issue, another mod was trying
+ * to apply a potion to the fake player and causing the whole system to crash due to essential potion related structures not being initialized for a fake player.
  *
  * The broader problem is that the FakePlayer in Forge 14.23.5.2768 isn't really complete and short of patching Forge and requiring everyone in the world to upgrade,
  * there's no easy fix -- so we introduce our own FakePlayer that will let us override other methods as necessary.
@@ -53,7 +54,7 @@ public class MekFakePlayer extends FakePlayer {
     @Nonnull
     @Override
     public UUID getUUID() {
-        return this.emulatingUUID != null ? this.emulatingUUID : super.getUUID();
+        return this.emulatingUUID == null ? super.getUUID() : this.emulatingUUID;
     }
 
     @Override
@@ -82,7 +83,7 @@ public class MekFakePlayer extends FakePlayer {
      */
     @SuppressWarnings("WeakerAccess")
     public static <R> R withFakePlayer(ServerLevel world, Function<MekFakePlayer, R> fakePlayerConsumer) {
-        MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
+        MekFakePlayer actual = INSTANCE == null ? null : INSTANCE.get();
         if (actual == null) {
             actual = new MekFakePlayer(world);
             INSTANCE = new WeakReference<>(actual);
@@ -118,7 +119,7 @@ public class MekFakePlayer extends FakePlayer {
     public static void releaseInstance(LevelAccessor world) {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
-        MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
+        MekFakePlayer actual = INSTANCE == null ? null : INSTANCE.get();
         if (actual != null && actual.level == world) {
             actual.level = null;
         }
@@ -136,19 +137,19 @@ public class MekFakePlayer extends FakePlayer {
         }
 
         private UUID getEmulatingUUID() {
-            return myFakePlayer != null ? myFakePlayer.emulatingUUID : null;
+            return myFakePlayer == null ? null : myFakePlayer.emulatingUUID;
         }
 
         @Override
         public UUID getId() {
             UUID emulatingUUID = getEmulatingUUID();
-            return emulatingUUID != null ? emulatingUUID : super.getId();
+            return emulatingUUID == null ? super.getId() : emulatingUUID;
         }
 
         @Override
         public String getName() {
             UUID emulatingUUID = getEmulatingUUID();
-            return emulatingUUID != null ? MekanismUtils.getLastKnownUsername(emulatingUUID) : super.getName();
+            return emulatingUUID == null ? super.getName() : MekanismUtils.getLastKnownUsername(emulatingUUID);
         }
 
         //NB: super check they're the same class, we only check that name & id match
@@ -160,16 +161,15 @@ public class MekFakePlayer extends FakePlayer {
             if (!(o instanceof GameProfile that)) {
                 return false;
             }
-            if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
-                return false;
-            }
-            return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
+            return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName());
         }
 
         @Override
         public int hashCode() {
-            int result = getId() != null ? getId().hashCode() : 0;
-            result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+            UUID id = getId();
+            String name = getName();
+            int result = id == null ? 0 : id.hashCode();
+            result = 31 * result + (name == null ? 0 : name.hashCode());
             return result;
         }
     }

@@ -40,7 +40,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
         AttributeEnergy origEnergy = origMachine.get(AttributeEnergy.class);
         //TODO: Make this more readable
         add(new AttributeEnergy(origEnergy::getUsage, () -> origEnergy.getConfigStorage().multiply(0.5).max(origEnergy.getUsage())
-              .multiply(((FactoryTier) get(AttributeTier.class).getTier()).processes)));
+              .multiply(((FactoryTier) get(AttributeTier.class).tier()).processes)));
     }
 
     public static class FactoryBuilder<FACTORY extends Factory<TILE>, TILE extends TileEntityFactory<?>, T extends MachineBuilder<FACTORY, TILE, T>>

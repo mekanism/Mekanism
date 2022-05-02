@@ -7,8 +7,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.providers.IRobitSkinProvider;
-import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -19,7 +17,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSkinProvider, IHasTranslationKey, IHasTextComponent {
+public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSkinProvider {
 
     private final List<ResourceLocation> textures;
     private String translationKey;

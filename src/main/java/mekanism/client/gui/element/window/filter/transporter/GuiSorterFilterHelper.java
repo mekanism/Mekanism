@@ -41,12 +41,12 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         GuiTextField minField = new GuiTextField(gui, relativeX + 169, relativeY + 31, 20, 11);
         minField.setMaxLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
-        minField.setText("" + filter.min);
+        minField.setText(Integer.toString(filter.min));
         childAdder.apply(minField);
         GuiTextField maxField = new GuiTextField(gui, relativeX + 169, relativeY + 43, 20, 11);
         maxField.setMaxLength(2);
         maxField.setInputValidator(InputValidator.DIGIT);
-        maxField.setText("" + filter.max);
+        maxField.setText(Integer.toString(filter.max));
         childAdder.apply(maxField);
         rangeSetter.accept(minField, maxField);
         childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),

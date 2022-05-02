@@ -1,7 +1,6 @@
 package mekanism.common.lib;
 
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
@@ -11,7 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
-public class SidedBlockPos {
+public record SidedBlockPos(BlockPos pos, Direction side) {
 
     public static SidedBlockPos get(Destination destination) {
         List<BlockPos> path = destination.getPath();
@@ -31,20 +30,8 @@ public class SidedBlockPos {
         return null;
     }
 
-    private final BlockPos pos;
-    private final Direction side;
-
-    public SidedBlockPos(BlockPos pos, Direction side) {
-        this.pos = pos.immutable();
-        this.side = side;
-    }
-
-    public BlockPos getPos() {
-        return pos;
-    }
-
-    public Direction getSide() {
-        return side;
+    public SidedBlockPos {
+        pos = pos.immutable();
     }
 
     public CompoundTag serialize() {
@@ -54,21 +41,5 @@ public class SidedBlockPos {
         target.putInt(NBTConstants.Z, pos.getZ());
         target.putInt(NBTConstants.SIDE, side.ordinal());
         return target;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        } else if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SidedBlockPos that = (SidedBlockPos) o;
-        return pos.equals(that.pos) && side == that.side;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pos, side);
     }
 }

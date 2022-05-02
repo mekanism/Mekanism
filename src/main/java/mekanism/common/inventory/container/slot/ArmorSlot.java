@@ -11,10 +11,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public class ArmorSlot extends InsertableSlot {
 
-    protected static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS,
-                                                                                           InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
-                                                                                           InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE,
-                                                                                           InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
+    protected static final ResourceLocation[] ARMOR_SLOT_TEXTURES = {InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
+                                                                     InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET};
 
     private final EquipmentSlot slotType;
 

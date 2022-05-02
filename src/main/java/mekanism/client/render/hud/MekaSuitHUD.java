@@ -20,9 +20,8 @@ import net.minecraftforge.client.gui.IIngameOverlay;
 
 public class MekaSuitHUD implements IIngameOverlay {
 
-    private static final EquipmentSlot[] EQUIPMENT_ORDER = new EquipmentSlot[]{EquipmentSlot.OFFHAND, EquipmentSlot.MAINHAND,
-                                                                               EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
-                                                                               EquipmentSlot.FEET};
+    private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.OFFHAND, EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
+                                                            EquipmentSlot.FEET};
 
     private static final HUDRenderer hudRenderer = new HUDRenderer();
 

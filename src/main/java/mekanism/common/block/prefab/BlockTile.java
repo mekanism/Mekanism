@@ -123,9 +123,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Override
     @Deprecated
     public int getSignal(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull Direction side) {
-        if (type.has(AttributeRedstoneEmitter.class)) {
+        AttributeRedstoneEmitter<TileEntityMekanism> redstoneEmitter = type.get(AttributeRedstoneEmitter.class);
+        if (redstoneEmitter != null) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-            return type.get(AttributeRedstoneEmitter.class).getRedstoneLevel(tile);
+            if (tile != null) {
+                return redstoneEmitter.getRedstoneLevel(tile);
+            }
         }
         return super.getSignal(state, world, pos, side);
     }

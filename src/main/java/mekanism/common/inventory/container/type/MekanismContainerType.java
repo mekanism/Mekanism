@@ -89,6 +89,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
             int entityId = buf.readVarInt();
             Entity e = Minecraft.getInstance().level.getEntity(entityId);
             if (type.isInstance(e)) {
+                //noinspection unchecked
                 return (ENTITY) e;
             }
             throw new IllegalStateException("Client could not locate entity (id: " + entityId + ")  for entity container or the entity was of an invalid type. "

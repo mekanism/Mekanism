@@ -200,10 +200,10 @@ public interface IFancyFontRenderer {
                     wordBuilder.append(c);
                     wordLength += lastFont.width(Character.toString(c));
                 }
-                if (wordBuilder.length() > 0) {
+                if (!wordBuilder.isEmpty()) {
                     lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
                 }
-                if (lineBuilder.length() > 0) {
+                if (!lineBuilder.isEmpty()) {
                     linesToDraw.add(new LineData(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
                 }
             }
@@ -211,7 +211,7 @@ public interface IFancyFontRenderer {
 
         StringBuilder addWord(StringBuilder lineBuilder, StringBuilder wordBuilder, float maxLength, int spaceLength, int wordLength) {
             // ignore spacing if this is the first word of the line
-            float spacingLength = lineBuilder.length() == 0 ? 0 : spaceLength;
+            float spacingLength = lineBuilder.isEmpty() ? 0 : spaceLength;
             if (lineLength + spacingLength + wordLength > maxLength) {
                 linesToDraw.add(new LineData(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
                 lineBuilder = new StringBuilder(wordBuilder);

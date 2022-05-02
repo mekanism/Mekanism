@@ -124,7 +124,7 @@ public class LRU<T> extends AbstractCollection<T> {
                     throw new NoSuchElementException("Reached end of LRU");
                 }
             }
-            return curEntry != null ? curEntry.value : null;
+            return curEntry == null ? null : curEntry.value;
         }
 
         public LRUIterator reverse() {

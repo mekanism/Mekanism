@@ -17,11 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 @MethodsReturnNonnullByDefault
 public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
-    private static final DecimalFormat df;
-
-    static {
-        df = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-    }
+    private static final DecimalFormat df = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     //TODO: Eventually we should define a way of doing a set of operations all at once, and outputting a new value
     // given that way we can internally do all the calculations using primitives rather than spamming a lot of objects
@@ -247,13 +243,11 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.plusEqual(toAdd)}
      */
     public FloatingLong plusEqual(FloatingLong toAdd) {
-        long newValue;
-        short newDecimal;
         if ((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
             return setAndClampValues(-1, MAX_DECIMAL);
         }
-        newValue = value + toAdd.value;
-        newDecimal = (short) (decimal + toAdd.decimal);
+        long newValue = value + toAdd.value;
+        short newDecimal = (short) (decimal + toAdd.decimal);
         if (newDecimal > MAX_DECIMAL) {
             if (newValue == -1) {
                 newDecimal = MAX_DECIMAL;
@@ -949,7 +943,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public static FloatingLong parseFloatingLong(String string, boolean isConstant) {
         long value;
-        int index = string.indexOf(".");
+        int index = string.indexOf('.');
         if (index == -1) {
             value = Long.parseUnsignedLong(string);
         } else {
@@ -970,7 +964,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws NumberFormatException if the string does not contain a parsable {@link Short}.
      */
     private static short parseDecimal(String string) {
-        return parseDecimal(string, string.indexOf("."));
+        return parseDecimal(string, string.indexOf('.'));
     }
 
     /**

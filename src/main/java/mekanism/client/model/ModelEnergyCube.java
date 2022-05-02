@@ -305,9 +305,9 @@ public class ModelEnergyCube extends MekanismJavaModel {
             //TODO: Maybe improve on this, but for now this is a decent way of making it not have disabled sides show
             for (RelativeSide side : EnumUtils.SIDES) {
                 DataType dataType = DataType.byIndexStatic(sideConfig.getInt(NBTConstants.SIDE + side.ordinal()));
-                if (dataType.equals(DataType.INPUT)) {
+                if (dataType == DataType.INPUT) {
                     enabledSides.add(side);
-                } else if (dataType.equals(DataType.OUTPUT)) {
+                } else if (dataType == DataType.OUTPUT) {
                     enabledSides.add(side);
                     outputSides.add(side);
                 }

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.custom.GuiFrequencySelector;
-import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.ITileGuiFrequencySelector;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
@@ -20,7 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuantumEntangloporter, MekanismTileContainer<TileEntityQuantumEntangloporter>>
-      implements IGuiFrequencySelector<InventoryFrequency>, ITileGuiFrequencySelector<InventoryFrequency, TileEntityQuantumEntangloporter> {
+      implements ITileGuiFrequencySelector<InventoryFrequency, TileEntityQuantumEntangloporter> {
 
     public GuiQuantumEntangloporter(MekanismTileContainer<TileEntityQuantumEntangloporter> container, Inventory inv, Component title) {
         super(container, inv, title);

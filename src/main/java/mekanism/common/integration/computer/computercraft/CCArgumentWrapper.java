@@ -140,6 +140,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     }
                 } else if (expectedType.isEnum()) {
                     if (d >= 0) {
+                        //noinspection unchecked
                         Enum<?>[] enumConstants = ((Class<? extends Enum<?>>) expectedType).getEnumConstants();
                         if (d < enumConstants.length) {
                             return enumConstants[(int) d];
@@ -168,6 +169,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 } catch (NumberFormatException ignored) {
                 }
             } else if (expectedType.isEnum()) {
+                //noinspection unchecked
                 Object sanitized = sanitizeStringToEnum((Class<? extends Enum<?>>) expectedType, (String) argument);
                 if (sanitized != null) {
                     return sanitized;

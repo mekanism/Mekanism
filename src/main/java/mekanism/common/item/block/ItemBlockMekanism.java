@@ -52,7 +52,8 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
     }
 
     public EnumColor getTextColor(ItemStack stack) {
-        return getTier() != null ? getTier().getBaseTier().getTextColor() : null;
+        ITier tier = getTier();
+        return tier == null ? null : tier.getBaseTier().getTextColor();
     }
 
     @Nonnull
@@ -91,7 +92,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
             AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
             FloatingLongSupplier maxEnergy;
             AttributeUpgradeSupport upgradeSupport = Attribute.get(block, AttributeUpgradeSupport.class);
-            if (upgradeSupport != null && upgradeSupport.getSupportedUpgrades().contains(Upgrade.ENERGY)) {
+            if (upgradeSupport != null && upgradeSupport.supportedUpgrades().contains(Upgrade.ENERGY)) {
                 //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
                 maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
             } else {

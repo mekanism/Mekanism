@@ -942,7 +942,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return Attribute.get(getBlockType(), AttributeUpgradeSupport.class).getSupportedUpgrades();
+            return Attribute.get(getBlockType(), AttributeUpgradeSupport.class).supportedUpgrades();
         }
         return Collections.emptySet();
     }
@@ -1278,7 +1278,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public String getComputerName() {
         if (hasComputerSupport()) {
-            return Attribute.get(getBlockType(), AttributeComputerIntegration.class).name;
+            return Attribute.get(getBlockType(), AttributeComputerIntegration.class).name();
         }
         return "";
     }

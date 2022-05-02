@@ -27,6 +27,7 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
         this.count = count;
     }
 
+    @SuppressWarnings("unchecked")
     public BUILDER setGroup(String group) {
         this.group = group;
         return (BUILDER) this;

@@ -139,18 +139,13 @@ public class RenderPropertiesProvider {
                             double y = pos.getY() + world.random.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY - 0.2) + 0.1 + axisalignedbb.minY;
                             double z = pos.getZ() + world.random.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ - 0.2) + 0.1 + axisalignedbb.minZ;
                             Direction side = blockTarget.getDirection();
-                            if (side == Direction.DOWN) {
-                                y = pos.getY() + axisalignedbb.minY - 0.1;
-                            } else if (side == Direction.UP) {
-                                y = pos.getY() + axisalignedbb.maxY + 0.1;
-                            } else if (side == Direction.NORTH) {
-                                z = pos.getZ() + axisalignedbb.minZ - 0.1;
-                            } else if (side == Direction.SOUTH) {
-                                z = pos.getZ() + axisalignedbb.maxZ + 0.1;
-                            } else if (side == Direction.WEST) {
-                                x = pos.getX() + axisalignedbb.minX - 0.1;
-                            } else if (side == Direction.EAST) {
-                                x = pos.getX() + axisalignedbb.maxX + 0.1;
+                            switch (side) {
+                                case DOWN -> y = pos.getY() + axisalignedbb.minY - 0.1;
+                                case UP -> y = pos.getY() + axisalignedbb.maxY + 0.1;
+                                case NORTH -> z = pos.getZ() + axisalignedbb.minZ - 0.1;
+                                case SOUTH -> z = pos.getZ() + axisalignedbb.maxZ + 0.1;
+                                case WEST -> x = pos.getX() + axisalignedbb.minX - 0.1;
+                                case EAST -> x = pos.getX() + axisalignedbb.maxX + 0.1;
                             }
                             manager.add(new TerrainParticle((ClientLevel) world, x, y, z, 0, 0, 0, mainState)
                                   .updateSprite(mainState, mainPos).setPower(0.2F).scale(0.6F));

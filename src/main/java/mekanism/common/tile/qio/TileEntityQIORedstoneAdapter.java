@@ -145,7 +145,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     @ComputerMethod(nameOverride = "getTargetItem")
     public ItemStack getItemType() {
-        return itemType != null ? itemType.getStack() : ItemStack.EMPTY;
+        return itemType == null ? ItemStack.EMPTY : itemType.getStack();
     }
 
     @ComputerMethod(nameOverride = "getTriggerAmount")

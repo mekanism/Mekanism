@@ -12,7 +12,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
-import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
@@ -38,21 +37,15 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
         Predicate<@NonNull ItemStack> infusionInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getInfusionTank(), InfusionInventorySlot::getCapability);
         Predicate<@NonNull ItemStack> pigmentInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getPigmentTank(), PigmentInventorySlot::getCapability);
         Predicate<@NonNull ItemStack> slurryInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getSlurryTank(), SlurryInventorySlot::getCapability);
-        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> insertPredicate = (stack, automationType) -> {
-            CurrentType currentType = mergedTank.getCurrentType();
-            if (currentType == CurrentType.FLUID) {
-                return fluidInsertPredicate.test(stack);
-            } else if (currentType == CurrentType.GAS) {
-                return gasInsertPredicate.test(stack);
-            } else if (currentType == CurrentType.INFUSION) {
-                return infusionInsertPredicate.test(stack);
-            } else if (currentType == CurrentType.PIGMENT) {
-                return pigmentInsertPredicate.test(stack);
-            } else if (currentType == CurrentType.SLURRY) {
-                return slurryInsertPredicate.test(stack);
-            }//Else the tank is empty, check if any insert predicate is valid
-            return fluidInsertPredicate.test(stack) || gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) ||
-                   slurryInsertPredicate.test(stack);
+        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> insertPredicate = (stack, automationType) -> switch (mergedTank.getCurrentType()) {
+            case FLUID -> fluidInsertPredicate.test(stack);
+            case GAS -> gasInsertPredicate.test(stack);
+            case INFUSION -> infusionInsertPredicate.test(stack);
+            case PIGMENT -> pigmentInsertPredicate.test(stack);
+            case SLURRY -> slurryInsertPredicate.test(stack);
+            //Tank is empty, check if any insert predicate is valid
+            case EMPTY -> fluidInsertPredicate.test(stack) || gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) ||
+                          pigmentInsertPredicate.test(stack) || slurryInsertPredicate.test(stack);
         };
         //Extract predicate, always allow the player to manually extract or if the insert predicate no longer matches allow for it to be extracted
         return new HybridInventorySlot(mergedTank, (stack, automationType) -> automationType == AutomationType.MANUAL || !insertPredicate.test(stack, automationType),
@@ -74,39 +67,32 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
                 //Always allow the player to manually extract
                 return true;
             }
-            CurrentType currentType = mergedTank.getCurrentType();
-            if (currentType == CurrentType.FLUID) {
+            return switch (mergedTank.getCurrentType()) {
                 //Always allow extracting from a "fluid output" slot
-                return true;
-            } else if (currentType == CurrentType.GAS) {
-                return gasExtractPredicate.test(stack);
-            } else if (currentType == CurrentType.INFUSION) {
-                return infusionExtractPredicate.test(stack);
-            } else if (currentType == CurrentType.PIGMENT) {
-                return pigmentExtractPredicate.test(stack);
-            } else if (currentType == CurrentType.SLURRY) {
-                return slurryExtractPredicate.test(stack);
-            }//Else the tank is empty, check all our extraction predicates
-            return gasExtractPredicate.test(stack) && infusionExtractPredicate.test(stack) && pigmentExtractPredicate.test(stack) && slurryExtractPredicate.test(stack);
-        }, (stack, automationType) -> {
-            CurrentType currentType = mergedTank.getCurrentType();
-            if (currentType == CurrentType.FLUID) {
-                //Only allow inserting internally for "fluid output" slots
-                return automationType == AutomationType.INTERNAL;
-            } else if (currentType == CurrentType.GAS) {
-                return gasInsertPredicate.test(stack);
-            } else if (currentType == CurrentType.INFUSION) {
-                return infusionInsertPredicate.test(stack);
-            } else if (currentType == CurrentType.PIGMENT) {
-                return pigmentInsertPredicate.test(stack);
-            } else if (currentType == CurrentType.SLURRY) {
-                return slurryInsertPredicate.test(stack);
-            }//Else the tank is empty, if the item is a fluid handler, and it is an internal check allow it
-            if (automationType == AutomationType.INTERNAL && FluidUtil.getFluidHandler(stack).isPresent()) {
-                return true;
+                case FLUID -> true;
+                case GAS -> gasExtractPredicate.test(stack);
+                case INFUSION -> infusionExtractPredicate.test(stack);
+                case PIGMENT -> pigmentExtractPredicate.test(stack);
+                case SLURRY -> slurryExtractPredicate.test(stack);
+                //Tank is empty, check all our extraction predicates
+                case EMPTY -> gasExtractPredicate.test(stack) && infusionExtractPredicate.test(stack) && pigmentExtractPredicate.test(stack) &&
+                              slurryExtractPredicate.test(stack);
+            };
+        }, (stack, automationType) -> switch (mergedTank.getCurrentType()) {
+            //Only allow inserting internally for "fluid output" slots
+            case FLUID -> automationType == AutomationType.INTERNAL;
+            case GAS -> gasInsertPredicate.test(stack);
+            case INFUSION -> infusionInsertPredicate.test(stack);
+            case PIGMENT -> pigmentInsertPredicate.test(stack);
+            case SLURRY -> slurryInsertPredicate.test(stack);
+            case EMPTY -> {
+                //Tank is empty, if the item is a fluid handler, and it is an internal check allow it
+                if (automationType == AutomationType.INTERNAL && FluidUtil.getFluidHandler(stack).isPresent()) {
+                    yield true;
+                }
+                //otherwise, only allow it if one of the chemical insert predicates matches
+                yield gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) || slurryInsertPredicate.test(stack);
             }
-            //otherwise, only allow it if one of the chemical insert predicates matches
-            return gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) || slurryInsertPredicate.test(stack);
         }, HybridInventorySlot::hasCapability, listener, x, y);
     }
 

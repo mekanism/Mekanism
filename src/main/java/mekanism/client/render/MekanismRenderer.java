@@ -467,7 +467,7 @@ public class MekanismRenderer {
         public float maxX, maxY, maxZ;
 
         private final SpriteInfo[] textures = new SpriteInfo[6];
-        private final boolean[] renderSides = new boolean[]{true, true, true, true, true, true};
+        private final boolean[] renderSides = {true, true, true, true, true, true};
 
         public void setSideRender(Direction side, boolean value) {
             renderSides[side.ordinal()] = value;

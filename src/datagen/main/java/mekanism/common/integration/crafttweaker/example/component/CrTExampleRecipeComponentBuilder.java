@@ -165,6 +165,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                 appendRecipeMethodStart(stringBuilder, example.method.methodName);
                 stringBuilder.append(");\n");
             } else {
+                //noinspection unchecked
                 List<String>[] parameterRepresentations = new List[paramCount];
                 for (int i = 0; i < paramCount; i++) {
                     Object exampleParam = example.params[i];

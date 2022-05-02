@@ -59,7 +59,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         // Calculate number of available modes to switch between
         int activeModes;
         if (isDisableable) {
-            activeModes = (int) Arrays.stream(types).filter(type -> ((IDisableableEnum) type).isEnabled()).count();
+            activeModes = (int) Arrays.stream(types).filter(type -> ((IDisableableEnum<?>) type).isEnabled()).count();
         } else {
             activeModes = types.length;
         }
@@ -82,7 +82,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 //Calculate the proper section to highlight as green in case one of the earlier ones is disabled
                 section = 0;
                 for (TYPE type : types) {
-                    if (((IDisableableEnum) type).isEnabled()) {
+                    if (((IDisableableEnum<?>) type).isEnabled()) {
                         if (type == cur) {
                             break;
                         }
@@ -110,7 +110,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 if (isDisableable) {
                     int count = 0;
                     for (TYPE type : types) {
-                        if (((IDisableableEnum) type).isEnabled()) {
+                        if (((IDisableableEnum<?>) type).isEnabled()) {
                             if (count == selectionDrawnPos) {
                                 selection = type;
                                 break;
@@ -136,7 +136,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         RenderSystem.enableTexture();
         int position = 0;
         for (TYPE type : types) {
-            if (isDisableable && !((IDisableableEnum) type).isEnabled()) {
+            if (isDisableable && !((IDisableableEnum<?>) type).isEnabled()) {
                 // Mode disabled, skip it.
                 continue;
             }

@@ -50,7 +50,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
             @Override
             public double getLevel() {
                 MatrixMultiblockData multiblock = tile.getMultiblock();
-                return !multiblock.isFormed() ? 0 : multiblock.getLastInput().divideToLevel(multiblock.getTransferCap());
+                return multiblock.isFormed() ? multiblock.getLastInput().divideToLevel(multiblock.getTransferCap()) : 0;
             }
         }, 30, 13));
         addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {

@@ -13,6 +13,7 @@ public class DataSerializerRegistryObject<T> extends WrappedRegistryObject<DataS
     }
 
     @Nonnull
+    @SuppressWarnings("unchecked")
     public EntityDataSerializer<T> getSerializer() {
         return (EntityDataSerializer<T>) get().getSerializer();
     }

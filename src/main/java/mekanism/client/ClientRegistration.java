@@ -516,7 +516,7 @@ public class ClientRegistration {
                       BlockEntity tile = WorldUtils.getTileEntity(world, pos);
                       if (tile instanceof TileEntityQIOComponent qioComponent) {
                           EnumColor color = qioComponent.getColor();
-                          return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;
+                          return color == null ? -1 : MekanismRenderer.getColorARGB(color, 1);
                       }
                   }
                   return -1;
@@ -573,6 +573,7 @@ public class ClientRegistration {
             EntityRenderer<?> renderer = entry.getValue();
             if (renderer instanceof LivingEntityRenderer) {
                 EntityType<?> entityType = entry.getKey();
+                //noinspection unchecked,rawtypes
                 addCustomLayers(entityType, event.getRenderer((EntityType) entityType));
             }
         }

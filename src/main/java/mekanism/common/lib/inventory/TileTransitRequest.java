@@ -31,7 +31,7 @@ public class TileTransitRequest extends TransitRequest {
 
     public int getCount(HashedItem itemType) {
         ItemData data = itemMap.get(itemType);
-        return data != null ? data.getTotalCount() : 0;
+        return data == null ? 0 : data.getTotalCount();
     }
 
     protected Direction getSide() {

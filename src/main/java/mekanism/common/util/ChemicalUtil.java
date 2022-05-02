@@ -58,7 +58,8 @@ public class ChemicalUtil {
     private ChemicalUtil() {
     }
 
-    public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(Chemical<?> chemical) {
+    @SuppressWarnings("unchecked")
+    public static <CHEMICAL extends Chemical<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, ?>> Capability<HANDLER> getCapabilityForChemical(CHEMICAL chemical) {
         if (chemical instanceof Gas) {
             return (Capability<HANDLER>) Capabilities.GAS_HANDLER_CAPABILITY;
         } else if (chemical instanceof InfuseType) {
@@ -98,6 +99,7 @@ public class ChemicalUtil {
     /**
      * Gets the empty stack matching the type of the input stack type
      */
+    @SuppressWarnings("unchecked")
     public static <STACK extends ChemicalStack<?>> STACK getEmptyStack(STACK stack) {
         if (stack instanceof GasStack) {
             return (STACK) GasStack.EMPTY;
@@ -133,6 +135,7 @@ public class ChemicalUtil {
      *
      * @apiNote Should only be called if we know that copy returns STACK
      */
+    @SuppressWarnings("unchecked")
     public static <STACK extends ChemicalStack<?>> STACK copy(STACK stack) {
         return (STACK) stack.copy();
     }
@@ -146,17 +149,20 @@ public class ChemicalUtil {
      * @return Copy of the input stack with the desired size
      */
     public static <STACK extends ChemicalStack<?>> STACK copyWithAmount(STACK stack, long amount) {
-        if (stack instanceof GasStack gasStack) {
-            return (STACK) new GasStack(gasStack, amount);
-        } else if (stack instanceof InfusionStack infusionStack) {
-            return (STACK) new InfusionStack(infusionStack, amount);
-        } else if (stack instanceof PigmentStack pigmentStack) {
-            return (STACK) new PigmentStack(pigmentStack, amount);
-        } else if (stack instanceof SlurryStack slurryStack) {
-            return (STACK) new SlurryStack(slurryStack, amount);
-        } else {
-            throw new IllegalStateException("Unknown Chemical Type: " + stack.getType().getClass().getName());
-        }
+        STACK result = copy(stack);
+        result.setAmount(amount);
+        return result;
+    }
+
+    /**
+     * Helper to get a chemical stack of the proper type.
+     *
+     * @param provider Chemical Provider
+     * @param amount   Desired size
+     */
+    @SuppressWarnings("unchecked")
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK withAmount(IChemicalProvider<CHEMICAL> provider, long amount) {
+        return (STACK) provider.getStack(amount);
     }
 
     /**
@@ -203,7 +209,7 @@ public class ChemicalUtil {
     ItemStack getFilledVariant(ItemStack toFill, ChemicalTankBuilder<CHEMICAL, STACK, TANK> tankBuilder, long capacity, IChemicalProvider<CHEMICAL> provider, String key) {
         TANK dummyTank = tankBuilder.createDummy(capacity);
         //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
-        dummyTank.setStack((STACK) provider.getStack(dummyTank.getCapacity()));
+        dummyTank.setStack(withAmount(provider, dummyTank.getCapacity()));
         ItemDataUtils.setList(toFill, key, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
         //The item is now filled return it for convenience
         return toFill;

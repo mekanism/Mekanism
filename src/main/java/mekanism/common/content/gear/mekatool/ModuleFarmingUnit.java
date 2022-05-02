@@ -248,7 +248,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         Vec3 getLightningPos(BlockPos pos);
     }
 
-    private static abstract class FlatToolAOEData implements IToolAOEData {
+    private abstract static class FlatToolAOEData implements IToolAOEData {
 
         @Override
         public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {

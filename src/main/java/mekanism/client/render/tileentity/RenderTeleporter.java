@@ -53,30 +53,37 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
             Model3D model = new Model3D();
             model.setTexture(MekanismRenderer.teleporterPortal);
             cache.put(direction, model);
-            if (direction == Direction.UP) {
-                model.minY = 1;
-                model.maxY = 3;
-                setUpDownDimensions(model, rotated);
-            } else if (direction == Direction.DOWN) {
-                model.minY = -2;
-                model.maxY = 0;
-                setUpDownDimensions(model, rotated);
-            } else if (direction == Direction.EAST) {
-                model.minX = 1;
-                model.maxX = 3;
-                setEastWestDimensions(model, rotated);
-            } else if (direction == Direction.WEST) {
-                model.minX = -2;
-                model.maxX = 0;
-                setEastWestDimensions(model, rotated);
-            } else if (direction == Direction.NORTH) {
-                model.minZ = -2;
-                model.maxZ = 0;
-                setNorthSouthDimensions(model, rotated);
-            } else if (direction == Direction.SOUTH) {
-                model.minZ = 0;
-                model.maxZ = 3;
-                setNorthSouthDimensions(model, rotated);
+            switch (direction) {
+                case UP -> {
+                    model.minY = 1;
+                    model.maxY = 3;
+                    setUpDownDimensions(model, rotated);
+                }
+                case DOWN -> {
+                    model.minY = -2;
+                    model.maxY = 0;
+                    setUpDownDimensions(model, rotated);
+                }
+                case EAST -> {
+                    model.minX = 1;
+                    model.maxX = 3;
+                    setEastWestDimensions(model, rotated);
+                }
+                case WEST -> {
+                    model.minX = -2;
+                    model.maxX = 0;
+                    setEastWestDimensions(model, rotated);
+                }
+                case NORTH -> {
+                    model.minZ = -2;
+                    model.maxZ = 0;
+                    setNorthSouthDimensions(model, rotated);
+                }
+                case SOUTH -> {
+                    model.minZ = 0;
+                    model.maxZ = 3;
+                    setNorthSouthDimensions(model, rotated);
+                }
             }
         }
         return cache.get(direction);

@@ -305,7 +305,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
         GuiWindow window = getWindowHovering(mouseX, mouseY);
-        return window != null ? Optional.of(window) : super.getChildAt(mouseX, mouseY);
+        return window == null ? super.getChildAt(mouseX, mouseY) : Optional.of(window);
     }
 
     @Override

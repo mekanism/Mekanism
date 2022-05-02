@@ -50,6 +50,7 @@ public class MekanismFeatures {
     static {
         for (OreType type : EnumUtils.ORE_TYPES) {
             int features = type.getBaseConfigs().size();
+            //noinspection unchecked
             MekFeature<ResizableOreFeatureConfig, ResizableOreFeature>[] oreFeatures = new MekFeature[features];
             for (int vein = 0; vein < features; vein++) {
                 OreVeinType oreVeinType = new OreVeinType(type, vein);

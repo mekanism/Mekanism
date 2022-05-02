@@ -158,15 +158,11 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     private void adoptBuffer(BoxedChemicalNetwork net) {
-        Current netCurrent = net.chemicalTank.getCurrent();
-        if (netCurrent == Current.GAS) {
-            moveBuffer(getGasTank(), net.getGasTank());
-        } else if (netCurrent == Current.INFUSION) {
-            moveBuffer(getInfusionTank(), net.getInfusionTank());
-        } else if (netCurrent == Current.PIGMENT) {
-            moveBuffer(getPigmentTank(), net.getPigmentTank());
-        } else if (netCurrent == Current.SLURRY) {
-            moveBuffer(getSlurryTank(), net.getSlurryTank());
+        switch (net.chemicalTank.getCurrent()) {
+            case GAS -> moveBuffer(getGasTank(), net.getGasTank());
+            case INFUSION -> moveBuffer(getInfusionTank(), net.getInfusionTank());
+            case PIGMENT -> moveBuffer(getPigmentTank(), net.getPigmentTank());
+            case SLURRY -> moveBuffer(getSlurryTank(), net.getSlurryTank());
         }
     }
 
@@ -392,6 +388,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         return slurryTanks;
     }
 
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void setStack(STACK stack, IChemicalTank<?, ?> tank) {
         ((IChemicalTank<CHEMICAL, STACK>) tank).setStack(stack);
     }

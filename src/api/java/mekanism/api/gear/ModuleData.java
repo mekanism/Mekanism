@@ -8,7 +8,6 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
-import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegistryEntry<ModuleData<?>> implements IHasTranslationKey, IModuleDataProvider<MODULE> {
+public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegistryEntry<ModuleData<?>> implements IModuleDataProvider<MODULE> {
 
     private final NonNullSupplier<MODULE> supplier;
     private final IItemProvider itemProvider;

@@ -123,7 +123,7 @@ public class MekAnnotationScanner {
         }
     }
 
-    public static abstract class BaseAnnotationScanner {
+    public abstract static class BaseAnnotationScanner {
 
         protected boolean isEnabled() {
             return true;

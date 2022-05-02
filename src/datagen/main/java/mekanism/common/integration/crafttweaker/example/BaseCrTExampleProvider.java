@@ -195,7 +195,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     @Nullable
     private List<ClassConversionInfo<?>> getConversions(Class<?> crtClass, @Nullable Class<?> crtGenerics) {
         ConversionTracker conversionTracker = supportedConversions.get(crtClass);
-        return conversionTracker != null ? conversionTracker.getConversions(crtGenerics) : null;
+        return conversionTracker == null ? null : conversionTracker.getConversions(crtGenerics);
     }
 
     public boolean supportsConversion(Class<?> crtClass, @Nullable Class<?> crtGenerics, Class<?> actualClass) {
@@ -211,6 +211,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             for (ClassConversionInfo<?> conversionInfo : conversions) {
                 if (conversionInfo.actualClass.isAssignableFrom(actualClass)) {
                     for (BiFunction<CrTImportsComponent, ?, String> stringFunction : conversionInfo.conversions) {
+                        //noinspection unchecked
                         String representation = ((BiFunction<CrTImportsComponent, ? super ACTUAL, String>) stringFunction).apply(imports, actual);
                         if (representation != null) {
                             //We use null to represent things we can't represent and then don't add them here

@@ -49,7 +49,7 @@ public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends
         if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
-        return chemicalType.isTypeEqual(((ChemicalRenderData) o).chemicalType);
+        return chemicalType.getType() == ((ChemicalRenderData<?>) o).chemicalType.getType();
     }
 
     public static class GasRenderData extends ChemicalRenderData<GasStack> {

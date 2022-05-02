@@ -117,16 +117,20 @@ public class PacketGuiButtonPress implements IMekanismPacket {
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
-        if (type == Type.ENTITY) {
-            buffer.writeEnum(entityButton);
-            buffer.writeVarInt(entityID);
-        } else if (type == Type.TILE) {
-            buffer.writeEnum(tileButton);
-            buffer.writeBlockPos(tilePosition);
-            buffer.writeVarInt(extra);
-        } else if (type == Type.ITEM) {
-            buffer.writeEnum(itemButton);
-            buffer.writeEnum(hand);
+        switch (type) {
+            case ENTITY -> {
+                buffer.writeEnum(entityButton);
+                buffer.writeVarInt(entityID);
+            }
+            case TILE -> {
+                buffer.writeEnum(tileButton);
+                buffer.writeBlockPos(tilePosition);
+                buffer.writeVarInt(extra);
+            }
+            case ITEM -> {
+                buffer.writeEnum(itemButton);
+                buffer.writeEnum(hand);
+            }
         }
     }
 

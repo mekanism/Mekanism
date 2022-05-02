@@ -84,7 +84,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     @Override
     public int hashCode() {
         int code = 1;
-        code = 31 * code + (color != null ? color.ordinal() : -1);
+        code = 31 * code + (color == null ? -1 : color.ordinal());
         code = 31 * code + (sizeMode ? 1 : 0);
         code = 31 * code + min;
         code = 31 * code + max;

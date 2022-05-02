@@ -178,7 +178,8 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public String getName() {
-        return ownerUUID != null ? (ownerUUID + "_" + frequencyType.getName() + "FrequencyHandler") : (frequencyType.getName() + "FrequencyHandler");
+        String owner = ownerUUID == null ? "" : ownerUUID + "_";
+        return owner + frequencyType.getName() + "FrequencyHandler";
     }
 
     public class FrequencyDataHandler extends SavedData {

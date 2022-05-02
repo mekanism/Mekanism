@@ -70,7 +70,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         }));
         addRenderableWidget(new GuiInnerScreen(this, 27, 30, imageWidth - 27 - 8, 54, () -> {
             List<Component> list = new ArrayList<>();
-            list.add(!tile.getItemType().isEmpty() ? tile.getItemType().getHoverName() : MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate());
+            list.add(tile.getItemType().isEmpty() ? MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate() : tile.getItemType().getHoverName());
             list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(TextUtils.format(tile.getCount())));
             if (!tile.getItemType().isEmpty() && tile.getQIOFrequency() != null) {
                 list.add(MekanismLang.QIO_STORED_COUNT.translate(TextUtils.format(tile.getStoredCount())));

@@ -9,7 +9,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
-import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
@@ -39,20 +38,13 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
         super(TextureAtlas.LOCATION_BLOCKS, gui, new IBarInfoHandler() {
             @Nullable
             private IChemicalTank<?, ?> getCurrentTank() {
-                Current current = chemicalTank.getCurrent();
-                if (current == Current.EMPTY) {
-                    return null;
-                } else if (current == Current.GAS) {
-                    return chemicalTank.getGasTank();
-                } else if (current == Current.INFUSION) {
-                    return chemicalTank.getInfusionTank();
-                } else if (current == Current.PIGMENT) {
-                    return chemicalTank.getPigmentTank();
-                } else if (current == Current.SLURRY) {
-                    return chemicalTank.getSlurryTank();
-                } else {
-                    throw new IllegalStateException("Unknown current type");
-                }
+                return switch (chemicalTank.getCurrent()) {
+                    case EMPTY -> null;
+                    case GAS -> chemicalTank.getGasTank();
+                    case INFUSION -> chemicalTank.getInfusionTank();
+                    case PIGMENT -> chemicalTank.getPigmentTank();
+                    case SLURRY -> chemicalTank.getSlurryTank();
+                };
             }
 
             @Override

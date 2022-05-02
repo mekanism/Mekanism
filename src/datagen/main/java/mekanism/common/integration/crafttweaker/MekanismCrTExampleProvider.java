@@ -62,6 +62,7 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.FluidTags;
@@ -519,7 +520,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         @Override
         public String asString() {
             return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(" +
-                   describer.apply((STACK) chemicalProvider.getStack(FluidAttributes.BUCKET_VOLUME)).getCommandString() + ");";
+                   describer.apply(ChemicalUtil.withAmount(chemicalProvider, FluidAttributes.BUCKET_VOLUME)).getCommandString() + ");";
         }
     }
 

@@ -54,13 +54,7 @@ public class Attributes {
     }
 
     /** If a block supports integration with computers. */
-    public static class AttributeComputerIntegration implements Attribute {
-
-        public final String name;
-
-        public AttributeComputerIntegration(String name) {
-            this.name = name;
-        }
+    public record AttributeComputerIntegration(String name) implements Attribute {
     }
 
     /** If a block has a redstone input configuration. */

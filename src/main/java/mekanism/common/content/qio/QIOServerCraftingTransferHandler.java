@@ -704,7 +704,7 @@ public class QIOServerCraftingTransferHandler {
         }
     }
 
-    private static abstract class ItemData {
+    private abstract static class ItemData {
 
         private int available;
 

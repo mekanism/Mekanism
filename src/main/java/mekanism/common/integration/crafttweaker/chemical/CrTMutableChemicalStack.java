@@ -27,6 +27,7 @@ public abstract class CrTMutableChemicalStack<CHEMICAL extends Chemical<CHEMICAL
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CRT_STACK asMutable() {
         return (CRT_STACK) this;
     }

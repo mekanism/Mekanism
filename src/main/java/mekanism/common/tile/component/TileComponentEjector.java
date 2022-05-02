@@ -55,7 +55,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
-    private final EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
+    private final EnumColor[] inputColors = new EnumColor[6];
     private final LongSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable

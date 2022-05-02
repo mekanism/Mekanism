@@ -70,7 +70,7 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        return getInventory(stack) != null ? 1 : 64;
+        return getInventory(stack) == null ? 64 : 1;
     }
 
     @Nonnull

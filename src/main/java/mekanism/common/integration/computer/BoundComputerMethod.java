@@ -144,35 +144,26 @@ public class BoundComputerMethod {
             // sizable performance difference in the two methods. We also call invoke instead of invokeExact for the zero argument count
             // as it requires knowing the return type by casting which causes us issues as we don't know it at compile time and thus cannot
             // specify the cast to the correct type directly
-            if (argumentCount == 0) {
-                result = methodHandle.invoke();
-            } else if (argumentCount == 1) {
-                result = methodHandle.invoke(methodInfo.arguments[0]);
-            } else if (argumentCount == 2) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1]);
-            } else if (argumentCount == 3) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2]);
-            } else if (argumentCount == 4) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3]);
-            } else if (argumentCount == 5) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4]);
-            } else if (argumentCount == 6) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
+            result = switch (argumentCount) {
+                case 0 -> methodHandle.invoke();
+                case 1 -> methodHandle.invoke(methodInfo.arguments[0]);
+                case 2 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1]);
+                case 3 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2]);
+                case 4 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3]);
+                case 5 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3],
+                      methodInfo.arguments[4]);
+                case 6 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
                       methodInfo.arguments[5]);
-            } else if (argumentCount == 7) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
+                case 7 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
                       methodInfo.arguments[5], methodInfo.arguments[6]);
-            } else if (argumentCount == 8) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
+                case 8 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
                       methodInfo.arguments[5], methodInfo.arguments[6], methodInfo.arguments[7]);
-            } else if (argumentCount == 9) {
-                result = methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
+                case 9 -> methodHandle.invoke(methodInfo.arguments[0], methodInfo.arguments[1], methodInfo.arguments[2], methodInfo.arguments[3], methodInfo.arguments[4],
                       methodInfo.arguments[5], methodInfo.arguments[6], methodInfo.arguments[7], methodInfo.arguments[8]);
-            } else {
                 //Note: If we ever really get to the point this needs to be used for the number of parameters, we should heavily consider
                 // adding in more argumentCount based special cases to improve the overall performance in the calls to the method
-                result = methodHandle.invokeWithArguments(methodInfo.arguments);
-            }
+                default -> methodHandle.invokeWithArguments(methodInfo.arguments);
+            };
         } catch (Throwable e) {
             //Possible errors for invoke/invokeWithArguments:
             // - WrongMethodTypeException if the target's type is not identical with the caller's symbolic type descriptor

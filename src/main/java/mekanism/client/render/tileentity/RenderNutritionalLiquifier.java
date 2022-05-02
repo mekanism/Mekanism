@@ -234,10 +234,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
 
             //Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
             //vector3f1.transform(quaternion);
-            Vector3f[] vectors = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F),
-                                                new Vector3f(-1.0F, 1.0F, 0.0F),
-                                                new Vector3f(1.0F, 1.0F, 0.0F),
-                                                new Vector3f(1.0F, -1.0F, 0.0F)};
+            Vector3f[] vectors = {new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
+                                  new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
             for (int i = 0; i < 4; ++i) {
                 Vector3f vector3f = vectors[i];
                 vector3f.transform(quaternion);

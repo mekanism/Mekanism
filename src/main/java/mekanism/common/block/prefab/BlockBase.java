@@ -76,7 +76,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
         if (type.has(AttributeCustomShape.class)) {
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
             int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateProperties.FACING ? 0 : 2));
-            return type.get(AttributeCustomShape.class).getBounds()[index];
+            return type.get(AttributeCustomShape.class).bounds()[index];
         }
         return super.getShape(state, world, pos, context);
     }

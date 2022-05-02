@@ -31,8 +31,8 @@ public class BillboardingEffectRenderer {
         int xIndex = tick % gridSize, yIndex = tick / gridSize;
         float spriteSize = 1F / gridSize;
         Quaternion quaternion = renderInfo.rotation();
-        Vector3f[] vertexPos = new Vector3f[]{new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
-                                              new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
+        Vector3f[] vertexPos = {new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
+                                new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
         Vec3 pos = effect.getPos(partialTick).subtract(Vec3.atLowerCornerOf(renderPos));
         for (int i = 0; i < 4; i++) {
             Vector3f vector3f = vertexPos[i];

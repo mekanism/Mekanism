@@ -113,8 +113,6 @@ public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
 
-    public static final Direction[] SIDE_DIRS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
-
     private static final List<UUID> warnedFails = new ArrayList<>();
 
     //TODO: Evaluate adding an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
@@ -557,7 +555,7 @@ public final class MekanismUtils {
             Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
             warnedFails.add(uuid);
         }
-        return ret != null ? ret : "<" + uuid + ">";
+        return ret == null ? "<" + uuid + ">" : ret;
     }
 
     /**

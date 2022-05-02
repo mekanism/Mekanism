@@ -99,7 +99,7 @@ public class SecurityFrequency extends Frequency {
     public int getSyncHash() {
         int code = super.getSyncHash();
         code = 31 * code + (override ? 1 : 0);
-        code = 31 * code + (securityMode != null ? securityMode.ordinal() : 0);
+        code = 31 * code + (securityMode == null ? 0 : securityMode.ordinal());
         code = 31 * code + trustedCacheHash;
         return code;
     }

@@ -63,6 +63,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.machine.TileEntityElectricPump;
+import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -234,7 +235,7 @@ public class MekanismJEI implements IModPlugin {
           IForgeRegistry<CHEMICAL> forgeRegistry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper) {
         List<STACK> types = forgeRegistry.getValues().stream()
               .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
-              .map(chemical -> (STACK) chemical.getStack(FluidAttributes.BUCKET_VOLUME))
+              .map(chemical -> ChemicalUtil.<CHEMICAL, STACK>withAmount(chemical, FluidAttributes.BUCKET_VOLUME))
               .toList();
         stackHelper.setColorHelper(registry.getColorHelper());
         registry.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());

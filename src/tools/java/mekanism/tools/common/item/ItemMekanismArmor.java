@@ -37,18 +37,13 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     public ItemMekanismArmor(MaterialCreator material, EquipmentSlot slot, Item.Properties properties) {
         super(material, slot, properties);
         this.material = material;
-        CachedIntValue armorConfig;
-        if (slot == EquipmentSlot.FEET) {
-            armorConfig = material.bootArmor;
-        } else if (slot == EquipmentSlot.LEGS) {
-            armorConfig = material.leggingArmor;
-        } else if (slot == EquipmentSlot.CHEST) {
-            armorConfig = material.chestplateArmor;
-        } else if (slot == EquipmentSlot.HEAD) {
-            armorConfig = material.helmetArmor;
-        } else {
-            throw new IllegalArgumentException("Invalid slot type for armor");
-        }
+        CachedIntValue armorConfig = switch (slot) {
+            case FEET -> material.bootArmor;
+            case LEGS -> material.leggingArmor;
+            case CHEST -> material.chestplateArmor;
+            case HEAD -> material.helmetArmor;
+            default -> throw new IllegalArgumentException("Invalid slot type for armor");
+        };
         this.attributeCache = new AttributeCache(this, material.toughness, material.knockbackResistance, armorConfig);
     }
 

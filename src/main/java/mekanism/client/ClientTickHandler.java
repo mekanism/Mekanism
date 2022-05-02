@@ -267,6 +267,7 @@ public class ClientTickHandler {
                 if (minecraft.player != null) {
                     ItemStack s = minecraft.player.getItemBySlot(EquipmentSlot.MAINHAND);
                     if (s.getItem() instanceof IRadialModeItem) {
+                        //noinspection unchecked
                         return ((IRadialModeItem<TYPE>) s.getItem()).getMode(s);
                     }
                 }
