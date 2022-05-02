@@ -14,7 +14,7 @@ public class CrTHasTranslation {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("translationKey")
-    public static String getTranslationKey(IHasTranslationKey internal) {
-        return internal.getTranslationKey();
+    public static String getTranslationKey(IHasTranslationKey _this) {
+        return _this.getTranslationKey();
     }
 }
