@@ -4,21 +4,21 @@
       "item": "mekanism:canteen"
     },
     "title": "Full to the brim",
-    "description": "Fully fill a canteen",
+    "description": "Ready to chow down",
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": true
   },
-  "parent": "mekansim:root",
+  "parent": "mekanism:mekanism",
   "criteria": {
     "isAnvil": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tags": [
-            ]
+            "items": ["mekanism:canteen"],
+            "nbt": "{\"mekData\": {\"FluidTanks\": [{\"Tank\": 0b, \"stored\": {\"FluidName\": \"mekanism:nutritional_paste\", \"Amount\": 64000}}]}}"
           }
         ]
       }

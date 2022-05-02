@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "item": "mekanism:basic_control_circuit"
     },
-    "title": "Industrial revolution",
-    "description": "Create your first steel ingot",
+    "title": "Under control",
+    "description": "We have this all under control",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -12,13 +12,13 @@
   },
   "parent": "mekanism:metallurgic",
   "criteria": {
-    "hasSteelIngot": {
+    "hasBasicControlCircuit": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:ingot_steel"
+              "mekanism:basic_control_circuit"
             ]
           }
         ]

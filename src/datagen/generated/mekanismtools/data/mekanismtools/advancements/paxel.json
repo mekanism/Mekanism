@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "item": "mekanismtools:steel_paxel"
+    },
+    "title": "Multi-tool",
+    "description": "A versatile tool",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "mekanism:mekanism",
+  "criteria": {
+    "hasSteelIngot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:wood_paxel",
+              "mekanismtools:stone_paxel",
+              "mekanismtools:iron_paxel",
+              "mekanismtools:diamond_paxel",
+              "mekanismtools:gold_paxel",
+              "mekanismtools:netherite_paxel",
+              "mekanismtools:bronze_paxel",
+              "mekanismtools:lapis_lazuli_paxel",
+              "mekanismtools:osmium_paxel",
+              "mekanismtools:refined_glowstone_paxel",
+              "mekanismtools:refined_obsidian_paxel",
+              "mekanismtools:steel_paxel"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

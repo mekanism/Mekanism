@@ -10,15 +10,15 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekansim:root",
+  "parent": "mekanism:mekanism",
   "criteria": {
-    "isAnvil": {
+    "hasInfuser": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:metallurigic_infuser"
+              "mekanism:metallurgic_infuser"
             ]
           }
         ]

@@ -12,7 +12,7 @@
     "background": "mekanism:textures/block/block_osmium.png"
   },
   "criteria": {
-    "isAnvil": {
+    "gameTick": {
       "trigger": "minecraft:tick"
     }
   }

@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "item": "mekanism:alloy_atomic"
     },
-    "title": "Industrial revolution",
-    "description": "Create your first steel ingot",
-    "frame": "task",
+    "title": "A powerful alloy",
+    "description": "Atomic power!",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:metallurgic",
+  "parent": "mekanism:alloy_reinforced",
   "criteria": {
-    "hasSteelIngot": {
+    "hasInfusedAlloy": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:ingot_steel"
+              "mekanism:alloy_atomic"
             ]
           }
         ]

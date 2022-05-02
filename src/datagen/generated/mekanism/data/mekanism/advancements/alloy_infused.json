@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "item": "mekanism:alloy_infused"
     },
-    "title": "Industrial revolution",
-    "description": "Create your first steel ingot",
+    "title": "Iron-Redstone Fusion!",
+    "description": "Iron + Redstone = ???",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -12,13 +12,13 @@
   },
   "parent": "mekanism:metallurgic",
   "criteria": {
-    "hasSteelIngot": {
+    "hasInfusedAlloy": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:ingot_steel"
+              "mekanism:alloy_infused"
             ]
           }
         ]

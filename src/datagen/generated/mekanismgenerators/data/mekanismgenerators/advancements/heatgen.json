@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "item": "mekanismgenerators:heat_generator"
     },
-    "title": "Industrial revolution",
-    "description": "Create your first steel ingot",
+    "title": "Hot energy",
+    "description": "Craft a heat generator",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:metallurgic",
+  "parent": "mekanism:mekanism",
   "criteria": {
-    "hasSteelIngot": {
+    "hasHeatGenerator": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:ingot_steel"
+              "mekanismgenerators:heat_generator"
             ]
           }
         ]

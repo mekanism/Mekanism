@@ -1,16 +1,16 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "item": "mekanism:robit"
     },
-    "title": "Industrial revolution",
-    "description": "Create your first steel ingot",
+    "title": "Welcome to the world",
+    "description": "Hello friend",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:metallurgic",
+  "parent": "mekanism:mekanism",
   "criteria": {
     "hasSteelIngot": {
       "trigger": "minecraft:inventory_changed",
@@ -18,7 +18,7 @@
         "items": [
           {
             "items": [
-              "mekanism:ingot_steel"
+              "mekanism:robit"
             ]
           }
         ]

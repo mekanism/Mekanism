@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:advanced_alloy"
+      "item": "mekanism:alloy_reinforced"
     },
-    "title": "This is advanced stuff",
-    "description": "Iron + Redstone = ???",
+    "title": "Reinforcement",
+    "description": "Diamonds make everything better!",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekansim:metallurgic_infuser",
+  "parent": "mekanism:alloy_infused",
   "criteria": {
-    "isAnvil": {
+    "hasInfusedAlloy": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:advanced_alloy"
+              "mekanism:alloy_reinforced"
             ]
           }
         ]
