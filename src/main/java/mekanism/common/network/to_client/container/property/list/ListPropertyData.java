@@ -1,8 +1,8 @@
 package mekanism.common.network.to_client.container.property.list;
 
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
@@ -20,22 +20,14 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
         this.values = values;
     }
 
+    @SuppressWarnings("unchecked")
     public static <TYPE> ListPropertyData<TYPE> readList(short property, FriendlyByteBuf buffer) {
-        ListType listType = buffer.readEnum(ListType.class);
-        int elements = buffer.readVarInt();
-        switch (listType) {
-            case STRING:
-                return (ListPropertyData<TYPE>) StringListPropertyData.read(property, elements, buffer);
-            case FILTER:
-                return (ListPropertyData<TYPE>) FilterListPropertyData.read(property, elements, buffer);
-            case FREQUENCY:
-                return (ListPropertyData<TYPE>) FrequencyListPropertyData.read(property, elements, buffer);
-            case REGISTRY_ENTRY:
-                return (ListPropertyData<TYPE>) RegistryEntryListPropertyData.read(property, elements, buffer);
-            default:
-                Mekanism.logger.error("Unrecognized list type received: {}", listType);
-                return null;
-        }
+        return (ListPropertyData<TYPE>) switch (buffer.readEnum(ListType.class)) {
+            case STRING -> StringListPropertyData.read(property, buffer::readList);
+            case FILTER -> FilterListPropertyData.read(property, buffer::readList);
+            case FREQUENCY -> FrequencyListPropertyData.read(property, buffer::readList);
+            case REGISTRY_ENTRY -> RegistryEntryListPropertyData.read(property, buffer::readList);
+        };
     }
 
     @Override
@@ -47,11 +39,11 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
     public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
         buffer.writeEnum(listType);
-        buffer.writeVarInt(values.size());
-        for (TYPE value : values) {
-            writeListElement(buffer, value);
-        }
+        buffer.writeCollection(values, this::writeListElement);
     }
 
     protected abstract void writeListElement(FriendlyByteBuf buffer, TYPE value);
+
+    interface ListPropertyReader<TYPE> extends Function<Function<FriendlyByteBuf, TYPE>, List<TYPE>> {
+    }
 }

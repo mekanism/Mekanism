@@ -51,16 +51,14 @@ public class BoxedChemical implements IHasTextComponent {
      *
      * @return Boxed Chemical.
      */
-    @SuppressWarnings("RedundantCast")
     public static BoxedChemical read(FriendlyByteBuf buffer) {
-        //Note: Casts are needed for compiling, so it knows how to read it properly
         ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-        return switch (chemicalType) {
-            case GAS -> new BoxedChemical(chemicalType, (Gas) buffer.readRegistryId());
-            case INFUSION -> new BoxedChemical(chemicalType, (InfuseType) buffer.readRegistryId());
-            case PIGMENT -> new BoxedChemical(chemicalType, (Pigment) buffer.readRegistryId());
-            case SLURRY -> new BoxedChemical(chemicalType, (Slurry) buffer.readRegistryId());
-        };
+        return new BoxedChemical(chemicalType, switch (chemicalType) {
+            case GAS -> (Gas) buffer.readRegistryId();
+            case INFUSION -> (InfuseType) buffer.readRegistryId();
+            case PIGMENT -> (Pigment) buffer.readRegistryId();
+            case SLURRY ->  (Slurry) buffer.readRegistryId();
+        });
     }
 
     /**
@@ -72,17 +70,15 @@ public class BoxedChemical implements IHasTextComponent {
      */
     public static BoxedChemical read(@Nullable CompoundTag nbt) {
         ChemicalType chemicalType = ChemicalType.fromNBT(nbt);
-        Chemical<?> chemical = null;
-        if (chemicalType == ChemicalType.GAS) {
-            chemical = Gas.readFromNBT(nbt);
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            chemical = InfuseType.readFromNBT(nbt);
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            chemical = Pigment.readFromNBT(nbt);
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            chemical = Slurry.readFromNBT(nbt);
+        if (chemicalType == null) {
+            return EMPTY;
         }
-        return chemicalType == null || chemical == null ? EMPTY : new BoxedChemical(chemicalType, chemical);
+        return new BoxedChemical(chemicalType, switch (chemicalType) {
+            case GAS -> Gas.readFromNBT(nbt);
+            case INFUSION -> InfuseType.readFromNBT(nbt);
+            case PIGMENT -> Pigment.readFromNBT(nbt);
+            case SLURRY -> Slurry.readFromNBT(nbt);
+        });
     }
 
     private final ChemicalType chemicalType;

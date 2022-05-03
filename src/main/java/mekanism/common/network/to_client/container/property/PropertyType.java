@@ -30,6 +30,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.to_client.container.property.chemical.GasStackPropertyData;
 import mekanism.common.network.to_client.container.property.chemical.InfusionStackPropertyData;
 import mekanism.common.network.to_client.container.property.chemical.PigmentStackPropertyData;
@@ -74,7 +75,7 @@ public enum PropertyType {
           FrequencyPropertyData::readFrequency),
     LIST(ArrayList.class, Collections.emptyList(), (getter, setter) -> null /* not handled */, ListPropertyData::readList),
     BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept),
-          (property, buffer) -> new BlockPosPropertyData(property, buffer.readBoolean() ? buffer.readBlockPos() : null)),
+          (property, buffer) -> new BlockPosPropertyData(property, BasePacketHandler.readOptional(buffer, FriendlyByteBuf::readBlockPos))),
     FLOATING_LONG(FloatingLong.class, FloatingLong.ZERO, (getter, setter) -> SyncableFloatingLong.create(() -> (FloatingLong) getter.get(), setter::accept),
           (property, buffer) -> new FloatingLongPropertyData(property, FloatingLong.readFromBuffer(buffer)));
 

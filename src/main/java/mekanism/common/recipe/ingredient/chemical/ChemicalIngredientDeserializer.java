@@ -34,6 +34,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngr
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiGasStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiInfusionStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiPigmentStackIngredient;
@@ -107,17 +108,11 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
      */
     public final INGREDIENT read(FriendlyByteBuf buffer) {
         Objects.requireNonNull(buffer, "ChemicalStackIngredients cannot be read from a null packet buffer.");
-        IngredientType type = buffer.readEnum(IngredientType.class);
-        if (type == IngredientType.SINGLE) {
-            return ingredientCreator.from(fromPacket.apply(buffer));
-        } else if (type == IngredientType.TAGGED) {
-            return ingredientCreator.from(tags.tag(buffer.readResourceLocation()), buffer.readVarLong());
-        }
-        INGREDIENT[] ingredients = arrayCreator.apply(buffer.readVarInt());
-        for (int i = 0; i < ingredients.length; i++) {
-            ingredients[i] = read(buffer);
-        }
-        return createMulti(ingredients);
+        return switch (buffer.readEnum(IngredientType.class)) {
+            case SINGLE -> ingredientCreator.from(fromPacket.apply(buffer));
+            case TAGGED -> ingredientCreator.from(tags.tag(buffer.readResourceLocation()), buffer.readVarLong());
+            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, arrayCreator, this::read));
+        };
     }
 
     /**

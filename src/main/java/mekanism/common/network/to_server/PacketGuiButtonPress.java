@@ -135,8 +135,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
     }
 
     public static PacketGuiButtonPress decode(FriendlyByteBuf buffer) {
-        Type type = buffer.readEnum(Type.class);
-        return switch (type) {
+        return switch (buffer.readEnum(Type.class)) {
             case ENTITY -> new PacketGuiButtonPress(buffer.readEnum(ClickedEntityButton.class), buffer.readVarInt());
             case TILE -> new PacketGuiButtonPress(buffer.readEnum(ClickedTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
             case ITEM -> new PacketGuiButtonPress(buffer.readEnum(ClickedItemButton.class), buffer.readEnum(InteractionHand.class));

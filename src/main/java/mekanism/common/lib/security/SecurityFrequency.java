@@ -1,6 +1,5 @@
 package mekanism.common.lib.security;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -79,8 +78,7 @@ public class SecurityFrequency extends Frequency {
         super.write(buffer);
         buffer.writeBoolean(override);
         buffer.writeEnum(securityMode);
-        buffer.writeVarInt(trustedCache.size());
-        trustedCache.forEach(buffer::writeUtf);
+        buffer.writeCollection(trustedCache, FriendlyByteBuf::writeUtf);
     }
 
     @Override
@@ -88,11 +86,7 @@ public class SecurityFrequency extends Frequency {
         super.read(dataStream);
         override = dataStream.readBoolean();
         securityMode = dataStream.readEnum(SecurityMode.class);
-        trustedCache = new ArrayList<>();
-        int count = dataStream.readVarInt();
-        for (int i = 0; i < count; i++) {
-            trustedCache.add(BasePacketHandler.readString(dataStream));
-        }
+        trustedCache = dataStream.readList(BasePacketHandler::readString);
     }
 
     @Override

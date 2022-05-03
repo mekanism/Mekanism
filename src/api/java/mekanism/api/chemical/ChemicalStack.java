@@ -288,6 +288,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     public void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeRegistryId(getType());
+        //TODO - 1.19: Evaluate only writing the amount if the type isn't empty
+        // We aren't doing it now in case it breaks any third parties that are manually reading
         buffer.writeVarLong(getAmount());
     }
 }

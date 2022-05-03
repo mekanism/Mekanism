@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -54,17 +55,11 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
         if (type == Type.BATCH || type == Type.UPDATE) {
             buffer.writeVarLong(countCapacity);
             buffer.writeVarInt(typeCapacity);
-            buffer.writeVarInt(itemMap.size());
-            itemMap.forEach((key, value) -> {
-                buffer.writeItem(key.getStack());
-                if (key.getUUID() == null) {
-                    //Shouldn't be null unless something failed, but if it does try to handle it relatively gracefully
-                    buffer.writeBoolean(false);
-                } else {
-                    buffer.writeBoolean(true);
-                    buffer.writeUUID(key.getUUID());
-                }
-                buffer.writeVarLong(value);
+            BasePacketHandler.writeMap(buffer, itemMap, (key, value, buf) -> {
+                buf.writeItem(key.getStack());
+                //Shouldn't be null unless something failed, but if it does try to handle it relatively gracefully
+                BasePacketHandler.writeOptional(buf, key.getUUID(), FriendlyByteBuf::writeUUID);
+                buf.writeVarLong(value);
             });
         }
     }
@@ -77,11 +72,8 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
         if (type == Type.BATCH || type == Type.UPDATE) {
             countCapacity = buffer.readVarLong();
             typeCapacity = buffer.readVarInt();
-            int count = buffer.readVarInt();
-            map = new Object2LongOpenHashMap<>(count);
-            for (int i = 0; i < count; i++) {
-                map.put(new UUIDAwareHashedItem(buffer.readItem(), buffer.readBoolean() ? buffer.readUUID() : null), buffer.readVarLong());
-            }
+            map = BasePacketHandler.readMap(buffer, Object2LongOpenHashMap::new,
+                  buf -> new UUIDAwareHashedItem(buf.readItem(), BasePacketHandler.readOptional(buf, FriendlyByteBuf::readUUID)), FriendlyByteBuf::readVarLong);
         }
         return new PacketQIOItemViewerGuiSync(type, map, countCapacity, typeCapacity);
     }

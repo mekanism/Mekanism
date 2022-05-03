@@ -10,6 +10,7 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -310,10 +311,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void writeSpawnData(FriendlyByteBuf data) {
-        data.writeDouble(getX());
-        data.writeDouble(getY());
-        data.writeDouble(getZ());
-
+        BasePacketHandler.writeVector3d(data, position());
         data.writeEnum(color);
         if (latched != null) {
             data.writeByte((byte) 1);
@@ -328,7 +326,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void readSpawnData(FriendlyByteBuf data) {
-        setPos(data.readDouble(), data.readDouble(), data.readDouble());
+        setPos(BasePacketHandler.readVector3d(data));
         color = data.readEnum(EnumColor.class);
         byte type = data.readByte();
         if (type == 1) {

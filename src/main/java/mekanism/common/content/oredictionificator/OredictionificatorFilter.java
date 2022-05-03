@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -122,17 +123,14 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
         super.write(buffer);
         //Realistically the filter location shouldn't be null except when the filter is first being created
         // but handle it being null just in case
-        buffer.writeBoolean(filterLocation != null);
-        if (filterLocation != null) {
-            buffer.writeResourceLocation(filterLocation.location());
-        }
+        BasePacketHandler.writeOptional(buffer, filterLocation, (buf, location) -> buf.writeResourceLocation(location.location()));
         buffer.writeResourceLocation(selectedOutput.getRegistryName());
         buffer.writeBoolean(isValid);
     }
 
     @Override
     public void read(FriendlyByteBuf buffer) {
-        setFilter(buffer.readBoolean() ? buffer.readResourceLocation() : null);
+        setFilter(BasePacketHandler.readOptional(buffer, FriendlyByteBuf::readResourceLocation));
         setSelectedOrFallback(buffer.readResourceLocation());
         isValid = buffer.readBoolean();
     }
