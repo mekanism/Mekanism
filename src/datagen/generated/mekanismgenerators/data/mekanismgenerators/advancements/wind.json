@@ -10,7 +10,7 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:heatgen",
+  "parent": "mekanismgenerators:zheatgen",
   "criteria": {
     "hasWindGenerator": {
       "trigger": "minecraft:inventory_changed",

@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "item": "mekanism:alloy_reinforced"
     },
-    "title": "Sun-run",
-    "description": "Use the power of the sun",
+    "title": "Reinforcement",
+    "description": "Diamonds make everything better!",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:zheatgen",
+  "parent": "mekanism:alloys/alloy_infused",
   "criteria": {
-    "hasSolarGenerator": {
+    "hasReinforcedAlloy": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanismgenerators:solar_generator"
+              "mekanism:alloy_reinforced"
             ]
           }
         ]

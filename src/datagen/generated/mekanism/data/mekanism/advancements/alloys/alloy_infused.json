@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:metallurgic_infuser"
+      "item": "mekanism:alloy_infused"
     },
-    "title": "A metallur-what now?",
-    "description": "Craft a Metallurgic Infuser",
+    "title": "Iron-Redstone Fusion!",
+    "description": "Iron + Redstone = ???",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:mekanism",
+  "parent": "mekanism:metallurgy/metallurgic",
   "criteria": {
-    "hasInfuser": {
+    "hasInfusedAlloy": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:metallurgic_infuser"
+              "mekanism:alloy_infused"
             ]
           }
         ]

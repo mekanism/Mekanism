@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "item": "mekanism:qio_drive_array"
     },
-    "title": "Sun-run",
-    "description": "Use the power of the sun",
+    "title": "Quantum orchestra",
+    "description": "You are the conductor!",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:zheatgen",
+  "parent": "mekanism:endgame/polonium",
   "criteria": {
-    "hasSolarGenerator": {
+    "hasQIO": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanismgenerators:solar_generator"
+              "mekanism:qio_drive_array"
             ]
           }
         ]

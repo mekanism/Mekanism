@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "item": "mekanism:qio_dashboard"
     },
-    "title": "Sun-run",
-    "description": "Use the power of the sun",
+    "title": "Quantum peek",
+    "description": "Behold your storage",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:zheatgen",
+  "parent": "mekanism:qio/qio",
   "criteria": {
-    "hasSolarGenerator": {
+    "hasQIO": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanismgenerators:solar_generator"
+              "mekanism:qio_dashboard"
             ]
           }
         ]

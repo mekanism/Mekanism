@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "item": "mekanism:ultimate_control_circuit"
     },
-    "title": "Sun-run",
-    "description": "Use the power of the sun",
-    "frame": "task",
+    "title": "Where's my supercomputer?",
+    "description": "Honey! Where is my supercomputer?",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:zheatgen",
+  "parent": "mekanism:controls/control_elite",
   "criteria": {
-    "hasSolarGenerator": {
+    "hasUltimateControlCircuit": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanismgenerators:solar_generator"
+              "mekanism:ultimate_control_circuit"
             ]
           }
         ]

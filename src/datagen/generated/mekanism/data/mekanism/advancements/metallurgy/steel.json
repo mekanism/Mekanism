@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "item": "mekanism:ingot_steel"
     },
-    "title": "Sun-run",
-    "description": "Use the power of the sun",
+    "title": "Industrial revolution",
+    "description": "Create your first steel ingot",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:zheatgen",
+  "parent": "mekanism:metallurgy/metallurgic",
   "criteria": {
-    "hasSolarGenerator": {
+    "hasSteelIngot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanismgenerators:solar_generator"
+              "mekanism:ingot_steel"
             ]
           }
         ]

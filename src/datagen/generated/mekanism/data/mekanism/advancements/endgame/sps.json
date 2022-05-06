@@ -1,24 +1,25 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:digital_miner"
+      "item": "mekanism:sps_port"
     },
-    "title": "What is my purpose?",
-    "description": "Goodbye friend",
+    "title": "Going supercritical",
+    "description": "Ready to phase shift",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:robit",
+  "parent": "mekanism:endgame/plutonium",
   "criteria": {
-    "hasSteelIngot": {
+    "hasSPS": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:digital_miner"
+              "mekanism:sps_casing",
+              "mekanism:sps_port"
             ]
           }
         ]

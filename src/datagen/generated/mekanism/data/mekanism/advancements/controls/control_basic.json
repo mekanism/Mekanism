@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:robit"
+      "item": "mekanism:basic_control_circuit"
     },
-    "title": "Welcome to the world",
-    "description": "Hello friend",
+    "title": "Under control",
+    "description": "We have this all under control",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:mekanism",
+  "parent": "mekanism:metallurgy/metallurgic",
   "criteria": {
-    "hasSteelIngot": {
+    "hasBasicControlCircuit": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:robit"
+              "mekanism:basic_control_circuit"
             ]
           }
         ]

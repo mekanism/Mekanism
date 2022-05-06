@@ -1,24 +1,27 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "item": "mekanism:qio_drive_supermassive"
     },
-    "title": "Industrial revolution",
-    "description": "Create your first steel ingot",
-    "frame": "task",
+    "title": "Super massive",
+    "description": {
+      "text": "Parallel universe detected",
+      "obfuscated": true
+    },
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:metallurgic",
+  "parent": "mekanism:qio/elite_qio",
   "criteria": {
-    "hasSteelIngot": {
+    "hasQIO": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:ingot_steel"
+              "mekanism:qio_drive_supermassive"
             ]
           }
         ]

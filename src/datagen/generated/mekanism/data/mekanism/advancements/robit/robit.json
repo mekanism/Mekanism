@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:ultimate_control_circuit"
+      "item": "mekanism:robit"
     },
-    "title": "Where's my supercomputer?",
-    "description": "Honey! Where is my supercomputer?",
-    "frame": "challenge",
+    "title": "Welcome to the world",
+    "description": "Hello friend",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:control_elite",
+  "parent": "mekanism:controls/control_ultimate",
   "criteria": {
-    "hasBasicControlCircuit": {
+    "hasRobit": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:ultimate_control_circuit"
+              "mekanism:robit"
             ]
           }
         ]

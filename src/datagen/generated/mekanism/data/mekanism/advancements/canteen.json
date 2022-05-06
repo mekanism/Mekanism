@@ -10,9 +10,9 @@
     "announce_to_chat": true,
     "hidden": true
   },
-  "parent": "mekanism:mekanism",
+  "parent": "mekanism:mekamaterials",
   "criteria": {
-    "isAnvil": {
+    "hasCanteen": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [

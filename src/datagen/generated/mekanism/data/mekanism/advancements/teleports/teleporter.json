@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:elite_control_circuit"
+      "item": "mekanism:teleporter"
     },
-    "title": "Precision control",
-    "description": "Precise!",
+    "title": "Portals:online",
+    "description": "Instant travel",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:control_advanced",
+  "parent": "mekanism:teleports/teleportcore",
   "criteria": {
-    "hasBasicControlCircuit": {
+    "hasPortalCore": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:elite_control_circuit"
+              "mekanism:teleporter"
             ]
           }
         ]

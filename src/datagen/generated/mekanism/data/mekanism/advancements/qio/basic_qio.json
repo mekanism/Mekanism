@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:alloy_reinforced"
+      "item": "mekanism:qio_drive_base"
     },
-    "title": "Reinforcement",
-    "description": "Diamonds make everything better!",
+    "title": "Quantum level 1",
+    "description": "1/4 storage",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:alloy_infused",
+  "parent": "mekanism:qio/qio",
   "criteria": {
-    "hasInfusedAlloy": {
+    "hasQIO": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:alloy_reinforced"
+              "mekanism:qio_drive_base"
             ]
           }
         ]

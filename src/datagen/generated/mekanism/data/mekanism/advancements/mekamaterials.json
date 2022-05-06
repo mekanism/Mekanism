@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:basic_chemical_tank"
+      "item": "mekanism:ingot_osmium"
     },
-    "title": "High pressure storage",
-    "description": "64 buckets of chemicals",
+    "title": "Mekanism materials",
+    "description": "Your path to creation",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -12,16 +12,17 @@
   },
   "parent": "mekanism:mekanism",
   "criteria": {
-    "hasChemicalTank": {
+    "hasSteelIngot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_chemical_tank",
-              "mekanism:advanced_chemical_tank",
-              "mekanism:elite_chemical_tank",
-              "mekanism:ultimate_chemical_tank"
+              "mekanism:ingot_osmium",
+              "mekanism:ingot_lead",
+              "mekanism:ingot_tin",
+              "mekanism:ingot_uranium",
+              "mekanism:fluorite_gem"
             ]
           }
         ]

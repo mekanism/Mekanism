@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "item": "mekanism:metallurgic_infuser"
     },
-    "title": "Sun-run",
-    "description": "Use the power of the sun",
+    "title": "A metallur-what now?",
+    "description": "Craft a Metallurgic Infuser",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:zheatgen",
+  "parent": "mekanism:mekamaterials",
   "criteria": {
-    "hasSolarGenerator": {
+    "hasInfuser": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanismgenerators:solar_generator"
+              "mekanism:metallurgic_infuser"
             ]
           }
         ]

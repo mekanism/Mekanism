@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:alloy_infused"
+      "item": "mekanism:alloy_atomic"
     },
-    "title": "Iron-Redstone Fusion!",
-    "description": "Iron + Redstone = ???",
-    "frame": "task",
+    "title": "A powerful alloy",
+    "description": "Atomic power!",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:metallurgic",
+  "parent": "mekanism:alloys/alloy_reinforced",
   "criteria": {
-    "hasInfusedAlloy": {
+    "hasAtomicAlloy": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:alloy_infused"
+              "mekanism:alloy_atomic"
             ]
           }
         ]

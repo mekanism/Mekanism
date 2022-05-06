@@ -1,24 +1,27 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:basic_control_circuit"
+      "item": "mekanism:pellet_antimatter"
     },
-    "title": "Under control",
-    "description": "We have this all under control",
+    "title": "Impossible material",
+    "description": {
+      "text": "This shouldn't be here, reporting paradox",
+      "obfuscated": true
+    },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:metallurgic",
+  "parent": "mekanism:endgame/sps",
   "criteria": {
-    "hasBasicControlCircuit": {
+    "hasAntimatter": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_control_circuit"
+              "mekanism:pellet_antimatter"
             ]
           }
         ]

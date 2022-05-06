@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanism:steel_casing"
+      "item": "mekanism:portable_qio_dashboard"
     },
-    "title": "The perfect foundation",
-    "description": "The basis for even the most advanced machines",
-    "frame": "task",
+    "title": "Portable peek",
+    "description": "Behold your storage from anywhere!",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:steel",
+  "parent": "mekanism:qio/qio_dash",
   "criteria": {
-    "hasCasing": {
+    "hasQIO": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:steel_casing"
+              "mekanism:portable_qio_dashboard"
             ]
           }
         ]

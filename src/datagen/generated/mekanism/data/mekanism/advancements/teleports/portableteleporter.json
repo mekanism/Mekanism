@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "item": "mekanism:portable_teleporter"
     },
-    "title": "Sun-run",
-    "description": "Use the power of the sun",
+    "title": "Portable portals",
+    "description": "Instant travel from anywhere",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanismgenerators:zheatgen",
+  "parent": "mekanism:teleports/teleporter",
   "criteria": {
-    "hasSolarGenerator": {
+    "hasPortalCore": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanismgenerators:solar_generator"
+              "mekanism:portable_teleporter"
             ]
           }
         ]

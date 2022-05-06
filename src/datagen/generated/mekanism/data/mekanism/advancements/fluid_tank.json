@@ -12,7 +12,7 @@
   },
   "parent": "mekanism:mekanism",
   "criteria": {
-    "hasSteelIngot": {
+    "hasFluidTank": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
