@@ -1295,6 +1295,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit", "Increases digging speed on any block.");
         add(MekanismModules.ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit", "Amplifies melee attacks on players or mobs.");
         add(MekanismModules.SILK_TOUCH_UNIT, "Silk Touch Unit", "Allows all mined blocks to drop as themselves.");
+        add(MekanismModules.FORTUNE_UNIT, "Ore Refinement Unit", "Increases ore yields.");
         add(MekanismModules.BLASTING_UNIT, "Blasting Unit", "Uses controlled explosions to destroy nearby blocks in the target plane.");
         add(MekanismModules.VEIN_MINING_UNIT, "Vein Mining Unit", "Allows for quick mining of ore deposits and rapid felling of trees.");
         add(MekanismModules.FARMING_UNIT, "Farming Unit", "Allows for soil tilling, log stripping, and soil flattening.");
