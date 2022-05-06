@@ -15,7 +15,6 @@ import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
-import mekanism.common.content.gear.mekasuit.ModuleGyroscopicStabilizationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
@@ -390,15 +389,15 @@ public class CommonPlayerTickHandler {
     @SubscribeEvent
     public void getBreakSpeed(BreakSpeed event) {
         Player player = event.getPlayer();
-        IModule<ModuleGyroscopicStabilizationUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GYROSCOPIC_STABILIZATION_UNIT);
-        if (module != null && module.isEnabled()) {
-            float speed = event.getOriginalSpeed();
+        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+        if (!legs.isEmpty() && MekanismAPI.getModuleHelper().isEnabled(legs, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
+            float speed = event.getNewSpeed();
             if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
-               speed *= 5.0F;
+                speed *= 5.0F;
             }
 
             if (!player.isOnGround()) {
-               speed *= 5.0F;
+                speed *= 5.0F;
             }
             event.setNewSpeed(speed);
         }
