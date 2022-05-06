@@ -97,6 +97,7 @@ public class SelectedWindowData {
         CONFIRMATION("confirmation"),
         CRAFTING("crafting", IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS),
         MEKA_SUIT_HELMET("mekaSuitHelmet"),
+        MEKA_TOOL_MODES("mekaToolModes"),
         RENAME("rename"),
         SKIN_SELECT("skinSelect"),
         SIDE_CONFIG("sideConfig"),

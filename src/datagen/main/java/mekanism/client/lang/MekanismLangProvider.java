@@ -718,6 +718,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COLOR_PICKER, "Color Picker");
         add(MekanismLang.HELMET_OPTIONS, "Helmet Options");
         add(MekanismLang.HUD_OVERLAY, "HUD Overlay:");
+        add(MekanismLang.MEKATOOL_OPTIONS, "MekaTool Profiles");
         add(MekanismLang.OPACITY, "Opacity");
         add(MekanismLang.DEFAULT, "Default");
         add(MekanismLang.WARNING, "Warning");
@@ -1260,6 +1261,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_HANDLE_MODE_CHANGE, "Handle Mode Key");
         add(MekanismLang.MODULE_RENDER_HUD, "Show in HUD");
         add(MekanismLang.MODULE_MODE, "Mode");
+        add(MekanismLang.MODULE_PROFILE_SELECTED, "Profile: %1$s");
         add(MekanismLang.MODULE_BONUS_ATTACK_DAMAGE, "Bonus Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_JUMP_BOOST, "Jump Boost");
