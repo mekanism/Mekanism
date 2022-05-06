@@ -7,6 +7,7 @@ import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleFrostWalkerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGeigerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleGyroscopicStabilizationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
@@ -89,6 +90,8 @@ public class MekanismModules {
                 .rendersHUD().exclusive());
     public static final ModuleRegistryObject<?> ELYTRA_UNIT = MODULES.registerMarker("elytra_unit", () -> MekanismItems.MODULE_ELYTRA.asItem(),
           builder -> builder.rarity(Rarity.EPIC));
+    public static final ModuleRegistryObject<ModuleGyroscopicStabilizationUnit> GYROSCOPIC_STABILIZATION_UNIT = MODULES.register("gyroscopic_stabilization_unit",
+          ModuleGyroscopicStabilizationUnit::new, () -> MekanismItems.MODULE_GYROSCOPIC_STABILIZATION.asItem(), builder -> builder.rarity(Rarity.RARE));
 
     //Pants
     public static final ModuleRegistryObject<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = MODULES.register("locomotive_boosting_unit",

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_gyroscopic_stabilization_unit"
+  },
+  "pattern": [
+    "A#A",
+    "#P#",
+    "H#H"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "minecraft:obsidian"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    }
+  }
+}
