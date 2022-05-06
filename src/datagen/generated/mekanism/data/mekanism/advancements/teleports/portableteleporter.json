@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:portable_teleporter"
+    "display":{
+        "icon":{
+            "item":"mekanism:portable_teleporter"
+        },
+        "title":{
+            "translate":"advancements.mekanism.teleports.portableteleporter.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.teleports.portableteleporter.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Portable portals",
-    "description": "Instant travel from anywhere",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:teleports/teleporter",
-  "criteria": {
-    "hasPortalCore": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:portable_teleporter"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:teleports/teleporter",
+    "criteria":{
+        "hasPortalCore":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:portable_teleporter"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

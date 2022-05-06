@@ -1,29 +1,33 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:sps_port"
+    "display":{
+        "icon":{
+            "item":"mekanism:sps_port"
+        },
+        "title":{
+            "translate":"advancements.mekanism.endgame.sps.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.endgame.sps.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Going supercritical",
-    "description": "Ready to phase shift",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:endgame/plutonium",
-  "criteria": {
-    "hasSPS": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:sps_casing",
-              "mekanism:sps_port"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:endgame/plutonium",
+    "criteria":{
+        "hasSPS":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:sps_casing",
+                            "mekanism:sps_port"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

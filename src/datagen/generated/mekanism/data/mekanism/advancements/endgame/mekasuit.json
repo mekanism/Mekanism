@@ -1,48 +1,52 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:mekasuit_bodyarmor"
+    "display":{
+        "icon":{
+            "item":"mekanism:mekasuit_bodyarmor"
+        },
+        "title":{
+            "translate":"advancements.mekanism.endgame.mekasuit.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.endgame.mekasuit.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Fully kitted",
-    "description": "A true mekanism outfit",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:disassembler",
-  "criteria": {
-    "hasFullKit": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:mekasuit_helmet"
-            ]
-          },
-          {
-            "items": [
-              "mekanism:mekasuit_bodyarmor"
-            ]
-          },
-          {
-            "items": [
-              "mekanism:mekasuit_pants"
-            ]
-          },
-          {
-            "items": [
-              "mekanism:mekasuit_boots"
-            ]
-          },
-          {
-            "items": [
-              "mekanism:meka_tool"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:disassembler",
+    "criteria":{
+        "hasFullKit":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:mekasuit_helmet"
+                        ]
+                    },
+                    {
+                        "items":[
+                            "mekanism:mekasuit_bodyarmor"
+                        ]
+                    },
+                    {
+                        "items":[
+                            "mekanism:mekasuit_pants"
+                        ]
+                    },
+                    {
+                        "items":[
+                            "mekanism:mekasuit_boots"
+                        ]
+                    },
+                    {
+                        "items":[
+                            "mekanism:meka_tool"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

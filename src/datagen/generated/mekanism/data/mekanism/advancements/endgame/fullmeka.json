@@ -1,54 +1,58 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:mekasuit_bodyarmor",
-      "nbt": "{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:jetpack_unit\": {amount:1}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:dosimeter_unit\": {}, \"mekanism:geiger_unit\": {}, \"mekanism:charge_distribution_unit\": {}, \"mekanism:elytra_unit\": {}, \"mekanism:gravitational_modulating_unit\": {amount: 1}, \"mekanism:energy_unit\": {amount: 8}}}}"
+    "display":{
+        "icon":{
+            "item":"mekanism:mekasuit_bodyarmor",
+            "nbt":"{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:jetpack_unit\": {amount:1}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:dosimeter_unit\": {}, \"mekanism:geiger_unit\": {}, \"mekanism:charge_distribution_unit\": {}, \"mekanism:elytra_unit\": {}, \"mekanism:gravitational_modulating_unit\": {amount: 1}, \"mekanism:energy_unit\": {amount: 8}}}}"
+        },
+        "title":{
+            "translate":"advancements.mekanism.endgame.fullmeka.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.endgame.fullmeka.description"
+        },
+        "frame":"challenge",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":true
     },
-    "title": "The ultimate suit",
-    "description": "True dedication",
-    "frame": "challenge",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": true
-  },
-  "parent": "mekanism:endgame/mekasuit",
-  "criteria": {
-    "hasFullUpgrades": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:meka_tool"
-            ],
-            "nbt": "{mekData: {modules: {\"mekanism:silk_touch_unit\": {}, \"mekanism:attack_amplification_unit\": {amount: 4}, \"mekanism:farming_unit\": {amount: 4}, \"mekanism:teleportation_unit\": {}, \"mekanism:excavation_escalation_unit\": {amount: 4}, \"mekanism:vein_mining_unit\": {amount: 4}, \"mekanism:shearing_unit\": {amount: 1}, \"mekanism:energy_unit\": {amount: 8}}}}"
-          },
-          {
-            "items": [
-              "mekanism:mekasuit_bodyarmor"
-            ],
-            "nbt": "{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:jetpack_unit\": {amount:1}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:dosimeter_unit\": {}, \"mekanism:geiger_unit\": {}, \"mekanism:charge_distribution_unit\": {}, \"mekanism:elytra_unit\": {}, \"mekanism:gravitational_modulating_unit\": {amount: 1}, \"mekanism:energy_unit\": {amount: 8}}}}"
-          },
-          {
-            "items": [
-              "mekanism:mekasuit_helmet"
-            ],
-            "nbt": "{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:inhalation_purification_unit\": {amount: 1}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:electrolytic_breathing_unit\": {amount: 4}, \"mekanism:nutritional_injection_unit\": {}, \"mekanism:energy_unit\": {amount: 8}, \"mekanismgenerators:solar_recharging_unit\": {amount: 8}}}}"
-          },
-          {
-            "items": [
-              "mekanism:mekasuit_pants"
-            ],
-            "nbt": "{mekData: {modules: {\"mekanismgenerators:geothermal_generator_unit\": {amount: 8}, \"mekanism:radiation_shielding_unit\": {}, \"mekanism:locomotive_boosting_unit\": {amount: 4}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:energy_unit\": {amount: 8}}}}"
-          },
-          {
-            "items": [
-              "mekanism:mekasuit_boots"
-            ],
-            "nbt": "{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:frost_walker_unit\": {amount: 2}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:hydraulic_propulsion_unit\": {amount: 4}, \"mekanism:energy_unit\": {amount: 8}, \"mekanism:magnetic_attraction_unit\": {amount: 4}}}}"
-          }
-        ]
-      }
+    "parent":"mekanism:endgame/mekasuit",
+    "criteria":{
+        "hasFullUpgrades":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:meka_tool"
+                        ],
+                        "nbt":"{mekData: {modules: {\"mekanism:silk_touch_unit\": {}, \"mekanism:attack_amplification_unit\": {amount: 4}, \"mekanism:farming_unit\": {amount: 4}, \"mekanism:teleportation_unit\": {}, \"mekanism:excavation_escalation_unit\": {amount: 4}, \"mekanism:vein_mining_unit\": {amount: 4}, \"mekanism:shearing_unit\": {amount: 1}, \"mekanism:energy_unit\": {amount: 8}}}}"
+                    },
+                    {
+                        "items":[
+                            "mekanism:mekasuit_bodyarmor"
+                        ],
+                        "nbt":"{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:jetpack_unit\": {amount:1}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:dosimeter_unit\": {}, \"mekanism:geiger_unit\": {}, \"mekanism:charge_distribution_unit\": {}, \"mekanism:elytra_unit\": {}, \"mekanism:gravitational_modulating_unit\": {amount: 1}, \"mekanism:energy_unit\": {amount: 8}}}}"
+                    },
+                    {
+                        "items":[
+                            "mekanism:mekasuit_helmet"
+                        ],
+                        "nbt":"{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:inhalation_purification_unit\": {amount: 1}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:electrolytic_breathing_unit\": {amount: 4}, \"mekanism:nutritional_injection_unit\": {}, \"mekanism:energy_unit\": {amount: 8}, \"mekanismgenerators:solar_recharging_unit\": {amount: 8}}}}"
+                    },
+                    {
+                        "items":[
+                            "mekanism:mekasuit_pants"
+                        ],
+                        "nbt":"{mekData: {modules: {\"mekanismgenerators:geothermal_generator_unit\": {amount: 8}, \"mekanism:radiation_shielding_unit\": {}, \"mekanism:locomotive_boosting_unit\": {amount: 4}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:energy_unit\": {amount: 8}}}}"
+                    },
+                    {
+                        "items":[
+                            "mekanism:mekasuit_boots"
+                        ],
+                        "nbt":"{mekData: {modules: {\"mekanism:radiation_shielding_unit\": {}, \"mekanism:frost_walker_unit\": {amount: 2}, \"mekanism:laser_dissipation_unit\": {}, \"mekanism:hydraulic_propulsion_unit\": {amount: 4}, \"mekanism:energy_unit\": {amount: 8}, \"mekanism:magnetic_attraction_unit\": {amount: 4}}}}"
+                    }
+                ]
+            }
+        }
     }
-  }
 }

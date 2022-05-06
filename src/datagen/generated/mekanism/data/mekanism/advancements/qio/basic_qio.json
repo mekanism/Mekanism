@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:qio_drive_base"
+    "display":{
+        "icon":{
+            "item":"mekanism:qio_drive_base"
+        },
+        "title":{
+            "translate":"advancements.mekanism.qio.basic_qio.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.qio.basic_qio.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Quantum level 1",
-    "description": "1/4 storage",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:qio/qio",
-  "criteria": {
-    "hasQIO": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:qio_drive_base"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:qio/qio",
+    "criteria":{
+        "hasQIO":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:qio_drive_base"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

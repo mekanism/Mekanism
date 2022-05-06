@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:ingot_steel"
+    "display":{
+        "icon":{
+            "item":"mekanism:ingot_steel"
+        },
+        "title":{
+            "translate":"advancements.mekanism.metallurgy.steel.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.metallurgy.steel.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Industrial revolution",
-    "description": "Create your first steel ingot",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:metallurgy/metallurgic",
-  "criteria": {
-    "hasSteelIngot": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_steel"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:metallurgy/metallurgic",
+    "criteria":{
+        "hasSteelIngot":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:ingot_steel"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

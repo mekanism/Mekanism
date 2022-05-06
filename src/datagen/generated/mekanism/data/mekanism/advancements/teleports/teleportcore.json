@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:teleportation_core"
+    "display":{
+        "icon":{
+            "item":"mekanism:teleportation_core"
+        },
+        "title":{
+            "translate":"advancements.mekanism.teleports.teleportcore.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.teleports.teleportcore.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Instant teleportation",
-    "description": "Numerous applications!",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:alloys/alloy_atomic",
-  "criteria": {
-    "hasPortalCore": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:teleportation_core"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:alloys/alloy_atomic",
+    "criteria":{
+        "hasPortalCore":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:teleportation_core"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

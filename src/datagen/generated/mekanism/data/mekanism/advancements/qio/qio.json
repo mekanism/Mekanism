@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:qio_drive_array"
+    "display":{
+        "icon":{
+            "item":"mekanism:qio_drive_array"
+        },
+        "title":{
+            "translate":"advancements.mekanism.qio.qio.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.qio.qio.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Quantum orchestra",
-    "description": "You are the conductor!",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:endgame/polonium",
-  "criteria": {
-    "hasQIO": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:qio_drive_array"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:endgame/polonium",
+    "criteria":{
+        "hasQIO":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:qio_drive_array"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

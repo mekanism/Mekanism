@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:pellet_plutonium"
+    "display":{
+        "icon":{
+            "item":"mekanism:pellet_plutonium"
+        },
+        "title":{
+            "translate":"advancements.mekanism.endgame.plutonium.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.endgame.plutonium.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Plutonium  power",
-    "description": "Not polonium",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:alloys/alloy_atomic",
-  "criteria": {
-    "hasPolonium": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:pellet_plutonium"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:alloys/alloy_atomic",
+    "criteria":{
+        "hasPolonium":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:pellet_plutonium"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

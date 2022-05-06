@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:robit"
+    "display":{
+        "icon":{
+            "item":"mekanism:robit"
+        },
+        "title":{
+            "translate":"advancements.mekanism.robit.robit.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.robit.robit.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Welcome to the world",
-    "description": "Hello friend",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:controls/control_ultimate",
-  "criteria": {
-    "hasRobit": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:robit"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:controls/control_ultimate",
+    "criteria":{
+        "hasRobit":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:robit"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

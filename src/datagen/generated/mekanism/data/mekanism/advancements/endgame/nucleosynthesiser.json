@@ -1,31 +1,33 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:antiprotonic_nucleosynthesizer"
+    "display":{
+        "icon":{
+            "item":"mekanism:antiprotonic_nucleosynthesizer"
+        },
+        "title":{
+            "translate":"advancements.mekanism.endgame.nucleosynthesiser.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.endgame.nucleosynthesiser.description",
+            "obfuscated":true
+        },
+        "frame":"goal",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Matter manipulation",
-    "description": {
-      "text": "Sending signal, fix inbound",
-      "obfuscated": true
-    },
-    "frame": "goal",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:endgame/nantimatter",
-  "criteria": {
-    "hasNucleosynth": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:antiprotonic_nucleosynthesizer"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:endgame/nantimatter",
+    "criteria":{
+        "hasNucleosynth":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:antiprotonic_nucleosynthesizer"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

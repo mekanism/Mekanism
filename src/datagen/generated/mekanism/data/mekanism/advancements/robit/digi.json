@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:digital_miner"
+    "display":{
+        "icon":{
+            "item":"mekanism:digital_miner"
+        },
+        "title":{
+            "translate":"advancements.mekanism.robit.digi.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.robit.digi.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "What is my purpose?",
-    "description": "Goodbye friend",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:robit/robit",
-  "criteria": {
-    "hasMiner": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:digital_miner"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:robit/robit",
+    "criteria":{
+        "hasMiner":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:digital_miner"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

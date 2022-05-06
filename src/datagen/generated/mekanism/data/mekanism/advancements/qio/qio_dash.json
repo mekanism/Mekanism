@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:qio_dashboard"
+    "display":{
+        "icon":{
+            "item":"mekanism:qio_dashboard"
+        },
+        "title":{
+            "translate":"advancements.mekanism.qio.qio_dash.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.qio.qio_dash.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Quantum peek",
-    "description": "Behold your storage",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:qio/qio",
-  "criteria": {
-    "hasQIO": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:qio_dashboard"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:qio/qio",
+    "criteria":{
+        "hasQIO":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:qio_dashboard"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

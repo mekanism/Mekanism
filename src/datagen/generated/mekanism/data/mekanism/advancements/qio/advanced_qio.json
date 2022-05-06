@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:qio_drive_hyper_dense"
+    "display":{
+        "icon":{
+            "item":"mekanism:qio_drive_hyper_dense"
+        },
+        "title":{
+            "translate":"advancements.mekanism.qio.advanced_qio.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.qio.advanced_qio.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Quantum level 2",
-    "description": "Higher density",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:qio/basic_qio",
-  "criteria": {
-    "hasQIO": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:qio_drive_hyper_dense"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:qio/basic_qio",
+    "criteria":{
+        "hasQIO":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:qio_drive_hyper_dense"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

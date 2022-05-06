@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:alloy_atomic"
+    "display":{
+        "icon":{
+            "item":"mekanism:alloy_atomic"
+        },
+        "title":{
+            "translate":"advancements.mekanism.alloys.alloy_atomic.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.alloys.alloy_atomic.description"
+        },
+        "frame":"challenge",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "A powerful alloy",
-    "description": "Atomic power!",
-    "frame": "challenge",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:alloys/alloy_reinforced",
-  "criteria": {
-    "hasAtomicAlloy": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:alloy_atomic"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:alloys/alloy_reinforced",
+    "criteria":{
+        "hasAtomicAlloy":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:alloy_atomic"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:steel_casing"
+    "display":{
+        "icon":{
+            "item":"mekanism:steel_casing"
+        },
+        "title":{
+            "translate":"advancements.mekanism.metallurgy.casing_steel.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.metallurgy.casing_steel.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "The perfect foundation",
-    "description": "The basis for even the most advanced machines",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:metallurgy/steel",
-  "criteria": {
-    "hasCasing": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:steel_casing"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:metallurgy/steel",
+    "criteria":{
+        "hasCasing":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:steel_casing"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

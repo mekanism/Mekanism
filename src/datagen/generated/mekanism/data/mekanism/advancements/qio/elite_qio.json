@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:qio_drive_time_dilating"
+    "display":{
+        "icon":{
+            "item":"mekanism:qio_drive_time_dilating"
+        },
+        "title":{
+            "translate":"advancements.mekanism.qio.elite_qio.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.qio.elite_qio.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Quantum level 3",
-    "description": "In the millions!",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:qio/advanced_qio",
-  "criteria": {
-    "hasQIO": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:qio_drive_time_dilating"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:qio/advanced_qio",
+    "criteria":{
+        "hasQIO":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:qio_drive_time_dilating"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

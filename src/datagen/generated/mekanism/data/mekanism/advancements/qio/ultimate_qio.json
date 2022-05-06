@@ -1,31 +1,33 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:qio_drive_supermassive"
+    "display":{
+        "icon":{
+            "item":"mekanism:qio_drive_supermassive"
+        },
+        "title":{
+            "translate":"advancements.mekanism.qio.ultimate_qio.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.qio.ultimate_qio.description",
+            "obfuscated":true
+        },
+        "frame":"goal",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Super massive",
-    "description": {
-      "text": "Parallel universe detected",
-      "obfuscated": true
-    },
-    "frame": "goal",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:qio/elite_qio",
-  "criteria": {
-    "hasQIO": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:qio_drive_supermassive"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:qio/elite_qio",
+    "criteria":{
+        "hasQIO":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:qio_drive_supermassive"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

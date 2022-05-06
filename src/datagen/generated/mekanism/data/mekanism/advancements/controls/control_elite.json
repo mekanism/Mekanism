@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:elite_control_circuit"
+    "display":{
+        "icon":{
+            "item":"mekanism:elite_control_circuit"
+        },
+        "title":{
+            "translate":"advancements.mekanism.controls.control_elite.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.controls.control_elite.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Precision control",
-    "description": "Precise!",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:controls/control_advanced",
-  "criteria": {
-    "hasEliteControlCircuit": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:elite_control_circuit"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:controls/control_advanced",
+    "criteria":{
+        "hasEliteControlCircuit":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:elite_control_circuit"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

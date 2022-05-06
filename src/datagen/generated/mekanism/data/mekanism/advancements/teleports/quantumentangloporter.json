@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:quantum_entangloporter"
+    "display":{
+        "icon":{
+            "item":"mekanism:quantum_entangloporter"
+        },
+        "title":{
+            "translate":"advancements.mekanism.teleports.quantumentangloporter.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.teleports.quantumentangloporter.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Quantum entanglement",
-    "description": "Instant resource transport",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:teleports/teleportcore",
-  "criteria": {
-    "hasPortalCore": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:quantum_entangloporter"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:teleports/teleportcore",
+    "criteria":{
+        "hasPortalCore":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:quantum_entangloporter"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }

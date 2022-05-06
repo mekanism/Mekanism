@@ -1,28 +1,32 @@
 {
-  "display": {
-    "icon": {
-      "item": "mekanism:alloy_reinforced"
+    "display":{
+        "icon":{
+            "item":"mekanism:alloy_reinforced"
+        },
+        "title":{
+            "translate":"advancements.mekanism.alloys.alloy_reinforced.title"
+        },
+        "description":{
+            "translate":"advancements.mekanism.alloys.alloy_reinforced.description"
+        },
+        "frame":"task",
+        "show_toast":true,
+        "announce_to_chat":true,
+        "hidden":false
     },
-    "title": "Reinforcement",
-    "description": "Diamonds make everything better!",
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "parent": "mekanism:alloys/alloy_infused",
-  "criteria": {
-    "hasReinforcedAlloy": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:alloy_reinforced"
-            ]
-          }
-        ]
-      }
+    "parent":"mekanism:alloys/alloy_infused",
+    "criteria":{
+        "hasReinforcedAlloy":{
+            "trigger":"minecraft:inventory_changed",
+            "conditions":{
+                "items":[
+                    {
+                        "items":[
+                            "mekanism:alloy_reinforced"
+                        ]
+                    }
+                ]
+            }
+        }
     }
-  }
 }
