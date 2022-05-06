@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_osmium"
+    }
+  },
+  "chemicalInput": {
+    "amount": 2,
+    "gas": "mekanism:oxygen"
+  },
+  "output": {
+    "item": "mekanism:clump_osmium",
+    "count": 18
+  }
+}

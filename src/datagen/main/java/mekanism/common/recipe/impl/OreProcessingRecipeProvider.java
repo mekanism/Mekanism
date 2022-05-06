@@ -109,6 +109,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                     ingotTag = Tags.Items.INGOTS_IRON;
                     raw = Items.RAW_IRON;
                     rawTag = Tags.Items.RAW_MATERIALS_IRON;
+                    rawBlock = Items.RAW_IRON_BLOCK;
+                    rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_IRON;
                     ore = Blocks.IRON_ORE;
                     deepslateOre = Blocks.DEEPSLATE_IRON_ORE;
                     dustExperience = 0.35F;
@@ -118,6 +120,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                     ingotTag = Tags.Items.INGOTS_GOLD;
                     raw = Items.RAW_GOLD;
                     rawTag = Tags.Items.RAW_MATERIALS_GOLD;
+                    rawBlock = Items.RAW_GOLD_BLOCK;
+                    rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_GOLD;
                     ore = Blocks.GOLD_ORE;
                     deepslateOre = Blocks.DEEPSLATE_GOLD_ORE;
                     dustExperience = 0.5F;
@@ -127,6 +131,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                     ingotTag = Tags.Items.INGOTS_COPPER;
                     raw = Items.RAW_COPPER;
                     rawTag = Tags.Items.RAW_MATERIALS_COPPER;
+                    rawBlock = Items.RAW_COPPER_BLOCK;
+                    rawBlockTag = Tags.Items.STORAGE_BLOCKS_RAW_COPPER;
                     ore = Blocks.COPPER_ORE;
                     deepslateOre = Blocks.DEEPSLATE_COPPER_ORE;
                     dustExperience = 0.35F;
@@ -149,50 +155,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
         SlurryRegistryObject<?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
 
-        // Clump
-        // from ore
-        ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              IngredientCreatorAccess.item().from(oreTag),
-              IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1),
-              clump.getItemStack(3)
-        ).build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
-        // from raw ore
-        ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              IngredientCreatorAccess.item().from(rawTag),
-              IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1),
-              clump.getItemStack(2)
-        ).build(consumer, Mekanism.rl(basePath + "clump/from_raw_ore"));
-        // from shard
-        ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              IngredientCreatorAccess.item().from(shardTag),
-              IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1),
-              clump.getItemStack()
-        ).build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
-        // Crystal
-        // from slurry
-        ChemicalCrystallizerRecipeBuilder.crystallizing(IngredientCreatorAccess.slurry().from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
-        // Dirty Dust
-        // from clump
-        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(clumpTag), dirtyDust.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "dirty_dust/from_clump"));
-        // Dust
-        // from dirty dust
-        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(dirtyDustTag), dust.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "dust/from_dirty_dust"));
-        // from ingot
-        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(ingotTag), dust.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
-        // from ore
-        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(oreTag), dust.getItemStack(2))
-              .build(consumer, Mekanism.rl(basePath + "dust/from_ore"));
-        // from raw ore
-        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(rawTag, 3), dust.getItemStack(4))
-              .build(consumer, Mekanism.rl(basePath + "dust/from_raw_ore"));
-        // Ingot
-        // from dust
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(dustTag), ingot, dustExperience, 200,
-              Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
+        // Miscellaneous
         if (!resource.isVanilla()) {
             // from block
             ExtendedShapelessRecipeBuilder.shapelessRecipe(ingot, 9).addIngredient(blockTag).build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
@@ -224,60 +187,125 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                   .key(Pattern.CONSTANT, rawTag)
                   .build(consumer, Mekanism.rl(basePath + "raw_storage_blocks/from_raw"));
         }
+
         ItemStackIngredient forOre = IngredientCreatorAccess.item().from(rawTag, toOre);
-        // Ore
-        // from dust
+        // Ore from Dust
         CombinerRecipeBuilder.combining(
-              forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_NORMAL),
-              new ItemStack(ore)
-        ).build(consumer, Mekanism.rl(basePath + "ore/from_raw"));
-        // Deepslate Ore
-        // from dust
+                forOre,
+                IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_NORMAL),
+                new ItemStack(ore)
+                ).build(consumer, Mekanism.rl(basePath + "ore/from_raw"));
+        // Deepslate Ore from Dust
         CombinerRecipeBuilder.combining(
-              forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
-              new ItemStack(deepslateOre)
-        ).build(consumer, Mekanism.rl(basePath + "ore/deepslate_from_raw"));
-        // Shard
-        // from crystal
+                forOre,
+                IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
+                new ItemStack(deepslateOre)
+                ).build(consumer, Mekanism.rl(basePath + "ore/deepslate_from_raw"));
+
+        //Dust from Ingot
+        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(ingotTag), dust.getItemStack())
+        .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
+
+        // Intermediate Steps
+        // Ingot from Dust
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(dustTag), ingot, dustExperience, 200,
+                Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
+        // Dust from Dirty Dust
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(dirtyDustTag), dust.getItemStack())
+        .build(consumer, Mekanism.rl(basePath + "dust/from_dirty_dust"));
+        // Dirty Dust from Clump
+        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(clumpTag), dirtyDust.getItemStack())
+        .build(consumer, Mekanism.rl(basePath + "dirty_dust/from_clump"));
+        // Clump from Shard
+        ItemStackChemicalToItemStackRecipeBuilder.purifying(
+                IngredientCreatorAccess.item().from(shardTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1),
+                clump.getItemStack()
+                ).build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
+        // Shard from Crystal
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(crystalTag),
-              IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              shard.getItemStack()
-        ).build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
-        // from ore
-        ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(oreTag),
-              IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              shard.getItemStack(4)
-        ).build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
-        // from raw ore
-        ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(rawTag, 3),
-              IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
-              shard.getItemStack(8)
-        ).build(consumer, Mekanism.rl(basePath + "shard/from_raw_ore"));
-        // Slurry
-        // clean
+                IngredientCreatorAccess.item().from(crystalTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+                shard.getItemStack()
+                ).build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
+        // Crystal from Clean Slurry
+        ChemicalCrystallizerRecipeBuilder.crystallizing(IngredientCreatorAccess.slurry().from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
+        .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
+        // Clean Slurry from Dirty Slurry
         FluidSlurryToSlurryRecipeBuilder.washing(
-              IngredientCreatorAccess.fluid().from(FluidTags.WATER, 5),
-              IngredientCreatorAccess.slurry().from(slurry.getDirtySlurry(), 1),
-              slurry.getCleanSlurry().getStack(1)
-        ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
-        // dirty
-        // from ore
+                IngredientCreatorAccess.fluid().from(FluidTags.WATER, 5),
+                IngredientCreatorAccess.slurry().from(slurry.getDirtySlurry(), 1),
+                slurry.getCleanSlurry().getStack(1)
+                ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
+
+        // From ore
+        // Dust
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(oreTag), dust.getItemStack(2))
+        .build(consumer, Mekanism.rl(basePath + "dust/from_ore"));
+        // Clump
+        ItemStackChemicalToItemStackRecipeBuilder.purifying(
+                IngredientCreatorAccess.item().from(oreTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1),
+                clump.getItemStack(3)
+                ).build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
+        // Shard
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
+                IngredientCreatorAccess.item().from(oreTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+                shard.getItemStack(4)
+                ).build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
+        // Dirty Slurry
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(oreTag),
-              IngredientCreatorAccess.gas().from(MekanismGases.SULFURIC_ACID, 1),
-              slurry.getDirtySlurry().getStack(1_000)
-        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_ore"));
-        // from raw ore
+                IngredientCreatorAccess.item().from(oreTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.SULFURIC_ACID, 1),
+                slurry.getDirtySlurry().getStack(1_000)
+                ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_ore"));
+
+        // From raw ore
+        // Dust
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(rawTag, 3), dust.getItemStack(4))
+        .build(consumer, Mekanism.rl(basePath + "dust/from_raw_ore"));
+        // Clump
+        ItemStackChemicalToItemStackRecipeBuilder.purifying(
+                IngredientCreatorAccess.item().from(rawTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1),
+                clump.getItemStack(2)
+                ).build(consumer, Mekanism.rl(basePath + "clump/from_raw_ore"));
+        // Shard
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
+                IngredientCreatorAccess.item().from(rawTag, 3),
+                IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+                shard.getItemStack(8)
+                ).build(consumer, Mekanism.rl(basePath + "shard/from_raw_ore"));
+        // Dirty Slurry
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(rawTag, 3),
-              IngredientCreatorAccess.gas().from(MekanismGases.SULFURIC_ACID, 1),
-              slurry.getDirtySlurry().getStack(2_000)
-        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_ore"));
+                IngredientCreatorAccess.item().from(rawTag, 3),
+                IngredientCreatorAccess.gas().from(MekanismGases.SULFURIC_ACID, 1),
+                slurry.getDirtySlurry().getStack(2_000)
+                ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_ore"));
+
+        // From raw ore block
+        // Dust
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(rawBlockTag), dust.getItemStack(12))
+        .build(consumer, Mekanism.rl(basePath + "dust/from_raw_block"));
+        // Clump
+        ItemStackChemicalToItemStackRecipeBuilder.purifying(
+                IngredientCreatorAccess.item().from(rawBlockTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 2),
+                clump.getItemStack(18)
+          ).build(consumer, Mekanism.rl(basePath + "clump/from_raw_block"));
+        // Shard
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
+                IngredientCreatorAccess.item().from(rawBlockTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 2),
+                shard.getItemStack(24)
+          ).build(consumer, Mekanism.rl(basePath + "shard/from_raw_block"));
+        // Dirty Slurry
+        ChemicalDissolutionRecipeBuilder.dissolution(
+                IngredientCreatorAccess.item().from(rawBlockTag),
+                IngredientCreatorAccess.gas().from(MekanismGases.SULFURIC_ACID, 2),
+                slurry.getDirtySlurry().getStack(6_000)
+          ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_block"));
     }
 
     private void addCoalOreProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

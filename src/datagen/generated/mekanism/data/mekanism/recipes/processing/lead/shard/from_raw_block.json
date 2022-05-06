@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:injecting",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_lead"
+    }
+  },
+  "chemicalInput": {
+    "amount": 2,
+    "gas": "mekanism:hydrogen_chloride"
+  },
+  "output": {
+    "item": "mekanism:shard_lead",
+    "count": 24
+  }
+}
