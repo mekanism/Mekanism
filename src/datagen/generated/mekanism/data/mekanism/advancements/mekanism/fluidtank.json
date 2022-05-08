@@ -1,31 +1,37 @@
 {
+  "parent": "mekanism:mekanism/root",
   "display": {
     "icon": {
       "item": "mekanism:basic_fluid_tank"
     },
-    "title": "Liquid storage",
-    "description": "32 buckets of fluid",
+    "title": {
+      "translate": "advancements.mekanism.fluidtank.title"
+    },
+    "description": {
+      "translate": "advancements.mekanism.fluidtank.description"
+    },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:mekanism",
   "criteria": {
-    "hasFluidTank": {
+    "fluidtank": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_fluid_tank",
-              "mekanism:advanced_fluid_tank",
-              "mekanism:elite_fluid_tank",
-              "mekanism:ultimate_fluid_tank"
+              "mekanism:basic_fluid_tank"
             ]
           }
         ]
       }
     }
-  }
+  },
+  "requirements": [
+    [
+      "fluidtank"
+    ]
+  ]
 }

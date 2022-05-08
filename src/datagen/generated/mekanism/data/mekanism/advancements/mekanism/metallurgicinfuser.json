@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:mekanism/materials",
+  "display": {
+    "icon": {
+      "item": "mekanism:metallurgic_infuser"
+    },
+    "title": {
+      "translate": "advancements.mekanism.metallurgicinfuser.title"
+    },
+    "description": {
+      "translate": "advancements.mekanism.metallurgicinfuser.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "metallurgicinfuser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:metallurgic_infuser"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "metallurgicinfuser"
+    ]
+  ]
+}

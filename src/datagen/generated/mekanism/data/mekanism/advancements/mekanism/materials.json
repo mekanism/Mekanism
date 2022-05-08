@@ -1,0 +1,89 @@
+{
+  "parent": "mekanism:mekanism/root",
+  "display": {
+    "icon": {
+      "item": "mekanism:ingot_osmium"
+    },
+    "title": {
+      "translate": "advancements.mekanism.materials.title"
+    },
+    "description": {
+      "translate": "advancements.mekanism.materials.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "osmium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_osmium"
+            ]
+          }
+        ]
+      }
+    },
+    "tin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_tin"
+            ]
+          }
+        ]
+      }
+    },
+    "lead": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_lead"
+            ]
+          }
+        ]
+      }
+    },
+    "uranium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_uranium"
+            ]
+          }
+        ]
+      }
+    },
+    "fluorite": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:fluorite_gem"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "osmium",
+      "tin",
+      "lead",
+      "uranium",
+      "fluorite"
+    ]
+  ]
+}

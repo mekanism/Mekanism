@@ -1,0 +1,20 @@
+{
+  "parent": "mekanism:mekanism/atomic_alloy",
+  "display": {
+    "icon": {
+      "item": "mekanism:robit"
+    },
+    "title": {
+      "translate": "advancements.mekanism.robit.title"
+    },
+    "description": {
+      "translate": "advancements.mekanism.robit.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {},
+  "requirements": []
+}

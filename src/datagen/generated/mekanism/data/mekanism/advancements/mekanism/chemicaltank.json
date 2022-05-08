@@ -1,31 +1,37 @@
 {
+  "parent": "mekanism:mekanism/root",
   "display": {
     "icon": {
       "item": "mekanism:basic_chemical_tank"
     },
-    "title": "High pressure storage",
-    "description": "64 buckets of chemicals",
+    "title": {
+      "translate": "advancements.mekanism.chemicaltank.title"
+    },
+    "description": {
+      "translate": "advancements.mekanism.chemicaltank.description"
+    },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "mekanism:mekanism",
   "criteria": {
-    "hasChemicalTank": {
+    "chemicaltank": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_chemical_tank",
-              "mekanism:advanced_chemical_tank",
-              "mekanism:elite_chemical_tank",
-              "mekanism:ultimate_chemical_tank"
+              "mekanism:basic_chemical_tank"
             ]
           }
         ]
       }
     }
-  }
+  },
+  "requirements": [
+    [
+      "chemicaltank"
+    ]
+  ]
 }

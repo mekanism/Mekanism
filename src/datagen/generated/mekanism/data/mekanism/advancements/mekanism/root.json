@@ -1,0 +1,29 @@
+{
+  "display": {
+    "icon": {
+      "item": "mekanism:block_steel"
+    },
+    "title": {
+      "translate": "advancements.mekanism.root.title"
+    },
+    "description": {
+      "translate": "advancements.mekanism.root.description"
+    },
+    "frame": "goal",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "mekanism:textures/block/block_osmium.png"
+  },
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick",
+      "conditions": {}
+    }
+  },
+  "requirements": [
+    [
+      "tick"
+    ]
+  ]
+}
