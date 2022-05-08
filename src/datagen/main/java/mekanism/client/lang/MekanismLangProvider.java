@@ -1262,6 +1262,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
         add(MekanismLang.MODULE_EXTENDED_ENABLED, "Extended Vein Mining: %1$s");
         add(MekanismLang.MODULE_EXCAVATION_RANGE, "Excavation Range");
+        add(MekanismLang.MODULE_BLASTING_RADIUS, "Blast Radius");
+        add(MekanismLang.MODULE_BLASTING_ENABLED, "Blast Radius: %1$s");
+        add(MekanismLang.MODULE_BLAST_RADIUS, "%1$sX%1$s");
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
         add(MekanismLang.MODULE_MODE_CHANGE, "%1$s bumped to: %2$s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
@@ -1284,6 +1287,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit", "Increases digging speed on any block.");
         add(MekanismModules.ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit", "Amplifies melee attacks on players or mobs.");
         add(MekanismModules.SILK_TOUCH_UNIT, "Silk Touch Unit", "Allows all mined blocks to drop as themselves.");
+        add(MekanismModules.BLASTING_UNIT, "Blasting Unit", "Allows mining larger areas.");
         add(MekanismModules.VEIN_MINING_UNIT, "Vein Mining Unit", "Allows for quick mining of ore deposits and rapid felling of trees.");
         add(MekanismModules.FARMING_UNIT, "Farming Unit", "Allows for soil tilling, log stripping, and soil flattening.");
         add(MekanismModules.SHEARING_UNIT, "Shearing Unit", "Allows the creation of energy blades for precise cutting jobs. Does not add laser swords.");

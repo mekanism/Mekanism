@@ -16,6 +16,7 @@ public class ProfilerConstants {
     public static final String FLUID_TANK = "fluidTank";
     public static final String INDUSTRIAL_ALARM = "industrialAlarm";
     public static final String MEKANISM_OUTLINE = "mekOutline";
+    public static final String AREA_MINE_OUTLINE = "areaMineOutline";
     public static final String NUTRITIONAL_LIQUIFIER = "nutritionalLiquifier";
     public static final String PERSONAL_CHEST = "personalChest";
     public static final String PIGMENT_MIXER = "pigmentMixer";

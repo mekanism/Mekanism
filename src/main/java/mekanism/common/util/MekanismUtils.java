@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.DoubleUnaryOperator;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -761,7 +761,7 @@ public final class MekanismUtils {
     }
 
     public static void veinMineArea(IEnergyContainer energyContainer, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
-          Collection<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier, BlockState sourceState) {
+          Collection<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, BiFunction<Double, BlockState, Double> distanceMultiplier, BlockState sourceState) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
@@ -771,8 +771,12 @@ public final class MekanismUtils {
                 continue;
             }
             BlockState targetState = world.getBlockState(foundPos);
-            FloatingLong destroyEnergy = destroyEnergyFunction.apply(targetState.getDestroySpeed(world, foundPos))
-                  .multiply(distanceMultiplier.applyAsDouble(WorldUtils.distanceBetween(pos, foundPos)));
+            float hardness = targetState.getDestroySpeed(world, foundPos);
+            if (targetState.isAir() || hardness == -1) {
+                continue;
+            }
+            FloatingLong destroyEnergy = destroyEnergyFunction.apply(hardness)
+                  .multiply(distanceMultiplier.apply(WorldUtils.distanceBetween(pos, foundPos), targetState));
             if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block

@@ -9,6 +9,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -81,6 +83,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
@@ -104,6 +107,8 @@ public class RenderTickHandler {
     public static double prevRadiation = 0;
 
     private static final BoltRenderer boltRenderer = new BoltRenderer();
+
+    private boolean outliningArea = false;
 
     public static void resetCached() {
         cachedOverlays.clear();
@@ -307,6 +312,30 @@ public class RenderTickHandler {
             PoseStack matrix = event.getPoseStack();
             ProfilerFiller profiler = world.getProfiler();
             BlockState blockState = world.getBlockState(pos);
+
+            profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
+            // Draw outlines for area mining blocks
+            if (!outliningArea) {
+                outliningArea = true;
+                ItemStack stack = player.getMainHandItem();
+                if (!stack.isEmpty() && stack.getItem() instanceof IBlastingItem tool) {
+                    Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
+                    if (!blocks.isEmpty()) {
+                        Vec3 renderView = info.getPosition();
+                        for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
+                            if (pos.equals(block.getKey())) {
+                                continue;
+                            }
+                            if (!ForgeHooksClient.onDrawHighlight(event.getLevelRenderer(), info, rayTraceResult, event.getPartialTicks(), matrix, renderer)) {
+                                event.getLevelRenderer().renderHitOutline(matrix, renderer.getBuffer(RenderType.lines()), minecraft.player, renderView.x, renderView.y, renderView.z, block.getKey(), block.getValue());
+                            }
+                        }
+                    }
+                }
+                outliningArea = false;
+            }
+            profiler.pop();
+
             boolean shouldCancel = false;
             profiler.push(ProfilerConstants.MEKANISM_OUTLINE);
             if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {

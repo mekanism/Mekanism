@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -19,9 +19,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
+import mekanism.common.content.gear.mekatool.ModuleBlastingUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
@@ -34,6 +36,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -56,6 +59,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,7 +68,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.fluids.IFluidBlock;
 
-public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem {
+public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IBlastingItem {
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -224,6 +228,18 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
+    public Map<BlockPos, BlockState> getBlastedBlocks(Level world, Player player, ItemStack stack, BlockPos pos, BlockState state) {
+        //Setup initial set for blasting
+        IModule<ModuleBlastingUnit> blastingUnit = getModule(stack, MekanismModules.BLASTING_UNIT);
+        if (blastingUnit != null && blastingUnit.isEnabled() && !player.isShiftKeyDown() && IBlastingItem.canBlastBlock(world, pos, state)) {
+            Direction direction = getPlayerPOVHitResult(world, player, ClipContext.Fluid.NONE).getDirection();
+            return IBlastingItem.findPositions(world, pos, direction, blastingUnit.getCustomInstance().getBlastRadius());
+        }
+        // If blasting is not enabled just return the initial block
+        return Map.of(pos, state);
+    }
+
+    @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
         if (player.level.isClientSide || player.isCreative()) {
             return super.onBlockStartBreak(stack, pos, player);
@@ -235,18 +251,19 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
             FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), silk);
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
+                Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
+
                 IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
                 //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
                 if (veinMiningUnit != null && veinMiningUnit.isEnabled() && !(state.getBlock() instanceof BlockBounding)) {
-                    boolean isOre = state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE);
-                    //If it is extended or should be treated as an ore
-                    if (isOre || veinMiningUnit.getCustomInstance().isExtended()) {
-                        //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
-                        FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
-                        Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, isOre ? -1 : veinMiningUnit.getCustomInstance().getExcavationRange());
-                        MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found,
-                              hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), distance -> 0.5 * Math.pow(distance, isOre ? 1.5 : 2), state);
-                    }
+                    blocks = ModuleVeinMiningUnit.findPositions(world, blocks, veinMiningUnit.getCustomInstance().isExtended(), veinMiningUnit.getCustomInstance().getExcavationRange());
+                }
+
+                if (!blocks.isEmpty()) {
+                    //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
+                    FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
+                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, blocks.keySet(),
+                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), (distance, bs) -> 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2), state);
                 }
             }
         }
