@@ -75,8 +75,8 @@ public class MekanismKeyHandler {
                 CuriosIntegration.findCurio(player, s -> s.canEquip(slot, player))
                         .stream()
                         .filter(r -> {
-                            if (IModeItem.isModeItem(stack, slot)) {
-                                return !(stack.getItem() instanceof IGasItem item) || !item.getGas(stack).isEmpty();
+                            if (IModeItem.isModeItem(r.stack(), slot)) {
+                                return !(r.stack().getItem() instanceof IGasItem item) || !item.getGas(r.stack()).isEmpty();
                             }
                             return false;
                         })

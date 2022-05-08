@@ -49,10 +49,6 @@ public class CuriosIntegration {
         return CuriosApi.getCuriosHelper().getEquippedCurios(living).resolve();
     }
 
-    public static Optional<ItemStack> findFirstCurio(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
-        return findFirstCurioAsResult(livingEntity, filter).map(SlotResult::stack);
-    }
-
     public static Optional<SlotResult> findFirstCurioAsResult(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
         return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, filter);
     }
