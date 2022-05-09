@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
@@ -51,11 +52,11 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
-        Player player = event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayer) player));
-
+        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync(player));
+        RadiationManager.INSTANCE.updateClientRadiation(player);
     }
 
     @SubscribeEvent
@@ -84,11 +85,16 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
-        event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
-            c.set(0);
-            PacketRadiationData.sync((ServerPlayer) event.getPlayer());
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+            if (!event.isEndConquered()) {
+                //If the player is returning from the end don't reset radiation
+                c.set(0);
+            }
+            PacketRadiationData.sync(player);
         });
-        Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(event.getPlayer().getUUID()));
+        RadiationManager.INSTANCE.updateClientRadiation(player);
+        Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));
     }
 
     /**

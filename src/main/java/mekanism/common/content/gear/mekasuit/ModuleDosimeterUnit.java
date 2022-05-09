@@ -25,7 +25,7 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
     public void addHUDElements(IModule<ModuleDosimeterUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(capability -> {
-                double radiation = capability.getRadiation();
+                double radiation = MekanismAPI.getRadiationManager().isRadiationEnabled() ? capability.getRadiation() : 0;
                 hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2),
                       radiation < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER)));
             });

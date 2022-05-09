@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -270,7 +271,7 @@ public class RenderTickHandler {
                     }
                 }
 
-                if (MekanismUtils.isPlayingMode(player)) {
+                if (MekanismAPI.getRadiationManager().isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
                     player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
                         double radiation = c.getRadiation();
                         double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
