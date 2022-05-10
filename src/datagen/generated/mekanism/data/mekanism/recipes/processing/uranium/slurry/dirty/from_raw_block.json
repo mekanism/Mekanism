@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:dissolution",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_uranium"
+    }
+  },
+  "gasInput": {
+    "amount": 2,
+    "gas": "mekanism:sulfuric_acid"
+  },
+  "output": {
+    "slurry": "mekanism:dirty_uranium",
+    "amount": 6000,
+    "chemicalType": "slurry"
+  }
+}

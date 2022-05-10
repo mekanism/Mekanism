@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:dissolution",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_tin"
+    }
+  },
+  "gasInput": {
+    "amount": 2,
+    "gas": "mekanism:sulfuric_acid"
+  },
+  "output": {
+    "slurry": "mekanism:dirty_tin",
+    "amount": 6000,
+    "chemicalType": "slurry"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_gold"
+    }
+  },
+  "chemicalInput": {
+    "amount": 2,
+    "gas": "mekanism:oxygen"
+  },
+  "output": {
+    "item": "mekanism:clump_gold",
+    "count": 18
+  }
+}

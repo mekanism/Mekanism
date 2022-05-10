@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_tin"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_tin",
+    "count": 12
+  }
+}
