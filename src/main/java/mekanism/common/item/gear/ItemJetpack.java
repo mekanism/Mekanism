@@ -7,7 +7,6 @@ import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
@@ -26,7 +25,6 @@ import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -43,7 +41,6 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
-import top.theillusivec4.curios.api.SlotResult;
 
 public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
 
@@ -99,7 +96,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
             GasStack stored = GasStack.EMPTY;
             Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
             if (capability.isPresent()) {
-                final IGasHandler gasHandlerItem = capability.get();
+                IGasHandler gasHandlerItem = capability.get();
                 if (gasHandlerItem.getTanks() > 0) {
                     stored = gasHandlerItem.getChemicalInTank(0);
                 }
@@ -134,29 +131,27 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     /**
-     * Gets the first found jetpack from an entity, if one is worn. <br>
+     * Gets the first found jetpack from an entity, if one is worn.
+     * <br>
      * If Curios is loaded, the curio slots will be checked as well.
      *
      * @param entity the entity on which to look for the jetpack
+     *
      * @return the jetpack stack if present, otherwise an empty stack
      */
     @Nonnull
-    public static ItemStack getJetpack(final LivingEntity entity) {
-        final ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+    public static ItemStack getJetpack(LivingEntity entity) {
+        return getJetpack(entity, entity.getItemBySlot(EquipmentSlot.CHEST));
+    }
+
+    @Nonnull
+    public static ItemStack getJetpack(LivingEntity entity, ItemStack chest) {
         if (chest.getItem() instanceof ItemJetpack) {
             return chest;
         } else if (Mekanism.hooks.CuriosLoaded) {
-            return findNonEmptyJetpack(entity);
+            return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof ItemJetpack jetpackItem && jetpackItem.hasGas(s));
         }
         return ItemStack.EMPTY;
-    }
-
-    public static ItemStack findNonEmptyJetpack(final LivingEntity entity) {
-        return CuriosIntegration.findCurio(entity, s -> s.getItem() instanceof ItemJetpack jetpackItem && !jetpackItem.getGas(s).isEmpty())
-                .stream()
-                .findFirst()
-                .map(SlotResult::stack)
-                .orElse(ItemStack.EMPTY);
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {

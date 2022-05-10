@@ -1,8 +1,10 @@
 package mekanism.common.integration.curios;
 
+import java.util.Optional;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismCurioRenderer;
 import mekanism.client.render.armor.ISpecialGear;
-import mekanism.client.render.armor.JetpackArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.registries.MekanismItems;
@@ -20,40 +22,45 @@ import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-
 public class CuriosIntegration {
 
     public static void sendIMC() {
         InterModComms.sendTo(MekanismHooks.CURIOS_MODID, "register_type", () -> SlotTypePreset.BODY.getMessageBuilder().build());
     }
 
-    public static void addListeners(final IEventBus bus) {
+    public static void addListeners(IEventBus bus) {
         bus.addListener((FMLClientSetupEvent event) -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
     }
 
     private static void registerRenderers(ItemLike... items) {
-        for (final ItemLike item : items) {
-            if (item.asItem() instanceof ArmorItem armour && RenderProperties.get(armour) instanceof ISpecialGear gear) {
-                CuriosRendererRegistry.register(armour, () -> new MekanismCurioRenderer(gear.getGearModel(armour.getSlot())));
+        for (ItemLike item : items) {
+            if (item.asItem() instanceof ArmorItem armor && RenderProperties.get(armor) instanceof ISpecialGear gear) {
+                CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(gear.getGearModel(armor.getSlot())));
             } else {
-                Mekanism.logger.warn("Attempted to register Curios renderer for a non-special gear item.");
+                Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", item.asItem().getRegistryName());
             }
         }
     }
 
-    public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity living) {
-        return CuriosApi.getCuriosHelper().getEquippedCurios(living).resolve();
+    public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity entity) {
+        return CuriosApi.getCuriosHelper().getEquippedCurios(entity).resolve();
     }
 
-    public static Optional<SlotResult> findFirstCurioAsResult(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
-        return CuriosApi.getCuriosHelper().findFirstCurio(livingEntity, filter);
+    public static Optional<SlotResult> findFirstCurioAsResult(@Nonnull LivingEntity entity, Predicate<ItemStack> filter) {
+        return CuriosApi.getCuriosHelper().findFirstCurio(entity, filter);
     }
 
-    public static List<SlotResult> findCurio(@Nonnull LivingEntity livingEntity, Predicate<ItemStack> filter) {
-        return CuriosApi.getCuriosHelper().findCurios(livingEntity, filter);
+    public static ItemStack findFirstCurio(@Nonnull LivingEntity entity, Predicate<ItemStack> filter) {
+        return findFirstCurioAsResult(entity, filter)
+              .map(SlotResult::stack)
+              .orElse(ItemStack.EMPTY);
+    }
+
+    public static ItemStack getCurioStack(@Nonnull LivingEntity entity, String slotType, int slot) {
+        return CuriosApi.getCuriosHelper().getCuriosHandler(entity)
+              .resolve()
+              .flatMap(handler -> handler.getStacksHandler(slotType))
+              .map(handler -> handler.getStacks().getStackInSlot(slot))
+              .orElse(ItemStack.EMPTY);
     }
 }

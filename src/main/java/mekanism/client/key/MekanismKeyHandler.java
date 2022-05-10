@@ -19,9 +19,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
+import top.theillusivec4.curios.api.SlotContext;
 
 public class MekanismKeyHandler {
 
@@ -72,19 +72,16 @@ public class MekanismKeyHandler {
                 Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             } else if (Mekanism.hooks.CuriosLoaded) {
-                CuriosIntegration.findCurio(player, s -> s.canEquip(slot, player))
-                        .stream()
-                        .filter(r -> {
-                            if (IModeItem.isModeItem(r.stack(), slot)) {
-                                return !(r.stack().getItem() instanceof IGasItem item) || !item.getGas(r.stack()).isEmpty();
-                            }
-                            return false;
-                        })
-                        .findFirst()
-                        .ifPresent(result -> {
-                            Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(result.slotContext().index(), player.isShiftKeyDown()));
-                            SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-                        });
+                CuriosIntegration.findFirstCurioAsResult(player, stack -> {
+                    if (stack.canEquip(slot, player) && IModeItem.isModeItem(stack, slot)) {
+                        return !(stack.getItem() instanceof IGasItem item) || item.hasGas(stack);
+                    }
+                    return false;
+                }).ifPresent(result -> {
+                    SlotContext slotContext = result.slotContext();
+                    Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(slotContext.identifier(), slotContext.index(), player.isShiftKeyDown()));
+                    SoundHandler.playSound(MekanismSounds.HYDRAULIC);
+                });
             }
         }
     }

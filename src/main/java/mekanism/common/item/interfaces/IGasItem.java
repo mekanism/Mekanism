@@ -31,10 +31,15 @@ public interface IGasItem {
         return GasStack.EMPTY;
     }
 
-    @Nonnull
-    default GasStack getGas(ItemStack stack) {
-        // TODO Change this and no longer hardcode checking in the first tank, if we end up with items that have more than one tank
+    default boolean hasGas(ItemStack stack) {
         return stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY)
-                .map(handler -> handler.getChemicalInTank(0)).orElse(GasStack.EMPTY);
+              .map(handler -> {
+                  for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                      if (!handler.getChemicalInTank(tank).isEmpty()) {
+                          return true;
+                      }
+                  }
+                  return false;
+              }).orElse(false);
     }
 }

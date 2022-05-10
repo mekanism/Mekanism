@@ -105,19 +105,19 @@ public class CommonPlayerTickHandler {
         }
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        final ItemStack jetStack = getJetpackIfOn(player, chest);
-        if (!jetStack.isEmpty()) {
-            JetpackMode mode = getJetpackMode(jetStack);
+        ItemStack jetpackStack = ItemJetpack.getJetpack(player, chest);
+        JetpackMode mode = getJetpackModeIfOn(player, jetpackStack);
+        if (mode != JetpackMode.DISABLED) {
             if (handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
                 player.fallDistance = 0.0F;
                 if (player instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.aboveGroundTickCount = 0;
                 }
             }
-            if (jetStack.getItem() instanceof ItemJetpack jetpack) {
-                jetpack.useGas(jetStack, 1);
+            if (jetpackStack.getItem() instanceof ItemJetpack jetpack) {
+                jetpack.useGas(jetpackStack, 1);
             } else {
-                ((ItemMekaSuitArmor) jetStack.getItem()).useGas(jetStack, MekanismGases.HYDROGEN.get(), 1);
+                ((ItemMekaSuitArmor) jetpackStack.getItem()).useGas(jetpackStack, MekanismGases.HYDROGEN.get(), 1);
             }
         }
 
@@ -180,24 +180,21 @@ public class CommonPlayerTickHandler {
         return true;
     }
 
-    private static ItemStack getJetpackIfOn(Player player, ItemStack chest) {
-        if (chest.isEmpty() && Mekanism.hooks.CuriosLoaded) {
-            chest = ItemJetpack.findNonEmptyJetpack(player);
-        }
+    private static JetpackMode getJetpackModeIfOn(Player player, ItemStack chest) {
         if (!chest.isEmpty() && !player.isSpectator()) {
             JetpackMode mode = getJetpackMode(chest);
-            if (mode == JetpackMode.NORMAL) {
-                return Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND) ? chest : ItemStack.EMPTY;
-            } else if (mode == JetpackMode.HOVER) {
+            if (mode != JetpackMode.DISABLED) {
                 boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
-                boolean descending = player.isDescending();
-                if (!ascending || descending) {
-                    return isOnGroundOrSleeping(player) ? ItemStack.EMPTY : chest;
+                if (mode == JetpackMode.HOVER) {
+                    if (ascending && !player.isDescending() || !isOnGroundOrSleeping(player)) {
+                        return mode;
+                    }
+                } else if (mode == JetpackMode.NORMAL && ascending) {
+                    return mode;
                 }
-                return chest;
             }
         }
-        return ItemStack.EMPTY;
+        return JetpackMode.DISABLED;
     }
 
     public static boolean isGravitationalModulationReady(Player player) {
@@ -210,7 +207,6 @@ public class CommonPlayerTickHandler {
         return isGravitationalModulationReady(player) && player.getAbilities().flying;
     }
 
-    /** Will return null if jetpack mode is not active */
     public static JetpackMode getJetpackMode(ItemStack stack) {
         if (stack.getItem() instanceof ItemJetpack jetpack && ChemicalUtil.hasGas(stack)) {
             return jetpack.getMode(stack);

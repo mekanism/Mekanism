@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-
 import mekanism.client.MekanismClient;
 import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
@@ -35,19 +34,19 @@ public class MekaSuitHUD implements IIngameOverlay {
         Minecraft minecraft = Minecraft.getInstance();
         if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
             int count = 0;
-            final List<List<Component>> renderStrings = new ArrayList<>();
+            List<List<Component>> renderStrings = new ArrayList<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {
-                final ItemStack stack = minecraft.player.getItemBySlot(slotType);
+                ItemStack stack = minecraft.player.getItemBySlot(slotType);
                 if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
                     count += makeComponent(list -> hudProvider.addHUDStrings(list, minecraft.player, stack, slotType), renderStrings);
                 }
             }
             if (Mekanism.hooks.CuriosLoaded) {
-                final Optional<? extends IItemHandler> invOptional = CuriosIntegration.getCuriosInventory(minecraft.player);
-                if (invOptional.isPresent()) { // Can't use ifPresent due to count not being final
-                    final IItemHandler inv = invOptional.get();
+                Optional<? extends IItemHandler> invOptional = CuriosIntegration.getCuriosInventory(minecraft.player);
+                if (invOptional.isPresent()) {
+                    IItemHandler inv = invOptional.get();
                     for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
-                        final ItemStack stack = inv.getStackInSlot(i);
+                        ItemStack stack = inv.getStackInSlot(i);
                         if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
                             count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, minecraft.player, stack), renderStrings);
                         }
@@ -61,8 +60,8 @@ public class MekaSuitHUD implements IIngameOverlay {
                 int yScale = (int) ((1 / hudScale) * height);
                 poseStack.pushPose();
                 poseStack.scale(hudScale, hudScale, hudScale);
-                for (final List<Component> group : renderStrings) {
-                    for (final Component text : group) {
+                for (List<Component> group : renderStrings) {
+                    for (Component text : group) {
                         drawString(minecraft.font, width, poseStack, text, alignLeft, yScale - start, 0xC8C8C8);
                         start -= 9;
                     }
@@ -77,9 +76,9 @@ public class MekaSuitHUD implements IIngameOverlay {
     }
 
     private int makeComponent(Consumer<List<Component>> adder, List<List<Component>> initial) {
-        final List<Component> list = new ArrayList<>();
+        List<Component> list = new ArrayList<>();
         adder.accept(list);
-        final int size = list.size();
+        int size = list.size();
         if (size > 0) {
             initial.add(list);
         }
