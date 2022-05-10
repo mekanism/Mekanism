@@ -86,7 +86,7 @@ public class ClientTickHandler {
             return Mekanism.playerState.isJetpackOn(player);
         }
         if (!player.isSpectator()) {
-            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+            ItemStack chest = ItemJetpack.getJetpack(player);
             if (!chest.isEmpty()) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
@@ -208,12 +208,13 @@ public class ClientTickHandler {
             ItemStack chestStack = minecraft.player.getItemBySlot(EquipmentSlot.CHEST);
             IModule<ModuleJetpackUnit> jetpackModule = MekanismAPI.getModuleHelper().load(chestStack, MekanismModules.JETPACK_UNIT);
 
-            if (!chestStack.isEmpty() && (chestStack.getItem() instanceof ItemJetpack || jetpackModule != null)) {
+            ItemStack jetpack = ItemJetpack.getJetpack(minecraft.player, chestStack);
+            if (!jetpack.isEmpty() || jetpackModule != null) {
                 MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
             }
 
             if (isJetpackActive(minecraft.player)) {
-                JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chestStack);
+                JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(jetpack);
                 if (CommonPlayerTickHandler.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
                     minecraft.player.fallDistance = 0.0F;
                 }

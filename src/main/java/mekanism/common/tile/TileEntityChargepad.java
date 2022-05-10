@@ -16,7 +16,7 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -70,7 +70,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                 Optional<IItemHandler> itemHandlerCap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
                 if (!chargeHandler(itemHandlerCap) && Mekanism.hooks.CuriosLoaded) {
                     //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
-                    chargeHandler(MekanismHooks.getCuriosInventory(entity));
+                    chargeHandler(CuriosIntegration.getCuriosInventory(entity));
                 }
             }
         }

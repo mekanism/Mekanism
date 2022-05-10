@@ -30,4 +30,16 @@ public interface IGasItem {
         }
         return GasStack.EMPTY;
     }
+
+    default boolean hasGas(ItemStack stack) {
+        return stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY)
+              .map(handler -> {
+                  for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                      if (!handler.getChemicalInTank(tank).isEmpty()) {
+                          return true;
+                      }
+                  }
+                  return false;
+              }).orElse(false);
+    }
 }

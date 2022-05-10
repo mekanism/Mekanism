@@ -1,15 +1,14 @@
 package mekanism.common.integration;
 
-import java.util.Optional;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.items.IItemHandler;
-import top.theillusivec4.curios.api.CuriosApi;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -41,15 +40,18 @@ public final class MekanismHooks {
     public boolean TOPLoaded;
     public boolean WildfireGenderModLoaded;
 
-    public void hookConstructor() {
+    public void hookConstructor(final IEventBus bus) {
         ModList modList = ModList.get();
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
+        CuriosLoaded = modList.isLoaded(CURIOS_MODID);
+        if (CuriosLoaded) {
+            CuriosIntegration.addListeners(bus);
+        }
     }
 
     public void hookCommonSetup() {
         ModList modList = ModList.get();
         CCLoaded = modList.isLoaded(CC_MOD_ID);
-        CuriosLoaded = modList.isLoaded(CURIOS_MODID);
         IC2Loaded = modList.isLoaded(IC2_MOD_ID);
         JEILoaded = modList.isLoaded(JEI_MOD_ID);
         OC2Loaded = modList.isLoaded(OC2_MOD_ID);
@@ -69,13 +71,13 @@ public final class MekanismHooks {
         if (ProjectELoaded) {
             NSSHelper.init();
         }
+        if (CuriosLoaded) {
+            CuriosIntegration.sendIMC();
+        }
     }
 
     public boolean computerCompatEnabled() {
         return CCLoaded || OC2Loaded;
     }
 
-    public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity living) {
-        return CuriosApi.getCuriosHelper().getEquippedCurios(living).resolve();
-    }
 }

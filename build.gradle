@@ -147,7 +147,7 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 ext {
     versionProperties = ["version"           : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version"    : loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "wildfire_gender_version": wildfire_gender_version_range]
+                         "wildfire_gender_version": wildfire_gender_version_range, "curios_version": curios_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 

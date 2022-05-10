@@ -2,12 +2,14 @@ package mekanism.client.render.hud;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 import mekanism.client.MekanismClient;
 import mekanism.client.render.HUDRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import net.minecraft.client.Minecraft;
@@ -17,6 +19,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.items.IItemHandler;
 
 public class MekaSuitHUD implements IIngameOverlay {
 
@@ -30,16 +33,22 @@ public class MekaSuitHUD implements IIngameOverlay {
         Minecraft minecraft = Minecraft.getInstance();
         if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
             int count = 0;
-            Map<EquipmentSlot, List<Component>> renderStrings = new LinkedHashMap<>();
+            List<List<Component>> renderStrings = new ArrayList<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {
                 ItemStack stack = minecraft.player.getItemBySlot(slotType);
                 if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
-                    List<Component> list = new ArrayList<>();
-                    hudProvider.addHUDStrings(list, minecraft.player, stack, slotType);
-                    int size = list.size();
-                    if (size > 0) {
-                        renderStrings.put(slotType, list);
-                        count += size;
+                    count += makeComponent(list -> hudProvider.addHUDStrings(list, minecraft.player, stack, slotType), renderStrings);
+                }
+            }
+            if (Mekanism.hooks.CuriosLoaded) {
+                Optional<? extends IItemHandler> invOptional = CuriosIntegration.getCuriosInventory(minecraft.player);
+                if (invOptional.isPresent()) {
+                    IItemHandler inv = invOptional.get();
+                    for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
+                        ItemStack stack = inv.getStackInSlot(i);
+                        if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
+                            count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, minecraft.player, stack), renderStrings);
+                        }
                     }
                 }
             }
@@ -50,8 +59,8 @@ public class MekaSuitHUD implements IIngameOverlay {
                 int yScale = (int) ((1 / hudScale) * height);
                 poseStack.pushPose();
                 poseStack.scale(hudScale, hudScale, hudScale);
-                for (Map.Entry<EquipmentSlot, List<Component>> entry : renderStrings.entrySet()) {
-                    for (Component text : entry.getValue()) {
+                for (List<Component> group : renderStrings) {
+                    for (Component text : group) {
                         drawString(minecraft.font, width, poseStack, text, alignLeft, yScale - start, 0xC8C8C8);
                         start -= 9;
                     }
@@ -63,6 +72,16 @@ public class MekaSuitHUD implements IIngameOverlay {
                 hudRenderer.renderHUD(poseStack, partialTicks);
             }
         }
+    }
+
+    private int makeComponent(Consumer<List<Component>> adder, List<List<Component>> initial) {
+        List<Component> list = new ArrayList<>();
+        adder.accept(list);
+        int size = list.size();
+        if (size > 0) {
+            initial.add(list);
+        }
+        return size;
     }
 
     private void drawString(Font font, int windowWidth, PoseStack matrix, Component text, boolean leftSide, int y, int color) {

@@ -21,6 +21,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
@@ -32,6 +33,7 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
@@ -126,6 +128,30 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
             return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
         }
         return super.getDefaultTooltipHideFlags(stack);
+    }
+
+    /**
+     * Gets the first found jetpack from an entity, if one is worn.
+     * <br>
+     * If Curios is loaded, the curio slots will be checked as well.
+     *
+     * @param entity the entity on which to look for the jetpack
+     *
+     * @return the jetpack stack if present, otherwise an empty stack
+     */
+    @Nonnull
+    public static ItemStack getJetpack(LivingEntity entity) {
+        return getJetpack(entity, entity.getItemBySlot(EquipmentSlot.CHEST));
+    }
+
+    @Nonnull
+    public static ItemStack getJetpack(LivingEntity entity, ItemStack chest) {
+        if (chest.getItem() instanceof ItemJetpack) {
+            return chest;
+        } else if (Mekanism.hooks.CuriosLoaded) {
+            return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof ItemJetpack jetpackItem && jetpackItem.hasGas(s));
+        }
+        return ItemStack.EMPTY;
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {

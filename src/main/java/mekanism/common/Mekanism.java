@@ -255,7 +255,7 @@ public class Mekanism {
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
         packetHandler = new PacketHandler();
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
-        hooks.hookConstructor();
+        hooks.hookConstructor(modEventBus);
         if (hooks.CraftTweakerLoaded && !DatagenModLoader.isRunningDataGen()) {
             //Attempt to grab the mod event bus for CraftTweaker so that we can register our custom content in their namespace
             // to make it clearer which chemicals were added by CraftTweaker, and which are added by actual mods.
