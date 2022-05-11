@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:mekanism/atomic_alloy",
+  "parent": "mekanism:mekanism/ultimate_control",
   "display": {
     "icon": {
       "item": "mekanism:robit"
@@ -10,11 +10,28 @@
     "description": {
       "translate": "advancements.mekanism.robit.description"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "criteria": {},
-  "requirements": []
+  "criteria": {
+    "elite_control": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:robit"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "elite_control"
+    ]
+  ]
 }

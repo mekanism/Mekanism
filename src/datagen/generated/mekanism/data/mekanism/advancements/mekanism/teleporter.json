@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/teleportcore",
   "display": {
     "icon": {
-      "item": "mekanism:basic_control_circuit"
+      "item": "mekanism:teleporter"
     },
     "title": {
-      "translate": "advancements.mekanism.basic_control.title"
+      "translate": "advancements.mekanism.teleporter.title"
     },
     "description": {
-      "translate": "advancements.mekanism.basic_control.description"
+      "translate": "advancements.mekanism.teleporter.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "basic_control": {
+    "teleporter": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_control_circuit"
+              "mekanism:teleporter"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "basic_control"
+      "teleporter"
     ]
   ]
 }

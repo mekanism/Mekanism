@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/atomic_alloy",
   "display": {
     "icon": {
-      "item": "mekanism:basic_control_circuit"
+      "item": "mekanism:pellet_plutonium"
     },
     "title": {
-      "translate": "advancements.mekanism.basic_control.title"
+      "translate": "advancements.mekanism.plutonium.title"
     },
     "description": {
-      "translate": "advancements.mekanism.basic_control.description"
+      "translate": "advancements.mekanism.plutonium.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "basic_control": {
+    "plutonium": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_control_circuit"
+              "mekanism:pellet_plutonium"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "basic_control"
+      "plutonium"
     ]
   ]
 }

@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/atomic_alloy",
   "display": {
     "icon": {
-      "item": "mekanism:basic_control_circuit"
+      "item": "mekanism:teleportation_core"
     },
     "title": {
-      "translate": "advancements.mekanism.basic_control.title"
+      "translate": "advancements.mekanism.teleportcore.title"
     },
     "description": {
-      "translate": "advancements.mekanism.basic_control.description"
+      "translate": "advancements.mekanism.teleportcore.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "basic_control": {
+    "teleportcore": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_control_circuit"
+              "mekanism:teleportation_core"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "basic_control"
+      "teleportcore"
     ]
   ]
 }

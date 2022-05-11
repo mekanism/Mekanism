@@ -1,14 +1,15 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/sps",
   "display": {
     "icon": {
-      "item": "mekanism:basic_control_circuit"
+      "item": "mekanism:pellet_antimatter"
     },
     "title": {
-      "translate": "advancements.mekanism.basic_control.title"
+      "translate": "advancements.mekanism.antimatter.title"
     },
     "description": {
-      "translate": "advancements.mekanism.basic_control.description"
+      "obfuscated": true,
+      "translate": "advancements.mekanism.antimatter.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +17,13 @@
     "hidden": false
   },
   "criteria": {
-    "basic_control": {
+    "antimatter": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_control_circuit"
+              "mekanism:pellet_antimatter"
             ]
           }
         ]
@@ -31,7 +32,7 @@
   },
   "requirements": [
     [
-      "basic_control"
+      "antimatter"
     ]
   ]
 }
