@@ -495,6 +495,7 @@
   "description.mekanism.fuelwood_heater": "一臺通過燃燒固體可燃物來生產熱量的機器.",
   "description.mekanism.geiger_unit": "在HUD中顯示環境輻射值.",
   "description.mekanism.gravitational_modulating_unit": "使用實驗技術和龐大的反物質能量, 使用者可以克服重力.",
+  "description.mekanism.gyroscopic_stabilization_unit": "允許使用者像在堅實的地面上一樣行動.",
   "description.mekanism.hydraulic_propulsion_unit": "允許使用者跳得更高.",
   "description.mekanism.induction_casing": "用於輸導矩陣的絕緣外殼.",
   "description.mekanism.induction_cell": "能存儲大量能量的方塊,作為輸導矩陣的存儲元件.",
