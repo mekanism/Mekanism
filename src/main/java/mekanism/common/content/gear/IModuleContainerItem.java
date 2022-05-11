@@ -38,6 +38,10 @@ public interface IModuleContainerItem extends IItemHUDProvider {
         return MekanismAPI.getModuleHelper().load(stack, typeProvider);
     }
 
+    default boolean supportsModule(ItemStack stack, IModuleDataProvider<?> typeProvider) {
+        return MekanismAPI.getModuleHelper().getSupported(stack).contains(typeProvider.getModuleData());
+    }
+
     default void addModuleDetails(ItemStack stack, List<Component> tooltip) {
         for (Module<?> module : getModules(stack)) {
             ModuleData<?> data = module.getData();

@@ -21,10 +21,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -146,7 +148,8 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Nonnull
     public static ItemStack getJetpack(LivingEntity entity, ItemStack chest) {
-        if (chest.getItem() instanceof ItemJetpack) {
+        if (chest.getItem() instanceof ItemJetpack || chest.getItem() instanceof IModuleContainerItem moduleContainer &&
+                                                      moduleContainer.supportsModule(chest, MekanismModules.JETPACK_UNIT)) {
             return chest;
         } else if (Mekanism.hooks.CuriosLoaded) {
             return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof ItemJetpack jetpackItem && jetpackItem.hasGas(s));
