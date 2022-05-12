@@ -24,7 +24,7 @@
             "items": [
               "mekanism:mekasuit_helmet"
             ],
-            "nbt": "{}"
+            "nbt": "{mekData:{modules:{\"mekanism:electrolytic_breathing_unit\":{},\"mekanism:energy_unit\":{},\"mekanism:inhalation_purification_unit\":{},\"mekanism:laser_dissipation_unit\":{},\"mekanism:nutritional_injection_unit\":{},\"mekanism:radiation_shielding_unit\":{},\"mekanism:vision_enhancement_unit\":{},\"mekanismgenerators:solar_recharging_unit\":{}}}}"
           }
         ]
       }
@@ -37,7 +37,7 @@
             "items": [
               "mekanism:mekasuit_bodyarmor"
             ],
-            "nbt": "{}"
+            "nbt": "{mekData:{modules:{\"mekanism:charge_distribution_unit\":{},\"mekanism:dosimeter_unit\":{},\"mekanism:elytra_unit\":{},\"mekanism:energy_unit\":{},\"mekanism:geiger_unit\":{},\"mekanism:gravitational_modulating_unit\":{},\"mekanism:jetpack_unit\":{amount:1,enabled:0b,handleModeChange:1b,jetpack_mode:0,renderHUD:1b},\"mekanism:laser_dissipation_unit\":{},\"mekanism:radiation_shielding_unit\":{}}}}"
           }
         ]
       }
@@ -50,7 +50,7 @@
             "items": [
               "mekanism:mekasuit_pants"
             ],
-            "nbt": "{}"
+            "nbt": "{mekData:{modules:{\"mekanism:energy_unit\":{},\"mekanism:laser_dissipation_unit\":{},\"mekanism:locomotive_boosting_unit\":{},\"mekanism:radiation_shielding_unit\":{},\"mekanismgenerators:geothermal_generator_unit\":{}}}}"
           }
         ]
       }
@@ -63,7 +63,7 @@
             "items": [
               "mekanism:mekasuit_boots"
             ],
-            "nbt": "{}"
+            "nbt": "{Enchantments:[{id:\"minecraft:frost_walker\",lvl:1s}],mekData:{modules:{\"mekanism:energy_unit\":{},\"mekanism:frost_walker_unit\":{},\"mekanism:hydraulic_propulsion_unit\":{},\"mekanism:laser_dissipation_unit\":{},\"mekanism:magnetic_attraction_unit\":{},\"mekanism:radiation_shielding_unit\":{}}}}"
           }
         ]
       }
@@ -76,7 +76,7 @@
             "items": [
               "mekanism:meka_tool"
             ],
-            "nbt": "{}"
+            "nbt": "{Enchantments:[{id:\"minecraft:silk_touch\",lvl:1s}],mekData:{modules:{\"mekanism:attack_amplification_unit\":{},\"mekanism:energy_unit\":{},\"mekanism:excavation_escalation_unit\":{},\"mekanism:farming_unit\":{amount:1,enabled:0b,farming_radius:1},\"mekanism:shearing_unit\":{amount:1,enabled:0b},\"mekanism:silk_touch_unit\":{},\"mekanism:teleportation_unit\":{},\"mekanism:vein_mining_unit\":{}}}}"
           }
         ]
       }
