@@ -126,6 +126,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitInventoryChargeRate;
     public final CachedFloatingLongValue mekaSuitSolarRechargingRate;
     public final CachedFloatingLongValue mekaSuitEnergyUsageVisionEnhancement;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageHydrostaticRepulsion;
     public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
     public final CachedFloatingLongValue mekaSuitEnergyUsageDamage;
     public final CachedFloatingLongValue mekaSuitEnergyUsageItemAttraction;
@@ -338,6 +339,8 @@ public class GearConfig extends BaseMekanismConfig {
               "solarRechargingRate", FloatingLong.createConst(500));
         mekaSuitEnergyUsageVisionEnhancement = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using vision enhancement.",
               "energyUsageVisionEnhancement", FloatingLong.createConst(500));
+        mekaSuitEnergyUsageHydrostaticRepulsion = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using hydrostatic repulsion.",
+              "energyUsageHydrostaticRepulsion", FloatingLong.createConst(500));
         mekaSuitEnergyUsageNutritionalInjection = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per half-food of nutritional injection.",
               "energyUsageNutritionalInjection", FloatingLong.createConst(20_000));
         mekaSuitEnergyUsageDamage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",

@@ -16,6 +16,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
@@ -80,6 +81,17 @@ public class CommonPlayerTickHandler {
         return 0;
     }
 
+    public static float getSwimBoost(Player player) {
+        ItemStack stack = player.getItemBySlot(EquipmentSlot.LEGS);
+        if (!stack.isEmpty()) {
+            IModule<ModuleHydrostaticRepulsorUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
+            if (module != null && module.isEnabled() && module.getCustomInstance().isSwimBoost(module)) {
+                return 1F;
+            }
+        }
+        return 0;
+    }
+
     @SubscribeEvent
     public void onTick(PlayerTickEvent event) {
         if (event.phase == Phase.END && event.side.isServer()) {
@@ -89,6 +101,7 @@ public class CommonPlayerTickHandler {
 
     private void tickEnd(Player player) {
         Mekanism.playerState.updateStepAssist(player);
+        Mekanism.playerState.updateSwimBoost(player);
         if (player instanceof ServerPlayer serverPlayer) {
             RadiationManager.INSTANCE.tickServer(serverPlayer);
         }

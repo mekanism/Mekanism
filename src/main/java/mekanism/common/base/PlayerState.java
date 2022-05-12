@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
+import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.sound.PlayerSound.SoundType;
@@ -24,6 +25,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -35,6 +37,7 @@ import net.minecraftforge.common.ForgeMod;
 public class PlayerState {
 
     private static final UUID STEP_ASSIST_MODIFIER_UUID = UUID.fromString("026E638A-570D-48F2-BA91-3E86BBB26576");
+    private static final UUID SWIM_BOOST_MODIFIER_UUID = UUID.fromString("B8BEEC12-741C-47C3-A74D-AA00F0D2ACF0");
 
     private final Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
@@ -175,12 +178,26 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(Player player) {
-        AttributeInstance attributeInstance = player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get());
+        updateAttribute(player, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", () -> CommonPlayerTickHandler.getStepBoost(player));
+    }
+
+    // ----------------------
+    //
+    // Swim boost state tracking
+    //
+    // ----------------------
+
+    public void updateSwimBoost(Player player) {
+        updateAttribute(player, ForgeMod.SWIM_SPEED.get(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", () -> CommonPlayerTickHandler.getSwimBoost(player));
+    }
+
+    private void updateAttribute(Player player, Attribute attribute, UUID uuid, String name, FloatSupplier additionalSupplier) {
+        AttributeInstance attributeInstance = player.getAttribute(attribute);
         if (attributeInstance != null) {
-            AttributeModifier existing = attributeInstance.getModifier(STEP_ASSIST_MODIFIER_UUID);
-            float additionalHeight = CommonPlayerTickHandler.getStepBoost(player);
+            AttributeModifier existing = attributeInstance.getModifier(uuid);
+            float additional = additionalSupplier.getAsFloat();
             if (existing != null) {
-                if (existing.getAmount() == additionalHeight) {
+                if (existing.getAmount() == additional) {
                     //If we already have it set to the correct value just exit
                     //Note: We don't need to check for if it is equal to zero as we should never have the attribute applied then
                     return;
@@ -188,9 +205,9 @@ public class PlayerState {
                 //Otherwise, remove the no longer valid value, so we can add it again properly
                 attributeInstance.removeModifier(existing);
             }
-            if (additionalHeight > 0) {
-                //If we should be able to have auto step, but we don't have it set yet, or our stored amount was different, update
-                attributeInstance.addTransientModifier(new AttributeModifier(STEP_ASSIST_MODIFIER_UUID, "Step Assist", additionalHeight, Operation.ADDITION));
+            if (additional > 0) {
+                //If we should have the attribute, but we don't have it set yet, or our stored amount was different, update
+                attributeInstance.addTransientModifier(new AttributeModifier(uuid, name, additional, Operation.ADDITION));
             }
         }
     }

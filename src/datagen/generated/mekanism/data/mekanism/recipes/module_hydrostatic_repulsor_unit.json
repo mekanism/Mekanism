@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_hydrostatic_repulsor_unit"
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "minecraft:lightning_rod"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mekanism:item/module_hydrostatic_repulsor_unit"
+  }
+}
