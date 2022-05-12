@@ -25,6 +25,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -312,11 +313,12 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
 
         @Override
         public Iterable<BlockPos> getTargetPositions(BlockPos pos, Direction side, int radius) {
-            AABB box = switch (side) {
-                case EAST, WEST -> new AABB(pos.getX(), pos.getY() - radius, pos.getZ() - radius, pos.getX(), pos.getY() + radius, pos.getZ() + radius);
-                case UP, DOWN -> new AABB(pos.getX() - radius, pos.getY(), pos.getZ() - radius, pos.getX() + radius, pos.getY(), pos.getZ() + radius);
-                case SOUTH, NORTH -> new AABB(pos.getX() - radius, pos.getY() - radius, pos.getZ(), pos.getX() + radius, pos.getY() + radius, pos.getZ());
+            Vec3i adjustment = switch (side) {
+                case EAST, WEST -> new Vec3i(0, radius, radius);
+                case UP, DOWN -> new Vec3i(radius, 0, radius);
+                case SOUTH, NORTH -> new Vec3i(radius, radius, 0);
             };
+            AABB box = new AABB(pos.subtract(adjustment), pos.offset(adjustment));
             return BlockPos.betweenClosed(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
         }
 

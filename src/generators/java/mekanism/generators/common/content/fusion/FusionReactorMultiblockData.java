@@ -147,8 +147,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             }
         }
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
-        deathZone = new AABB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
-              getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
+        deathZone = new AABB(getMinPos().offset(1, 1, 1), getMaxPos());
     }
 
     @Override
