@@ -3,6 +3,7 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -235,8 +236,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             Direction direction = getPlayerPOVHitResult(world, player, ClipContext.Fluid.NONE).getDirection();
             return IBlastingItem.findPositions(world, pos, direction, blastingUnit.getCustomInstance().getBlastRadius());
         }
-        // If blasting is not enabled just return the initial block
-        return Map.of(pos, state);
+        return Collections.emptyMap();
     }
 
     @Override
@@ -256,7 +256,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
                 //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
                 if (veinMiningUnit != null && veinMiningUnit.isEnabled() && !(state.getBlock() instanceof BlockBounding)) {
-                    blocks = ModuleVeinMiningUnit.findPositions(world, blocks, veinMiningUnit.getCustomInstance().isExtended(), veinMiningUnit.getCustomInstance().getExcavationRange());
+                    blocks = ModuleVeinMiningUnit.findPositions(world, blocks.isEmpty() ? Map.of(pos, state) : blocks, veinMiningUnit.getCustomInstance().isExtended(), veinMiningUnit.getCustomInstance().getExcavationRange());
                 }
 
                 if (!blocks.isEmpty()) {

@@ -412,7 +412,7 @@ public class CommonPlayerTickHandler {
         ItemStack mainHand = player.getMainHandItem();
         if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
             Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, event.getPos(), event.getState());
-            if (blocks != null) {
+            if (!blocks.isEmpty()) {
                 float targetHardness = event.getState().getDestroySpeed(player.level, event.getPos());
                 float maxHardness = blocks.entrySet().stream()
                       .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))
