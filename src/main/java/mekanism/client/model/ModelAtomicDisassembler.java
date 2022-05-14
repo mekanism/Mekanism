@@ -56,7 +56,7 @@ public class ModelAtomicDisassembler extends MekanismJavaModel {
           .addBox(0, -2.44F, -6.07F, 1, 2, 3));
     private static final ModelPartData BLADE_HOLDER_BACK = new ModelPartData("bladeHolderBack", CubeListBuilder.create()
           .texOffs(42, 14)
-          .addBox(-0.5F, -0.5F, 3.5F, 2, 1, 1));
+          .addBox(-0.5F, -4.5F, 3.5F, 2, 1, 1));
     private static final ModelPartData BLADE_HOLDER_MAIN = new ModelPartData("bladeHolderMain", CubeListBuilder.create()
           .texOffs(30, 16)
           .addBox(-0.5F, -3.5F, -1.5F, 2, 1, 4));
