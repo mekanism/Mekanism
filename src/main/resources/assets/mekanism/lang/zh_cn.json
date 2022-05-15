@@ -285,6 +285,7 @@
   "color.mekanism.white": "白色",
   "color.mekanism.yellow": "黄色",
   "command.mekanism.build.built": "完成建造：%1$s。",
+  "command.mekanism.build.built.empty": "清空建造：%1$s。",
   "command.mekanism.build.removed": "建造已成功删除。",
   "command.mekanism.chunk.clear": "%1$s 个区块已从监视列表中移除。",
   "command.mekanism.chunk.flush": "%1$s 个区块已卸载。",
