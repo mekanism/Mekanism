@@ -105,7 +105,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.FILTER, getFilterText());
         if (selectedOutput != getFallbackElement()) {
-            nbtTags.putString(NBTConstants.SELECTED, selectedOutput.getRegistryName().toString());
+            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SELECTED, selectedOutput);
         }
         return nbtTags;
     }

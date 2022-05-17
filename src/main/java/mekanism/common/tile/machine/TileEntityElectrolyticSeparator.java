@@ -68,12 +68,10 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -329,29 +327,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
+    public void writeSustainedData(CompoundTag dataMap) {
+        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_LEFT, dumpLeft);
+        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        data.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
-        data.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
-        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        dumpLeft = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_LEFT));
-        dumpRight = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_RIGHT));
+    public void readSustainedData(CompoundTag dataMap) {
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
     }
 
     @Override

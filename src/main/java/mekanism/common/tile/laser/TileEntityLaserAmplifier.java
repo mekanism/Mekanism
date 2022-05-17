@@ -170,7 +170,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         data.putString(NBTConstants.MIN, minThreshold.toString());
         data.putString(NBTConstants.MAX, maxThreshold.toString());
         data.putInt(NBTConstants.TIME, delay);
-        data.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
+        NBTUtils.writeEnum(data, NBTConstants.OUTPUT_MODE, outputMode);
     }
 
     @Override

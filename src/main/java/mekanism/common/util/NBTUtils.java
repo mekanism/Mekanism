@@ -270,6 +270,10 @@ public class NBTUtils {
         }
     }
 
+    public static void writeEnum(CompoundTag nbt, String key, Enum<?> e) {
+        nbt.putInt(key, e.ordinal());
+    }
+
     public static <V extends IForgeRegistryEntry<V>> V readRegistryEntry(CompoundTag nbt, String key, IForgeRegistry<V> registry, V fallback) {
         if (nbt.contains(key, Tag.TAG_STRING)) {
             ResourceLocation rl = ResourceLocation.tryParse(nbt.getString(key));
@@ -281,5 +285,12 @@ public class NBTUtils {
             }
         }
         return fallback;
+    }
+
+    public static void writeRegistryEntry(CompoundTag nbt, String key, IForgeRegistryEntry<?> entry) {
+        ResourceLocation registryName = entry.getRegistryName();
+        if (registryName != null) {//Should not be null but validate it
+            nbt.putString(key, registryName.toString());
+        }
     }
 }

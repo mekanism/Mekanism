@@ -467,7 +467,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
-        nbtTags.putInt(NBTConstants.SECURITY_MODE, getSecurityMode().ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, getSecurityMode());
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
@@ -476,7 +476,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
-        nbtTags.putString(NBTConstants.SKIN, getSkin().getRegistryName().toString());
+        NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SKIN, getSkin());
     }
 
     @Override

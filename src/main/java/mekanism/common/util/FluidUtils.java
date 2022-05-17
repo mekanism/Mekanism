@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IFluidProvider;
@@ -36,7 +35,7 @@ public final class FluidUtils {
         IExtendedFluidTank dummyTank = BasicFluidTank.create(capacity, null);
         //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
         dummyTank.setStack(provider.getFluidStack(dummyTank.getCapacity()));
-        ItemDataUtils.setList(toFill, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
+        ItemDataUtils.writeContainers(toFill, NBTConstants.FLUID_TANKS, Collections.singletonList(dummyTank));
         //The item is now filled return it for convenience
         return toFill;
     }

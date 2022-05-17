@@ -114,7 +114,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void saveAdditional(@Nonnull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
-        nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
     }
 
     @Override

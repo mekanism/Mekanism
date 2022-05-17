@@ -389,7 +389,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            updateTag.putInt(NBTConstants.SIDE + direction.ordinal(), getConnectionTypeRaw(direction).ordinal());
+            NBTUtils.writeEnum(updateTag, NBTConstants.SIDE + direction.ordinal(), getConnectionTypeRaw(direction));
         }
         //Transmitter
         if (hasTransmitterNetwork()) {
@@ -442,7 +442,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public CompoundTag write(@Nonnull CompoundTag nbtTags) {
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            nbtTags.putInt(NBTConstants.CONNECTION + direction.ordinal(), getConnectionTypeRaw(direction).ordinal());
+            NBTUtils.writeEnum(nbtTags, NBTConstants.CONNECTION + direction.ordinal(), getConnectionTypeRaw(direction));
         }
         return nbtTags;
     }

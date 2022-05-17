@@ -56,7 +56,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     @Nonnull
     private CompoundTag writeModes(@Nonnull CompoundTag nbtTags) {
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            nbtTags.putInt(NBTConstants.MODE + i, modes[i].ordinal());
+            NBTUtils.writeEnum(nbtTags, NBTConstants.MODE + i, modes[i]);
         }
         return nbtTags;
     }

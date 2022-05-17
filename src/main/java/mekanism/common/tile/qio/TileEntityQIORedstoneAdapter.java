@@ -13,12 +13,10 @@ import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ISustainedData;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -88,19 +86,17 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     }
 
     @Override
-    public void writeSustainedData(ItemStack itemStack) {
+    public void writeSustainedData(CompoundTag dataMap) {
         if (itemType != null) {
-            ItemDataUtils.setCompound(itemStack, NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundTag()));
+            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundTag()));
         }
-        ItemDataUtils.setLong(itemStack, NBTConstants.AMOUNT, count);
+        dataMap.putLong(NBTConstants.AMOUNT, count);
     }
 
     @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.SINGLE_ITEM, Tag.TAG_COMPOUND)) {
-            itemType = HashedItem.create(ItemStack.of(ItemDataUtils.getCompound(itemStack, NBTConstants.SINGLE_ITEM)));
-        }
-        count = ItemDataUtils.getLong(itemStack, NBTConstants.AMOUNT);
+    public void readSustainedData(CompoundTag dataMap) {
+        NBTUtils.setItemStackIfPresent(dataMap, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
+        NBTUtils.setLongIfPresent(dataMap, NBTConstants.AMOUNT, value -> count = value);
     }
 
     @Override
@@ -125,22 +121,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();
         WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
-    }
-
-    @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        NBTUtils.setItemStackIfPresent(data, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
-        NBTUtils.setLongIfPresent(data, NBTConstants.AMOUNT, value -> count = value);
-    }
-
-    @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        if (itemType != null) {
-            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundTag()));
-        }
-        data.putLong(NBTConstants.AMOUNT, count);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

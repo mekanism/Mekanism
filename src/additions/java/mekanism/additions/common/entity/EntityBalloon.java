@@ -288,7 +288,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
-        nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
         if (latched != null) {
             nbtTags.put(NBTConstants.LATCHED, NbtUtils.writeBlockPos(latched));
         }

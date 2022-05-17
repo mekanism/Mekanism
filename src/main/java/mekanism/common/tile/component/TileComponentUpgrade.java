@@ -178,15 +178,14 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     @Override
     public void read(CompoundTag nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-            CompoundTag upgradeNBT = nbtTags.getCompound(NBTConstants.COMPONENT_UPGRADE);
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_UPGRADE, upgradeNBT -> {
             upgrades = Upgrade.buildMap(upgradeNBT);
             for (Upgrade upgrade : getSupportedTypes()) {
                 tile.recalculateUpgrades(upgrade);
             }
             //Load the inventory
             NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, Tag.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
-        }
+        });
     }
 
     @Override

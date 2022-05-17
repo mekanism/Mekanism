@@ -49,7 +49,7 @@ public class SecurityFrequency extends Frequency {
     public void write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.OVERRIDE, override);
-        nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, securityMode);
         if (!trusted.isEmpty()) {
             ListTag trustedList = new ListTag();
             for (UUID uuid : trusted) {

@@ -37,7 +37,6 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
@@ -226,72 +225,35 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        data.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
-        data.putBoolean(NBTConstants.EJECT, autoEject);
-        data.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
-        data.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
+    public void writeSustainedData(CompoundTag dataMap) {
+        dataMap.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        dataMap.putBoolean(NBTConstants.EJECT, autoEject);
+        dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
+        dataMap.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
         if (!filters.isEmpty()) {
             ListTag filterTags = new ListTag();
             for (SorterFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundTag()));
             }
-            data.put(NBTConstants.FILTERS, filterTags);
+            dataMap.put(NBTConstants.FILTERS, filterTags);
         }
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
-        autoEject = data.getBoolean(NBTConstants.EJECT);
-        roundRobin = data.getBoolean(NBTConstants.ROUND_ROBIN);
-        singleItem = data.getBoolean(NBTConstants.SINGLE_ITEM);
+    public void readSustainedData(CompoundTag dataMap) {
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        autoEject = dataMap.getBoolean(NBTConstants.EJECT);
+        roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
+        singleItem = dataMap.getBoolean(NBTConstants.SINGLE_ITEM);
         filters.clear();
-        if (data.contains(NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            ListTag tagList = data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
+        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
+            for (int i = 0, size = tagList.size(); i < size; i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof SorterFilter<?> sorterFilter) {
                     filters.add(sorterFilter);
                 }
             }
-        }
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.EJECT, autoEject);
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.ROUND_ROBIN, roundRobin);
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.SINGLE_ITEM, singleItem);
-        if (!filters.isEmpty()) {
-            ListTag filterTags = new ListTag();
-            for (SorterFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundTag()));
-            }
-            ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.COLOR, Tag.TAG_INT)) {
-            color = TransporterUtils.readColor(ItemDataUtils.getInt(itemStack, NBTConstants.COLOR));
-        }
-        autoEject = ItemDataUtils.getBoolean(itemStack, NBTConstants.EJECT);
-        roundRobin = ItemDataUtils.getBoolean(itemStack, NBTConstants.ROUND_ROBIN);
-        singleItem = ItemDataUtils.getBoolean(itemStack, NBTConstants.SINGLE_ITEM);
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            ListTag tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
-            for (int i = 0; i < tagList.size(); i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof SorterFilter<?> sorterFilter) {
-                    filters.add(sorterFilter);
-                }
-            }
-        }
+        });
     }
 
     @Override

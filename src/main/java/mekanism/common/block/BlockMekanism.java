@@ -43,9 +43,11 @@ import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
@@ -71,6 +73,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.IBlockRenderProperties;
+import net.minecraftforge.common.util.Lazy;
 
 public abstract class BlockMekanism extends Block {
 
@@ -108,8 +111,9 @@ public abstract class BlockMekanism extends Block {
         //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
         // the server doesn't bother syncing the data to the client. For example with what frequencies there are
         Item item = itemStack.getItem();
+        Lazy<CompoundTag> lazyDataMap = Lazy.of(() -> ItemDataUtils.getDataMap(itemStack));
         if (tile.getFrequencyComponent().hasCustomFrequencies()) {
-            tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(itemStack));
+            tile.getFrequencyComponent().write(lazyDataMap.get());
         }
         if (tile.hasSecurity()) {
             itemStack.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject -> {
@@ -118,21 +122,22 @@ public abstract class BlockMekanism extends Block {
             });
         }
         if (tile.supportsUpgrades()) {
-            tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
+            tile.getComponent().write(lazyDataMap.get());
         }
         if (tile instanceof ISideConfiguration config) {
-            config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-            config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+            CompoundTag dataMap = lazyDataMap.get();
+            config.getConfig().write(dataMap);
+            config.getEjector().write(dataMap);
         }
         if (tile instanceof ISustainedData sustainedData) {
-            sustainedData.writeSustainedData(itemStack);
+            sustainedData.writeSustainedData(lazyDataMap.get());
         }
         if (tile.supportsRedstone()) {
-            ItemDataUtils.setInt(itemStack, NBTConstants.CONTROL_TYPE, tile.getControlType().ordinal());
+            NBTUtils.writeEnum(lazyDataMap.get(), NBTConstants.CONTROL_TYPE, tile.getControlType());
         }
         for (SubstanceType type : EnumUtils.SUBSTANCES) {
             if (tile.handles(type)) {
-                ItemDataUtils.setList(itemStack, type.getContainerTag(), DataHandlerUtils.writeContainers(type.getContainers(tile)));
+                lazyDataMap.get().put(type.getContainerTag(), DataHandlerUtils.writeContainers(type.getContainers(tile)));
             }
         }
         if (item instanceof ISustainedInventory sustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
@@ -174,13 +179,8 @@ public abstract class BlockMekanism extends Block {
                                 //If the item has any gas tanks stored, check if any have radioactive substances in them
                                 // and if so clear them out
                                 ListTag newGasTankList = DataHandlerUtils.writeContainers(tanks);
-                                if (newGasTankList.isEmpty()) {
-                                    //If the list is now empty remove it
-                                    ItemDataUtils.removeData(drop, NBTConstants.GAS_TANKS);
-                                } else {
-                                    //Otherwise, update the list
-                                    ItemDataUtils.setList(drop, NBTConstants.GAS_TANKS, newGasTankList);
-                                }
+                                //If the list is now empty remove it; otherwise, update the list
+                                ItemDataUtils.setListOrRemove(drop, NBTConstants.GAS_TANKS, newGasTankList);
                             }
                         }
                     }
@@ -272,13 +272,19 @@ public abstract class BlockMekanism extends Block {
 
         //Handle item
         Item item = stack.getItem();
+        CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
+        if (dataMap == null) {
+            //Don't bother modifying the stack even though it doesn't matter as it is going away but return an empty compound
+            // the same as we would normally do if we had to add the data map
+            dataMap = new CompoundTag();
+        }
         setTileData(world, pos, state, placer, stack, tile);
 
         //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
         // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
         // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
         if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
-            tile.getFrequencyComponent().read(ItemDataUtils.getDataMap(stack));
+            tile.getFrequencyComponent().read(dataMap);
         }
         if (tile.hasSecurity()) {
             stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> tile.setSecurityMode(security.getSecurityMode()));
@@ -295,23 +301,24 @@ public abstract class BlockMekanism extends Block {
         }
         if (tile.supportsUpgrades()) {
             //The read method validates that data is stored
-            tile.getComponent().read(ItemDataUtils.getDataMap(stack));
+            tile.getComponent().read(dataMap);
         }
         if (tile instanceof ISideConfiguration config) {
             //The read methods validate that data is stored
-            config.getConfig().read(ItemDataUtils.getDataMap(stack));
-            config.getEjector().read(ItemDataUtils.getDataMap(stack));
+            config.getConfig().read(dataMap);
+            config.getEjector().read(dataMap);
         }
         for (SubstanceType type : EnumUtils.SUBSTANCES) {
             if (type.canHandle(tile)) {
-                DataHandlerUtils.readContainers(type.getContainers(tile), ItemDataUtils.getList(stack, type.getContainerTag()));
+                DataHandlerUtils.readContainers(type.getContainers(tile), dataMap.getList(type.getContainerTag(), Tag.TAG_COMPOUND));
             }
         }
         if (tile instanceof ISustainedData sustainedData && stack.hasTag()) {
-            sustainedData.readSustainedData(stack);
+            //TODO - 1.18: do we want to be checking it has a tag or not so that we can set things to stuff
+            sustainedData.readSustainedData(dataMap);
         }
-        if (tile.supportsRedstone() && ItemDataUtils.hasData(stack, NBTConstants.CONTROL_TYPE, Tag.TAG_INT)) {
-            tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.CONTROL_TYPE)));
+        if (tile.supportsRedstone()) {
+            NBTUtils.setEnumIfPresent(dataMap, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, tile::setControlType);
         }
         if (item instanceof ISustainedInventory sustainedInventory && tile.persistInventory()) {
             tile.setInventory(sustainedInventory.getInventory(stack));

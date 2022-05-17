@@ -77,7 +77,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void saveAdditional(@Nonnull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
-        nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
         nbtTags.putBoolean(NBTConstants.ACTIVE_COOLED, activeCooled);
     }
 

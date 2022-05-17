@@ -86,7 +86,7 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void write(CompoundTag nbtTags) {
         CompoundTag securityNBT = new CompoundTag();
-        securityNBT.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
+        NBTUtils.writeEnum(securityNBT, NBTConstants.SECURITY_MODE, securityMode);
         if (ownerUUID != null) {
             securityNBT.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }

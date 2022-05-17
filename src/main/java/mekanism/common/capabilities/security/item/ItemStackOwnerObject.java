@@ -27,10 +27,7 @@ public class ItemStackOwnerObject extends ItemCapability implements IOwnerObject
     @Override
     public UUID getOwnerUUID() {
         ItemStack stack = getStack();
-        if (!stack.isEmpty() && ItemDataUtils.hasUUID(stack, NBTConstants.OWNER_UUID)) {
-            return ItemDataUtils.getUniqueID(stack, NBTConstants.OWNER_UUID);
-        }
-        return null;
+        return stack.isEmpty() ? null : ItemDataUtils.getUniqueID(stack, NBTConstants.OWNER_UUID);
     }
 
     @Nullable
@@ -52,11 +49,7 @@ public class ItemStackOwnerObject extends ItemCapability implements IOwnerObject
                 //If the item happens to be a frequency item reset the frequency when the owner changes
                 frequencyItem.setFrequency(stack, null);
             }
-            if (owner == null) {
-                ItemDataUtils.removeData(stack, NBTConstants.OWNER_UUID);
-            } else {
-                ItemDataUtils.setUUID(stack, NBTConstants.OWNER_UUID, owner);
-            }
+            ItemDataUtils.setUUID(stack, NBTConstants.OWNER_UUID, owner);
         }
     }
 

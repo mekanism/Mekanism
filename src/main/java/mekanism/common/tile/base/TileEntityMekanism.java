@@ -98,6 +98,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IComparatorSupport;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
@@ -706,13 +707,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     protected void addGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
-            data.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
+            NBTUtils.writeEnum(data, NBTConstants.CONTROL_TYPE, controlType);
+        }
+        if (this instanceof ISustainedData sustainedData) {
+            sustainedData.writeSustainedData(data);
         }
     }
 
     protected void loadGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
+        }
+        if (this instanceof ISustainedData sustainedData) {
+            sustainedData.readSustainedData(data);
         }
     }
 

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -71,10 +70,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
     @Override
     protected void load() {
         super.load();
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            DataHandlerUtils.readContainers(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
-        }
+        ItemDataUtils.readContainers(getStack(), NBTConstants.FLUID_TANKS, getFluidTanks(null));
     }
 
     @Nonnull

@@ -544,7 +544,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     @Override
     public void write(CompoundTag nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
     }
 
     @Override

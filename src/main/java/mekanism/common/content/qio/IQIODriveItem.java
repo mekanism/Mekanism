@@ -39,7 +39,7 @@ public interface IQIODriveItem {
             tag.putLong(NBTConstants.AMOUNT, entry.getLongValue());
             list.add(tag);
         }
-        ItemDataUtils.setList(stack, NBTConstants.QIO_ITEM_MAP, list);
+        ItemDataUtils.setListOrRemove(stack, NBTConstants.QIO_ITEM_MAP, list);
     }
 
     long getCountCapacity(ItemStack stack);
@@ -49,8 +49,8 @@ public interface IQIODriveItem {
     record DriveMetadata(long count, int types) {
 
         public void write(ItemStack stack) {
-            ItemDataUtils.setLong(stack, NBTConstants.QIO_META_COUNT, count);
-            ItemDataUtils.setInt(stack, NBTConstants.QIO_META_TYPES, types);
+            ItemDataUtils.setLongOrRemove(stack, NBTConstants.QIO_META_COUNT, count);
+            ItemDataUtils.setIntOrRemove(stack, NBTConstants.QIO_META_TYPES, types);
         }
 
         public static DriveMetadata load(ItemStack stack) {

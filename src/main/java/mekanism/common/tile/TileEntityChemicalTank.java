@@ -58,13 +58,11 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements ISustainedData, IHasGasMode {
@@ -192,18 +190,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumping = mode);
-    }
-
-    @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        data.putInt(NBTConstants.DUMP_MODE, dumping.ordinal());
-    }
-
-    @Override
     public boolean shouldDumpRadiation() {
         return tier != ChemicalTankTier.CREATIVE;
     }
@@ -277,13 +263,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_MODE, dumping.ordinal());
+    public void writeSustainedData(CompoundTag dataMap) {
+        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_MODE, dumping);
     }
 
     @Override
-    public void readSustainedData(ItemStack itemStack) {
-        dumping = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_MODE));
+    public void readSustainedData(CompoundTag dataMap) {
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumping = mode);
     }
 
     @Override

@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -118,11 +117,11 @@ public class ChemicalUtil {
      * Compares a {@link ChemicalType} with the current type of merged chemical tank.
      */
     public static boolean compareTypes(ChemicalType chemicalType, Current current) {
-        return switch (chemicalType) {
-            case GAS -> current == Current.GAS;
-            case INFUSION -> current == Current.INFUSION;
-            case PIGMENT -> current == Current.PIGMENT;
-            case SLURRY -> current == Current.SLURRY;
+        return current == switch (chemicalType) {
+            case GAS -> Current.GAS;
+            case INFUSION -> Current.INFUSION;
+            case PIGMENT -> Current.PIGMENT;
+            case SLURRY -> Current.SLURRY;
         };
     }
 
@@ -149,6 +148,9 @@ public class ChemicalUtil {
      * @return Copy of the input stack with the desired size
      */
     public static <STACK extends ChemicalStack<?>> STACK copyWithAmount(STACK stack, long amount) {
+        if (stack.isEmpty()) {
+            return getEmptyStack(stack);
+        }
         STACK result = copy(stack);
         result.setAmount(amount);
         return result;
@@ -182,13 +184,13 @@ public class ChemicalUtil {
      * @return empty chemical tank
      */
     private static ItemStack getEmptyChemicalTank(ChemicalTankTier tier) {
-        return switch (tier) {
-            case BASIC -> MekanismBlocks.BASIC_CHEMICAL_TANK.getItemStack();
-            case ADVANCED -> MekanismBlocks.ADVANCED_CHEMICAL_TANK.getItemStack();
-            case ELITE -> MekanismBlocks.ELITE_CHEMICAL_TANK.getItemStack();
-            case ULTIMATE -> MekanismBlocks.ULTIMATE_CHEMICAL_TANK.getItemStack();
-            case CREATIVE -> MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack();
-        };
+        return (switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_CHEMICAL_TANK;
+            case ADVANCED -> MekanismBlocks.ADVANCED_CHEMICAL_TANK;
+            case ELITE -> MekanismBlocks.ELITE_CHEMICAL_TANK;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_CHEMICAL_TANK;
+            case CREATIVE -> MekanismBlocks.CREATIVE_CHEMICAL_TANK;
+        }).getItemStack();
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IChemicalProvider<?> provider) {
@@ -210,7 +212,7 @@ public class ChemicalUtil {
         TANK dummyTank = tankBuilder.createDummy(capacity);
         //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
         dummyTank.setStack(withAmount(provider, dummyTank.getCapacity()));
-        ItemDataUtils.setList(toFill, key, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
+        ItemDataUtils.writeContainers(toFill, key, Collections.singletonList(dummyTank));
         //The item is now filled return it for convenience
         return toFill;
     }

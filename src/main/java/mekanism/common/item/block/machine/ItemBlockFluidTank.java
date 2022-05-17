@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -131,7 +130,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                         //Manually handle filling it as capabilities are not necessarily loaded yet
                         dummyTank.setStack(new FluidStack(fluid, dummyTank.getCapacity()));
                         ItemStack stack = new ItemStack(this);
-                        ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
+                        ItemDataUtils.writeContainers(stack, NBTConstants.FLUID_TANKS, Collections.singletonList(dummyTank));
                         items.add(stack);
                     }
                 }

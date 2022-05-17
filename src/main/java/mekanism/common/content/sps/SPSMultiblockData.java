@@ -22,6 +22,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -238,7 +239,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             for (CoilData data : coilMap.values()) {
                 CompoundTag tag = new CompoundTag();
                 tag.put(NBTConstants.POSITION, NbtUtils.writeBlockPos(data.coilPos));
-                tag.putInt(NBTConstants.SIDE, data.side.ordinal());
+                NBTUtils.writeEnum(tag, NBTConstants.SIDE, data.side);
                 tag.putInt(NBTConstants.LEVEL, data.prevLevel);
                 list.add(tag);
             }

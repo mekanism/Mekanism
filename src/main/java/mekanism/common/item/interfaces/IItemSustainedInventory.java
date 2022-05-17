@@ -11,7 +11,7 @@ public interface IItemSustainedInventory extends ISustainedInventory {
     @Override
     default void setInventory(ListTag nbtTags, Object... data) {
         if (data[0] instanceof ItemStack stack) {
-            ItemDataUtils.setList(stack, NBTConstants.ITEMS, nbtTags);
+            ItemDataUtils.setListOrRemove(stack, NBTConstants.ITEMS, nbtTags);
         }
     }
 

@@ -75,7 +75,6 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
@@ -762,7 +761,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         nbtTags.putBoolean(NBTConstants.RUNNING, running);
         nbtTags.putInt(NBTConstants.DELAY, delay);
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
-        nbtTags.putInt(NBTConstants.STATE, searcher.state.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.STATE, searcher.state);
     }
 
     public int getTotalSize() {
@@ -840,27 +839,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        data.putInt(NBTConstants.RADIUS, getRadius());
-        data.putInt(NBTConstants.MIN, getMinY());
-        data.putInt(NBTConstants.MAX, getMaxY());
-        data.putBoolean(NBTConstants.EJECT, doEject);
-        data.putBoolean(NBTConstants.PULL, doPull);
-        data.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
-        data.putBoolean(NBTConstants.INVERSE, inverse);
-        data.putString(NBTConstants.REPLACE_STACK, inverseReplaceTarget.getRegistryName().toString());
-        data.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        if (!filters.isEmpty()) {
-            ListTag filterTags = new ListTag();
-            for (MinerFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundTag()));
-            }
-            data.put(NBTConstants.FILTERS, filterTags);
-        }
-    }
-
-    @Override
     public void configurationDataSet() {
         super.configurationDataSet();
         if (isRunning()) {
@@ -874,87 +852,47 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        setRadius(Math.min(data.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        NBTUtils.setIntIfPresent(data, NBTConstants.MIN, this::setMinY);
-        NBTUtils.setIntIfPresent(data, NBTConstants.MAX, this::setMaxY);
-        doEject = data.getBoolean(NBTConstants.EJECT);
-        doPull = data.getBoolean(NBTConstants.PULL);
-        NBTUtils.setBooleanIfPresent(data, NBTConstants.SILK_TOUCH, this::setSilkTouch);
-        inverse = data.getBoolean(NBTConstants.INVERSE);
-        inverseReplaceTarget = NBTUtils.readRegistryEntry(data, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
-        inverseRequiresReplacement = data.getBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE);
-        filters.clear();
-        if (data.contains(NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            ListTag tagList = data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof MinerFilter<?> minerFilter) {
-                    filters.add(minerFilter);
-                }
-            }
+    public void writeSustainedData(CompoundTag dataMap) {
+        dataMap.putInt(NBTConstants.RADIUS, getRadius());
+        dataMap.putInt(NBTConstants.MIN, getMinY());
+        dataMap.putInt(NBTConstants.MAX, getMaxY());
+        dataMap.putBoolean(NBTConstants.EJECT, doEject);
+        dataMap.putBoolean(NBTConstants.PULL, doPull);
+        dataMap.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
+        dataMap.putBoolean(NBTConstants.INVERSE, inverse);
+        if (inverseReplaceTarget != Items.AIR) {
+            NBTUtils.writeRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, inverseReplaceTarget);
         }
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.RADIUS, getRadius());
-        ItemDataUtils.setInt(itemStack, NBTConstants.MIN, getMinY());
-        ItemDataUtils.setInt(itemStack, NBTConstants.MAX, getMaxY());
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.EJECT, doEject);
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.PULL, doPull);
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.SILK_TOUCH, getSilkTouch());
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.INVERSE, inverse);
-        ItemDataUtils.setString(itemStack, NBTConstants.REPLACE_STACK, inverseReplaceTarget.getRegistryName().toString());
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        dataMap.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         if (!filters.isEmpty()) {
             ListTag filterTags = new ListTag();
             for (MinerFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundTag()));
             }
-            ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
+            dataMap.put(NBTConstants.FILTERS, filterTags);
         }
     }
 
     @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.RADIUS, Tag.TAG_INT)) {
-            setRadius(Math.min(ItemDataUtils.getInt(itemStack, NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.MIN, Tag.TAG_INT)) {
-            setMinY(ItemDataUtils.getInt(itemStack, NBTConstants.MIN));
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.MAX, Tag.TAG_INT)) {
-            setMaxY(ItemDataUtils.getInt(itemStack, NBTConstants.MAX));
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.EJECT, Tag.TAG_BYTE)) {
-            doEject = ItemDataUtils.getBoolean(itemStack, NBTConstants.EJECT);
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.PULL, Tag.TAG_BYTE)) {
-            doPull = ItemDataUtils.getBoolean(itemStack, NBTConstants.PULL);
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.SILK_TOUCH, Tag.TAG_BYTE)) {
-            setSilkTouch(ItemDataUtils.getBoolean(itemStack, NBTConstants.SILK_TOUCH));
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE, Tag.TAG_BYTE)) {
-            inverse = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE);
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.REPLACE_STACK, Tag.TAG_STRING)) {
-            inverseReplaceTarget = ItemDataUtils.getRegistryEntry(itemStack, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE, Tag.TAG_BYTE)) {
-            inverseRequiresReplacement = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE);
-        }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            ListTag tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
-            for (int i = 0; i < tagList.size(); i++) {
+    public void readSustainedData(CompoundTag dataMap) {
+        setRadius(Math.min(dataMap.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
+        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, this::setMinY);
+        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MAX, this::setMaxY);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.EJECT, eject -> doEject = eject);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.PULL, pull -> doPull = pull);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.SILK_TOUCH, this::setSilkTouch);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, inverse -> this.inverse = inverse);
+        inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
+        filters.clear();
+        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
+            for (int i = 0, size = tagList.size(); i < size; i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof MinerFilter<?> minerFilter) {
                     filters.add(minerFilter);
                 }
             }
-        }
+        });
     }
 
     @Override

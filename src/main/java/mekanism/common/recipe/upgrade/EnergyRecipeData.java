@@ -105,7 +105,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         }
         if (hasData) {
             //We managed to transfer it all into valid slots, so save it to the stack
-            ItemDataUtils.setList(stack, NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(energyContainers));
+            ItemDataUtils.writeContainers(stack, NBTConstants.ENERGY_CONTAINERS, energyContainers);
         }
         return true;
     }

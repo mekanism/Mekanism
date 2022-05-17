@@ -82,10 +82,7 @@ public interface IModuleContainerItem extends IItemHUDProvider {
     default void addModule(ItemStack stack, ModuleData<?> type) {
         Module<?> module = ModuleHelper.INSTANCE.load(stack, type);
         if (module == null) {
-            if (!ItemDataUtils.hasData(stack, NBTConstants.MODULES, Tag.TAG_COMPOUND)) {
-                ItemDataUtils.setCompound(stack, NBTConstants.MODULES, new CompoundTag());
-            }
-            ItemDataUtils.getCompound(stack, NBTConstants.MODULES).put(type.getRegistryName().toString(), new CompoundTag());
+            ItemDataUtils.getOrAddCompound(stack, NBTConstants.MODULES).put(type.getRegistryName().toString(), new CompoundTag());
             ModuleHelper.INSTANCE.load(stack, type).onAdded(true);
         } else {
             module.setInstalledCount(module.getInstalledCount() + 1);

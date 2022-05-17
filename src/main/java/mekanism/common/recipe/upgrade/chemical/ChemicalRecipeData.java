@@ -124,7 +124,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
         if (hasData) {
             //We managed to transfer it all into valid slots, so save it to the stack
-            ItemDataUtils.setList(stack, getSubstanceType().getContainerTag(), DataHandlerUtils.writeContainers(tanks));
+            ItemDataUtils.writeContainers(stack, getSubstanceType().getContainerTag(), tanks);
         }
         return true;
     }

@@ -37,7 +37,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.REQUIRE_STACK, requiresReplacement);
         if (replaceTarget != Items.AIR) {
-            nbtTags.putString(NBTConstants.REPLACE_STACK, replaceTarget.getRegistryName().toString());
+            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, replaceTarget);
         }
         return nbtTags;
     }

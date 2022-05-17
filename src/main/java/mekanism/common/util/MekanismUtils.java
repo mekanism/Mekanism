@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.DoubleUnaryOperator;
@@ -434,10 +433,9 @@ public final class MekanismUtils {
      * @apiNote Only call on the client.
      */
     public static void addFrequencyToTileTooltip(ItemStack stack, FrequencyType<?> frequencyType, List<Component> tooltip) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-            CompoundTag frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
-            if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
-                Frequency frequency = frequencyType.create(frequencyComponent.getCompound(frequencyType.getName()));
+        ItemDataUtils.setCompoundIfPresent(stack, NBTConstants.COMPONENT_FREQUENCY, frequencyComponent -> {
+            NBTUtils.setCompoundIfPresent(frequencyComponent, frequencyType.getName(), frequencyCompound -> {
+                Frequency frequency = frequencyType.create(frequencyCompound);
                 frequency.setValid(false);
                 tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
                 if (frequency.getOwner() != null) {
@@ -447,8 +445,8 @@ public final class MekanismUtils {
                     }
                 }
                 tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? APILang.PUBLIC : APILang.PRIVATE));
-            }
-        }
+            });
+        });
     }
 
     /**
@@ -470,12 +468,8 @@ public final class MekanismUtils {
     }
 
     public static void addUpgradesToTooltip(ItemStack stack, List<Component> tooltip) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-            for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-                tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
-            }
-        }
+        ItemDataUtils.setCompoundIfPresent(stack, NBTConstants.COMPONENT_UPGRADE, upgradeComponent -> Upgrade.buildMap(upgradeComponent)
+              .forEach((upgrade, level) -> tooltip.add(UpgradeDisplay.of(upgrade, level).getTextComponent())));
     }
 
     public static Component getEnergyDisplayShort(FloatingLong energy) {

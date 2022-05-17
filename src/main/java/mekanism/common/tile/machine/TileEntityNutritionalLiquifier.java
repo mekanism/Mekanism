@@ -227,7 +227,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         updateTag.put(NBTConstants.FLUID_STORED, fluidTank.serializeNBT());
         CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
-            item.putString(NBTConstants.ID, lastPasteItem.getStack().getItem().getRegistryName().toString());
+            NBTUtils.writeRegistryEntry(item, NBTConstants.ID, lastPasteItem.getStack().getItem());
             CompoundTag tag = lastPasteItem.getStack().getTag();
             if (tag != null) {
                 item.put(NBTConstants.TAG, tag.copy());

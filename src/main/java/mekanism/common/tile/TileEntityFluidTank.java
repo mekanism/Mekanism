@@ -146,7 +146,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
-        data.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
+        NBTUtils.writeEnum(data, NBTConstants.EDIT_MODE, editMode);
     }
 
     @Override

@@ -279,12 +279,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     @Override
     public void read(CompoundTag nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, Tag.TAG_COMPOUND)) {
-            CompoundTag configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_CONFIG, configNBT -> {
             Set<Direction> directionsToUpdate = EnumSet.noneOf(Direction.class);
-            for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
-                TransmissionType type = entry.getKey();
-                ConfigInfo info = entry.getValue();
+            configInfo.forEach((type, info) -> {
                 info.setEjecting(configNBT.getBoolean(NBTConstants.EJECT + type.ordinal()));
                 CompoundTag sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
@@ -299,9 +296,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
                         }
                     });
                 }
-            }
+            });
             WorldUtils.notifyNeighborsOfChange(tile.getLevel(), tile.getBlockPos(), directionsToUpdate);
-        }
+        });
     }
 
     @Override
@@ -313,7 +310,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
             CompoundTag sideConfig = new CompoundTag();
             for (RelativeSide side : EnumUtils.SIDES) {
-                sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());
+                NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), info.getDataType(side));
             }
             configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
         }
@@ -329,7 +326,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             ConfigInfo info = entry.getValue();
             CompoundTag sideConfig = new CompoundTag();
             for (RelativeSide side : EnumUtils.SIDES) {
-                sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());
+                NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), info.getDataType(side));
             }
             configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
         }

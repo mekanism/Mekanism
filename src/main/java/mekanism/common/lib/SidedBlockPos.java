@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,7 +40,7 @@ public record SidedBlockPos(BlockPos pos, Direction side) {
         target.putInt(NBTConstants.X, pos.getX());
         target.putInt(NBTConstants.Y, pos.getY());
         target.putInt(NBTConstants.Z, pos.getZ());
-        target.putInt(NBTConstants.SIDE, side.ordinal());
+        NBTUtils.writeEnum(target, NBTConstants.SIDE, side);
         return target;
     }
 }

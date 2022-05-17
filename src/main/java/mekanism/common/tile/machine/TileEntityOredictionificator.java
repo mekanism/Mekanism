@@ -38,8 +38,8 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -182,50 +182,27 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
+    public void writeSustainedData(CompoundTag dataMap) {
         if (!filters.isEmpty()) {
-            data.put(NBTConstants.FILTERS, writeFilters());
-        }
-    }
-
-    @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        if (data.contains(NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            setFilters(data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND));
-        }
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!filters.isEmpty()) {
-            ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, writeFilters());
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            setFilters(ItemDataUtils.getList(itemStack, NBTConstants.FILTERS));
-        }
-    }
-
-    private ListTag writeFilters() {
-        ListTag filterList = new ListTag();
-        for (OredictionificatorFilter<?, ?, ?> filter : filters) {
-            filterList.add(filter.write(new CompoundTag()));
-        }
-        return filterList;
-    }
-
-    private void setFilters(ListTag filterList) {
-        for (int i = 0; i < filterList.size(); i++) {
-            IFilter<?> filter = BaseFilter.readFromNBT(filterList.getCompound(i));
-            if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
-                filters.add(oredictionificatorFilter);
+            ListTag filterList = new ListTag();
+            for (OredictionificatorFilter<?, ?, ?> filter : filters) {
+                filterList.add(filter.write(new CompoundTag()));
             }
+            dataMap.put(NBTConstants.FILTERS, filterList);
         }
+    }
+
+    @Override
+    public void readSustainedData(CompoundTag dataMap) {
+        filters.clear();
+        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, filterList -> {
+            for (int i = 0, size = filterList.size(); i < size; i++) {
+                IFilter<?> filter = BaseFilter.readFromNBT(filterList.getCompound(i));
+                if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
+                    filters.add(oredictionificatorFilter);
+                }
+            }
+        });
     }
 
     @Override

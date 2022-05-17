@@ -48,7 +48,6 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
@@ -275,8 +274,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public void read(CompoundTag nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_EJECTOR, Tag.TAG_COMPOUND)) {
-            CompoundTag ejectorNBT = nbtTags.getCompound(NBTConstants.COMPONENT_EJECTOR);
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_EJECTOR, ejectorNBT -> {
             strictInput = ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT);
             NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor, color -> outputColor = color);
             //Input colors
@@ -284,7 +282,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 int index = i;
                 NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR + index, TransporterUtils::readColor, color -> inputColors[index] = color);
             }
-        }
+        });
     }
 
     @Override

@@ -16,12 +16,11 @@ import mekanism.common.lib.collection.HashList;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>>, IHasSortableFilters, ISustainedData {
@@ -39,27 +38,27 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public void writeSustainedData(ItemStack itemStack) {
+    public void writeSustainedData(CompoundTag dataMap) {
         if (!filters.isEmpty()) {
             ListTag filterTags = new ListTag();
             for (QIOFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundTag()));
             }
-            ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
+            dataMap.put(NBTConstants.FILTERS, filterTags);
         }
     }
 
     @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            ListTag tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
-            for (int i = 0; i < tagList.size(); i++) {
+    public void readSustainedData(CompoundTag dataMap) {
+        filters.clear();
+        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
+            for (int i = 0, size = tagList.size(); i < size; i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof QIOFilter<?> qioFilter) {
                     filters.add(qioFilter);
                 }
             }
-        }
+        });
     }
 
     @Override
@@ -67,33 +66,6 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
-    }
-
-    @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        if (!filters.isEmpty()) {
-            ListTag filterTags = new ListTag();
-            for (QIOFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundTag()));
-            }
-            data.put(NBTConstants.FILTERS, filterTags);
-        }
-    }
-
-    @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        filters.clear();
-        if (data.contains(NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            ListTag tagList = data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof QIOFilter<?> qioFilter) {
-                    filters.add(qioFilter);
-                }
-            }
-        }
     }
 
     @Override

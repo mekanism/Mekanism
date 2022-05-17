@@ -74,7 +74,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             tag.putLong(NBTConstants.AMOUNT, entry.getLongValue());
             list.add(tag);
         }
-        ItemDataUtils.setList(stack, NBTConstants.QIO_ITEM_MAP, list);
+        ItemDataUtils.setListOrRemove(stack, NBTConstants.QIO_ITEM_MAP, list);
         DriveMetadata meta = new DriveMetadata(itemCount, itemMap.size());
         meta.write(stack);
         return true;

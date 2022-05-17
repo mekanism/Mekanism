@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -14,7 +13,6 @@ import mekanism.common.capabilities.resolver.EnergyCapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Helper class for implementing fluid handlers for items
@@ -36,10 +34,7 @@ public abstract class ItemStackEnergyHandler extends ItemCapability implements I
     @Override
     protected void load() {
         super.load();
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            DataHandlerUtils.readContainers(getEnergyContainers(null), ItemDataUtils.getList(stack, NBTConstants.ENERGY_CONTAINERS));
-        }
+        ItemDataUtils.readContainers(getStack(), NBTConstants.ENERGY_CONTAINERS, getEnergyContainers(null));
     }
 
     @Nonnull
@@ -50,10 +45,7 @@ public abstract class ItemStackEnergyHandler extends ItemCapability implements I
 
     @Override
     public void onContentsChanged() {
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
-        }
+        ItemDataUtils.writeContainers(getStack(), NBTConstants.ENERGY_CONTAINERS, getEnergyContainers(null));
     }
 
     @Override

@@ -18,7 +18,7 @@ public interface IValveHandler {
             if (valveData.activeTicks > 0) {
                 CompoundTag valveNBT = new CompoundTag();
                 valveNBT.put(NBTConstants.POSITION, NbtUtils.writeBlockPos(valveData.location));
-                valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
+                NBTUtils.writeEnum(valveNBT, NBTConstants.SIDE, valveData.side);
                 valves.add(valveNBT);
             }
         }

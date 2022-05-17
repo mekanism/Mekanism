@@ -3,7 +3,6 @@ package mekanism.common.capabilities.merged;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -56,18 +55,15 @@ public abstract class MergedTankContentsHandler<MERGED extends MergedChemicalTan
         super.load();
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readContainers(gasTanks, ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
-            DataHandlerUtils.readContainers(infusionTanks, ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
-            DataHandlerUtils.readContainers(pigmentTanks, ItemDataUtils.getList(stack, NBTConstants.PIGMENT_TANKS));
-            DataHandlerUtils.readContainers(slurryTanks, ItemDataUtils.getList(stack, NBTConstants.SLURRY_TANKS));
+            ItemDataUtils.readContainers(stack, NBTConstants.GAS_TANKS, gasTanks);
+            ItemDataUtils.readContainers(stack, NBTConstants.INFUSION_TANKS, infusionTanks);
+            ItemDataUtils.readContainers(stack, NBTConstants.PIGMENT_TANKS, pigmentTanks);
+            ItemDataUtils.readContainers(stack, NBTConstants.SLURRY_TANKS, slurryTanks);
         }
     }
 
     protected void onContentsChanged(String key, List<? extends INBTSerializable<CompoundTag>> containers) {
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, key, DataHandlerUtils.writeContainers(containers));
-        }
+        ItemDataUtils.writeContainers(getStack(), key, containers);
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -38,10 +37,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
     @Override
     protected void load() {
         super.load();
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            DataHandlerUtils.readContainers(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
-        }
+        ItemDataUtils.readContainers(getStack(), NBTConstants.FLUID_TANKS, getFluidTanks(null));
     }
 
     @Nonnull
@@ -52,10 +48,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
 
     @Override
     public void onContentsChanged() {
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(getFluidTanks(null)));
-        }
+        ItemDataUtils.writeContainers(getStack(), NBTConstants.FLUID_TANKS, getFluidTanks(null));
     }
 
     @Nonnull

@@ -14,6 +14,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -69,7 +70,7 @@ public class ItemConfigurationCard extends Item {
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
-                    data.putString(NBTConstants.DATA_TYPE, configCardAccess.getConfigurationDataType().getRegistryName().toString());
+                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, configCardAccess.getConfigurationDataType());
                     ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
                     player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))),
                           Util.NIL_UUID);

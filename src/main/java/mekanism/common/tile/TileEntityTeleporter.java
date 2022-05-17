@@ -589,7 +589,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
         if (color != null) {
-            updateTag.putInt(NBTConstants.COLOR, color.ordinal());
+            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, color);
         }
         return updateTag;
     }

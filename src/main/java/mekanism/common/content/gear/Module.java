@@ -186,16 +186,15 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
      * @param callback - will run after the NBT data is saved
      */
     public void save(@Nullable Runnable callback) {
-        CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+        CompoundTag modulesTag = ItemDataUtils.getOrAddCompound(container, NBTConstants.MODULES);
         String registryName = data.getRegistryName().toString();
         CompoundTag nbt = modulesTag.getCompound(registryName);
         nbt.putInt(NBTConstants.AMOUNT, installed);
         for (ModuleConfigItem<?> item : configItems) {
             item.write(nbt);
         }
-
+        //If the modules tag doesn't contain a match then we are on a new entry and have to make sure to add it
         modulesTag.put(registryName, nbt);
-        ItemDataUtils.setCompound(container, NBTConstants.MODULES, modulesTag);
 
         if (callback != null) {
             callback.run();

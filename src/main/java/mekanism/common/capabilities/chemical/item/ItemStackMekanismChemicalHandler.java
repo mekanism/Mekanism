@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -13,7 +12,6 @@ import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Helper class for implementing chemical handlers for items
@@ -34,18 +32,12 @@ public abstract class ItemStackMekanismChemicalHandler<CHEMICAL extends Chemical
     @Override
     protected void load() {
         super.load();
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            DataHandlerUtils.readContainers(getChemicalTanks(null), ItemDataUtils.getList(stack, getNbtKey()));
-        }
+        ItemDataUtils.readContainers(getStack(), getNbtKey(), getChemicalTanks(null));
     }
 
     @Override
     public void onContentsChanged() {
-        ItemStack stack = getStack();
-        if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, getNbtKey(), DataHandlerUtils.writeContainers(getChemicalTanks(null)));
-        }
+        ItemDataUtils.writeContainers(getStack(), getNbtKey(), getChemicalTanks(null));
     }
 
     @Nonnull

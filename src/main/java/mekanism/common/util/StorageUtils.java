@@ -7,7 +7,6 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -179,7 +178,7 @@ public class StorageUtils {
     @Nonnull
     public static FluidStack getStoredFluidFromNBT(ItemStack stack) {
         BasicFluidTank tank = BasicFluidTank.create(Integer.MAX_VALUE, null);
-        DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
+        ItemDataUtils.readContainers(stack, NBTConstants.FLUID_TANKS, Collections.singletonList(tank));
         return tank.getFluid();
     }
 
@@ -221,7 +220,7 @@ public class StorageUtils {
 
     @Nonnull
     private static <STACK extends ChemicalStack<?>> STACK getStoredChemicalFromNBT(ItemStack stack, IChemicalTank<?, STACK> tank, String tag) {
-        DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, tag));
+        ItemDataUtils.readContainers(stack, tag, Collections.singletonList(tank));
         return tank.getStack();
     }
 
@@ -231,7 +230,7 @@ public class StorageUtils {
      */
     public static FloatingLong getStoredEnergyFromNBT(ItemStack stack) {
         BasicEnergyContainer container = BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null);
-        DataHandlerUtils.readContainers(Collections.singletonList(container), ItemDataUtils.getList(stack, NBTConstants.ENERGY_CONTAINERS));
+        ItemDataUtils.readContainers(stack, NBTConstants.ENERGY_CONTAINERS, Collections.singletonList(container));
         return container.getEnergy();
     }
 
@@ -239,7 +238,7 @@ public class StorageUtils {
         //Manually handle this as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
         BasicEnergyContainer container = BasicEnergyContainer.create(capacity, null);
         container.setEnergy(capacity);
-        ItemDataUtils.setList(toFill, NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(Collections.singletonList(container)));
+        ItemDataUtils.writeContainers(toFill, NBTConstants.ENERGY_CONTAINERS, Collections.singletonList(container));
         //The item is now filled return it for convenience
         return toFill;
     }
