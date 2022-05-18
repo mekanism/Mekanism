@@ -67,16 +67,20 @@ public class ModelFreeRunners extends MekanismJavaModel {
 
     @Override
     public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
-        renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+        renderLeg(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha, true);
+        renderLeg(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha, false);
     }
 
     public void renderLeg(@Nonnull PoseStack poseStack, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
-        VertexConsumer vertexConsumer = getVertexConsumer(renderer, RENDER_TYPE, hasEffect);
+        renderLeg(poseStack, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1, left);
+    }
+
+    protected void renderLeg(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
+          float alpha, boolean left) {
         if (left) {
-            renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, 1, 1, 1, 1);
+            renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
         } else {
-            renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, 1, 1, 1, 1);
+            renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
         }
     }
 }
