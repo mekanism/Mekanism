@@ -3,6 +3,7 @@ package mekanism.client.render.item.gear;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import javax.annotation.Nonnull;
+import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.render.item.MekanismISTER;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,12 +13,23 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderJetpack extends MekanismISTER {
 
-    public static final RenderJetpack RENDERER = new RenderJetpack();
+    public static final RenderJetpack RENDERER = new RenderJetpack(false);
+    public static final RenderJetpack ARMORED_RENDERER = new RenderJetpack(true);
+
+    private final boolean armored;
     private ModelJetpack jetpack;
+
+    private RenderJetpack(boolean armored) {
+        this.armored = armored;
+    }
 
     @Override
     public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
-        jetpack = new ModelJetpack(getEntityModels());
+        if (armored) {
+            jetpack = new ModelArmoredJetpack(getEntityModels());
+        } else {
+            jetpack = new ModelJetpack(getEntityModels());
+        }
     }
 
     @Override

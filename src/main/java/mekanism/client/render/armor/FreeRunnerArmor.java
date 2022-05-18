@@ -2,6 +2,7 @@ package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
+import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelFreeRunners;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -13,16 +14,23 @@ import net.minecraft.world.item.ItemStack;
 
 public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListener {
 
-    public static final FreeRunnerArmor FREE_RUNNERS = new FreeRunnerArmor();
+    public static final FreeRunnerArmor FREE_RUNNERS = new FreeRunnerArmor(false);
+    public static final FreeRunnerArmor ARMORED_FREE_RUNNERS = new FreeRunnerArmor(true);
 
+    private final boolean armored;
     private ModelFreeRunners model;
 
-    private FreeRunnerArmor() {
+    private FreeRunnerArmor(boolean armored) {
+        this.armored = armored;
     }
 
     @Override
     public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
-        model = new ModelFreeRunners(Minecraft.getInstance().getEntityModels());
+        if (armored) {
+            model = new ModelArmoredFreeRunners(Minecraft.getInstance().getEntityModels());
+        } else {
+            model = new ModelFreeRunners(Minecraft.getInstance().getEntityModels());
+        }
     }
 
     @Override

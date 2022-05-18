@@ -107,13 +107,13 @@ public class ModelJetpack extends MekanismJavaModel {
     private final List<ModelPart> wingParts;
 
     public ModelJetpack(EntityModelSet entityModelSet) {
-        this(entityModelSet.bakeLayer(JETPACK_LAYER), JETPACK_TEXTURE);
+        this(entityModelSet.bakeLayer(JETPACK_LAYER));
     }
 
-    protected ModelJetpack(ModelPart root, ResourceLocation texture) {
+    protected ModelJetpack(ModelPart root) {
         super(RenderType::entitySolid);
-        this.frameRenderType = renderType(texture);
-        this.wingRenderType = MekanismRenderType.standard(texture);
+        this.frameRenderType = renderType(JETPACK_TEXTURE);
+        this.wingRenderType = MekanismRenderType.standard(JETPACK_TEXTURE);
         parts = getRenderableParts(root, PACK_TOP, PACK_BOTTOM, THRUSTER_LEFT, THRUSTER_RIGHT, FUEL_TUBE_RIGHT, FUEL_TUBE_LEFT, PACK_MID,
               WING_SUPPORT_L, WING_SUPPORT_R, PACK_TOP_REAR, EXTENDO_SUPPORT_L, EXTENDO_SUPPORT_R, PACK_DOODAD_2, PACK_DOODAD_3, BOTTOM_THRUSTER);
         litParts = getRenderableParts(root, LIGHT_1, LIGHT_2, LIGHT_3, PACK_CORE);

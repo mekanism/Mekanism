@@ -28,12 +28,13 @@ public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttribut
 
     public ItemArmoredFreeRunners(Properties properties) {
         super(ARMORED_FREE_RUNNER_MATERIAL, properties);
-        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.armoredFreeRunnerArmor, MekanismConfig.gear.armoredFreeRunnerToughness);
+        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.armoredFreeRunnerArmor, MekanismConfig.gear.armoredFreeRunnerToughness,
+              MekanismConfig.gear.armoredFreeRunnerKnockbackResistance);
     }
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(RenderPropertiesProvider.freeRunners()); // TODO: custom rendering
+        consumer.accept(RenderPropertiesProvider.armoredFreeRunners());
     }
 
     @Override
@@ -57,6 +58,8 @@ public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttribut
         UUID modifier = ARMOR_MODIFIER_UUID_PER_SLOT[getSlot().getIndex()];
         builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
+        builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().getKnockbackResistance(),
+              Operation.ADDITION));
     }
 
     @ParametersAreNonnullByDefault
@@ -75,6 +78,11 @@ public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttribut
         @Override
         public float getToughness() {
             return MekanismConfig.gear.armoredFreeRunnerToughness.get();
+        }
+
+        @Override
+        public float getKnockbackResistance() {
+            return MekanismConfig.gear.armoredFreeRunnerKnockbackResistance.get();
         }
     }
 }

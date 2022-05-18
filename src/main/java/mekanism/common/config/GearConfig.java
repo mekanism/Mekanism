@@ -70,12 +70,14 @@ public class GearConfig extends BaseMekanismConfig {
     //Armored Free Runner
     public final CachedIntValue armoredFreeRunnerArmor;
     public final CachedFloatValue armoredFreeRunnerToughness;
+    public final CachedFloatValue armoredFreeRunnerKnockbackResistance;
     //Jetpack
     public final CachedLongValue jetpackMaxGas;
     public final CachedLongValue jetpackFillRate;
     //Armored Jetpack
     public final CachedIntValue armoredJetpackArmor;
     public final CachedFloatValue armoredJetpackToughness;
+    public final CachedFloatValue armoredJetpackKnockbackResistance;
     //Portable Teleporter
     public final CachedFloatingLongValue portableTeleporterMaxEnergy;
     public final CachedFloatingLongValue portableTeleporterChargeRate;
@@ -210,9 +212,11 @@ public class GearConfig extends BaseMekanismConfig {
               "chargeRate", FloatingLong.createConst(320));
         builder.comment("Armored Free Runner Settings").push(ARMORED_SUBCATEGORY);
         armoredFreeRunnerArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Free Runners")
-              .define("armor", 3));
+              .defineInRange("armor", 3, 0, Integer.MAX_VALUE));
         armoredFreeRunnerToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Free Runners.")
-              .define("toughness", 2.0));
+              .defineInRange("toughness", 2.0, 0, Float.MAX_VALUE));
+        armoredFreeRunnerKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the Armored Free Runners.")
+              .defineInRange("knockbackResistance", 0.0, 0, Float.MAX_VALUE));
         builder.pop(2);
 
         builder.comment("Jetpack Settings").push(JETPACK_CATEGORY);
@@ -222,9 +226,11 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
         builder.comment("Armored Jetpack Settings").push(ARMORED_SUBCATEGORY);
         armoredJetpackArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Jetpack.")
-              .define("armor", 8));
+              .defineInRange("armor", 8, 0, Integer.MAX_VALUE));
         armoredJetpackToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Jetpack.")
-              .define("toughness", 2.0));
+              .defineInRange("toughness", 2.0, 0, Float.MAX_VALUE));
+        armoredJetpackKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the Armored Jetpack.")
+              .defineInRange("knockbackResistance", 0.0, 0, Float.MAX_VALUE));
         builder.pop(2);
 
         builder.comment("Network Reader Settings").push(NETWORK_READER_CATEGORY);
