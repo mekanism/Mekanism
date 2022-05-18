@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.resolver.manager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -110,9 +111,13 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
         //Note: We don't invalidate the base handlers as they are still valid regardless, and the holder just removes slots when they shouldn't be accessible
         // we only bother invalidating the lazy optionals
         for (Map<Capability<?>, LazyOptional<?>> cachedSide : cachedCapabilities.values()) {
-            cachedSide.values().forEach(this::invalidate);
+            for (LazyOptional<?> lazyOptional : new ArrayList<>(cachedSide.values())) {
+                invalidate(lazyOptional);
+            }
         }
-        cachedReadOnlyCapabilities.values().forEach(this::invalidate);
+        for (LazyOptional<?> lazyOptional : new ArrayList<>(cachedReadOnlyCapabilities.values())) {
+            invalidate(lazyOptional);
+        }
     }
 
     protected void invalidate(@Nullable LazyOptional<?> cachedCapability) {
