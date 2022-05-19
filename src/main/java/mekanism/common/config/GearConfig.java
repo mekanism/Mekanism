@@ -10,6 +10,8 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -131,6 +133,12 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaSuitNutritionalTransferRate;
     public final CachedLongValue mekaSuitJetpackMaxStorage;
     public final CachedLongValue mekaSuitJetpackTransferRate;
+    public final CachedIntValue mekaSuitHelmetArmor;
+    public final CachedIntValue mekaSuitBodyArmorArmor;
+    public final CachedIntValue mekaSuitPantsArmor;
+    public final CachedIntValue mekaSuitBootsArmor;
+    public final CachedFloatValue mekaSuitToughness;
+    public final CachedFloatValue mekaSuitKnockbackResistance;
     public final Map<DamageSource, CachedFloatValue> mekaSuitDamageRatios = new LinkedHashMap<>();
     public final CachedFloatValue mekaSuitFallDamageRatio;
     public final CachedFloatValue mekaSuitMagicDamageRatio;
@@ -344,6 +352,18 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("jetpackMaxStorage", 48_000, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
+        mekaSuitHelmetArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Helmets.")
+              .defineInRange("helmetArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.HEAD), 0, Integer.MAX_VALUE));
+        mekaSuitBodyArmorArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit BodyArmor.")
+              .defineInRange("bodyArmorArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.CHEST), 0, Integer.MAX_VALUE));
+        mekaSuitPantsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Pants.")
+              .defineInRange("pantsArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.LEGS), 0, Integer.MAX_VALUE));
+        mekaSuitBootsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Boots.")
+              .defineInRange("bootsArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.FEET), 0, Integer.MAX_VALUE));
+        mekaSuitToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the MekaSuit.")
+              .defineInRange("toughness", ArmorMaterials.NETHERITE.getToughness(), 0, Float.MAX_VALUE));
+        mekaSuitKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the MekaSuit.")
+              .defineInRange("knockbackResistance", ArmorMaterials.NETHERITE.getKnockbackResistance(), 0, Float.MAX_VALUE));
         builder.push(MEKASUIT_DAMAGE_CATEGORY);
         mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power.")
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
