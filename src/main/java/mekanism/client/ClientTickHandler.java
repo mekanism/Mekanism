@@ -231,7 +231,7 @@ public class ClientTickHandler {
             if (isVisionEnhancementOn(minecraft.player)) {
                 visionEnhancement = true;
                 // adds if it doesn't exist, otherwise tops off duration to 220. equal or less than 200 will make vision flickers
-                minecraft.player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 220, 0, false, true, false));
+                minecraft.player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 220, 0, false, false, false));
             } else if (visionEnhancement) {
                 visionEnhancement = false;
                 MobEffectInstance effect = minecraft.player.getEffect(MobEffects.NIGHT_VISION);
