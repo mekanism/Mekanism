@@ -469,11 +469,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Armored Free Runners
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_FREE_RUNNERS)
               .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.PREVIOUS, Pattern.CONSTANT),
                     TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT))
               ).key(Pattern.PREVIOUS, MekanismItems.FREE_RUNNERS)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_BRONZE)
               .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_DIAMOND)
+              .key(Pattern.STEEL, MekanismTags.Items.STORAGE_BLOCKS_STEEL)
               .build(consumer);
         //Fuelwood heater
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FUELWOOD_HEATER)

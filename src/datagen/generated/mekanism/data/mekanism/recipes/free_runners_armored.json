@@ -4,6 +4,7 @@
     "item": "mekanism:free_runners_armored"
   },
   "pattern": [
+    " S ",
     "#P#",
     "I I"
   ],
@@ -16,6 +17,9 @@
     },
     "#": {
       "tag": "forge:dusts/diamond"
+    },
+    "S": {
+      "tag": "forge:storage_blocks/steel"
     }
   }
 }
