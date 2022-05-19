@@ -20,21 +20,21 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.IItemRenderProperties;
 
-public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresher {
+public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttributeRefresher {
 
-    private static final ArmoredJetpackMaterial ARMORED_JETPACK_MATERIAL = new ArmoredJetpackMaterial();
+    private static final ArmoredFreeRunnerMaterial ARMORED_FREE_RUNNER_MATERIAL = new ArmoredFreeRunnerMaterial();
 
     private final AttributeCache attributeCache;
 
-    public ItemArmoredJetpack(Properties properties) {
-        super(ARMORED_JETPACK_MATERIAL, properties);
-        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.armoredJetpackArmor, MekanismConfig.gear.armoredJetpackToughness,
-              MekanismConfig.gear.armoredJetpackKnockbackResistance);
+    public ItemArmoredFreeRunners(Properties properties) {
+        super(ARMORED_FREE_RUNNER_MATERIAL, properties);
+        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.armoredFreeRunnerArmor, MekanismConfig.gear.armoredFreeRunnerToughness,
+              MekanismConfig.gear.armoredFreeRunnerKnockbackResistance);
     }
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(RenderPropertiesProvider.armoredJetpack());
+        consumer.accept(RenderPropertiesProvider.armoredFreeRunners());
     }
 
     @Override
@@ -64,26 +64,25 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    private static class ArmoredJetpackMaterial extends JetpackMaterial {
-
+    private static class ArmoredFreeRunnerMaterial extends FreeRunnerMaterial {
         @Override
         public int getDefenseForSlot(EquipmentSlot slotType) {
-            return slotType == EquipmentSlot.CHEST ? MekanismConfig.gear.armoredJetpackArmor.get() : 0;
+            return slotType == EquipmentSlot.FEET ? MekanismConfig.gear.armoredFreeRunnerArmor.get() : 0;
         }
 
         @Override
         public String getName() {
-            return Mekanism.MODID + ":jetpack_armored";
+            return Mekanism.MODID + ":free_runners_armored";
         }
 
         @Override
         public float getToughness() {
-            return MekanismConfig.gear.armoredJetpackToughness.get();
+            return MekanismConfig.gear.armoredFreeRunnerToughness.get();
         }
 
         @Override
         public float getKnockbackResistance() {
-            return MekanismConfig.gear.armoredJetpackKnockbackResistance.get();
+            return MekanismConfig.gear.armoredFreeRunnerKnockbackResistance.get();
         }
     }
 }

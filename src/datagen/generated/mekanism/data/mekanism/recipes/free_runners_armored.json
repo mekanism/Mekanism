@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:free_runners_armored"
+  },
+  "pattern": [
+    " S ",
+    "#P#",
+    "I I"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:free_runners"
+    },
+    "I": {
+      "tag": "forge:ingots/bronze"
+    },
+    "#": {
+      "tag": "forge:dusts/diamond"
+    },
+    "S": {
+      "tag": "forge:storage_blocks/steel"
+    }
+  }
+}

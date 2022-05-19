@@ -21,8 +21,8 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String ENERGY_TABLET_CATEGORY = "energy_tablet";
     private static final String FLAMETHROWER_CATEGORY = "flamethrower";
     private static final String FREE_RUNNER_CATEGORY = "free_runner";
+    private static final String ARMORED_SUBCATEGORY = "armored";
     private static final String JETPACK_CATEGORY = "jetpack";
-    private static final String ARMORED_JETPACK_SUBCATEGORY = "armored";
     private static final String NETWORK_READER_CATEGORY = "network_reader";
     private static final String PORTABLE_TELEPORTER_CATEGORY = "portable_teleporter";
     private static final String SCUBA_TANK_CATEGORY = "scuba_tank";
@@ -67,12 +67,17 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatValue freeRunnerFallDamageRatio;
     public final CachedFloatingLongValue freeRunnerMaxEnergy;
     public final CachedFloatingLongValue freeRunnerChargeRate;
+    //Armored Free Runner
+    public final CachedIntValue armoredFreeRunnerArmor;
+    public final CachedFloatValue armoredFreeRunnerToughness;
+    public final CachedFloatValue armoredFreeRunnerKnockbackResistance;
     //Jetpack
     public final CachedLongValue jetpackMaxGas;
     public final CachedLongValue jetpackFillRate;
     //Armored Jetpack
     public final CachedIntValue armoredJetpackArmor;
     public final CachedFloatValue armoredJetpackToughness;
+    public final CachedFloatValue armoredJetpackKnockbackResistance;
     //Portable Teleporter
     public final CachedFloatingLongValue portableTeleporterMaxEnergy;
     public final CachedFloatingLongValue portableTeleporterChargeRate;
@@ -205,18 +210,27 @@ public class GearConfig extends BaseMekanismConfig {
               "maxEnergy", FloatingLong.createConst(64_000));
         freeRunnerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Free Runners can accept per tick.",
               "chargeRate", FloatingLong.createConst(320));
-        builder.pop();
+        builder.comment("Armored Free Runner Settings").push(ARMORED_SUBCATEGORY);
+        armoredFreeRunnerArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Free Runners")
+              .defineInRange("armor", 3, 0, Integer.MAX_VALUE));
+        armoredFreeRunnerToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Free Runners.")
+              .defineInRange("toughness", 2.0, 0, Float.MAX_VALUE));
+        armoredFreeRunnerKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the Armored Free Runners.")
+              .defineInRange("knockbackResistance", 0.0, 0, Float.MAX_VALUE));
+        builder.pop(2);
 
         builder.comment("Jetpack Settings").push(JETPACK_CATEGORY);
         jetpackMaxGas = CachedLongValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
               .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
         jetpackFillRate = CachedLongValue.wrap(this, builder.comment("Amount of hydrogen the Jetpack can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
-        builder.comment("Armored Jetpack Settings").push(ARMORED_JETPACK_SUBCATEGORY);
+        builder.comment("Armored Jetpack Settings").push(ARMORED_SUBCATEGORY);
         armoredJetpackArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Jetpack.")
-              .define("armor", 8));
+              .defineInRange("armor", 8, 0, Integer.MAX_VALUE));
         armoredJetpackToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Jetpack.")
-              .define("toughness", 2.0));
+              .defineInRange("toughness", 2.0, 0, Float.MAX_VALUE));
+        armoredJetpackKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the Armored Jetpack.")
+              .defineInRange("knockbackResistance", 0.0, 0, Float.MAX_VALUE));
         builder.pop(2);
 
         builder.comment("Network Reader Settings").push(NETWORK_READER_CATEGORY);

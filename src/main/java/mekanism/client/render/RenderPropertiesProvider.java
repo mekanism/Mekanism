@@ -15,7 +15,6 @@ import mekanism.client.render.item.block.RenderIndustrialAlarmItem;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
 import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
-import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
@@ -75,7 +74,7 @@ public class RenderPropertiesProvider {
     }
 
     public static IItemRenderProperties armoredJetpack() {
-        return new MekCustomArmorRenderProperties(RenderArmoredJetpack.RENDERER, JetpackArmor.ARMORED_JETPACK);
+        return new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK);
     }
 
     public static IItemRenderProperties jetpack() {
@@ -88,6 +87,10 @@ public class RenderPropertiesProvider {
 
     public static IItemRenderProperties flamethrower() {
         return new MekRenderProperties(RenderFlameThrower.RENDERER);
+    }
+
+    public static IItemRenderProperties armoredFreeRunners() {
+        return new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS);
     }
 
     public static IItemRenderProperties freeRunners() {
