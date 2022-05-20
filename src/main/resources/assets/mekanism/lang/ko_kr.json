@@ -478,6 +478,7 @@
   "description.mekanism.geiger_unit": "HUD에 주변의 방사능 수준을 표시합니다.",
   "description.mekanism.gravitational_modulating_unit": "반물질의 엄청난 에너지와 실험적인 여러 기술을 이용해, 중력을 조종할 수 있도록 해 줍니다.",
   "description.mekanism.hydraulic_propulsion_unit": "플레이어가 더 높게 점프할 수 있도록 해줍니다.",
+  "description.mekanism.hydrostatic_repulsor_unit": "첨단 기술을 사용해서 물을 밀어내고 물을 지나갈 때의 저항을 낮춥니다.",
   "description.mekanism.induction_casing": "유도 매트릭스 멀티블록에 사용되는 케이싱으로, 막대한 양의 에너지를 견딜 수 있습니다.",
   "description.mekanism.induction_cell": "막대한 양의 에너지를 축적할 수 있는 고전도성 축전기입니다. 유도 매트릭스의 내부에 내장하여 에너지 저장 용량을 늘리는 데 사용합니다.",
   "description.mekanism.induction_port": "유도 매트릭스 멀티블록에 배치할 수 있는 포트로, 에너지를 투입 및 방출할 수 있도록 해줍니다.",
