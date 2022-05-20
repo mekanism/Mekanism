@@ -12,6 +12,9 @@ https://www.curseforge.com/minecraft/mc-mods/mekanism-ce
 ```
 You will find the files inside ./output/
 
+## For modpacks
+You need to include the [LICENSE](https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.7.10/LICENSE.md) for Mekanism 1.7.10 Community Edition and Aidanbrady as author, if your system supports it indicate that this is an custom version and give appreciable credits
+
 ## Fixes by
 
 #### Clienthax : 
@@ -38,3 +41,9 @@ fix EnergyMatrix use IC2 cable(EnergyNetBug) connecting valve as a loop to fully
 fix for bin dupe bug, removed the ability to stack bins, quick solution but it works
 
 ## All contributors get capes
+
+# License stuff
+
+[LICENSE](https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.7.10/LICENSE.md)
+
+[ORIGINAL MOD](https://github.com/mekanism/Mekanism)
