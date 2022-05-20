@@ -1,8 +1,5 @@
 package mekanism.common.content.gear.mekatool;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.gear.ICustomModule;
@@ -13,13 +10,8 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockBounding;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 
 @ParametersAreNonnullByDefault
 public class ModuleBlastingUnit implements ICustomModule<ModuleBlastingUnit> {
@@ -28,7 +20,7 @@ public class ModuleBlastingUnit implements ICustomModule<ModuleBlastingUnit> {
 
     @Override
     public void init(IModule<ModuleBlastingUnit> module, ModuleConfigItemCreator configItemCreator) {
-        blastRadius = configItemCreator.createConfigItem("blast_radius", MekanismLang.MODULE_BLASTING_RADIUS,
+        blastRadius = configItemCreator.createConfigItem("blast_radius", MekanismLang.MODULE_BLAST_RADIUS,
                 new ModuleEnumData<>(BlastRadius.class, module.getInstalledCount() + 1, BlastRadius.LOW));
     }
 
@@ -56,7 +48,7 @@ public class ModuleBlastingUnit implements ICustomModule<ModuleBlastingUnit> {
 
         BlastRadius(int radius) {
             this.radius = radius;
-            this.label = MekanismLang.MODULE_BLAST_RADIUS.translate(2 * radius + 1);
+            this.label = MekanismLang.MODULE_BLAST_AREA.translate(2 * radius + 1);
         }
 
         @Override

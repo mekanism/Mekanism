@@ -3,9 +3,15 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -18,7 +24,6 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
@@ -62,7 +67,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -231,12 +238,26 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     public Map<BlockPos, BlockState> getBlastedBlocks(Level world, Player player, ItemStack stack, BlockPos pos, BlockState state) {
         //Setup initial set for blasting
-        IModule<ModuleBlastingUnit> blastingUnit = getModule(stack, MekanismModules.BLASTING_UNIT);
-        if (blastingUnit != null && blastingUnit.isEnabled() && !player.isShiftKeyDown() && IBlastingItem.canBlastBlock(world, pos, state)) {
-            Direction direction = getPlayerPOVHitResult(world, player, ClipContext.Fluid.NONE).getDirection();
-            return IBlastingItem.findPositions(world, pos, direction, blastingUnit.getCustomInstance().getBlastRadius());
+        if (!player.isShiftKeyDown()) {
+            IModule<ModuleBlastingUnit> blastingUnit = getModule(stack, MekanismModules.BLASTING_UNIT);
+            if (blastingUnit != null && blastingUnit.isEnabled()) {
+                int radius = blastingUnit.getCustomInstance().getBlastRadius();
+                if (radius > 0 && IBlastingItem.canBlastBlock(world, pos, state)) {
+                    Direction direction = getPlayerPOVHitResult(world, player, ClipContext.Fluid.NONE).getDirection();
+                    return IBlastingItem.findPositions(world, pos, direction, radius);
+                }
+            }
         }
         return Collections.emptyMap();
+    }
+
+    private Object2IntMap<BlockPos> getVeinedBlocks(Level world, ItemStack stack, Map<BlockPos, BlockState> blocks, Object2BooleanMap<Block> oreTracker) {
+        IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
+        if (veinMiningUnit != null && veinMiningUnit.isEnabled()) {
+            ModuleVeinMiningUnit customInstance = veinMiningUnit.getCustomInstance();
+            return ModuleVeinMiningUnit.findPositions(world, blocks, customInstance.isExtended() ? customInstance.getExcavationRange() : 0, oreTracker);
+        }
+        return blocks.entrySet().stream().collect(Collectors.toMap(Entry::getKey, be -> 0, (l, r) -> l, Object2IntArrayMap::new));
     }
 
     @Override
@@ -252,18 +273,18 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), silk);
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
                 Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
+                blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
 
-                IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
-                //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
-                if (veinMiningUnit != null && veinMiningUnit.isEnabled() && !(state.getBlock() instanceof BlockBounding)) {
-                    blocks = ModuleVeinMiningUnit.findPositions(world, blocks.isEmpty() ? Map.of(pos, state) : blocks, veinMiningUnit.getCustomInstance().isExtended(), veinMiningUnit.getCustomInstance().getExcavationRange());
-                }
+                Object2BooleanMap<Block> oreTracker = blocks.values().stream().collect(Collectors.toMap(BlockStateBase::getBlock,
+                      bs -> bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE), (l, r) -> l, Object2BooleanArrayMap::new));
 
-                if (!blocks.isEmpty()) {
+                Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
+                if (!veinedBlocks.isEmpty()) {
                     //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
                     FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
-                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, blocks.keySet(),
-                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), (distance, bs) -> 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2), state);
+                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, veinedBlocks,
+                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness),
+                          (distance, bs) -> 0.5 * Math.pow(distance, oreTracker.getBoolean(bs.getBlock()) ? 1.5 : 2), state);
                 }
             }
         }

@@ -1,11 +1,17 @@
 package mekanism.common.content.gear.mekatool;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -17,6 +23,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
@@ -27,6 +34,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -51,40 +59,76 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
         return excavationRange.get().getRange();
     }
 
-    public static Map<BlockPos, BlockState> findPositions(Level world, Map<BlockPos, BlockState> initial, boolean extended, int maxRange) {
+    // Helper class to help calculate the breadth first traversal path distance
+    private static class TraversalDistance {
+
+        // Start at distance 0
+        private int distance = 0;
+        private int next;
+
+        // Initialize with the number of elements at distance 0
+        public TraversalDistance(int next) {
+            this.next = next;
+        }
+
+        // When all elements at distance 0 are found, determine how many elements there are with distance 1 and increment distance
+        public void updateDistance(int found, int frontierSize) {
+            if (found == next) {
+                distance++;
+                next += frontierSize;
+            }
+        }
+
+        public int getDistance() {
+            return distance;
+        }
+    }
+
+    public static boolean canVeinBlock(BlockState state) {
+        //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
+        return !(state.getBlock() instanceof BlockBounding);
+    }
+
+    public static Object2IntMap<BlockPos> findPositions(Level world, Map<BlockPos, BlockState> initial, int extendedRange, Object2BooleanMap<Block> oreTracker) {
+        Object2IntMap<BlockPos> found = new Object2IntLinkedOpenHashMap<>();
+
         int maxVein = MekanismConfig.gear.disassemblerMiningCount.get();
-        int maxCount = (int) (initial.size() + maxVein * initial.values().stream().map(bs->bs.getBlock()).distinct().count());
-        Map<BlockPos, BlockState> found = new LinkedHashMap<>();
-        Map<BlockPos, BlockState> openSet = new LinkedHashMap<>();
-        openSet.putAll(initial);
-        for (int dist = 0, next = openSet.size(); !openSet.isEmpty(); next += (found.size() == next && ++dist > 0) ? openSet.size() : 0) {
-            Entry<BlockPos, BlockState> blockEntry = openSet.entrySet().iterator().next();
+        int maxCount = initial.size() + maxVein * oreTracker.size();
+
+        Map<BlockPos, BlockState> frontier = new LinkedHashMap<>(initial);
+        TraversalDistance dist = new TraversalDistance(frontier.size());
+        while (!frontier.isEmpty()) {
+            Iterator<Entry<BlockPos, BlockState>> iterator = frontier.entrySet().iterator();
+            Entry<BlockPos, BlockState> blockEntry = iterator.next();
+            iterator.remove();
+
             BlockPos blockPos = blockEntry.getKey();
             BlockState blockState = blockEntry.getValue();
-            found.put(blockPos, blockState);
-            openSet.remove(blockPos);
-            if (found.size() > maxCount) {
+            found.put(blockPos, dist.getDistance());
+            if (found.size() >= maxCount) {
                 break;
             }
-            boolean isOre = blockState.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE);
+
+            Block block = blockState.getBlock();
+            boolean isOre = oreTracker.getBoolean(block);
             //If it is extended or should be treated as an ore
-            if (isOre || extended) {
-                Block block = blockState.getBlock();
+            if (isOre || extendedRange > dist.getDistance()) {
                 for (BlockPos nextPos : BlockPos.betweenClosed(blockPos.offset(-1, -1, -1), blockPos.offset(1, 1, 1))) {
                     //We can check contains as mutable
-                    if (!found.containsKey(nextPos) && (isOre || dist < maxRange)) {
+                    if (!found.containsKey(nextPos)) {
                         Optional<BlockState> nextState = WorldUtils.getBlockState(world, nextPos);
-                        if (nextState.isPresent() && block == nextState.get().getBlock()) {
+                        if (nextState.isPresent() && nextState.get().is(block)) {
                             //Make sure to add it as immutable
-                            openSet.put(nextPos.immutable(), nextState.get());
+                            frontier.put(nextPos.immutable(), nextState.get());
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
                             Mekanism.packetHandler().sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, nextPos),
-                                    Vec3.atCenterOf(blockPos), Vec3.atCenterOf(nextPos), 10), world, blockPos);
+                                  Vec3.atCenterOf(blockPos), Vec3.atCenterOf(nextPos), 10), world, blockPos);
                         }
                     }
                 }
             }
+            dist.updateDistance(found.size(), frontier.size());
         }
         return found;
     }

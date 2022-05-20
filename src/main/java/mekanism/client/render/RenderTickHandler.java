@@ -60,6 +60,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -91,6 +92,7 @@ import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -316,23 +318,23 @@ public class RenderTickHandler {
             profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
             // Draw outlines for area mining blocks
             if (!outliningArea) {
-                outliningArea = true;
                 ItemStack stack = player.getMainHandItem();
                 if (!stack.isEmpty() && stack.getItem() instanceof IBlastingItem tool) {
                     Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
                     if (!blocks.isEmpty()) {
+                        outliningArea = true;
                         Vec3 renderView = info.getPosition();
+                        LevelRenderer levelRenderer = event.getLevelRenderer();
+                        Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
                         for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
-                            if (pos.equals(block.getKey())) {
-                                continue;
-                            }
-                            if (!ForgeHooksClient.onDrawHighlight(event.getLevelRenderer(), info, rayTraceResult, event.getPartialTicks(), matrix, renderer)) {
-                                event.getLevelRenderer().renderHitOutline(matrix, renderer.getBuffer(RenderType.lines()), minecraft.player, renderView.x, renderView.y, renderView.z, block.getKey(), block.getValue());
+                            BlockPos blastingTarget = block.getKey();
+                            if (!pos.equals(blastingTarget) && !ForgeHooksClient.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getPartialTicks(), matrix, renderer)) {
+                                levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                             }
                         }
+                        outliningArea = false;
                     }
                 }
-                outliningArea = false;
             }
             profiler.pop();
 

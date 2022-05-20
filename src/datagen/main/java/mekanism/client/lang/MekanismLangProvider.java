@@ -1262,9 +1262,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
         add(MekanismLang.MODULE_EXTENDED_ENABLED, "Extended Vein Mining: %1$s");
         add(MekanismLang.MODULE_EXCAVATION_RANGE, "Excavation Range");
-        add(MekanismLang.MODULE_BLASTING_RADIUS, "Blast Radius");
+        add(MekanismLang.MODULE_BLAST_RADIUS, "Blast Radius");
         add(MekanismLang.MODULE_BLASTING_ENABLED, "Blast Radius: %1$s");
-        add(MekanismLang.MODULE_BLAST_RADIUS, "%1$sX%1$s");
+        add(MekanismLang.MODULE_BLAST_AREA, "%1$sx%1$s");
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
         add(MekanismLang.MODULE_MODE_CHANGE, "%1$s bumped to: %2$s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");

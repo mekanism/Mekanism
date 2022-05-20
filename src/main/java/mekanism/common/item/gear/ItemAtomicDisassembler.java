@@ -3,6 +3,8 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +24,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.item.ItemEnergized;
@@ -173,11 +174,10 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             FloatingLong baseDestroyEnergy = getDestroyEnergy(stack);
             FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
-                //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
-                // only allow mining things that are considered an ore
-                if (!(state.getBlock() instanceof BlockBounding) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                    Map<BlockPos, BlockState> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos.immutable(), state), false, -1);
-                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found.keySet(),
+                // Only allow mining things that are considered an ore
+                if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                    Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0, Object2BooleanMaps.singleton(state.getBlock(), true));
+                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found,
                           hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), (distance, bs) -> 0.5 * Math.pow(distance, 1.5), state);
                 }
             }

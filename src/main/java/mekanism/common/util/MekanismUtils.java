@@ -7,6 +7,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -761,22 +762,25 @@ public final class MekanismUtils {
     }
 
     public static void veinMineArea(IEnergyContainer energyContainer, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
-          Collection<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, BiFunction<Double, BlockState, Double> distanceMultiplier, BlockState sourceState) {
+          Object2IntMap<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, BiFunction<Double, BlockState, Double> distanceMultiplier, BlockState sourceState) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
         energyAvailable = energyAvailable.subtract(destroyEnergyFunction.apply(sourceState.getDestroySpeed(world, pos)));
-        for (BlockPos foundPos : found) {
+        for (Object2IntMap.Entry<BlockPos> foundEntry : found.object2IntEntrySet()) {
+            BlockPos foundPos = foundEntry.getKey();
             if (pos.equals(foundPos)) {
                 continue;
             }
             BlockState targetState = world.getBlockState(foundPos);
-            float hardness = targetState.getDestroySpeed(world, foundPos);
-            if (targetState.isAir() || hardness == -1) {
+            if (targetState.isAir()) {
                 continue;
             }
-            FloatingLong destroyEnergy = destroyEnergyFunction.apply(hardness)
-                  .multiply(distanceMultiplier.apply(WorldUtils.distanceBetween(pos, foundPos), targetState));
+            float hardness = targetState.getDestroySpeed(world, foundPos);
+            if (hardness == -1) {
+                continue;
+            }
+            FloatingLong destroyEnergy = destroyEnergyFunction.apply(hardness).multiply(distanceMultiplier.apply((double) foundEntry.getIntValue(), targetState));
             if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
