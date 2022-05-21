@@ -3,6 +3,7 @@ package mekanism.generators.common.block.fusion;
 import javax.annotation.Nonnull;
 import mekanism.common.block.basic.BlockStructuralGlass;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix;
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserFocusMatrix> {
 
     public BlockLaserFocusMatrix() {
-        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, BlockBehaviour.Properties.of(Material.GLASS).strength(3.5F, 4.8F).noOcclusion());
+        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, BlockBehaviour.Properties.of(Material.GLASS).strength(3.5F, 4.8F).noOcclusion()
+              .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE));
     }
 
     @Override

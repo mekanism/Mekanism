@@ -60,8 +60,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public BlockBounding() {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
+        //Note: We mark it as not having occlusion as our occlusion shape is not quite right in that it goes past a single block size which confuses MC
+        // Eventually we may want to try cropping it but for now this works better
         super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F, 4.8F)
-              .requiresCorrectToolForDrops().dynamicShape()));
+              .requiresCorrectToolForDrops().dynamicShape().noOcclusion().isViewBlocking(BlockStateHelper.NEVER_PREDICATE)));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
     }
 
@@ -266,6 +268,46 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     @Deprecated
     public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+        return proxyShape(world, pos, context, BlockStateBase::getShape);
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+        return proxyShape(world, pos, context, BlockStateBase::getCollisionShape);
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getVisualShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+        return proxyShape(world, pos, context, BlockStateBase::getVisualShape);
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getOcclusionShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
+        return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getOcclusionShape(level, p));
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getBlockSupportShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
+        return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getBlockSupportShape(level, p));
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getInteractionShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
+        return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getInteractionShape(level, p));
+    }
+
+    //Context should only be null if there is none, and it isn't used in the shape proxy
+    private VoxelShape proxyShape(BlockGetter world, BlockPos pos, @Nullable CollisionContext context, ShapeProxy proxy) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             //If we don't have a main pos, then act as if the block is empty so that we can move into it properly
@@ -285,11 +327,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                 world = region.level;
                 mainState = world.getBlockState(mainPos);
             } else {
-                Mekanism.logger.error("Error getting bounding block shape, for position {}, with main position {}. World of type {}", pos, mainPos, world.getClass().getName());
+                Mekanism.logger.error("Error getting bounding block shape, for position {}, with main position {}. World of type {}", pos, mainPos,
+                      world.getClass().getName());
                 return Shapes.empty();
             }
         }
-        VoxelShape shape = mainState.getShape(world, mainPos, context);
+        VoxelShape shape = proxy.getShape(mainState, world, mainPos, context);
         BlockPos offset = pos.subtract(mainPos);
         //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
         return shape.move(-offset.getX(), -offset.getY(), -offset.getZ());
@@ -316,5 +359,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
         //Mark that bounding blocks do not allow movement for use by AI pathing
         return false;
+    }
+
+    private interface ShapeProxy {
+
+        VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context);
     }
 }

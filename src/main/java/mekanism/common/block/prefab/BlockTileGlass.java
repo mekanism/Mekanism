@@ -1,6 +1,7 @@
 package mekanism.common.block.prefab;
 
 import javax.annotation.Nonnull;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
     public BlockTileGlass(TYPE type) {
-        super(type, BlockBehaviour.Properties.of(Material.GLASS).strength(3.5F, 9.6F).noOcclusion().requiresCorrectToolForDrops());
+        super(type, BlockBehaviour.Properties.of(Material.GLASS).strength(3.5F, 9.6F).noOcclusion().requiresCorrectToolForDrops()
+              .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE));
     }
 
     @Override
