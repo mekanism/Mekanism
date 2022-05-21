@@ -17,18 +17,12 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     @Nonnull
     private ItemStack renderStack = ItemStack.EMPTY;
     private final NonNullSupplier<List<ItemStack>> stackListSupplier;
-    private float zOffset;
 
     public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, NonNullSupplier<List<ItemStack>> stackListSupplier) {
         super(gui, x, y, 16, 16);
         this.stackListSupplier = stackListSupplier;
         //Mark it as false for active so that it doesn't intercept click events and ensures that it properly clears it
         active = false;
-    }
-
-    public GuiSequencedSlotDisplay setZOffset(float zOffset) {
-        this.zOffset = zOffset;
-        return this;
     }
 
     @Override
@@ -57,11 +51,7 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        if (!renderStack.isEmpty()) {
-            gui().getItemRenderer().blitOffset += zOffset;
-            gui().renderItem(matrix, renderStack, x, y);
-            gui().getItemRenderer().blitOffset -= zOffset;
-        }
+        gui().renderItem(matrix, renderStack, x, y);
     }
 
     public void updateStackList() {

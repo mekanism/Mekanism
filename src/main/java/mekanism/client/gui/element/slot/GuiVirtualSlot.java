@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
+import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
@@ -15,14 +16,14 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
 
     private IVirtualSlot virtualSlot;
 
-    public GuiVirtualSlot(SlotType type, IGuiWrapper gui, int x, int y, VirtualInventoryContainerSlot containerSlot) {
+    public GuiVirtualSlot(@Nullable IGUIWindow window, SlotType type, IGuiWrapper gui, int x, int y, VirtualInventoryContainerSlot containerSlot) {
         this(type, gui, x, y);
         if (containerSlot != null) {
             SlotOverlay slotOverlay = containerSlot.getSlotOverlay();
             if (slotOverlay != null) {
                 with(slotOverlay);
             }
-            updateVirtualSlot(containerSlot);
+            updateVirtualSlot(window, containerSlot);
         }
     }
 
@@ -36,9 +37,9 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
         return this.virtualSlot == virtualSlot;
     }
 
-    public void updateVirtualSlot(@Nonnull IVirtualSlot virtualSlot) {
+    public void updateVirtualSlot(@Nullable IGUIWindow window, @Nonnull IVirtualSlot virtualSlot) {
         this.virtualSlot = virtualSlot;
-        this.virtualSlot.updatePosition(() -> relativeX + 1, () -> relativeY + 1);
+        this.virtualSlot.updatePosition(window, () -> relativeX + 1, () -> relativeY + 1);
     }
 
     @Override

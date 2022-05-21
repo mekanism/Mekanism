@@ -280,7 +280,12 @@ public class GuiUtils {
                 RenderSystem.applyModelViewMatrix();
                 renderer.renderAndDecorateItem(stack, xAxis, yAxis);
                 if (overlay) {
+                    //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
+                    // for rendering the stored count so that it doesn't clip with later windows
+                    float previousOffset = renderer.blitOffset;
+                    renderer.blitOffset -= 25;
                     renderer.renderGuiItemDecorations(font, stack, xAxis, yAxis, text);
+                    renderer.blitOffset = previousOffset;
                 }
                 modelViewStack.popPose();
                 RenderSystem.applyModelViewMatrix();

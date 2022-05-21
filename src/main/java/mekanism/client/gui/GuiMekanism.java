@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,12 +42,14 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.RenderProperties;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
@@ -64,6 +67,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     private boolean hasClicked = false;
 
     public static int maxZOffset;
+    private int maxZOffsetNoWindows;
 
     protected GuiMekanism(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -242,8 +246,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         RenderSystem.applyModelViewMatrix();
         drawForegroundText(matrix, mouseX, mouseY);
         // first render general foregrounds
-        maxZOffset = 200;
         int zOffset = 200;
+        maxZOffsetNoWindows = maxZOffset = zOffset;
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
                 matrix.pushPose();
@@ -251,12 +255,18 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 matrix.popPose();
             }
         }
+        maxZOffsetNoWindows = maxZOffset;
+        int windowSeparation = 150;
 
         // now render overlays in reverse-order (i.e. back to front)
-        zOffset = maxZOffset;
         for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
             GuiWindow overlay = iter.next();
-            zOffset += 150;
+            //Max z offset is incremented based on what is the deepest level offset we go to
+            // if our gui isn't flagged as visible we won't increment it as nothing is drawn
+            // we need to do this based on what the max is after having rendered the previous
+            // window as while the windows don't necessarily overlap, if they do we want to
+            // ensure that there is no clipping
+            zOffset = maxZOffset + windowSeparation;
             matrix.pushPose();
             overlay.onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
             if (iter.hasNext()) {
@@ -296,6 +306,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // have the adjustments to the z-value persist into the vanilla methods
         modelViewStack.translate(0, 0, 200);
         RenderSystem.applyModelViewMatrix();
+
+        //Adjust the amount we offset tooltips to put tooltips made by JEI above the windows
+        maxZOffsetNoWindows = -(maxZOffset - windowSeparation * windows.size());
     }
 
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
@@ -387,12 +400,19 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         boolean overNoButtons = false;
         GuiWindow window = null;
         for (Slot slot : menu.slots) {
+            if (!slot.isActive()) {
+                continue;
+            }
             boolean virtual = slot instanceof IVirtualSlot;
             int xPos = slot.x;
             int yPos = slot.y;
             if (virtual) {
                 //Virtual slots need special handling to allow for matching them to the window they may be attached to
                 IVirtualSlot virtualSlot = (IVirtualSlot) slot;
+                if (!isVirtualSlotAvailable(virtualSlot)) {
+                    //If the slot is not available just skip all checks related to it
+                    continue;
+                }
                 xPos = virtualSlot.getActualX();
                 yPos = virtualSlot.getActualY();
             }
@@ -419,13 +439,16 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected boolean isMouseOverSlot(@Nonnull Slot slot, double mouseX, double mouseY) {
         if (slot instanceof IVirtualSlot virtualSlot) {
             //Virtual slots need special handling to allow for matching them to the window they may be attached to
-            int xPos = virtualSlot.getActualX();
-            int yPos = virtualSlot.getActualY();
-            if (super.isHovering(xPos, yPos, 16, 16, mouseX, mouseY)) {
-                GuiWindow window = getWindowHovering(mouseX, mouseY);
-                //If we are hovering over a window, check if the virtual slot is a child of the window
-                if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot v && v.isElementForSlot(virtualSlot))) {
-                    return overNoButtons(window, mouseX, mouseY);
+            if (isVirtualSlotAvailable(virtualSlot)) {
+                //Start by checking if the slot is even "active/available"
+                int xPos = virtualSlot.getActualX();
+                int yPos = virtualSlot.getActualY();
+                if (super.isHovering(xPos, yPos, 16, 16, mouseX, mouseY)) {
+                    GuiWindow window = getWindowHovering(mouseX, mouseY);
+                    //If we are hovering over a window, check if the virtual slot is a child of the window
+                    if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot v && v.isElementForSlot(virtualSlot))) {
+                        return overNoButtons(window, mouseX, mouseY);
+                    }
                 }
             }
             return false;
@@ -438,6 +461,11 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             return children().stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
         }
         return !window.childrenContainsElement(e -> e.isMouseOver(mouseX, mouseY));
+    }
+
+    private boolean isVirtualSlotAvailable(IVirtualSlot virtualSlot) {
+        //If there is a window linked to the slot, and it no longer exists then skip checking if the slot is available
+        return !(virtualSlot.getLinkedWindow() instanceof GuiWindow linkedWindow) || windows.contains(linkedWindow);
     }
 
     @Override
@@ -533,6 +561,43 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
+    public void renderTooltip(@Nonnull PoseStack poseStack, @Nonnull List<Component> tooltips, @Nonnull Optional<TooltipComponent> visualTooltipComponent, int mouseX,
+          int mouseY) {
+        adjustTooltipZ(poseStack, pose -> super.renderTooltip(pose, tooltips, visualTooltipComponent, mouseX, mouseY));
+    }
+
+    @Override
+    public void renderComponentTooltip(@Nonnull PoseStack poseStack, @Nonnull List<Component> tooltips, int mouseX, int mouseY) {
+        adjustTooltipZ(poseStack, pose -> super.renderComponentTooltip(pose, tooltips, mouseX, mouseY));
+    }
+
+    @Override
+    public void renderComponentTooltip(@Nonnull PoseStack poseStack, @Nonnull List<? extends FormattedText> tooltips, int mouseX, int mouseY, @Nullable Font font,
+          @Nonnull ItemStack stack) {
+        adjustTooltipZ(poseStack, pose -> super.renderComponentTooltip(pose, tooltips, mouseX, mouseY, font, stack));
+    }
+
+    @Override
+    public void renderTooltip(@Nonnull PoseStack poseStack, @Nonnull List<? extends FormattedCharSequence> tooltips, int mouseX, int mouseY) {
+        adjustTooltipZ(poseStack, pose -> super.renderTooltip(pose, tooltips, mouseX, mouseY));
+    }
+
+    //Used as a helper to wrap and fix the various calls to renderTooltipInternal so that tooltips for bundles appear in the proper location
+    private void adjustTooltipZ(@Nonnull PoseStack poseStack, @Nonnull Consumer<PoseStack> tooltipRender) {
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+        //Apply the current matrix to the view so that we render items and tooltips at the proper level
+        // (especially for bundles that render items as part of the tooltip). We also translate to make things
+        // fit better in the z direction
+        modelViewStack.translate(0, 0, -maxZOffsetNoWindows - 1);
+        modelViewStack.mulPoseMatrix(poseStack.last().pose());
+        RenderSystem.applyModelViewMatrix();
+        tooltipRender.accept(new PoseStack());
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+    }
+
+    @Override
     public void renderItemTooltip(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
         renderTooltip(matrix, stack, xAxis, yAxis);
     }
@@ -542,10 +607,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         if (toAppend.isEmpty()) {
             renderItemTooltip(matrix, stack, xAxis, yAxis);
         } else {
-            Font font = RenderProperties.get(stack.getItem()).getFont(stack);
             List<Component> tooltip = new ArrayList<>(getTooltipFromItem(stack));
             tooltip.addAll(toAppend);
-            renderTooltip(matrix, tooltip, stack.getTooltipImage(), xAxis, yAxis, (font == null ? this.font : font), stack);
+            renderTooltip(matrix, tooltip, stack.getTooltipImage(), xAxis, yAxis, stack);
         }
     }
 

@@ -24,18 +24,18 @@ public class GuiCraftingWindow extends GuiWindow {
         slots = new ArrayList<>();
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
-                slots.add(addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 8 + column * 18, relativeY + 18 + row * 18,
+                slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 8 + column * 18, relativeY + 18 + row * 18,
                       container.getCraftingWindowSlot(this.index, row * 3 + column))));
             }
         }
         addChild(new GuiRightArrow(gui, relativeX + 66, relativeY + 38).jeiCrafting());
-        slots.add(addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 92, relativeY + 36, container.getCraftingWindowSlot(this.index, 9))));
+        slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 92, relativeY + 36, container.getCraftingWindowSlot(this.index, 9))));
     }
 
     public void updateContainer(QIOItemViewerContainer container) {
         //Lookup the slots again and update the stored lookup method
         for (int i = 0; i < slots.size(); i++) {
-            slots.get(i).updateVirtualSlot(container.getCraftingWindowSlot(index, i));
+            slots.get(i).updateVirtualSlot(this, container.getCraftingWindowSlot(index, i));
         }
     }
 
