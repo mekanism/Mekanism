@@ -2,35 +2,36 @@ package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
-import mekanism.common.tile.component.config.DataType;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import org.jetbrains.annotations.Nullable;
 
-public class ColorToggleButton extends MekanismButton {
+public class BasicColorButton extends MekanismButton {
 
-    private final BooleanSupplier toggled;
-    private final EnumColor color;
-
-    public ColorToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, Runnable onLeftClick, @Nullable GuiElement.IHoverable onHover) {
-        this(gui, x, y, size, EnumColor.DARK_BLUE, toggled, onLeftClick, onHover);
+    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, Runnable onLeftClick,
+          @Nullable GuiElement.IHoverable onHover) {
+        return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick, onHover);
     }
 
-    public ColorToggleButton(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, Runnable onLeftClick, @Nullable GuiElement.IHoverable onHover) {
-        super(gui, x, y, size, size, TextComponent.EMPTY, onLeftClick, onHover);
-        this.toggled = toggled;
-        this.color = color;
+    private final Supplier<EnumColor> colorSupplier;
+
+    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @Nullable Runnable onLeftClick, @Nullable Runnable onRightClick,
+          @Nullable GuiElement.IHoverable onHover) {
+        super(gui, x, y, size, size, TextComponent.EMPTY, onLeftClick, onRightClick, onHover);
+        this.colorSupplier = color;
     }
 
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        if (toggled.getAsBoolean()) {
+        EnumColor color = getColor();
+        boolean doColor = color != null && color != EnumColor.GRAY;
+        if (doColor) {
             Color c = Color.rgbi(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2]);
             double[] hsv = c.hsvArray();
             hsv[1] = Math.max(0, hsv[1] - 0.25F);
@@ -40,7 +41,7 @@ public class ColorToggleButton extends MekanismButton {
             MekanismRenderer.resetColor();
         }
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        if (toggled.getAsBoolean()) {
+        if (doColor) {
             MekanismRenderer.resetColor();
         }
     }
@@ -48,5 +49,9 @@ public class ColorToggleButton extends MekanismButton {
     @Override
     protected boolean resetColorBeforeRender() {
         return false;
+    }
+
+    public EnumColor getColor() {
+        return this.colorSupplier.get();
     }
 }

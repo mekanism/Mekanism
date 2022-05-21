@@ -760,11 +760,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
 
         private void track(MekanismContainer container) {
-            for (int i = 0; i < trackedErrors.length; i++) {
-                for (int j = 0; j < trackedErrors[i].length; j++) {
-                    container.track(SyncableBoolean.create(trackedErrors, i, j));
-                }
-            }
+            container.trackArray(trackedErrors);
         }
 
         public void onErrorsChanged(Set<RecipeError> errors, int processIndex) {

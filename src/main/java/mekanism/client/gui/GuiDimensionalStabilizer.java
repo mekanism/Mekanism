@@ -2,12 +2,11 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.button.ColorToggleButton;
-import mekanism.client.gui.element.button.ToggleButton;
+import mekanism.client.gui.element.button.BasicColorButton;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -16,12 +15,10 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityDimensionalStabilizer;
-import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensionalStabilizer, MekanismTileContainer<TileEntityDimensionalStabilizer>> {
-
 
     public GuiDimensionalStabilizer(MekanismTileContainer<TileEntityDimensionalStabilizer> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -42,14 +39,9 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
             for (int x = 0; x < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; ++x) {
                 int finalX = x;
                 int finalZ = z;
-                addRenderableWidget(new ColorToggleButton(
-                      this,
-                      63 + 10 * x,
-                      19 + 10 * z,
-                      10,
-                      () -> tile.isChunkloadingAt(finalX, finalZ),
-                      () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, finalZ * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + finalX)),
-                      null));
+                addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * x, 19 + 10 * z, 10, EnumColor.DARK_BLUE,
+                      () -> tile.isChunkloadingAt(finalX, finalZ), () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD,
+                            tile, finalZ * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + finalX)), null));
             }
         }
         addRenderableWidget(new GuiUpArrow(this, 52, 28));

@@ -17,6 +17,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends MachineEnergyContainer<TILE> {
+
     public static <TILE extends TileEntityMekanism> FixedUsageEnergyContainer<TILE> input(TILE tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
         return new FixedUsageEnergyContainer<>(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
