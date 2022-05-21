@@ -30,7 +30,7 @@ import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.TileEntityChemicalTank;
-import mekanism.common.tile.TileEntityDimensionalStabilizer;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityLogisticalSorter;

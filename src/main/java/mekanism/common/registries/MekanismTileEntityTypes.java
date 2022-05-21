@@ -13,7 +13,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalTank;
-import mekanism.common.tile.TileEntityDimensionalStabilizer;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;

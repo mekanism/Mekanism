@@ -14,7 +14,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.tile.TileEntityDimensionalStabilizer;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 

@@ -1,7 +1,8 @@
-package mekanism.common.tile;
+package mekanism.common.tile.machine;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -10,11 +11,13 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.energy.item.FixedUsageEnergyContainer;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -36,6 +39,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     public static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
+    private static final BiFunction<FloatingLong, TileEntityDimensionalStabilizer, FloatingLong> BASE_ENERGY_CALCULATOR =
+          (base, tile) -> base.multiply(tile.getChunksLoaded());
 
     protected final ChunkLoader chunkLoaderComponent;
     protected final boolean[][] loadingChunks;
@@ -48,26 +53,20 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     public TileEntityDimensionalStabilizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIMENSIONAL_STABILIZER, pos, state);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
 
         chunkLoaderComponent = new ChunkLoader(this);
         loadingChunks = new boolean[MAX_LOAD_DIAMETER][MAX_LOAD_DIAMETER];
         loadingChunks[MAX_LOAD_RADIUS][MAX_LOAD_RADIUS] = true;
-    }
-
-    public boolean isChunkloadingAt(int x, int z) {
-        return loadingChunks[x][z];
-    }
-
-    public void toggleChunkloadingAt(int x, int z) {
-        loadingChunks[x][z] = !loadingChunks[x][z];
-        setChanged(false);
+        //TODO: Strictly speaking center chunk should always be loaded if at least one other chunk is loaded
+        // due to the fact that we need to be using energy. This isn't currently the case but it should be made to be
     }
 
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        builder.addContainer(energyContainer = FixedUsageEnergyContainer.input(this, listener));
+        builder.addContainer(energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener));
         return builder.build();
     }
 
@@ -80,44 +79,55 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.trackArray(loadingChunks);
-    }
-
-    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         if (MekanismUtils.canFunction(this)) {
-            FloatingLong energyPerTick = energyContainer.getEnergyPerTick().multiply(getChunksLoaded());
+            FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 setChunkloading(true);
             } else {
                 setChunkloading(false);
             }
+        } else {
+            setChunkloading(false);
+        }
+    }
+
+    //TODO: Expose as a computer method
+    public boolean isChunkloadingAt(int x, int z) {
+        return loadingChunks[x][z];
+    }
+
+    //TODO: Expose as a computer method that requires it to be public
+    public void toggleChunkloadingAt(int x, int z) {
+        //Validate x and z are valid as this is set via packet
+        if (x >= 0 && x < MAX_LOAD_DIAMETER && z >= 0 && z < MAX_LOAD_DIAMETER) {
+            loadingChunks[x][z] = !loadingChunks[x][z];
+            setChanged(false);
+            energyContainer.updateEnergyPerTick();
         }
     }
 
     private void setChunkloading(boolean value) {
-        boolean old = chunkloading;
-        chunkloading = value;
-        if (old != chunkloading) {
+        if (chunkloading != value) {
+            chunkloading = value;
             setChanged(true);
         }
     }
 
+    //TODO: Expose as a computer method
     private int getChunksLoaded() {
-        int retval = 0;
-        for (int z = 0; z < MAX_LOAD_DIAMETER; ++z) {
-            for (int x = 0; x < MAX_LOAD_DIAMETER; ++x) {
-                if (loadingChunks[x][z]) {
-                    ++retval;
+        int chunksLoaded = 0;
+        for (boolean[] row : loadingChunks) {
+            for (boolean loadingChunk : row) {
+                if (loadingChunk) {
+                    chunksLoaded++;
                 }
             }
         }
-        return retval;
+        return chunksLoaded;
     }
 
     @Override
@@ -128,17 +138,15 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @Override
     public Set<ChunkPos> getChunkSet() {
         Set<ChunkPos> chunkSet = new HashSet<>();
+        int chunkX = SectionPos.blockToSectionCoord(worldPosition.getX());
+        int chunkZ = SectionPos.blockToSectionCoord(worldPosition.getZ());
         for (int z = -MAX_LOAD_RADIUS; z <= MAX_LOAD_RADIUS; ++z) {
             for (int x = -MAX_LOAD_RADIUS; x <= MAX_LOAD_RADIUS; ++x) {
                 if (loadingChunks[x + MAX_LOAD_RADIUS][z + MAX_LOAD_RADIUS]) {
-                    chunkSet.add(new ChunkPos(
-                          SectionPos.blockToSectionCoord(worldPosition.getX()) + x,
-                          SectionPos.blockToSectionCoord(worldPosition.getZ()) + z)
-                    );
+                    chunkSet.add(new ChunkPos(chunkX + x, chunkZ + z));
                 }
             }
         }
-
         return chunkSet;
     }
 
@@ -159,6 +167,12 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.trackArray(loadingChunks);
+    }
+
+    @Override
     protected void addGeneralPersistentData(@Nonnull CompoundTag nbtTags) {
         super.addGeneralPersistentData(nbtTags);
         byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
@@ -167,6 +181,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 chunksToLoad[z * MAX_LOAD_DIAMETER + x] = (byte) (loadingChunks[x][z] ? 1 : 0);
             }
         }
+        //TODO: Persist this when picked up as an item
         nbtTags.putByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
     }
 
@@ -179,6 +194,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 loadingChunks[x][z] = chunksToLoad[z * MAX_LOAD_DIAMETER + x] == 1;
             }
         }
+        energyContainer.updateEnergyPerTick();
     }
 
     @Override
