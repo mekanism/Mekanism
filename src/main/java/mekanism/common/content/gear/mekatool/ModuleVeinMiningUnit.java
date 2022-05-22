@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.mekatool;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -11,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -27,14 +25,12 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -59,31 +55,6 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
         return excavationRange.get().getRange();
     }
 
-    // Helper class to help calculate the breadth first traversal path distance
-    private static class TraversalDistance {
-
-        // Start at distance 0
-        private int distance = 0;
-        private int next;
-
-        // Initialize with the number of elements at distance 0
-        public TraversalDistance(int next) {
-            this.next = next;
-        }
-
-        // When all elements at distance 0 are found, determine how many elements there are with distance 1 and increment distance
-        public void updateDistance(int found, int frontierSize) {
-            if (found == next) {
-                distance++;
-                next += frontierSize;
-            }
-        }
-
-        public int getDistance() {
-            return distance;
-        }
-    }
-
     public static boolean canVeinBlock(BlockState state) {
         //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
         return !(state.getBlock() instanceof BlockBounding);
@@ -103,13 +74,12 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
             iterator.remove();
 
             BlockPos blockPos = blockEntry.getKey();
-            BlockState blockState = blockEntry.getValue();
             found.put(blockPos, dist.getDistance());
             if (found.size() >= maxCount) {
                 break;
             }
 
-            Block block = blockState.getBlock();
+            Block block = blockEntry.getValue().getBlock();
             boolean isOre = oreTracker.getBoolean(block);
             //If it is extended or should be treated as an ore
             if (isOre || extendedRange > dist.getDistance()) {
@@ -165,6 +135,31 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
 
         public int getRange() {
             return range;
+        }
+    }
+
+    // Helper class to help calculate the breadth first traversal path distance
+    private static class TraversalDistance {
+
+        // Start at distance 0
+        private int distance = 0;
+        private int next;
+
+        // Initialize with the number of elements at distance 0
+        public TraversalDistance(int next) {
+            this.next = next;
+        }
+
+        // When all elements at distance 0 are found, determine how many elements there are with distance 1 and increment distance
+        public void updateDistance(int found, int frontierSize) {
+            if (found == next) {
+                distance++;
+                next += frontierSize;
+            }
+        }
+
+        public int getDistance() {
+            return distance;
         }
     }
 }

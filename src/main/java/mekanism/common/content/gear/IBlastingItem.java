@@ -16,7 +16,7 @@ public interface IBlastingItem {
     Map<BlockPos, BlockState> getBlastedBlocks(Level world, Player player, ItemStack stack, BlockPos pos, BlockState state);
 
     static Map<BlockPos, BlockState> findPositions(Level world, BlockPos targetPos, Direction axis, int radius) {
-        if(radius <= 0) {
+        if (radius <= 0) {
             return Collections.emptyMap();
         }
         int minX = 0, minY = 0, minZ = 0;
