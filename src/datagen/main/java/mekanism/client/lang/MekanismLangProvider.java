@@ -63,6 +63,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addRobitSkins();
         addSubtitles();
         addMisc();
+        addAdvancements();
     }
 
     private void addItems() {
@@ -471,6 +472,39 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismSounds.GEIGER_MEDIUM, "Geiger Counter clicks");
         add(MekanismSounds.GEIGER_ELEVATED, "Elevated Geiger Counter clicks");
         add(MekanismSounds.GEIGER_FAST, "Constant Geiger Counter clicks");
+    }
+
+    private void addAdvancements() {
+        addAdvancement("alloy_atomic", "A powerful alloy", "Atomic power!");
+        addAdvancement("alloy_infused", "Iron-Redstone Fusion!", "Iron + Redstone = ???");
+        addAdvancement("alloy_reinforced", "Reinforcement", "Diamonds make everything better!");
+        addAdvancement("control_advanced", "Better control", "Craft an advanced control circuit");
+        addAdvancement("control_basic", "Under control", "We have this all under control");
+        addAdvancement("control_elite", "Precision control", "Precise!");
+        addAdvancement("control_ultimate", "Where's my supercomputer?", "Honey! Where is my supercomputer?");
+        addAdvancement("fullmeka", "The ultimate suit", "True dedication");
+        addAdvancement("mekasuit", "Fully kitted", "A true mekanism outfit");
+        addAdvancement("nantimatter", "Impossible material", "This shouldn't be here, reporting paradox");
+        addAdvancement("nucleosynthesiser", "Matter manipulation", "Sending signal, fix inbound");
+        addAdvancement("plutonium", "Plutonium  power", "Not polonium");
+        addAdvancement("polonium", "Polonium power", "Not plutonium");
+        addAdvancement("sps", "Going supercritical", "Ready to phase shift");
+        addAdvancement("advanced_qio", "Quantum level 2", "Higher density");
+        addAdvancement("basic_qio", "Quantum level 1", "1/4 storage");
+        addAdvancement("elite_qio", "Quantum level 3", "In the millions!");
+        addAdvancement("portal_qio_dash", "Portable peek", "Behold your storage from anywhere!");
+        addAdvancement("qio", "Quantum orchestra", "You are the conductor!");
+        addAdvancement("qio_dash", "Quantum peek", "Behold your storage");
+        addAdvancement("ultimate_qio", "Super massive", "Parallel universe detected");
+        addAdvancement("casing_steel", "The perfect foundation", "The basis for even the most advanced machines");
+        addAdvancement("metallurgic", "A metallur-what now?", "Craft a Metallurgic Infuser");
+        addAdvancement("steel", "Industrial revolution", "Create your first steel ingot");
+        addAdvancement("digi", "What is my purpose?", "Goodbye friend");
+        addAdvancement("robit", "Welcome to the world", "Hello friend");
+        addAdvancement("portableteleporter", "Portable portals", "Instant travel from anywhere");
+        addAdvancement("quantumentangloporter", "Quantum entanglement", "Instant resource transport");
+        addAdvancement("teleportcore", "Instant teleportation", "Numerous applications!");
+        addAdvancement("teleporter", "Portals:online", "Instant travel");
     }
 
     private void addJade() {
@@ -1349,6 +1383,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit", "Allows the user to both step and jump higher.");
         add(MekanismModules.MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit", "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
         add(MekanismModules.FROST_WALKER_UNIT, "Frost Walker Unit", "Uses liquid hydrogen to freeze any water the player walks on. Install multiple for a greater range.");
+    }
+
+    private void addAdvancement(String advancement, String title, String description) {
+        add("mekanism.advancements."+advancement+".title", title);
+        add("mekanism.advancements."+advancement+".description", description);
     }
 
     private void addOre(OreType type, String description) {
