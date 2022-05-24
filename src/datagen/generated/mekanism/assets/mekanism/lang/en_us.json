@@ -458,7 +458,7 @@
   "description.mekanism.antiprotonic_nucleosynthesizer": "A machine which uses bits of antimatter and mass amounts of energy to atomically transmute various resources.",
   "description.mekanism.attack_amplification_unit": "Amplifies melee attacks on players or mobs.",
   "description.mekanism.bin": "A block used to store large quantities of a single type of item.",
-  "description.mekanism.blasting_unit": "Allows mining larger areas.",
+  "description.mekanism.blasting_unit": "Uses controlled explosions to destroy nearby blocks in the target plane.",
   "description.mekanism.boiler_casing": "A pressure-resistant, dense casing used in the creation of a Thermoelectric Boiler multiblock.",
   "description.mekanism.boiler_valve": "A valve that can be placed on a Thermoelectric Boiler multiblock, allowing for the insertion of energy and water along with the extraction of produced steam.",
   "description.mekanism.charge_distribution_unit": "Evenly distributes charge throughout all worn MekaSuit armor.",

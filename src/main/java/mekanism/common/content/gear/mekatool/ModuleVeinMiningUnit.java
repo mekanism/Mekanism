@@ -85,7 +85,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
             if (isOre || extendedRange > dist.getDistance()) {
                 for (BlockPos nextPos : BlockPos.betweenClosed(blockPos.offset(-1, -1, -1), blockPos.offset(1, 1, 1))) {
                     //We can check contains as mutable
-                    if (!found.containsKey(nextPos)) {
+                    if (!found.containsKey(nextPos) && !frontier.containsKey(nextPos)) {
                         Optional<BlockState> nextState = WorldUtils.getBlockState(world, nextPos);
                         if (nextState.isPresent() && nextState.get().is(block)) {
                             //Make sure to add it as immutable
