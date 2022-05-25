@@ -42,7 +42,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -65,7 +64,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -243,8 +241,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             if (blastingUnit != null && blastingUnit.isEnabled()) {
                 int radius = blastingUnit.getCustomInstance().getBlastRadius();
                 if (radius > 0 && IBlastingItem.canBlastBlock(world, pos, state)) {
-                    Direction direction = getPlayerPOVHitResult(world, player, ClipContext.Fluid.NONE).getDirection();
-                    return IBlastingItem.findPositions(world, pos, direction, radius);
+                    return IBlastingItem.findPositions(world, pos, player, radius);
                 }
             }
         }

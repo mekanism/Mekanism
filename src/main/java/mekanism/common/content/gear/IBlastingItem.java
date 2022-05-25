@@ -4,16 +4,32 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
+import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.MultipartUtils.RayTraceVectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
 
 public interface IBlastingItem {
 
     Map<BlockPos, BlockState> getBlastedBlocks(Level world, Player player, ItemStack stack, BlockPos pos, BlockState state);
+
+    static Map<BlockPos, BlockState> findPositions(Level world, BlockPos targetPos, Player player, int radius) {
+        if (radius <= 0) {
+            return Collections.emptyMap();
+        }
+        RayTraceVectors rayTraceVectors = MultipartUtils.getRayTraceVectors(player);
+        BlockHitResult hitResult = Shapes.block().clip(rayTraceVectors.start(), rayTraceVectors.end(), targetPos);
+        if (hitResult != null) {
+            return findPositions(world, targetPos, hitResult.getDirection(), radius);
+        }
+        return Collections.emptyMap();
+    }
 
     static Map<BlockPos, BlockState> findPositions(Level world, BlockPos targetPos, Direction axis, int radius) {
         if (radius <= 0) {
