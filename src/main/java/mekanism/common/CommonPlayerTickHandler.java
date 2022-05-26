@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -13,6 +14,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
@@ -34,6 +36,7 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -42,6 +45,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -402,9 +406,26 @@ public class CommonPlayerTickHandler {
     @SubscribeEvent
     public void getBreakSpeed(BreakSpeed event) {
         Player player = event.getPlayer();
+        float speed = event.getNewSpeed();
+
+        // Blasting item speed check
+        ItemStack mainHand = player.getMainHandItem();
+        if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
+            Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, event.getPos(), event.getState());
+            if (!blocks.isEmpty()) {
+                // Scales mining speed based on hardest block
+                // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
+                float targetHardness = event.getState().getDestroySpeed(player.level, event.getPos());
+                float maxHardness = blocks.entrySet().stream()
+                      .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))
+                      .reduce(targetHardness, Float::max);
+                speed *= (targetHardness / maxHardness);
+            }
+        }
+        
+        //Gyroscopic stabilization check
         ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
         if (!legs.isEmpty() && MekanismAPI.getModuleHelper().isEnabled(legs, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
-            float speed = event.getNewSpeed();
             if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
                 speed *= 5.0F;
             }
@@ -412,7 +433,8 @@ public class CommonPlayerTickHandler {
             if (!player.isOnGround()) {
                 speed *= 5.0F;
             }
-            event.setNewSpeed(speed);
         }
+
+        event.setNewSpeed(speed);
     }
 }

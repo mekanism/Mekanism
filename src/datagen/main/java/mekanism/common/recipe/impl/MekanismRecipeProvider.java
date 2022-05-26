@@ -1342,6 +1342,18 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.WOOD, Items.DIAMOND_PICKAXE)
               .build(consumer);
+        //Blasting Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BLASTING)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR))
+              ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ULTIMATE)
+              .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.TNT)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .build(consumer);
         //Excavation Escalation Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_EXCAVATION_ESCALATION)
               .pattern(BASIC_MODULE)

@@ -7,6 +7,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.DoubleUnaryOperator;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -758,19 +759,27 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
-          Collection<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier, BlockState sourceState) {
+    public static void veinMineArea(IEnergyContainer energyContainer, FloatingLong energyRequired, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
+          Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
-        energyAvailable = energyAvailable.subtract(destroyEnergyFunction.apply(sourceState.getDestroySpeed(world, pos)));
-        for (BlockPos foundPos : found) {
+        energyAvailable = energyAvailable.subtract(energyRequired);
+        for (Object2IntMap.Entry<BlockPos> foundEntry : found.object2IntEntrySet()) {
+            BlockPos foundPos = foundEntry.getKey();
             if (pos.equals(foundPos)) {
                 continue;
             }
             BlockState targetState = world.getBlockState(foundPos);
-            FloatingLong destroyEnergy = destroyEnergyFunction.apply(targetState.getDestroySpeed(world, foundPos))
-                  .multiply(distanceMultiplier.applyAsDouble(WorldUtils.distanceBetween(pos, foundPos)));
+            if (targetState.isAir()) {
+                continue;
+            }
+            float hardness = targetState.getDestroySpeed(world, foundPos);
+            if (hardness == -1) {
+                continue;
+            }
+            int distance = foundEntry.getIntValue();
+            FloatingLong destroyEnergy = distance == 0 ? blastEnergy.calc(hardness) : veinEnergy.calc(hardness, distance, targetState);
             if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
@@ -845,5 +854,17 @@ public final class MekanismUtils {
         public double getMaxHeight() {
             return heights.values().doubleStream().max().orElse(0);
         }
+    }
+
+    @FunctionalInterface
+    public interface BlastEnergyFunction {
+
+        FloatingLong calc(float hardness);
+    }
+
+    @FunctionalInterface
+    public interface VeinEnergyFunction {
+
+        FloatingLong calc(float hardness, int distance, BlockState state);
     }
 }

@@ -118,6 +118,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> MODULE_FARMING = ITEMS.registerModule(MekanismModules.FARMING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_SHEARING = ITEMS.registerModule(MekanismModules.SHEARING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_SILK_TOUCH = ITEMS.registerModule(MekanismModules.SILK_TOUCH_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_BLASTING = ITEMS.registerModule(MekanismModules.BLASTING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_VEIN_MINING = ITEMS.registerModule(MekanismModules.VEIN_MINING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_TELEPORTATION = ITEMS.registerModule(MekanismModules.TELEPORTATION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_ELECTROLYTIC_BREATHING = ITEMS.registerModule(MekanismModules.ELECTROLYTIC_BREATHING_UNIT);

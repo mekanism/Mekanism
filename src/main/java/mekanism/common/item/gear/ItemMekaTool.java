@@ -3,8 +3,15 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -17,11 +24,12 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
+import mekanism.common.content.gear.mekatool.ModuleBlastingUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
@@ -57,14 +65,16 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.fluids.IFluidBlock;
 
-public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem {
+public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IBlastingItem {
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -224,6 +234,30 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
+    public Map<BlockPos, BlockState> getBlastedBlocks(Level world, Player player, ItemStack stack, BlockPos pos, BlockState state) {
+        //Setup initial set for blasting
+        if (!player.isShiftKeyDown()) {
+            IModule<ModuleBlastingUnit> blastingUnit = getModule(stack, MekanismModules.BLASTING_UNIT);
+            if (blastingUnit != null && blastingUnit.isEnabled()) {
+                int radius = blastingUnit.getCustomInstance().getBlastRadius();
+                if (radius > 0 && IBlastingItem.canBlastBlock(world, pos, state)) {
+                    return IBlastingItem.findPositions(world, pos, player, radius);
+                }
+            }
+        }
+        return Collections.emptyMap();
+    }
+
+    private Object2IntMap<BlockPos> getVeinedBlocks(Level world, ItemStack stack, Map<BlockPos, BlockState> blocks, Object2BooleanMap<Block> oreTracker) {
+        IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
+        if (veinMiningUnit != null && veinMiningUnit.isEnabled()) {
+            ModuleVeinMiningUnit customInstance = veinMiningUnit.getCustomInstance();
+            return ModuleVeinMiningUnit.findPositions(world, blocks, customInstance.isExtended() ? customInstance.getExcavationRange() : 0, oreTracker);
+        }
+        return blocks.entrySet().stream().collect(Collectors.toMap(Entry::getKey, be -> 0, (l, r) -> l, Object2IntArrayMap::new));
+    }
+
+    @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
         if (player.level.isClientSide || player.isCreative()) {
             return super.onBlockStartBreak(stack, pos, player);
@@ -233,20 +267,22 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             Level world = player.level;
             BlockState state = world.getBlockState(pos);
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
-            FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), silk);
+            FloatingLong modDestroyEnergy = getDestroyEnergy(stack, silk);
+            FloatingLong energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
-                IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
-                //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
-                if (veinMiningUnit != null && veinMiningUnit.isEnabled() && !(state.getBlock() instanceof BlockBounding)) {
-                    boolean isOre = state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE);
-                    //If it is extended or should be treated as an ore
-                    if (isOre || veinMiningUnit.getCustomInstance().isExtended()) {
-                        //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
-                        FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
-                        Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, isOre ? -1 : veinMiningUnit.getCustomInstance().getExcavationRange());
-                        MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found,
-                              hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), distance -> 0.5 * Math.pow(distance, isOre ? 1.5 : 2), state);
-                    }
+                Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
+                blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
+
+                Object2BooleanMap<Block> oreTracker = blocks.values().stream().collect(Collectors.toMap(BlockStateBase::getBlock,
+                      bs -> bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE), (l, r) -> l, Object2BooleanArrayMap::new));
+
+                Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
+                if (!veinedBlocks.isEmpty()) {
+                    //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
+                    FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, world, pos, (ServerPlayer) player, stack, this, veinedBlocks,
+                          hardness -> getDestroyEnergy(modDestroyEnergy, hardness),
+                          (hardness, distance, bs) -> getDestroyEnergy(baseDestroyEnergy, hardness).multiply(0.5 * Math.pow(distance, oreTracker.getBoolean(bs.getBlock()) ? 1.5 : 2)));
                 }
             }
         }

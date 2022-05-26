@@ -9,6 +9,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -58,6 +60,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -81,6 +84,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
@@ -88,6 +92,7 @@ import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -104,6 +109,8 @@ public class RenderTickHandler {
     public static double prevRadiation = 0;
 
     private static final BoltRenderer boltRenderer = new BoltRenderer();
+
+    private boolean outliningArea = false;
 
     public static void resetCached() {
         cachedOverlays.clear();
@@ -307,6 +314,30 @@ public class RenderTickHandler {
             PoseStack matrix = event.getPoseStack();
             ProfilerFiller profiler = world.getProfiler();
             BlockState blockState = world.getBlockState(pos);
+
+            profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
+            // Draw outlines for area mining blocks
+            if (!outliningArea) {
+                ItemStack stack = player.getMainHandItem();
+                if (!stack.isEmpty() && stack.getItem() instanceof IBlastingItem tool) {
+                    Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
+                    if (!blocks.isEmpty()) {
+                        outliningArea = true;
+                        Vec3 renderView = info.getPosition();
+                        LevelRenderer levelRenderer = event.getLevelRenderer();
+                        Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
+                        for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
+                            BlockPos blastingTarget = block.getKey();
+                            if (!pos.equals(blastingTarget) && !ForgeHooksClient.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getPartialTicks(), matrix, renderer)) {
+                                levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
+                            }
+                        }
+                        outliningArea = false;
+                    }
+                }
+            }
+            profiler.pop();
+
             boolean shouldCancel = false;
             profiler.push(ProfilerConstants.MEKANISM_OUTLINE);
             if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {
