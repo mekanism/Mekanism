@@ -191,12 +191,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 continue;
             }
             ISlotInfo slotInfo = info.getSlotInfo(dataType);
-            if (slotInfo instanceof InventorySlotInfo) {
+            if (slotInfo instanceof InventorySlotInfo inventorySlotInfo) {
                 //Validate the slot info is of the correct type
                 Set<Direction> outputs = info.getSidesForData(dataType);
                 if (!outputs.isEmpty()) {
-                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()),
-                          ((InventorySlotInfo) slotInfo).getSlots());
+                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()), inventorySlotInfo.getSlots());
                     if (!ejectMap.isEmpty()) {
                         for (Direction side : outputs) {
                             BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
