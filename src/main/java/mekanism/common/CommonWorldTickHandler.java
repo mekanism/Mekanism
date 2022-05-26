@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -23,10 +24,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -74,6 +78,21 @@ public class CommonWorldTickHandler {
         if (monitoringCardboardBox && event.getEntity() instanceof ItemEntity entity) {
             entity.discard();
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockBreak(BlockEvent.BreakEvent event) {
+        BlockState state = event.getState();
+        //Skip empty block, shouldn't be a null state but the BreakEvent still handles that as the empty block,
+        // so we need to skip handling it that way, AND skip and blocks that can never have a block entity
+        if (state != null && !state.isAir() && state.hasBlockEntity()) {
+            //If the block might have a block entity, look it up from the world and see if the player has access to destroy it
+            BlockEntity blockEntity = WorldUtils.getTileEntity(event.getWorld(), event.getPos());
+            if (!MekanismAPI.getSecurityUtils().canAccess(event.getPlayer(), blockEntity)) {
+                //If they don't because it is something that is locked, then cancel the event
+                event.setCanceled(true);
+            }
         }
     }
 
