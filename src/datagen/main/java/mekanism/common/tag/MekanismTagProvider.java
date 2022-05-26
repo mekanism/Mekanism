@@ -133,7 +133,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               EntityType.TNT_MINECART
         ).addOptional(
               BOPEntities.BOAT,
-              BYGEntities.BOAT
+              BYGEntities.BOAT.get()
         );
     }
 

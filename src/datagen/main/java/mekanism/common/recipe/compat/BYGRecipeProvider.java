@@ -17,6 +17,7 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import potionstudios.byg.common.block.BYGBlocks;
 import potionstudios.byg.common.item.BYGItems;
+import potionstudios.byg.reg.RegistryObject;
 
 @ParametersAreNonnullByDefault
 public class BYGRecipeProvider extends CompatRecipeProvider {
@@ -105,15 +107,15 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               BYGBlocks.ZELKOVA_PRESSURE_PLATE, BYGBlocks.ZELKOVA_TRAPDOOR, "zelkova");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
+    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable RegistryObject<? extends Item> boat,
           ItemLike door, ItemLike fenceGate, ItemLike pressurePlate, ItemLike trapdoor, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, pressurePlate, trapdoor, name, "logs");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
+    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable RegistryObject<? extends Item> boat,
           ItemLike door, ItemLike fenceGate, ItemLike pressurePlate, ItemLike trapdoor, String name, String logTagType) {
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, tag(name + "_" + logTagType), pressurePlate,
-              trapdoor, name, modLoaded);
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat == null ? null : boat.get(), door, fenceGate,
+              tag(name + "_" + logTagType), pressurePlate, trapdoor, name, modLoaded);
     }
 
     private void addSandRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

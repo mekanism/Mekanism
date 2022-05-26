@@ -2,27 +2,6 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import mekanism.MergeJars
 
-buildscript {
-    repositories {
-        maven {
-            name 'thiakil'
-            url "https://maven.thiakil.com"
-        }
-        maven {
-            name "forge"
-            url "https://maven.minecraftforge.net/"
-        }
-        maven {
-            name 'parchment'
-            url 'https://maven.parchmentmc.org'
-        }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.parchmentmc:librarian:1.+'
-    }
-}
-
 plugins {
     id 'org.ajoberstar.grgit' version '5.0.0'
     id "com.matthewprenger.cursegradle" version '1.4.0'
@@ -30,10 +9,9 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
