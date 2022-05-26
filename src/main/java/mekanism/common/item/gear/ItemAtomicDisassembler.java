@@ -177,8 +177,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 // Only allow mining things that are considered an ore
                 if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0, Object2BooleanMaps.singleton(state.getBlock(), true));
-                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found,
-                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), (distance, bs) -> 0.5 * Math.pow(distance, 1.5), state);
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, world, pos, (ServerPlayer) player, stack, this, found, hardness -> FloatingLong.ZERO,
+                          (hardness, distance, bs) -> getDestroyEnergy(baseDestroyEnergy, hardness).multiply(0.5 * Math.pow(distance, 1.5)));
                 }
             }
         }

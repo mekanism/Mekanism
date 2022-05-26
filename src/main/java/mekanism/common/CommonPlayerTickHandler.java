@@ -413,6 +413,8 @@ public class CommonPlayerTickHandler {
         if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
             Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, event.getPos(), event.getState());
             if (!blocks.isEmpty()) {
+                // Scales mining speed based on hardest block
+                // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
                 float targetHardness = event.getState().getDestroySpeed(player.level, event.getPos());
                 float maxHardness = blocks.entrySet().stream()
                       .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))

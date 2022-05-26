@@ -267,7 +267,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             Level world = player.level;
             BlockState state = world.getBlockState(pos);
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
-            FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), silk);
+            FloatingLong modDestroyEnergy = getDestroyEnergy(stack, silk);
+            FloatingLong energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
                 Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
                 blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
@@ -279,9 +280,9 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 if (!veinedBlocks.isEmpty()) {
                     //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
                     FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
-                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, veinedBlocks,
-                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness),
-                          (distance, bs) -> 0.5 * Math.pow(distance, oreTracker.getBoolean(bs.getBlock()) ? 1.5 : 2), state);
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, world, pos, (ServerPlayer) player, stack, this, veinedBlocks,
+                          hardness -> getDestroyEnergy(modDestroyEnergy, hardness),
+                          (hardness, distance, bs) -> getDestroyEnergy(baseDestroyEnergy, hardness).multiply(0.5 * Math.pow(distance, oreTracker.getBoolean(bs.getBlock()) ? 1.5 : 2)));
                 }
             }
         }
