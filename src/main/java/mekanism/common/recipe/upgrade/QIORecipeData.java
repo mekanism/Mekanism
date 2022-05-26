@@ -34,7 +34,8 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
         for (int i = 0; i < nbtItemMap.size(); i++) {
             CompoundTag tag = nbtItemMap.getCompound(i);
             ItemStack itemType = ItemStack.of(tag.getCompound(NBTConstants.ITEM));
-            itemMap.put(HashedItem.create(itemType), tag.getLong(NBTConstants.AMOUNT));
+            //Note: We can use raw as we just created the stack, so we know it isn't referenced anywhere else
+            itemMap.put(HashedItem.raw(itemType), tag.getLong(NBTConstants.AMOUNT));
         }
     }
 
@@ -48,11 +49,16 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     public QIORecipeData merge(QIORecipeData other) {
         if (itemCount <= Long.MAX_VALUE - other.itemCount) {
             //Protect against overflow
-            Object2LongMap<HashedItem> fullItemMap = new Object2LongOpenHashMap<>();
-            fullItemMap.putAll(itemMap);
-            for (Entry<HashedItem> entry : other.itemMap.object2LongEntrySet()) {
-                HashedItem type = entry.getKey();
-                fullItemMap.put(type, fullItemMap.getOrDefault(type, 0L) + entry.getLongValue());
+            Object2LongMap<HashedItem> smallerMap = other.itemMap;
+            Object2LongMap<HashedItem> largerMap = itemMap;
+            if (largerMap.size() < smallerMap.size()) {
+                smallerMap = itemMap;
+                largerMap = other.itemMap;
+            }
+            //Add smaller to larger, so we have to iterate fewer elements
+            Object2LongMap<HashedItem> fullItemMap = new Object2LongOpenHashMap<>(largerMap);
+            for (Entry<HashedItem> entry : smallerMap.object2LongEntrySet()) {
+                fullItemMap.mergeLong(entry.getKey(), entry.getLongValue(), Long::sum);
             }
             return new QIORecipeData(fullItemMap, itemCount + other.itemCount);
         }
@@ -61,9 +67,14 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
 
     @Override
     public boolean applyToStack(ItemStack stack) {
+        if (itemMap.isEmpty()) {
+            //If we have nothing present then it is a success, but if we have data that says we should
+            // have items, but we don't then fail
+            return itemCount == 0;
+        }
         IQIODriveItem driveItem = (IQIODriveItem) stack.getItem();
-        if (itemCount > driveItem.getCountCapacity(stack) || itemMap.size() > driveItem.getTypeCapacity(stack)) {
-            //If we have more items stored than the output item supports or more types stored
+        if (itemCount == 0 || itemCount > driveItem.getCountCapacity(stack) || itemMap.size() > driveItem.getTypeCapacity(stack)) {
+            //If we have items stored but no types, have more items stored than the output item supports, or have more types stored
             // then return that we are not able to actually apply them to the stack
             return false;
         }

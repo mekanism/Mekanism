@@ -273,6 +273,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         if (tile == null || tile.isRemoved()) {
             solars[i] = null;
         } else {
+            //TODO - 1.19: Given we cache it we really should add an invalidation listener here in case mods that add custom evap solars are only sometimes valid
             solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN).resolve().orElse(null);
         }
     }

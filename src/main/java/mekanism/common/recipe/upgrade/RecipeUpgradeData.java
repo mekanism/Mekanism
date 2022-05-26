@@ -5,12 +5,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
@@ -27,7 +27,7 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -105,6 +105,12 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         return supportedTypes;
     }
 
+    @Nullable
+    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@Nonnull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
+        ListTag containers = ItemDataUtils.getList(stack, key);
+        return containers.isEmpty() ? null : creator.apply(containers);
+    }
+
     /**
      * Make sure to validate with getSupportedTypes before calling this
      */
@@ -113,19 +119,20 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         Item item = stack.getItem();
         switch (type) {
             case ENERGY:
-                return new EnergyRecipeData(ItemDataUtils.getList(stack, NBTConstants.ENERGY_CONTAINERS));
+                return getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);
             case FLUID:
-                return new FluidRecipeData(ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
+                return getContainerUpgradeData(stack, NBTConstants.FLUID_TANKS, FluidRecipeData::new);
             case GAS:
-                return new GasRecipeData(ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
+                return getContainerUpgradeData(stack, NBTConstants.GAS_TANKS, GasRecipeData::new);
             case INFUSION:
-                return new InfusionRecipeData(ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
+                return getContainerUpgradeData(stack, NBTConstants.INFUSION_TANKS, InfusionRecipeData::new);
             case PIGMENT:
-                return new PigmentRecipeData(ItemDataUtils.getList(stack, NBTConstants.PIGMENT_TANKS));
+                return getContainerUpgradeData(stack, NBTConstants.PIGMENT_TANKS, PigmentRecipeData::new);
             case SLURRY:
-                return new SlurryRecipeData(ItemDataUtils.getList(stack, NBTConstants.SLURRY_TANKS));
+                return getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
             case ITEM:
-                return new ItemRecipeData(((ISustainedInventory) item).getInventory(stack));
+                ListTag inventory = ((ISustainedInventory) item).getInventory(stack);
+                return inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
             case SECURITY:
                 UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
                 if (ownerUUID == null) {
@@ -136,8 +143,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
                 return new SecurityRecipeData(ownerUUID, securityMode);
             case UPGRADE:
-                CompoundTag componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
-                return componentUpgrade.isEmpty() ? null : new UpgradesRecipeData(Upgrade.buildMap(componentUpgrade));
+                return UpgradesRecipeData.tryCreate(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
             case QIO_DRIVE:
                 DriveMetadata data = DriveMetadata.load(stack);
                 if (data.count() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {

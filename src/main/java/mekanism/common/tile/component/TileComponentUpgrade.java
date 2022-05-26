@@ -44,8 +44,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
      */
     private final TileEntityMekanism tile;
     @SyntheticComputerMethod(getter = "getInstalledUpgrades")
-    private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
-    private final Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
+    private final Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
+    private final Set<Upgrade> supported;
     /**
      * The inventory slot the upgrade slot of this component occupies.
      */
@@ -54,10 +54,10 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     public TileComponentUpgrade(TileEntityMekanism tile) {
         this.tile = tile;
-        tile.getSupportedUpgrade().forEach(this::setSupported);
-        upgradeSlot = UpgradeInventorySlot.input(tile, supported);
-        upgradeOutputSlot = UpgradeInventorySlot.output(tile);
-        tile.addComponent(this);
+        supported = EnumSet.copyOf(this.tile.getSupportedUpgrade());
+        upgradeSlot = UpgradeInventorySlot.input(this.tile, supported);
+        upgradeOutputSlot = UpgradeInventorySlot.output(this.tile);
+        this.tile.addComponent(this);
     }
 
     public void tickServer() {
@@ -179,7 +179,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     @Override
     public void read(CompoundTag nbtTags) {
         NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_UPGRADE, upgradeNBT -> {
-            upgrades = Upgrade.buildMap(upgradeNBT);
+            upgrades.clear();
+            upgrades.putAll(Upgrade.buildMap(upgradeNBT));
             for (Upgrade upgrade : getSupportedTypes()) {
                 tile.recalculateUpgrades(upgrade);
             }

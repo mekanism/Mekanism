@@ -53,7 +53,6 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -403,8 +402,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     @Nonnull
     protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull Player player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
         int difference = slotStack.getCount() - stackToInsert.getCount();
-        currentSlot.remove(difference);
-        ItemStack newStack = StackUtils.size(slotStack, difference);
+        ItemStack newStack = currentSlot.remove(difference);
         currentSlot.onTake(player, newStack);
         return newStack;
     }

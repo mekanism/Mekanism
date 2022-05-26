@@ -46,8 +46,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
     @Nullable
     @Override
     public FluidRecipeData merge(FluidRecipeData other) {
-        List<IExtendedFluidTank> allTanks = new ArrayList<>(fluidTanks.size() + other.fluidTanks.size());
-        allTanks.addAll(fluidTanks);
+        List<IExtendedFluidTank> allTanks = new ArrayList<>(fluidTanks);
         allTanks.addAll(other.fluidTanks);
         return new FluidRecipeData(allTanks);
     }

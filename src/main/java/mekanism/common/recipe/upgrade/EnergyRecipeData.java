@@ -47,8 +47,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
     @Nullable
     @Override
     public EnergyRecipeData merge(EnergyRecipeData other) {
-        List<IEnergyContainer> allContainers = new ArrayList<>(energyContainers.size() + other.energyContainers.size());
-        allContainers.addAll(energyContainers);
+        List<IEnergyContainer> allContainers = new ArrayList<>(energyContainers);
         allContainers.addAll(other.energyContainers);
         return new EnergyRecipeData(allContainers);
     }

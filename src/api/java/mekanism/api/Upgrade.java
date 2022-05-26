@@ -47,15 +47,26 @@ public enum Upgrade implements IHasTranslationKey {
      * @return Installed upgrade map.
      */
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundTag nbtTags) {
-        Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
+        Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);//null;
         if (nbtTags != null && nbtTags.contains(NBTConstants.UPGRADES, Tag.TAG_LIST)) {
             ListTag list = nbtTags.getList(NBTConstants.UPGRADES, Tag.TAG_COMPOUND);
             for (int tagCount = 0; tagCount < list.size(); tagCount++) {
                 CompoundTag compound = list.getCompound(tagCount);
                 Upgrade upgrade = byIndexStatic(compound.getInt(NBTConstants.TYPE));
-                upgrades.put(upgrade, Math.min(upgrade.maxStack, compound.getInt(NBTConstants.AMOUNT)));
+                //Validate the nbt isn't malformed with a negative or zero amount
+                int installed = Math.max(0, Math.min(upgrade.maxStack, compound.getInt(NBTConstants.AMOUNT)));
+                if (installed > 0) {
+                    /*if (upgrades == null) {
+                        upgrades = new EnumMap<>(Upgrade.class);
+                    }*/
+                    upgrades.put(upgrade, installed);
+                }
             }
         }
+        //TODO - 1.19: Return empty map if there are no upgrades rather than an enum map (basically just uncomment everything that is commented in this method)
+        // We can't do it yet as it technically is a breaking change if anyone is depending on implementation spec;
+        // which for example we used to do in TileComponentUpgrade
+        //return upgrades == null ? Collections.emptyMap() : upgrades;
         return upgrades;
     }
 
