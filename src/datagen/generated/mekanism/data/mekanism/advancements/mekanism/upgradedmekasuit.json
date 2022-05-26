@@ -50,7 +50,7 @@
             "items": [
               "mekanism:mekasuit_pants"
             ],
-            "nbt": "{mekData:{modules:{\"mekanism:energy_unit\":{},\"mekanism:laser_dissipation_unit\":{},\"mekanism:locomotive_boosting_unit\":{},\"mekanism:radiation_shielding_unit\":{},\"mekanismgenerators:geothermal_generator_unit\":{}}}}"
+            "nbt": "{Enchantments:[{id:\"minecraft:depth_strider\",lvl:1s}],mekData:{modules:{\"mekanism:energy_unit\":{},\"mekanism:gyroscopic_stabilization_unit\":{},\"mekanism:hydrostatic_repulsor_unit\":{},\"mekanism:laser_dissipation_unit\":{},\"mekanism:locomotive_boosting_unit\":{},\"mekanism:radiation_shielding_unit\":{},\"mekanismgenerators:geothermal_generator_unit\":{}}}}"
           }
         ]
       }

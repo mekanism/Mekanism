@@ -1391,8 +1391,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addAdvancement(MekanismLang advancement, String title, String description) {
-        add("mekanism.advancements."+advancement.getTranslationKey()+".title", title);
-        add("mekanism.advancements."+advancement.getTranslationKey()+".description", description);
+        add(advancement.getTranslationKey()+".title", title);
+        add(advancement.getTranslationKey()+".description", description);
     }
 
     private void addOre(OreType type, String description) {
