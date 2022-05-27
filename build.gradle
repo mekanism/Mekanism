@@ -5,7 +5,7 @@ import groovy.json.JsonSlurper
 import mekanism.MergeJars
 
 plugins {
-    id 'org.ajoberstar.grgit' version '5.0.0'
+    id 'org.ajoberstar.grgit' version '4.1.1'//'5.0.0'//Can't use 5.0.0 yet as our jenkins uses java 8 to run gradle
     id "com.matthewprenger.cursegradle" version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
