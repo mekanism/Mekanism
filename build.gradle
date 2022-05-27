@@ -1,5 +1,6 @@
 import com.modrinth.minotaur.TaskModrinthUpload
 import com.modrinth.minotaur.dependencies.ModDependency
+import com.modrinth.minotaur.dependencies.VersionDependency
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import mekanism.MergeJars
@@ -941,8 +942,13 @@ def createSecondaryModrinthUpload(String output, String targetProjectId, Jar sou
                 uploadFile = sourceSetJar
                 //Clear additional upload files as this is a modification of what things are set to from before
                 additionalFiles = []
-                //Mark that the addon requires Mekanism (and override it to clear all optional dependencies)
-                dependencies = [new ModDependency("Ce6I4WUE", "required")]
+                //Mark that the addon requires the build of Mekanism that we just uploaded (and override it to clear all optional dependencies)
+                if (tasks.modrinth.uploadInfo == null || tasks.modrinth.uploadInfo.id == null) {
+                    //If we failed to find the upload version just set it to Mekanism in general
+                    dependencies = [new ModDependency("Ce6I4WUE", "required")]
+                } else {
+                    dependencies = [new VersionDependency(tasks.modrinth.uploadInfo.id, "required")]
+                }
             }
             println "Updated Modrinth extension"
         }
