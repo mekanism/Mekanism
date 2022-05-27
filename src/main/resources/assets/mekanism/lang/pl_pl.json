@@ -1095,6 +1095,7 @@
   "module.mekanism.attack_amplification_unit": "Jednostka Amplifikacji Ataku",
   "module.mekanism.blast_area": "%1$sx%1$s",
   "module.mekanism.blast_radius": "Promień wybuchu",
+  "module.mekanism.blasting_enabled": "Promień wybuchu: %1$s",
   "module.mekanism.bonus_attack_damage": "Dodatkowe obrażenia od ataku",
   "module.mekanism.breathing.held": "Napełniaj trzymane",
   "module.mekanism.charge_distribution_unit": "Jednostka Rozłożenia Ładunku",
