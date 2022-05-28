@@ -1,15 +1,16 @@
 package mekanism.common.capabilities.fluid.item;
 
 import java.util.List;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -58,7 +59,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
     }
 
     @Override
-    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
-        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
+    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
+        consumer.accept(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
     }
 }

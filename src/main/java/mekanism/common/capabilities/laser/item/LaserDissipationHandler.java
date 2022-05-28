@@ -1,12 +1,13 @@
 package mekanism.common.capabilities.laser.item;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraft.world.item.ItemStack;
 
 public class LaserDissipationHandler extends ItemCapability implements ILaserDissipation {
@@ -36,7 +37,7 @@ public class LaserDissipationHandler extends ItemCapability implements ILaserDis
     }
 
     @Override
-    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
-        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_DISSIPATION_CAPABILITY, this));
+    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.LASER_DISSIPATION_CAPABILITY, this));
     }
 }

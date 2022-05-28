@@ -2,6 +2,7 @@ package mekanism.common.capabilities.merged;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -9,7 +10,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicGasHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicInfusionHandler;
@@ -21,6 +21,7 @@ import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.Rate
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitSlurryTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -41,7 +42,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
         return new GaugeDropperContentsHandler();
     }
 
-    protected List<IExtendedFluidTank> fluidTanks;
+    protected final List<IExtendedFluidTank> fluidTanks;
 
     private GaugeDropperContentsHandler() {
         mergedTank = MergedTank.create(
@@ -59,11 +60,6 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
                     ChemicalTankBuilder.SLURRY.alwaysTrue, slurryHandler = new DynamicSlurryHandler(side -> slurryTanks, InteractPredicate.ALWAYS_TRUE,
                     InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
         );
-    }
-
-    @Override
-    protected void init() {
-        super.init();
         this.fluidTanks = Collections.singletonList(mergedTank.getFluidTank());
     }
 
@@ -91,8 +87,8 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
     }
 
     @Override
-    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
-        super.addCapabilityResolvers(capabilityCache);
-        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
+    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
+        super.gatherCapabilityResolvers(consumer);
+        consumer.accept(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
     }
 }
