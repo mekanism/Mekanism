@@ -783,12 +783,18 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capabilityCache.isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        } else if (capabilityCache.canResolve(capability)) {
-            return capabilityCache.getCapabilityUnchecked(capability, side);
+        if (capabilityCache != null) {
+            //Validate the cache is not null. In theory this should never happen unless some mod is trying to access capabilities
+            // before our entity is done constructing, but there are cases such as the size event where based on when they are
+            // fired if it is based on the entity's caps then the first call will happen before the enitity has finished
+            // constructing. See https://github.com/mekanism/Mekanism/issues/7490
+            if (capabilityCache.isCapabilityDisabled(capability, side)) {
+                return LazyOptional.empty();
+            } else if (capabilityCache.canResolve(capability)) {
+                return capabilityCache.getCapabilityUnchecked(capability, side);
+            }
         }
-        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
+        //Call to LivingEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);
     }
 
