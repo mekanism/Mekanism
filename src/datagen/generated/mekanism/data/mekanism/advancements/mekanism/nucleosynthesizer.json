@@ -8,7 +8,6 @@
       "translate": "advancements.mekanism.nucleosynthesizer.title"
     },
     "description": {
-      "obfuscated": true,
       "translate": "advancements.mekanism.nucleosynthesizer.description"
     },
     "frame": "challenge",

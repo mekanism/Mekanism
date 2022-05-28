@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "elite_control": {
+    "robit": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "elite_control"
+      "robit"
     ]
   ]
 }

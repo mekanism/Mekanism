@@ -1,28 +1,28 @@
 {
-  "parent": "mekanism:mekanism/teleporter",
+  "parent": "mekanism:mekanism/elite_qio_drive",
   "display": {
     "icon": {
-      "item": "mekanism:portable_teleporter"
+      "item": "mekanism:qio_drive_supermassive"
     },
     "title": {
-      "translate": "advancements.mekanism.portableteleporter.title"
+      "translate": "advancements.mekanism.ultimate_qio_drive.title"
     },
     "description": {
-      "translate": "advancements.mekanism.portableteleporter.description"
+      "translate": "advancements.mekanism.ultimate_qio_drive.description"
     },
-    "frame": "task",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "portableteleporter": {
+    "ultimate_qio_drive": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:portable_teleporter"
+              "mekanism:qio_drive_supermassive"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "portableteleporter"
+      "ultimate_qio_drive"
     ]
   ]
 }

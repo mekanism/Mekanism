@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/atomic_alloy",
+  "parent": "mekanism:mekanism/metallurgic_infuser",
   "display": {
     "icon": {
-      "item": "mekanism:teleportation_core"
+      "item": "mekanism:ingot_steel"
     },
     "title": {
-      "translate": "advancements.mekanism.teleportcore.title"
+      "translate": "advancements.mekanism.steel_ingot.title"
     },
     "description": {
-      "translate": "advancements.mekanism.teleportcore.description"
+      "translate": "advancements.mekanism.steel_ingot.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "teleportcore": {
+    "steel_ingot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:teleportation_core"
+              "mekanism:ingot_steel"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "teleportcore"
+      "steel_ingot"
     ]
   ]
 }

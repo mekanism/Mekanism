@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/metallurgic_infuser",
   "display": {
     "icon": {
-      "item": "mekanism:basic_control_circuit"
+      "item": "mekanism:steel_casing"
     },
     "title": {
-      "translate": "advancements.mekanism.basic_control.title"
+      "translate": "advancements.mekanism.steel_casing.title"
     },
     "description": {
-      "translate": "advancements.mekanism.basic_control.description"
+      "translate": "advancements.mekanism.steel_casing.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "basic_control": {
+    "steel_casing": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_control_circuit"
+              "mekanism:steel_casing"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "basic_control"
+      "steel_casing"
     ]
   ]
 }

@@ -1,29 +1,28 @@
 {
-  "parent": "mekanism:mekanism/eliteqiodrive",
+  "parent": "mekanism:mekanism/qio_dashboard",
   "display": {
     "icon": {
-      "item": "mekanism:qio_drive_supermassive"
+      "item": "mekanism:portable_qio_dashboard"
     },
     "title": {
-      "translate": "advancements.mekanism.ultimateqiodrive.title"
+      "translate": "advancements.mekanism.portable_qio_dashboard.title"
     },
     "description": {
-      "obfuscated": true,
-      "translate": "advancements.mekanism.ultimateqiodrive.description"
+      "translate": "advancements.mekanism.portable_qio_dashboard.description"
     },
-    "frame": "challenge",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "ultimateqiodrive": {
+    "portable_qio_dashboard": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:qio_drive_supermassive"
+              "mekanism:portable_qio_dashboard"
             ]
           }
         ]
@@ -32,7 +31,7 @@
   },
   "requirements": [
     [
-      "ultimateqiodrive"
+      "portable_qio_dashboard"
     ]
   ]
 }

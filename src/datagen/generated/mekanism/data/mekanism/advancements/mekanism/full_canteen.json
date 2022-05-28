@@ -1,29 +1,27 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/materials",
   "display": {
     "icon": {
-      "item": "mekanism:steel_casing"
+      "item": "mekanism:canteen"
     },
     "title": {
-      "translate": "advancements.mekanism.steelcasing.title"
+      "translate": "advancements.mekanism.full_canteen.title"
     },
     "description": {
-      "translate": "advancements.mekanism.steelcasing.description"
+      "translate": "advancements.mekanism.full_canteen.description"
     },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": false
+    "hidden": true
   },
   "criteria": {
-    "steelcasing": {
+    "full_canteen": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:steel_casing"
-            ]
+            "type": "mekanism:full_canteen"
           }
         ]
       }
@@ -31,7 +29,7 @@
   },
   "requirements": [
     [
-      "steelcasing"
+      "full_canteen"
     ]
   ]
 }

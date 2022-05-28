@@ -8,7 +8,6 @@
       "translate": "advancements.mekanism.antimatter.title"
     },
     "description": {
-      "obfuscated": true,
       "translate": "advancements.mekanism.antimatter.description"
     },
     "frame": "task",

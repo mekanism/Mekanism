@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:mekanism/control_basic",
+  "parent": "mekanism:mekanism/basic_control",
   "display": {
     "icon": {
       "item": "mekanism:advanced_control_circuit"

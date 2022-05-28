@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:mekanism/teleportcore",
+  "parent": "mekanism:mekanism/teleportation_core",
   "display": {
     "icon": {
       "item": "mekanism:teleporter"

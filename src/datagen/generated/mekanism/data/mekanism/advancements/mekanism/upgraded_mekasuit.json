@@ -1,0 +1,92 @@
+{
+  "parent": "mekanism:mekanism/mekasuit",
+  "display": {
+    "icon": {
+      "item": "mekanism:mekasuit_bodyarmor"
+    },
+    "title": {
+      "translate": "advancements.mekanism.upgraded_mekasuit.title"
+    },
+    "description": {
+      "translate": "advancements.mekanism.upgraded_mekasuit.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "helmet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_helmet"
+          }
+        ]
+      }
+    },
+    "bodyarmor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_bodyarmor"
+          }
+        ]
+      }
+    },
+    "pants": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_pants"
+          }
+        ]
+      }
+    },
+    "boots": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_boots"
+          }
+        ]
+      }
+    },
+    "tool": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:meka_tool"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "helmet"
+    ],
+    [
+      "bodyarmor"
+    ],
+    [
+      "pants"
+    ],
+    [
+      "boots"
+    ],
+    [
+      "tool"
+    ]
+  ]
+}

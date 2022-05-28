@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/basicqiodrive",
+  "parent": "mekanism:mekanism/teleportation_core",
   "display": {
     "icon": {
-      "item": "mekanism:qio_drive_hyper_dense"
+      "item": "mekanism:quantum_entangloporter"
     },
     "title": {
-      "translate": "advancements.mekanism.advancedqiodrive.title"
+      "translate": "advancements.mekanism.quantum_entangloporter.title"
     },
     "description": {
-      "translate": "advancements.mekanism.advancedqiodrive.description"
+      "translate": "advancements.mekanism.quantum_entangloporter.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "advancedqiodrive": {
+    "quantum_entangloporter": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:qio_drive_hyper_dense"
+              "mekanism:quantum_entangloporter"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "advancedqiodrive"
+      "quantum_entangloporter"
     ]
   ]
 }

@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/qiodrivearray",
+  "parent": "mekanism:mekanism/basic_qio_drive",
   "display": {
     "icon": {
-      "item": "mekanism:qio_dashboard"
+      "item": "mekanism:qio_drive_hyper_dense"
     },
     "title": {
-      "translate": "advancements.mekanism.qiodashboard.title"
+      "translate": "advancements.mekanism.advanced_qio_drive.title"
     },
     "description": {
-      "translate": "advancements.mekanism.qiodashboard.description"
+      "translate": "advancements.mekanism.advanced_qio_drive.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "qiodashboard": {
+    "advanced_qio_drive": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:qio_dashboard"
+              "mekanism:qio_drive_hyper_dense"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "qiodashboard"
+      "advanced_qio_drive"
     ]
   ]
 }

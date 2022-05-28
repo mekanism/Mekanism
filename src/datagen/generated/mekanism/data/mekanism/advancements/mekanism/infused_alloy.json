@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/metallurgic_infuser",
   "display": {
     "icon": {
       "item": "mekanism:alloy_infused"

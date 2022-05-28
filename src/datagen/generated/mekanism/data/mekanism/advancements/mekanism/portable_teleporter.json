@@ -1,28 +1,28 @@
 {
-  "parent": "mekanism:mekanism/robit",
+  "parent": "mekanism:mekanism/teleporter",
   "display": {
     "icon": {
-      "item": "mekanism:digital_miner"
+      "item": "mekanism:portable_teleporter"
     },
     "title": {
-      "translate": "advancements.mekanism.robit.title"
+      "translate": "advancements.mekanism.portable_teleporter.title"
     },
     "description": {
-      "translate": "advancements.mekanism.robit.description"
+      "translate": "advancements.mekanism.portable_teleporter.description"
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "digitalminer": {
+    "portable_teleporter": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:digital_miner"
+              "mekanism:portable_teleporter"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "digitalminer"
+      "portable_teleporter"
     ]
   ]
 }

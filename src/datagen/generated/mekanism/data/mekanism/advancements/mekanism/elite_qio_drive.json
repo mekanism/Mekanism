@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/teleportcore",
+  "parent": "mekanism:mekanism/advanced_qio_drive",
   "display": {
     "icon": {
-      "item": "mekanism:quantum_entangloporter"
+      "item": "mekanism:qio_drive_time_dilating"
     },
     "title": {
-      "translate": "advancements.mekanism.quantumentangloporter.title"
+      "translate": "advancements.mekanism.elite_qio_drive.title"
     },
     "description": {
-      "translate": "advancements.mekanism.quantumentangloporter.description"
+      "translate": "advancements.mekanism.elite_qio_drive.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "quantumentangloporter": {
+    "elite_qio_drive": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:quantum_entangloporter"
+              "mekanism:qio_drive_time_dilating"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "quantumentangloporter"
+      "elite_qio_drive"
     ]
   ]
 }

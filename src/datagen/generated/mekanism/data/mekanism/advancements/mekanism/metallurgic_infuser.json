@@ -2,29 +2,28 @@
   "parent": "mekanism:mekanism/materials",
   "display": {
     "icon": {
-      "item": "mekanism:canteen"
+      "item": "mekanism:metallurgic_infuser"
     },
     "title": {
-      "translate": "advancements.mekanism.fullcanteen.title"
+      "translate": "advancements.mekanism.metallurgic_infuser.title"
     },
     "description": {
-      "translate": "advancements.mekanism.fullcanteen.description"
+      "translate": "advancements.mekanism.metallurgic_infuser.description"
     },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": true
+    "hidden": false
   },
   "criteria": {
-    "fullcanteen": {
+    "metallurgic_infuser": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:canteen"
-            ],
-            "nbt": "{mekData:{FluidTanks:[{Tank:0b,stored:{Amount:64000,FluidName:\"mekanism:nutritional_paste\"}}]}}"
+              "mekanism:metallurgic_infuser"
+            ]
           }
         ]
       }
@@ -32,7 +31,7 @@
   },
   "requirements": [
     [
-      "fullcanteen"
+      "metallurgic_infuser"
     ]
   ]
 }

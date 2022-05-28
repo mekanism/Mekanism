@@ -20,6 +20,8 @@ import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registration.impl.RobitSkinRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
+import mekanism.common.advancements.MekanismAdvancements;
+import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -475,41 +477,48 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addAdvancements() {
-        addAdvancement(MekanismLang.ADVANCEMENT_ROOT, "Mekanism", "Welcome to Mekanism!");
-        addAdvancement(MekanismLang.ADVANCEMENT_MATERIALS, "Meka-materials", "Advancements in technology");
-        addAdvancement(MekanismLang.ADVANCEMENT_FLUIDTANK, "Better than buckets", "64-in-one");
-        addAdvancement(MekanismLang.ADVANCEMENT_CHEMICALTANK, "High pressure gas", "64000mb of presurized gas");
-        addAdvancement(MekanismLang.ADVANCEMENT_FULLCANTEEN, "Full to the brim", "Ready to chow down");
-        addAdvancement(MekanismLang.ADVANCEMENT_METALLURGICINFUSER, "A metallur-what now?", "Craft a Metallurgic Infuser");
-        addAdvancement(MekanismLang.ADVANCEMENT_STEELINGOT, "Industrial revolution", "Create your first steel ingot");
-        addAdvancement(MekanismLang.ADVANCEMENT_STEELCASING, "The perfect foundation", "The basis for even the most advanced machines");
-        addAdvancement(MekanismLang.ADVANCEMENT_INFUSED_ALLOY, "Iron-Redstone Fusion!", "Iron + Redstone = ???");
-        addAdvancement(MekanismLang.ADVANCEMENT_REINFORCED_ALLOY, "Reinforcement", "Diamonds make everything better!");
-        addAdvancement(MekanismLang.ADVANCEMENT_ATOMIC_ALLOY, "A powerful alloy", "Atomic power!");
-        addAdvancement(MekanismLang.ADVANCEMENT_PLUTONIUM, "Plutonium  power", "Not polonium");
-        addAdvancement(MekanismLang.ADVANCEMENT_SPS, "Going supercritical", "Ready to phase shift");
-        addAdvancement(MekanismLang.ADVANCEMENT_ANTIMATTER, "Impossible material", "This shouldn't be here, reporting paradox");
-        addAdvancement(MekanismLang.ADVANCEMENT_NUCLEOSYNTHESIZER, "Matter manipulation", "Sending signal, fix inbound");
-        addAdvancement(MekanismLang.ADVANCEMENT_POLONIUM, "Polonium power", "Not plutonium");
-        addAdvancement(MekanismLang.ADVANCEMENT_QIODRIVEARRAY, "Quantum orchestra", "You are the conductor!");
-        addAdvancement(MekanismLang.ADVANCEMENT_BASICQIODRIVE, "Quantum level 1", "1/4 storage");
-        addAdvancement(MekanismLang.ADVANCEMENT_ADVANCEDQIODRIVE, "Quantum level 2", "Higher density");
-        addAdvancement(MekanismLang.ADVANCEMENT_ELITEQIODRIVE, "Quantum level 3", "In the millions!");
-        addAdvancement(MekanismLang.ADVANCEMENT_ULTIMATEQIODRIVE, "Super massive", "Parallel universe detected");
-        addAdvancement(MekanismLang.ADVANCEMENT_QIODASHBOARD, "Quantum peek", "Behold your storage");
-        addAdvancement(MekanismLang.ADVANCEMENT_PORTABLEQIODASHBOARD, "Portable peek", "Behold your storage from anywhere!");
-        addAdvancement(MekanismLang.ADVANCEMENT_TELEPORTCORE, "Instant teleportation", "Numerous applications!");
-        addAdvancement(MekanismLang.ADVANCEMENT_TELEPORTER, "Portals:online", "Instant travel");
-        addAdvancement(MekanismLang.ADVANCEMENT_PORTABLETELEPORTER, "Portable portals", "Instant travel from anywhere");
-        addAdvancement(MekanismLang.ADVANCEMENT_QUANTUMENTANGLOPORTER, "Quantum entanglement", "Instant resource transport");
-        addAdvancement(MekanismLang.ADVANCEMENT_BASIC_CONTROL, "Under control", "We have this all under control");
-        addAdvancement(MekanismLang.ADVANCEMENT_ADVANCED_CONTROL, "Better control", "Craft an advanced control circuit");
-        addAdvancement(MekanismLang.ADVANCEMENT_ELITE_CONTROL, "Precision control", "Precise!");
-        addAdvancement(MekanismLang.ADVANCEMENT_ULTIMATE_CONTROL, "Where's my supercomputer?", "Honey! Where is my supercomputer?");
-        addAdvancement(MekanismLang.ADVANCEMENT_ROBIT, "Welcome to the world", "Hello friend");
-        addAdvancement(MekanismLang.ADVANCEMENT_DISASSEMBLER, "Atomic disassembler", "Rapid disassembly.");
-        addAdvancement(MekanismLang.ADVANCEMENT_MEKASUIT, "Fully kitted", "A true mekanism outfit");
-        addAdvancement(MekanismLang.ADVANCEMENT_UPGRADEDMEKASUIT, "The ultimate suit", "True dedication");
+        add(MekanismAdvancements.ROOT, "Mekanism", "Welcome to Mekanism!");
+        add(MekanismAdvancements.MATERIALS, "Meka-materials", "Advancements in technology");
+        add(MekanismAdvancements.FLUID_TANK, "Better than buckets", "64-in-one");
+        add(MekanismAdvancements.CHEMICAL_TANK, "High pressure gas", "64,000 mB of pressurized gas");
+        add(MekanismAdvancements.FULL_CANTEEN, "Full to the brim", "Ready to chow down");
+        add(MekanismAdvancements.METALLURGIC_INFUSER, "A metallur-what now?", "Craft a Metallurgic Infuser");
+        add(MekanismAdvancements.STEEL_INGOT, "Industrial revolution", "Create your first steel ingot");
+        add(MekanismAdvancements.STEEL_CASING, "The perfect foundation", "The basis for even the most advanced machines");
+        add(MekanismAdvancements.INFUSED_ALLOY, "Iron-Redstone Fusion!", "Iron + Redstone = ???");
+        add(MekanismAdvancements.REINFORCED_ALLOY, "Reinforcement", "Diamonds make everything better!");
+        add(MekanismAdvancements.ATOMIC_ALLOY, "A powerful alloy", "Atomic power!");
+        add(MekanismAdvancements.PLUTONIUM, "Plutonium  power", "Not polonium");
+        add(MekanismAdvancements.SPS, "Going supercritical", "Ready to phase shift");
+        add(MekanismAdvancements.ANTIMATTER, "Impossible material", "This shouldn't be here, reporting paradox");
+        add(MekanismAdvancements.NUCLEOSYNTHESIZER, "Matter manipulation", "Sending signal, fix inbound");
+        add(MekanismAdvancements.POLONIUM, "Polonium power", "Not plutonium");
+        add(MekanismAdvancements.QIO_DRIVE_ARRAY, "Quantum orchestra", "You are the conductor!");
+        add(MekanismAdvancements.BASIC_QIO_DRIVE, "Quantum level 1", "1/4 storage");
+        add(MekanismAdvancements.ADVANCED_QIO_DRIVE, "Quantum level 2", "Higher density");
+        add(MekanismAdvancements.ELITE_QIO_DRIVE, "Quantum level 3", "In the millions!");
+        add(MekanismAdvancements.ULTIMATE_QIO_DRIVE, "Super massive", "Parallel universe detected");
+        add(MekanismAdvancements.QIO_DASHBOARD, "Quantum peek", "Behold your storage");
+        add(MekanismAdvancements.PORTABLE_QIO_DASHBOARD, "Portable peek", "Behold your storage from anywhere!");
+        add(MekanismAdvancements.TELEPORTATION_CORE, "Instant teleportation", "Numerous applications!");
+        add(MekanismAdvancements.TELEPORTER, "Portals:online", "Instant travel");
+        add(MekanismAdvancements.PORTABLE_TELEPORTER, "Portable portals", "Instant travel from anywhere");
+        add(MekanismAdvancements.QUANTUM_ENTANGLOPORTER, "Quantum entanglement", "Instant resource transport");
+        add(MekanismAdvancements.BASIC_CONTROL, "Under control", "We have this all under control");
+        add(MekanismAdvancements.ADVANCED_CONTROL, "Better control", "Craft an advanced control circuit");
+        add(MekanismAdvancements.ELITE_CONTROL, "Precision control", "Precise!");
+        add(MekanismAdvancements.ULTIMATE_CONTROL, "Where's my supercomputer?", "Honey! Where is my supercomputer?");
+        add(MekanismAdvancements.ROBIT, "Welcome to the world", "Hello friend");
+        //TODO
+        //add(MekanismAdvancements.DIGITAL_MINER, "", "");
+        add(MekanismAdvancements.DISASSEMBLER, "Atomic disassembler", "Rapid disassembly.");
+        add(MekanismAdvancements.MEKASUIT, "Fully kitted", "A true mekanism outfit");
+        add(MekanismAdvancements.UPGRADED_MEKASUIT, "The ultimate suit", "True dedication");
+    }
+
+    private void add(MekanismAdvancement advancement, String title, String description) {
+        add(advancement.title(), title);
+        add(advancement.description(), description);
     }
 
     private void addJade() {
@@ -1388,11 +1397,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit", "Allows the user to both step and jump higher.");
         add(MekanismModules.MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit", "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
         add(MekanismModules.FROST_WALKER_UNIT, "Frost Walker Unit", "Uses liquid hydrogen to freeze any water the player walks on. Install multiple for a greater range.");
-    }
-
-    private void addAdvancement(MekanismLang advancement, String title, String description) {
-        add(advancement.getTranslationKey()+".title", title);
-        add(advancement.getTranslationKey()+".description", description);
     }
 
     private void addOre(OreType type, String description) {

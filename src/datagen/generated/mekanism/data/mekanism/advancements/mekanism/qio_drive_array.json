@@ -5,10 +5,10 @@
       "item": "mekanism:qio_drive_array"
     },
     "title": {
-      "translate": "advancements.mekanism.qiodrivearray.title"
+      "translate": "advancements.mekanism.qio_drive_array.title"
     },
     "description": {
-      "translate": "advancements.mekanism.qiodrivearray.description"
+      "translate": "advancements.mekanism.qio_drive_array.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "qiodrivearray": {
+    "qio_drive_array": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "qiodrivearray"
+      "qio_drive_array"
     ]
   ]
 }

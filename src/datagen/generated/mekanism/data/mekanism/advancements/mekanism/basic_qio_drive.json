@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/root",
+  "parent": "mekanism:mekanism/qio_drive_array",
   "display": {
     "icon": {
-      "item": "mekanism:basic_fluid_tank"
+      "item": "mekanism:qio_drive_base"
     },
     "title": {
-      "translate": "advancements.mekanism.fluidtank.title"
+      "translate": "advancements.mekanism.basic_qio_drive.title"
     },
     "description": {
-      "translate": "advancements.mekanism.fluidtank.description"
+      "translate": "advancements.mekanism.basic_qio_drive.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "fluidtank": {
+    "basic_qio_drive": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:basic_fluid_tank"
+              "mekanism:qio_drive_base"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "fluidtank"
+      "basic_qio_drive"
     ]
   ]
 }

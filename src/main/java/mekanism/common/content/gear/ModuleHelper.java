@@ -1,6 +1,9 @@
 package mekanism.common.content.gear;
 
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,6 +189,29 @@ public class ModuleHelper implements IModuleHelper {
             }
         }
         return moduleTypes;
+    }
+
+    public Object2IntMap<ModuleData<?>> loadAllCounts(ItemStack container) {
+        if (container.getItem() instanceof IModuleContainerItem) {
+            return loadAllCounts(ItemDataUtils.getCompound(container, NBTConstants.MODULES));
+        }
+        return Object2IntMaps.emptyMap();
+    }
+
+    private Object2IntMap<ModuleData<?>> loadAllCounts(CompoundTag modulesTag) {
+        Object2IntMap<ModuleData<?>> counts = new Object2IntOpenHashMap<>();
+        for (String name : modulesTag.getAllKeys()) {
+            ModuleData<?> moduleType = getModuleTypeFromName(name);
+            if (moduleType != null) {
+                int count = 1;
+                CompoundTag moduleData = modulesTag.getCompound(name);
+                if (moduleData.contains(NBTConstants.AMOUNT, Tag.TAG_INT)) {
+                    count = moduleData.getInt(NBTConstants.AMOUNT);
+                }
+                counts.put(moduleType, count);
+            }
+        }
+        return counts;
     }
 
     @Nullable

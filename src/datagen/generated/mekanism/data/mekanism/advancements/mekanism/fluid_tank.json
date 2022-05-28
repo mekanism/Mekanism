@@ -1,14 +1,14 @@
 {
-  "parent": "mekanism:mekanism/metallurgicinfuser",
+  "parent": "mekanism:mekanism/root",
   "display": {
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "item": "mekanism:basic_fluid_tank"
     },
     "title": {
-      "translate": "advancements.mekanism.steelingot.title"
+      "translate": "advancements.mekanism.fluid_tank.title"
     },
     "description": {
-      "translate": "advancements.mekanism.steelingot.description"
+      "translate": "advancements.mekanism.fluid_tank.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "steelingot": {
+    "fluid_tank": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:ingot_steel"
+              "mekanism:basic_fluid_tank"
             ]
           }
         ]
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "steelingot"
+      "fluid_tank"
     ]
   ]
 }

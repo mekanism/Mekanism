@@ -8,7 +8,7 @@
       "translate": "advancements.mekanism.ultimate_control.title"
     },
     "description": {
-      "translate": "advancements.mekanism.elite_control.description"
+      "translate": "advancements.mekanism.ultimate_control.description"
     },
     "frame": "goal",
     "show_toast": true,
@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "elite_control": {
+    "ultimate_control": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "elite_control"
+      "ultimate_control"
     ]
   ]
 }
