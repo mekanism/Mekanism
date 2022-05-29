@@ -509,8 +509,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.ELITE_CONTROL, "Precision control", "Precise!");
         add(MekanismAdvancements.ULTIMATE_CONTROL, "Where's my supercomputer?", "Honey! Where is my supercomputer?");
         add(MekanismAdvancements.ROBIT, "Welcome to the world", "Hello friend");
-        //TODO
-        //add(MekanismAdvancements.DIGITAL_MINER, "", "");
+        add(MekanismAdvancements.DIGITAL_MINER, "What is my purpose?", "Goodbye friend");
         add(MekanismAdvancements.DISASSEMBLER, "Atomic disassembler", "Rapid disassembly.");
         add(MekanismAdvancements.MEKASUIT, "Fully kitted", "A true mekanism outfit");
         add(MekanismAdvancements.UPGRADED_MEKASUIT, "The ultimate suit", "True dedication");
