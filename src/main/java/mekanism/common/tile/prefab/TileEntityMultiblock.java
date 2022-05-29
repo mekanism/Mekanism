@@ -124,8 +124,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
         T multiblock = getMultiblock();
         if (isMaster() && multiblock.isFormed() && multiblock.recheckStructure) {
-            getStructure().markForUpdate(level, true);
             multiblock.recheckStructure = false;
+            getStructure().doImmediateUpdate(this, ticker % 10 == 0);
             multiblock = getMultiblock();
         }
         if (multiblock.isFormed()) {
@@ -196,7 +196,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos pos = getBlockPos().relative(side);
-            if (!multiblock.isFormed() || (!multiblock.locations.contains(pos) && !multiblock.internalLocations.contains(pos))) {
+            if (!multiblock.isFormed() || !multiblock.isKnownLocation(pos)) {
                 BlockEntity tile = WorldUtils.getTileEntity(level, pos);
                 if (!level.isEmptyBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
                     WorldUtils.notifyNeighborOfChange(level, pos, getBlockPos());
@@ -395,7 +395,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             T multiblock = getMultiblock();
             if (multiblock.isPositionInsideBounds(getStructure(), neighborPos)) {
                 //If the neighbor change happened from inside the bounds of the multiblock,
-                if (!multiblock.internalLocations.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
+                if (level.isEmptyBlock(neighborPos) || !multiblock.internalLocations.contains(neighborPos)) {
                     //And we are not already an internal part of the structure, or we are changing an internal part to air
                     // then we mark the structure as needing to be re-validated
                     //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt

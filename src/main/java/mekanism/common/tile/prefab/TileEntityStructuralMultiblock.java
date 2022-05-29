@@ -156,7 +156,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (s.getController() != null) {
                     MultiblockData multiblockData = getMultiblockData(s);
                     if (multiblockData.isPositionInsideBounds(s, neighborPos)) {
-                        if (!multiblockData.internalLocations.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
+                        if (level.isEmptyBlock(neighborPos) || !multiblockData.internalLocations.contains(neighborPos)) {
                             //And we are not already an internal part of the structure, or we are changing an internal part to air
                             // then we mark the structure as needing to be re-validated
                             //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
