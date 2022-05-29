@@ -19,13 +19,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemHDPEElytra;
-import mekanism.common.item.gear.ItemJetpack;
-import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.item.interfaces.IJetpackItem;
+import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
@@ -86,15 +85,17 @@ public class ClientTickHandler {
             return Mekanism.playerState.isJetpackOn(player);
         }
         if (!player.isSpectator()) {
-            ItemStack chest = ItemJetpack.getJetpack(player);
-            if (!chest.isEmpty()) {
-                JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chest);
+            ItemStack activeJetpack = IJetpackItem.getActiveJetpack(player);
+            if (!activeJetpack.isEmpty()) {
+                JetpackMode mode = ((IJetpackItem) activeJetpack.getItem()).getJetpackMode(activeJetpack);
+                boolean guiOpen = minecraft.screen != null;
+                boolean ascending = minecraft.player.input.jumping;
+                boolean rising = ascending && !guiOpen;
                 if (mode == JetpackMode.NORMAL) {
-                    return minecraft.screen == null && minecraft.player.input.jumping;
+                    return rising;
                 } else if (mode == JetpackMode.HOVER) {
-                    boolean ascending = minecraft.player.input.jumping;
                     boolean descending = minecraft.player.input.shiftKeyDown;
-                    if (!ascending || descending || minecraft.screen != null) {
+                    if (!rising || descending) {
                         return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
                     }
                     return true;
@@ -205,17 +206,10 @@ public class ClientTickHandler {
                 }
             }
 
-            ItemStack chestStack = minecraft.player.getItemBySlot(EquipmentSlot.CHEST);
-            IModule<ModuleJetpackUnit> jetpackModule = MekanismAPI.getModuleHelper().load(chestStack, MekanismModules.JETPACK_UNIT);
-
-            ItemStack jetpack = ItemJetpack.getJetpack(minecraft.player, chestStack);
-            if (!jetpack.isEmpty() || jetpackModule != null) {
+            ItemStack jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
+            if (!jetpack.isEmpty()) {
                 MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
-            }
-
-            if (isJetpackActive(minecraft.player)) {
-                JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(jetpack);
-                if (CommonPlayerTickHandler.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
+                if (isJetpackActive(minecraft.player) && IJetpackItem.handleJetpackMotion(minecraft.player, ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack), () -> minecraft.player.input.jumping)) {
                     minecraft.player.fallDistance = 0.0F;
                 }
             }
