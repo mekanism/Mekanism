@@ -21,6 +21,7 @@ public class JsonConstants {
     public static final String SLURRY = "slurry";
     public static final String FLUID = "fluid";
     public static final String BASE = "base";
+    @Deprecated(forRemoval = true)
     public static final String WITHOUT = "without";
 
     //Recipes

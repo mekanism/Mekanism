@@ -154,7 +154,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
         //Created a pack key as follows:
         // first four bits of a short are used to represent size (realistically first three are ignored and fourth represents small or large)
         // last 12 bits are separated into 6 sides each of 2 bits that represent the connection type
-        int packedKey = tile.getTransmitterType().getSize().ordinal() << 13;
+        int packedKey = tile.getTransmitterType().getSize().ordinal() << 12;
         for (Direction side : EnumUtils.DIRECTIONS) {
             //Get the actual connection types
             ConnectionType connectionType = transmitter.getConnectionType(side);
@@ -164,6 +164,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
         //We can cast this to a short as we don't use more bits than are in a short, we just use an int to simplify bit shifting
         return cachedShapes.computeIfAbsent((short) packedKey, packed -> {
             //If we don't have a cached version of our shape, then we need to calculate it
+            //size = Size.byIndexStatic(packed >> 12);
             List<VoxelShape> shapes = new ArrayList<>(EnumUtils.DIRECTIONS.length);
             for (Direction side : EnumUtils.DIRECTIONS) {
                 //Unpack the ordinal of the connection type (shift so that significant bits are the two rightmost
