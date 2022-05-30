@@ -10,6 +10,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -351,5 +352,20 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
     }
 
     private record RecipeExample(RecipeMethod method, Object[] params) {
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            return o instanceof RecipeExample other && method.equals(other.method) && Arrays.deepEquals(params, other.params);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = method.hashCode();
+            result = 31 * result + Arrays.hashCode(params);
+            return result;
+        }
     }
 }

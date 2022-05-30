@@ -2,6 +2,7 @@ package mekanism.common.base;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
@@ -202,6 +203,21 @@ public final class HolidayManager {
     }
 
     private record HolidayMessage(String themedLines, Component... lines) {
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            return o instanceof HolidayMessage other && themedLines.equals(other.themedLines) && Arrays.equals(lines, other.lines);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = themedLines.hashCode();
+            result = 31 * result + Arrays.hashCode(lines);
+            return result;
+        }
     }
 
     public record YearlyDate(Month month, @Range(from = 1, to = 31) int day) {

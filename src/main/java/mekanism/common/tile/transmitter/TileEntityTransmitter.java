@@ -248,7 +248,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             }
         }
         //Center position
-        list.add(isSmall ? BlockSmallTransmitter.center : BlockLargeTransmitter.center);
+        list.add(isSmall ? BlockSmallTransmitter.CENTER : BlockLargeTransmitter.CENTER);
         return list;
     }
 

@@ -11,7 +11,7 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
     private static final VoxelShape[] SIDES = new VoxelShape[EnumUtils.DIRECTIONS.length];
     private static final VoxelShape[] SIDES_PULL = new VoxelShape[EnumUtils.DIRECTIONS.length];
     private static final VoxelShape[] SIDES_PUSH = new VoxelShape[EnumUtils.DIRECTIONS.length];
-    public static final VoxelShape center;
+    public static final VoxelShape CENTER;
 
     static {
         VoxelShapeUtils.setShape(box(4, 0, 4, 12, 4, 12), SIDES, true);
@@ -25,7 +25,7 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
               box(5, 1, 5, 11, 3, 11),
               box(6, 0, 6, 10, 1, 10)
         ), SIDES_PUSH, true);
-        center = box(4, 4, 4, 12, 12, 12);
+        CENTER = box(4, 4, 4, 12, 12, 12);
     }
 
     public static VoxelShape getSideForType(ConnectionType type, Direction side) {
@@ -39,7 +39,7 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
 
     @Override
     protected VoxelShape getCenter() {
-        return center;
+        return CENTER;
     }
 
     @Override
