@@ -14,9 +14,13 @@ import net.minecraft.network.chat.TextComponent;
 
 public class BasicColorButton extends MekanismButton {
 
-    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, Runnable onLeftClick,
+    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @Nullable Runnable onLeftClick,
           @Nullable GuiElement.IHoverable onHover) {
         return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick, onHover);
+    }
+
+    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @Nullable GuiElement.IHoverable onHover) {
+        return new BasicColorButton(gui, x, y, size, () -> color, null, null, onHover);
     }
 
     private final Supplier<EnumColor> colorSupplier;

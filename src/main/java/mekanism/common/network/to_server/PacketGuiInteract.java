@@ -378,7 +378,7 @@ public class PacketGuiInteract implements IMekanismPacket {
 
         TOGGLE_CHUNKLOAD((tile, player, extra) -> {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
-                stabilizer.toggleChunkloadingAt(extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
+                stabilizer.toggleChunkloadingAt(extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
             }
         })
 

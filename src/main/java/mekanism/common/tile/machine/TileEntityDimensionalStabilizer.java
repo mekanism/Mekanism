@@ -40,13 +40,15 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, ISustainedData {
 
-    private static final int MAX_LOAD_RADIUS = 2;
+    public static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
     private static final BiFunction<FloatingLong, TileEntityDimensionalStabilizer, FloatingLong> BASE_ENERGY_CALCULATOR =
-          (base, tile) -> base.multiply(tile.getChunksLoaded());
+          (base, tile) -> base.multiply(tile.chunksLoaded);
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
+    //TODO: Expose as a computer method getChunksLoaded
+    private int chunksLoaded = 1;
 
     private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
@@ -58,6 +60,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
         chunkLoaderComponent = new ChunkLoader(this);
         loadingChunks = new boolean[MAX_LOAD_DIAMETER][MAX_LOAD_DIAMETER];
+        //Center chunk where the stabilizer is, is always loaded (unless none are loaded due to energy or control mode)
         loadingChunks[MAX_LOAD_RADIUS][MAX_LOAD_RADIUS] = true;
         //TODO: Strictly speaking center chunk should always be loaded if at least one other chunk is loaded
         // due to the fact that we need to be using energy. This isn't currently the case but it should be made to be
@@ -105,27 +108,34 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     //TODO: Expose as a computer method that requires it to be public
     public void toggleChunkloadingAt(int x, int z) {
-        //Validate x and z are valid as this is set via packet
+        //Validate x and z are valid as this is called from a packet
         if (x >= 0 && x < MAX_LOAD_DIAMETER && z >= 0 && z < MAX_LOAD_DIAMETER) {
-            loadingChunks[x][z] = !loadingChunks[x][z];
-            setChanged(false);
-            energyContainer.updateEnergyPerTick();
-            //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets();
+            if (setChunkLoadingAt(x, z, !isChunkloadingAt(x, z))) {
+                setChanged(false);
+                energyContainer.updateEnergyPerTick();
+                //Refresh the chunks that are loaded as it has changed
+                getChunkLoader().refreshChunkTickets();
+            }
         }
     }
 
-    //TODO: Expose as a computer method
-    private int getChunksLoaded() {
-        int chunksLoaded = 0;
-        for (boolean[] row : loadingChunks) {
-            for (boolean loadingChunk : row) {
-                if (loadingChunk) {
-                    chunksLoaded++;
-                }
+    //TODO: Expose as a computer method that requires it to be public and validates positions and marks for refresh and the like
+    // Also probably should have it use negatives in computer land so it is offset compared to where we actually are
+    private boolean setChunkLoadingAt(int x, int z, boolean load) {
+        if (x == MAX_LOAD_RADIUS && z == MAX_LOAD_RADIUS) {
+            //Center chunk where the stabilizer is, is always loaded (unless none are loaded due to energy or control mode)
+            // so just skip and return we don't need to update if that is the position that someone attempts to change
+            return false;
+        } else if (isChunkloadingAt(x, z) != load) {
+            loadingChunks[x][z] = load;
+            if (load) {
+                chunksLoaded++;
+            } else {
+                chunksLoaded--;
             }
+            return true;
         }
-        return chunksLoaded;
+        return false;
     }
 
     @Override
@@ -138,9 +148,9 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         Set<ChunkPos> chunkSet = new HashSet<>();
         int chunkX = SectionPos.blockToSectionCoord(worldPosition.getX());
         int chunkZ = SectionPos.blockToSectionCoord(worldPosition.getZ());
-        for (int z = -MAX_LOAD_RADIUS; z <= MAX_LOAD_RADIUS; ++z) {
-            for (int x = -MAX_LOAD_RADIUS; x <= MAX_LOAD_RADIUS; ++x) {
-                if (loadingChunks[x + MAX_LOAD_RADIUS][z + MAX_LOAD_RADIUS]) {
+        for (int x = -MAX_LOAD_RADIUS; x <= MAX_LOAD_RADIUS; x++) {
+            for (int z = -MAX_LOAD_RADIUS; z <= MAX_LOAD_RADIUS; z++) {
+                if (isChunkloadingAt(x + MAX_LOAD_RADIUS, z + MAX_LOAD_RADIUS)) {
                     chunkSet.add(new ChunkPos(chunkX + x, chunkZ + z));
                 }
             }
@@ -184,23 +194,33 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     private void writeChunksToLoad(@Nonnull CompoundTag nbtTags) {
         byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
-        for (int z = 0; z < MAX_LOAD_DIAMETER; ++z) {
-            for (int x = 0; x < MAX_LOAD_DIAMETER; ++x) {
-                chunksToLoad[z * MAX_LOAD_DIAMETER + x] = (byte) (loadingChunks[x][z] ? 1 : 0);
+        for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
+            for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
+                chunksToLoad[x * MAX_LOAD_DIAMETER + z] = (byte) (isChunkloadingAt(x, z) ? 1 : 0);
             }
         }
         nbtTags.putByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
     }
 
-    private void readChunksToLoad(@Nonnull CompoundTag nbt) {
+    private boolean readChunksToLoad(@Nonnull CompoundTag nbt) {
+        boolean changed = false;
+        int lastChunksLoaded = chunksLoaded;
         byte[] chunksToLoad = nbt.getByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
-        //TODO: Fix it not handling it properly if chunksToLoad is the wrong size or missing
-        for (int z = 0; z < MAX_LOAD_DIAMETER; ++z) {
-            for (int x = 0; x < MAX_LOAD_DIAMETER; ++x) {
-                loadingChunks[x][z] = chunksToLoad[z * MAX_LOAD_DIAMETER + x] == 1;
+        if (chunksToLoad.length != MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER) {
+            //If it is the wrong size dummy it to all zeros so things get set to false as we don't know
+            // where to position our values
+            chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
+        }
+        for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
+            for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
+                changed |= setChunkLoadingAt(x, z, chunksToLoad[x * MAX_LOAD_DIAMETER + z] == 1);
             }
         }
-        energyContainer.updateEnergyPerTick();
+        if (chunksLoaded != lastChunksLoaded) {
+            //If the number of chunks loaded is different we need to update our energy to use
+            energyContainer.updateEnergyPerTick();
+        }
+        return changed;
     }
 
     @Override
@@ -210,7 +230,10 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
-        readChunksToLoad(dataMap);
+        if (readChunksToLoad(dataMap)) {
+            //Refresh the chunks that are loaded as it has changed
+            getChunkLoader().refreshChunkTickets();
+        }
     }
 
     @Override

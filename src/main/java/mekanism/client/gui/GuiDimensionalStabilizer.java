@@ -35,13 +35,18 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                   return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
-        for (int z = 0; z < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; ++z) {
-            for (int x = 0; x < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; ++x) {
-                int finalX = x;
-                int finalZ = z;
-                addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * x, 19 + 10 * z, 10, EnumColor.DARK_BLUE,
-                      () -> tile.isChunkloadingAt(finalX, finalZ), () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD,
-                            tile, finalZ * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + finalX)), null));
+        for (int x = 0; x < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; x++) {
+            for (int z = 0; z < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; z++) {
+                if (x == TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS && z == TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS) {
+                    addRenderableWidget(BasicColorButton.renderActive(this, 63 + 10 * x, 19 + 10 * z, 10, EnumColor.DARK_BLUE, null));
+                } else {
+                    int finalX = x;
+                    int finalZ = z;
+                    //TODO: Add hover tooltips
+                    addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * x, 19 + 10 * z, 10, EnumColor.DARK_BLUE,
+                          () -> tile.isChunkloadingAt(finalX, finalZ), () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD,
+                                tile, finalX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + finalZ)), null));
+                }
             }
         }
         addRenderableWidget(new GuiUpArrow(this, 52, 28));
