@@ -80,14 +80,14 @@ public class ClientTickHandler {
     private static long lastScrollTime = -1;
     private static double scrollDelta;
 
-    public static boolean isJetpackActive(Player player) {
-        if (player != minecraft.player) {
-            return Mekanism.playerState.isJetpackOn(player);
-        }
+    public static boolean isJetpackOn(Player player) {
+        return Mekanism.playerState.isJetpackOn(player);
+    }
+
+    public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
         if (!player.isSpectator()) {
-            ItemStack activeJetpack = IJetpackItem.getActiveJetpack(player);
-            if (!activeJetpack.isEmpty()) {
-                JetpackMode mode = ((IJetpackItem) activeJetpack.getItem()).getJetpackMode(activeJetpack);
+            if (!jetpack.isEmpty()) {
+                JetpackMode mode = ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack);
                 boolean guiOpen = minecraft.screen != null;
                 boolean ascending = minecraft.player.input.jumping;
                 boolean rising = ascending && !guiOpen;
@@ -185,7 +185,9 @@ public class ClientTickHandler {
             UUID playerUUID = minecraft.player.getUUID();
             // Update player's state for various items; this also automatically notifies server if something changed and
             // kicks off sounds as necessary
-            Mekanism.playerState.setJetpackState(playerUUID, isJetpackActive(minecraft.player), true);
+            ItemStack jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
+            boolean jetpackInUse = isJetpackInUse(minecraft.player, jetpack);
+            Mekanism.playerState.setJetpackState(playerUUID, jetpackInUse, true);
             Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
             Mekanism.playerState.setGravitationalModulationState(playerUUID, isGravitationalModulationOn(minecraft.player), true);
             Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(minecraft.player), isFlamethrowerOn(minecraft.player), true);
@@ -206,10 +208,12 @@ public class ClientTickHandler {
                 }
             }
 
-            ItemStack jetpack = IJetpackItem.getActiveJetpack(minecraft.player);
             if (!jetpack.isEmpty()) {
+                ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
+                JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
+                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode);
                 MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
-                if (isJetpackActive(minecraft.player) && IJetpackItem.handleJetpackMotion(minecraft.player, ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack), () -> minecraft.player.input.jumping)) {
+                if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack), () -> minecraft.player.input.jumping)) {
                     minecraft.player.fallDistance = 0.0F;
                 }
             }

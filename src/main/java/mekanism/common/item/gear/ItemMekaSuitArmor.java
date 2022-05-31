@@ -332,7 +332,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        return slot == EquipmentSlot.CHEST && isModuleEnabled(stack, MekanismModules.JETPACK_UNIT) && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get());
+        return slot == EquipmentSlot.CHEST && (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT) && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get()) || isModuleEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT));
     }
 
     @Override

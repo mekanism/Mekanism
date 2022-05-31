@@ -120,16 +120,19 @@ public class CommonPlayerTickHandler {
         }
 
         ItemStack jetpack = IJetpackItem.getActiveJetpack(player);
-        JetpackMode mode = getJetpackModeIfOn(player, jetpack);
-        if (mode != JetpackMode.DISABLED) {
-            if (IJetpackItem.handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
-                player.fallDistance = 0.0F;
-                if (player instanceof ServerPlayer serverPlayer) {
-                    serverPlayer.connection.aboveGroundTickCount = 0;
+        if (!jetpack.isEmpty()) {
+            ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(player);
+            JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
+            JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode);
+            if (mode != JetpackMode.DISABLED) {
+                // Client handles motion and sets fallDistance in ClientTickHandler at the tick start
+                if (mode == JetpackMode.HOVER || !player.isFallFlying()) {
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        player.fallDistance = 0.0F;
+                        serverPlayer.connection.aboveGroundTickCount = 0;
+                    }
                 }
-            }
-            if (jetpack.getItem() instanceof IJetpackItem jetpackItem) {
-                jetpackItem.useJetpackFuel(jetpack);
+                ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
             }
         }
 
@@ -152,23 +155,6 @@ public class CommonPlayerTickHandler {
         }
 
         Mekanism.playerState.updateFlightInfo(player);
-    }
-
-    private static JetpackMode getJetpackModeIfOn(Player player, ItemStack jetpack) {
-        if (!jetpack.isEmpty() && !player.isSpectator()) {
-            JetpackMode mode = ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack);
-            if (mode != JetpackMode.DISABLED) {
-                boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
-                if (mode == JetpackMode.HOVER) {
-                    if (ascending && !player.isDescending() || !isOnGroundOrSleeping(player)) {
-                        return mode;
-                    }
-                } else if (mode == JetpackMode.NORMAL && ascending) {
-                    return mode;
-                }
-            }
-        }
-        return JetpackMode.DISABLED;
     }
 
     public static boolean isGravitationalModulationReady(Player player) {
@@ -364,7 +350,7 @@ public class CommonPlayerTickHandler {
                 speed *= (targetHardness / maxHardness);
             }
         }
-        
+
         //Gyroscopic stabilization check
         ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
         if (!legs.isEmpty() && MekanismAPI.getModuleHelper().isEnabled(legs, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {

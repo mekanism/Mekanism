@@ -13,6 +13,6 @@ public class JetpackSound extends PlayerSound {
 
     @Override
     public boolean shouldPlaySound(@Nonnull Player player) {
-        return ClientTickHandler.isJetpackActive(player);
+        return ClientTickHandler.isJetpackOn(player);
     }
 }
