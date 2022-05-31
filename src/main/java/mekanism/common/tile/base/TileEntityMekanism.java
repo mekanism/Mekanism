@@ -857,6 +857,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         //TODO: Remove, give it some better default, or allow it to be null
+        // (this is used by some things like non directional blocks with energy configs)
         return Direction.NORTH;
     }
 

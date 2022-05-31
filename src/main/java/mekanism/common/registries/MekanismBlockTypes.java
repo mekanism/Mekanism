@@ -550,7 +550,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityDimensionalStabilizer> DIMENSIONAL_STABILIZER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.DIMENSIONAL_STABILIZER, MekanismLang.DESCRIPTION_DIMENSIONAL_STABILIZER)
           .withGui(() -> MekanismContainerTypes.DIMENSIONAL_STABILIZER)
-          .without(AttributeStateActive.class, AttributeParticleFX.class)
+          .without(AttributeStateFacing.class, AttributeParticleFX.class)
           .withEnergyConfig(MekanismConfig.usage.dimensionalStabilizer, MekanismConfig.storage.dimensionalStabilizer)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ENERGY))
           .withComputerSupport("dimensionalStabilizer")

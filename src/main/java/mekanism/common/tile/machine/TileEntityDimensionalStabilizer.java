@@ -1,6 +1,8 @@
 package mekanism.common.tile.machine;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
@@ -28,6 +30,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -35,7 +38,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader {
+public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, ISustainedData {
 
     private static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
@@ -44,7 +47,6 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
-    private boolean chunkloading = false;
 
     private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
@@ -59,6 +61,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         loadingChunks[MAX_LOAD_RADIUS][MAX_LOAD_RADIUS] = true;
         //TODO: Strictly speaking center chunk should always be loaded if at least one other chunk is loaded
         // due to the fact that we need to be using energy. This isn't currently the case but it should be made to be
+        //TODO: Visuals button on GUI and then either do something like F3+G or sort of like the digital miner?
     }
 
     @Nonnull
@@ -86,12 +89,12 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                setChunkloading(true);
+                setActive(true);
             } else {
-                setChunkloading(false);
+                setActive(false);
             }
         } else {
-            setChunkloading(false);
+            setActive(false);
         }
     }
 
@@ -109,13 +112,6 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
             energyContainer.updateEnergyPerTick();
             //Refresh the chunks that are loaded as it has changed
             getChunkLoader().refreshChunkTickets();
-        }
-    }
-
-    private void setChunkloading(boolean value) {
-        if (chunkloading != value) {
-            chunkloading = value;
-            setChanged(true);
         }
     }
 
@@ -154,7 +150,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     public int getRedstoneLevel() {
-        return chunkloading ? 15 : 0;
+        return getActive() ? 15 : 0;
     }
 
     @Override
@@ -175,21 +171,28 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    protected void addGeneralPersistentData(@Nonnull CompoundTag nbtTags) {
-        super.addGeneralPersistentData(nbtTags);
+    protected void addGeneralPersistentData(@Nonnull CompoundTag nbt) {
+        super.addGeneralPersistentData(nbt);
+        writeChunksToLoad(nbt);
+    }
+
+    @Override
+    protected void loadGeneralPersistentData(@Nonnull CompoundTag nbt) {
+        super.loadGeneralPersistentData(nbt);
+        readChunksToLoad(nbt);
+    }
+
+    private void writeChunksToLoad(@Nonnull CompoundTag nbtTags) {
         byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
         for (int z = 0; z < MAX_LOAD_DIAMETER; ++z) {
             for (int x = 0; x < MAX_LOAD_DIAMETER; ++x) {
                 chunksToLoad[z * MAX_LOAD_DIAMETER + x] = (byte) (loadingChunks[x][z] ? 1 : 0);
             }
         }
-        //TODO: Persist this when picked up as an item
         nbtTags.putByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
     }
 
-    @Override
-    protected void loadGeneralPersistentData(@Nonnull CompoundTag nbt) {
-        super.loadGeneralPersistentData(nbt);
+    private void readChunksToLoad(@Nonnull CompoundTag nbt) {
         byte[] chunksToLoad = nbt.getByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
         //TODO: Fix it not handling it properly if chunksToLoad is the wrong size or missing
         for (int z = 0; z < MAX_LOAD_DIAMETER; ++z) {
@@ -201,15 +204,20 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
-        nbtTags.putBoolean(NBTConstants.STABILIZER_CHUNKLOADING, chunkloading);
+    public void writeSustainedData(CompoundTag dataMap) {
+        writeChunksToLoad(dataMap);
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
-        chunkloading = nbt.getBoolean(NBTConstants.STABILIZER_CHUNKLOADING);
+    public void readSustainedData(CompoundTag dataMap) {
+        readChunksToLoad(dataMap);
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        remap.put(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
+        return remap;
     }
 
     @Override
@@ -231,7 +239,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
         @Override
         public boolean canOperate() {
-            return MekanismConfig.general.allowChunkloading.get() && chunkloading;
+            return MekanismConfig.general.allowChunkloading.get() && getActive();
         }
     }
 }

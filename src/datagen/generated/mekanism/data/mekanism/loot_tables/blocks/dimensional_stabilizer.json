@@ -33,6 +33,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "stabilizerChunksToLoad",
+                  "target": "mekData.stabilizerChunksToLoad",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"
