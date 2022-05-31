@@ -1,5 +1,6 @@
 package mekanism.api.gear;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
@@ -24,7 +25,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     private final IItemProvider itemProvider;
     private final int maxStackSize;
     private final Rarity rarity;
-    private final boolean exclusive;
+    private final int exclusive;
     private final boolean handlesModeChange;
     private final boolean rendersHUD;
     private final boolean noDisable;
@@ -86,11 +87,18 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     }
 
     /**
-     * Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled.
+     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
      *
      * @return {@code true} if this module type is exclusive.
      */
-    public final boolean isExclusive() {
+    public final boolean isExclusive(int flags) {
+        return (exclusive & flags) != 0;
+    }
+
+    /**
+     * Gets the exclusive flags for this module type.
+     */
+    public final int getExclusiveFlags() {
         return exclusive;
     }
 
@@ -177,8 +185,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
          * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
          *
          * @apiNote Strictly speaking a new instance of the custom module does not need to be returned if {@link ICustomModule#init(IModule, ModuleConfigItemCreator)}
-         * creates no config items so there is no unique data, but it is easier to just return a new instance each time unless you are using {@link
-         * #marker(IItemProvider)}.
+         * creates no config items so there is no unique data, but it is easier to just return a new instance each time unless you are using
+         * {@link #marker(IItemProvider)}.
          */
         public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(@Nonnull NonNullSupplier<MODULE> customModule,
               @Nonnull IItemProvider itemProvider) {
@@ -189,7 +197,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         private final IItemProvider itemProvider;
         private Rarity rarity = Rarity.COMMON;
         private int maxStackSize = 1;
-        private boolean exclusive;
+        private int exclusive;
         private boolean handlesModeChange;
         private boolean rendersHUD;
         private boolean noDisable;
@@ -224,16 +232,16 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled.
+         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
          */
-        public ModuleDataBuilder<MODULE> exclusive() {
-            exclusive = true;
+        public ModuleDataBuilder<MODULE> exclusive(int flags) {
+            exclusive = flags;
             return this;
         }
 
         /**
-         * Marks this module type as being able to handle mode changes. In addition to using this method {@link ICustomModule#changeMode(IModule, Player, ItemStack, int,
-         * boolean)} should be implemented.
+         * Marks this module type as being able to handle mode changes. In addition to using this method
+         * {@link ICustomModule#changeMode(IModule, Player, ItemStack, int, boolean)} should be implemented.
          */
         public ModuleDataBuilder<MODULE> handlesModeChange() {
             handlesModeChange = true;
@@ -274,5 +282,21 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
             disabledByDefault = true;
             return this;
         }
+    }
+
+    public enum ExclusiveFlag {
+        INTERACT_EMPTY,
+        INTERACT_ENTITY,
+        INTERACT_BLOCK,
+        OVERRIDE_JUMP;
+
+        // This will work for 32 flags, if we go past that we will have to switch it to a long. But that is a lot of flags!
+        public static int getFlags(ExclusiveFlag... flags) {
+            return Arrays.stream(flags).mapToInt(Enum::ordinal).reduce(0, (result, flag) -> result | (1 << flag));
+        }
+
+        public static final int NONE = 0;
+        public static final int ANY = -1;
+        public static final int INTERACT_ALL = getFlags(INTERACT_EMPTY, INTERACT_ENTITY, INTERACT_BLOCK);
     }
 }
