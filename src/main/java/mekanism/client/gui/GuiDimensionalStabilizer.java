@@ -44,7 +44,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                     int finalZ = z;
                     //TODO: Add hover tooltips
                     addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * x, 19 + 10 * z, 10, EnumColor.DARK_BLUE,
-                          () -> tile.isChunkloadingAt(finalX, finalZ), () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD,
+                          () -> tile.isChunkLoadingAt(finalX, finalZ), () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD,
                                 tile, finalX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + finalZ)), null));
                 }
             }

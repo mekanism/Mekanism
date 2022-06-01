@@ -21,7 +21,10 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -47,7 +50,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
-    //TODO: Expose as a computer method getChunksLoaded
+    @SyntheticComputerMethod(getter = "getChunksLoaded")
     private int chunksLoaded = 1;
 
     private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
@@ -62,8 +65,6 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         loadingChunks = new boolean[MAX_LOAD_DIAMETER][MAX_LOAD_DIAMETER];
         //Center chunk where the stabilizer is, is always loaded (unless none are loaded due to energy or control mode)
         loadingChunks[MAX_LOAD_RADIUS][MAX_LOAD_RADIUS] = true;
-        //TODO: Strictly speaking center chunk should always be loaded if at least one other chunk is loaded
-        // due to the fact that we need to be using energy. This isn't currently the case but it should be made to be
         //TODO: Visuals button on GUI and then either do something like F3+G or sort of like the digital miner?
     }
 
@@ -101,16 +102,14 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
     }
 
-    //TODO: Expose as a computer method
-    public boolean isChunkloadingAt(int x, int z) {
+    public boolean isChunkLoadingAt(int x, int z) {
         return loadingChunks[x][z];
     }
 
-    //TODO: Expose as a computer method that requires it to be public
-    public void toggleChunkloadingAt(int x, int z) {
+    public void toggleChunkLoadingAt(int x, int z) {
         //Validate x and z are valid as this is called from a packet
         if (x >= 0 && x < MAX_LOAD_DIAMETER && z >= 0 && z < MAX_LOAD_DIAMETER) {
-            if (setChunkLoadingAt(x, z, !isChunkloadingAt(x, z))) {
+            if (setChunkLoadingAt(x, z, !isChunkLoadingAt(x, z))) {
                 setChanged(false);
                 energyContainer.updateEnergyPerTick();
                 //Refresh the chunks that are loaded as it has changed
@@ -119,14 +118,12 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
     }
 
-    //TODO: Expose as a computer method that requires it to be public and validates positions and marks for refresh and the like
-    // Also probably should have it use negatives in computer land so it is offset compared to where we actually are
     private boolean setChunkLoadingAt(int x, int z, boolean load) {
         if (x == MAX_LOAD_RADIUS && z == MAX_LOAD_RADIUS) {
             //Center chunk where the stabilizer is, is always loaded (unless none are loaded due to energy or control mode)
             // so just skip and return we don't need to update if that is the position that someone attempts to change
             return false;
-        } else if (isChunkloadingAt(x, z) != load) {
+        } else if (isChunkLoadingAt(x, z) != load) {
             loadingChunks[x][z] = load;
             if (load) {
                 chunksLoaded++;
@@ -150,7 +147,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         int chunkZ = SectionPos.blockToSectionCoord(worldPosition.getZ());
         for (int x = -MAX_LOAD_RADIUS; x <= MAX_LOAD_RADIUS; x++) {
             for (int z = -MAX_LOAD_RADIUS; z <= MAX_LOAD_RADIUS; z++) {
-                if (isChunkloadingAt(x + MAX_LOAD_RADIUS, z + MAX_LOAD_RADIUS)) {
+                if (isChunkLoadingAt(x + MAX_LOAD_RADIUS, z + MAX_LOAD_RADIUS)) {
                     chunkSet.add(new ChunkPos(chunkX + x, chunkZ + z));
                 }
             }
@@ -196,7 +193,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
-                chunksToLoad[x * MAX_LOAD_DIAMETER + z] = (byte) (isChunkloadingAt(x, z) ? 1 : 0);
+                chunksToLoad[x * MAX_LOAD_DIAMETER + z] = (byte) (isChunkLoadingAt(x, z) ? 1 : 0);
             }
         }
         nbtTags.putByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
@@ -253,6 +250,39 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     public FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> getEnergyContainer() {
         return energyContainer;
     }
+
+    //Methods relating to IComputerTile
+    private int validateDimension(int val, boolean x) throws ComputerException {
+        if (val < -MAX_LOAD_RADIUS || val > MAX_LOAD_RADIUS) {
+            throw new ComputerException("%s offset '%d' is not in range, must be between %d and %d inclusive.", x ? "X" : "Z", val, -MAX_LOAD_RADIUS, MAX_LOAD_RADIUS);
+        }
+        //Shift up by max load radius as internally we act starting at zero
+        return val + MAX_LOAD_RADIUS;
+    }
+
+    @ComputerMethod(nameOverride = "isChunkLoadingAt")
+    private boolean computerIsChunkloadingAt(int x, int z) throws ComputerException {
+        return isChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
+    }
+
+    @ComputerMethod(nameOverride = "toggleChunkLoadingAt")
+    private void computerToggleChunkLoadingAt(int x, int z) throws ComputerException {
+        validateSecurityIsPublic();
+        toggleChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
+    }
+
+    @ComputerMethod(nameOverride = "setChunkLoadingAt")
+    private void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
+        validateSecurityIsPublic();
+        if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
+            //If it changed we need to mark it as such and update various things
+            setChanged(false);
+            energyContainer.updateEnergyPerTick();
+            //Refresh the chunks that are loaded as it has changed
+            getChunkLoader().refreshChunkTickets();
+        }
+    }
+    //End methods IComputerTile
 
     private class ChunkLoader extends TileComponentChunkLoader<TileEntityDimensionalStabilizer> {
 
