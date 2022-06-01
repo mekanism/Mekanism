@@ -55,10 +55,10 @@ public class MekanismModules {
           ModuleAttackAmplificationUnit::new, () -> MekanismItems.MODULE_ATTACK_AMPLIFICATION.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON)
                 .rendersHUD());
     public static final ModuleRegistryObject<ModuleFarmingUnit> FARMING_UNIT = MODULES.register("farming_unit", ModuleFarmingUnit::new,
-          () -> MekanismItems.MODULE_FARMING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_BLOCK.getMask()));
+          () -> MekanismItems.MODULE_FARMING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_BLOCK));
     // While you can shear blocks in general they don't overlap with anything that supports the farming unit right click.
     public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.register("shearing_unit", ModuleShearingUnit::new,
-          () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_ENTITY.getMask()));
+          () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_ENTITY));
     public static final ModuleRegistryObject<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = MODULES.register("silk_touch_unit", ModuleSilkTouchUnit::new,
           () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.rarity(Rarity.RARE));
     public static final ModuleRegistryObject<ModuleBlastingUnit> BLASTING_UNIT = MODULES.register("blasting_unit", ModuleBlastingUnit::new,
@@ -86,12 +86,12 @@ public class MekanismModules {
           ModuleGeigerUnit::new, () -> MekanismItems.MODULE_GEIGER.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
     public static final ModuleRegistryObject<ModuleJetpackUnit> JETPACK_UNIT = MODULES.register("jetpack_unit",
           ModuleJetpackUnit::new, () -> MekanismItems.MODULE_JETPACK.asItem(), builder -> builder.rarity(Rarity.RARE).handlesModeChange().rendersHUD()
-                .exclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
+                .exclusive(ExclusiveFlag.OVERRIDE_JUMP));
     public static final ModuleRegistryObject<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = MODULES.register("charge_distribution_unit",
           ModuleChargeDistributionUnit::new, () -> MekanismItems.MODULE_CHARGE_DISTRIBUTION.asItem(), builder -> builder.rarity(Rarity.RARE));
     public static final ModuleRegistryObject<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = MODULES.register("gravitational_modulating_unit",
           ModuleGravitationalModulatingUnit::new, () -> MekanismItems.MODULE_GRAVITATIONAL_MODULATING.asItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange()
-                .rendersHUD().exclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
+                .rendersHUD().exclusive(ExclusiveFlag.OVERRIDE_JUMP));
     public static final ModuleRegistryObject<?> ELYTRA_UNIT = MODULES.registerMarker("elytra_unit", () -> MekanismItems.MODULE_ELYTRA.asItem(),
           builder -> builder.rarity(Rarity.EPIC));
 

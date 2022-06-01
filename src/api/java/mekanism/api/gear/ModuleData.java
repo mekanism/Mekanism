@@ -262,6 +262,15 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
+         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+         *
+         * @param flags {@link ExclusiveFlag} flags for the exclusive mask
+         */
+        public ModuleDataBuilder<MODULE> exclusive(ExclusiveFlag... flags) {
+            return exclusive(ExclusiveFlag.getCompoundMask(flags));
+        }
+
+        /**
          * Marks this module type as being able to handle mode changes. In addition to using this method
          * {@link ICustomModule#changeMode(IModule, Player, ItemStack, int, boolean)} should be implemented.
          */
