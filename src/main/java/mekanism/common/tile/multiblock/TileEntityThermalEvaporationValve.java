@@ -47,11 +47,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         return super.persists(type);
     }
 
-    @Override
-    public boolean persistInventory() {
-        return false;
-    }
-
     @Nonnull
     @Override
     public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
