@@ -87,26 +87,28 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     }
 
     /**
-     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
+     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
      *
      * @return {@code true} if this module type is exclusive.
      */
+    @Deprecated(forRemoval = true, since = "10.2.3")
     public final boolean isExclusive() {
         return isExclusive(ExclusiveFlag.ANY);
     }
 
     /**
-     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
+     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+     *
+     * @param mask {@link ExclusiveFlag} mask
      *
      * @return {@code true} if this module type is exclusive.
      */
-    public final boolean isExclusive(int flags) {
-        return (exclusive & flags) != 0;
+    public final boolean isExclusive(int mask) {
+        return (exclusive & mask) != 0;
     }
 
     /**
-     * Gets the exclusive flags for this module type.
-     * @see ExclusiveFlag
+     * Gets the mask of {@link ExclusiveFlag} for this module type.
      */
     public final int getExclusiveFlags() {
         return exclusive;
@@ -242,17 +244,20 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
+         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
          */
+        @Deprecated(forRemoval = true, since = "10.2.3")
         public ModuleDataBuilder<MODULE> exclusive() {
             return exclusive(ExclusiveFlag.ANY);
         }
 
         /**
-         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
+         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+         *
+         * @param mask {@link ExclusiveFlag} mask
          */
-        public ModuleDataBuilder<MODULE> exclusive(int flags) {
-            exclusive = flags;
+        public ModuleDataBuilder<MODULE> exclusive(int mask) {
+            exclusive = mask;
             return this;
         }
 
@@ -301,23 +306,60 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
     }
 
+    /**
+     * Enum of flags for module exclusivity channels
+     */
     public enum ExclusiveFlag {
+
+        /**
+         * This flag indicates that this module uses interaction without a target
+         */
         INTERACT_EMPTY,
+
+        /**
+         * This flag indicates that this module uses interaction with an entity
+         */
         INTERACT_ENTITY,
+
+        /**
+         * This flag indicates that this module uses interaction with a block
+         */
         INTERACT_BLOCK,
+
+        /**
+         * This flag indicates that this module changes what pressing jump does
+         */
         OVERRIDE_JUMP;
 
+        // This will work for 32 flags, if we go past that we will have to switch it to a long. But that is a lot of flags!
+
+        /**
+         * Gets the mask for this flag
+         */
         public int getMask() {
             return 1 << ordinal();
         }
 
-        // This will work for 32 flags, if we go past that we will have to switch it to a long. But that is a lot of flags!
-        public static int getFlags(ExclusiveFlag... flags) {
+        /**
+         * Gets the mask for the combination of all the input flags
+         */
+        public static int getCompoundMask(ExclusiveFlag... flags) {
             return Arrays.stream(flags).mapToInt(ExclusiveFlag::getMask).reduce(0, (result, mask) -> result | mask);
         }
 
+        /**
+         * The mask for no flags
+         */
         public static final int NONE = 0;
+
+        /**
+         * The mask for the combination of all flags
+         */
         public static final int ANY = -1;
-        public static final int INTERACT_ANY = getFlags(INTERACT_EMPTY, INTERACT_ENTITY, INTERACT_BLOCK);
+
+        /**
+         * The mask for the combination of all interact flags
+         */
+        public static final int INTERACT_ANY = getCompoundMask(INTERACT_EMPTY, INTERACT_ENTITY, INTERACT_BLOCK);
     }
 }
