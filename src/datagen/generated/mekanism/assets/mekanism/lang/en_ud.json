@@ -827,6 +827,8 @@
   "gui.mekanism.rgb": ":\u15FA\u2141\u1D1A",
   "gui.mekanism.set": ":\u0287\u01DDS",
   "gui.mekanism.slurry": "%s :\u028E\u0279\u0279n\uA781S",
+  "gui.mekanism.stabilizer.center": "\u02D9p\u01DDp\u0250o\uA781 s\u028E\u0250\u028D\uA781\u0250 s\u1D09 (%2$s '%1$s) \u0287\u0250 \u029Eun\u0265\u0186",
+  "gui.mekanism.stabilizer.toggle_loading": "(%3$s '%s) \u0287\u0250 %1$s \u1D77u\u1D09p\u0250o\uA781 \u029Eun\u0265\u0254 \u01DD\uA781\u1D77\u1D77o\u27D8",
   "gui.mekanism.storing": "%s :\u1D77u\u1D09\u0279o\u0287S",
   "gui.mekanism.ticks_required": "%s :p\u01DD\u0279\u1D09nb\u01DD\u1D1A s\u029E\u0254\u1D09\u27D8",
   "gui.mekanism.transferred_rate": "\u0287/%s :p\u01DD\u0279\u0279\u01DD\u025Fsu\u0250\u0279\u27D8",

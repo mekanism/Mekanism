@@ -15,6 +15,8 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -35,17 +37,23 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                   return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
-        for (int x = 0; x < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; x++) {
-            for (int z = 0; z < TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER; z++) {
-                if (x == TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS && z == TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS) {
-                    addRenderableWidget(BasicColorButton.renderActive(this, 63 + 10 * x, 19 + 10 * z, 10, EnumColor.DARK_BLUE, null));
+        int tileChunkX = SectionPos.blockToSectionCoord(tile.getBlockPos().getX());
+        int tileChunkZ = SectionPos.blockToSectionCoord(tile.getBlockPos().getZ());
+        for (int x = -TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; x <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; x++) {
+            int shiftedX = x + TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
+            int chunkX = tileChunkX + x;
+            for (int z = -TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; z <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; z++) {
+                int shiftedZ = z + TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
+                int chunkZ = tileChunkZ + z;
+                if (x == 0 && z == 0) {
+                    addRenderableWidget(BasicColorButton.renderActive(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE,
+                          getOnHover(() -> MekanismLang.STABILIZER_CENTER.translate(chunkX, chunkZ))));
                 } else {
-                    int finalX = x;
-                    int finalZ = z;
-                    //TODO: Add hover tooltips
-                    addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * x, 19 + 10 * z, 10, EnumColor.DARK_BLUE,
-                          () -> tile.isChunkLoadingAt(finalX, finalZ), () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD,
-                                tile, finalX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + finalZ)), null));
+                    int packetTarget = shiftedX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + shiftedZ;
+                    addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE,
+                          () -> tile.isChunkLoadingAt(shiftedX, shiftedZ),
+                          () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, packetTarget)),
+                          getOnHover(() -> MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(tile.isChunkLoadingAt(shiftedX, shiftedZ), true), chunkX, chunkZ))));
                 }
             }
         }

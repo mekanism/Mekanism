@@ -805,6 +805,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Oredictionificator
         add(MekanismLang.LAST_ITEM, "Last Item");
         add(MekanismLang.NEXT_ITEM, "Next Item");
+        //Stabilizer
+        add(MekanismLang.STABILIZER_CENTER, "Chunk at (%1$s, %2$s) is always loaded.");
+        add(MekanismLang.STABILIZER_TOGGLE_LOADING, "Toggle chunk loading %1$s at (%2$s, %3$s)");
         //Status
         add(MekanismLang.STATUS, "Status: %1$s");
         add(MekanismLang.STATUS_OK, "All OK");

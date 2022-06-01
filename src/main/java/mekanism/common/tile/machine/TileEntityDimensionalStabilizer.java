@@ -45,8 +45,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     public static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
-    private static final BiFunction<FloatingLong, TileEntityDimensionalStabilizer, FloatingLong> BASE_ENERGY_CALCULATOR =
-          (base, tile) -> base.multiply(tile.chunksLoaded);
+    private static final BiFunction<FloatingLong, TileEntityDimensionalStabilizer, FloatingLong> BASE_ENERGY_CALCULATOR = (base, tile) -> base.multiply(tile.chunksLoaded);
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
