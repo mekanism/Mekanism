@@ -91,12 +91,22 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
      *
      * @return {@code true} if this module type is exclusive.
      */
+    public final boolean isExclusive() {
+        return isExclusive(ExclusiveFlag.ANY);
+    }
+
+    /**
+     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
+     *
+     * @return {@code true} if this module type is exclusive.
+     */
     public final boolean isExclusive(int flags) {
         return (exclusive & flags) != 0;
     }
 
     /**
      * Gets the exclusive flags for this module type.
+     * @see ExclusiveFlag
      */
     public final int getExclusiveFlags() {
         return exclusive;
@@ -234,6 +244,13 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         /**
          * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
          */
+        public ModuleDataBuilder<MODULE> exclusive() {
+            return exclusive(ExclusiveFlag.ANY);
+        }
+
+        /**
+         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible others will be automatically disabled.
+         */
         public ModuleDataBuilder<MODULE> exclusive(int flags) {
             exclusive = flags;
             return this;
@@ -290,13 +307,17 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         INTERACT_BLOCK,
         OVERRIDE_JUMP;
 
+        public int getMask() {
+            return 1 << ordinal();
+        }
+
         // This will work for 32 flags, if we go past that we will have to switch it to a long. But that is a lot of flags!
         public static int getFlags(ExclusiveFlag... flags) {
-            return Arrays.stream(flags).mapToInt(Enum::ordinal).reduce(0, (result, flag) -> result | (1 << flag));
+            return Arrays.stream(flags).mapToInt(ExclusiveFlag::getMask).reduce(0, (result, mask) -> result | mask);
         }
 
         public static final int NONE = 0;
         public static final int ANY = -1;
-        public static final int INTERACT_ALL = getFlags(INTERACT_EMPTY, INTERACT_ENTITY, INTERACT_BLOCK);
+        public static final int INTERACT_ANY = getFlags(INTERACT_EMPTY, INTERACT_ENTITY, INTERACT_BLOCK);
     }
 }
