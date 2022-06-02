@@ -1246,7 +1246,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
-              .key(DIAMOND_CHAR, Tags.Items.GEMS_DIAMOND)
+              .key(DIAMOND_CHAR, Tags.Items.STORAGE_BLOCKS_DIAMOND)
               .build(consumer);
     }
 

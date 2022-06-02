@@ -109,7 +109,7 @@ public class UsageConfig extends BaseMekanismConfig {
         paintingMachine = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "paintingMachine",
               FloatingLong.createConst(100));
         dimensionalStabilizer = CachedFloatingLongValue.define(this, builder, "Energy per chunk per tick (Joules).", "dimensionalStabilizer",
-              FloatingLong.createConst(1_000));
+              FloatingLong.createConst(5_000));
 
         builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
 
