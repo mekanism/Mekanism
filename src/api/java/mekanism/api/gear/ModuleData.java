@@ -99,9 +99,11 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     /**
      * Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
      *
-     * @param mask {@link ExclusiveFlag} mask
+     * @param mask Mask of all {@link ExclusiveFlag flags} to check exclusivity against.
      *
-     * @return {@code true} if this module type is exclusive.
+     * @return {@code true} if this module type is exclusive of the given flags
+     *
+     * @since 10.2.3.
      */
     public final boolean isExclusive(int mask) {
         return (exclusive & mask) != 0;
@@ -109,6 +111,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
 
     /**
      * Gets the mask of {@link ExclusiveFlag} for this module type.
+     * @since 10.2.3
      */
     public final int getExclusiveFlags() {
         return exclusive;
@@ -255,6 +258,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
          * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
          *
          * @param mask {@link ExclusiveFlag} mask
+         * @since 10.2.3
          */
         public ModuleDataBuilder<MODULE> exclusive(int mask) {
             exclusive = mask;
@@ -265,9 +269,10 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
          * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
          *
          * @param flags {@link ExclusiveFlag} flags for the exclusive mask
+         * @since 10.2.3
          */
         public ModuleDataBuilder<MODULE> exclusive(ExclusiveFlag... flags) {
-            return exclusive(ExclusiveFlag.getCompoundMask(flags));
+            return exclusive(flags.length == 0 ? ExclusiveFlag.ANY : ExclusiveFlag.getCompoundMask(flags));
         }
 
         /**
@@ -317,30 +322,25 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
 
     /**
      * Enum of flags for module exclusivity channels
+     * @since 10.2.3
      */
     public enum ExclusiveFlag {
-
         /**
          * This flag indicates that this module uses interaction without a target
          */
         INTERACT_EMPTY,
-
         /**
          * This flag indicates that this module uses interaction with an entity
          */
         INTERACT_ENTITY,
-
         /**
          * This flag indicates that this module uses interaction with a block
          */
         INTERACT_BLOCK,
-
         /**
          * This flag indicates that this module changes what pressing jump does
          */
         OVERRIDE_JUMP;
-
-        // This will work for 32 flags, if we go past that we will have to switch it to a long. But that is a lot of flags!
 
         /**
          * Gets the mask for this flag
@@ -350,10 +350,14 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Gets the mask for the combination of all the input flags
+         * Helper to get the mask of the combination of the given input flags
+         *
+         * @param flags {@link ExclusiveFlag Flags} to combine into a mask.
+         *
+         * @returns Mask representing all the given {@link ExclusiveFlag flags}.
          */
         public static int getCompoundMask(ExclusiveFlag... flags) {
-            return Arrays.stream(flags).mapToInt(ExclusiveFlag::getMask).reduce(0, (result, mask) -> result | mask);
+            return Arrays.stream(flags).mapToInt(ExclusiveFlag::getMask).reduce(NONE, (result, mask) -> result | mask);
         }
 
         /**
