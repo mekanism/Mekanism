@@ -65,6 +65,9 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             model.maxY = 1;
             model.maxZ = 1;
         }
+        //Calculate the different sides that should be rendered, as a 3D array. The last parameter is of length 5 to support the four cardinal directions
+        // PLUS a marker for if the chunk is loaded and should be rendered at all. As if a chunk is surrounded on all sides by other chunks, then none of
+        // its sides will actually need to be drawn, but it still should be able to combine with neighboring pieces
         boolean[][][] allRenderSides = new boolean[TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER][TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER][5];
         for (int x = 0; x < allRenderSides.length; x++) {
             boolean[][] rowRenderSides = allRenderSides[x];
@@ -73,7 +76,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
                     boolean[] renderSides = rowRenderSides[z];
                     Arrays.fill(renderSides, true);
                     //Look back at the previous row and previous column if they are touching then the side should be disabled
-                    // for rendering for both of them
+                    // for rendering for both this one and the previous
                     if (x > 0) {
                         boolean[] previousRenderSides = allRenderSides[x - 1][z];
                         if (previousRenderSides[Direction.EAST.get2DDataValue()]) {
@@ -91,7 +94,6 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
                 }
             }
         }
-        //TODO: Comments
         Level level = stabilizer.getLevel();
         int minY = level.getMinBuildHeight();
         int height = level.getMaxBuildHeight() - minY;
@@ -100,6 +102,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
         VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
         for (RenderPiece piece : calculateRenderPieces(allRenderSides)) {
+            //Set the visibility of the sides that are going to render for this piece
             model.setSideRender(Direction.NORTH, piece.renderNorth);
             model.setSideRender(Direction.EAST, piece.renderEast);
             model.setSideRender(Direction.SOUTH, piece.renderSouth);
@@ -157,11 +160,19 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         return tile.isClientRendering() && tile.canDisplayVisuals() && super.shouldRender(tile, camera);
     }
 
-    //TODO: Comments
+    /**
+     * Combines the sides that should be rendered for each chunk's position into a list of pieces that should be rendered. This allows for doing less draw calls and
+     * overall better performance.
+     *
+     * @param allRenderSides 3D array of ROW, COLUMN, RENDER
+     *
+     * @return List of render pieces.
+     */
     private List<RenderPiece> calculateRenderPieces(boolean[][][] allRenderSides) {
-        //TODO: keep north south in record as well to distribute across more maps?
+        //Keep track of the minimal amount of data that is needed to match in order to merge two column pieces across rows
         record MinimalColumnPieceData(int z, int zLength, boolean renderNorth, boolean renderSouth) {
         }
+        //Used to store the remaining data for what rows different column pieces were found and a bit of side render data
         record MinimalRowPieceData(int x, boolean renderEast, boolean renderWest) {
         }
         Map<MinimalColumnPieceData, List<MinimalRowPieceData>> columnData = new HashMap<>();
@@ -170,47 +181,51 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             for (int z = 0; z < rowRenderSides.length; ) {
                 int zLength = 1;
                 boolean[] renderSides = rowRenderSides[z];
-                boolean renderNorth = renderSides[Direction.NORTH.get2DDataValue()];
-                boolean renderSouth = renderSides[Direction.SOUTH.get2DDataValue()];
-                boolean renderEast = renderSides[Direction.EAST.get2DDataValue()];
-                boolean renderWest = renderSides[Direction.WEST.get2DDataValue()];
                 //Only calculate if the chunk is loaded, and we are meant to add it as part of the pieces to render
                 if (renderSides[4]) {
-                    //If we don't need to render a side which means we potentially may connect, evaluate if we should merge
+                    boolean renderNorth = renderSides[Direction.NORTH.get2DDataValue()];
+                    boolean renderSouth = renderSides[Direction.SOUTH.get2DDataValue()];
+                    boolean renderEast = renderSides[Direction.EAST.get2DDataValue()];
+                    boolean renderWest = renderSides[Direction.WEST.get2DDataValue()];
+                    //If we don't need to render a side which means we potentially may be able to merge
                     while (!renderSouth && z + zLength < rowRenderSides.length) {
                         boolean[] nextColumnRenderSides = rowRenderSides[z + zLength];
                         //Note: We don't need to check if the back side is connected as we know from how we built it that it won't be
                         if (renderEast == nextColumnRenderSides[Direction.EAST.get2DDataValue()] &&
                             renderWest == nextColumnRenderSides[Direction.WEST.get2DDataValue()]) {
                             zLength++;
+                            //Update if we render on the south side as if we are we can exit because the next column piece
+                            // should not be present
                             renderSouth = nextColumnRenderSides[Direction.SOUTH.get2DDataValue()];
                         } else {
                             break;
                         }
                     }
                     columnData.computeIfAbsent(new MinimalColumnPieceData(z, zLength, renderNorth, renderSouth),
-                                piece -> new ArrayList<>(TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS + 1))
+                                piece -> new ArrayList<>(TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER))
                           .add(new MinimalRowPieceData(x, renderEast, renderWest));
 
                 }
                 z += zLength;
             }
         }
-
+        //Combine pieces of column data
         List<RenderPiece> pieces = new ArrayList<>();
         for (Map.Entry<MinimalColumnPieceData, List<MinimalRowPieceData>> entry : columnData.entrySet()) {
             MinimalColumnPieceData minimalColumnPiece = entry.getKey();
             List<MinimalRowPieceData> rows = entry.getValue();
             for (int row = 0; row < rows.size(); ) {
+                int xLength = 1;
                 MinimalRowPieceData minimalRowPiece = rows.get(row);
                 boolean renderEast = minimalRowPiece.renderEast;
-                int xLength = 1;
                 while (!renderEast && row + xLength < rows.size()) {
                     MinimalRowPieceData nextRowPiece = rows.get(row + xLength);
-                    //Note: comparing north and south pieces happens at z and zLength comparison of the map's keys
+                    //Note: comparing north and south pieces happens at z and zLength comparison of the map's keys,
+                    // so we only have to confirm that the two column pieces are in neighboring rows
                     if (minimalRowPiece.x + xLength == nextRowPiece.x) {
                         xLength++;
-                        //Update if we are rendering on the east yet
+                        //Update if we render on the east side as if we are we can exit because the next
+                        // column row data should not be present
                         renderEast = nextRowPiece.renderEast;
                     } else {
                         break;
