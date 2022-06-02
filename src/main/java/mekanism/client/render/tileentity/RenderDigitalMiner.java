@@ -39,7 +39,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
 
     @Override
     protected void render(TileEntityDigitalMiner miner, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        if (miner.clientRendering && miner.getRadius() <= 64) {
+        if (miner.isClientRendering() && miner.canDisplayVisuals()) {
             if (model == null) {
                 model = new Model3D();
                 model.setTexture(MekanismRenderer.whiteIcon);
@@ -58,7 +58,8 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             //If we are inside the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
             // we want to be able to see all faces easily
             FaceDisplay faceDisplay = isInsideBounds(miner.getBlockPos().getX() - miner.getRadius(), miner.getMinY(), miner.getBlockPos().getZ() - miner.getRadius(),
-                  miner.getBlockPos().getX() + miner.getRadius(), miner.getMaxY(), miner.getBlockPos().getZ() + miner.getRadius()) ? FaceDisplay.BACK : FaceDisplay.BOTH;
+                  miner.getBlockPos().getX() + miner.getRadius() + 1, miner.getMaxY(), miner.getBlockPos().getZ() + miner.getRadius() + 1)
+                                      ? FaceDisplay.BACK : FaceDisplay.BOTH;
             MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), colors, MekanismRenderer.FULL_LIGHT, overlayLight,
                   faceDisplay);
             matrix.popPose();

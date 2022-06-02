@@ -26,7 +26,7 @@ public class SpecialColors {
     public static final ColorRegistryObject TAB_UPGRADE = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_CONFIGURATION = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_TRANSPORTER = GUI_OBJECTS.register();
-    public static final ColorRegistryObject TAB_DIGITAL_MINER_VISUAL = GUI_OBJECTS.register();
+    public static final ColorRegistryObject TAB_VISUALS = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_ROBIT_MENU = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_FACTORY_SORT = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_QIO_FREQUENCY = GUI_OBJECTS.register();

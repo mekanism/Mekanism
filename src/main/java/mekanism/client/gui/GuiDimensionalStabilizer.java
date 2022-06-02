@@ -7,6 +7,7 @@ import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.BasicColorButton;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.element.tab.GuiVisualsTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -36,6 +37,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                   MachineEnergyContainer<TileEntityDimensionalStabilizer> energyContainer = tile.getEnergyContainer();
                   return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
               });
+        addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
         int tileChunkX = SectionPos.blockToSectionCoord(tile.getBlockPos().getX());
         int tileChunkZ = SectionPos.blockToSectionCoord(tile.getBlockPos().getZ());

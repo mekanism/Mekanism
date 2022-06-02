@@ -33,6 +33,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
+import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
@@ -40,8 +41,9 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
-public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, ISustainedData {
+public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, ISustainedData, IHasVisualization {
 
     public static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
@@ -51,6 +53,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     private final boolean[][] loadingChunks;
     @SyntheticComputerMethod(getter = "getChunksLoaded")
     private int chunksLoaded = 1;
+    private boolean clientRendering;
 
     private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
@@ -64,7 +67,6 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         loadingChunks = new boolean[MAX_LOAD_DIAMETER][MAX_LOAD_DIAMETER];
         //Center chunk where the stabilizer is, is always loaded (unless none are loaded due to energy or control mode)
         loadingChunks[MAX_LOAD_RADIUS][MAX_LOAD_RADIUS] = true;
-        //TODO: Visuals button on GUI and then either do something like F3+G or sort of like the digital miner?
     }
 
     @Nonnull
@@ -170,6 +172,36 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         return getRedstoneLevel();
     }
 
+    @Nonnull
+    @Override
+    public AABB getRenderBoundingBox() {
+        if (isClientRendering() && canDisplayVisuals() && level != null) {
+            int chunkX = SectionPos.blockToSectionCoord(worldPosition.getX());
+            int chunkZ = SectionPos.blockToSectionCoord(worldPosition.getZ());
+            ChunkPos minChunk = new ChunkPos(chunkX - MAX_LOAD_RADIUS, chunkZ - MAX_LOAD_RADIUS);
+            ChunkPos maxChunk = new ChunkPos(chunkX + MAX_LOAD_RADIUS, chunkZ + MAX_LOAD_RADIUS);
+            return new AABB(
+                  minChunk.getMinBlockX(),
+                  level.getMinBuildHeight(),
+                  minChunk.getMinBlockZ(),
+                  maxChunk.getMaxBlockX() + 1,
+                  level.getMaxBuildHeight(),
+                  maxChunk.getMaxBlockZ() + 1
+            );
+        }
+        return super.getRenderBoundingBox();
+    }
+
+    @Override
+    public boolean isClientRendering() {
+        return clientRendering;
+    }
+
+    @Override
+    public void toggleClientRendering() {
+        this.clientRendering = !clientRendering;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
@@ -177,31 +209,21 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    protected void addGeneralPersistentData(@Nonnull CompoundTag nbt) {
-        super.addGeneralPersistentData(nbt);
-        writeChunksToLoad(nbt);
-    }
-
-    @Override
-    protected void loadGeneralPersistentData(@Nonnull CompoundTag nbt) {
-        super.loadGeneralPersistentData(nbt);
-        readChunksToLoad(nbt);
-    }
-
-    private void writeChunksToLoad(@Nonnull CompoundTag nbtTags) {
+    public void writeSustainedData(CompoundTag dataMap) {
         byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
                 chunksToLoad[x * MAX_LOAD_DIAMETER + z] = (byte) (isChunkLoadingAt(x, z) ? 1 : 0);
             }
         }
-        nbtTags.putByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
+        dataMap.putByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
     }
 
-    private boolean readChunksToLoad(@Nonnull CompoundTag nbt) {
+    @Override
+    public void readSustainedData(CompoundTag dataMap) {
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
-        byte[] chunksToLoad = nbt.getByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
+        byte[] chunksToLoad = dataMap.getByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
         if (chunksToLoad.length != MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER) {
             //If it is the wrong size dummy it to all zeros so things get set to false as we don't know
             // where to position our values
@@ -212,23 +234,15 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 changed |= setChunkLoadingAt(x, z, chunksToLoad[x * MAX_LOAD_DIAMETER + z] == 1);
             }
         }
-        if (chunksLoaded != lastChunksLoaded) {
-            //If the number of chunks loaded is different we need to update our energy to use
-            energyContainer.updateEnergyPerTick();
-        }
-        return changed;
-    }
-
-    @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        writeChunksToLoad(dataMap);
-    }
-
-    @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        if (readChunksToLoad(dataMap)) {
-            //Refresh the chunks that are loaded as it has changed
-            getChunkLoader().refreshChunkTickets();
+        if (changed) {
+            if (chunksLoaded != lastChunksLoaded) {
+                //If the number of chunks loaded is different we need to update our energy to use
+                energyContainer.updateEnergyPerTick();
+            }
+            if (hasLevel()) {
+                //Refresh the chunks that are loaded as it has changed
+                getChunkLoader().refreshChunkTickets();
+            }
         }
     }
 
