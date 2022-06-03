@@ -80,26 +80,20 @@ public class ClientTickHandler {
     private static long lastScrollTime = -1;
     private static double scrollDelta;
 
-    public static boolean isJetpackOn(Player player) {
-        return Mekanism.playerState.isJetpackOn(player);
-    }
-
     public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
-        if (!player.isSpectator()) {
-            if (!jetpack.isEmpty()) {
-                JetpackMode mode = ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack);
-                boolean guiOpen = minecraft.screen != null;
-                boolean ascending = minecraft.player.input.jumping;
-                boolean rising = ascending && !guiOpen;
-                if (mode == JetpackMode.NORMAL) {
-                    return rising;
-                } else if (mode == JetpackMode.HOVER) {
-                    boolean descending = minecraft.player.input.shiftKeyDown;
-                    if (!rising || descending) {
-                        return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
-                    }
-                    return true;
+        if (!player.isSpectator() && !jetpack.isEmpty()) {
+            JetpackMode mode = ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack);
+            boolean guiOpen = minecraft.screen != null;
+            boolean ascending = minecraft.player.input.jumping;
+            boolean rising = ascending && !guiOpen;
+            if (mode == JetpackMode.NORMAL) {
+                return rising;
+            } else if (mode == JetpackMode.HOVER) {
+                boolean descending = minecraft.player.input.shiftKeyDown;
+                if (!rising || descending) {
+                    return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
                 }
+                return true;
             }
         }
         return false;
@@ -210,11 +204,13 @@ public class ClientTickHandler {
 
             if (!jetpack.isEmpty()) {
                 ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
-                JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
-                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode);
-                MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
-                if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack), () -> minecraft.player.input.jumping)) {
-                    minecraft.player.fallDistance = 0.0F;
+                if (!primaryJetpack.isEmpty()) {
+                    JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
+                    JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, () -> minecraft.player.input.jumping);
+                    MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
+                    if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
+                        minecraft.player.fallDistance = 0.0F;
+                    }
                 }
             }
 

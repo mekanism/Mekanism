@@ -1,6 +1,7 @@
 package mekanism.common.item.interfaces;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
@@ -10,7 +11,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.KeySync;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -29,10 +29,6 @@ public interface IJetpackItem {
     JetpackMode getJetpackMode(ItemStack stack);
 
     void useJetpackFuel(ItemStack stack);
-
-    default boolean isActive(ItemStack stack) {
-        return canUseJetpack(stack);
-    }
 
     enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
@@ -81,13 +77,7 @@ public interface IJetpackItem {
      */
     @Nonnull
     static ItemStack getActiveJetpack(LivingEntity entity) {
-        ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.isActive(chest)) {
-            return chest;
-        } else if (Mekanism.hooks.CuriosLoaded) {
-            return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.isActive(s));
-        }
-        return ItemStack.EMPTY;
+        return getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack));
     }
 
     /**
@@ -101,11 +91,15 @@ public interface IJetpackItem {
      */
     @Nonnull
     static ItemStack getPrimaryJetpack(LivingEntity entity) {
+        return getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem);
+    }
+
+    private static ItemStack getJetpack(LivingEntity entity, Predicate<ItemStack> matcher) {
         ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof IJetpackItem jetpackItem) {
+        if (matcher.test(chest)) {
             return chest;
         } else if (Mekanism.hooks.CuriosLoaded) {
-            return CuriosIntegration.findFirstCurio(entity, s -> s.getItem() instanceof IJetpackItem jetpackItem);
+            return CuriosIntegration.findFirstCurio(entity, s -> matcher.test(s));
         }
         return ItemStack.EMPTY;
     }
@@ -116,10 +110,10 @@ public interface IJetpackItem {
     static boolean handleJetpackMotion(Player player, JetpackMode mode, BooleanSupplier ascendingSupplier) {
         Vec3 motion = player.getDeltaMovement();
         if (mode == JetpackMode.NORMAL) {
-            Vec3 forward = player.getLookAngle();
             if (player.isFallFlying()) {
-                Vec3 delta = forward.multiply(forward.scale(.15))
-                      .add(forward.scale(1.5).subtract(motion).scale(.5));
+                Vec3 forward = player.getLookAngle();
+                Vec3 delta = forward.multiply(forward.scale(0.15))
+                      .add(forward.scale(1.5).subtract(motion).scale(0.5));
                 player.setDeltaMovement(motion.add(delta));
                 return false;
             } else {
@@ -145,10 +139,10 @@ public interface IJetpackItem {
         return true;
     }
 
-    public static JetpackMode getPlayerJetpackMode(Player player, JetpackMode mode) {
+    static JetpackMode getPlayerJetpackMode(Player player, JetpackMode mode, BooleanSupplier ascendingSupplier) {
         if (!player.isSpectator()) {
             if (mode != JetpackMode.DISABLED) {
-                boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
+                boolean ascending = ascendingSupplier.getAsBoolean();
                 if (mode == JetpackMode.HOVER) {
                     if (ascending && !player.isDescending() || !CommonPlayerTickHandler.isOnGroundOrSleeping(player)) {
                         return mode;

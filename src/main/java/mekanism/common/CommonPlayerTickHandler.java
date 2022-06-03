@@ -122,17 +122,19 @@ public class CommonPlayerTickHandler {
         ItemStack jetpack = IJetpackItem.getActiveJetpack(player);
         if (!jetpack.isEmpty()) {
             ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(player);
-            JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
-            JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode);
-            if (mode != JetpackMode.DISABLED) {
-                // Client handles motion and sets fallDistance in ClientTickHandler at the tick start
-                if (mode == JetpackMode.HOVER || !player.isFallFlying()) {
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        player.fallDistance = 0.0F;
-                        serverPlayer.connection.aboveGroundTickCount = 0;
+            if (!primaryJetpack.isEmpty()) {
+                JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
+                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND));
+                if (mode != JetpackMode.DISABLED) {
+                    // Client handles motion and sets fallDistance in ClientTickHandler at the tick start
+                    if (mode == JetpackMode.HOVER || !player.isFallFlying()) {
+                        if (player instanceof ServerPlayer serverPlayer) {
+                            player.fallDistance = 0.0F;
+                            serverPlayer.connection.aboveGroundTickCount = 0;
+                        }
                     }
+                    ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
                 }
-                ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
             }
         }
 

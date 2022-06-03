@@ -1,7 +1,7 @@
 package mekanism.client.sound;
 
 import javax.annotation.Nonnull;
-import mekanism.client.ClientTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.world.entity.player.Player;
 
@@ -13,6 +13,6 @@ public class JetpackSound extends PlayerSound {
 
     @Override
     public boolean shouldPlaySound(@Nonnull Player player) {
-        return ClientTickHandler.isJetpackOn(player);
+        return Mekanism.playerState.isJetpackOn(player);
     }
 }
