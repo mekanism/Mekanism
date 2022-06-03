@@ -1,6 +1,7 @@
 package mekanism.common.block.transmitter;
 
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMaps;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
 
     //Max retained size if we used a HashMap with a key of record(Size, ConnectionType[6]) ~= 1,343,576B
     //Max retained size packing it like this 163,987B
-    private static final Short2ObjectMap<VoxelShape> cachedShapes = new Short2ObjectOpenHashMap<>();
+    private static final Short2ObjectMap<VoxelShape> cachedShapes = Short2ObjectMaps.synchronize(new Short2ObjectOpenHashMap<>());
 
     protected BlockTransmitter() {
         super(BlockBehaviour.Properties.of(Material.PISTON).strength(1, 6));
