@@ -34,16 +34,16 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
 
     @Override
     protected void colorTab() {
-        switch (transmission) {
-            case ENERGY -> MekanismRenderer.color(SpecialColors.TAB_ENERGY_CONFIG);
-            case FLUID -> MekanismRenderer.color(SpecialColors.TAB_FLUID_CONFIG);
-            case GAS -> MekanismRenderer.color(SpecialColors.TAB_GAS_CONFIG);
-            case INFUSION -> MekanismRenderer.color(SpecialColors.TAB_INFUSION_CONFIG);
-            case PIGMENT -> MekanismRenderer.color(SpecialColors.TAB_PIGMENT_CONFIG);
-            case SLURRY -> MekanismRenderer.color(SpecialColors.TAB_SLURRY_CONFIG);
-            case ITEM -> MekanismRenderer.color(SpecialColors.TAB_ITEM_CONFIG);
-            case HEAT -> MekanismRenderer.color(SpecialColors.TAB_HEAT_CONFIG);
-        }
+        MekanismRenderer.color(switch (transmission) {
+            case ENERGY -> SpecialColors.TAB_ENERGY_CONFIG;
+            case FLUID -> SpecialColors.TAB_FLUID_CONFIG;
+            case GAS -> SpecialColors.TAB_GAS_CONFIG;
+            case INFUSION -> SpecialColors.TAB_INFUSION_CONFIG;
+            case PIGMENT -> SpecialColors.TAB_PIGMENT_CONFIG;
+            case SLURRY -> SpecialColors.TAB_SLURRY_CONFIG;
+            case ITEM -> SpecialColors.TAB_ITEM_CONFIG;
+            case HEAT -> SpecialColors.TAB_HEAT_CONFIG;
+        });
     }
 
     @Override

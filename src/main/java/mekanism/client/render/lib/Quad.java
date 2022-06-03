@@ -149,24 +149,16 @@ public class Quad {
             float f2 = data.length >= 3 ? data[2] : 0;
             float f3 = data.length >= 4 ? data[3] : 0;
             switch (element.getUsage()) {
-                case POSITION:
-                    vertex.pos(new Vec3(f0, f1, f2));
-                    break;
-                case NORMAL:
-                    vertex.normal(new Vec3(f0, f1, f2));
-                    break;
-                case COLOR:
-                    vertex.color(Color.rgbad(f0, f1, f2, f3));
-                    break;
-                case UV:
+                case POSITION -> vertex.pos(new Vec3(f0, f1, f2));
+                case NORMAL -> vertex.normal(new Vec3(f0, f1, f2));
+                case COLOR -> vertex.color(Color.rgbad(f0, f1, f2, f3));
+                case UV -> {
                     if (element.getIndex() == 0) {
                         vertex.texRaw(f0, f1);
                     } else if (element.getIndex() == 2) {
                         vertex.lightRaw(f0, f1);
                     }
-                    break;
-                default:
-                    break;
+                }
             }
             if (elementIndex == SIZE - 1) {
                 vertices[vertexIndex++] = vertex;

@@ -140,16 +140,17 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addProcessedResources() {
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             TagKey<Item> tag = addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
-            switch (item.getRowKey()) {
-                case SHARD -> getItemBuilder(MekanismTags.Items.SHARDS).add(tag);
-                case CRYSTAL -> getItemBuilder(MekanismTags.Items.CRYSTALS).add(tag);
-                case DUST -> getItemBuilder(Tags.Items.DUSTS).add(tag);
-                case DIRTY_DUST -> getItemBuilder(MekanismTags.Items.DIRTY_DUSTS).add(tag);
-                case CLUMP -> getItemBuilder(MekanismTags.Items.CLUMPS).add(tag);
-                case INGOT -> getItemBuilder(Tags.Items.INGOTS).add(tag);
-                case RAW -> getItemBuilder(Tags.Items.RAW_MATERIALS).add(tag);
-                case NUGGET -> getItemBuilder(Tags.Items.NUGGETS).add(tag);
-            }
+            getItemBuilder(switch (item.getRowKey()) {
+                case SHARD -> MekanismTags.Items.SHARDS;
+                case CRYSTAL -> MekanismTags.Items.CRYSTALS;
+                case DUST -> Tags.Items.DUSTS;
+                case DIRTY_DUST -> MekanismTags.Items.DIRTY_DUSTS;
+                case CLUMP -> MekanismTags.Items.CLUMPS;
+                case INGOT -> Tags.Items.INGOTS;
+                case RAW -> Tags.Items.RAW_MATERIALS;
+                case NUGGET -> Tags.Items.NUGGETS;
+                default -> throw new IllegalStateException("Unexpected resource type for primary resource.");
+            }).add(tag);
         }
     }
 

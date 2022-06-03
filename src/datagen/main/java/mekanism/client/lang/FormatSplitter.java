@@ -243,7 +243,7 @@ public class FormatSplitter {
             boolean isChoice = false;
             switch (trimmedFormatType) {
                 //Built in Java Format Types
-                case "number":
+                case "number" -> {
                     if (formatStyle != null && !formatStyle.equals("integer") && !formatStyle.equals("currency") && !formatStyle.equals("percent")) {
                         //If it is not a valid format style for number check if it is a valid SubformatPattern
                         // number uses DecimalFormat as a SubformatPattern
@@ -254,9 +254,8 @@ public class FormatSplitter {
                             return null;
                         }
                     }
-                    break;
-                case "date":
-                case "time":
+                }
+                case "date", "time" -> {
                     if (formatStyle != null && !formatStyle.equals("short") && !formatStyle.equals("medium") && !formatStyle.equals("long") && !formatStyle.equals("full")) {
                         //If it is not a valid format style for date or time check if it is a valid SubformatPattern
                         // time and date both use SimpleDateFormat as a SubformatPattern
@@ -267,8 +266,8 @@ public class FormatSplitter {
                             return null;
                         }
                     }
-                    break;
-                case "choice":
+                }
+                case "choice" -> {
                     if (formatStyle == null) {
                         return null;
                     }
@@ -280,38 +279,36 @@ public class FormatSplitter {
                         return null;
                     }
                     isChoice = true;
-                    break;
+                }
                 //Forge added Format types
-                case "modinfo":
+                case "modinfo" -> {
                     if (formatStyle == null || (!formatStyle.equals("id") && !formatStyle.equals("name"))) {
                         //modinfo only supports id, and name, and is not valid if the type is missing
                         return null;
                     }
-                    break;
-                case "lower":
-                case "upper":
-                case "vr":
+                }
+                case "lower", "upper", "vr" -> {
                     if (formatStyle != null) {
                         //lower, upper, and vr do not support any format style
                         return null;
                     }
-                    break;
-                case "exc":
+                }
+                case "exc" -> {
                     if (formatStyle == null || (!formatStyle.equals("class") && !formatStyle.equals("msg"))) {
                         //exc only supports class, and msg, and is not valid if the type is missing
                         return null;
                     }
-                    break;
-                case "i18n":
-                case "ornull":
+                }
+                case "i18n", "ornull" -> {
                     if (formatStyle == null) {
                         //i18n, and ornull both require a format style
                         return null;
                     }
-                    break;
-                default:
+                }
+                default -> {
                     //Not a valid format type
                     return null;
+                }
             }
             return new MessageFormatComponent(contents, argumentIndex, formatType, formatStyle, isChoice);
         }

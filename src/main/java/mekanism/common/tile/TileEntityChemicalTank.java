@@ -152,7 +152,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
             Current current = chemicalTank.getCurrent();
             if (current != Current.EMPTY) {
-                IChemicalTank<?, ?> currentTank = getCurrentTank(current);
+                IChemicalTank<?, ?> currentTank = chemicalTank.getTankFromCurrent(current);
                 if (dumping == GasMode.DUMPING) {
                     currentTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
                 } else {//dumping == GasMode.DUMPING_EXCESS
@@ -165,20 +165,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
                 }
             }
         }
-    }
-
-    private IChemicalTank<?, ?> getCurrentTank(Current current) {
-        switch (current) {
-            case GAS:
-                return getGasTank();
-            case INFUSION:
-                return getInfusionTank();
-            case PIGMENT:
-                return getPigmentTank();
-            case SLURRY:
-                return getSlurryTank();
-        }
-        throw new IllegalStateException("Unknown chemical type");
     }
 
     @Override

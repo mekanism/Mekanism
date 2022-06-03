@@ -118,22 +118,17 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     static RecipeUpgradeData<?> getUpgradeData(@Nonnull RecipeUpgradeType type, @Nonnull ItemStack stack) {
         Item item = stack.getItem();
         switch (type) {
-            case ENERGY:
-                return getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);
-            case FLUID:
-                return getContainerUpgradeData(stack, NBTConstants.FLUID_TANKS, FluidRecipeData::new);
-            case GAS:
-                return getContainerUpgradeData(stack, NBTConstants.GAS_TANKS, GasRecipeData::new);
-            case INFUSION:
-                return getContainerUpgradeData(stack, NBTConstants.INFUSION_TANKS, InfusionRecipeData::new);
-            case PIGMENT:
-                return getContainerUpgradeData(stack, NBTConstants.PIGMENT_TANKS, PigmentRecipeData::new);
-            case SLURRY:
-                return getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
-            case ITEM:
+            case ENERGY -> getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);
+            case FLUID -> getContainerUpgradeData(stack, NBTConstants.FLUID_TANKS, FluidRecipeData::new);
+            case GAS -> getContainerUpgradeData(stack, NBTConstants.GAS_TANKS, GasRecipeData::new);
+            case INFUSION -> getContainerUpgradeData(stack, NBTConstants.INFUSION_TANKS, InfusionRecipeData::new);
+            case PIGMENT -> getContainerUpgradeData(stack, NBTConstants.PIGMENT_TANKS, PigmentRecipeData::new);
+            case SLURRY -> getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
+            case ITEM -> {
                 ListTag inventory = ((ISustainedInventory) item).getInventory(stack);
                 return inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
-            case SECURITY:
+            }
+            case SECURITY -> {
                 UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
                 if (ownerUUID == null) {
                     return null;
@@ -142,15 +137,15 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 // item's security just because it has one item that is owned
                 SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
                 return new SecurityRecipeData(ownerUUID, securityMode);
-            case UPGRADE:
-                return UpgradesRecipeData.tryCreate(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-            case QIO_DRIVE:
+            }
+            case UPGRADE -> UpgradesRecipeData.tryCreate(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
+            case QIO_DRIVE -> {
                 DriveMetadata data = DriveMetadata.load(stack);
                 if (data.count() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
                     //If we don't have any stored items don't actually grab any recipe data
                     return new QIORecipeData(data, ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP));
                 }
-                break;
+            }
         }
         return null;
     }

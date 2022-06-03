@@ -171,16 +171,17 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             String resourceName = formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
-            switch (item.getRowKey()) {
-                case SHARD -> add(item.getValue(), resourceName + " Shard");
-                case CRYSTAL -> add(item.getValue(), resourceName + " Crystal");
-                case DUST -> add(item.getValue(), resourceName + " Dust");
-                case DIRTY_DUST -> add(item.getValue(), "Dirty " + resourceName + " Dust");
-                case CLUMP -> add(item.getValue(), resourceName + " Clump");
-                case INGOT -> add(item.getValue(), resourceName + " Ingot");
-                case RAW -> add(item.getValue(), "Raw " + resourceName);
-                case NUGGET -> add(item.getValue(), resourceName + " Nugget");
-            }
+            add(item.getValue(), switch (item.getRowKey()) {
+                case SHARD -> resourceName + " Shard";
+                case CRYSTAL -> resourceName + " Crystal";
+                case DUST -> resourceName + " Dust";
+                case DIRTY_DUST -> "Dirty " + resourceName + " Dust";
+                case CLUMP -> resourceName + " Clump";
+                case INGOT -> resourceName + " Ingot";
+                case RAW -> "Raw " + resourceName;
+                case NUGGET -> resourceName + " Nugget";
+                default -> throw new IllegalStateException("Unexpected resource type for primary resource.");
+            });
         }
     }
 

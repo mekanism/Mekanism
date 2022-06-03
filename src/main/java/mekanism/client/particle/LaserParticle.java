@@ -129,11 +129,11 @@ public class LaserParticle extends TextureSheetParticle {
 
     private void updateBoundingBox() {
         float halfDiameter = quadSize / 2;
-        switch (direction) {
-            case DOWN, UP -> setBoundingBox(new AABB(x - halfDiameter, y - halfLength, z - halfDiameter, x + halfDiameter, y + halfLength, z + halfDiameter));
-            case NORTH, SOUTH -> setBoundingBox(new AABB(x - halfDiameter, y - halfDiameter, z - halfLength, x + halfDiameter, y + halfDiameter, z + halfLength));
-            case WEST, EAST -> setBoundingBox(new AABB(x - halfLength, y - halfDiameter, z - halfDiameter, x + halfLength, y + halfDiameter, z + halfDiameter));
-        }
+        setBoundingBox(switch (direction) {
+            case DOWN, UP -> new AABB(x - halfDiameter, y - halfLength, z - halfDiameter, x + halfDiameter, y + halfLength, z + halfDiameter);
+            case NORTH, SOUTH -> new AABB(x - halfDiameter, y - halfDiameter, z - halfLength, x + halfDiameter, y + halfDiameter, z + halfLength);
+            case WEST, EAST -> new AABB(x - halfLength, y - halfDiameter, z - halfDiameter, x + halfLength, y + halfDiameter, z + halfDiameter);
+        });
     }
 
     public static class Factory implements ParticleProvider<LaserParticleData> {

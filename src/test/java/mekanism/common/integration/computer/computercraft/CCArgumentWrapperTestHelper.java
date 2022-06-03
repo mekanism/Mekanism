@@ -44,31 +44,22 @@ class CCArgumentWrapperTestHelper {
             return null;
         }
         byte id = nbt.getId();
-        switch (id) {
-            case Tag.TAG_BYTE:
-            case Tag.TAG_SHORT:
-            case Tag.TAG_INT:
-            case Tag.TAG_LONG:
-            case Tag.TAG_FLOAT:
-            case Tag.TAG_DOUBLE:
-            case Tag.TAG_ANY_NUMERIC:
+        return switch (id) {
+            case Tag.TAG_BYTE, Tag.TAG_SHORT, Tag.TAG_INT, Tag.TAG_LONG, Tag.TAG_FLOAT, Tag.TAG_DOUBLE, Tag.TAG_ANY_NUMERIC ->
                 //Get it as a double instead of a number as we will only get it back as a double from CC
-                return addTagHint(id, ((NumericTag) nbt).getAsDouble(), includeHints);
-            case Tag.TAG_STRING:
-            case Tag.TAG_END://Tag End is highly unlikely to ever be used outside of networking but handle it anyway
-                return addTagHint(id, nbt.getAsString(), includeHints);
-            case Tag.TAG_BYTE_ARRAY:
-            case Tag.TAG_INT_ARRAY:
-            case Tag.TAG_LONG_ARRAY:
-            case Tag.TAG_LIST:
+                addTagHint(id, ((NumericTag) nbt).getAsDouble(), includeHints);
+            //Tag End is highly unlikely to ever be used outside of networking but handle it anyway
+            case Tag.TAG_STRING, Tag.TAG_END -> addTagHint(id, nbt.getAsString(), includeHints);
+            case Tag.TAG_BYTE_ARRAY, Tag.TAG_INT_ARRAY, Tag.TAG_LONG_ARRAY, Tag.TAG_LIST -> {
                 CollectionTag<?> collectionTag = (CollectionTag<?>) nbt;
                 int size = collectionTag.size();
                 Map<Double, Object> wrappedCollection = new HashMap<>(size);
                 for (int i = 0; i < size; i++) {
                     wrappedCollection.put((double) i, wrapTag(collectionTag.get(i), includeHints));
                 }
-                return addTagHint(id, wrappedCollection, includeHints);
-            case Tag.TAG_COMPOUND:
+                yield addTagHint(id, wrappedCollection, includeHints);
+            }
+            case Tag.TAG_COMPOUND -> {
                 CompoundTag compound = (CompoundTag) nbt;
                 Map<String, Object> wrappedCompound = new HashMap<>(compound.size());
                 for (String key : compound.getAllKeys()) {
@@ -77,9 +68,10 @@ class CCArgumentWrapperTestHelper {
                         wrappedCompound.put(key, value);
                     }
                 }
-                return addTagHint(id, wrappedCompound, includeHints);
-        }
-        return null;
+                yield addTagHint(id, wrappedCompound, includeHints);
+            }
+            default -> null;
+        };
     }
 
     private static Object addTagHint(byte id, Object nbtRepresentation, boolean includeHint) {

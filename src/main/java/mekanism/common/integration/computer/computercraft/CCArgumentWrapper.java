@@ -324,30 +324,20 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         if (nbt == null) {
             return null;
         }
-        switch (nbt.getId()) {
-            case Tag.TAG_BYTE:
-            case Tag.TAG_SHORT:
-            case Tag.TAG_INT:
-            case Tag.TAG_LONG:
-            case Tag.TAG_FLOAT:
-            case Tag.TAG_DOUBLE:
-            case Tag.TAG_ANY_NUMERIC:
-                return ((NumericTag) nbt).getAsNumber();
-            case Tag.TAG_STRING:
-            case Tag.TAG_END://Tag End is highly unlikely to ever be used outside of networking but handle it anyway
-                return nbt.getAsString();
-            case Tag.TAG_BYTE_ARRAY:
-            case Tag.TAG_INT_ARRAY:
-            case Tag.TAG_LONG_ARRAY:
-            case Tag.TAG_LIST:
+        return switch (nbt.getId()) {
+            case Tag.TAG_BYTE, Tag.TAG_SHORT, Tag.TAG_INT, Tag.TAG_LONG, Tag.TAG_FLOAT, Tag.TAG_DOUBLE, Tag.TAG_ANY_NUMERIC -> ((NumericTag) nbt).getAsNumber();
+            //Tag End is highly unlikely to ever be used outside of networking but handle it anyway
+            case Tag.TAG_STRING, Tag.TAG_END -> nbt.getAsString();
+            case Tag.TAG_BYTE_ARRAY, Tag.TAG_INT_ARRAY, Tag.TAG_LONG_ARRAY, Tag.TAG_LIST -> {
                 CollectionTag<?> collectionNBT = (CollectionTag<?>) nbt;
                 int size = collectionNBT.size();
                 Map<Integer, Object> wrappedCollection = new HashMap<>(size);
                 for (int i = 0; i < size; i++) {
                     wrappedCollection.put(i, wrapNBT(collectionNBT.get(i)));
                 }
-                return wrappedCollection;
-            case Tag.TAG_COMPOUND:
+                yield wrappedCollection;
+            }
+            case Tag.TAG_COMPOUND -> {
                 CompoundTag compound = (CompoundTag) nbt;
                 Map<String, Object> wrappedCompound = new HashMap<>(compound.size());
                 for (String key : compound.getAllKeys()) {
@@ -356,9 +346,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         wrappedCompound.put(key, value);
                     }
                 }
-                return wrappedCompound;
-        }
-        return null;
+                yield wrappedCompound;
+            }
+            default -> null;
+        };
     }
 
     private static String getName(ForgeRegistryEntry<?> entry) {

@@ -161,17 +161,13 @@ public class MergedChemicalTank {
      * @return Internal tank.
      */
     public IChemicalTank<?, ?> getTankFromCurrent(Current current) {
-        switch (current) {
-            case GAS:
-                return getGasTank();
-            case INFUSION:
-                return getInfusionTank();
-            case PIGMENT:
-                return getPigmentTank();
-            case SLURRY:
-                return getSlurryTank();
-        }
-        throw new IllegalStateException("Unknown current chemical type");
+        return switch (current) {
+            case GAS -> getGasTank();
+            case INFUSION -> getInfusionTank();
+            case PIGMENT -> getPigmentTank();
+            case SLURRY -> getSlurryTank();
+            case EMPTY -> throw new UnsupportedOperationException("Empty chemical type is unsupported for getting current tank.");
+        };
     }
 
     public enum Current {
