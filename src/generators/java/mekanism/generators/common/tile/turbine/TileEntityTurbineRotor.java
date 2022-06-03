@@ -7,6 +7,7 @@ import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Clearable;
@@ -144,6 +145,17 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     @Nullable
     private TileEntityTurbineRotor getRotor(BlockPos pos) {
         return WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getLevel(), pos);
+    }
+
+    @Override
+    public void blockRemoved() {
+        super.blockRemoved();
+        if (!isRemote()) {
+            int amount = getHousedBlades();
+            if (amount > 0) {
+                Block.popResource(level, worldPosition, GeneratorsItems.TURBINE_BLADE.getItemStack(amount));
+            }
+        }
     }
 
     @Override

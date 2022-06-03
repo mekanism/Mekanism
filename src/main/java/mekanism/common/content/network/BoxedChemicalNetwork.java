@@ -16,7 +16,6 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
@@ -239,7 +238,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@Nonnull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
-        if (chemical instanceof GasStack stack && chemical.has(GasAttributes.Radiation.class)) {
+        if (chemical instanceof GasStack stack) {
             // Handle radiation leakage
             MekanismAPI.getRadiationManager().dumpRadiation(triggerTransmitter.getTileCoord(), stack);
         }

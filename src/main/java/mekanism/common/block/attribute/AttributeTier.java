@@ -13,11 +13,6 @@ public record AttributeTier<TIER extends ITier>(TIER tier) implements Attribute 
     private static final Map<ITier, BlockType> typeCache = new HashMap<>();
 
     public static <T extends ITier> BlockType getPassthroughType(T tier) {
-        if (typeCache.containsKey(tier)) {
-            return typeCache.get(tier);
-        }
-        BlockType type = BlockTypeBuilder.createBlock(MekanismLang.EMPTY).with(new AttributeTier<>(tier)).build();
-        typeCache.put(tier, type);
-        return type;
+        return typeCache.computeIfAbsent(tier, t -> BlockTypeBuilder.createBlock(MekanismLang.EMPTY).with(new AttributeTier<>(t)).build());
     }
 }

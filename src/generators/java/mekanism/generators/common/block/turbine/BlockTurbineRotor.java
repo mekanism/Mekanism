@@ -29,21 +29,6 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         super(GeneratorsBlockTypes.TURBINE_ROTOR);
     }
 
-    @Override
-    @Deprecated
-    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-        if (!world.isClientSide && state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
-            TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
-            if (tile != null) {
-                int amount = tile.getHousedBlades();
-                if (amount > 0) {
-                    popResource(world, pos, GeneratorsItems.TURBINE_BLADE.getItemStack(amount));
-                }
-            }
-        }
-        super.onRemove(state, world, pos, newState, isMoving);
-    }
-
     @Nonnull
     @Override
     @Deprecated
