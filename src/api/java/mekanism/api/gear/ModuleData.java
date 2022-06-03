@@ -103,7 +103,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
      *
      * @return {@code true} if this module type is exclusive of the given flags
      *
-     * @since 10.2.3.
+     * @since 10.2.3
      */
     public final boolean isExclusive(int mask) {
         return (exclusive & mask) != 0;

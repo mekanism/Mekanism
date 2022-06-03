@@ -621,7 +621,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %1$s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %1$s for a description.");
         add(MekanismLang.HOLD_FOR_MODULES, "Hold %1$s for installed modules.");
-        add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %1$s for supporting items.");
+        add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %1$s for supporting items and conflicting modules.");
         //Commands
         add(MekanismLang.COMMAND_CHUNK_WATCH, "Chunk (%1$s) added to watch list.");
         add(MekanismLang.COMMAND_CHUNK_UNWATCH, "Chunk (%1$s) removed from watch list.");

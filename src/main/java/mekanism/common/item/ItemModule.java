@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
@@ -11,7 +12,9 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.IModuleItem;
+import mekanism.common.registries.MekanismModules;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -46,8 +49,16 @@ public class ItemModule extends Item implements IModuleItem {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
+            tooltip.add(new TextComponent("Supported by:"));
             for (Item item : MekanismAPI.getModuleHelper().getSupported(getModuleData())) {
                 tooltip.add(item.getName(new ItemStack(item)));
+            }
+            Set<ModuleData<?>> conflicting = MekanismAPI.getModuleHelper().getConflicting(getModuleData());
+            if(!conflicting.isEmpty()){
+                tooltip.add(new TextComponent("Conflicting:"));
+                for (ModuleData<?> module : conflicting) {
+                    tooltip.add(module.getTextComponent());
+                }
             }
         } else {
             ModuleData<?> moduleData = getModuleData();

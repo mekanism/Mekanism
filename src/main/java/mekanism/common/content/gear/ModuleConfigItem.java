@@ -53,7 +53,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
             boolean checkModeState;
             if (name.equals(Module.ENABLED_KEY) && val == Boolean.TRUE) {
                 // disable other exclusive modules
-                if (m.getData().isExclusive(module.getData().getExclusiveFlags()) && m.getData() != module.getData()) {
+                if (m.getData() != module.getData() && m.getData().isExclusive(module.getData().getExclusiveFlags())) {
                     m.setDisabledForce(callback != null);
                 }
                 //If enabled state of the module changes, recheck about mode changes
