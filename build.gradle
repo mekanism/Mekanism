@@ -135,16 +135,16 @@ ext {
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
-setupTasks(sourceSets.main, "")
-setupTasks(sourceSets.additions, "Additions")
-setupTasks(sourceSets.defense, "Defense")
-setupTasks(sourceSets.generators, "Generators")
-setupTasks(sourceSets.tools, "Tools")
+setupTasks(sourceSets.main, sourceSets.datagenmain, "mekanism")
+setupTasks(sourceSets.additions, sourceSets.datagenadditions, "mekanismAdditions")
+setupTasks(sourceSets.defense, sourceSets.datagengenerators, "mekanismDefense")
+setupTasks(sourceSets.generators, sourceSets.datagendefense, "mekanismGenerators")
+setupTasks(sourceSets.tools, sourceSets.datagentools, "mekanismTools")
 
-def setupTasks(SourceSet sourceSet, String name) {
+def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet, String module) {
     def output = sourceSet.name
-    def compileTask = tasks.named("compile${name}Java", JavaCompile)
-    def replaceResourceTask = tasks.register("${output}ReplaceResources", Copy, {
+    def compileTask = tasks.named(sourceSet.getCompileJavaTaskName(), JavaCompile)
+    def replaceResourceTask = tasks.register(sourceSet.getTaskName("replace", "resources"), Copy, {
         outputs.upToDateWhen { false }
         def modsToml = copySpec {
             from(sourceSet.resources) {
@@ -174,7 +174,7 @@ def setupTasks(SourceSet sourceSet, String name) {
         }
     })
     //Set the various variables/settings for the different process resources tasks
-    tasks.named("process${name}Resources", ProcessResources).configure {
+    tasks.named(sourceSet.getProcessResourcesTaskName(), ProcessResources).configure {
         duplicatesStrategy(DuplicatesStrategy.FAIL)
         exclude('META-INF/mods.toml')
         from("${projectDir}") { include 'logo.png' }
@@ -187,16 +187,16 @@ def setupTasks(SourceSet sourceSet, String name) {
             }
         }
     }
-    tasks.named("processDatagen${output}Resources", ProcessResources).configure { dependsOn(compileTask) }
+    tasks.named(datagenSourceSet.getProcessResourcesTaskName(), ProcessResources).configure { dependsOn(compileTask) }
     //Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
-    tasks.named(name.isEmpty() ? "classes" : "${output}Classes").configure { dependsOn(replaceResourceTask) }
+    tasks.named(sourceSet.getClassesTaskName()).configure { dependsOn(replaceResourceTask) }
     //Configure specific compile tasks to have the proper annotation processor info
     compileTask.configure {
         options.annotationProcessorPath = configurations.annotationProcessor
         options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${output}/"))
         options.compilerArgs = [
                 "-processor", "mekanism.ParamNameMapper",
-                "-AmekanismModule=mekanism${name.isEmpty() ? "" : output}"
+                "-AmekanismModule=${module}"
         ]
     }
 }
@@ -467,10 +467,11 @@ tasks.named('sourcesJar', Jar).configure {
     manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
-def secondaryJar(String classifier, String title) {
-    return tasks.register("${classifier}Jar", Jar, {
+def secondaryJar(SourceSet sourceSet, String title) {
+    return tasks.register(sourceSet.getJarTaskName(), Jar, {
         duplicatesStrategy(DuplicatesStrategy.FAIL)
-        archiveClassifier.set(classifier)
+        archiveClassifier.set(sourceSet.name)
+        from sourceSet.output
         if (!title.isEmpty()) {
             archiveFileName.set("${title}-${project.version}.jar")
         }
@@ -478,20 +479,11 @@ def secondaryJar(String classifier, String title) {
     })
 }
 
-def apiJar = secondaryJar('api', '')
-apiJar.configure { from sourceSets.api.output }
-
-def additionsJar = secondaryJar('additions', 'MekanismAdditions')
-additionsJar.configure { from sourceSets.additions.output }
-
-def defenseJar = secondaryJar('defense', 'MekanismDefense')
-defenseJar.configure { from sourceSets.defense.output }
-
-def generatorsJar = secondaryJar('generators', 'MekanismGenerators')
-generatorsJar.configure { from sourceSets.generators.output }
-
-def toolsJar = secondaryJar('tools', 'MekanismTools')
-toolsJar.configure { from sourceSets.tools.output }
+def apiJar = secondaryJar(sourceSets.api, '')
+def additionsJar = secondaryJar(sourceSets.additions, 'MekanismAdditions')
+def defenseJar = secondaryJar(sourceSets.defense, 'MekanismDefense')
+def generatorsJar = secondaryJar(sourceSets.generators, 'MekanismGenerators')
+def toolsJar = secondaryJar(sourceSets.tools, 'MekanismTools')
 
 def allJar = tasks.register('allJar', Jar, {
     dependsOn(classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses)
@@ -559,29 +551,27 @@ def reobfAdditionsJar = createReobf(sourceSets.additions)
 def reobfDefenseJar = createReobf(sourceSets.generators)
 def reobfGeneratorsJar = createReobf(sourceSets.defense)
 def reobfToolsJar = createReobf(sourceSets.tools)
-def reobfAllJar = createReobf("all", null)
+def reobfAllJar = createReobf('allJar')
 
 def createReobf(SourceSet sourceSet) {
-    return createReobf(sourceSet.name, sourceSet)
-}
-
-def createReobf(String name, SourceSet sourceSet) {
-    def reobfExtension = (NamedDomainObjectContainer<RenameJarInPlace>) extensions.getByName("reobf")
-    def reobfTask = reobfExtension.register("${name}Jar")
-    if (sourceSet != null) {
-        reobfTask.configure { classpath.from(sourceSet.compileClasspath) }
-    }
+    def reobfTask = createReobf(sourceSet.getJarTaskName())
+    reobfTask.configure { classpath.from(sourceSet.compileClasspath) }
     return reobfTask
 }
 
+def createReobf(String name) {
+    def reobfExtension = (NamedDomainObjectContainer<RenameJarInPlace>) extensions.getByName("reobf")
+    return reobfExtension.register(name)
+}
+
+apiJar.configure { finalizedBy(reobfApiJar) }
+additionsJar.configure { finalizedBy(reobfAdditionsJar) }
+defenseJar.configure { finalizedBy(reobfDefenseJar) }
+generatorsJar.configure { finalizedBy(reobfGeneratorsJar) }
+toolsJar.configure { finalizedBy(reobfToolsJar) }
+allJar.configure { finalizedBy(reobfAllJar) }
 afterEvaluate {
     tasks.named('jar', Jar).configure { finalizedBy(tasks.named('reobfJar', RenameJarInPlace)) }
-    apiJar.configure { finalizedBy(reobfApiJar) }
-    additionsJar.configure { finalizedBy(reobfAdditionsJar) }
-    defenseJar.configure { finalizedBy(reobfDefenseJar) }
-    generatorsJar.configure { finalizedBy(reobfGeneratorsJar) }
-    toolsJar.configure { finalizedBy(reobfToolsJar) }
-    allJar.configure { finalizedBy(reobfAllJar) }
 }
 
 //Minimize/optimize all png files, requires optipng on the PATH
