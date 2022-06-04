@@ -135,13 +135,13 @@ ext {
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
-setupTasks(sourceSets.main, sourceSets.datagenmain, "mekanism")
-setupTasks(sourceSets.additions, sourceSets.datagenadditions, "mekanismAdditions")
-setupTasks(sourceSets.defense, sourceSets.datagengenerators, "mekanismDefense")
-setupTasks(sourceSets.generators, sourceSets.datagendefense, "mekanismGenerators")
-setupTasks(sourceSets.tools, sourceSets.datagentools, "mekanismTools")
+setupTasks(sourceSets.main, sourceSets.datagenmain)
+setupTasks(sourceSets.additions, sourceSets.datagenadditions)
+setupTasks(sourceSets.defense, sourceSets.datagengenerators)
+setupTasks(sourceSets.generators, sourceSets.datagendefense)
+setupTasks(sourceSets.tools, sourceSets.datagentools)
 
-def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet, String module) {
+def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet) {
     def output = sourceSet.name
     def compileTask = tasks.named(sourceSet.getCompileJavaTaskName(), JavaCompile)
     def replaceResourceTask = tasks.register(sourceSet.getTaskName("replace", "resources"), Copy, {
@@ -194,10 +194,10 @@ def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet, String module) {
     compileTask.configure {
         options.annotationProcessorPath = configurations.annotationProcessor
         options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${output}/"))
-        options.compilerArgs = [
+        options.compilerArgs.addAll([
                 "-processor", "mekanism.ParamNameMapper",
-                "-AmekanismModule=${module}"
-        ]
+                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}"
+        ])
     }
 }
 
@@ -532,7 +532,7 @@ clean {
 
 tasks.withType(JavaCompile).configureEach({
     options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xmaxerrs" << "100000"
+    options.compilerArgs.addAll(["-Xmaxerrs", "100000"])
 })
 
 artifacts {
