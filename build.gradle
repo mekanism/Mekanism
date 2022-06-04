@@ -132,6 +132,9 @@ ext {
     versionProperties = ["version"                : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version"         : loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
                          "wildfire_gender_version": wildfire_gender_version_range, "curios_version": curios_version_range]
+    //Fallback pack format is the larger of the resource and data pack formats
+    packProperties = ["pack_format"         : Math.max(Integer.parseInt(resource_pack_format), Integer.parseInt(data_pack_format)),
+                      "resource_pack_format": resource_pack_format, "data_pack_format": data_pack_format]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
@@ -152,8 +155,14 @@ def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet) {
                 expand versionProperties
             }
         }
+        def packMcMeta = copySpec {
+            from(sourceSet.resources) {
+                include "pack.mcmeta"
+                expand packProperties
+            }
+        }
         //Copy it into the build dir
-        with modsToml
+        with(modsToml, packMcMeta)
         into "$buildDir/resources/${output}/"
         //If IntelliJ's output dir exists, copy it there as well
         if (new File("$rootDir/out/production/Mekanism.${output}/").exists()) {
@@ -161,14 +170,14 @@ def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet) {
             // run work by default because of incorrect MOD_CLASSES getting generated.
             // probably related to us setting inheritOutputDirs
             copy {
-                with modsToml
+                with(modsToml, packMcMeta)
                 into "$rootDir/out/production/Mekanism.${output}/"
             }
         }
         //If Eclipse's output dir exists, copy it there as well
         if (new File("$rootDir/bin/${output}/").exists()) {
             copy {
-                with modsToml
+                with(modsToml, packMcMeta)
                 into "$rootDir/bin/${output}/"
             }
         }
@@ -176,7 +185,7 @@ def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet) {
     //Set the various variables/settings for the different process resources tasks
     tasks.named(sourceSet.getProcessResourcesTaskName(), ProcessResources).configure {
         duplicatesStrategy(DuplicatesStrategy.FAIL)
-        exclude('META-INF/mods.toml')
+        exclude('META-INF/mods.toml', 'pack.mcmeta')
         from("${projectDir}") { include 'logo.png' }
         //Depend on the compile task so that we can map the computer methods as needed
         dependsOn(compileTask)
