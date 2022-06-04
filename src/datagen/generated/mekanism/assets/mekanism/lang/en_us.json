@@ -499,7 +499,7 @@
   "description.mekanism.gravitational_modulating_unit": "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.",
   "description.mekanism.gyroscopic_stabilization_unit": "Allows the user to act as though they are on solid ground.",
   "description.mekanism.hydraulic_propulsion_unit": "Allows the user to both step and jump higher.",
-  "description.mekanism.hydrostatic_repulsor_unit": "Uses advanced technology to repel water lowering the resistance felt while moving through it.",
+  "description.mekanism.hydrostatic_repulsor_unit": "Uses advanced technology to repel water, lowering the resistance felt while moving through it.",
   "description.mekanism.induction_casing": "A type of energy-resistant casing used in the creation of an Energized Induction Matrix multiblock.",
   "description.mekanism.induction_cell": "A highly conductive energy capacitor capable of storing massive amounts of energy in a single block. Housed in an Energized Induction Matrix to expand the multiblock's energy storage.",
   "description.mekanism.induction_port": "A port that can be placed on an Energized Induction Matrix multiblock, allowing for energy to be inserted from and output to external cabling.",
