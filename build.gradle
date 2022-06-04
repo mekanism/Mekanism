@@ -4,6 +4,8 @@ import com.modrinth.minotaur.dependencies.VersionDependency
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import mekanism.MergeJars
+import net.minecraftforge.gradle.common.util.RunConfig
+import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
 plugins {
     id 'org.ajoberstar.grgit' version '4.1.1'//'5.0.0'//Can't use 5.0.0 yet as our jenkins uses java 8 to run gradle
@@ -17,7 +19,7 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-wrapper {
+tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
     gradleVersion = '7.4.2'
     distributionType = Wrapper.DistributionType.ALL
@@ -133,15 +135,17 @@ ext {
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
-def mainReplaceResources = createReplaceResourcesTask("main", sourceSets.main)
-def additionsReplaceResources = createReplaceResourcesTask("additions", sourceSets.additions)
-def generatorsReplaceResources = createReplaceResourcesTask("generators", sourceSets.generators)
-def defenseReplaceResources = createReplaceResourcesTask("defense", sourceSets.defense)
-def toolsReplaceResources = createReplaceResourcesTask("tools", sourceSets.tools)
+setupTasks(sourceSets.main, "")
+setupTasks(sourceSets.additions, "Additions")
+setupTasks(sourceSets.defense, "Defense")
+setupTasks(sourceSets.generators, "Generators")
+setupTasks(sourceSets.tools, "Tools")
 
-def createReplaceResourcesTask(String output, SourceSet sourceSet) {
-    return tasks.register("${output}ReplaceResources", Copy, it -> {
-        it.outputs.upToDateWhen { false }
+def setupTasks(SourceSet sourceSet, String name) {
+    def output = sourceSet.name
+    def compileTask = tasks.named("compile${name}Java", JavaCompile)
+    def replaceResourceTask = tasks.register("${output}ReplaceResources", Copy, {
+        outputs.upToDateWhen { false }
         def modsToml = copySpec {
             from(sourceSet.resources) {
                 include "META-INF/mods.toml"
@@ -149,8 +153,8 @@ def createReplaceResourcesTask(String output, SourceSet sourceSet) {
             }
         }
         //Copy it into the build dir
-        it.with modsToml
-        it.into "$buildDir/resources/${output}/"
+        with modsToml
+        into "$buildDir/resources/${output}/"
         //If IntelliJ's output dir exists, copy it there as well
         if (new File("$rootDir/out/production/Mekanism.${output}/").exists()) {
             //Note: This copies it into the correct place, but it still doesn't have the IntelliJ
@@ -169,13 +173,42 @@ def createReplaceResourcesTask(String output, SourceSet sourceSet) {
             }
         }
     })
+    //Set the various variables/settings for the different process resources tasks
+    tasks.named("process${name}Resources", ProcessResources).configure {
+        duplicatesStrategy(DuplicatesStrategy.FAIL)
+        exclude('META-INF/mods.toml')
+        from("${projectDir}") { include 'logo.png' }
+        //Depend on the compile task so that we can map the computer methods as needed
+        dependsOn(compileTask)
+        finalizedBy(replaceResourceTask)
+        doLast {
+            fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+                File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+            }
+        }
+    }
+    tasks.named("processDatagen${output}Resources", ProcessResources).configure { dependsOn(compileTask) }
+    //Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
+    tasks.named(name.isEmpty() ? "classes" : "${output}Classes").configure { dependsOn(replaceResourceTask) }
+    //Configure specific compile tasks to have the proper annotation processor info
+    compileTask.configure {
+        options.annotationProcessorPath = configurations.annotationProcessor
+        options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${output}/"))
+        options.compilerArgs = [
+                "-processor", "mekanism.ParamNameMapper",
+                "-AmekanismModule=mekanism${name.isEmpty() ? "" : output}"
+        ]
+    }
 }
 
 group = "mekanism"
 def basicVersion = "${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 version = "${minecraft_version}-${basicVersion}"
 archivesBaseName = "Mekanism"
-java.toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
+    withSourcesJar()
+}
 
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
@@ -185,13 +218,7 @@ minecraft {
 
     runs {
         client {
-            workingDirectory file("run")
-            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
-            forceExit = false
-            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
+            setupRunConfig(it, true)
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)
             // Setting the below properties allows use of your normal Minecraft account in the
@@ -212,91 +239,58 @@ minecraft {
                 //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
                 args '--accessToken', project.getProperty('mc_accessToken')
             }
-            if (project.hasProperty('forge_force_ansi')) {
-                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-                // or eclipse's plugin that adds support for ansi escape in console
-                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
-            }
-
-            mods {
-                mekanism.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-                mekanismadditions.source((SourceSet) sourceSets.additions)
-                mekanismdefense.source((SourceSet) sourceSets.defense)
-                mekanismgenerators.source((SourceSet) sourceSets.generators)
-                mekanismtools.source((SourceSet) sourceSets.tools)
-            }
         }
-
-        server {
-            workingDirectory file("run")
-            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
-            forceExit = false
-            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            if (project.hasProperty('forge_force_ansi')) {
-                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-                // or eclipse's plugin that adds support for ansi escape in console
-                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
-            }
-
-            mods {
-                mekanism.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-                mekanismadditions.source((SourceSet) sourceSets.additions)
-                mekanismdefense.source((SourceSet) sourceSets.defense)
-                mekanismgenerators.source((SourceSet) sourceSets.generators)
-                mekanismtools.source((SourceSet) sourceSets.tools)
-            }
+        server { setupRunConfig(it, true) }
+        gameTestServer {
+            setupRunConfig(it, true)
+            //TODO: Add a sourceset for handling gametests
         }
-
         data {
-            workingDirectory file("run")
+            setupRunConfig(it, false)
             environment 'target', 'fmluserdevdata'
-            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
-            forceExit = false
-            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            if (project.hasProperty('forge_force_ansi')) {
-                //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-                // or eclipse's plugin that adds support for ansi escape in console
-                jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
-            }
 
             args '--all', '--output', file('src/datagen/generated/'),
-                    '--mod', 'mekanism',
-                    '--existing', file('src/main/resources/'),
-                    '--mod', 'mekanismadditions',
-                    '--existing', file('src/additions/resources/'),
-                    '--mod', 'mekanismdefense',
-                    '--existing', file('src/defense/resources/'),
-                    '--mod', 'mekanismgenerators',
-                    '--existing', file('src/generators/resources/'),
-                    '--mod', 'mekanismtools',
-                    '--existing', file('src/tools/resources/')
+                    '--mod', 'mekanism', '--existing', file('src/main/resources/'),
+                    '--mod', 'mekanismadditions', '--existing', file('src/additions/resources/'),
+                    '--mod', 'mekanismdefense', '--existing', file('src/defense/resources/'),
+                    '--mod', 'mekanismgenerators', '--existing', file('src/generators/resources/'),
+                    '--mod', 'mekanismtools', '--existing', file('src/tools/resources/')
 
-            mods {
-                mekanism.sources((SourceSet[]) [sourceSets.main, sourceSets.api, sourceSets.datagenmain])
-                mekanismadditions.sources((SourceSet[]) [sourceSets.additions, sourceSets.datagenadditions])
-                mekanismdefense.sources((SourceSet[]) [sourceSets.defense, sourceSets.datagendefense])
-                mekanismgenerators.sources((SourceSet[]) [sourceSets.generators, sourceSets.datagengenerators])
-                mekanismtools.sources((SourceSet[]) [sourceSets.tools, sourceSets.datagentools])
-            }
+            mods.named("mekanism").configure { source((SourceSet) sourceSets.datagenmain) }
+            mods.named("mekanismadditions").configure { source((SourceSet) sourceSets.datagenadditions) }
+            mods.named("mekanismdefense").configure { source((SourceSet) sourceSets.datagendefense) }
+            mods.named("mekanismgenerators").configure { source((SourceSet) sourceSets.datagengenerators) }
+            mods.named("mekanismtools").configure { source((SourceSet) sourceSets.datagentools) }
         }
     }
 }
 
-repositories {
-    maven {
-        name 'thiakil'
-        url 'https://maven.thiakil.com'
-        content {
-            includeGroup 'de.oceanlabs.mcp'
-            includeGroup 'net.minecraft'//custom mappings
-        }
+def setupRunConfig(RunConfig runConfig, boolean supportsGameTests) {
+    runConfig.workingDirectory(file("run"))
+    //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
+    runConfig.forceExit = false
+    //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+    runConfig.property 'mixin.env.remapRefMap', 'true'
+    runConfig.property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    if (supportsGameTests) {
+        //Specify all our mods as domains to look for game tests
+        runConfig.property 'forge.enabledGameTestNamespaces', 'mekanism,mekanismadditions,mekanismdefense,mekanismgenerators,mekanismtools'
     }
+
+    if (project.hasProperty('forge_force_ansi')) {
+        //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+        // or eclipse's plugin that adds support for ansi escape in console
+        runConfig.jvmArg('-Dterminal.ansi=' + project.getProperty('forge_force_ansi'))
+    }
+
+    runConfig.mods.register("mekanism").configure { sources((SourceSet[]) [sourceSets.main, sourceSets.api]) }
+    runConfig.mods.register("mekanismadditions").configure { source((SourceSet) sourceSets.additions) }
+    runConfig.mods.register("mekanismdefense").configure { source((SourceSet) sourceSets.defense) }
+    runConfig.mods.register("mekanismgenerators").configure { source((SourceSet) sourceSets.generators) }
+    runConfig.mods.register("mekanismtools").configure { source((SourceSet) sourceSets.tools) }
+}
+
+repositories {
     maven {
         name 'prog'
         url 'https://dvs1.progwml6.com/files/maven'
@@ -357,7 +351,7 @@ repositories {
                         excludeGroup 'com.blamejared.jeitweaker'
                         excludeGroup 'top.theillusivec4.curios'
                     }
-                    println("Adding exclusions to ${it.url}")
+                    println("Adding exclusions to ${url}")
                 } catch (Exception ignored) {
                     //oh well
                 }
@@ -446,41 +440,6 @@ if (project.hasProperty('UPDATE_MAPPINGS')) {
     allExtraDirs.each { extractMappedNew.addTarget it }
 }
 
-//Set the various variables/settings for the different process resources tasks
-processResources { setupProcessResources(processResources, mainReplaceResources, compileJava) }
-processAdditionsResources { setupProcessResources(processAdditionsResources, additionsReplaceResources, compileAdditionsJava) }
-processDefenseResources { setupProcessResources(processDefenseResources, defenseReplaceResources, compileDefenseJava) }
-processGeneratorsResources { setupProcessResources(processGeneratorsResources, generatorsReplaceResources, compileGeneratorsJava) }
-processToolsResources { setupProcessResources(processToolsResources, toolsReplaceResources, compileToolsJava) }
-processDatagenmainResources { dependsOn(compileJava) }
-processDatagenadditionsResources { dependsOn(compileAdditionsJava) }
-processDatagendefenseResources { dependsOn(compileDefenseJava) }
-processDatagengeneratorsResources { dependsOn(compileGeneratorsJava) }
-processDatagentoolsResources { dependsOn(compileToolsJava) }
-
-def setupProcessResources(ProcessResources process, TaskProvider<Task> replaceResources, JavaCompile compileTask) {
-    process.duplicatesStrategy(DuplicatesStrategy.FAIL)
-    process.exclude('META-INF/mods.toml')
-    process.from("${projectDir}") { include 'logo.png' }
-    process.configure {
-        //Depend on the compile task so that we can map the computer methods as needed
-        dependsOn(compileTask)
-        finalizedBy(replaceResources)
-    }
-    process.doLast {
-        fileTree(dir: process.getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
-        }
-    }
-}
-
-//Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
-classes.configure { dependsOn(mainReplaceResources) }
-additionsClasses.configure { dependsOn(additionsReplaceResources) }
-defenseClasses.configure { dependsOn(defenseReplaceResources) }
-generatorsClasses.configure { dependsOn(generatorsReplaceResources) }
-toolsClasses.configure { dependsOn(toolsReplaceResources) }
-
 def getManifestAttributes(String title) {
     return [
             "Specification-Title"     : title,
@@ -494,67 +453,49 @@ def getManifestAttributes(String title) {
     ]
 }
 
-jar {
+tasks.named('jar', Jar).configure {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     from([sourceSets.api.output, sourceSets.main.output])
     manifest.attributes(getManifestAttributes("Mekanism"))
-    afterEvaluate { finalizedBy reobfJar }
 }
 
-task sourcesJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses]) {
+tasks.named('sourcesJar', Jar).configure {
+    dependsOn(classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses)
     duplicatesStrategy(DuplicatesStrategy.FAIL)
-    archiveClassifier.set("sources")
-    from(sourceSets.api.allJava, sourceSets.main.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
+    //Note: Already contains main source set's sources by default
+    from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
     manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
-task apiJar(type: Jar) {
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
-    archiveClassifier.set("api")
-    from sourceSets.api.output
-    manifest.attributes(getManifestAttributes("Mekanism"))
-    afterEvaluate { finalizedBy reobfApiJar }
+def secondaryJar(String classifier, String title) {
+    return tasks.register("${classifier}Jar", Jar, {
+        duplicatesStrategy(DuplicatesStrategy.FAIL)
+        archiveClassifier.set(classifier)
+        if (!title.isEmpty()) {
+            archiveFileName.set("${title}-${project.version}.jar")
+        }
+        manifest.attributes(getManifestAttributes(title.isEmpty() ? "Mekanism" : title))
+    })
 }
 
-task additionsJar(type: Jar) {
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
-    archiveFileName.set("MekanismAdditions-${project.version}.jar")
-    archiveClassifier.set("additions")
-    from sourceSets.additions.output
-    manifest.attributes(getManifestAttributes("MekanismAdditions"))
-    afterEvaluate { finalizedBy reobfAdditionsJar }
-}
+def apiJar = secondaryJar('api', '')
+apiJar.configure { from sourceSets.api.output }
 
-task defenseJar(type: Jar) {
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
-    archiveFileName.set("MekanismDefense-${project.version}.jar")
-    archiveClassifier.set("defense")
-    from sourceSets.defense.output
-    manifest.attributes(getManifestAttributes("MekanismDefense"))
-    afterEvaluate { finalizedBy reobfDefenseJar }
-}
+def additionsJar = secondaryJar('additions', 'MekanismAdditions')
+additionsJar.configure { from sourceSets.additions.output }
 
-task generatorsJar(type: Jar) {
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
-    archiveFileName.set("MekanismGenerators-${project.version}.jar")
-    archiveClassifier.set("generators")
-    from sourceSets.generators.output
-    manifest.attributes(getManifestAttributes("MekanismGenerators"))
-    afterEvaluate { finalizedBy reobfGeneratorsJar }
-}
+def defenseJar = secondaryJar('defense', 'MekanismDefense')
+defenseJar.configure { from sourceSets.defense.output }
 
-task toolsJar(type: Jar) {
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
-    archiveFileName.set("MekanismTools-${project.version}.jar")
-    archiveClassifier.set("tools")
-    from sourceSets.tools.output
-    manifest.attributes(getManifestAttributes("MekanismTools"))
-    afterEvaluate { finalizedBy reobfToolsJar }
-}
+def generatorsJar = secondaryJar('generators', 'MekanismGenerators')
+generatorsJar.configure { from sourceSets.generators.output }
 
-task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses]) {
+def toolsJar = secondaryJar('tools', 'MekanismTools')
+toolsJar.configure { from sourceSets.tools.output }
+
+def allJar = tasks.register('allJar', Jar, {
+    dependsOn(classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses)
     mustRunAfter(clean)
-    afterEvaluate { finalizedBy reobfAllJar }
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
@@ -572,7 +513,7 @@ task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defens
     from(sourceSets.tools.output, excludeFromAll)
     //And finally copy over the generated files
     MergeJars.getGeneratedClosures(versionProperties).each { closure -> from("$buildDir/generated", closure) }
-}
+})
 
 clean {
     //TODO: Try to come up with a slightly better solution to this that deletes more,
@@ -583,16 +524,14 @@ clean {
     def filteredDelete = new HashSet<>()
     for (def toDelete : getDelete()) {
         for (def f : file(toDelete).listFiles()) {
-            if (f.getName() != "fg_cache") {
-                if (f.getName() == "generated") {
-                    for (def generated : file(f).listFiles()) {
-                        if (generated.getName() != "data" && generated.getName() != "META-INF") {
-                            filteredDelete.add(generated)
-                        }
+            if (f.getName() == "generated") {
+                for (def generated : file(f).listFiles()) {
+                    if (generated.getName() != "data" && generated.getName() != "META-INF") {
+                        filteredDelete.add(generated)
                     }
-                } else {
-                    filteredDelete.add(f)
                 }
+            } else if (f.getName() != "fg_cache") {
+                filteredDelete.add(f)
             }
         }
     }
@@ -600,25 +539,9 @@ clean {
 }
 
 tasks.withType(JavaCompile).configureEach({
-    it.options.encoding = 'UTF-8'
-    it.options.compilerArgs << "-Xmaxerrs" << "100000"
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xmaxerrs" << "100000"
 })
-
-//Configure specific compile tasks to have the proper annotation processor info
-compileJava { setupCompileJava(compileJava, "main", "mekanism") }
-compileAdditionsJava { setupCompileJava(compileAdditionsJava, "additions", "mekanismadditions") }
-compileDefenseJava { setupCompileJava(compileDefenseJava, "defense", "mekanismdefense") }
-compileGeneratorsJava { setupCompileJava(compileGeneratorsJava, "generators", "mekanismgenerators") }
-compileToolsJava { setupCompileJava(compileToolsJava, "tools", "mekanismtools") }
-
-def setupCompileJava(JavaCompile task, String baseFolder, String module) {
-    task.options.annotationProcessorPath = configurations.annotationProcessor
-    task.options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${baseFolder}/"))
-    task.options.compilerArgs = [
-            "-processor", "mekanism.ParamNameMapper",
-            "-AmekanismModule=${module}"
-    ]
-}
 
 artifacts {
     archives apiJar
@@ -631,14 +554,34 @@ artifacts {
     archives sourcesJar
 }
 
-reobf {
-    apiJar { classpath.from(sourceSets.api.compileClasspath) }
-    jar { classpath.from(sourceSets.main.compileClasspath) }
-    additionsJar { classpath.from(sourceSets.additions.compileClasspath) }
-    generatorsJar { classpath.from(sourceSets.generators.compileClasspath) }
-    defenseJar { classpath.from(sourceSets.defense.compileClasspath) }
-    toolsJar { classpath.from(sourceSets.tools.compileClasspath) }
-    allJar {}
+def reobfApiJar = createReobf(sourceSets.api)
+def reobfAdditionsJar = createReobf(sourceSets.additions)
+def reobfDefenseJar = createReobf(sourceSets.generators)
+def reobfGeneratorsJar = createReobf(sourceSets.defense)
+def reobfToolsJar = createReobf(sourceSets.tools)
+def reobfAllJar = createReobf("all", null)
+
+def createReobf(SourceSet sourceSet) {
+    return createReobf(sourceSet.name, sourceSet)
+}
+
+def createReobf(String name, SourceSet sourceSet) {
+    def reobfExtension = (NamedDomainObjectContainer<RenameJarInPlace>) extensions.getByName("reobf")
+    def reobfTask = reobfExtension.register("${name}Jar")
+    if (sourceSet != null) {
+        reobfTask.configure { classpath.from(sourceSet.compileClasspath) }
+    }
+    return reobfTask
+}
+
+afterEvaluate {
+    tasks.named('jar', Jar).configure { finalizedBy(tasks.named('reobfJar', RenameJarInPlace)) }
+    apiJar.configure { finalizedBy(reobfApiJar) }
+    additionsJar.configure { finalizedBy(reobfAdditionsJar) }
+    defenseJar.configure { finalizedBy(reobfDefenseJar) }
+    generatorsJar.configure { finalizedBy(reobfGeneratorsJar) }
+    toolsJar.configure { finalizedBy(reobfToolsJar) }
+    allJar.configure { finalizedBy(reobfAllJar) }
 }
 
 //Minimize/optimize all png files, requires optipng on the PATH
@@ -656,9 +599,9 @@ void minimizePNGFile(File file) {
     }
 }
 
-task optimizePng {
-    def pngPatterns = ["**/*.png"]
+tasks.register('optimizePng').configure {
     doLast {
+        def pngPatterns = ["**/*.png"]
         //Ensure the logo is minimized (we add this file to each jar)
         minimizePNGFile(file("${projectDir}/logo.png"))
         //Minimize any PNGs in the source sets
@@ -797,7 +740,7 @@ def changeLogResolver = { ->
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
-    tasks.curseforge.dependsOn(jar, additionsJar, generatorsJar, /*defenseJar,*/ toolsJar, apiJar)
+    tasks.named('curseforge').configure { dependsOn(jar, additionsJar, generatorsJar, /*defenseJar,*/ toolsJar, apiJar) }
     curseforge {
         apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
 
@@ -830,7 +773,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "the-one-probe"
                 }
             }
-            addArtifact apiJar
+            addArtifact apiJar.get()
             addGameVersion "Java ${java_version}"
             addGameVersion "${minecraft_version}"
         }
@@ -841,7 +784,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelogType = "html"
             changelog = changeLogResolver
             releaseType = "${release_type}"
-            mainArtifact(additionsJar) {
+            mainArtifact(additionsJar.get()) {
                 relations {
                     requiredDependency "mekanism"
                 }
@@ -856,7 +799,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelogType = "html"
             changelog = changeLogResolver
             releaseType = "${release_type}"
-            mainArtifact(defenseJar) {
+            mainArtifact(defenseJar.get()) {
                 relations {
                     requiredDependency "mekanism"
                 }
@@ -871,7 +814,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelogType = "html"
             changelog = changeLogResolver
             releaseType = "${release_type}"
-            mainArtifact(generatorsJar) {
+            mainArtifact(generatorsJar.get()) {
                 relations {
                     requiredDependency "mekanism"
                 }
@@ -886,7 +829,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelogType = "html"
             changelog = changeLogResolver
             releaseType = "${release_type}"
-            mainArtifact(toolsJar) {
+            mainArtifact(toolsJar.get()) {
                 relations {
                     requiredDependency "mekanism"
                 }
@@ -903,9 +846,9 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
     //def defenseModrinth = createSecondaryModrinthUpload("defense", "", defenseJar)
     def generatorsModrinth = createSecondaryModrinthUpload("generators", "OFVYKsAk", generatorsJar)
     def toolsModrinth = createSecondaryModrinthUpload("tools", "tqQpq1lt", toolsJar)
-    tasks.modrinth {
+    tasks.named('modrinth').configure {
         dependsOn(jar, apiJar)
-        finalizedBy(additionsModrinth, generatorsModrinth, toolsModrinth)
+        finalizedBy(additionsModrinth, /*defenseModrinth,*/ generatorsModrinth, toolsModrinth)
     }
 
     modrinth {
@@ -918,7 +861,7 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         versionType = "${release_type}"
         changelog = changeLogResolver.call()
         uploadFile = jar
-        additionalFiles = [apiJar]
+        additionalFiles = [apiJar.get()]
         gameVersions = ["${minecraft_version}"]
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
         dependencies = [
@@ -930,16 +873,16 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
     }
 }
 
-def createSecondaryModrinthUpload(String output, String targetProjectId, Jar sourceSetJar) {
-    return tasks.register("${output}Modrinth", TaskModrinthUpload, it -> {
-        it.setGroup("publishing")
-        it.setDescription("Upload Mekanism ${output} to Modrinth")
-        it.dependsOn(tasks.named("modrinth"), sourceSetJar)
-        it.doFirst {
+def createSecondaryModrinthUpload(String output, String targetProjectId, TaskProvider<Jar> sourceSetJar) {
+    return tasks.register("${output}Modrinth", TaskModrinthUpload, {
+        setGroup("publishing")
+        setDescription("Upload Mekanism ${output} to Modrinth")
+        dependsOn(tasks.named("modrinth"), sourceSetJar)
+        doFirst {
             //Run in do first to change the configured extension values before it starts applying
             modrinth {
                 projectId = targetProjectId
-                uploadFile = sourceSetJar
+                uploadFile = sourceSetJar.get()
                 //Clear additional upload files as this is a modification of what things are set to from before
                 additionalFiles = []
                 //Mark that the addon requires the build of Mekanism that we just uploaded (and override it to clear all optional dependencies)
