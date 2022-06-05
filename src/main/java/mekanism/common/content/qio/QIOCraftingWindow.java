@@ -772,7 +772,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
         private boolean testEquivalentItem(Level world, @Nonnull QIOFrequency frequency, CraftingWindowInventorySlot slot, int index, Ingredient usedIngredient,
               HashedItem replacementType) {
-            if (frequency.getStored(replacementType) == 0 || !usedIngredient.test(replacementType.getStack())) {
+            if (!frequency.isStoring(replacementType) || !usedIngredient.test(replacementType.getStack())) {
                 //Our frequency doesn't actually have the item stored we are trying to use or the type we are trying
                 // doesn't actually match the ingredient we have for that slot
                 return false;

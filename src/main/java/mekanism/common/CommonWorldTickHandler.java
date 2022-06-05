@@ -11,6 +11,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
+import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -154,6 +155,7 @@ public class CommonWorldTickHandler {
     public void worldLoadEvent(WorldEvent.Load event) {
         if (!event.getWorld().isClientSide()) {
             FrequencyManager.load();
+            QIOGlobalItemLookup.INSTANCE.createOrLoad();
             RadiationManager.INSTANCE.createOrLoad();
         }
     }

@@ -186,6 +186,18 @@ public final class ItemDataUtils {
         }
     }
 
+    public static long[] getLongArray(ItemStack stack, String key) {
+        return getDataValue(stack, dataMap -> dataMap.getLongArray(key), new long[0]);
+    }
+
+    public static void setLongArrayOrRemove(ItemStack stack, String key, long[] array) {
+        if (array.length == 0) {
+            removeData(stack, key);
+        } else {
+            getDataMap(stack).putLongArray(key, array);
+        }
+    }
+
     public static void readContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
         if (!stack.isEmpty()) {
             DataHandlerUtils.readContainers(containers, getList(stack, containerKey));

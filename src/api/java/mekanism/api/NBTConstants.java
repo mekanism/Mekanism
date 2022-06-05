@@ -11,6 +11,7 @@ public final class NBTConstants {
     //Ones that also are used for interacting with forge/vanilla
     public static final String BASE = "Base";
     public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
+    public static final String COUNT = "Count";
     public static final String CUSTOM_NAME = "CustomName";
     public static final String ID = "id";
     public static final String X = "x";

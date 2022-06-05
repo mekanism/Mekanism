@@ -3,6 +3,7 @@ package mekanism.common.recipe.upgrade;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
@@ -11,10 +12,7 @@ import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -25,21 +23,19 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNonnullByDefault
 public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
 
-    private final Object2LongMap<HashedItem> itemMap;
+    //Note: We just keep track of the UUID as we know it is unique by type so there is no reason to look up the stacks for merging purposes
+    private final Object2LongMap<UUID> itemMap;
     private final long itemCount;
 
-    QIORecipeData(DriveMetadata data, ListTag nbtItemMap) {
+    QIORecipeData(DriveMetadata data, long[] serializedMap) {
         itemCount = data.count();
         itemMap = new Object2LongOpenHashMap<>(data.types());
-        for (int i = 0; i < nbtItemMap.size(); i++) {
-            CompoundTag tag = nbtItemMap.getCompound(i);
-            ItemStack itemType = ItemStack.of(tag.getCompound(NBTConstants.ITEM));
-            //Note: We can use raw as we just created the stack, so we know it isn't referenced anywhere else
-            itemMap.put(HashedItem.raw(itemType), tag.getLong(NBTConstants.AMOUNT));
+        for (int i = 0; i < serializedMap.length; i++) {
+            itemMap.put(new UUID(serializedMap[i++], serializedMap[i++]), serializedMap[i]);
         }
     }
 
-    private QIORecipeData(Object2LongMap<HashedItem> itemMap, long itemCount) {
+    private QIORecipeData(Object2LongMap<UUID> itemMap, long itemCount) {
         this.itemMap = itemMap;
         this.itemCount = itemCount;
     }
@@ -49,15 +45,15 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     public QIORecipeData merge(QIORecipeData other) {
         if (itemCount <= Long.MAX_VALUE - other.itemCount) {
             //Protect against overflow
-            Object2LongMap<HashedItem> smallerMap = other.itemMap;
-            Object2LongMap<HashedItem> largerMap = itemMap;
+            Object2LongMap<UUID> smallerMap = other.itemMap;
+            Object2LongMap<UUID> largerMap = itemMap;
             if (largerMap.size() < smallerMap.size()) {
                 smallerMap = itemMap;
                 largerMap = other.itemMap;
             }
             //Add smaller to larger, so we have to iterate fewer elements
-            Object2LongMap<HashedItem> fullItemMap = new Object2LongOpenHashMap<>(largerMap);
-            for (Entry<HashedItem> entry : smallerMap.object2LongEntrySet()) {
+            Object2LongMap<UUID> fullItemMap = new Object2LongOpenHashMap<>(largerMap);
+            for (Entry<UUID> entry : smallerMap.object2LongEntrySet()) {
                 fullItemMap.mergeLong(entry.getKey(), entry.getLongValue(), Long::sum);
             }
             return new QIORecipeData(fullItemMap, itemCount + other.itemCount);
@@ -78,14 +74,15 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             // then return that we are not able to actually apply them to the stack
             return false;
         }
-        ListTag list = new ListTag();
-        for (Entry<HashedItem> entry : itemMap.object2LongEntrySet()) {
-            CompoundTag tag = new CompoundTag();
-            tag.put(NBTConstants.ITEM, entry.getKey().getStack().save(new CompoundTag()));
-            tag.putLong(NBTConstants.AMOUNT, entry.getLongValue());
-            list.add(tag);
+        int i = 0;
+        long[] serializedMap = new long[3 * itemMap.size()];
+        for (Entry<UUID> entry : itemMap.object2LongEntrySet()) {
+            UUID uuid = entry.getKey();
+            serializedMap[i++] = uuid.getMostSignificantBits();
+            serializedMap[i++] = uuid.getLeastSignificantBits();
+            serializedMap[i++] = entry.getLongValue();
         }
-        ItemDataUtils.setListOrRemove(stack, NBTConstants.QIO_ITEM_MAP, list);
+        ItemDataUtils.setLongArrayOrRemove(stack, NBTConstants.QIO_ITEM_MAP, serializedMap);
         DriveMetadata meta = new DriveMetadata(itemCount, itemMap.size());
         meta.write(stack);
         return true;

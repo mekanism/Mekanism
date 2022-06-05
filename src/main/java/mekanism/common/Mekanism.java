@@ -60,6 +60,7 @@ import mekanism.common.content.matrix.MatrixValidator;
 import mekanism.common.content.network.BoxedChemicalNetwork.ChemicalTransferEvent;
 import mekanism.common.content.network.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.content.network.FluidNetwork.FluidTransferEvent;
+import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.content.sps.SPSCache;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.content.sps.SPSValidator;
@@ -350,6 +351,7 @@ public class Mekanism {
         BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers
+        QIOGlobalItemLookup.INSTANCE.reset();
         RadiationManager.INSTANCE.reset();
         MultiblockManager.reset();
         FrequencyManager.reset();

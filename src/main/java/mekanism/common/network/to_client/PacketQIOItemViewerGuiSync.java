@@ -11,6 +11,9 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
+//TODO - 1.19: Split this packet as it is possible for it to technically become too large and cause a crash
+// Also ideally we only would sync the hashed item for types we haven't sent a given client yet so that then
+// we can also send a smaller packet to each client until they disconnect and then we clear what packets they know
 public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
 
     private final Type type;

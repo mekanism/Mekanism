@@ -151,7 +151,11 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 DriveMetadata data = DriveMetadata.load(stack);
                 if (data.count() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
                     //If we don't have any stored items don't actually grab any recipe data
-                    return new QIORecipeData(data, ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP));
+                    long[] storedItems = ItemDataUtils.getLongArray(stack, NBTConstants.QIO_ITEM_MAP);
+                    if (storedItems.length % 3 == 0) {
+                        //Ensure we have valid data and not some unknown thing
+                        return new QIORecipeData(data, storedItems);
+                    }
                 }
             }
         }
