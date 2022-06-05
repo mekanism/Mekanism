@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mekanism:block/dimensional_stabilizer"
+    },
+    "active=true": {
+      "model": "mekanism:block/dimensional_stabilizer_active"
+    }
+  }
+}

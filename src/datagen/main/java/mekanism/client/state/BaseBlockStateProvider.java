@@ -71,4 +71,8 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
                   .build();
         }, toSkip);
     }
+
+    protected void simpleBlockItem(IBlockProvider block, ModelFile model) {
+        super.simpleBlockItem(block.getBlock(), model);
+    }
 }
