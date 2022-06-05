@@ -499,6 +499,7 @@
   "description.mekanism.gravitational_modulating_unit": "L’utilisation de technologies expérimentales et de l'énergie formidable de l’antimatière, permet à l’utilisateur de défier la gravité.",
   "description.mekanism.gyroscopic_stabilization_unit": "Permet à l'utilisateur d'agir comme s'il était sur le sol.",
   "description.mekanism.hydraulic_propulsion_unit": "Permet à l'utilisateur de monter et de sauter plus haut.",
+  "description.mekanism.hydrostatic_repulsor_unit": "Utilise une technologie avancée pour repousser l'eau, réduisant la résistance ressentie lors de son déplacement.",
   "description.mekanism.induction_casing": "Un type de boîtier résistant à l'énergie utilisé dans la création d'une matrice à d'induction.",
   "description.mekanism.induction_cell": "Un condensateur d'énergie hautement conducteur capable de stocker des quantités massives d'énergie dans un seul bloc. Logé dans une matrice à induction pour augmenter le stockage d'énergie du multibloc.",
   "description.mekanism.induction_port": "Un port qui peut être placé sur une matrice à induction, permettant l'insertion et la sortie de l'énergie via le câblage externe.",
