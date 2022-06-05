@@ -499,6 +499,7 @@
   "description.mekanism.gravitational_modulating_unit": "El uso de tecnologías experimentales y la tremenda energía del antimateria, permite al usuario desafiar la gravedad.",
   "description.mekanism.gyroscopic_stabilization_unit": "Permite al usuario actuar como si estuviera en tierra firme.",
   "description.mekanism.hydraulic_propulsion_unit": "Permite al usuario dar un paso más alto y saltar más alto.",
+  "description.mekanism.hydrostatic_repulsor_unit": "Utiliza tecnología avanzada para repeler el agua, reduciendo la resistencia que siente mientras se mueve a través de ella.",
   "description.mekanism.induction_casing": "Carcasa resistente a la energía utilizada en la creación de una Matriz de Inducción Energizada.",
   "description.mekanism.induction_cell": "Un condensador de energía altamente conductivo capaz de almacenar cantidades masivas de energía en un solo bloque. Alojado en una Matriz de Inducción Energizada para ampliar su almacenamiento energético.",
   "description.mekanism.induction_port": "Un puerto que puede ser colocado en una Matriz de Inducción Energizada, permitiendo que la energía pueda entrar y salir de un cable externo.",
