@@ -19,6 +19,32 @@ public interface ChemicalAttributeValidator {
     boolean validate(ChemicalAttribute attribute);
 
     /**
+     * Determines if a Chemical is considered valid for this validator.
+     *
+     * @param chemical chemical to test
+     *
+     * @return if the chemical is valid
+     *
+     * @since 10.2.3
+     */
+    default boolean process(Chemical<?> chemical) {
+        return chemical.getAttributes().stream().allMatch(this::validate);
+    }
+
+    /**
+     * Determines if a ChemicalStack is considered valid for this validator.
+     *
+     * @param stack stack to test
+     *
+     * @return if the stack is valid
+     *
+     * @since 10.2.3
+     */
+    default boolean process(ChemicalStack<?> stack) {
+        return process(stack.getType());
+    }
+
+    /**
      * Determines if a Chemical is considered valid from a provided attribute validator.
      *
      * @param chemical  chemical to test
@@ -26,8 +52,9 @@ public interface ChemicalAttributeValidator {
      *
      * @return if the chemical is valid
      */
+    @Deprecated(forRemoval = true, since = "10.2.3")
     static boolean process(Chemical<?> chemical, ChemicalAttributeValidator validator) {
-        return chemical.getAttributes().stream().allMatch(validator::validate);
+        return validator.process(chemical);
     }
 
     /**
@@ -38,8 +65,9 @@ public interface ChemicalAttributeValidator {
      *
      * @return if the stack is valid
      */
+    @Deprecated(forRemoval = true, since = "10.2.3")
     static boolean process(ChemicalStack<?> stack, ChemicalAttributeValidator validator) {
-        return process(stack.getType(), validator);
+        return validator.process(stack);
     }
 
     /**

@@ -149,7 +149,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public boolean isValid(STACK stack) {
-        return ChemicalAttributeValidator.process(stack, getAttributeValidator()) && validator.test(stack.getType());
+        return getAttributeValidator().process(stack) && validator.test(stack.getType());
     }
 
     /**
