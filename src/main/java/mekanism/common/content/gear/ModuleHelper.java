@@ -52,6 +52,7 @@ public class ModuleHelper implements IModuleHelper {
 
     private final Map<Item, Set<ModuleData<?>>> supportedModules = new Object2ObjectOpenHashMap<>(5);
     private final Map<ModuleData<?>, Set<Item>> supportedContainers = new Object2ObjectOpenHashMap<>();
+    private final Map<ModuleData<?>, Set<ModuleData<?>>> conflictingModules = new Object2ObjectOpenHashMap<>();
 
     public void processIMC() {
         Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap = new Object2ObjectOpenHashMap<>();
@@ -116,9 +117,8 @@ public class ModuleHelper implements IModuleHelper {
 
     @Override
     public Set<ModuleData<?>> getConflicting(IModuleDataProvider<?> typeProvider) {
-        return getSupported(typeProvider).stream().flatMap(item -> getSupported(item).stream())
-              .filter(other -> typeProvider.getModuleData() != other && typeProvider.getModuleData().isExclusive(other.getExclusiveFlags()))
-              .collect(Collectors.toSet());
+        return conflictingModules.computeIfAbsent(typeProvider.getModuleData(), moduleType -> getSupported(typeProvider).stream().flatMap(item -> getSupported(item).stream())
+              .filter(other -> moduleType != other && moduleType.isExclusive(other.getExclusiveFlags())).collect(Collectors.toSet()));
     }
 
     @Override
