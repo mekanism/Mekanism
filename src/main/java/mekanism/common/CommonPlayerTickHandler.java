@@ -127,11 +127,9 @@ public class CommonPlayerTickHandler {
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND));
                 if (mode != JetpackMode.DISABLED) {
                     // Client handles motion and sets fallDistance in ClientTickHandler at the tick start
-                    if (mode == JetpackMode.HOVER || !player.isFallFlying()) {
-                        if (player instanceof ServerPlayer serverPlayer) {
-                            player.fallDistance = 0.0F;
-                            serverPlayer.connection.aboveGroundTickCount = 0;
-                        }
+                    if (player instanceof ServerPlayer serverPlayer && IJetpackItem.handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
+                        player.fallDistance = 0.0F;
+                        serverPlayer.connection.aboveGroundTickCount = 0;
                     }
                     ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
                 }

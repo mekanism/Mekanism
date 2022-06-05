@@ -99,7 +99,7 @@ public interface IJetpackItem {
         if (matcher.test(chest)) {
             return chest;
         } else if (Mekanism.hooks.CuriosLoaded) {
-            return CuriosIntegration.findFirstCurio(entity, s -> matcher.test(s));
+            return CuriosIntegration.findFirstCurio(entity, matcher);
         }
         return ItemStack.EMPTY;
     }
