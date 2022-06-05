@@ -8,23 +8,23 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.network.chat.Component;
 
-public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
+public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
 
-    public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "visuals.png"), gui, tile, -26, 6, 26, 18, true);
+    public GuiVisualsTab(IGuiWrapper gui, IHasVisualization hasVisualization) {
+        super(MekanismUtils.getResource(ResourceType.GUI, "visuals.png"), gui, hasVisualization, -26, 6, 26, 18, true);
     }
 
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        Component visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(dataSource.clientRendering));
-        if (dataSource.getRadius() <= 64) {
+        Component visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(dataSource.isClientRendering()));
+        if (dataSource.canDisplayVisuals()) {
             displayTooltips(matrix, mouseX, mouseY, visualsComponent);
         } else {
             displayTooltips(matrix, mouseX, mouseY, visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED));
@@ -33,11 +33,11 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_DIGITAL_MINER_VISUAL);
+        MekanismRenderer.color(SpecialColors.TAB_VISUALS);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        dataSource.clientRendering = !dataSource.clientRendering;
+        dataSource.toggleClientRendering();
     }
 }

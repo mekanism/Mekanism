@@ -14,6 +14,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
+import mekanism.client.gui.GuiDimensionalStabilizer;
 import mekanism.client.gui.GuiDynamicTank;
 import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiFluidTank;
@@ -135,6 +136,7 @@ import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
+import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
@@ -336,6 +338,7 @@ public class ClientRegistration {
         event.registerBlockEntityRenderer(MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER.get(), RenderChemicalDissolutionChamber::new);
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderDynamicTank::new, MekanismTileEntityTypes.DYNAMIC_TANK, MekanismTileEntityTypes.DYNAMIC_VALVE);
         event.registerBlockEntityRenderer(MekanismTileEntityTypes.DIGITAL_MINER.get(), RenderDigitalMiner::new);
+        event.registerBlockEntityRenderer(MekanismTileEntityTypes.DIMENSIONAL_STABILIZER.get(), RenderDimensionalStabilizer::new);
         event.registerBlockEntityRenderer(MekanismTileEntityTypes.PERSONAL_CHEST.get(), RenderPersonalChest::new);
         event.registerBlockEntityRenderer(MekanismTileEntityTypes.NUTRITIONAL_LIQUIFIER.get(), RenderNutritionalLiquifier::new);
         event.registerBlockEntityRenderer(MekanismTileEntityTypes.PIGMENT_MIXER.get(), RenderPigmentMixer::new);
@@ -463,6 +466,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_EXPORTER, GuiQIOExporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_REDSTONE_ADAPTER, GuiQIORedstoneAdapter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SPS, GuiSPS::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DIMENSIONAL_STABILIZER, GuiDimensionalStabilizer::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_TANK, GuiChemicalTank::new);

@@ -30,6 +30,7 @@ import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.TileEntityChemicalTank;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -156,6 +157,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOExporter>> QIO_EXPORTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter.class).offset(0, 74).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIORedstoneAdapter>> QIO_REDSTONE_ADAPTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_REDSTONE_ADAPTER, TileEntityQIORedstoneAdapter.class).offset(0, 16).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySPSCasing>> SPS = CONTAINER_TYPES.custom(MekanismBlocks.SPS_CASING, TileEntitySPSCasing.class).offset(0, 16).build();
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDimensionalStabilizer>> DIMENSIONAL_STABILIZER = CONTAINER_TYPES.register(MekanismBlocks.DIMENSIONAL_STABILIZER, TileEntityDimensionalStabilizer.class);
 
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", factoryClass(), FactoryContainer::new);

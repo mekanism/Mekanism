@@ -71,6 +71,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
+import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
@@ -114,7 +115,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
-      IHasSortableFilters {
+      IHasSortableFilters, IHasVisualization {
 
     public static final int DEFAULT_HEIGHT_RANGE = 60;
     public static final int DEFAULT_RADIUS = 10;
@@ -140,7 +141,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private int delayTicks;
     private boolean initCalc = false;
     private int numPowering;
-    public boolean clientRendering = false;
+    private boolean clientRendering;
 
     private final TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     @Nullable
@@ -790,11 +791,32 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Nonnull
     @Override
     public AABB getRenderBoundingBox() {
-        if (clientRendering) {
-            //TODO: Improve on this to use the max that we actually need to do the rendering
-            return INFINITE_EXTENT_AABB;
+        if (isClientRendering() && canDisplayVisuals()) {
+            return new AABB(
+                  worldPosition.getX() - radius,
+                  minY,
+                  worldPosition.getZ() - radius,
+                  worldPosition.getX() + radius + 1,
+                  maxY + 1,
+                  worldPosition.getZ() + radius + 1
+            );
         }
         return super.getRenderBoundingBox();
+    }
+
+    @Override
+    public boolean isClientRendering() {
+        return clientRendering;
+    }
+
+    @Override
+    public void toggleClientRendering() {
+        this.clientRendering = !clientRendering;
+    }
+
+    @Override
+    public boolean canDisplayVisuals() {
+        return getRadius() <= 64;
     }
 
     @Override

@@ -81,11 +81,6 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     }
 
     @Override
-    public boolean persistInventory() {
-        return false;
-    }
-
-    @Override
     protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {

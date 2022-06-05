@@ -33,6 +33,7 @@ import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
+import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
@@ -401,6 +402,7 @@ public class MekanismRenderer {
 
         ModelRenderer.resetCachedModels();
         RenderDigitalMiner.resetCachedVisuals();
+        RenderDimensionalStabilizer.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
         RenderNutritionalLiquifier.resetCachedModels();

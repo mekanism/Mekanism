@@ -507,6 +507,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
+    public void trackArray(boolean[][] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            for (int j = 0; j < arrayIn[i].length; j++) {
+                track(SyncableBoolean.create(arrayIn, i, j));
+            }
+        }
+    }
+
     public void handleWindowProperty(short property, boolean value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableBoolean syncable) {

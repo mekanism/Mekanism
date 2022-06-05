@@ -270,6 +270,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.SPS_CASING, "SPS Casing");
         add(MekanismBlocks.SPS_PORT, "SPS Port");
         add(MekanismBlocks.SUPERCHARGED_COIL, "Supercharged Coil");
+        add(MekanismBlocks.DIMENSIONAL_STABILIZER, "Dimensional Stabilizer");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         //Ores
@@ -804,6 +805,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Oredictionificator
         add(MekanismLang.LAST_ITEM, "Last Item");
         add(MekanismLang.NEXT_ITEM, "Next Item");
+        //Stabilizer
+        add(MekanismLang.STABILIZER_CENTER, "Chunk at (%1$s, %2$s) is always loaded.");
+        add(MekanismLang.STABILIZER_TOGGLE_LOADING, "Toggle chunk loading %1$s at (%2$s, %3$s)");
         //Status
         add(MekanismLang.STATUS, "Status: %1$s");
         add(MekanismLang.STATUS_OK, "All OK");
@@ -1241,6 +1245,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_SPS_CASING, "Reinforced casing capable of resisting intense chemical and thermal effects from phase-shifting reactions.");
         add(MekanismLang.DESCRIPTION_SPS_PORT, "A port used for the transfer of energy and substances in the Supercritical Phase Shifter.");
         add(MekanismLang.DESCRIPTION_SUPERCHARGED_COIL, "Used in Supercritical Phase Shifter multiblock to supply large quantities of energy. Must be attached to a SPS Port.");
+        add(MekanismLang.DESCRIPTION_DIMENSIONAL_STABILIZER, "A machine that prevents areas of the world from disappearing when not observed.");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");

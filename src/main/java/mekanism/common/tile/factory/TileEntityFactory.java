@@ -760,13 +760,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
 
         private void track(MekanismContainer container) {
-            for (boolean[] processTrackedErrors : trackedErrors) {
-                //Note: We don't need a special syncable boolean for two depth arrays
-                // as long as our arrays are in the same order on client and server
-                for (int j = 0; j < processTrackedErrors.length; j++) {
-                    container.track(SyncableBoolean.create(processTrackedErrors, j));
-                }
-            }
+            container.trackArray(trackedErrors);
         }
 
         public void onErrorsChanged(Set<RecipeError> errors, int processIndex) {

@@ -77,6 +77,7 @@ import mekanism.common.tile.machine.TileEntityChemicalWasher;
 import mekanism.common.tile.machine.TileEntityCombiner;
 import mekanism.common.tile.machine.TileEntityCrusher;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityElectricPump;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.machine.TileEntityEnergizedSmelter;
@@ -442,12 +443,11 @@ public class MekanismBlockTypes {
           .withComputerSupport("oredictionificator")
           .build();
     // Quantum Entangloporter
-    public static final Machine<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = MachineBuilder
-          .createMachine(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
+    public static final BlockTypeTile<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
           .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
-          .with(new AttributeStateFacing(BlockStateProperties.FACING))
-          .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING), Attributes.INVENTORY, Attributes.SECURITY)
           .withCustomShape(BlockShapes.QUANTUM_ENTANGLOPORTER)
           .withComputerSupport("quantumEntangloporter")
           .build();
@@ -544,6 +544,15 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.paintingMachine, MekanismConfig.storage.paintingMachine)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
           .withComputerSupport("paintingMachine")
+          .build();
+    // Dimensional Stabilizer
+    public static final Machine<TileEntityDimensionalStabilizer> DIMENSIONAL_STABILIZER = MachineBuilder
+          .createMachine(() -> MekanismTileEntityTypes.DIMENSIONAL_STABILIZER, MekanismLang.DESCRIPTION_DIMENSIONAL_STABILIZER)
+          .withGui(() -> MekanismContainerTypes.DIMENSIONAL_STABILIZER)
+          .without(AttributeStateFacing.class, AttributeParticleFX.class)
+          .withEnergyConfig(MekanismConfig.usage.dimensionalStabilizer, MekanismConfig.storage.dimensionalStabilizer)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.ENERGY))
+          .withComputerSupport("dimensionalStabilizer")
           .build();
 
     // QIO Drive Array

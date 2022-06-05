@@ -44,6 +44,7 @@ public class StorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue pigmentMixer;
     public final CachedFloatingLongValue paintingMachine;
     public final CachedFloatingLongValue spsPort;
+    public final CachedFloatingLongValue dimensionalStabilizer;
 
     StorageConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -118,6 +119,8 @@ public class StorageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(40_000));
         spsPort = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules). Also defines max output rate.", "spsPort",
               FloatingLong.createConst(1_000_000_000));
+        dimensionalStabilizer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "dimensionalStabilizer",
+              FloatingLong.createConst(40_000));
 
         builder.pop();
         configSpec = builder.build();

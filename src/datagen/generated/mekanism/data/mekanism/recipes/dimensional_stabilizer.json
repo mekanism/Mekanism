@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:dimensional_stabilizer"
+  },
+  "pattern": [
+    "ICI",
+    "ADA",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "D": {
+      "tag": "forge:storage_blocks/diamond"
+    }
+  }
+}

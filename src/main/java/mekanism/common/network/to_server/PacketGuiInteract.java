@@ -6,6 +6,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -374,6 +375,12 @@ public class PacketGuiInteract implements IMekanismPacket {
                 amplifier.setDelay(extra);
             }
         }),
+
+        TOGGLE_CHUNKLOAD((tile, player, extra) -> {
+            if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
+                stabilizer.toggleChunkLoadingAt(extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
+            }
+        })
 
         ;
 
