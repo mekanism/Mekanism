@@ -56,7 +56,6 @@ public class MekanismModules {
                 .rendersHUD());
     public static final ModuleRegistryObject<ModuleFarmingUnit> FARMING_UNIT = MODULES.register("farming_unit", ModuleFarmingUnit::new,
           () -> MekanismItems.MODULE_FARMING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_BLOCK));
-    // While you can shear blocks, in general they don't overlap with anything that supports the farming unit right click.
     public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.register("shearing_unit", ModuleShearingUnit::new,
           () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_ENTITY, ExclusiveFlag.INTERACT_BLOCK));
     public static final ModuleRegistryObject<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = MODULES.register("silk_touch_unit", ModuleSilkTouchUnit::new,

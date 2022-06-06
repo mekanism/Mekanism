@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
@@ -49,15 +50,16 @@ public class ItemModule extends Item implements IModuleItem {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            tooltip.add(new TextComponent("Supported by:"));
-            for (Item item : MekanismAPI.getModuleHelper().getSupported(getModuleData())) {
-                tooltip.add(item.getName(new ItemStack(item)));
+            tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
+            IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
+            for (Item item : moduleHelper.getSupported(getModuleData())) {
+                tooltip.add(MekanismLang.GENERIC_LIST.translate(item.getName(new ItemStack(item))));
             }
-            Set<ModuleData<?>> conflicting = MekanismAPI.getModuleHelper().getConflicting(getModuleData());
-            if(!conflicting.isEmpty()){
-                tooltip.add(new TextComponent("Conflicting:"));
+            Set<ModuleData<?>> conflicting = moduleHelper.getConflicting(getModuleData());
+            if (!conflicting.isEmpty()) {
+                tooltip.add(MekanismLang.MODULE_CONFLICTING.translateColored(EnumColor.RED));
                 for (ModuleData<?> module : conflicting) {
-                    tooltip.add(module.getTextComponent());
+                    tooltip.add(MekanismLang.GENERIC_LIST.translate(module.getTextComponent()));
                 }
             }
         } else {

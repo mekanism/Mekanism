@@ -120,6 +120,7 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_PRE_STORED("generic", "pre_pre_colon"),
     GENERIC_BLOCK_POS("generic", "block_pos"),
     GENERIC_HEX("generic", "hex"),
+    GENERIC_LIST("generic", "list"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
@@ -379,7 +380,6 @@ public enum MekanismLang implements ILangEntry {
     CONDENSENTRATING("condensentrator", "condensentrating"),
     DECONDENSENTRATING("condensentrator", "decondensentrating"),
     //Upgrades
-    UPGRADE_DISPLAY("upgrade", "display"),
     UPGRADE_DISPLAY_LEVEL("upgrade", "display.level"),
     UPGRADES_EFFECT("gui", "upgrades.effect"),
     UPGRADES("gui", "upgrades"),
@@ -766,6 +766,8 @@ public enum MekanismLang implements ILangEntry {
     MODULE_DAMAGE("module", "damage"),
     MODULE_TWEAKER("module", "module_tweaker"),
     MODULE_INSTALLED("module", "installed"),
+    MODULE_SUPPORTED("module", "supported"),
+    MODULE_CONFLICTING("module", "conflicting"),
     MODULE_STACKABLE("module", "stackable"),
     MODULE_EXCLUSIVE("module", "exclusive"),
     MODULE_HANDLE_MODE_CHANGE("module", "handle_mode_change"),
