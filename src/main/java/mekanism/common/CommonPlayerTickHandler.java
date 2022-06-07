@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import java.util.Map;
-import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -15,23 +14,20 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
-import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
-import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
-import mekanism.common.item.gear.ItemJetpack;
-import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.item.interfaces.IJetpackItem;
+import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
@@ -46,7 +42,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -124,23 +119,25 @@ public class CommonPlayerTickHandler {
             }
         }
 
-        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        ItemStack jetpackStack = ItemJetpack.getJetpack(player, chest);
-        JetpackMode mode = getJetpackModeIfOn(player, jetpackStack);
-        if (mode != JetpackMode.DISABLED) {
-            if (handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
-                player.fallDistance = 0.0F;
-                if (player instanceof ServerPlayer serverPlayer) {
-                    serverPlayer.connection.aboveGroundTickCount = 0;
+        ItemStack jetpack = IJetpackItem.getActiveJetpack(player);
+        if (!jetpack.isEmpty()) {
+            ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(player);
+            if (!primaryJetpack.isEmpty()) {
+                JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
+                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND));
+                if (mode != JetpackMode.DISABLED) {
+                    if (IJetpackItem.handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
+                        player.fallDistance = 0.0F;
+                        if (player instanceof ServerPlayer serverPlayer) {
+                            serverPlayer.connection.aboveGroundTickCount = 0;
+                        }
+                    }
+                    ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
                 }
-            }
-            if (jetpackStack.getItem() instanceof ItemJetpack jetpack) {
-                jetpack.useGas(jetpackStack, 1);
-            } else {
-                ((ItemMekaSuitArmor) jetpackStack.getItem()).useGas(jetpackStack, MekanismGases.HYDROGEN.get(), 1);
             }
         }
 
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         if (isScubaMaskOn(player, chest)) {
             ItemScubaTank tank = (ItemScubaTank) chest.getItem();
             final int max = player.getMaxAirSupply();
@@ -161,62 +158,6 @@ public class CommonPlayerTickHandler {
         Mekanism.playerState.updateFlightInfo(player);
     }
 
-    /**
-     * @return If fall distance should get reset or not
-     */
-    public static boolean handleJetpackMotion(Player player, JetpackMode mode, BooleanSupplier ascendingSupplier) {
-        Vec3 motion = player.getDeltaMovement();
-        if (mode == JetpackMode.NORMAL) {
-            if (player.isFallFlying()) {
-                Vec3 lookAngle = player.getLookAngle();
-                Vec3 normalizedLook = lookAngle.normalize();
-                double d1x = normalizedLook.x * 0.15;
-                double d1y = normalizedLook.y * 0.15;
-                double d1z = normalizedLook.z * 0.15;
-                player.setDeltaMovement(motion.add(lookAngle.x * d1x + (lookAngle.x * 1.5 - motion.x) * 0.5,
-                      lookAngle.y * d1y + (lookAngle.y * 1.5 - motion.y) * 0.5,
-                      lookAngle.z * d1z + (lookAngle.z * 1.5 - motion.z) * 0.5));
-                return false;
-            } else {
-                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.5D), motion.z());
-            }
-        } else if (mode == JetpackMode.HOVER) {
-            boolean ascending = ascendingSupplier.getAsBoolean();
-            boolean descending = player.isDescending();
-            if ((!ascending && !descending) || (ascending && descending)) {
-                if (motion.y() > 0) {
-                    player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, 0), motion.z());
-                } else if (motion.y() < 0) {
-                    if (!isOnGroundOrSleeping(player)) {
-                        player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0), motion.z());
-                    }
-                }
-            } else if (ascending) {
-                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.2D), motion.z());
-            } else if (!isOnGroundOrSleeping(player)) {
-                player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, -0.2D), motion.z());
-            }
-        }
-        return true;
-    }
-
-    private static JetpackMode getJetpackModeIfOn(Player player, ItemStack chest) {
-        if (!chest.isEmpty() && !player.isSpectator()) {
-            JetpackMode mode = getJetpackMode(chest);
-            if (mode != JetpackMode.DISABLED) {
-                boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
-                if (mode == JetpackMode.HOVER) {
-                    if (ascending && !player.isDescending() || !isOnGroundOrSleeping(player)) {
-                        return mode;
-                    }
-                } else if (mode == JetpackMode.NORMAL && ascending) {
-                    return mode;
-                }
-            }
-        }
-        return JetpackMode.DISABLED;
-    }
-
     public static boolean isGravitationalModulationReady(Player player) {
         IModule<ModuleGravitationalModulatingUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
@@ -225,18 +166,6 @@ public class CommonPlayerTickHandler {
 
     public static boolean isGravitationalModulationOn(Player player) {
         return isGravitationalModulationReady(player) && player.getAbilities().flying;
-    }
-
-    public static JetpackMode getJetpackMode(ItemStack stack) {
-        if (stack.getItem() instanceof ItemJetpack jetpack && ChemicalUtil.hasGas(stack)) {
-            return jetpack.getMode(stack);
-        } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
-            IModule<ModuleJetpackUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.JETPACK_UNIT);
-            if (module != null && module.isEnabled()) {
-                return module.getCustomInstance().getMode();
-            }
-        }
-        return JetpackMode.DISABLED;
     }
 
     @SubscribeEvent
@@ -422,7 +351,7 @@ public class CommonPlayerTickHandler {
                 speed *= (targetHardness / maxHardness);
             }
         }
-        
+
         //Gyroscopic stabilization check
         ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
         if (!legs.isEmpty() && MekanismAPI.getModuleHelper().isEnabled(legs, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {

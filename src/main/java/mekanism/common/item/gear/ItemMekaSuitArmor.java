@@ -23,6 +23,7 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
@@ -47,13 +48,14 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
-import mekanism.common.item.gear.ItemJetpack.JetpackMode;
+import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -79,7 +81,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem, IAttributeRefresher {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem, IJetpackItem, IAttributeRefresher {
 
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new LinkedHashSet<>(List.of(
           DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRY_OUT,
@@ -232,7 +234,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         capabilities.add(RadiationShieldingHandler.create(item -> isModuleEnabled(item, MekanismModules.RADIATION_SHIELDING_UNIT) ?
                                                                   ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         capabilities.add(LaserDissipationHandler.create(item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserDissipation : 0,
-                    item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
+              item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
         if (!gasTankSpecs.isEmpty()) {
             capabilities.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
         }
@@ -327,6 +329,26 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean canUseJetpack(ItemStack stack) {
+        return slot == EquipmentSlot.CHEST && (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT) ? ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get()) :
+                                               getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask())));
+    }
+
+    @Override
+    public JetpackMode getJetpackMode(ItemStack stack) {
+        IModule<ModuleJetpackUnit> module = getModule(stack, MekanismModules.JETPACK_UNIT);
+        if (module != null && module.isEnabled()) {
+            return module.getCustomInstance().getMode();
+        }
+        return JetpackMode.DISABLED;
+    }
+
+    @Override
+    public void useJetpackFuel(ItemStack stack) {
+        useGas(stack, MekanismGases.HYDROGEN.get(), 1);
     }
 
     private FloatingLong getMaxEnergy(ItemStack stack) {
