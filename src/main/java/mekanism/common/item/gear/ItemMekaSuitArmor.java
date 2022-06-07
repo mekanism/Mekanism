@@ -23,6 +23,7 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
@@ -233,7 +234,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         capabilities.add(RadiationShieldingHandler.create(item -> isModuleEnabled(item, MekanismModules.RADIATION_SHIELDING_UNIT) ?
                                                                   ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         capabilities.add(LaserDissipationHandler.create(item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserDissipation : 0,
-                    item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
+              item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
         if (!gasTankSpecs.isEmpty()) {
             capabilities.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
         }
@@ -332,8 +333,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        return slot == EquipmentSlot.CHEST && (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT) && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get()) || isModuleEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT));
-//                                               || getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP)));
+        return slot == EquipmentSlot.CHEST && (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT) && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())
+                                               || getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask())));
     }
 
     @Override
