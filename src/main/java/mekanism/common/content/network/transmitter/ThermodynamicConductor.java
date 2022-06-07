@@ -74,7 +74,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @Override
     public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        return getAcceptorCache().isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
+        return getAcceptorCache().isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER);
     }
 
     @Nullable

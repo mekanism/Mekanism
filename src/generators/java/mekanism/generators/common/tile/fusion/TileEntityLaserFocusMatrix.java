@@ -16,7 +16,7 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
 
     public TileEntityLaserFocusMatrix(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.LASER_FOCUS_MATRIX, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR, this));
     }
 
     @Override

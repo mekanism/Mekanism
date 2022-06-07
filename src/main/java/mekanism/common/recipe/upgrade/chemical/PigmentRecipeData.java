@@ -63,7 +63,7 @@ public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack,
 
     @Override
     protected Capability<IPigmentHandler> getCapability() {
-        return Capabilities.PIGMENT_HANDLER_CAPABILITY;
+        return Capabilities.PIGMENT_HANDLER;
     }
 
     @Override

@@ -36,7 +36,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public TileEntitySeismicVibrator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SEISMIC_VIBRATOR, pos, state);
         cacheCoord();
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull

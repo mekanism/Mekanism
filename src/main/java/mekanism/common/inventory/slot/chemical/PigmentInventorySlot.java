@@ -25,7 +25,7 @@ public class PigmentInventorySlot extends ChemicalInventorySlot<Pigment, Pigment
 
     @Nullable
     public static IPigmentHandler getCapability(ItemStack stack) {
-        return getCapability(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY);
+        return getCapability(stack, Capabilities.PIGMENT_HANDLER);
     }
 
     /**
@@ -34,7 +34,7 @@ public class PigmentInventorySlot extends ChemicalInventorySlot<Pigment, Pigment
     public static PigmentInventorySlot fill(IPigmentTank pigmentTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(pigmentTank, "Pigment tank cannot be null");
         return new PigmentInventorySlot(pigmentTank, getFillExtractPredicate(pigmentTank, PigmentInventorySlot::getCapability),
-              stack -> fillInsertCheck(pigmentTank, getCapability(stack)), stack -> stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent(),
+              stack -> fillInsertCheck(pigmentTank, getCapability(stack)), stack -> stack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent(),
               listener, x, y);
     }
 
@@ -47,7 +47,7 @@ public class PigmentInventorySlot extends ChemicalInventorySlot<Pigment, Pigment
         Objects.requireNonNull(pigmentTank, "Pigment tank cannot be null");
         Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(pigmentTank, PigmentInventorySlot::getCapability);
         return new PigmentInventorySlot(pigmentTank, insertPredicate.negate(), insertPredicate,
-              stack -> stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent(), listener, x, y);
+              stack -> stack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent(), listener, x, y);
     }
 
     private PigmentInventorySlot(IPigmentTank pigmentTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,

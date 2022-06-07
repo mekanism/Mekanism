@@ -27,8 +27,6 @@ public final class NBTConstants {
     public static final String CURRENT_CONNECTIONS = "connections";
     public static final String HAS_STRUCTURE = "hasStructure";
     public static final String HEIGHT = "height";
-    @Deprecated(forRemoval = true, since = "10.2.1")
-    public static final String HOT = "hot";
     public static final String INVENTORY_ID = "inventoryID";
     public static final String LOWER_VOLUME = "lowerVolume";
     public static final String MUFFLING_COUNT = "muffling";

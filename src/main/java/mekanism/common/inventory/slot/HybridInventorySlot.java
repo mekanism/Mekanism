@@ -25,9 +25,9 @@ import net.minecraftforge.fluids.FluidUtil;
 public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank> implements IFluidHandlerSlot {
 
     private static boolean hasCapability(@Nonnull ItemStack stack) {
-        return FluidUtil.getFluidHandler(stack).isPresent() || stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() ||
-               stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent() || stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent() ||
-               stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent();
+        return FluidUtil.getFluidHandler(stack).isPresent() || stack.getCapability(Capabilities.GAS_HANDLER).isPresent() ||
+               stack.getCapability(Capabilities.INFUSION_HANDLER).isPresent() || stack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent() ||
+               stack.getCapability(Capabilities.SLURRY_HANDLER).isPresent();
     }
 
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {

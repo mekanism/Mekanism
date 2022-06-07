@@ -87,12 +87,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
             case FLUID -> tile.invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
-            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, direction);
-            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, direction);
-            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, direction);
-            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, direction);
+            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER, direction);
+            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER, direction);
+            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER, direction);
+            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER, direction);
             case ITEM -> tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
-            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
+            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER, direction);
         }
         tile.markForSave();
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
@@ -121,15 +121,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         TransmissionType type = null;
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             type = TransmissionType.ITEM;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+        } else if (capability == Capabilities.GAS_HANDLER) {
             type = TransmissionType.GAS;
-        } else if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
+        } else if (capability == Capabilities.INFUSION_HANDLER) {
             type = TransmissionType.INFUSION;
-        } else if (capability == Capabilities.PIGMENT_HANDLER_CAPABILITY) {
+        } else if (capability == Capabilities.PIGMENT_HANDLER) {
             type = TransmissionType.PIGMENT;
-        } else if (capability == Capabilities.SLURRY_HANDLER_CAPABILITY) {
+        } else if (capability == Capabilities.SLURRY_HANDLER) {
             type = TransmissionType.SLURRY;
-        } else if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
+        } else if (capability == Capabilities.HEAT_HANDLER) {
             type = TransmissionType.HEAT;
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             type = TransmissionType.FLUID;

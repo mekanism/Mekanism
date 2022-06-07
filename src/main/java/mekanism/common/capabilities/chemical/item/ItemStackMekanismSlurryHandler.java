@@ -24,6 +24,6 @@ public abstract class ItemStackMekanismSlurryHandler extends ItemStackMekanismCh
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.SLURRY_HANDLER_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.SLURRY_HANDLER, this));
     }
 }

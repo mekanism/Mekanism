@@ -69,9 +69,9 @@ public abstract class MergedTankContentsHandler<MERGED extends MergedChemicalTan
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.GAS_HANDLER_CAPABILITY, gasHandler));
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.INFUSION_HANDLER_CAPABILITY, infusionHandler));
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.PIGMENT_HANDLER_CAPABILITY, pigmentHandler));
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.SLURRY_HANDLER_CAPABILITY, slurryHandler));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.GAS_HANDLER, gasHandler));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.INFUSION_HANDLER, infusionHandler));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.PIGMENT_HANDLER, pigmentHandler));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.SLURRY_HANDLER, slurryHandler));
     }
 }

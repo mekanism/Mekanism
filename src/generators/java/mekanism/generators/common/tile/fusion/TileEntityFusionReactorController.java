@@ -15,7 +15,7 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
     public TileEntityFusionReactorController(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, pos, state);
         //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
-        addDisabledCapabilities(Capabilities.GAS_HANDLER_CAPABILITY, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Capabilities.HEAT_HANDLER_CAPABILITY);
+        addDisabledCapabilities(Capabilities.GAS_HANDLER, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Capabilities.HEAT_HANDLER);
         addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
         addSemiDisabledCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, () -> !getMultiblock().isFormed());
         delaySupplier = () -> 0;

@@ -38,7 +38,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     public TileEntityStructuralMultiblock(IBlockProvider provider, BlockPos pos, BlockState state) {
         super(provider, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
     }
 
     @Override

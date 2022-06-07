@@ -24,6 +24,6 @@ public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemi
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.GAS_HANDLER_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.GAS_HANDLER, this));
     }
 }

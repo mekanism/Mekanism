@@ -24,6 +24,6 @@ public abstract class ItemStackMekanismPigmentHandler extends ItemStackMekanismC
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.PIGMENT_HANDLER_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.PIGMENT_HANDLER, this));
     }
 }

@@ -58,7 +58,7 @@ public class ItemConfigurationCard extends Item {
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).resolve();
+        Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD, side).resolve();
         if (configCardSupport.isPresent()) {
             if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                 return InteractionResult.FAIL;

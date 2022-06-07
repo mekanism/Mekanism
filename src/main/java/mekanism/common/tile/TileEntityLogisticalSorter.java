@@ -67,7 +67,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileEntityLogisticalSorter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.LOGISTICAL_SORTER, pos, state);
         delaySupplier = () -> 3;
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull

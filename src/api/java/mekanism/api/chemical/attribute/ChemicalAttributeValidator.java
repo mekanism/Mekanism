@@ -45,32 +45,6 @@ public interface ChemicalAttributeValidator {
     }
 
     /**
-     * Determines if a Chemical is considered valid from a provided attribute validator.
-     *
-     * @param chemical  chemical to test
-     * @param validator validator to use
-     *
-     * @return if the chemical is valid
-     */
-    @Deprecated(forRemoval = true, since = "10.2.3")
-    static boolean process(Chemical<?> chemical, ChemicalAttributeValidator validator) {
-        return validator.process(chemical);
-    }
-
-    /**
-     * Determines if a ChemicalStack is considered valid from a provided attribute validator.
-     *
-     * @param stack     stack to test
-     * @param validator validator to use
-     *
-     * @return if the stack is valid
-     */
-    @Deprecated(forRemoval = true, since = "10.2.3")
-    static boolean process(ChemicalStack<?> stack, ChemicalAttributeValidator validator) {
-        return validator.process(stack);
-    }
-
-    /**
      * Creates a simple attribute validator which accepts any attributes that don't require validation, and any attributes provided in the parameters.
      *
      * @param validAttributes attributes which can be accepted

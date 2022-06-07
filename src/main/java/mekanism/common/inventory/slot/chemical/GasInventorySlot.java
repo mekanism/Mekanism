@@ -29,7 +29,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
 
     @Nullable
     public static IGasHandler getCapability(ItemStack stack) {
-        return getCapability(stack, Capabilities.GAS_HANDLER_CAPABILITY);
+        return getCapability(stack, Capabilities.GAS_HANDLER);
     }
 
     /**
@@ -46,7 +46,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(gasTank, GasInventorySlot::getCapability).and(stack -> modeSupplier.getAsBoolean());
-        return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), listener, x, y);
+        return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER).isPresent(), listener, x, y);
     }
 
     /**
@@ -57,7 +57,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new GasInventorySlot(gasTank, getFillExtractPredicate(gasTank, GasInventorySlot::getCapability),
               stack -> !modeSupplier.getAsBoolean() && fillInsertCheck(gasTank, getCapability(stack)),
-              stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), listener, x, y);
+              stack -> stack.getCapability(Capabilities.GAS_HANDLER).isPresent(), listener, x, y);
     }
 
     /**
@@ -69,7 +69,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
         Function<ItemStack, GasStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
         return new GasInventorySlot(gasTank, worldSupplier, getFillOrConvertExtractPredicate(gasTank, GasInventorySlot::getCapability, potentialConversionSupplier),
               getFillOrConvertInsertPredicate(gasTank, GasInventorySlot::getCapability, potentialConversionSupplier), stack -> {
-            if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
+            if (stack.getCapability(Capabilities.GAS_HANDLER).isPresent()) {
                 //Note: we mark all gas items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
                 return true;
             }
@@ -85,7 +85,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     public static GasInventorySlot fill(IGasTank gasTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         return new GasInventorySlot(gasTank, getFillExtractPredicate(gasTank, GasInventorySlot::getCapability),
-              stack -> fillInsertCheck(gasTank, getCapability(stack)), stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), listener, x, y);
+              stack -> fillInsertCheck(gasTank, getCapability(stack)), stack -> stack.getCapability(Capabilities.GAS_HANDLER).isPresent(), listener, x, y);
     }
 
     /**
@@ -96,7 +96,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     public static GasInventorySlot drain(IGasTank gasTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(gasTank, GasInventorySlot::getCapability);
-        return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(),
+        return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER).isPresent(),
               listener, x, y);
     }
 

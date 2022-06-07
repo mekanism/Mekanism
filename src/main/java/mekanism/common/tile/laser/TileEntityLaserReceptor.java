@@ -15,7 +15,7 @@ public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser imple
 
     public TileEntityLaserReceptor(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR, this));
     }
 
     @Override

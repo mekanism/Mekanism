@@ -52,7 +52,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public TileEntityModificationStation(BlockPos pos, BlockState state) {
         super(MekanismBlocks.MODIFICATION_STATION, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull

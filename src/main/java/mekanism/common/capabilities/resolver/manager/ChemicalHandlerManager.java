@@ -51,28 +51,28 @@ public class ChemicalHandlerManager<CHEMICAL extends Chemical<CHEMICAL>, STACK e
     public static class GasHandlerManager extends ChemicalHandlerManager<Gas, GasStack, IGasTank, IGasHandler, ISidedGasHandler> {
 
         public GasHandlerManager(@Nullable IChemicalTankHolder<Gas, GasStack, IGasTank> holder, @Nonnull ISidedGasHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.GAS_HANDLER_CAPABILITY, ProxyGasHandler::new);
+            super(holder, baseHandler, Capabilities.GAS_HANDLER, ProxyGasHandler::new);
         }
     }
 
     public static class InfusionHandlerManager extends ChemicalHandlerManager<InfuseType, InfusionStack, IInfusionTank, IInfusionHandler, ISidedInfusionHandler> {
 
         public InfusionHandlerManager(@Nullable IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> holder, @Nonnull ISidedInfusionHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.INFUSION_HANDLER_CAPABILITY, ProxyInfusionHandler::new);
+            super(holder, baseHandler, Capabilities.INFUSION_HANDLER, ProxyInfusionHandler::new);
         }
     }
 
     public static class PigmentHandlerManager extends ChemicalHandlerManager<Pigment, PigmentStack, IPigmentTank, IPigmentHandler, ISidedPigmentHandler> {
 
         public PigmentHandlerManager(@Nullable IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> holder, @Nonnull ISidedPigmentHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.PIGMENT_HANDLER_CAPABILITY, ProxyPigmentHandler::new);
+            super(holder, baseHandler, Capabilities.PIGMENT_HANDLER, ProxyPigmentHandler::new);
         }
     }
 
     public static class SlurryHandlerManager extends ChemicalHandlerManager<Slurry, SlurryStack, ISlurryTank, ISlurryHandler, ISidedSlurryHandler> {
 
         public SlurryHandlerManager(@Nullable IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> holder, @Nonnull ISidedSlurryHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.SLURRY_HANDLER_CAPABILITY, ProxySlurryHandler::new);
+            super(holder, baseHandler, Capabilities.SLURRY_HANDLER, ProxySlurryHandler::new);
         }
     }
 }

@@ -60,13 +60,13 @@ public class ChemicalUtil {
     @SuppressWarnings("unchecked")
     public static <CHEMICAL extends Chemical<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, ?>> Capability<HANDLER> getCapabilityForChemical(CHEMICAL chemical) {
         if (chemical instanceof Gas) {
-            return (Capability<HANDLER>) Capabilities.GAS_HANDLER_CAPABILITY;
+            return (Capability<HANDLER>) Capabilities.GAS_HANDLER;
         } else if (chemical instanceof InfuseType) {
-            return (Capability<HANDLER>) Capabilities.INFUSION_HANDLER_CAPABILITY;
+            return (Capability<HANDLER>) Capabilities.INFUSION_HANDLER;
         } else if (chemical instanceof Pigment) {
-            return (Capability<HANDLER>) Capabilities.PIGMENT_HANDLER_CAPABILITY;
+            return (Capability<HANDLER>) Capabilities.PIGMENT_HANDLER;
         } else if (chemical instanceof Slurry) {
-            return (Capability<HANDLER>) Capabilities.SLURRY_HANDLER_CAPABILITY;
+            return (Capability<HANDLER>) Capabilities.SLURRY_HANDLER;
         } else {
             throw new IllegalStateException("Unknown Chemical Type: " + chemical.getClass().getName());
         }
@@ -238,7 +238,7 @@ public class ChemicalUtil {
     }
 
     public static boolean hasGas(ItemStack stack) {
-        return hasChemical(stack, s -> true, Capabilities.GAS_HANDLER_CAPABILITY);
+        return hasChemical(stack, s -> true, Capabilities.GAS_HANDLER);
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean hasChemical(ItemStack stack, CHEMICAL type) {

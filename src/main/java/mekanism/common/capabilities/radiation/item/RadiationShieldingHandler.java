@@ -30,6 +30,6 @@ public class RadiationShieldingHandler extends ItemCapability implements IRadiat
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.RADIATION_SHIELDING_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.RADIATION_SHIELDING, this));
     }
 }

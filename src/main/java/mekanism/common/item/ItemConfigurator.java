@@ -124,7 +124,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                 if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                     return InteractionResult.FAIL;
                 }
-                Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
+                Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE, side).resolve();
                 if (capability.isPresent()) {
                     IConfigurable config = capability.get();
                     if (player.isShiftKeyDown()) {

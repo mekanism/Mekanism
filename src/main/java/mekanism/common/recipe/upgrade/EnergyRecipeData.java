@@ -58,7 +58,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             return true;
         }
         Item item = stack.getItem();
-        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandler = capability.get();

@@ -72,7 +72,7 @@ public class RadiationCommand {
               ).then(Commands.literal("heal")
                     .executes(ctx -> {
                         CommandSourceStack source = ctx.getSource();
-                        source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                        source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                             c.set(0);
                             source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
                         });
@@ -82,7 +82,7 @@ public class RadiationCommand {
                               CommandSourceStack source = ctx.getSource();
                               for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
                                   if (entity instanceof LivingEntity) {
-                                      entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                                      entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                                           c.set(0);
                                           source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                                                 entity.getDisplayName()), true);

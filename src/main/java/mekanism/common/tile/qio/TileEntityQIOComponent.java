@@ -28,7 +28,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public TileEntityQIOComponent(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         frequencyComponent.track(FrequencyType.QIO, true, true, true);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     public EnumColor getColor() {

@@ -15,7 +15,7 @@ public interface IGasItem {
 
     @Nonnull
     default GasStack useGas(ItemStack stack, long amount) {
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler gasHandler) {
@@ -32,7 +32,7 @@ public interface IGasItem {
     }
 
     default boolean hasGas(ItemStack stack) {
-        return stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY)
+        return stack.getCapability(Capabilities.GAS_HANDLER)
               .map(handler -> {
                   for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                       if (!handler.getChemicalInTank(tank).isEmpty()) {

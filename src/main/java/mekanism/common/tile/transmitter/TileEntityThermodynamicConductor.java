@@ -77,7 +77,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
     public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
-            invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, side);
+            invalidateCapability(Capabilities.HEAT_HANDLER, side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {

@@ -523,7 +523,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
-            if (getCapability(Capabilities.CONFIG_CARD_CAPABILITY, null).isPresent()) {
+            if (getCapability(Capabilities.CONFIG_CARD, null).isPresent()) {
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
                     return InteractionResult.PASS;
                 }
@@ -1137,7 +1137,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
         }
         return null;
     }

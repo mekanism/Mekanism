@@ -176,7 +176,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (!reactorSlot.isEmpty()) {
             ItemStack hohlraum = reactorSlot.getStack();
             if (hohlraum.getItem() instanceof ItemHohlraum) {
-                Optional<IGasHandler> capability = hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+                Optional<IGasHandler> capability = hohlraum.getCapability(Capabilities.GAS_HANDLER).resolve();
                 if (capability.isPresent()) {
                     IGasHandler gasHandlerItem = capability.get();
                     if (gasHandlerItem.getTanks() > 0) {
@@ -246,7 +246,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void vaporiseHohlraum() {
         ItemStack hohlraum = reactorSlot.getStack();
-        Optional<IGasHandler> capability = hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+        Optional<IGasHandler> capability = hohlraum.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem.getTanks() > 0) {

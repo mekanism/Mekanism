@@ -38,6 +38,6 @@ public class LaserDissipationHandler extends ItemCapability implements ILaserDis
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.LASER_DISSIPATION_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.LASER_DISSIPATION, this));
     }
 }

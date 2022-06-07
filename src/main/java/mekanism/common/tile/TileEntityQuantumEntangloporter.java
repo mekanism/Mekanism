@@ -220,7 +220,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
                 BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
             }
         }
         return null;

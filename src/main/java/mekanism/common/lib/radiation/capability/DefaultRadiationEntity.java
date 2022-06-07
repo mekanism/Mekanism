@@ -101,7 +101,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         private final CapabilityCache capabilityCache = new CapabilityCache();
 
         public Provider() {
-            capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_ENTITY_CAPABILITY, defaultImpl));
+            capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_ENTITY, defaultImpl));
         }
 
         @Nonnull
@@ -111,7 +111,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         }
 
         public void invalidate() {
-            capabilityCache.invalidate(Capabilities.RADIATION_ENTITY_CAPABILITY, null);
+            capabilityCache.invalidate(Capabilities.RADIATION_ENTITY, null);
         }
 
         @Override

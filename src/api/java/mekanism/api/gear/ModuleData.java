@@ -89,16 +89,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     /**
      * Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
      *
-     * @return {@code true} if this module type is exclusive.
-     */
-    @Deprecated(forRemoval = true, since = "10.2.3")
-    public final boolean isExclusive() {
-        return isExclusive(ExclusiveFlag.ANY);
-    }
-
-    /**
-     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
-     *
      * @param mask Mask of all {@link ExclusiveFlag flags} to check exclusivity against.
      *
      * @return {@code true} if this module type is exclusive of the given flags
@@ -244,14 +234,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
             }
             this.maxStackSize = maxStackSize;
             return this;
-        }
-
-        /**
-         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
-         */
-        @Deprecated(forRemoval = true, since = "10.2.3")
-        public ModuleDataBuilder<MODULE> exclusive() {
-            return exclusive(ExclusiveFlag.ANY);
         }
 
         /**

@@ -107,8 +107,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     public TileEntityElectricPump(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ELECTRIC_PUMP, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull

@@ -51,7 +51,7 @@ public class StorageUtils {
     }
 
     public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
-        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = capability.get();
             int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
@@ -76,7 +76,7 @@ public class StorageUtils {
             }
             return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
                   MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
-        }, Capabilities.GAS_HANDLER_CAPABILITY);
+        }, Capabilities.GAS_HANDLER);
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
@@ -246,7 +246,7 @@ public class StorageUtils {
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
         if (!stack.isEmpty()) {
-            Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+            Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
             if (energyCapability.isPresent()) {
                 IStrictEnergyHandler energyHandlerItem = energyCapability.get();
                 if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
@@ -296,10 +296,10 @@ public class StorageUtils {
 
     private static double getDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER_CAPABILITY);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER_CAPABILITY);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER_CAPABILITY);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER_CAPABILITY);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER);
         Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack).resolve();
         if (fluidCapability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = fluidCapability.get();
@@ -317,7 +317,7 @@ public class StorageUtils {
 
     private static double getEnergyDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
-        Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+        Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
         if (energyCapability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = energyCapability.get();
             int containers = energyHandlerItem.getEnergyContainerCount();

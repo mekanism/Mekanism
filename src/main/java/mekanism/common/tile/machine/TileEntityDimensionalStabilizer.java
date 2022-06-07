@@ -61,7 +61,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     public TileEntityDimensionalStabilizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIMENSIONAL_STABILIZER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
 
         chunkLoaderComponent = new ChunkLoader(this);
         loadingChunks = new boolean[MAX_LOAD_DIAMETER][MAX_LOAD_DIAMETER];

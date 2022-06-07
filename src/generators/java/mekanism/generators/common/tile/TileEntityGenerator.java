@@ -35,7 +35,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @Nonnull FloatingLong out) {
         super(blockProvider, pos, state);
         output = out;
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     protected RelativeSide[] getEnergySides() {

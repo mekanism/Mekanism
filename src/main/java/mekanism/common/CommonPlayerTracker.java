@@ -38,7 +38,7 @@ public class CommonPlayerTracker {
         if (!player.level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
-            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
+            player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
             //player.sendMessage(ALPHA_WARNING, Util.NIL_UUID);
         }
     }
@@ -55,7 +55,7 @@ public class CommonPlayerTracker {
         ServerPlayer player = (ServerPlayer) event.getPlayer();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync(player));
+        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(player));
         RadiationManager.INSTANCE.updateClientRadiation(player);
     }
 
@@ -78,15 +78,15 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void cloneEvent(PlayerEvent.Clone event) {
         event.getOriginal().reviveCaps();
-        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(cap ->
-              event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
+        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(cap ->
+              event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
         event.getOriginal().invalidateCaps();
     }
 
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ServerPlayer player = (ServerPlayer) event.getPlayer();
-        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
             if (!event.isEndConquered()) {
                 //If the player is returning from the end don't reset radiation
                 c.set(0);

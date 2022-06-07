@@ -73,7 +73,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (tile instanceof TileEntityTransmitter transmitterTile) {
                     displayTransmitterInfo(player, transmitterTile.getTransmitter(), tile, opposite);
                 } else {
-                    Optional<IHeatHandler> heatHandler = CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER_CAPABILITY, opposite).resolve();
+                    Optional<IHeatHandler> heatHandler = CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER, opposite).resolve();
                     if (heatHandler.isPresent()) {
                         IHeatHandler transfer = heatHandler.get();
                         displayBorder(player, MekanismLang.MEKANISM, true);
@@ -105,7 +105,7 @@ public class ItemNetworkReader extends ItemEnergized {
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_CAPACITY, transmitterNetwork.getNetworkReaderCapacity());
-            CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER_CAPABILITY, opposite).ifPresent(heatHandler -> sendTemperature(player, heatHandler));
+            CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER, opposite).ifPresent(heatHandler -> sendTemperature(player, heatHandler));
         } else {
             player.sendMessage(MekanismLang.NO_NETWORK.translate(), Util.NIL_UUID);
         }

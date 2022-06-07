@@ -24,6 +24,6 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.INFUSION_HANDLER_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.INFUSION_HANDLER, this));
     }
 }

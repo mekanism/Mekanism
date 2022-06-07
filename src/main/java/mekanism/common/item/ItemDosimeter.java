@@ -29,7 +29,7 @@ public class ItemDosimeter extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                     double radiation = MekanismAPI.getRadiationManager().isRadiationEnabled() ? c.getRadiation() : 0;
                     player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(radiation),
                           UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)), Util.NIL_UUID);

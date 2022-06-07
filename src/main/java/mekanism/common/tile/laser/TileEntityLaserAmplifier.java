@@ -42,7 +42,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     public TileEntityLaserAmplifier(BlockPos pos, BlockState state) {
         super(MekanismBlocks.LASER_AMPLIFIER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Override
