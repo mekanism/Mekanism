@@ -43,6 +43,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "sorting",
+                  "target": "mekData.sorting",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"

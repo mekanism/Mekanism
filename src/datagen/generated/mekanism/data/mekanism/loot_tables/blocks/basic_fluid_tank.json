@@ -28,6 +28,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "editMode",
+                  "target": "mekData.editMode",
+                  "op": "replace"
+                },
+                {
                   "source": "FluidTanks",
                   "target": "mekData.FluidTanks",
                   "op": "replace"

@@ -1,14 +1,11 @@
 package mekanism.common.recipe.upgrade;
 
-import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.Capabilities;
 import net.minecraft.world.item.ItemStack;
 
 @FieldsAreNonnullByDefault
@@ -32,18 +29,10 @@ public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData>
         }
         //If the owners don't match fail
         return null;
-
     }
 
     @Override
     public boolean applyToStack(ItemStack stack) {
-        Optional<IOwnerObject> ownerCapability = stack.getCapability(Capabilities.OWNER_OBJECT).resolve();
-        if (ownerCapability.isPresent()) {
-            IOwnerObject ownerObject = ownerCapability.get();
-            ownerObject.setOwnerUUID(owner);
-            stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(securityObject -> securityObject.setSecurityMode(mode));
-            return true;
-        }
-        return false;
+        return true;
     }
 }

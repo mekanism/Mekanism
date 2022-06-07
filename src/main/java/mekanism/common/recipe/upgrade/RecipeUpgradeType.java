@@ -9,6 +9,7 @@ public enum RecipeUpgradeType {
     SLURRY,
     ITEM,
     SECURITY,
+    SORTING,
     UPGRADE,
     QIO_DRIVE;
 }

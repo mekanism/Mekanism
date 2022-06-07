@@ -25,6 +25,7 @@ import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.ListTag;
@@ -99,6 +100,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
         }
+        if (tile instanceof TileEntityFactory) {
+            supportedTypes.add(RecipeUpgradeType.SORTING);
+        }
         if (item instanceof IQIODriveItem) {
             supportedTypes.add(RecipeUpgradeType.QIO_DRIVE);
         }
@@ -137,6 +141,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 // item's security just because it has one item that is owned
                 SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
                 return new SecurityRecipeData(ownerUUID, securityMode);
+            }
+            case SORTING -> {
+                boolean sorting = ItemDataUtils.getBoolean(stack, NBTConstants.SORTING);
+                return sorting ? SortingRecipeData.SORTING : null;
             }
             case UPGRADE -> UpgradesRecipeData.tryCreate(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
             case QIO_DRIVE -> {
