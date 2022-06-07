@@ -340,7 +340,11 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         /**
          * This flag indicates that this module changes what pressing jump does
          */
-        OVERRIDE_JUMP;
+        OVERRIDE_JUMP,
+        /**
+         * This flag indicates that this module changes what blocks drop
+         */
+        OVERRIDE_DROPS;
 
         /**
          * Gets the mask for this flag

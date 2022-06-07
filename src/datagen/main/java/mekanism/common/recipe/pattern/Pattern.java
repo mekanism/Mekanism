@@ -12,7 +12,7 @@ public class Pattern {
     public static final char ALLOY = 'A';
     public static final char BUCKET = 'B';
     public static final char CIRCUIT = 'C';
-    public static final char DYE = 'D';
+    public static final char DYE = 'D', DIAMOND = 'D';
     public static final char ENERGY = 'E';
     public static final char GLOWSTONE = 'G', GLASS = 'G';
     public static final char HDPE_CHAR = 'H';

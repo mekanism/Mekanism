@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "mekanism:module_silk_touch_unit"
+    "item": "mekanism:module_fortune_unit"
   },
   "pattern": [
     "A#A",
@@ -22,7 +22,7 @@
       "tag": "forge:pellets/polonium"
     },
     "D": {
-      "item": "minecraft:diamond_pickaxe"
+      "tag": "forge:storage_blocks/diamond"
     }
   }
 }
