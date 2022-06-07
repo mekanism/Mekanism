@@ -60,9 +60,9 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.register("shearing_unit", ModuleShearingUnit::new,
           () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_ENTITY, ExclusiveFlag.INTERACT_BLOCK));
     public static final ModuleRegistryObject<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = MODULES.register("silk_touch_unit", ModuleSilkTouchUnit::new,
-          () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.rarity(Rarity.RARE));
+          () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.rarity(Rarity.RARE).exclusive(ExclusiveFlag.OVERRIDE_DROPS));
     public static final ModuleRegistryObject<ModuleFortuneUnit> FORTUNE_UNIT = MODULES.register("fortune_unit", ModuleFortuneUnit::new,
-            () -> MekanismItems.MODULE_FORTUNE.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE));
+          () -> MekanismItems.MODULE_FORTUNE.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).exclusive(ExclusiveFlag.OVERRIDE_DROPS));
     public static final ModuleRegistryObject<ModuleBlastingUnit> BLASTING_UNIT = MODULES.register("blasting_unit", ModuleBlastingUnit::new,
           () -> MekanismItems.MODULE_BLASTING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).rendersHUD());
     public static final ModuleRegistryObject<ModuleVeinMiningUnit> VEIN_MINING_UNIT = MODULES.register("vein_mining_unit", ModuleVeinMiningUnit::new,
