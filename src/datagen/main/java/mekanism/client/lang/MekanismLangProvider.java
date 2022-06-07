@@ -1298,6 +1298,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.JETPACK_MODE_CHANGE, "Jetpack mode changed to: %1$s");
         add(MekanismLang.JETPACK_NORMAL, "Regular");
         add(MekanismLang.JETPACK_HOVER, "Hover");
+        add(MekanismLang.JETPACK_VECTOR, "Vector");
         add(MekanismLang.JETPACK_DISABLED, "Disabled");
         //Disassembler Mode
         add(MekanismLang.DISASSEMBLER_MODE_CHANGE, "Mode toggled to: %1$s (%2$s)");

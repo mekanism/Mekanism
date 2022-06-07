@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -29,12 +30,15 @@ public interface IJetpackItem {
 
     JetpackMode getJetpackMode(ItemStack stack);
 
+    double getJetpackThrust(ItemStack stack);
+
     void useJetpackFuel(ItemStack stack);
 
     @NothingNullByDefault
     enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
         HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_hover.png")),
+        VECTOR(MekanismLang.JETPACK_VECTOR, EnumColor.ORANGE, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_vector.png")),
         DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_off.png"));
 
         private static final JetpackMode[] MODES = values();
@@ -113,33 +117,38 @@ public interface IJetpackItem {
     /**
      * @return If fall distance should get reset or not
      */
-    static boolean handleJetpackMotion(Player player, JetpackMode mode, BooleanSupplier ascendingSupplier) {
+    static boolean handleJetpackMotion(Player player, JetpackMode mode, double thrust, BooleanSupplier ascendingSupplier) {
         Vec3 motion = player.getDeltaMovement();
-        if (mode == JetpackMode.NORMAL) {
-            if (player.isFallFlying()) {
-                Vec3 forward = player.getLookAngle();
-                Vec3 delta = forward.multiply(forward.scale(0.15))
-                      .add(forward.scale(1.5).subtract(motion).scale(0.5));
-                player.setDeltaMovement(motion.add(delta));
-                return false;
-            } else {
-                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.5D), motion.z());
-            }
+        if ((mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) && player.isFallFlying()) {
+            Vec3 forward = player.getLookAngle();
+            Vec3 delta = forward.multiply(forward.scale(thrust))
+                  .add(forward.scale(1.5).subtract(motion).scale(0.5));
+            player.setDeltaMovement(motion.add(delta));
+            return false;
+        } else if (mode == JetpackMode.NORMAL) {
+            player.setDeltaMovement(motion.x(), Math.min(motion.y() + thrust, 0.5D), motion.z());
+        } else if (mode == JetpackMode.VECTOR) {
+            Vec3 forward = player.getLookAngle();
+            float theta = player.getYRot() * ((float) Math.PI / 180F);
+            Vec3 left = new Vec3(Mth.cos(theta), 0, Mth.sin(theta));
+            Vec3 up = forward.cross(left);
+            Vec3 velocity = motion.add(up.scale(thrust));
+            player.setDeltaMovement(new Vec3(velocity.x, Math.min(0.5D, velocity.y), velocity.z));
         } else if (mode == JetpackMode.HOVER) {
             boolean ascending = ascendingSupplier.getAsBoolean();
             boolean descending = player.isDescending();
             if (ascending == descending) {
                 if (motion.y() > 0) {
-                    player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, 0), motion.z());
+                    player.setDeltaMovement(motion.x(), Math.max(motion.y() - thrust, 0), motion.z());
                 } else if (motion.y() < 0) {
                     if (!CommonPlayerTickHandler.isOnGroundOrSleeping(player)) {
-                        player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0), motion.z());
+                        player.setDeltaMovement(motion.x(), Math.min(motion.y() + thrust, 0), motion.z());
                     }
                 }
             } else if (ascending) {
-                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.2D), motion.z());
+                player.setDeltaMovement(motion.x(), Math.min(motion.y() + thrust, 0.2D), motion.z());
             } else if (!CommonPlayerTickHandler.isOnGroundOrSleeping(player)) {
-                player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, -0.2D), motion.z());
+                player.setDeltaMovement(motion.x(), Math.max(motion.y() - thrust, -0.2D), motion.z());
             }
         }
         return true;
@@ -153,7 +162,7 @@ public interface IJetpackItem {
                     if (ascending && !player.isDescending() || !CommonPlayerTickHandler.isOnGroundOrSleeping(player)) {
                         return mode;
                     }
-                } else if (mode == JetpackMode.NORMAL && ascending) {
+                } else if (ascending) {
                     return mode;
                 }
             }

@@ -643,6 +643,7 @@ public enum MekanismLang implements ILangEntry {
     JETPACK_MODE_CHANGE("jetpack", "mode_change"),
     JETPACK_NORMAL("jetpack", "normal"),
     JETPACK_HOVER("jetpack", "hover"),
+    JETPACK_VECTOR("jetpack", "vector"),
     JETPACK_DISABLED("jetpack", "disabled"),
     //Disassembler Mode
     DISASSEMBLER_MODE_CHANGE("disassembler", "mode_change"),

@@ -88,6 +88,11 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
     }
 
     @Override
+    public double getJetpackThrust(ItemStack stack) {
+        return 0.15D;
+    }
+
+    @Override
     public void useJetpackFuel(ItemStack stack) {
         useGas(stack, 1);
     }
