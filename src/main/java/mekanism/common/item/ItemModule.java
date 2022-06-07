@@ -1,8 +1,10 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
@@ -11,7 +13,9 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.IModuleItem;
+import mekanism.common.registries.MekanismModules;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -46,8 +50,17 @@ public class ItemModule extends Item implements IModuleItem {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            for (Item item : MekanismAPI.getModuleHelper().getSupported(getModuleData())) {
-                tooltip.add(item.getName(new ItemStack(item)));
+            tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
+            IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
+            for (Item item : moduleHelper.getSupported(getModuleData())) {
+                tooltip.add(MekanismLang.GENERIC_LIST.translate(item.getName(new ItemStack(item))));
+            }
+            Set<ModuleData<?>> conflicting = moduleHelper.getConflicting(getModuleData());
+            if (!conflicting.isEmpty()) {
+                tooltip.add(MekanismLang.MODULE_CONFLICTING.translateColored(EnumColor.RED));
+                for (ModuleData<?> module : conflicting) {
+                    tooltip.add(MekanismLang.GENERIC_LIST.translate(module));
+                }
             }
         } else {
             ModuleData<?> moduleData = getModuleData();

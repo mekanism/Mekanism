@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
@@ -51,6 +52,7 @@ public class ModuleHelper implements IModuleHelper {
 
     private final Map<Item, Set<ModuleData<?>>> supportedModules = new Object2ObjectOpenHashMap<>(5);
     private final Map<ModuleData<?>, Set<Item>> supportedContainers = new Object2ObjectOpenHashMap<>();
+    private final Map<ModuleData<?>, Set<ModuleData<?>>> conflictingModules = new Object2ObjectOpenHashMap<>();
 
     public void processIMC() {
         Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap = new Object2ObjectOpenHashMap<>();
@@ -101,12 +103,22 @@ public class ModuleHelper implements IModuleHelper {
 
     @Override
     public Set<ModuleData<?>> getSupported(ItemStack container) {
-        return supportedModules.getOrDefault(container.getItem(), Collections.emptySet());
+        return getSupported(container.getItem());
+    }
+
+    private Set<ModuleData<?>> getSupported(Item item) {
+        return supportedModules.getOrDefault(item, Collections.emptySet());
     }
 
     @Override
     public Set<Item> getSupported(IModuleDataProvider<?> typeProvider) {
         return supportedContainers.getOrDefault(typeProvider.getModuleData(), Collections.emptySet());
+    }
+
+    @Override
+    public Set<ModuleData<?>> getConflicting(IModuleDataProvider<?> typeProvider) {
+        return conflictingModules.computeIfAbsent(typeProvider.getModuleData(), moduleType -> getSupported(typeProvider).stream().flatMap(item -> getSupported(item).stream())
+              .filter(other -> moduleType != other && moduleType.isExclusive(other.getExclusiveFlags())).collect(Collectors.toSet()));
     }
 
     @Override

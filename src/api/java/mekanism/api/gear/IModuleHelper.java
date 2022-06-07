@@ -56,6 +56,16 @@ public interface IModuleHelper {
     Set<Item> getSupported(IModuleDataProvider<?> typeProvider);
 
     /**
+     * Gets all the module types a given module type conflicts with.
+     *
+     * @param typeProvider Module type.
+     *
+     * @return Set of conflicting module types.
+     * @since 10.2.3
+     */
+    Set<ModuleData<?>> getConflicting(IModuleDataProvider<?> typeProvider);
+
+    /**
      * Helper method to check if an item has a module installed and the module is enabled.
      *
      * @param container    Module container, for example a Meka-Tool or MekaSuit piece.

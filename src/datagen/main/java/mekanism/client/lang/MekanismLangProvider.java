@@ -599,6 +599,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_PRE_STORED, "%1$s %2$s: %3$s");
         add(MekanismLang.GENERIC_BLOCK_POS, "%1$s, %2$s, %3$s");
         add(MekanismLang.GENERIC_HEX, "#%1$s");
+        add(MekanismLang.GENERIC_LIST, "- %1$s");
         //Directions
         add(APILang.DOWN, "Down");
         add(APILang.UP, "Up");
@@ -621,7 +622,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %1$s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %1$s for a description.");
         add(MekanismLang.HOLD_FOR_MODULES, "Hold %1$s for installed modules.");
-        add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %1$s for supporting items.");
+        add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS, "Hold %1$s for supporting items and conflicting modules.");
         //Commands
         add(MekanismLang.COMMAND_CHUNK_WATCH, "Chunk (%1$s) added to watch list.");
         add(MekanismLang.COMMAND_CHUNK_UNWATCH, "Chunk (%1$s) removed from watch list.");
@@ -867,7 +868,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CONDENSENTRATING, "Condensentrating");
         add(MekanismLang.DECONDENSENTRATING, "Decondensentrating");
         //Upgrades
-        add(MekanismLang.UPGRADE_DISPLAY, "- %1$s");
         add(MekanismLang.UPGRADE_DISPLAY_LEVEL, "- %1$s: x%2$s");
         add(MekanismLang.UPGRADES_EFFECT, "Effect: %1$sx");
         add(MekanismLang.UPGRADES, "Upgrades");
@@ -1253,6 +1253,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_DAMAGE, "Damage: %1$s");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %1$s");
+        add(MekanismLang.MODULE_SUPPORTED, "Supported by:");
+        add(MekanismLang.MODULE_CONFLICTING, "Conflicts with:");
         add(MekanismLang.MODULE_STACKABLE, "Stackable: %1$s");
         add(MekanismLang.MODULE_EXCLUSIVE, "(Exclusive Module)");
         add(MekanismLang.MODULE_HANDLE_MODE_CHANGE, "Handle Mode Key");

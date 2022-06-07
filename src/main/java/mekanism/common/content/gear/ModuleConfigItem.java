@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
@@ -52,10 +53,8 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
             boolean checkModeState;
             if (name.equals(Module.ENABLED_KEY) && val == Boolean.TRUE) {
                 // disable other exclusive modules
-                if (module.getData().isExclusive()) {
-                    if (m.getData().isExclusive() && m.getData() != module.getData()) {
-                        m.setDisabledForce(callback != null);
-                    }
+                if (m.getData() != module.getData() && m.getData().isExclusive(module.getData().getExclusiveFlags())) {
+                    m.setDisabledForce(callback != null);
                 }
                 //If enabled state of the module changes, recheck about mode changes
                 checkModeState = true;

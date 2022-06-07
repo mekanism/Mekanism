@@ -275,7 +275,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         for (Module<?> module : ModuleHelper.INSTANCE.loadAll(getContainer())) {
             if (module.getData() != getData()) {
                 // disable other exclusive modules if this is an exclusive module, as this one will now be active
-                if (getData().isExclusive() && module.getData().isExclusive()) {
+                if (getData().isExclusive(module.getData().getExclusiveFlags())) {
                     module.setDisabledForce(false);
                 }
                 if (handlesModeChange() && module.handlesModeChange()) {
