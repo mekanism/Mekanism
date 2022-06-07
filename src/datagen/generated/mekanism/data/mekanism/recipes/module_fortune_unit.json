@@ -5,7 +5,7 @@
   },
   "pattern": [
     "A#A",
-    "WPW",
+    "DPD",
     "HHH"
   ],
   "key": {
@@ -16,13 +16,13 @@
       "item": "mekanism:module_base"
     },
     "#": {
-      "item": "mekanism:block_refined_glowstone"
+      "tag": "forge:storage_blocks/refined_glowstone"
     },
     "H": {
       "tag": "forge:pellets/polonium"
     },
-    "W": {
-      "item": "minecraft:diamond"
+    "D": {
+      "tag": "forge:storage_blocks/diamond"
     }
   }
 }
