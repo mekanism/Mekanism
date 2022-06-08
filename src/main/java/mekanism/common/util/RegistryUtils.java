@@ -32,9 +32,20 @@ public class RegistryUtils {
         return getName(ForgeRegistries.ITEMS, element);
     }
 
-    //TODO - 1.19: Add helpers for some of these that we call getNamespace and getPath on a bunch to cleanup the calls
+    public static String getPath(Item element) {
+        return getName(element).getPath();
+    }
+
     public static ResourceLocation getName(Block element) {
         return getName(ForgeRegistries.BLOCKS, element);
+    }
+
+    public static String getNamespace(Block element) {
+        return getName(element).getNamespace();
+    }
+
+    public static String getPath(Block element) {
+        return getName(element).getPath();
     }
 
     public static ResourceLocation getName(Fluid element) {

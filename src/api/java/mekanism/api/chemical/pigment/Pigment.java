@@ -50,8 +50,9 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public ResourceLocation getRegistryName() {
-        //TODO - 1.19: Re-evaluate
+        //May be null if called before the object is registered
         IForgeRegistry<Pigment> registry = MekanismAPI.pigmentRegistry();
         return registry == null ? null : registry.getKey(this);
     }

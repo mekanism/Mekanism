@@ -161,7 +161,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
-            String baseNuggetFrom = RegistryUtils.getName(nugget).getPath() + "_from_";
+            String baseNuggetFrom = RegistryUtils.getPath(nugget) + "_from_";
             RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(paxel), nugget, 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }

@@ -104,7 +104,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(dead),
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, water),
               new ItemStack(living)
-        ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getName(living.asItem()).getPath()));
+        ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(living.asItem())));
     }
 
     private void addChemicalInjectorOxidizingRecipe(Consumer<FinishedRecipe> consumer, String basePath) {

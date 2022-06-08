@@ -124,18 +124,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param output       Output to base the recipe name off of.
      */
     protected void build(Consumer<FinishedRecipe> consumer, ItemLike output) {
-        build(consumer, getRegistryName(ForgeRegistries.ITEMS, output.asItem()));
-    }
-
-    /**
-     * Helper to get the registry name of an object by registry
-     *
-     * @param registry The registry.
-     * @param element  Object in the registry.
-     */
-    protected <T> ResourceLocation getRegistryName(IForgeRegistry<T> registry, T element) {
-        //TODO - 1.19: Evaluate
-        return registry.getKey(element);
+        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output.asItem());
+        if (registryName == null) {
+            throw new IllegalStateException("Could not retrieve registry name for output.");
+        }
+        build(consumer, registryName);
     }
 
     /**

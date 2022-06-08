@@ -48,8 +48,9 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public ResourceLocation getRegistryName() {
-        //TODO - 1.19: Re-evaluate
+        //May be null if called before the object is registered
         IForgeRegistry<InfuseType> registry = MekanismAPI.infuseTypeRegistry();
         return registry == null ? null : registry.getKey(this);
     }

@@ -115,6 +115,6 @@ public class BuildCommand {
 
     private static boolean isMekanismBlock(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
         Optional<BlockState> state = WorldUtils.getBlockState(world, chunkMap, pos);
-        return state.isPresent() && RegistryUtils.getName(state.get().getBlock()).getNamespace().startsWith(Mekanism.MODID);
+        return state.isPresent() && RegistryUtils.getNamespace(state.get().getBlock()).startsWith(Mekanism.MODID);
     }
 }

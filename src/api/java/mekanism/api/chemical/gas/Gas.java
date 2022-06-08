@@ -59,8 +59,9 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public ResourceLocation getRegistryName() {
-        //TODO - 1.19: Re-evaluate
+        //May be null if called before the object is registered
         IForgeRegistry<Gas> registry = MekanismAPI.gasRegistry();
         return registry == null ? null : registry.getKey(this);
     }

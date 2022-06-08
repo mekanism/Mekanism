@@ -7,7 +7,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.ISlurryProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -57,8 +56,9 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public ResourceLocation getRegistryName() {
-        //TODO - 1.19: Re-evaluate
+        //May be null if called before the object is registered
         IForgeRegistry<Slurry> registry = MekanismAPI.slurryRegistry();
         return registry == null ? null : registry.getKey(this);
     }

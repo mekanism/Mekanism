@@ -93,7 +93,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
 
     //Note: This isn't the best way to do this in terms of model file validation, but it works
     protected void registerBucket(FluidRegistryObject<?, ?, ?, ?> fluidRO) {
-        withExistingParent(RegistryUtils.getName(fluidRO.getBucket()).getPath(), new ResourceLocation("forge", "item/bucket"))
+        withExistingParent(RegistryUtils.getPath(fluidRO.getBucket()), new ResourceLocation("forge", "item/bucket"))
               .customLoader(DynamicBucketModelBuilder::begin)
               .fluid(fluidRO.getStillFluid());
     }

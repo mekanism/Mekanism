@@ -48,13 +48,9 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
         return getVariantBuilder(blockProvider.getBlock());
     }
 
-    protected String name(Block block) {
-        return RegistryUtils.getName(block).getPath();
-    }
-
     protected void registerFluidBlockStates(List<FluidRegistryObject<?, ?, ?, ?>> fluidROs) {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
-            simpleBlock(fluidRO.getBlock(), models().getBuilder(name(fluidRO.getBlock())).texture(DataGenJsonConstants.PARTICLE,
+            simpleBlock(fluidRO.getBlock(), models().getBuilder(RegistryUtils.getPath(fluidRO.getBlock())).texture(DataGenJsonConstants.PARTICLE,
                   fluidRO.getStillFluid().getAttributes().getStillTexture()));
         }
     }

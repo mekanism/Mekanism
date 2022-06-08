@@ -83,7 +83,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
             BlockState state = world.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(world, pos) != -1) {
                 if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) ||
-                    MekanismConfig.general.cardboardModBlacklist.get().contains(RegistryUtils.getName(state.getBlock()).getNamespace()) ||
+                    MekanismConfig.general.cardboardModBlacklist.get().contains(RegistryUtils.getNamespace(state.getBlock())) ||
                     !canReplace(world, player, pos, context.getClickedFace(), state, stack)) {
                     return InteractionResult.FAIL;
                 }
