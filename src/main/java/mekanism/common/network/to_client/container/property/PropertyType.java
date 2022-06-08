@@ -40,7 +40,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public enum PropertyType {
     BOOLEAN(Boolean.TYPE, false, (getter, setter) -> SyncableBoolean.create(() -> (boolean) getter.get(), setter::accept),
@@ -57,7 +56,9 @@ public enum PropertyType {
           (property, buffer) -> new LongPropertyData(property, buffer.readVarLong())),
     SHORT(Short.TYPE, (short) 0, (getter, setter) -> SyncableShort.create(() -> (short) getter.get(), setter::accept),
           (property, buffer) -> new ShortPropertyData(property, buffer.readShort())),
-    REGISTRY_ENTRY(IForgeRegistryEntry.class, null, (supplier, consumer) -> SyncableRegistryEntry.create((Supplier) supplier, (Consumer) consumer),
+    //TODO - 1.19: Figure out how to best represent the registry entry. Technically we don't use ContainerSync on any registry entries
+    // so it isn't the biggest deal that we are passing null and just not supporting it yet, but we need to fix this before we release
+    REGISTRY_ENTRY(null/*IForgeRegistryEntry.class*/, null, (supplier, consumer) -> SyncableRegistryEntry.create(null/*registry*/, (Supplier) supplier, (Consumer) consumer),
           RegistryEntryPropertyData::readRegistryEntry),
     ITEM_STACK(ItemStack.class, ItemStack.EMPTY, (getter, setter) -> SyncableItemStack.create(() -> (ItemStack) getter.get(), setter::accept),
           (property, buffer) -> new ItemStackPropertyData(property, buffer.readItem())),

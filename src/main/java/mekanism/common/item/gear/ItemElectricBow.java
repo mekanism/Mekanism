@@ -156,7 +156,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.electricBowMaxEnergy.get()));
         }
     }
@@ -176,7 +176,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
             boolean newState = !getFireState(stack);
             setFireState(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true))), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true))));
             }
         }
     }

@@ -35,7 +35,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -223,7 +222,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             getTransmitter().onModeChange(Direction.from3DDataValue(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();
-            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.getConnectionTypeRaw(hitSide)), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.getConnectionTypeRaw(hitSide)));
             sendUpdatePacket();
         }
         return InteractionResult.SUCCESS;

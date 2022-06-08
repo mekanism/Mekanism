@@ -1,17 +1,14 @@
 package mekanism.common.registration.impl;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
-import mekanism.common.registration.WrappedForgeDeferredRegister;
+import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class DataSerializerDeferredRegister extends WrappedForgeDeferredRegister<DataSerializerEntry> {
+public class DataSerializerDeferredRegister extends WrappedDeferredRegister<EntityDataSerializer<?>> {
 
     public DataSerializerDeferredRegister(String modid) {
         super(modid, ForgeRegistries.Keys.DATA_SERIALIZERS);
@@ -21,11 +18,11 @@ public class DataSerializerDeferredRegister extends WrappedForgeDeferredRegister
         return registerSimple(name, FriendlyByteBuf::writeEnum, buffer -> buffer.readEnum(enumClass));
     }
 
-    public <T> DataSerializerRegistryObject<T> registerSimple(String name, BiConsumer<FriendlyByteBuf, T> writer, Function<FriendlyByteBuf, T> reader) {
-        return register(name, writer, reader, UnaryOperator.identity());
+    public <T> DataSerializerRegistryObject<T> registerSimple(String name, FriendlyByteBuf.Writer<T> writer, FriendlyByteBuf.Reader<T> reader) {
+        return register(name, () -> EntityDataSerializer.simple(writer, reader));
     }
 
-    public <T> DataSerializerRegistryObject<T> register(String name, BiConsumer<FriendlyByteBuf, T> writer, Function<FriendlyByteBuf, T> reader, UnaryOperator<T> copier) {
+    public <T> DataSerializerRegistryObject<T> register(String name, FriendlyByteBuf.Writer<T> writer, FriendlyByteBuf.Reader<T> reader, UnaryOperator<T> copier) {
         return register(name, () -> new EntityDataSerializer<>() {
             @Override
             public void write(@Nonnull FriendlyByteBuf buffer, @Nonnull T value) {
@@ -47,6 +44,6 @@ public class DataSerializerDeferredRegister extends WrappedForgeDeferredRegister
     }
 
     public <T> DataSerializerRegistryObject<T> register(String name, Supplier<EntityDataSerializer<T>> sup) {
-        return register(name, () -> new DataSerializerEntry(sup.get()), DataSerializerRegistryObject::new);
+        return register(name, sup, DataSerializerRegistryObject::new);
     }
 }

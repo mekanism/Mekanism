@@ -5,6 +5,7 @@ import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.SpawnHelper;
+import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -63,8 +64,8 @@ public class MekanismAdditions implements IModModule {
         AdditionsBlocks.BLOCKS.register(modEventBus);
         AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);
         AdditionsSounds.SOUND_EVENTS.register(modEventBus);
+        AdditionsBiomeModifierSerializers.BIOME_MODIFIER_SERIALIZERS.register(modEventBus);
 
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, SpawnHelper::onBiomeLoad);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, SpawnHelper::onStructureSpawnListGather);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle

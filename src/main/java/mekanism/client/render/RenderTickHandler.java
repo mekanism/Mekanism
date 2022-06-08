@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
@@ -72,6 +71,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -328,7 +328,7 @@ public class RenderTickHandler {
                         Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
                         for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                             BlockPos blastingTarget = block.getKey();
-                            if (!pos.equals(blastingTarget) && !ForgeHooksClient.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getPartialTicks(), matrix, renderer)) {
+                            if (!pos.equals(blastingTarget) && !ForgeHooksClient.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getPartialTick(), matrix, renderer)) {
                                 levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                             }
                         }
@@ -363,7 +363,7 @@ public class RenderTickHandler {
                                     if (wireFrameRenderer.isCombined()) {
                                         renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
                                     }
-                                    wireFrameRenderer.renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                                    wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrixStack, buffer, red, green, blue, alpha);
                                 };
                             }
                         }
@@ -423,7 +423,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, Random rand, float red, float green, float blue, float alpha) {
+    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, float red, float green, float blue, float alpha) {
         List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
             //TODO: Eventually we may want to add support for Model data

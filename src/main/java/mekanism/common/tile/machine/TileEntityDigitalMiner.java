@@ -461,7 +461,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                         if (inverse == (matchingFilter == null) && canMine(state, pos)) {
                             //If we can, then
                             List<ItemStack> drops = getDrops(state, pos);
-                            if (canInsert(drops) && setReplace(pos, matchingFilter)) {
+                            if (canInsert(drops) && setReplace(state, pos, matchingFilter)) {
                                 add(drops);
                                 missingStack = ItemStack.EMPTY;
                                 level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
@@ -505,7 +505,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
      *
      * @return false if unsuccessful
      */
-    private boolean setReplace(BlockPos pos, @Nullable MinerFilter<?> filter) {
+    private boolean setReplace(BlockState state, BlockPos pos, @Nullable MinerFilter<?> filter) {
         if (level == null) {
             return false;
         }
@@ -519,7 +519,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (stack.isEmpty()) {
             if (replaceTarget == Items.AIR || (filter == null && !inverseRequiresReplacement) || (filter != null && !filter.requiresReplacement)) {
                 level.removeBlock(pos, false);
-                level.gameEvent(GameEvent.BLOCK_DESTROY, pos);
+                level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
                 return true;
             }
             missingStack = new ItemStack(replaceTarget);
@@ -531,9 +531,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return false;
         }
         //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
-        level.gameEvent(GameEvent.BLOCK_DESTROY, pos);
+        level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, state));
         level.setBlockAndUpdate(pos, newState);
-        level.gameEvent(GameEvent.BLOCK_PLACE, pos);
+        level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(null, newState));
         return true;
     }
 
@@ -883,7 +883,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         dataMap.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
         dataMap.putBoolean(NBTConstants.INVERSE, inverse);
         if (inverseReplaceTarget != Items.AIR) {
-            NBTUtils.writeRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, inverseReplaceTarget);
+            NBTUtils.writeRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, inverseReplaceTarget);
         }
         dataMap.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         if (!filters.isEmpty()) {
@@ -1093,7 +1093,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableInt.create(this::getMaxY, this::setMaxY));
         container.track(SyncableBoolean.create(this::getInverse, value -> inverse = value));
         container.track(SyncableBoolean.create(this::getInverseRequiresReplacement, value -> inverseRequiresReplacement = value));
-        container.track(SyncableRegistryEntry.create(this::getInverseReplaceTarget, value -> inverseReplaceTarget = value));
+        container.track(SyncableRegistryEntry.create(ForgeRegistries.ITEMS, this::getInverseReplaceTarget, value -> inverseReplaceTarget = value));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
             if (value instanceof HashList<MinerFilter<?>> filters) {
                 this.filters = filters;

@@ -64,6 +64,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.machine.TileEntityElectricPump;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -159,7 +160,7 @@ public class MekanismJEI implements IModPlugin {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 FluidStack fluidStack = handler.getFluidInTank(tank);
                 if (!fluidStack.isEmpty()) {
-                    component = addInterpretation(component, fluidStack.getFluid().getRegistryName().toString());
+                    component = addInterpretation(component, RegistryUtils.getName(fluidStack.getFluid()).toString());
                 } else if (tanks > 1) {
                     component = addInterpretation(component, "empty");
                 }

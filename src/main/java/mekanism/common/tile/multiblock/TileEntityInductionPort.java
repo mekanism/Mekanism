@@ -12,7 +12,6 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -55,7 +54,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.sendMessage(MekanismUtils.logFormat(MekanismLang.INDUCTION_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.INDUCTION_PORT_MODE.translate(InputOutput.of(oldMode, true))));
         }
         return InteractionResult.SUCCESS;
     }

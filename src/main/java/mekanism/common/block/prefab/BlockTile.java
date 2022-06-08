@@ -1,6 +1,5 @@
 package mekanism.common.block.prefab;
 
-import java.util.Random;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
@@ -21,6 +20,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -77,11 +77,11 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    public void animateTick(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Random random) {
+    public void animateTick(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull RandomSource random) {
         super.animateTick(state, world, pos, random);
         if (MekanismConfig.client.machineEffects.get() && type.has(AttributeParticleFX.class) && Attribute.isActive(state)) {
             Direction facing = Attribute.getFacing(state);
-            for (Function<Random, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
+            for (Function<RandomSource, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
                 Particle particle = particleFunction.apply(random);
                 Vec3 particlePos = particle.getPos();
                 if (facing == Direction.WEST) {

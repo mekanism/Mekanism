@@ -16,12 +16,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
 
-public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<TYPE>, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>>
-      extends BaseFilter<FILTER> {
+public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> extends BaseFilter<FILTER> {
 
     @Nullable
     private TagKey<TYPE> filterLocation;
@@ -105,7 +103,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.FILTER, getFilterText());
         if (selectedOutput != getFallbackElement()) {
-            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SELECTED, selectedOutput);
+            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SELECTED, getRegistry(), selectedOutput);
         }
         return nbtTags;
     }
@@ -124,7 +122,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
         //Realistically the filter location shouldn't be null except when the filter is first being created
         // but handle it being null just in case
         BasePacketHandler.writeOptional(buffer, filterLocation, (buf, location) -> buf.writeResourceLocation(location.location()));
-        buffer.writeResourceLocation(selectedOutput.getRegistryName());
+        buffer.writeResourceLocation(getRegistry().getKey(selectedOutput));
         buffer.writeBoolean(isValid);
     }
 

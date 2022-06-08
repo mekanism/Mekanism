@@ -94,6 +94,7 @@ public class MekanismFeatures {
                   OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, oreBlockType.deepslateBlock().defaultBlockState())
             );
         });
+        //TODO - 1.19: Figure this out, configured features are registered before features so when we try to get the feature we fail
         return new ConfiguredFeature<>(featureRO.get(), new ResizableOreFeatureConfig(targetStates, oreVeinType, oreVeinConfig.maxVeinSize(),
               oreVeinConfig.discardChanceOnAirExposure()));
     }

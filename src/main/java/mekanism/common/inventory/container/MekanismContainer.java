@@ -63,7 +63,6 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class MekanismContainer extends AbstractContainerMenu implements ISecurityContainer {
 
@@ -595,7 +594,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public <V extends IForgeRegistryEntry<V>> void handleWindowProperty(short property, @Nonnull V value) {
+    public <V> void handleWindowProperty(short property, @Nonnull V value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableRegistryEntry) {
             ((SyncableRegistryEntry<V>) data).set(value);

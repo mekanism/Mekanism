@@ -2,19 +2,22 @@ package mekanism.common.network.to_client.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
 
-public class RegistryEntryPropertyData<V extends IForgeRegistryEntry<V>> extends PropertyData {
+public class RegistryEntryPropertyData<V> extends PropertyData {
 
+    private final IForgeRegistry<V> registry;
     private final V value;
 
-    public RegistryEntryPropertyData(short property, V value) {
+    public RegistryEntryPropertyData(short property, IForgeRegistry<V> registry, V value) {
         super(PropertyType.REGISTRY_ENTRY, property);
+        this.registry = registry;
         this.value = value;
     }
 
-    public static <V extends IForgeRegistryEntry<V>> RegistryEntryPropertyData<V> readRegistryEntry(short property, FriendlyByteBuf buffer) {
-        return new RegistryEntryPropertyData<V>(property, buffer.readRegistryId());
+    public static <V> RegistryEntryPropertyData<V> readRegistryEntry(short property, FriendlyByteBuf buffer) {
+        //Unused registry just do null for now
+        return new RegistryEntryPropertyData<>(property, null, buffer.readRegistryId());
     }
 
     @Override
@@ -25,6 +28,6 @@ public class RegistryEntryPropertyData<V extends IForgeRegistryEntry<V>> extends
     @Override
     public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
-        buffer.writeRegistryId(value);
+        buffer.writeRegistryId(registry, value);
     }
 }

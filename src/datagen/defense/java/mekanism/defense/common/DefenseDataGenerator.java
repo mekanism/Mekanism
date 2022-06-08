@@ -19,15 +19,11 @@ public class DefenseDataGenerator {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        if (event.includeClient()) {
-            //Client side data generators
-            gen.addProvider(new DefenseLangProvider(gen));
-        }
-        if (event.includeServer()) {
-            //Server side data generators
-            gen.addProvider(new DefenseTagProvider(gen, existingFileHelper));
-            gen.addProvider(new DefenseLootProvider(gen));
-            gen.addProvider(new DefenseRecipeProvider(gen, existingFileHelper));
-        }
+        //Client side data generators
+        gen.addProvider(event.includeClient(), new DefenseLangProvider(gen));
+        //Server side data generators
+        gen.addProvider(event.includeServer(), new DefenseTagProvider(gen, existingFileHelper));
+        gen.addProvider(event.includeServer(), new DefenseLootProvider(gen));
+        gen.addProvider(event.includeServer(), new DefenseRecipeProvider(gen, existingFileHelper));
     }
 }

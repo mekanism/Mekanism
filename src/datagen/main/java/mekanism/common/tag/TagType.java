@@ -13,9 +13,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public record TagType<TYPE extends IForgeRegistryEntry<TYPE>>(String name, NonNullSupplier<IForgeRegistry<TYPE>> registry) {
+public record TagType<TYPE>(String name, NonNullSupplier<IForgeRegistry<TYPE>> registry) {
 
     public static final TagType<Item> ITEM = new TagType<>("Item", () -> ForgeRegistries.ITEMS);
     public static final TagType<Block> BLOCK = new TagType<>("Block", () -> ForgeRegistries.BLOCKS);

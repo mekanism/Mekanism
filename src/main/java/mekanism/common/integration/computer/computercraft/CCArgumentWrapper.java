@@ -40,6 +40,7 @@ import mekanism.common.integration.computer.ComputerArgumentHandler;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ByteArrayTag;
@@ -64,7 +65,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.VisibleForTesting;
 
 public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, MethodResult> {
@@ -215,8 +215,6 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return result;
         } else if (result instanceof ResourceLocation || result instanceof UUID) {
             return result.toString();
-        } else if (result instanceof ForgeRegistryEntry<?> registryEntry) {
-            return getName(registryEntry);
         } else if (result instanceof ChemicalStack<?> stack) {
             Map<String, Object> wrapped = new HashMap<>(2);
             wrapped.put("name", getName(stack.getType()));
@@ -305,10 +303,15 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             //Note: This doesn't handle/deal with primitive arrays
             return Arrays.stream(res).map(CCArgumentWrapper::wrapReturnType).toArray();
         }
+        //If the object has a registry name, return the object's registry name
+        String name = getName(result);
+        if (name != null) {
+            return name;
+        }
         return result;
     }
 
-    private static Map<String, Object> wrapStack(ForgeRegistryEntry<?> entry, String sizeKey, int amount, @Nullable CompoundTag tag) {
+    private static Map<String, Object> wrapStack(Object entry, String sizeKey, int amount, @Nullable CompoundTag tag) {
         boolean hasTag = tag != null && !tag.isEmpty() && amount > 0;
         Map<String, Object> wrapped = new HashMap<>(hasTag ? 3 : 2);
         wrapped.put("name", getName(entry));
@@ -352,8 +355,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         };
     }
 
-    private static String getName(ForgeRegistryEntry<?> entry) {
-        ResourceLocation registryName = entry.getRegistryName();
+    private static String getName(Object entry) {
+        ResourceLocation registryName = RegistryUtils.getName(entry);
         return registryName == null ? null : registryName.toString();
     }
 

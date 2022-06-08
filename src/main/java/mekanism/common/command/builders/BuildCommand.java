@@ -19,6 +19,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -114,6 +115,6 @@ public class BuildCommand {
 
     private static boolean isMekanismBlock(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
         Optional<BlockState> state = WorldUtils.getBlockState(world, chunkMap, pos);
-        return state.isPresent() && state.get().getBlock().getRegistryName().getNamespace().startsWith(Mekanism.MODID);
+        return state.isPresent() && RegistryUtils.getName(state.get().getBlock()).getNamespace().startsWith(Mekanism.MODID);
     }
 }

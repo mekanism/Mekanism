@@ -15,9 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class SawmillRecipeSerializer<RECIPE extends SawmillRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
+public class SawmillRecipeSerializer<RECIPE extends SawmillRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
 

@@ -194,8 +194,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             vertexBuffer.vertex(matrix4f, (float) (OUTER * Math.cos(angle)), (float) (OUTER * Math.sin(angle)), 0).endVertex();
             vertexBuffer.vertex(matrix4f, (float) (INNER * Math.cos(angle)), (float) (INNER * Math.sin(angle)), 0).endVertex();
         }
-        vertexBuffer.end();
-        BufferUploader.end(vertexBuffer);
+        BufferUploader.drawWithShader(vertexBuffer.end());
     }
 
     public void updateSelection() {

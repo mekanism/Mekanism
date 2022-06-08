@@ -23,7 +23,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,8 +45,7 @@ public class MekanismAPI {
     public static final Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");
 
     @Nonnull
-    private static <T extends IForgeRegistryEntry<T>> Lazy<ResourceKey<? extends Registry<T>>> registryKey(
-          @SuppressWarnings("unused") @Nonnull Class<T> compileTimeTypeValidator, @Nonnull String path) {
+    private static <T> Lazy<ResourceKey<? extends Registry<T>>> registryKey(@SuppressWarnings("unused") @Nonnull Class<T> compileTimeTypeValidator, @Nonnull String path) {
         return Lazy.of(() -> ResourceKey.createRegistryKey(new ResourceLocation(MEKANISM_MODID, path)));
     }
 

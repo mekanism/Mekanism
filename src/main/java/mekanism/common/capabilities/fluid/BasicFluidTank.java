@@ -14,6 +14,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
@@ -172,7 +173,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         } else {
             //Throws a RuntimeException as specified is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
-            throw new RuntimeException("Invalid fluid for tank: " + stack.getFluid().getRegistryName() + " " + stack.getAmount());
+            throw new RuntimeException("Invalid fluid for tank: " + RegistryUtils.getName(stack.getFluid()) + " " + stack.getAmount());
         }
         onContentsChanged();
     }

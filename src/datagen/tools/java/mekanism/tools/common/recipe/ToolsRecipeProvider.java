@@ -17,6 +17,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.RegistryUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
@@ -160,7 +161,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
-            String baseNuggetFrom = nugget.getRegistryName().getPath() + "_from_";
+            String baseNuggetFrom = RegistryUtils.getName(nugget).getPath() + "_from_";
             RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(paxel), nugget, 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }

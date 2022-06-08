@@ -32,7 +32,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
 public class NBTUtils {
@@ -252,8 +251,7 @@ public class NBTUtils {
         }
     }
 
-    public static <REG extends IForgeRegistryEntry<REG>> void setRegistryEntryIfPresentElse(CompoundTag nbt, String key, IForgeRegistry<REG> registry,
-          Consumer<REG> setter, Runnable notPresent) {
+    public static <REG> void setRegistryEntryIfPresentElse(CompoundTag nbt, String key, IForgeRegistry<REG> registry, Consumer<REG> setter, Runnable notPresent) {
         setResourceLocationIfPresentElse(nbt, key, rl -> {
             REG reg = registry.getValue(rl);
             if (reg == null) {
@@ -274,7 +272,7 @@ public class NBTUtils {
         nbt.putInt(key, e.ordinal());
     }
 
-    public static <V extends IForgeRegistryEntry<V>> V readRegistryEntry(CompoundTag nbt, String key, IForgeRegistry<V> registry, V fallback) {
+    public static <V> V readRegistryEntry(CompoundTag nbt, String key, IForgeRegistry<V> registry, V fallback) {
         if (nbt.contains(key, Tag.TAG_STRING)) {
             ResourceLocation rl = ResourceLocation.tryParse(nbt.getString(key));
             if (rl != null) {
@@ -287,8 +285,8 @@ public class NBTUtils {
         return fallback;
     }
 
-    public static void writeRegistryEntry(CompoundTag nbt, String key, IForgeRegistryEntry<?> entry) {
-        ResourceLocation registryName = entry.getRegistryName();
+    public static <V> void writeRegistryEntry(CompoundTag nbt, String key, IForgeRegistry<V> registry, V entry) {
+        ResourceLocation registryName = registry.getKey(entry);
         if (registryName != null) {//Should not be null but validate it
             nbt.putString(key, registryName.toString());
         }

@@ -13,7 +13,6 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -86,7 +85,7 @@ public class CrTModExpansion {
         return getModSpecific(_this, MekanismAPI.robitSkinRegistry());
     }
 
-    private static <TYPE extends IForgeRegistryEntry<TYPE>> Collection<TYPE> getModSpecific(Mod mod, IForgeRegistry<TYPE> registry) {
+    private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, IForgeRegistry<TYPE> registry) {
         String modid = mod.id();
         return registry.getEntries().stream()
               .filter(entry -> entry.getKey().location().getNamespace().equals(modid))

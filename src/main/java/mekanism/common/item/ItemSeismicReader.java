@@ -15,7 +15,6 @@ import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -53,13 +52,13 @@ public class ItemSeismicReader extends ItemEnergized {
             return InteractionResultHolder.success(stack);
         }
         if (!WorldUtils.isChunkVibrated(new ChunkPos(player.blockPosition()), player.level)) {
-            player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS));
         } else {
             if (!player.isCreative()) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 FloatingLong energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyUsage, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyUsage)) {
-                    player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY), Util.NIL_UUID);
+                    player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
                     return InteractionResultHolder.consume(stack);
                 }
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);

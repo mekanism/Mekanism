@@ -20,15 +20,11 @@ public class ToolsDataGenerator {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        if (event.includeClient()) {
-            //Client side data generators
-            gen.addProvider(new ToolsLangProvider(gen));
-            gen.addProvider(new ToolsItemModelProvider(gen, existingFileHelper));
-        }
-        if (event.includeServer()) {
-            //Server side data generators
-            gen.addProvider(new ToolsTagProvider(gen, existingFileHelper));
-            gen.addProvider(new ToolsRecipeProvider(gen, existingFileHelper));
-        }
+        //Client side data generators
+        gen.addProvider(event.includeClient(), new ToolsLangProvider(gen));
+        gen.addProvider(event.includeClient(), new ToolsItemModelProvider(gen, existingFileHelper));
+        //Server side data generators
+        gen.addProvider(event.includeServer(), new ToolsTagProvider(gen, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ToolsRecipeProvider(gen, existingFileHelper));
     }
 }

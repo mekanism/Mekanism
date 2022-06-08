@@ -4,7 +4,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
@@ -16,6 +15,7 @@ import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Skeleton;
@@ -109,8 +109,8 @@ public class MekanismTools implements IModModule {
         }
     }
 
-    private void setEntityArmorWithChance(Random random, LivingEntity entity, IItemProvider sword, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
-          IItemProvider boots, ArmorSpawnChanceConfig chanceConfig) {
+    private void setEntityArmorWithChance(RandomSource random, LivingEntity entity, IItemProvider sword, IItemProvider helmet, IItemProvider chestplate,
+          IItemProvider leggings, IItemProvider boots, ArmorSpawnChanceConfig chanceConfig) {
         if (entity instanceof Zombie && random.nextDouble() < chanceConfig.swordChance.get()) {
             setStackIfEmpty(entity, EquipmentSlot.MAINHAND, sword.getItemStack());
         }
@@ -132,7 +132,7 @@ public class MekanismTools implements IModModule {
         LivingEntity entity = event.getEntityLiving();
         if (entity instanceof Zombie || entity instanceof Skeleton || entity instanceof Piglin) {
             //Don't bother calculating random numbers unless the instanceof checks pass
-            Random random = event.getWorld().getRandom();
+            RandomSource random = event.getWorld().getRandom();
             double chance = random.nextDouble();
             if (chance < MekanismToolsConfig.tools.armorSpawnRate.get()) {
                 //We can only spawn refined glowstone armor on piglins

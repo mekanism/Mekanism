@@ -16,7 +16,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -70,10 +69,9 @@ public class ItemConfigurationCard extends Item {
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
-                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, configCardAccess.getConfigurationDataType());
+                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, ForgeRegistries.BLOCK_ENTITIES, configCardAccess.getConfigurationDataType());
                     ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
-                    player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))),
-                          Util.NIL_UUID);
+                    player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))));
                 }
             } else {
                 CompoundTag data = getData(stack);
@@ -86,10 +84,10 @@ public class ItemConfigurationCard extends Item {
                     if (configCardAccess.isConfigurationDataCompatible(storedType)) {
                         configCardAccess.setConfigurationData(player, data);
                         configCardAccess.configurationDataSet();
-                        player.sendMessage(MekanismUtils.logFormat(EnumColor.DARK_GREEN, MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
-                              getConfigCardName(data))), Util.NIL_UUID);
+                        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.DARK_GREEN, MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
+                              getConfigCardName(data))));
                     } else {
-                        player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.CONFIG_CARD_UNEQUAL), Util.NIL_UUID);
+                        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.CONFIG_CARD_UNEQUAL));
                     }
                 }
             }

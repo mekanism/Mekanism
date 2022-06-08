@@ -24,7 +24,6 @@ import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -108,7 +107,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (!isRemote()) {
             FissionPortMode mode = getMode().getNext();
             setMode(mode);
-            player.sendMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)));
         }
         return InteractionResult.SUCCESS;
     }

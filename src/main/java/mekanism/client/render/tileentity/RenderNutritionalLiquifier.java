@@ -91,7 +91,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             Minecraft.getInstance().getItemRenderer().renderStatic(stack, TransformType.GROUND, light, overlayLight, matrix, renderer,
                   MathUtils.clampToInt(tile.getBlockPos().asLong()));
             matrix.popPose();
-            if (active && Minecraft.getInstance().options.particles != ParticleStatus.MINIMAL) {
+            if (active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
                 //Render eating particles
                 PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
                 if (!Minecraft.getInstance().isPaused()) {
@@ -100,7 +100,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                         pseudoParticles.lastTick = tile.getLevel().getGameTime();
                         pseudoParticles.particles.removeIf(PseudoParticle::tick);
                     }
-                    int rate = Minecraft.getInstance().options.particles == ParticleStatus.DECREASED ? 12 : 4;
+                    int rate = Minecraft.getInstance().options.particles().get() == ParticleStatus.DECREASED ? 12 : 4;
                     if (tile.getLevel().getGameTime() % rate == 0) {
                         pseudoParticles.particles.add(new PseudoParticle(tile.getLevel(), stack));
                     }

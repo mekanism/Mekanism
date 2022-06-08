@@ -311,7 +311,7 @@ public class SerializerHelper {
      */
     public static JsonElement serializeItemStack(@Nonnull ItemStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.ITEM, stack.getItem().getRegistryName().toString());
+        json.addProperty(JsonConstants.ITEM, ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
         if (stack.getCount() > 1) {
             json.addProperty(JsonConstants.COUNT, stack.getCount());
         }
@@ -330,7 +330,7 @@ public class SerializerHelper {
      */
     public static JsonElement serializeFluidStack(@Nonnull FluidStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.FLUID, stack.getFluid().getRegistryName().toString());
+        json.addProperty(JsonConstants.FLUID, ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString());
         json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
         if (stack.hasTag()) {
             json.addProperty(JsonConstants.NBT, stack.getTag().toString());

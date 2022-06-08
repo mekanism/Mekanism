@@ -12,7 +12,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
-import mekanism.common.registration.WrappedForgeDeferredRegister;
+import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
@@ -21,7 +21,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ItemDeferredRegister extends WrappedForgeDeferredRegister<Item> {
+public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
     private final List<IItemProvider> allItems = new ArrayList<>();
 

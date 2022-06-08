@@ -6,6 +6,7 @@ import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -19,7 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class NutritionalLiquifierIRecipe extends ItemStackToFluidRecipe {
 
     public NutritionalLiquifierIRecipe(Item item, ItemStackIngredient input, FluidStack output) {
-        this(Mekanism.rl("liquifier/" + item.getRegistryName().toString().replace(':', '/')), input, output);
+        this(Mekanism.rl("liquifier/" + RegistryUtils.getName(item).toString().replace(':', '/')), input, output);
     }
 
     public NutritionalLiquifierIRecipe(ResourceLocation id, ItemStackIngredient input, FluidStack output) {

@@ -9,6 +9,7 @@ import mekanism.common.resource.ore.OreType;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -43,10 +44,10 @@ public class BlockOre extends Block implements IHasDescription {
     }
 
     @Override
-    public int getExpDrop(BlockState state, LevelReader reader, BlockPos pos, int fortune, int silkTouch) {
+    public int getExpDrop(BlockState state, LevelReader reader, RandomSource random, BlockPos pos, int fortune, int silkTouch) {
         if (ore.getMaxExp() > 0 && silkTouch == 0) {
-            return Mth.nextInt(RANDOM, ore.getMinExp(), ore.getMaxExp());
+            return Mth.nextInt(random, ore.getMinExp(), ore.getMaxExp());
         }
-        return super.getExpDrop(state, reader, pos, fortune, silkTouch);
+        return super.getExpDrop(state, reader, random, pos, fortune, silkTouch);
     }
 }

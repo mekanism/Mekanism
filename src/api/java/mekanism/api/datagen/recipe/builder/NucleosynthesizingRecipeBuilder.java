@@ -62,7 +62,7 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
      * @param consumer Finished Recipe Consumer.
      */
     public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, output.getItem().getRegistryName());
+        build(consumer, output.getItem());
     }
 
     public class NucleosynthesizingRecipeResult extends RecipeResult {

@@ -50,6 +50,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -414,7 +415,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void animateTick(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Random random) {
+    public void animateTick(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull RandomSource random) {
         super.animateTick(state, world, pos, random);
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         if (tile instanceof ITileRadioactive radioactiveTile) {

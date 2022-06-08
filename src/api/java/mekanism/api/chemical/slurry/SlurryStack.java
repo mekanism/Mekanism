@@ -9,7 +9,7 @@ import mekanism.api.providers.ISlurryProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.IRegistryDelegate;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -35,13 +35,8 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
     }
 
     @Override
-    protected IRegistryDelegate<Slurry> getDelegate(Slurry slurry) {
-        if (MekanismAPI.slurryRegistry().getKey(slurry) == null) {
-            MekanismAPI.logger.fatal("Failed attempt to create a SlurryStack for an unregistered Slurry {} (type {})", slurry.getRegistryName(),
-                  slurry.getClass().getName());
-            throw new IllegalArgumentException("Cannot create a SlurryStack from an unregistered Slurry");
-        }
-        return slurry.delegate;
+    protected IForgeRegistry<Slurry> getRegistry() {
+        return MekanismAPI.slurryRegistry();
     }
 
     @Override

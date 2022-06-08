@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.type;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekanismItemContainerFactory;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,7 +55,7 @@ public class MekanismItemContainerType<ITEM extends Item, CONTAINER extends Abst
         if (type.isInstance(stack.getItem())) {
             return stack;
         }
-        throw new IllegalStateException("Client received invalid stack (" + stack.getItem().getRegistryName() + ") for item container.");
+        throw new IllegalStateException("Client received invalid stack (" + RegistryUtils.getName(stack.getItem()) + ") for item container.");
     }
 
     @FunctionalInterface

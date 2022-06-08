@@ -205,7 +205,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             ItemStack stack = new ItemStack(this);
             items.add(StorageUtils.getFilledEnergyVariant(stack, getMaxEnergy(stack)));
         }
@@ -325,7 +325,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
                     }
                 }
-                entity.gameEvent(GameEvent.ELYTRA_FREE_FALL);
+                entity.gameEvent(GameEvent.ELYTRA_GLIDE);
             }
         }
         return true;

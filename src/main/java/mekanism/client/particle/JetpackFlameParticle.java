@@ -19,7 +19,7 @@ public class JetpackFlameParticle extends FlameParticle {
 
     @Override
     public int getLightColor(float partialTick) {
-        return 190 + (int) (20F * (1.0F - Minecraft.getInstance().options.gamma));
+        return 190 + (int) (20F * (1.0F - Minecraft.getInstance().options.gamma().get().floatValue()));
     }
 
     @Override

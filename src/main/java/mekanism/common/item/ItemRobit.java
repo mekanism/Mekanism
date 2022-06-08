@@ -99,7 +99,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 robit.setSecurityMode(stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC));
                 robit.setSkin(getRobitSkin(stack), player);
                 world.addFreshEntity(robit);
-                world.gameEvent(player, GameEvent.ENTITY_PLACE, robit);
+                world.gameEvent(player, GameEvent.ENTITY_PLACE, robit.blockPosition());
                 stack.shrink(1);
             }
             return InteractionResult.sidedSuccess(world.isClientSide);

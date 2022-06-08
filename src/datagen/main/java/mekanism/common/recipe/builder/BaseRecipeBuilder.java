@@ -6,6 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,7 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     private String group;
 
     protected BaseRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
-        super(serializer.getRegistryName());
+        super(RegistryUtils.getName(serializer));
         this.result = result.asItem();
         this.count = count;
     }
@@ -34,7 +35,7 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, result.getRegistryName());
+        build(consumer, result);
     }
 
     protected abstract class BaseRecipeResult extends RecipeResult {
@@ -53,7 +54,7 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
 
         protected void serializeResult(JsonObject json) {
             JsonObject jsonResult = new JsonObject();
-            jsonResult.addProperty(JsonConstants.ITEM, result.getRegistryName().toString());
+            jsonResult.addProperty(JsonConstants.ITEM, RegistryUtils.getName(result).toString());
             if (count > 1) {
                 jsonResult.addProperty(JsonConstants.COUNT, count);
             }

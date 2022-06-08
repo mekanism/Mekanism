@@ -1,6 +1,7 @@
 package mekanism.common.network.to_server;
 
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
@@ -73,7 +74,7 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeVarInt(slotId);
-        buffer.writeRegistryId(moduleType);
+        buffer.writeRegistryId(MekanismAPI.moduleRegistry(), moduleType);
         buffer.writeVarInt(dataIndex);
         buffer.writeEnum(dataType);
         switch (dataType) {

@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.common.Mekanism;
+import mekanism.common.util.RegistryUtils;
 import mekanism.tools.client.ShieldTextures;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.model.ShieldModel;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Holder;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -53,7 +55,7 @@ public class RenderMekanismShieldItem extends MekanismISTER {
         } else if (item == ToolsItems.STEEL_SHIELD.asItem()) {
             textures = ShieldTextures.STEEL;
         } else {
-            Mekanism.logger.warn("Unknown item for mekanism shield renderer: {}", item.getRegistryName());
+            Mekanism.logger.warn("Unknown item for mekanism shield renderer: {}", RegistryUtils.getName(item));
             return;
         }
         Material material = textures.getBase();
@@ -62,7 +64,7 @@ public class RenderMekanismShieldItem extends MekanismISTER {
         VertexConsumer buffer = material.sprite().wrap(ItemRenderer.getFoilBufferDirect(renderer, shieldModel.renderType(material.atlasLocation()), true, stack.hasFoil()));
         if (stack.getTagElement(NBTConstants.BLOCK_ENTITY_TAG) != null) {
             shieldModel.handle().render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
-            List<Pair<BannerPattern, DyeColor>> list = BannerBlockEntity.createPatterns(ShieldItem.getColor(stack), BannerBlockEntity.getItemPatterns(stack));
+            List<Pair<Holder<BannerPattern>, DyeColor>> list = BannerBlockEntity.createPatterns(ShieldItem.getColor(stack), BannerBlockEntity.getItemPatterns(stack));
             BannerRenderer.renderPatterns(matrix, renderer, light, overlayLight, shieldModel.plate(), material, false, list);
         } else {
             shieldModel.renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);

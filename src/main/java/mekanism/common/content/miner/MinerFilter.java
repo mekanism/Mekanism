@@ -37,7 +37,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.REQUIRE_STACK, requiresReplacement);
         if (replaceTarget != Items.AIR) {
-            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, replaceTarget);
+            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, replaceTarget);
         }
         return nbtTags;
     }
@@ -52,7 +52,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeBoolean(requiresReplacement);
-        buffer.writeRegistryId(replaceTarget);
+        buffer.writeRegistryId(ForgeRegistries.ITEMS, replaceTarget);
     }
 
     @Override

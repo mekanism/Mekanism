@@ -1,14 +1,11 @@
 package mekanism.common.tag;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
@@ -23,13 +20,13 @@ import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
-import mekanism.common.DataGenJsonConstants;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.util.RegistryUtils;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -39,11 +36,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class BaseTagProvider implements DataProvider {
 
-    private final Map<TagType<?>, Map<TagKey<?>, Tag.Builder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<TagType<?>, Map<TagKey<?>, TagBuilder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
     private final Set<Block> knownHarvestRequirements = new HashSet<>();
     private final ExistingFileHelper existingFileHelper;
     private final DataGenerator gen;
@@ -71,7 +67,7 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     //Protected to allow for extensions to add their own supported types if they have one
-    protected <TYPE extends IForgeRegistryEntry<TYPE>> void addTagType(TagType<TYPE> tagType) {
+    protected <TYPE> void addTagType(TagType<TYPE> tagType) {
         supportedTagTypes.computeIfAbsent(tagType, type -> new Object2ObjectLinkedOpenHashMap<>());
     }
 
@@ -86,41 +82,26 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull HashCache cache) {
+    public void run(@Nonnull CachedOutput cache) {
         supportedTagTypes.values().forEach(Map::clear);
         registerTags();
         for (IBlockProvider blockProvider : getAllBlocks()) {
             Block block = blockProvider.getBlock();
             if (block.defaultBlockState().requiresCorrectToolForDrops() && !knownHarvestRequirements.contains(block)) {
-                throw new IllegalStateException("Missing harvest tool type for block '" + block.getRegistryName() +
-                                                "' that requires the correct tool for drops.");
+                throw new IllegalStateException("Missing harvest tool type for block '" + RegistryUtils.getName(block) + "' that requires the correct tool for drops.");
             }
         }
         supportedTagTypes.forEach((tagType, tagTypeMap) -> act(cache, tagType, tagTypeMap));
     }
 
-    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull HashCache cache, TagType<TYPE> tagType, Map<TagKey<?>, Tag.Builder> tagTypeMap) {
+    private <TYPE> void act(@Nonnull CachedOutput cache, TagType<TYPE> tagType, Map<TagKey<?>, TagBuilder> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
             //Create a dummy forge registry tags provider and pass all our collected data through to it
             new ForgeRegistryTagsProvider<>(gen, tagType.getRegistry(), modid, existingFileHelper) {
                 @Override
                 protected void addTags() {
-                    //Add each tag builder to the wrapped provider's builder, but wrap the builder so that we
-                    // make sure to first cleanup and remove excess/unused json components
-                    // Note: We only override the methods used by the TagsProvider rather than proxying everything back to the original tag builder
-                    tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.location(), new Tag.Builder() {
-                        @Nonnull
-                        @Override
-                        public JsonObject serializeToJson() {
-                            return cleanJsonTag(tagBuilder.serializeToJson());
-                        }
-
-                        @Nonnull
-                        @Override
-                        public Stream<Tag.BuilderEntry> getEntries() {
-                            return tagBuilder.getEntries();
-                        }
-                    }));
+                    //Add each tag builder to the wrapped provider's builder
+                    tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.location(), tagBuilder));
                 }
 
                 @Nonnull
@@ -132,20 +113,9 @@ public abstract class BaseTagProvider implements DataProvider {
         }
     }
 
-    private JsonObject cleanJsonTag(JsonObject tagAsJson) {
-        if (tagAsJson.has(DataGenJsonConstants.REPLACE)) {
-            //Strip out the optional "replace" entry from the tag if it is the default value
-            JsonPrimitive replace = tagAsJson.getAsJsonPrimitive(DataGenJsonConstants.REPLACE);
-            if (replace.isBoolean() && !replace.getAsBoolean()) {
-                tagAsJson.remove(DataGenJsonConstants.REPLACE);
-            }
-        }
-        return tagAsJson;
-    }
-
     //Protected to allow for extensions to add retrieve their own supported types if they have any
-    protected <TYPE extends IForgeRegistryEntry<TYPE>> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, TagKey<TYPE> tag) {
-        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> Tag.Builder.tag()), modid);
+    protected <TYPE> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, TagKey<TYPE> tag) {
+        return new ForgeRegistryTagBuilder<>(tagType.getRegistry(), supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> TagBuilder.create()), modid);
     }
 
     protected ForgeRegistryTagBuilder<Item> getItemBuilder(TagKey<Item> tag) {

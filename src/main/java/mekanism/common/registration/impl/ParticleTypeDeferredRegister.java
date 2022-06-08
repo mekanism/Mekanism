@@ -1,13 +1,13 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
-import mekanism.common.registration.WrappedForgeDeferredRegister;
+import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ParticleTypeDeferredRegister extends WrappedForgeDeferredRegister<ParticleType<?>> {
+public class ParticleTypeDeferredRegister extends WrappedDeferredRegister<ParticleType<?>> {
 
     public ParticleTypeDeferredRegister(String modid) {
         super(modid, ForgeRegistries.PARTICLE_TYPES);

@@ -37,7 +37,7 @@ public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends
     @Override
     public int hashCode() {
         int code = super.hashCode();
-        code = 31 * code + chemicalType.getTypeRegistryName().hashCode();
+        code = 31 * code + chemicalType.getType().hashCode();
         return code;
     }
 

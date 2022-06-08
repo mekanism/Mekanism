@@ -7,7 +7,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
-import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -29,8 +28,8 @@ public class ItemGeigerCounter extends Item {
         if (!player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
                 double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(player);
-                player.sendMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY,
-                      RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY,
+                      RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }

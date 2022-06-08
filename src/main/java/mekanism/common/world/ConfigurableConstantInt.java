@@ -3,13 +3,13 @@ package mekanism.common.world;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.resource.ore.OreType.OreVeinType;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
 
@@ -39,7 +39,7 @@ public class ConfigurableConstantInt extends IntProvider {
     }
 
     @Override
-    public int sample(@Nonnull Random random) {
+    public int sample(@Nonnull RandomSource random) {
         return getValue();
     }
 

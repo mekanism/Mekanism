@@ -18,6 +18,7 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -129,7 +130,7 @@ public class BasicInventorySlot implements IInventorySlot {
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
-            throw new RuntimeException("Invalid stack for slot: " + stack.getItem().getRegistryName() + " " + stack.getCount() + " " + stack.getTag());
+            throw new RuntimeException("Invalid stack for slot: " + RegistryUtils.getName(stack.getItem()) + " " + stack.getCount() + " " + stack.getTag());
         }
         onContentsChanged();
     }

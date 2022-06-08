@@ -16,7 +16,7 @@ import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -48,7 +48,7 @@ public class GuiTextField extends GuiElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
 
-        textField = new EditBox(getFont(), this.x, this.y, width, height, TextComponent.EMPTY);
+        textField = new EditBox(getFont(), this.x, this.y, width, height, Component.empty());
         textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {

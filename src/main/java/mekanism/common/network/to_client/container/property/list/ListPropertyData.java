@@ -44,6 +44,6 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
 
     protected abstract void writeListElement(FriendlyByteBuf buffer, TYPE value);
 
-    interface ListPropertyReader<TYPE> extends Function<Function<FriendlyByteBuf, TYPE>, List<TYPE>> {
+    interface ListPropertyReader<TYPE> extends Function<FriendlyByteBuf.Reader<TYPE>, List<TYPE>> {
     }
 }

@@ -15,7 +15,6 @@ import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tags.TagUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -73,7 +72,7 @@ public class ItemDictionary extends Item {
                     Set<ResourceLocation> fluidTags = fluidState.isEmpty() ? Collections.emptySet() : TagUtils.tagNames(fluidState.getTags());
                     Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : TagUtils.tagNames(ForgeRegistries.BLOCK_ENTITIES, tile.getType());
                     if (blockTags.isEmpty() && fluidTags.isEmpty() && tileTags.isEmpty()) {
-                        player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
+                        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
                     } else {
                         //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
@@ -129,7 +128,7 @@ public class ItemDictionary extends Item {
 
     private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (tags.isEmpty()) {
-            player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
         } else {
             sendTagsToPlayer(player, tagsFoundEntry, tags);
         }
@@ -137,9 +136,9 @@ public class ItemDictionary extends Item {
 
     private void sendTagsToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (!tags.isEmpty()) {
-            player.sendMessage(MekanismUtils.logFormat(tagsFoundEntry), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(tagsFoundEntry));
             for (ResourceLocation tag : tags) {
-                player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag));
             }
         }
     }

@@ -2,6 +2,7 @@ package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import mekanism.client.gui.IGuiWrapper;
@@ -10,7 +11,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 
 public class GuiElementHolder extends GuiScalableElement {
 
@@ -38,9 +38,8 @@ public class GuiElementHolder extends GuiScalableElement {
     public static void updateBackgroundColor() {
         //TODO: Try to do this in a more generic way. We don't directly use our ColorAtlas because we want to automatically
         // get it from the texture
-        try {
-            Resource resource = Minecraft.getInstance().getResourceManager().getResource(HOLDER);
-            BufferedImage img = ImageIO.read(resource.getInputStream());
+        try (InputStream stream = Minecraft.getInstance().getResourceManager().open(HOLDER)) {
+            BufferedImage img = ImageIO.read(stream);
             int rgb = img.getRGB(HOLDER_SIZE + 1, HOLDER_SIZE + 1);
             if (rgb >> 24 == 0) {
                 //Don't allow fully transparent colors, fallback to default color.

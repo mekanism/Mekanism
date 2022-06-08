@@ -10,7 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -70,11 +69,11 @@ public class CrTBracketDumpers {
         return getDump(registry, chemical -> getter.apply(chemical).getCommandString());
     }
 
-    private static <V extends IForgeRegistryEntry<V>> Collection<String> getDump(IForgeRegistry<V> registry, String bracket) {
-        return getDump(registry, v -> "<" + bracket + ":" + v.getRegistryName() + ">");
+    private static <V> Collection<String> getDump(IForgeRegistry<V> registry, String bracket) {
+        return getDump(registry, v -> "<" + bracket + ":" + registry.getKey(v) + ">");
     }
 
-    private static <V extends IForgeRegistryEntry<V>> Collection<String> getDump(IForgeRegistry<V> registry, Function<V, String> getter) {
+    private static <V> Collection<String> getDump(IForgeRegistry<V> registry, Function<V, String> getter) {
         return registry.getValues().stream().map(getter).toList();
     }
 }

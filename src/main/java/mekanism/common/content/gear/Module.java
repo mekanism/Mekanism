@@ -28,7 +28,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -292,7 +291,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public void displayModeChange(Player player, Component modeName, IHasTextComponent mode) {
-        player.sendMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, mode)), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, mode)));
     }
 
     @Override
@@ -304,6 +303,6 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         } else {
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.DARK_RED, MekanismLang.MODULE_DISABLED_LOWER);
         }
-        player.sendMessage(MekanismUtils.logFormat(message), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(message));
     }
 }

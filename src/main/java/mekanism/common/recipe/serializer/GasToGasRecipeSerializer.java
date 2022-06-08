@@ -15,9 +15,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
+public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
 

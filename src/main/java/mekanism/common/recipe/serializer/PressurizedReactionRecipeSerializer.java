@@ -19,9 +19,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReactionRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
+public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReactionRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
 

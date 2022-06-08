@@ -1,18 +1,17 @@
 package mekanism.additions.common.entity.baby;
 
-import java.util.Random;
 import javax.annotation.Nonnull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Stray;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.network.NetworkHooks;
@@ -22,7 +21,7 @@ public class EntityBabyStray extends Stray implements IBabyEntity {
     private static final EntityDataAccessor<Boolean> IS_CHILD = SynchedEntityData.defineId(EntityBabyStray.class, EntityDataSerializers.BOOLEAN);
 
     //Copy of stray spawn restrictions
-    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, Random random) {
+    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
         return checkMonsterSpawnRules(type, world, reason, pos, random) && (reason == MobSpawnType.SPAWNER || world.canSeeSky(pos));
     }
 
@@ -56,11 +55,11 @@ public class EntityBabyStray extends Stray implements IBabyEntity {
     }
 
     @Override
-    protected int getExperienceReward(@Nonnull Player player) {
+    public int getExperienceReward() {
         if (isBaby()) {
             xpReward = (int) (xpReward * 2.5F);
         }
-        return super.getExperienceReward(player);
+        return super.getExperienceReward();
     }
 
     @Override

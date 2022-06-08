@@ -91,7 +91,7 @@ public class PacketRobit implements IMekanismPacket {
         if (activeType == RobitPacketType.NAME) {
             buffer.writeUtf(name);
         } else if (activeType == RobitPacketType.SKIN) {
-            buffer.writeRegistryId(skin);
+            buffer.writeRegistryId(MekanismAPI.robitSkinRegistry(), skin);
         }
     }
 

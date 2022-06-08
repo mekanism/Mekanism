@@ -163,8 +163,7 @@ public class GuiUtils {
         vertexBuffer.vertex(matrix4f, x + width, y + height, zLevel).uv(sprite.getU1(), sprite.getV1()).endVertex();
         vertexBuffer.vertex(matrix4f, x + width, y, zLevel).uv(sprite.getU1(), sprite.getV0()).endVertex();
         vertexBuffer.vertex(matrix4f, x, y, zLevel).uv(sprite.getU0(), sprite.getV0()).endVertex();
-        vertexBuffer.end();
-        BufferUploader.end(vertexBuffer);
+        BufferUploader.drawWithShader(vertexBuffer.end());
         RenderSystem.disableBlend();
     }
 
@@ -240,8 +239,7 @@ public class GuiUtils {
                 vertexBuffer.vertex(matrix4f, x, y + maskTop, zLevel).uv(uLocalMin, vLocalMin).endVertex();
             }
         }
-        vertexBuffer.end();
-        BufferUploader.end(vertexBuffer);
+        BufferUploader.drawWithShader(vertexBuffer.end());
         if (blend) {
             RenderSystem.disableBlend();
         }

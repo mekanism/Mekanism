@@ -1,5 +1,9 @@
 package mekanism.additions.common.config;
 
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
+import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.common.config.BaseMekanismConfig;
@@ -7,6 +11,7 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -16,23 +21,28 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
 
     private final ForgeConfigSpec configSpec;
 
-    public final SpawnConfig babyCreeper;
-    public final SpawnConfig babyEnderman;
-    public final SpawnConfig babySkeleton;
-    public final SpawnConfig babyStray;
-    public final SpawnConfig babyWitherSkeleton;
+    private final Map<BabyType, SpawnConfig> spawnConfigs = new EnumMap<>(BabyType.class);
 
     AdditionsCommonConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Mekanism Additions Common Config. This config is not sync'd between server and client.").push("additions-common");
         builder.comment("Config options regarding spawning of entities.").push("spawning");
-        babyCreeper = new SpawnConfig(this, builder, "baby creepers", AdditionsEntityTypes.BABY_CREEPER, () -> EntityType.CREEPER);
-        babyEnderman = new SpawnConfig(this, builder, "baby endermen", AdditionsEntityTypes.BABY_ENDERMAN, () -> EntityType.ENDERMAN);
-        babySkeleton = new SpawnConfig(this, builder, "baby skeletons", AdditionsEntityTypes.BABY_SKELETON, () -> EntityType.SKELETON);
-        babyStray = new SpawnConfig(this, builder, "baby strays", AdditionsEntityTypes.BABY_STRAY, () -> EntityType.STRAY);
-        babyWitherSkeleton = new SpawnConfig(this, builder, "baby wither skeletons", AdditionsEntityTypes.BABY_WITHER_SKELETON, () -> EntityType.WITHER_SKELETON);
+        spawnConfigs.put(BabyType.CREEPER, new SpawnConfig(this, builder, "baby creepers", AdditionsEntityTypes.BABY_CREEPER, () -> EntityType.CREEPER));
+        spawnConfigs.put(BabyType.ENDERMAN, new SpawnConfig(this, builder, "baby endermen", AdditionsEntityTypes.BABY_ENDERMAN, () -> EntityType.ENDERMAN));
+        spawnConfigs.put(BabyType.SKELETON, new SpawnConfig(this, builder, "baby skeletons", AdditionsEntityTypes.BABY_SKELETON, () -> EntityType.SKELETON));
+        spawnConfigs.put(BabyType.STRAY, new SpawnConfig(this, builder, "baby strays", AdditionsEntityTypes.BABY_STRAY, () -> EntityType.STRAY));
+        spawnConfigs.put(BabyType.WITHER_SKELETON, new SpawnConfig(this, builder, "baby wither skeletons", AdditionsEntityTypes.BABY_WITHER_SKELETON,
+              () -> EntityType.WITHER_SKELETON));
         builder.pop(2);
         configSpec = builder.build();
+    }
+
+    public SpawnConfig getConfig(BabyType babyType) {
+        return spawnConfigs.get(babyType);
+    }
+
+    public Collection<SpawnConfig> getSpawnConfigs() {
+        return spawnConfigs.values();
     }
 
     @Override
@@ -89,7 +99,7 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
             this.biomeBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
                   .worldRestart(), "biomeBlackList", ForgeRegistries.BIOMES::containsKey);
             this.structureBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
-                  .worldRestart(), "structureBlackList", ForgeRegistries.STRUCTURE_FEATURES::containsKey);
+                  .worldRestart(), "structureBlackList", BuiltinRegistries.STRUCTURES::containsKey);
             builder.pop();
         }
     }

@@ -25,7 +25,6 @@ import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -209,7 +208,7 @@ public final class SecurityUtils implements ISecurityUtils {
                 if (!level.isClientSide) {
                     ownerObject.setOwnerUUID(player.getUUID());
                     Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID()));
-                    player.sendMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN), Util.NIL_UUID);
+                    player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));
                 }
                 return true;
             }
@@ -220,7 +219,7 @@ public final class SecurityUtils implements ISecurityUtils {
     @Override
     public void displayNoAccess(Player player) {
         Objects.requireNonNull(player, "Player may not be null.");
-        player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS));
     }
 
     public void addOwnerTooltip(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip) {

@@ -24,7 +24,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -52,7 +51,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public boolean isOverlay;
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height) {
-        this(gui, x, y, width, height, TextComponent.EMPTY);
+        this(gui, x, y, width, height, Component.empty());
     }
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, Component text) {

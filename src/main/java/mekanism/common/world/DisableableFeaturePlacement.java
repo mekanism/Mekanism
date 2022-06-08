@@ -11,6 +11,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -40,7 +41,7 @@ public class DisableableFeaturePlacement extends PlacementFilter {
     }
 
     @Override
-    protected boolean shouldPlace(@Nonnull PlacementContext context, @Nonnull Random random, @Nonnull BlockPos pos) {
+    protected boolean shouldPlace(@Nonnull PlacementContext context, @Nonnull RandomSource random, @Nonnull BlockPos pos) {
         if (enabledSupplier.getAsBoolean()) {
             //If we are enabled, and we are either not a retrogen feature or retrogen is enabled, generate
             return !retroGen || MekanismConfig.world.enableRegeneration.get();

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.common.DataGenJsonConstants;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -89,7 +90,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
         @Override
         protected void serializeResult(JsonObject json) {
             if (count == 1) {
-                json.addProperty(DataGenJsonConstants.RESULT, result.getRegistryName().toString());
+                json.addProperty(DataGenJsonConstants.RESULT, RegistryUtils.getName(result).toString());
             } else {
                 super.serializeResult(json);
             }

@@ -42,7 +42,7 @@ public class FluidRenderData extends RenderData {
     @Override
     public int hashCode() {
         int code = super.hashCode();
-        code = 31 * code + fluidType.getFluid().getRegistryName().hashCode();
+        code = 31 * code + fluidType.getFluid().hashCode();
         if (fluidType.hasTag()) {
             code = 31 * code + fluidType.getTag().hashCode();
         }

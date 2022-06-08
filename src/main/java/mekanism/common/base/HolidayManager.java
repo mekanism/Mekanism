@@ -11,7 +11,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
@@ -103,12 +102,12 @@ public final class HolidayManager {
         private void notify(Player player) {
             HolidayMessage message = getMessage(player);
             if (message != null) {
-                player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE,
-                      MekanismLang.GENERIC_SQUARE_BRACKET.translate(MekanismLang.MEKANISM)), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE,
+                      MekanismLang.GENERIC_SQUARE_BRACKET.translate(MekanismLang.MEKANISM)));
                 for (Component line : message.lines) {
-                    player.sendMessage(line, Util.NIL_UUID);
+                    player.sendSystemMessage(line);
                 }
-                player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE, "[=======]"));
             }
             hasNotified = true;
         }

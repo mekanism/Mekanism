@@ -1,20 +1,12 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.RegistryObject;
 
-public class DataSerializerRegistryObject<T> extends WrappedRegistryObject<DataSerializerEntry> {
+public class DataSerializerRegistryObject<T> extends WrappedRegistryObject<EntityDataSerializer<T>> {
 
-    public DataSerializerRegistryObject(RegistryObject<DataSerializerEntry> registryObject) {
+    public DataSerializerRegistryObject(RegistryObject<EntityDataSerializer<T>> registryObject) {
         super(registryObject);
-    }
-
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    public EntityDataSerializer<T> getSerializer() {
-        return (EntityDataSerializer<T>) get().getSerializer();
     }
 }

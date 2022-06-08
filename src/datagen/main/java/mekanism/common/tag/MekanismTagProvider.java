@@ -65,7 +65,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         return MekanismBlocks.BLOCKS.getAllBlocks();
     }
 
-
     @Override
     protected void registerTags() {
         addProcessedResources();

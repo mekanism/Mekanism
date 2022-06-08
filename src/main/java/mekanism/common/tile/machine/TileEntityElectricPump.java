@@ -47,7 +47,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -257,7 +256,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             recurringNodes.add(pos);
         }
         fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL);
-        level.gameEvent(GameEvent.FLUID_PICKUP, pos);
+        level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
     }
 
     private boolean validFluid(@Nonnull FluidStack fluidStack, boolean recheckSize) {
@@ -308,7 +307,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public InteractionResult onSneakRightClick(Player player) {
         reset();
-        player.sendMessage(MekanismUtils.logFormat(MekanismLang.PUMP_RESET), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.PUMP_RESET));
         return InteractionResult.SUCCESS;
     }
 

@@ -4,20 +4,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
-import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
@@ -68,7 +64,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -108,8 +103,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
  * @author AidanBrady
  */
 public final class MekanismUtils {
-
-    public static final Codec<Direction> DIRECTION_CODEC = StringRepresentable.fromEnum(Direction::values, Direction::byName);
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
 
@@ -155,7 +148,7 @@ public final class MekanismUtils {
         Item item = stack.getItem();
         String modid = item.getCreatorModId(stack);
         if (modid == null) {
-            ResourceLocation registryName = item.getRegistryName();
+            ResourceLocation registryName = RegistryUtils.getName(item);
             if (registryName == null) {
                 Mekanism.logger.error("Unexpected null registry name for item of class type: {}", item.getClass().getSimpleName());
                 return "";
@@ -512,6 +505,12 @@ public final class MekanismUtils {
 
     public static CraftingContainer getDummyCraftingInv() {
         AbstractContainerMenu tempContainer = new AbstractContainerMenu(MenuType.CRAFTING, 1) {
+            @Nonnull
+            @Override
+            public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+                return ItemStack.EMPTY;
+            }
+
             @Override
             public boolean stillValid(@Nonnull Player player) {
                 return false;

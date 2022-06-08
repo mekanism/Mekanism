@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -76,7 +77,7 @@ public class TileTransitRequest extends TransitRequest {
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
                         Mekanism.logger.warn("An inventory's returned content {} does not line up with TileTransitRequest's prediction.", stackable ? "count" : "type");
                         Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", getItemType().getStack(), toUse, ret, slot);
-                        Mekanism.logger.warn("Tile: {} {} {}", tile.getType().getRegistryName(), tile.getBlockPos(), side);
+                        Mekanism.logger.warn("Tile: {} {} {}", RegistryUtils.getName(tile.getType()), tile.getBlockPos(), side);
                     }
                     amount -= toUse;
                     totalCount -= toUse;

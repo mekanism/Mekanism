@@ -1,6 +1,5 @@
 package mekanism.common.lib.radiation.capability;
 
-import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.capability.IRadiationEntity;
@@ -18,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,7 +45,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             return;
         }
 
-        Random rand = entity.level.getRandom();
+        RandomSource rand = entity.level.getRandom();
         double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);

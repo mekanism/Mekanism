@@ -120,7 +120,7 @@ public class FluidDeferredRegister {
               ItemDeferredRegister.getMekBaseProperties().stacksTo(1).craftRemainder(Items.BUCKET))));
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new LiquidBlock(fluidRegistryObject::getStillFluid,
-              BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops())));
+              BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable())));
         allFluids.add(fluidRegistryObject);
         return fluidRegistryObject;
     }

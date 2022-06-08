@@ -411,7 +411,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
-                player.sendMessage(result.getResultText(), Util.NIL_UUID);
+                player.sendSystemMessage(result.getResultText());
                 return InteractionResult.sidedSuccess(isRemote());
             }
         }

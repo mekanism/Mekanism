@@ -6,6 +6,7 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.network.BasePacketHandler;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,7 +29,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public boolean canFilter(BlockState state) {
-        return WildcardMatcher.matches(modID, state.getBlock().getRegistryName().getNamespace());
+        return WildcardMatcher.matches(modID, RegistryUtils.getName(state.getBlock()).getNamespace());
     }
 
     @Override

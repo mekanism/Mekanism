@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class MekanismImageButton extends MekanismButton {
@@ -34,7 +34,7 @@ public class MekanismImageButton extends MekanismButton {
     }
 
     public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource, Runnable onPress, IHoverable onHover) {
-        super(gui, x, y, width, height, TextComponent.EMPTY, onPress, onHover);
+        super(gui, x, y, width, height, Component.empty(), onPress, onHover);
         this.resourceLocation = resource;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;

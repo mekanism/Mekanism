@@ -109,8 +109,7 @@ public class GuiColorWindow extends GuiWindow {
         buffer.vertex(matrix4f, x + width, y + height, 0).color(br.rf(), br.gf(), br.bf(), br.af()).endVertex();
         buffer.vertex(matrix4f, x + width, y, 0).color(tr.rf(), tr.gf(), tr.bf(), tr.af()).endVertex();
         buffer.vertex(matrix4f, x, y, 0).color(tl.rf(), tl.gf(), tl.bf(), tl.af()).endVertex();
-        buffer.end();
-        BufferUploader.end(buffer);
+        BufferUploader.drawWithShader(buffer.end());
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }

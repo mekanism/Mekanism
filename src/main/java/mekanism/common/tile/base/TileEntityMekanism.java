@@ -116,6 +116,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
@@ -127,6 +128,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -326,6 +328,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return blockProvider.getBlock();
     }
 
+    public ResourceLocation getBlockTypeRegistryName() {
+        return blockProvider.getRegistryName();
+    }
+
     /**
      * Should data related to the given type be persisted in this tile save
      */
@@ -452,7 +458,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @SuppressWarnings("ConstantConditions")
     public Component getDisplayName() {
         if (isNameable()) {
-            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockTypeRegistryName()));
         }
         return TextComponentUtil.build(getBlockType());
     }
@@ -853,7 +859,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 // but double check just in case before logging
                 Mekanism.logger.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
                                      + "things will probably not work correctly. This is almost certainly due to another mod incorrectly "
-                                     + "trying to move this tile and not properly updating the position.", getType().getRegistryName(), worldPosition, level);
+                                     + "trying to move this tile and not properly updating the position.", RegistryUtils.getName(getType()), worldPosition, level);
             }
         }
         //TODO: Remove, give it some better default, or allow it to be null
@@ -1261,7 +1267,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             // If this machine isn't fully muffled, and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
-                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), getSoundPos());
+                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again

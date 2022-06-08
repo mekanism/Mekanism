@@ -16,12 +16,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.tags.IReverseTag;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryEntry<CHEMICAL> implements IChemicalProvider<CHEMICAL> {
+public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements IChemicalProvider<CHEMICAL> {
 
     private final ChemicalTags<CHEMICAL> chemicalTags;
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
@@ -198,4 +197,10 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
      * @return {@code true} if this chemical is the empty instance, {@code false} otherwise.
      */
     public abstract boolean isEmptyType();
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        //TODO - 1.19: FIXME this needs to be implemented
+        throw new UnsupportedOperationException("IMPLEMENT ME");
+    }
 }

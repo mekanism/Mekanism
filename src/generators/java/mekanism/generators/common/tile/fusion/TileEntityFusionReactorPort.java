@@ -26,7 +26,6 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -108,7 +107,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.sendMessage(MekanismUtils.logFormat(GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))));
         }
         return InteractionResult.SUCCESS;
     }

@@ -15,23 +15,17 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.ISlurryHandler;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.gear.ModuleData;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
-import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.common.base.IModModule;
@@ -87,6 +81,7 @@ import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
+import mekanism.common.registries.MekanismBiomeModifierSerializers;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataSerializers;
@@ -110,13 +105,11 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
-import mekanism.common.world.GenHandler;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
@@ -126,7 +119,6 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -143,6 +135,8 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -217,7 +211,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, GenHandler::onBiomeLoad);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerCapabilities);
@@ -237,21 +230,17 @@ public class Mekanism {
         MekanismPlacementModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismFeatures.SETUP_FEATURES.register(modEventBus);
+        MekanismBiomeModifierSerializers.BIOME_MODIFIER_SERIALIZERS.register(modEventBus);
         MekanismRecipeType.RECIPE_TYPES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
-        MekanismGases.GASES.createAndRegister(modEventBus, Gas.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, InfuseType.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, Pigment.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, Slurry.class, builder -> builder.hasTags().setDefaultKey(rl("empty")));
-        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, RobitSkin.class, builder -> builder.setDefaultKey(rl("robit")));
-        //noinspection rawtypes,unchecked
-        MekanismModules.MODULES.createAndRegister(modEventBus, (Class) ModuleData.class);
-        modEventBus.addGenericListener(Gas.class, this::registerGases);
-        modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
-        modEventBus.addGenericListener(Pigment.class, this::registerPigments);
-        modEventBus.addGenericListener(Slurry.class, this::registerSlurries);
-        modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
+        MekanismGases.GASES.createAndRegisterChemical(modEventBus);
+        MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterChemical(modEventBus);
+        MekanismPigments.PIGMENTS.createAndRegisterChemical(modEventBus);
+        MekanismSlurries.SLURRIES.createAndRegisterChemical(modEventBus);
+        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, builder -> builder.setDefaultKey(rl("robit")));
+        MekanismModules.MODULES.createAndRegister(modEventBus);
+        modEventBus.addListener(this::registerEventListener);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
         packetHandler = new PacketHandler();
@@ -270,12 +259,8 @@ public class Mekanism {
                     crtModEventBus = modContainer.getEventBus();
                 }
             }
-            //Register these at lowest priority to try and ensure they get later ids in the chemical registries
-            crtModEventBus.addGenericListener(Gas.class, EventPriority.LOWEST, CrTContentUtils::registerCrTGases);
-            crtModEventBus.addGenericListener(InfuseType.class, EventPriority.LOWEST, CrTContentUtils::registerCrTInfuseTypes);
-            crtModEventBus.addGenericListener(Pigment.class, EventPriority.LOWEST, CrTContentUtils::registerCrTPigments);
-            crtModEventBus.addGenericListener(Slurry.class, EventPriority.LOWEST, CrTContentUtils::registerCrTSlurries);
-            crtModEventBus.addGenericListener(RobitSkin.class, EventPriority.LOWEST, CrTContentUtils::registerCrTRobitSkins);
+            //Register our CrT listener at lowest priority to try and ensure they get later ids than our normal registries
+            crtModEventBus.addListener(EventPriority.LOWEST, CrTContentUtils::registerCrTContent);
         }
     }
 
@@ -283,29 +268,17 @@ public class Mekanism {
         return instance.packetHandler;
     }
 
-    //Register the empty chemicals
-    private void registerGases(RegistryEvent.Register<Gas> event) {
-        MekanismAPI.EMPTY_GAS.setRegistryName(rl("empty"));
-        event.getRegistry().register(MekanismAPI.EMPTY_GAS);
-    }
-
-    private void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
-        MekanismAPI.EMPTY_INFUSE_TYPE.setRegistryName(rl("empty"));
-        event.getRegistry().register(MekanismAPI.EMPTY_INFUSE_TYPE);
-    }
-
-    private void registerPigments(RegistryEvent.Register<Pigment> event) {
-        MekanismAPI.EMPTY_PIGMENT.setRegistryName(rl("empty"));
-        event.getRegistry().register(MekanismAPI.EMPTY_PIGMENT);
-    }
-
-    private void registerSlurries(RegistryEvent.Register<Slurry> event) {
-        MekanismAPI.EMPTY_SLURRY.setRegistryName(rl("empty"));
-        event.getRegistry().register(MekanismAPI.EMPTY_SLURRY);
-    }
-
-    private void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
+    private void registerEventListener(RegisterEvent event) {
+        //Register the empty chemicals
+        ResourceLocation emptyName = rl("empty");
+        event.register(MekanismAPI.gasRegistryName(), emptyName, () -> MekanismAPI.EMPTY_GAS);
+        event.register(MekanismAPI.infuseTypeRegistryName(), emptyName, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
+        event.register(MekanismAPI.pigmentRegistryName(), emptyName, () -> MekanismAPI.EMPTY_PIGMENT);
+        event.register(MekanismAPI.slurryRegistryName(), emptyName, () -> MekanismAPI.EMPTY_SLURRY);
+        //Register our custom serializer condition
+        if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+            CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
+        }
     }
 
     public static ResourceLocation rl(String path) {

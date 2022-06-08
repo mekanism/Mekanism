@@ -25,7 +25,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -621,7 +620,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();
-            player.sendMessage(MekanismUtils.logFormat(MekanismLang.REDSTONE_SENSITIVITY.translate(EnumColor.INDIGO, OnOff.of(redstoneReactive))), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.REDSTONE_SENSITIVITY.translate(EnumColor.INDIGO, OnOff.of(redstoneReactive))));
         }
         return InteractionResult.SUCCESS;
     }

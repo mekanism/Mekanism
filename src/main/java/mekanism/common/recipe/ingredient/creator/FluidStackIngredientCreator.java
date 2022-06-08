@@ -24,6 +24,7 @@ import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.tags.TagUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -217,7 +218,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, fluidInstance.getAmount());
-            json.addProperty(JsonConstants.FLUID, fluidInstance.getFluid().getRegistryName().toString());
+            json.addProperty(JsonConstants.FLUID, RegistryUtils.getName(fluidInstance.getFluid()).toString());
             if (fluidInstance.hasTag()) {
                 json.addProperty(JsonConstants.NBT, fluidInstance.getTag().toString());
             }

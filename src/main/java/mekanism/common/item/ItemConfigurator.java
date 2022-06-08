@@ -97,8 +97,8 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
                         DataType dataType = info.getDataType(relativeSide);
                         if (!player.isShiftKeyDown()) {
-                            player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
-                                  dataType.getColor().getColoredName())), Util.NIL_UUID);
+                            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
+                                  dataType.getColor().getColoredName())));
                         } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                             return InteractionResult.FAIL;
                         } else {
@@ -113,8 +113,8 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                             DataType old = dataType;
                             dataType = info.incrementDataType(relativeSide);
                             if (dataType != old) {
-                                player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType,
-                                      dataType.getColor().getColoredName())), Util.NIL_UUID);
+                                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType,
+                                      dataType.getColor().getColoredName())));
                                 config.getConfig().sideChanged(transmissionType, relativeSide);
                             }
                         }
@@ -200,7 +200,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
         if (mode != newMode) {
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURE_STATE.translate(newMode)), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURE_STATE.translate(newMode)));
             }
         }
     }

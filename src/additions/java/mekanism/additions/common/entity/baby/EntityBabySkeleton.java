@@ -10,7 +10,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraftforge.network.NetworkHooks;
@@ -49,11 +48,11 @@ public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
     }
 
     @Override
-    protected int getExperienceReward(@Nonnull Player player) {
+    public int getExperienceReward() {
         if (isBaby()) {
             xpReward = (int) (xpReward * 2.5F);
         }
-        return super.getExperienceReward(player);
+        return super.getExperienceReward();
     }
 
     @Override

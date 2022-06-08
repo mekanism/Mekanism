@@ -101,7 +101,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
             boolean newState = !getFlowing(stack);
             setFlowing(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FLOWING.translate(OnOff.of(newState, true))), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.FLOWING.translate(OnOff.of(newState, true))));
             }
         }
     }

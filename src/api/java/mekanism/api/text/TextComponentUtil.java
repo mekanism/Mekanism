@@ -10,8 +10,6 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -127,8 +125,8 @@ public class TextComponentUtil {
      *
      * @return String Text Component.
      */
-    public static TextComponent getString(String component) {
-        return new TextComponent(cleanString(component));
+    public static MutableComponent getString(String component) {
+        return Component.literal(cleanString(component));
     }
 
     /**
@@ -151,8 +149,8 @@ public class TextComponentUtil {
      *
      * @return Translation Text Component.
      */
-    public static TranslatableComponent translate(String key, Object... args) {
-        return new TranslatableComponent(key, args);
+    public static MutableComponent translate(String key, Object... args) {
+        return Component.translatable(key, args);
     }
 
     /**
@@ -164,7 +162,7 @@ public class TextComponentUtil {
      *
      * @return Translation Text Component.
      */
-    public static TranslatableComponent smartTranslate(String key, Object... components) {
+    public static MutableComponent smartTranslate(String key, Object... components) {
         if (components.length == 0) {
             //If we don't have any args just short circuit to creating the translation key
             return translate(key);

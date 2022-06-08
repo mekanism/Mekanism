@@ -65,7 +65,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.freeRunnerMaxEnergy.get()));
         }
     }
@@ -120,7 +120,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         if (mode != newMode) {
             setMode(stack, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode)));
             }
         }
     }

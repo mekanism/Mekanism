@@ -8,6 +8,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.registration.impl.FluidRegistryObject;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
@@ -48,7 +49,7 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
     }
 
     protected String name(Block block) {
-        return block.getRegistryName().getPath();
+        return RegistryUtils.getName(block).getPath();
     }
 
     protected void registerFluidBlockStates(List<FluidRegistryObject<?, ?, ?, ?>> fluidROs) {

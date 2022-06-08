@@ -9,15 +9,15 @@ import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
-import com.google.gson.Gson;
+import com.google.common.hash.Hashing;
+import com.google.common.hash.HashingOutputStream;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,9 +71,9 @@ import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.Sin
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.GsonHelper;
@@ -271,7 +271,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull HashCache cache) {
+    public void run(@Nonnull CachedOutput cache) {
         examples.clear();
         addExamples();
         for (Map.Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
@@ -431,17 +431,15 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     /**
-     * Basically a copy of {@link DataProvider#save(Gson, HashCache, JsonElement, Path)} but it takes the contents as a string instead of serializes json using GSON.
+     * Basically a copy of {@link DataProvider#saveStable(CachedOutput, JsonElement, Path)} but it takes the contents as a string instead of serializes json using GSON.
      */
-    private static void save(HashCache cache, String contents, Path path) throws IOException {
-        String sha1 = SHA1.hashUnencodedChars(contents).toString();
-        if (!Objects.equals(cache.getHash(path), sha1) || !Files.exists(path)) {
-            Files.createDirectories(path.getParent());
-            try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
-                bufferedwriter.write(contents);
-            }
+    @SuppressWarnings("UnstableApiUsage")
+    private static void save(CachedOutput cache, String contents, Path path) throws IOException {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
+            hashingOutputStream.write(contents.getBytes(StandardCharsets.UTF_8));
+            cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
         }
-        cache.putNew(path, sha1);
     }
 
     private static boolean isValidNamespace(String namespaceIn) {

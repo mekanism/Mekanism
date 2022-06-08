@@ -36,7 +36,6 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import org.openzen.zencode.java.ZenCodeType;
 
 public class ParamNameMapper extends AbstractProcessor {
 
@@ -63,7 +62,8 @@ public class ParamNameMapper extends AbstractProcessor {
         String mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "mekanism");
         if (mekModule.equals("mekanism")) {
             scanners = Set.of(
-                  new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class),
+                  //TODO - 1.19: Re-enable when CrT updates
+                  //new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class),
                   computer(mekModule)
             );
         } else {

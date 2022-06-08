@@ -5,21 +5,24 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
+import mekanism.api.robit.RobitSkin;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegistryEntry<ModuleData<?>> implements IModuleDataProvider<MODULE> {
+public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModuleDataProvider<MODULE> {
 
     private final NonNullSupplier<MODULE> supplier;
     private final IItemProvider itemProvider;
@@ -159,6 +162,13 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
             descriptionTranslationKey = Util.makeDescriptionId("description", getRegistryName());
         }
         return descriptionTranslationKey;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        //TODO - 1.19: Re-evaluate
+        IForgeRegistry<ModuleData<?>> registry = MekanismAPI.moduleRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 
     /**

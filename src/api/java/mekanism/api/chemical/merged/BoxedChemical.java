@@ -126,10 +126,10 @@ public class BoxedChemical implements IHasTextComponent {
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
         switch (chemicalType) {
-            case GAS -> buffer.writeRegistryId((Gas) chemical);
-            case INFUSION -> buffer.writeRegistryId((InfuseType) chemical);
-            case PIGMENT -> buffer.writeRegistryId((Pigment) chemical);
-            case SLURRY -> buffer.writeRegistryId((Slurry) chemical);
+            case GAS -> buffer.writeRegistryId(MekanismAPI.gasRegistry(), (Gas) chemical);
+            case INFUSION -> buffer.writeRegistryId(MekanismAPI.infuseTypeRegistry(), (InfuseType) chemical);
+            case PIGMENT -> buffer.writeRegistryId(MekanismAPI.pigmentRegistry(), (Pigment) chemical);
+            case SLURRY -> buffer.writeRegistryId(MekanismAPI.slurryRegistry(), (Slurry) chemical);
         }
     }
 

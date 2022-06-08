@@ -35,7 +35,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -237,8 +236,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         if (mode != newMode) {
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.DISASSEMBLER_MODE_CHANGE.translate(EnumColor.INDIGO, newMode, EnumColor.AQUA,
-                      newMode.getEfficiency())), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DISASSEMBLER_MODE_CHANGE.translate(EnumColor.INDIGO, newMode, EnumColor.AQUA,
+                      newMode.getEfficiency())));
             }
         }
     }

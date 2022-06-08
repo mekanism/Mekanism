@@ -9,7 +9,7 @@ import mekanism.api.providers.IPigmentProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.IRegistryDelegate;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -35,13 +35,8 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
     }
 
     @Override
-    protected IRegistryDelegate<Pigment> getDelegate(Pigment pigment) {
-        if (MekanismAPI.pigmentRegistry().getKey(pigment) == null) {
-            MekanismAPI.logger.fatal("Failed attempt to create a PigmentStack for an unregistered Pigment {} (type {})", pigment.getRegistryName(),
-                  pigment.getClass().getName());
-            throw new IllegalArgumentException("Cannot create a PigmentStack from an unregistered Pigment");
-        }
-        return pigment.delegate;
+    protected IForgeRegistry<Pigment> getRegistry() {
+        return MekanismAPI.pigmentRegistry();
     }
 
     @Override

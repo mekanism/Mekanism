@@ -141,12 +141,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
-    private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.getSerializer());
+    private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.get());
     private static final EntityDataAccessor<String> OWNER_NAME = define(EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.getSerializer());
+    private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.get());
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DROP_PICKUP = define(EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<RobitSkin> SKIN = define(MekanismDataSerializers.<RobitSkin>getRegistryEntrySerializer());
+    private static final EntityDataAccessor<RobitSkin> SKIN = define(MekanismDataSerializers.ROBIT_SKIN.get());
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -476,7 +476,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
-        NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SKIN, getSkin());
+        NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistry(), getSkin());
     }
 
     @Override
