@@ -103,7 +103,7 @@ public class PacketRobit implements IMekanismPacket {
         if (activeType == RobitPacketType.NAME) {
             name = BasePacketHandler.readString(buffer).trim();
         } else if (activeType == RobitPacketType.SKIN) {
-            skin = buffer.readRegistryId();
+            skin = buffer.readRegistryIdSafe(RobitSkin.class);
         }
         return new PacketRobit(activeType, entityId, name, skin);
     }

@@ -38,6 +38,6 @@ public class PacketRemoveModule implements IMekanismPacket {
     }
 
     public static PacketRemoveModule decode(FriendlyByteBuf buffer) {
-        return new PacketRemoveModule(buffer.readBlockPos(), buffer.readRegistryId());
+        return new PacketRemoveModule(buffer.readBlockPos(), buffer.readRegistryIdSafe(ModuleData.class));
     }
 }

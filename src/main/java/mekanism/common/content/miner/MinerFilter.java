@@ -58,7 +58,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     @Override
     public void read(FriendlyByteBuf dataStream) {
         requiresReplacement = dataStream.readBoolean();
-        replaceTarget = dataStream.readRegistryId();
+        replaceTarget = dataStream.readRegistryIdSafe(Item.class);
     }
 
     @Override

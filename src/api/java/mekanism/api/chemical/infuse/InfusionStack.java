@@ -67,12 +67,11 @@ public final class InfusionStack extends ChemicalStack<InfuseType> {
     }
 
     public static InfusionStack readFromPacket(FriendlyByteBuf buf) {
-        InfuseType infuseType = buf.readRegistryId();
-        long amount = buf.readVarLong();
+        InfuseType infuseType = buf.readRegistryIdSafe(InfuseType.class);
         if (infuseType.isEmptyType()) {
             return EMPTY;
         }
-        return new InfusionStack(infuseType, amount);
+        return new InfusionStack(infuseType, buf.readVarLong());
     }
 
     /**

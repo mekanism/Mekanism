@@ -72,12 +72,11 @@ public final class GasStack extends ChemicalStack<Gas> {
     }
 
     public static GasStack readFromPacket(FriendlyByteBuf buf) {
-        Gas gas = buf.readRegistryId();
-        long amount = buf.readVarLong();
+        Gas gas = buf.readRegistryIdSafe(Gas.class);
         if (gas.isEmptyType()) {
             return EMPTY;
         }
-        return new GasStack(gas, amount);
+        return new GasStack(gas, buf.readVarLong());
     }
 
     /**

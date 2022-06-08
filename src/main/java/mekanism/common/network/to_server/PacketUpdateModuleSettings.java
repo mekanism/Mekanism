@@ -85,7 +85,7 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
 
     public static PacketUpdateModuleSettings decode(FriendlyByteBuf buffer) {
         int slotId = buffer.readVarInt();
-        ModuleData<?> moduleType = buffer.readRegistryId();
+        ModuleData<?> moduleType = buffer.readRegistryIdSafe(ModuleData.class);
         int dataIndex = buffer.readVarInt();
         ModuleDataType dataType = buffer.readEnum(ModuleDataType.class);
         Object data = switch (dataType) {

@@ -67,12 +67,11 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
     }
 
     public static PigmentStack readFromPacket(FriendlyByteBuf buf) {
-        Pigment pigment = buf.readRegistryId();
-        long amount = buf.readVarLong();
+        Pigment pigment = buf.readRegistryIdSafe(Pigment.class);
         if (pigment.isEmptyType()) {
             return EMPTY;
         }
-        return new PigmentStack(pigment, amount);
+        return new PigmentStack(pigment, buf.readVarLong());
     }
 
     /**

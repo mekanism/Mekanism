@@ -67,12 +67,11 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
     }
 
     public static SlurryStack readFromPacket(FriendlyByteBuf buf) {
-        Slurry slurry = buf.readRegistryId();
-        long amount = buf.readVarLong();
+        Slurry slurry = buf.readRegistryIdSafe(Slurry.class);
         if (slurry.isEmptyType()) {
             return EMPTY;
         }
-        return new SlurryStack(slurry, amount);
+        return new SlurryStack(slurry, buf.readVarLong());
     }
 
     /**

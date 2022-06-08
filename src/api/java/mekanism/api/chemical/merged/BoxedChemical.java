@@ -54,10 +54,10 @@ public class BoxedChemical implements IHasTextComponent {
     public static BoxedChemical read(FriendlyByteBuf buffer) {
         ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
         return new BoxedChemical(chemicalType, switch (chemicalType) {
-            case GAS -> (Gas) buffer.readRegistryId();
-            case INFUSION -> (InfuseType) buffer.readRegistryId();
-            case PIGMENT -> (Pigment) buffer.readRegistryId();
-            case SLURRY ->  (Slurry) buffer.readRegistryId();
+            case GAS -> buffer.readRegistryIdSafe(Gas.class);
+            case INFUSION -> buffer.readRegistryIdSafe(InfuseType.class);
+            case PIGMENT -> buffer.readRegistryIdSafe(Pigment.class);
+            case SLURRY ->  buffer.readRegistryIdSafe(Slurry.class);
         });
     }
 
