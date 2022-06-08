@@ -1,28 +1,28 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:robit"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    },
+    "P": {
+      "tag": "mekanism:personal_storage"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     " S ",
     "EAE",
     "IPI"
   ],
-  "key": {
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "S": {
-      "tag": "forge:ingots/steel"
-    },
-    "I": {
-      "tag": "forge:ingots/refined_obsidian"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "P": {
-      "tag": "mekanism:personal_storage"
-    }
+  "result": {
+    "item": "mekanism:robit"
   }
 }

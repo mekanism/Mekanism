@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:hazmat_boots"
+  "key": {
+    "D": {
+      "tag": "forge:dyes/black"
+    },
+    "I": {
+      "tag": "forge:ingots/lead"
+    }
   },
   "pattern": [
     "I I",
     "IDI"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/lead"
-    },
-    "D": {
-      "tag": "forge:dyes/black"
-    }
+  "result": {
+    "item": "mekanism:hazmat_boots"
   }
 }

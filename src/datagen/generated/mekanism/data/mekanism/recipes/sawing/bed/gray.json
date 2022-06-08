@@ -6,12 +6,12 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:oak_planks",
-    "count": 3
+    "count": 3,
+    "item": "minecraft:oak_planks"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:gray_wool",
-    "count": 3
-  },
-  "secondaryChance": 1.0
+    "count": 3,
+    "item": "minecraft:gray_wool"
+  }
 }

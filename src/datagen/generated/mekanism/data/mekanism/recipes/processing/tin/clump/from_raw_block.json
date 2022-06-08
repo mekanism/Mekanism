@@ -1,16 +1,16 @@
 {
   "type": "mekanism:purifying",
+  "chemicalInput": {
+    "amount": 2,
+    "gas": "mekanism:oxygen"
+  },
   "itemInput": {
     "ingredient": {
       "tag": "forge:storage_blocks/raw_tin"
     }
   },
-  "chemicalInput": {
-    "amount": 2,
-    "gas": "mekanism:oxygen"
-  },
   "output": {
-    "item": "mekanism:clump_tin",
-    "count": 18
+    "count": 18,
+    "item": "mekanism:clump_tin"
   }
 }

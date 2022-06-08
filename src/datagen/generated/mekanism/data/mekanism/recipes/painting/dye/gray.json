@@ -1,13 +1,13 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:gray"
+  },
   "itemInput": {
     "ingredient": {
       "item": "mekanism:dye_base"
     }
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:gray"
   },
   "output": {
     "item": "minecraft:gray_dye"

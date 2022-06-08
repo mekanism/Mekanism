@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismtools:bronze_shield"
+  "key": {
+    "I": {
+      "tag": "forge:ingots/bronze"
+    },
+    "P": {
+      "item": "minecraft:shield"
+    }
   },
   "pattern": [
     "IPI",
     "III",
     " I "
   ],
-  "key": {
-    "P": {
-      "item": "minecraft:shield"
-    },
-    "I": {
-      "tag": "forge:ingots/bronze"
-    }
+  "result": {
+    "item": "mekanismtools:bronze_shield"
   }
 }

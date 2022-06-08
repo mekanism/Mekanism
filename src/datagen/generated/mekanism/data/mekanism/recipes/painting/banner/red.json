@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:red"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "minecraft:red_banner"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:red"
   },
   "output": {
     "item": "minecraft:red_banner"

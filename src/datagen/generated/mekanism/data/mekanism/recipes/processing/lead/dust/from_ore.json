@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dust_lead",
-    "count": 2
+    "count": 2,
+    "item": "mekanism:dust_lead"
   }
 }

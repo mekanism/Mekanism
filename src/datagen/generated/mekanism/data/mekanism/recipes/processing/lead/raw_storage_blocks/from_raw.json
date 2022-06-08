@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:block_raw_lead"
+  "key": {
+    "#": {
+      "tag": "forge:raw_materials/lead"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:raw_materials/lead"
-    }
+  "result": {
+    "item": "mekanism:block_raw_lead"
   }
 }

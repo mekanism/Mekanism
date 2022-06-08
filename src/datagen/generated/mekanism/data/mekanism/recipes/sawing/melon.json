@@ -6,7 +6,7 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:melon_slice",
-    "count": 9
+    "count": 9,
+    "item": "minecraft:melon_slice"
   }
 }

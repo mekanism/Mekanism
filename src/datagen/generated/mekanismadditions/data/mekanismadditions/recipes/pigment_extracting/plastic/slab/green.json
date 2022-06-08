@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "pigment": "mekanism:green",
-    "amount": 24
+    "amount": 24,
+    "pigment": "mekanism:green"
   }
 }

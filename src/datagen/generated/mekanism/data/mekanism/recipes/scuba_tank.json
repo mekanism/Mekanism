@@ -1,25 +1,25 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:scuba_tank"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
+    }
   },
   "pattern": [
     " C ",
     "ATA",
     "SSS"
   ],
-  "key": {
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "S": {
-      "tag": "forge:ingots/steel"
-    }
+  "result": {
+    "item": "mekanism:scuba_tank"
   }
 }

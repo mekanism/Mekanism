@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:sps_port"
+  "key": {
+    "#": {
+      "item": "mekanism:sps_casing"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    }
   },
   "pattern": [
     " # ",
     "#C#",
     " # "
   ],
-  "key": {
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
-    "#": {
-      "item": "mekanism:sps_casing"
-    }
+  "result": {
+    "item": "mekanism:sps_port"
   }
 }

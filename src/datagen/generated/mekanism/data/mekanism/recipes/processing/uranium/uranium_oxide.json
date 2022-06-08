@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "gas": "mekanism:uranium_oxide",
-    "amount": 250
+    "amount": 250,
+    "gas": "mekanism:uranium_oxide"
   }
 }

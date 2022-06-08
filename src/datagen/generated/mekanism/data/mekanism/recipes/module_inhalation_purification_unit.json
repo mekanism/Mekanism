@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:module_inhalation_purification_unit"
+  "key": {
+    "#": {
+      "item": "mekanism:hazmat_mask"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    },
+    "o": {
+      "item": "mekanism:scuba_mask"
+    }
   },
   "pattern": [
     "A#A",
     "APA",
     "HoH"
   ],
-  "key": {
-    "A": {
-      "tag": "forge:alloys/elite"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
-    "#": {
-      "item": "mekanism:hazmat_mask"
-    },
-    "H": {
-      "item": "mekanism:pellet_polonium"
-    },
-    "o": {
-      "item": "mekanism:scuba_mask"
-    }
+  "result": {
+    "item": "mekanism:module_inhalation_purification_unit"
   }
 }

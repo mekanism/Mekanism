@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ultimate_thermodynamic_conductor",
-    "count": 8
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "P": {
+      "item": "mekanism:elite_thermodynamic_conductor"
+    }
   },
   "pattern": [
     "PPP",
     "PAP",
     "PPP"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:elite_thermodynamic_conductor"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    }
+  "result": {
+    "count": 8,
+    "item": "mekanism:ultimate_thermodynamic_conductor"
   }
 }

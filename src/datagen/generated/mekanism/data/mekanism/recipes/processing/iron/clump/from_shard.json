@@ -1,13 +1,13 @@
 {
   "type": "mekanism:purifying",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
   "itemInput": {
     "ingredient": {
       "tag": "mekanism:shards/iron"
     }
-  },
-  "chemicalInput": {
-    "amount": 1,
-    "gas": "mekanism:oxygen"
   },
   "output": {
     "item": "mekanism:clump_iron"

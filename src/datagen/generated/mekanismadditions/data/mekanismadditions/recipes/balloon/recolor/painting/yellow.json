@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:yellow"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "mekanismadditions:yellow_balloon"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:yellow"
   },
   "output": {
     "item": "mekanismadditions:yellow_balloon"

@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:block_tin"
+  "key": {
+    "#": {
+      "tag": "forge:ingots/tin"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:ingots/tin"
-    }
+  "result": {
+    "item": "mekanism:block_tin"
   }
 }

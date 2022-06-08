@@ -17,7 +17,7 @@
     ]
   },
   "output": {
-    "item": "minecraft:red_sand",
-    "count": 2
+    "count": 2,
+    "item": "minecraft:red_sand"
   }
 }

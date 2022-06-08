@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismadditions:light_gray_plastic_fence",
-    "count": 3
+  "key": {
+    "#": {
+      "item": "mekanismadditions:light_gray_plastic"
+    },
+    "R": {
+      "tag": "forge:rods/plastic"
+    }
   },
   "pattern": [
     "#R#",
     "#R#"
   ],
-  "key": {
-    "R": {
-      "tag": "forge:rods/plastic"
-    },
-    "#": {
-      "item": "mekanismadditions:light_gray_plastic"
-    }
+  "result": {
+    "count": 3,
+    "item": "mekanismadditions:light_gray_plastic_fence"
   }
 }

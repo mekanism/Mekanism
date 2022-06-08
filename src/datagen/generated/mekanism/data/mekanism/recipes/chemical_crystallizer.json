@@ -1,13 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:chemical_crystallizer"
-  },
-  "pattern": [
-    "IAI",
-    "CXC",
-    "IAI"
-  ],
   "key": {
     "A": {
       "tag": "forge:gems/fluorite"
@@ -21,5 +13,13 @@
     "X": {
       "item": "mekanism:steel_casing"
     }
+  },
+  "pattern": [
+    "IAI",
+    "CXC",
+    "IAI"
+  ],
+  "result": {
+    "item": "mekanism:chemical_crystallizer"
   }
 }

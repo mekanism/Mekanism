@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:dark_red"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "mekanismadditions:dark_red_plastic_glow"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 64,
-    "pigment": "mekanism:dark_red"
   },
   "output": {
     "item": "mekanismadditions:dark_red_plastic_glow"

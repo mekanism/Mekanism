@@ -7,11 +7,11 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:torch",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:torch"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:soul_soil"
-  },
-  "secondaryChance": 1.0
+  }
 }

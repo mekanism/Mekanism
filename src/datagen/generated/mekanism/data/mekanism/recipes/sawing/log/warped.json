@@ -6,11 +6,11 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:warped_planks",
-    "count": 6
+    "count": 6,
+    "item": "minecraft:warped_planks"
   },
+  "secondaryChance": 0.25,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.25
+  }
 }

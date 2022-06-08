@@ -5,7 +5,7 @@
     "gas": "mekanism:uranium_hexafluoride"
   },
   "output": {
-    "gas": "mekanism:fissile_fuel",
-    "amount": 1
+    "amount": 1,
+    "gas": "mekanism:fissile_fuel"
   }
 }

@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:elite_control_circuit"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/reinforced"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    }
   },
   "pattern": [
     "ACA"
   ],
-  "key": {
-    "C": {
-      "tag": "forge:circuits/advanced"
-    },
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    }
+  "result": {
+    "item": "mekanism:elite_control_circuit"
   }
 }

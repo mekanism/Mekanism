@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:solar_neutron_activator"
+  "key": {
+    "#": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "A": {
+      "tag": "mekanism:alloys/reinforced"
+    },
+    "C": {
+      "tag": "forge:circuits/elite"
+    },
+    "I": {
+      "tag": "forge:ingots/bronze"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
   },
   "pattern": [
     "A#A",
     "CXC",
     "III"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/bronze"
-    },
-    "C": {
-      "tag": "forge:circuits/elite"
-    },
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    },
-    "#": {
-      "item": "mekanism:hdpe_sheet"
-    }
+  "result": {
+    "item": "mekanism:solar_neutron_activator"
   }
 }

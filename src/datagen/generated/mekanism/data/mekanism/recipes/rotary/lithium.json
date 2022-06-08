@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:lithium"
   },
-  "gasOutput": {
-    "gas": "mekanism:lithium",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:lithium"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:lithium"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:lithium",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:lithium"
   }
 }

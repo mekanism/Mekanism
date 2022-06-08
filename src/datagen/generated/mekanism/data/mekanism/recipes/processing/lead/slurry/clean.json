@@ -4,12 +4,12 @@
     "amount": 5,
     "tag": "minecraft:water"
   },
+  "output": {
+    "amount": 1,
+    "slurry": "mekanism:clean_lead"
+  },
   "slurryInput": {
     "amount": 1,
     "slurry": "mekanism:dirty_lead"
-  },
-  "output": {
-    "slurry": "mekanism:clean_lead",
-    "amount": 1
   }
 }

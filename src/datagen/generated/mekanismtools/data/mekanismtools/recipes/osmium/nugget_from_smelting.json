@@ -1,6 +1,7 @@
 {
   "type": "minecraft:smelting",
-  "result": "mekanism:nugget_osmium",
+  "cookingtime": 200,
+  "experience": 0.1,
   "ingredient": [
     {
       "item": "mekanismtools:osmium_helmet"
@@ -33,6 +34,5 @@
       "item": "mekanismtools:osmium_paxel"
     }
   ],
-  "cookingtime": 200,
-  "experience": 0.1
+  "result": "mekanism:nugget_osmium"
 }

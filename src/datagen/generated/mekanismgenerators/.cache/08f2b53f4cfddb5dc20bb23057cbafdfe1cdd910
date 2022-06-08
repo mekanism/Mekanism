@@ -1,0 +1,15 @@
+// 1.19	2022-06-08T16:04:15.7570291	Tags: mekanismgenerators
+51c625436874fdd2506b20267e03dabf44c090b0 data/create/tags/fluids/no_infinite_draining.json
+1fcda8d5db3dac92eb2d3bd6339ec5b91b0c888e data/forge/tags/blocks/enderman_place_on_blacklist.json
+f30d0458accef4b51831b90f9039c05d00276e48 data/forge/tags/blocks/relocation_not_supported.json
+f30d0458accef4b51831b90f9039c05d00276e48 data/forge/tags/block_entity_type/immovable.json
+f30d0458accef4b51831b90f9039c05d00276e48 data/forge/tags/block_entity_type/relocation_not_supported.json
+bcd21ce2046a3b918a45281848276b4479c761dd data/forge/tags/fluids/bioethanol.json
+caa388bf7134c013888de340917b3323e5ee67cc data/forge/tags/fluids/deuterium.json
+7f7a379b0ce180430b454926e5f658f94b29bc75 data/forge/tags/fluids/fusion_fuel.json
+7cc3c16e557edb3ce5a4217ef457e9463b7469aa data/forge/tags/fluids/tritium.json
+be4bda854d3fe9deb94fb59619b00b5a068729bf data/mekanism/tags/mekanism/gas/deuterium.json
+f335abd8b1bb57e1fb2740b6c80d8c5cb80b06c1 data/mekanism/tags/mekanism/gas/fusion_fuel.json
+e7f3de2230470165a4e2f84ad01e7a005ad81e2f data/mekanism/tags/mekanism/gas/tritium.json
+974b8e28094a061f02f670ce4f597cb76f95255f data/minecraft/tags/blocks/impermeable.json
+e91a0038c23002914d2f8baf3fa6b0155f22cd6d data/minecraft/tags/blocks/mineable/pickaxe.json

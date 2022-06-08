@@ -1,17 +1,17 @@
 {
   "type": "mekanism:combining",
-  "mainInput": {
-    "ingredient": {
-      "tag": "forge:dyes/blue"
-    }
-  },
   "extraInput": {
     "ingredient": {
       "tag": "forge:dyes/red"
     }
   },
+  "mainInput": {
+    "ingredient": {
+      "tag": "forge:dyes/blue"
+    }
+  },
   "output": {
-    "item": "minecraft:purple_dye",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:purple_dye"
   }
 }

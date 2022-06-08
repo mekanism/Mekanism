@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:geiger_counter"
+  "key": {
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "I": {
+      "tag": "forge:ingots/lead"
+    }
   },
   "pattern": [
     " I ",
     "ICI",
     " I "
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/lead"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    }
+  "result": {
+    "item": "mekanism:geiger_counter"
   }
 }

@@ -1,25 +1,25 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:jetpack_armored"
+  "key": {
+    "#": {
+      "tag": "forge:dusts/diamond"
+    },
+    "I": {
+      "tag": "forge:ingots/bronze"
+    },
+    "P": {
+      "item": "mekanism:jetpack"
+    },
+    "S": {
+      "tag": "forge:storage_blocks/steel"
+    }
   },
   "pattern": [
     "# #",
     "ISI",
     " P "
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:jetpack"
-    },
-    "I": {
-      "tag": "forge:ingots/bronze"
-    },
-    "S": {
-      "tag": "forge:storage_blocks/steel"
-    },
-    "#": {
-      "tag": "forge:dusts/diamond"
-    }
+  "result": {
+    "item": "mekanism:jetpack_armored"
   }
 }

@@ -1,14 +1,14 @@
 {
   "type": "mekanism:combining",
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone/normal"
+    }
+  },
   "mainInput": {
     "amount": 8,
     "ingredient": {
       "tag": "forge:raw_materials/lead"
-    }
-  },
-  "extraInput": {
-    "ingredient": {
-      "tag": "forge:cobblestone/normal"
     }
   },
   "output": {

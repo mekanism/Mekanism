@@ -1,22 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:meka_tool"
-  },
-  "pattern": [
-    "CoC",
-    "P#P",
-    "AEA"
-  ],
   "key": {
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
-    "o": {
-      "item": "mekanism:configurator"
-    },
     "#": {
       "item": "mekanism:atomic_disassembler"
+    },
+    "A": {
+      "item": "mekanism:pellet_polonium"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
     },
     "E": {
       "item": "mekanism:basic_induction_cell"
@@ -24,8 +16,16 @@
     "P": {
       "item": "mekanism:hdpe_sheet"
     },
-    "A": {
-      "item": "mekanism:pellet_polonium"
+    "o": {
+      "item": "mekanism:configurator"
     }
+  },
+  "pattern": [
+    "CoC",
+    "P#P",
+    "AEA"
+  ],
+  "result": {
+    "item": "mekanism:meka_tool"
   }
 }

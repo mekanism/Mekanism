@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "infuse_type": "mekanism:diamond",
-    "amount": 80
+    "amount": 80,
+    "infuse_type": "mekanism:diamond"
   }
 }

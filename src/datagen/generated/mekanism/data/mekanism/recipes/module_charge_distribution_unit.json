@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:module_charge_distribution_unit"
+  "key": {
+    "#": {
+      "item": "mekanism:basic_induction_provider"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "H": {
+      "tag": "forge:pellets/polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
   },
   "pattern": [
     "A#A",
     "APA",
     "HHH"
   ],
-  "key": {
-    "A": {
-      "tag": "forge:alloys/elite"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
-    "#": {
-      "item": "mekanism:basic_induction_provider"
-    },
-    "H": {
-      "tag": "forge:pellets/polonium"
-    }
+  "result": {
+    "item": "mekanism:module_charge_distribution_unit"
   }
 }

@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "minecraft:water"
   },
-  "gasOutput": {
-    "gas": "mekanism:water_vapor",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "minecraft:water"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:water_vapor"
   },
-  "fluidOutput": {
-    "fluid": "minecraft:water",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:water_vapor"
   }
 }

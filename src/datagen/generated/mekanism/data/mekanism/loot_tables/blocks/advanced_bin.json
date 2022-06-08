@@ -2,8 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
@@ -11,19 +9,21 @@
           "functions": [
             {
               "function": "minecraft:copy_nbt",
-              "source": "block_entity",
               "ops": [
                 {
+                  "op": "replace",
                   "source": "Items",
-                  "target": "mekData.Items",
-                  "op": "replace"
+                  "target": "mekData.Items"
                 }
-              ]
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:advanced_bin"
         }
-      ]
+      ],
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

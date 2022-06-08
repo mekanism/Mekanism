@@ -2,16 +2,19 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "conditions": [
             {
-              "condition": "minecraft:block_state_property",
               "block": "mekanismadditions:obsidian_tnt",
+              "condition": "minecraft:block_state_property",
               "properties": {
                 "unstable": "false"
               }
@@ -20,11 +23,8 @@
           "name": "mekanismadditions:obsidian_tnt"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

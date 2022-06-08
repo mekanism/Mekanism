@@ -23,5 +23,7 @@ MDK.zip
 /logs
 /src/datagen/*/resources
 /src/datagen/*/annotation_generated
+!/src/datagen/main/resources/PersistingMekanismDatagenCache.js
+!/src/datagen/main/resources/META-INF/coremods.json
 /annotation-processor/bin
 libs/

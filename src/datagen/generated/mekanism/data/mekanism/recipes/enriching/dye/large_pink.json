@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "minecraft:pink_dye",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:pink_dye"
   }
 }

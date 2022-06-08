@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ingot_refined_obsidian"
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/refined_obsidian"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:nuggets/refined_obsidian"
-    }
+  "result": {
+    "item": "mekanism:ingot_refined_obsidian"
   }
 }

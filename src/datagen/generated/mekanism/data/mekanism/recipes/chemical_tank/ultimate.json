@@ -1,22 +1,22 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:ultimate_chemical_tank"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    },
+    "P": {
+      "item": "mekanism:elite_chemical_tank"
+    }
   },
   "pattern": [
     "AOA",
     "OPO",
     "AOA"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:elite_chemical_tank"
-    },
-    "O": {
-      "tag": "forge:ingots/osmium"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    }
+  "result": {
+    "item": "mekanism:ultimate_chemical_tank"
   }
 }

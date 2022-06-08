@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:block_raw_osmium"
+  "key": {
+    "#": {
+      "tag": "forge:raw_materials/osmium"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:raw_materials/osmium"
-    }
+  "result": {
+    "item": "mekanism:block_raw_osmium"
   }
 }

@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "gas": "mekanism:sulfuric_acid",
-    "amount": 2
+    "amount": 2,
+    "gas": "mekanism:sulfuric_acid"
   }
 }

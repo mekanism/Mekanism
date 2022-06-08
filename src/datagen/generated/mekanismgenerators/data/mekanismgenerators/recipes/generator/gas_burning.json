@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:gas_burning_generator"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "item": "mekanism:electrolytic_core"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
   },
   "pattern": [
     "OAO",
     "XCX",
     "OAO"
   ],
-  "key": {
-    "C": {
-      "item": "mekanism:electrolytic_core"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    },
-    "O": {
-      "tag": "forge:ingots/osmium"
-    }
+  "result": {
+    "item": "mekanismgenerators:gas_burning_generator"
   }
 }

@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ingot_uranium"
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/uranium"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:nuggets/uranium"
-    }
+  "result": {
+    "item": "mekanism:ingot_uranium"
   }
 }

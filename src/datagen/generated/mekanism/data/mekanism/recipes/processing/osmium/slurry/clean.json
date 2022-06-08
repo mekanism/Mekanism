@@ -4,12 +4,12 @@
     "amount": 5,
     "tag": "minecraft:water"
   },
+  "output": {
+    "amount": 1,
+    "slurry": "mekanism:clean_osmium"
+  },
   "slurryInput": {
     "amount": 1,
     "slurry": "mekanism:dirty_osmium"
-  },
-  "output": {
-    "slurry": "mekanism:clean_osmium",
-    "amount": 1
   }
 }

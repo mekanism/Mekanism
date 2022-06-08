@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:light_gray"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "mekanismadditions:light_gray_plastic_transparent_stairs"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 32,
-    "pigment": "mekanism:light_gray"
   },
   "output": {
     "item": "mekanismadditions:light_gray_plastic_transparent_stairs"

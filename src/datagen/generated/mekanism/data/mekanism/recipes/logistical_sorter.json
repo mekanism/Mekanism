@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:logistical_sorter"
+  "key": {
+    "#": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
   },
   "pattern": [
     "I#I",
     "ICI",
     "III"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "#": {
-      "item": "minecraft:piston"
-    }
+  "result": {
+    "item": "mekanism:logistical_sorter"
   }
 }

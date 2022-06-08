@@ -1,14 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismadditions:pink_plastic",
-    "count": 4
-  },
-  "pattern": [
-    " # ",
-    "#D#",
-    " # "
-  ],
   "key": {
     "#": {
       "item": "mekanism:hdpe_sheet"
@@ -16,5 +7,14 @@
     "D": {
       "tag": "forge:dyes/pink"
     }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "item": "mekanismadditions:pink_plastic"
   }
 }

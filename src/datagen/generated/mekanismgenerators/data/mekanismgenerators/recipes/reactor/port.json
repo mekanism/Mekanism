@@ -1,14 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:fusion_reactor_port",
-    "count": 2
-  },
-  "pattern": [
-    " F ",
-    "FCF",
-    " F "
-  ],
   "key": {
     "C": {
       "tag": "forge:circuits/ultimate"
@@ -16,5 +7,14 @@
     "F": {
       "item": "mekanismgenerators:fusion_reactor_frame"
     }
+  },
+  "pattern": [
+    " F ",
+    "FCF",
+    " F "
+  ],
+  "result": {
+    "count": 2,
+    "item": "mekanismgenerators:fusion_reactor_port"
   }
 }

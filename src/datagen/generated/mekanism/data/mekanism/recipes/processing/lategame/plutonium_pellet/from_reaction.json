@@ -1,10 +1,6 @@
 {
   "type": "mekanism:reaction",
-  "itemInput": {
-    "ingredient": {
-      "tag": "forge:dusts/fluorite"
-    }
-  },
+  "duration": 100,
   "fluidInput": {
     "amount": 1000,
     "tag": "minecraft:water"
@@ -13,12 +9,16 @@
     "amount": 1000,
     "gas": "mekanism:plutonium"
   },
-  "duration": 100,
+  "gasOutput": {
+    "amount": 1000,
+    "gas": "mekanism:spent_nuclear_waste"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:dusts/fluorite"
+    }
+  },
   "itemOutput": {
     "item": "mekanism:pellet_plutonium"
-  },
-  "gasOutput": {
-    "gas": "mekanism:spent_nuclear_waste",
-    "amount": 1000
   }
 }

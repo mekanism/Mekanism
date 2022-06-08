@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:block_steel"
+  "key": {
+    "#": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:ingots/steel"
-    }
+  "result": {
+    "item": "mekanism:block_steel"
   }
 }

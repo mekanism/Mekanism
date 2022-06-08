@@ -1,14 +1,14 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "tag": "mekanism:carbon"
+  },
   "itemInput": {
     "amount": 4,
     "ingredient": {
       "tag": "forge:dusts/gold"
     }
-  },
-  "chemicalInput": {
-    "amount": 10,
-    "tag": "mekanism:carbon"
   },
   "output": {
     "item": "mekanismgenerators:hohlraum"

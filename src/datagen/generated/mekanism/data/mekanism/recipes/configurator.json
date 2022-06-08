@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:configurator"
+  "key": {
+    "#": {
+      "tag": "forge:rods/wooden"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "I": {
+      "tag": "forge:gems/lapis"
+    }
   },
   "pattern": [
     " I ",
     "AEA",
     " # "
   ],
-  "key": {
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "I": {
-      "tag": "forge:gems/lapis"
-    },
-    "#": {
-      "tag": "forge:rods/wooden"
-    }
+  "result": {
+    "item": "mekanism:configurator"
   }
 }

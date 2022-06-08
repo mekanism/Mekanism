@@ -1,25 +1,25 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:chemical_infuser"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
   },
   "pattern": [
     "ACA",
     "TXT",
     "ACA"
   ],
-  "key": {
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+  "result": {
+    "item": "mekanism:chemical_infuser"
   }
 }

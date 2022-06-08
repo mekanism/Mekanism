@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:upgrade_stone_generator"
+  "key": {
+    "#": {
+      "item": "minecraft:water_bucket"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "B": {
+      "item": "minecraft:lava_bucket"
+    },
+    "G": {
+      "tag": "forge:glass"
+    }
   },
   "pattern": [
     " G ",
     "#AB",
     " G "
   ],
-  "key": {
-    "G": {
-      "tag": "forge:glass"
-    },
-    "#": {
-      "item": "minecraft:water_bucket"
-    },
-    "B": {
-      "item": "minecraft:lava_bucket"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    }
+  "result": {
+    "item": "mekanism:upgrade_stone_generator"
   }
 }

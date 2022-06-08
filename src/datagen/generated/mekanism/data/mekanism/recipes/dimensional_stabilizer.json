@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:dimensional_stabilizer"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "D": {
+      "tag": "forge:storage_blocks/diamond"
+    },
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    }
   },
   "pattern": [
     "ICI",
     "ADA",
     "ICI"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/refined_obsidian"
-    },
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "D": {
-      "tag": "forge:storage_blocks/diamond"
-    }
+  "result": {
+    "item": "mekanism:dimensional_stabilizer"
   }
 }

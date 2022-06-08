@@ -1,13 +1,13 @@
 {
   "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
   "itemInput": {
     "ingredient": {
       "item": "minecraft:exposed_cut_copper_slab"
     }
-  },
-  "chemicalInput": {
-    "amount": 1,
-    "gas": "mekanism:oxygen"
   },
   "output": {
     "item": "minecraft:weathered_cut_copper_slab"

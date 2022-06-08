@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "minecraft:clay_ball",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:clay_ball"
   }
 }

@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:advanced_control_circuit"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    }
   },
   "pattern": [
     "ACA"
   ],
-  "key": {
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    }
+  "result": {
+    "item": "mekanism:advanced_control_circuit"
   }
 }

@@ -7,7 +7,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dust_uranium",
-    "count": 4
+    "count": 4,
+    "item": "mekanism:dust_uranium"
   }
 }

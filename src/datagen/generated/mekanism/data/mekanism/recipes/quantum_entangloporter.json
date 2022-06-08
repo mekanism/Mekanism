@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:quantum_entangloporter"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
   },
   "pattern": [
     "ICI",
     "ATA",
     "ICI"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/refined_obsidian"
-    },
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    }
+  "result": {
+    "item": "mekanism:quantum_entangloporter"
   }
 }

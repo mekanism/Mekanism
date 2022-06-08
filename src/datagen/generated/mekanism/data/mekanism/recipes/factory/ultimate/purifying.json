@@ -1,16 +1,8 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:ultimate_purifying_factory"
-  },
-  "pattern": [
-    "ACA",
-    "IPI",
-    "ACA"
-  ],
   "key": {
-    "P": {
-      "item": "mekanism:elite_purifying_factory"
+    "A": {
+      "tag": "mekanism:alloys/atomic"
     },
     "C": {
       "tag": "forge:circuits/ultimate"
@@ -18,8 +10,16 @@
     "I": {
       "tag": "forge:gems/diamond"
     },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
+    "P": {
+      "item": "mekanism:elite_purifying_factory"
     }
+  },
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "result": {
+    "item": "mekanism:ultimate_purifying_factory"
   }
 }

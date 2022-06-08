@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:precision_sawmill"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
   },
   "pattern": [
     "ICI",
     "AXA",
     "ICI"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+  "result": {
+    "item": "mekanism:precision_sawmill"
   }
 }

@@ -1,22 +1,14 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:digital_miner"
-  },
-  "pattern": [
-    "ACA",
-    "SRS",
-    "TXT"
-  ],
   "key": {
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
     "A": {
       "tag": "mekanism:alloys/atomic"
     },
-    "X": {
-      "item": "mekanism:steel_casing"
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "R": {
+      "item": "mekanism:robit"
     },
     "S": {
       "item": "mekanism:logistical_sorter"
@@ -24,8 +16,16 @@
     "T": {
       "item": "mekanism:teleportation_core"
     },
-    "R": {
-      "item": "mekanism:robit"
+    "X": {
+      "item": "mekanism:steel_casing"
     }
+  },
+  "pattern": [
+    "ACA",
+    "SRS",
+    "TXT"
+  ],
+  "result": {
+    "item": "mekanism:digital_miner"
   }
 }

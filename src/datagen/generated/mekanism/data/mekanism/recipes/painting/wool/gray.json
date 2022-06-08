@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:gray"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "minecraft:gray_wool"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:gray"
   },
   "output": {
     "item": "minecraft:gray_wool"

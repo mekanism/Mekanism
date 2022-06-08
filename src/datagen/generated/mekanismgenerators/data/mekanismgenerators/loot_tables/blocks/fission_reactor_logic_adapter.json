@@ -2,9 +2,12 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -15,24 +18,21 @@
             },
             {
               "function": "minecraft:copy_nbt",
-              "source": "block_entity",
               "ops": [
                 {
+                  "op": "replace",
                   "source": "controlType",
-                  "target": "mekData.controlType",
-                  "op": "replace"
+                  "target": "mekData.controlType"
                 }
-              ]
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanismgenerators:fission_reactor_logic_adapter"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

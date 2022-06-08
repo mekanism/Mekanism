@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:item/shield",
-  "textures": {
-    "particle": "mekanism:block/block_refined_glowstone"
-  },
   "overrides": [
     {
+      "model": "mekanismtools:item/refined_glowstone_shield_blocking",
       "predicate": {
         "mekanismtools:blocking": 1.0
-      },
-      "model": "mekanismtools:item/refined_glowstone_shield_blocking"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "particle": "mekanism:block/block_refined_glowstone"
+  }
 }

@@ -1,16 +1,8 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:basic_purifying_factory"
-  },
-  "pattern": [
-    "ACA",
-    "IPI",
-    "ACA"
-  ],
   "key": {
-    "P": {
-      "item": "mekanism:purification_chamber"
+    "A": {
+      "tag": "mekanism:alloys/basic"
     },
     "C": {
       "tag": "forge:circuits/basic"
@@ -18,8 +10,16 @@
     "I": {
       "tag": "forge:ingots/iron"
     },
-    "A": {
-      "tag": "mekanism:alloys/basic"
+    "P": {
+      "item": "mekanism:purification_chamber"
     }
+  },
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "result": {
+    "item": "mekanism:basic_purifying_factory"
   }
 }

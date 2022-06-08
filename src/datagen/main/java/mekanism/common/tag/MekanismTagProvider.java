@@ -1,6 +1,5 @@
 package mekanism.common.tag;
 
-import biomesoplenty.api.entity.BOPEntities;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import potionstudios.byg.common.entity.BYGEntities;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
@@ -130,10 +128,11 @@ public class MekanismTagProvider extends BaseTagProvider {
               EntityType.HOPPER_MINECART,
               EntityType.SPAWNER_MINECART,
               EntityType.TNT_MINECART
-        ).addOptional(
-              BOPEntities.BOAT,
-              BYGEntities.BOAT.get()
-        );
+        )
+              //.addOptional(BOPEntities.BOAT.get())
+        //TODO - 1.19: Add back when BYG updates
+              //.addOptional(BYGEntities.BOAT.get())
+        ;
     }
 
     private void addProcessedResources() {

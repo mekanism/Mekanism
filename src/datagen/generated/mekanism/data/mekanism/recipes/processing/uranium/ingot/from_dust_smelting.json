@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "result": "mekanism:ingot_uranium",
+  "cookingtime": 200,
+  "experience": 0.3,
   "ingredient": {
     "tag": "forge:dusts/uranium"
   },
-  "cookingtime": 200,
-  "experience": 0.3
+  "result": "mekanism:ingot_uranium"
 }

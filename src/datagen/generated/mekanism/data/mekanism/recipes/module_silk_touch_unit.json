@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:module_silk_touch_unit"
+  "key": {
+    "#": {
+      "tag": "forge:storage_blocks/refined_glowstone"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "D": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "H": {
+      "tag": "forge:pellets/polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
   },
   "pattern": [
     "A#A",
     "DPD",
     "HHH"
   ],
-  "key": {
-    "A": {
-      "tag": "forge:alloys/elite"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
-    "#": {
-      "tag": "forge:storage_blocks/refined_glowstone"
-    },
-    "H": {
-      "tag": "forge:pellets/polonium"
-    },
-    "D": {
-      "item": "minecraft:diamond_pickaxe"
-    }
+  "result": {
+    "item": "mekanism:module_silk_touch_unit"
   }
 }

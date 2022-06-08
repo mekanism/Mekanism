@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ingot_steel"
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/steel"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:nuggets/steel"
-    }
+  "result": {
+    "item": "mekanism:ingot_steel"
   }
 }

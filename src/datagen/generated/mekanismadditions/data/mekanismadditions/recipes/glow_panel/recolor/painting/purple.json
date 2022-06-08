@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:purple"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "mekanismadditions:purple_glow_panel"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 64,
-    "pigment": "mekanism:purple"
   },
   "output": {
     "item": "mekanismadditions:purple_glow_panel"

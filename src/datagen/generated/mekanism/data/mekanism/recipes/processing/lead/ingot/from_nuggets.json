@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ingot_lead"
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/lead"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:nuggets/lead"
-    }
+  "result": {
+    "item": "mekanism:ingot_lead"
   }
 }

@@ -1,13 +1,13 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:pink"
+  },
   "itemInput": {
     "ingredient": {
       "item": "mekanism:dye_base"
     }
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:pink"
   },
   "output": {
     "item": "minecraft:pink_dye"

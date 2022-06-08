@@ -1,14 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:structural_glass",
-    "count": 4
-  },
-  "pattern": [
-    " S ",
-    "SGS",
-    " S "
-  ],
   "key": {
     "G": {
       "tag": "forge:glass"
@@ -16,5 +7,14 @@
     "S": {
       "tag": "forge:ingots/steel"
     }
+  },
+  "pattern": [
+    " S ",
+    "SGS",
+    " S "
+  ],
+  "result": {
+    "count": 4,
+    "item": "mekanism:structural_glass"
   }
 }

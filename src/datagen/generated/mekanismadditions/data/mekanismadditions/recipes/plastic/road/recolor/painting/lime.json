@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:lime"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "mekanismadditions:lime_plastic_road"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 64,
-    "pigment": "mekanism:lime"
   },
   "output": {
     "item": "mekanismadditions:lime_plastic_road"

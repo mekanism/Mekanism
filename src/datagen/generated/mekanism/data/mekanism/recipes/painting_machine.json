@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:painting_machine"
+  "key": {
+    "#": {
+      "item": "mekanism:dye_base"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
   },
   "pattern": [
     "ACA",
     "#X#",
     "ACA"
   ],
-  "key": {
-    "C": {
-      "tag": "forge:circuits/advanced"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    },
-    "#": {
-      "item": "mekanism:dye_base"
-    }
+  "result": {
+    "item": "mekanism:painting_machine"
   }
 }

@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:ethene"
   },
-  "gasOutput": {
-    "gas": "mekanism:ethene",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:ethene"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:ethene"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:ethene",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:ethene"
   }
 }

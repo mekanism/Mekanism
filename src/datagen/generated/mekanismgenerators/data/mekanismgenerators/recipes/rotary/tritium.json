@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:tritium"
   },
-  "gasOutput": {
-    "gas": "mekanismgenerators:tritium",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanismgenerators:tritium"
   },
   "gasInput": {
     "amount": 1,
     "tag": "mekanism:tritium"
   },
-  "fluidOutput": {
-    "fluid": "mekanismgenerators:tritium",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanismgenerators:tritium"
   }
 }

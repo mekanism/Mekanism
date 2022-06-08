@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
-  "result": "minecraft:iron_nugget",
+  "cookingtime": 100,
+  "experience": 0.1,
   "ingredient": {
     "item": "mekanismtools:iron_paxel"
   },
-  "cookingtime": 100,
-  "experience": 0.1
+  "result": "minecraft:iron_nugget"
 }

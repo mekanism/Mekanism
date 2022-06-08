@@ -1,13 +1,13 @@
 {
   "type": "mekanism:combining",
-  "mainInput": {
-    "ingredient": {
-      "item": "minecraft:copper_block"
-    }
-  },
   "extraInput": {
     "ingredient": {
       "item": "minecraft:honeycomb"
+    }
+  },
+  "mainInput": {
+    "ingredient": {
+      "item": "minecraft:copper_block"
     }
   },
   "output": {

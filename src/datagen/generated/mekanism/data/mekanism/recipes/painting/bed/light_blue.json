@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:light_blue"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "minecraft:light_blue_bed"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:light_blue"
   },
   "output": {
     "item": "minecraft:light_blue_bed"

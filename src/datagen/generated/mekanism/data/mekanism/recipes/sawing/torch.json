@@ -9,8 +9,8 @@
   "mainOutput": {
     "item": "minecraft:stick"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:coal"
-  },
-  "secondaryChance": 1.0
+  }
 }

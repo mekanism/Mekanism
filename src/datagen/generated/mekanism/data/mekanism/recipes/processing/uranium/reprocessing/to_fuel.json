@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "gas": "mekanism:fissile_fuel",
-    "amount": 2000
+    "amount": 2000,
+    "gas": "mekanism:fissile_fuel"
   }
 }

@@ -1,6 +1,7 @@
 {
   "type": "minecraft:blasting",
-  "result": "mekanism:nugget_refined_glowstone",
+  "cookingtime": 100,
+  "experience": 0.1,
   "ingredient": [
     {
       "item": "mekanismtools:refined_glowstone_helmet"
@@ -33,6 +34,5 @@
       "item": "mekanismtools:refined_glowstone_paxel"
     }
   ],
-  "cookingtime": 100,
-  "experience": 0.1
+  "result": "mekanism:nugget_refined_glowstone"
 }

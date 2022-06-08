@@ -1,16 +1,16 @@
 {
   "type": "mekanism:nucleosynthesizing",
+  "duration": 1000,
+  "gasInput": {
+    "amount": 4,
+    "gas": "mekanism:antimatter"
+  },
   "itemInput": {
     "ingredient": {
       "item": "minecraft:coal"
     }
   },
-  "gasInput": {
-    "amount": 4,
-    "gas": "mekanism:antimatter"
-  },
   "output": {
     "item": "minecraft:diamond"
-  },
-  "duration": 1000
+  }
 }

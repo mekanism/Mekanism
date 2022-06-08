@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "minecraft:quartz",
-    "count": 6
+    "count": 6,
+    "item": "minecraft:quartz"
   }
 }

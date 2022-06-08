@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:mekasuit_boots"
-  },
-  "pattern": [
-    "PCP",
-    "P#P",
-    "AEA"
-  ],
   "key": {
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
     "#": {
       "item": "minecraft:netherite_boots"
+    },
+    "A": {
+      "tag": "forge:pellets/polonium"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
     },
     "E": {
       "item": "mekanism:basic_induction_cell"
     },
     "P": {
       "item": "mekanism:hdpe_sheet"
-    },
-    "A": {
-      "tag": "forge:pellets/polonium"
     }
+  },
+  "pattern": [
+    "PCP",
+    "P#P",
+    "AEA"
+  ],
+  "result": {
+    "item": "mekanism:mekasuit_boots"
   }
 }

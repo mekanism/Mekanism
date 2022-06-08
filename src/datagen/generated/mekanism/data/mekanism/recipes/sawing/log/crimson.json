@@ -6,11 +6,11 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:crimson_planks",
-    "count": 6
+    "count": 6,
+    "item": "minecraft:crimson_planks"
   },
+  "secondaryChance": 0.25,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.25
+  }
 }

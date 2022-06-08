@@ -5,7 +5,7 @@
     "gas": "mekanism:nuclear_waste"
   },
   "output": {
-    "gas": "mekanism:plutonium",
-    "amount": 1
+    "amount": 1,
+    "gas": "mekanism:plutonium"
   }
 }

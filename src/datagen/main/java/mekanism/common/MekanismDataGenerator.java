@@ -4,8 +4,6 @@ import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.client.state.MekanismBlockStateProvider;
-import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
-import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
@@ -37,7 +35,11 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeServer(), new MekanismTagProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new MekanismLootProvider(gen));
         gen.addProvider(event.includeServer(), new MekanismRecipeProvider(gen, existingFileHelper));
-        gen.addProvider(event.includeServer(), new MekanismCustomConversions(gen));
-        gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(gen, existingFileHelper));
+        //TODO - 1.19: Re-enable when ProjectE updates and then disable it in the persisting data providers
+        //gen.addProvider(event.includeServer(), new MekanismCustomConversions(gen));
+        //TODO - 1.19: Re-enable when CrT updates and then disable it in the persisting data providers
+        //gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(gen, existingFileHelper));
+        //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
+        gen.addProvider(true, new PersistingDisabledProvidersProvider(gen));
     }
 }

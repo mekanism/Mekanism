@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismtools:refined_obsidian_shield"
+  "key": {
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    },
+    "P": {
+      "item": "minecraft:shield"
+    }
   },
   "pattern": [
     "IPI",
     "III",
     " I "
   ],
-  "key": {
-    "P": {
-      "item": "minecraft:shield"
-    },
-    "I": {
-      "tag": "forge:ingots/refined_obsidian"
-    }
+  "result": {
+    "item": "mekanismtools:refined_obsidian_shield"
   }
 }

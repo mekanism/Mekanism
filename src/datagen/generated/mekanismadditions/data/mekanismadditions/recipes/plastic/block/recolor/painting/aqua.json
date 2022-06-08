@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:aqua"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "mekanismadditions:aqua_plastic"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 64,
-    "pigment": "mekanism:aqua"
   },
   "output": {
     "item": "mekanismadditions:aqua_plastic"

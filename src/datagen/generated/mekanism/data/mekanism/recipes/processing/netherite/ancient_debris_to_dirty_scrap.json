@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dirty_netherite_scrap",
-    "count": 3
+    "count": 3,
+    "item": "mekanism:dirty_netherite_scrap"
   }
 }

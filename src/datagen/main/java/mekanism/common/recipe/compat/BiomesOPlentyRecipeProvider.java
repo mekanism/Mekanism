@@ -2,9 +2,9 @@ package mekanism.common.recipe.compat;
 
 import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.item.BOPItems;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -14,12 +14,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.RegistryObject;
 
 @ParametersAreNonnullByDefault
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
@@ -33,13 +35,14 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         addDyeRecipes(consumer, basePath);
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
         addSandRecipes(consumer, basePath + "sandstone_to_sand/");
+        //TODO - 1.19: Remove this comment after validating they didn't add some variant of this
         //Mud brick -> mud ball
-        ItemStackChemicalToItemStackRecipeBuilder.injecting(
+        /*ItemStackChemicalToItemStackRecipeBuilder.injecting(
                     IngredientCreatorAccess.item().from(BOPItems.MUD_BRICK),
                     IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
                     new ItemStack(BOPItems.MUD_BALL)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "mud_brick_to_mud_ball"));
+              .build(consumer, Mekanism.rl(basePath + "mud_brick_to_mud_ball"));*/
 
         //TODO: Bio-fuel recipes?
     }
@@ -69,22 +72,28 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               BOPBlocks.WILLOW_PRESSURE_PLATE, BOPBlocks.WILLOW_TRAPDOOR, "willow");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, ItemLike boat, ItemLike door,
-          ItemLike fenceGate, ItemLike pressurePlate, ItemLike trapdoor, String name) {
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, tag(name + "_logs"), pressurePlate, trapdoor, name,
-              modLoaded);
+    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Item> boat,
+          RegistryObject<Block> door, RegistryObject<Block> fenceGate, RegistryObject<Block> pressurePlate, RegistryObject<Block> trapdoor, String name) {
+        //TODO - 1.19: Re-evaluate the logs tag
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks.get(), boat.get(), door.get(), fenceGate.get(), tag(name + "_logs"),
+              pressurePlate.get(), trapdoor.get(), name, modLoaded);
     }
 
     private void addSandRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Black Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "black", modLoaded, BOPBlocks.BLACK_SAND, BOPBlocks.BLACK_SANDSTONE,
-              BOPBlocks.CHISELED_BLACK_SANDSTONE, BOPBlocks.CUT_BLACK_SANDSTONE, BOPBlocks.SMOOTH_BLACK_SANDSTONE);
+        addSandStoneToSandRecipe(consumer, basePath + "black", BOPBlocks.BLACK_SAND, BOPBlocks.BLACK_SANDSTONE, BOPBlocks.CHISELED_BLACK_SANDSTONE,
+              BOPBlocks.CUT_BLACK_SANDSTONE, BOPBlocks.SMOOTH_BLACK_SANDSTONE);
         //Orange Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "orange", modLoaded, BOPBlocks.ORANGE_SAND, BOPBlocks.ORANGE_SANDSTONE,
-              BOPBlocks.CHISELED_ORANGE_SANDSTONE, BOPBlocks.CUT_ORANGE_SANDSTONE, BOPBlocks.SMOOTH_ORANGE_SANDSTONE);
+        addSandStoneToSandRecipe(consumer, basePath + "orange", BOPBlocks.ORANGE_SAND, BOPBlocks.ORANGE_SANDSTONE, BOPBlocks.CHISELED_ORANGE_SANDSTONE,
+              BOPBlocks.CUT_ORANGE_SANDSTONE, BOPBlocks.SMOOTH_ORANGE_SANDSTONE);
         //White Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "white", modLoaded, BOPBlocks.WHITE_SAND, BOPBlocks.WHITE_SANDSTONE,
-              BOPBlocks.CHISELED_WHITE_SANDSTONE, BOPBlocks.CUT_WHITE_SANDSTONE, BOPBlocks.SMOOTH_WHITE_SANDSTONE);
+        addSandStoneToSandRecipe(consumer, basePath + "white", BOPBlocks.WHITE_SAND, BOPBlocks.WHITE_SANDSTONE, BOPBlocks.CHISELED_WHITE_SANDSTONE,
+              BOPBlocks.CUT_WHITE_SANDSTONE, BOPBlocks.SMOOTH_WHITE_SANDSTONE);
+    }
+
+    @SafeVarargs
+    private void addSandStoneToSandRecipe(Consumer<FinishedRecipe> consumer, String path, RegistryObject<Block> sand, RegistryObject<Block>... sandstones) {
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, path, modLoaded, sand.get(), toItemLike(sandstones));
     }
 
     private void addDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
@@ -108,8 +117,9 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         dye(consumer, basePath, Items.YELLOW_DYE, EnumColor.YELLOW, BOPBlocks.GOLDENROD);
     }
 
-    private void dye(Consumer<FinishedRecipe> consumer, String basePath, ItemLike output, EnumColor color, ItemLike... inputs) {
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(inputs));
+    @SafeVarargs
+    private void dye(Consumer<FinishedRecipe> consumer, String basePath, ItemLike output, EnumColor color, RegistryObject<Block>... inputs) {
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(toItemLike(inputs)));
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStack(output, 2)
@@ -122,5 +132,10 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color).getStack(flowerRate)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
+    }
+
+    @SafeVarargs
+    private static ItemLike[] toItemLike(RegistryObject<Block>... ros) {
+        return Arrays.stream(ros).map(RegistryObject::get).toArray(ItemLike[]::new);
     }
 }

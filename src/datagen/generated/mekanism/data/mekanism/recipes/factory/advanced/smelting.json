@@ -1,16 +1,8 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:advanced_smelting_factory"
-  },
-  "pattern": [
-    "ACA",
-    "IPI",
-    "ACA"
-  ],
   "key": {
-    "P": {
-      "item": "mekanism:basic_smelting_factory"
+    "A": {
+      "tag": "mekanism:alloys/infused"
     },
     "C": {
       "tag": "forge:circuits/advanced"
@@ -18,8 +10,16 @@
     "I": {
       "tag": "forge:ingots/osmium"
     },
-    "A": {
-      "tag": "mekanism:alloys/infused"
+    "P": {
+      "item": "mekanism:basic_smelting_factory"
     }
+  },
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "result": {
+    "item": "mekanism:advanced_smelting_factory"
   }
 }

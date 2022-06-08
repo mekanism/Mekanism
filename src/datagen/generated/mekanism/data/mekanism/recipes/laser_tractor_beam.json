@@ -1,18 +1,18 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:laser_tractor_beam"
+  "key": {
+    "#": {
+      "item": "mekanism:laser_amplifier"
+    },
+    "P": {
+      "tag": "mekanism:personal_storage"
+    }
   },
   "pattern": [
     "P",
     "#"
   ],
-  "key": {
-    "P": {
-      "tag": "mekanism:personal_storage"
-    },
-    "#": {
-      "item": "mekanism:laser_amplifier"
-    }
+  "result": {
+    "item": "mekanism:laser_tractor_beam"
   }
 }

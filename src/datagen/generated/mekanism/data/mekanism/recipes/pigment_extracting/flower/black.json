@@ -11,7 +11,7 @@
     ]
   },
   "output": {
-    "pigment": "mekanism:black",
-    "amount": 768
+    "amount": 768,
+    "pigment": "mekanism:black"
   }
 }

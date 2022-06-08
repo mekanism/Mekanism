@@ -8,8 +8,8 @@
   "mainOutput": {
     "item": "minecraft:stick"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:redstone"
-  },
-  "secondaryChance": 1.0
+  }
 }

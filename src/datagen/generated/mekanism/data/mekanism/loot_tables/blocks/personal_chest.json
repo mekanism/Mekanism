@@ -2,8 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
@@ -15,29 +13,31 @@
             },
             {
               "function": "minecraft:copy_nbt",
-              "source": "block_entity",
               "ops": [
                 {
+                  "op": "replace",
                   "source": "componentSecurity.owner",
-                  "target": "mekData.owner",
-                  "op": "replace"
+                  "target": "mekData.owner"
                 },
                 {
+                  "op": "replace",
                   "source": "componentSecurity.securityMode",
-                  "target": "mekData.securityMode",
-                  "op": "replace"
+                  "target": "mekData.securityMode"
                 },
                 {
+                  "op": "replace",
                   "source": "Items",
-                  "target": "mekData.Items",
-                  "op": "replace"
+                  "target": "mekData.Items"
                 }
-              ]
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:personal_chest"
         }
-      ]
+      ],
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

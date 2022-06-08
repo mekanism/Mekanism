@@ -1,8 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "result": {
-    "item": "mekanismadditions:light_blue_balloon"
-  },
   "ingredients": [
     {
       "type": "forge:difference",
@@ -16,5 +13,8 @@
     {
       "tag": "forge:dyes/light_blue"
     }
-  ]
+  ],
+  "result": {
+    "item": "mekanismadditions:light_blue_balloon"
+  }
 }

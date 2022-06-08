@@ -1,14 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:fission_reactor_port",
-    "count": 2
-  },
-  "pattern": [
-    " F ",
-    "FCF",
-    " F "
-  ],
   "key": {
     "C": {
       "tag": "forge:circuits/elite"
@@ -16,5 +7,14 @@
     "F": {
       "item": "mekanismgenerators:fission_reactor_casing"
     }
+  },
+  "pattern": [
+    " F ",
+    "FCF",
+    " F "
+  ],
+  "result": {
+    "count": 2,
+    "item": "mekanismgenerators:fission_reactor_port"
   }
 }

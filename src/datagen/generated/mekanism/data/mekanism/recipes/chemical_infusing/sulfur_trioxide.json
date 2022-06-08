@@ -4,12 +4,12 @@
     "amount": 1,
     "gas": "mekanism:oxygen"
   },
+  "output": {
+    "amount": 2,
+    "gas": "mekanism:sulfur_trioxide"
+  },
   "rightInput": {
     "amount": 2,
     "gas": "mekanism:sulfur_dioxide"
-  },
-  "output": {
-    "gas": "mekanism:sulfur_trioxide",
-    "amount": 2
   }
 }

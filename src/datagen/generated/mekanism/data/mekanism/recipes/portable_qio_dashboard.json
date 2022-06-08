@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:portable_qio_dashboard"
+  "key": {
+    "#": {
+      "item": "mekanism:qio_dashboard"
+    },
+    "A": {
+      "tag": "forge:pellets/polonium"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
   },
   "pattern": [
     "AAA",
     "A#A",
     "ATA"
   ],
-  "key": {
-    "A": {
-      "tag": "forge:pellets/polonium"
-    },
-    "#": {
-      "item": "mekanism:qio_dashboard"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    }
+  "result": {
+    "item": "mekanism:portable_qio_dashboard"
   }
 }

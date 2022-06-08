@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "minecraft:magenta_dye",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:magenta_dye"
   }
 }
