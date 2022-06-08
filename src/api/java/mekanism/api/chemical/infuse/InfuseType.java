@@ -7,11 +7,13 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -43,6 +45,13 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     @Override
     public final boolean isEmptyType() {
         return this == MekanismAPI.EMPTY_INFUSE_TYPE;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        //TODO - 1.19: Re-evaluate
+        IForgeRegistry<InfuseType> registry = MekanismAPI.infuseTypeRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 
     @Override

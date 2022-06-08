@@ -199,8 +199,5 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     public abstract boolean isEmptyType();
 
     @Override
-    public ResourceLocation getRegistryName() {
-        //TODO - 1.19: FIXME this needs to be implemented
-        throw new UnsupportedOperationException("IMPLEMENT ME");
-    }
+    public abstract ResourceLocation getRegistryName();
 }

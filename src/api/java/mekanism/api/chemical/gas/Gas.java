@@ -12,6 +12,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Gas - a class used to set specific properties of gases when used or seen in-game.
@@ -55,6 +56,13 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     @Override
     public final boolean isEmptyType() {
         return this == MekanismAPI.EMPTY_GAS;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        //TODO - 1.19: Re-evaluate
+        IForgeRegistry<Gas> registry = MekanismAPI.gasRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 
     @Override

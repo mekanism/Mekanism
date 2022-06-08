@@ -7,6 +7,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.ISlurryProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Represents a slurry chemical subtype
@@ -52,6 +54,13 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     @Override
     public final boolean isEmptyType() {
         return this == MekanismAPI.EMPTY_SLURRY;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        //TODO - 1.19: Re-evaluate
+        IForgeRegistry<Slurry> registry = MekanismAPI.slurryRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 
     @Override

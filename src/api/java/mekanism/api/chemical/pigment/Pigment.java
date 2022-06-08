@@ -12,6 +12,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Represents a pigment chemical subtype
@@ -46,6 +47,13 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
     @Override
     public final boolean isEmptyType() {
         return this == MekanismAPI.EMPTY_PIGMENT;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        //TODO - 1.19: Re-evaluate
+        IForgeRegistry<Pigment> registry = MekanismAPI.pigmentRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 
     @Override

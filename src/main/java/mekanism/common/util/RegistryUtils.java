@@ -3,6 +3,7 @@ package mekanism.common.util;
 import javax.annotation.Nullable;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -57,6 +58,7 @@ public class RegistryUtils {
     }
 
     @Nullable
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static ResourceLocation getName(Object element) {
         //TODO - 1.19: Re-evaluate this
         for (Registry<?> registry : Registry.REGISTRY) {
@@ -65,16 +67,10 @@ public class RegistryUtils {
                 return registryName;
             }
         }
-        return null;
-    }
-
-    @Nullable
-    public static Registry<?> getRegistryFor(Object element) {
-        //TODO - 1.19: Re-evaluate this
-        for (Registry<?> registry : Registry.REGISTRY) {
+        for (Registry<?> registry : BuiltinRegistries.REGISTRY) {
             ResourceLocation registryName = ((Registry) registry).getKey(element);
             if (registryName != null) {
-                return registry;
+                return registryName;
             }
         }
         return null;

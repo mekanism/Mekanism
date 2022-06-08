@@ -403,7 +403,7 @@ public class SerializerHelper {
 
     private static JsonObject serializeChemicalStack(@Nonnull String serializationKey, @Nonnull ChemicalStack<?> stack) {
         JsonObject json = new JsonObject();
-        json.addProperty(serializationKey, stack.getType().getRegistryName().toString());
+        json.addProperty(serializationKey, stack.getTypeRegistryName().toString());
         json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
         return json;
     }

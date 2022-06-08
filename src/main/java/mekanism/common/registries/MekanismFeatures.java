@@ -74,6 +74,7 @@ public class MekanismFeatures {
     }
 
     public static final MekFeature<ResizableDiskConfig, ResizableDiskReplaceFeature> SALT = SETUP_FEATURES.register("salt",
+          //TODO - 1.19: Figure this out, configured features are registered before features so when we try to get the feature we fail
           () -> new ConfiguredFeature<>(DISK.get(), new ResizableDiskConfig(MekanismBlocks.SALT_BLOCK.getBlock().defaultBlockState(), MekanismConfig.world.salt)),
           retrogen -> List.of(
                 new DisableableFeaturePlacement(null, MekanismConfig.world.salt.shouldGenerate, retrogen),

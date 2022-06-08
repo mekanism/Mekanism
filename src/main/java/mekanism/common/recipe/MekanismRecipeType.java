@@ -1,5 +1,6 @@
 package mekanism.common.recipe;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -221,6 +222,8 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
             //Note: This is a fresh mutable list that gets returned
             List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
             if (this == SMELTING.get()) {
+                //Ensure the recipes can be modified
+                recipes = new ArrayList<>(recipes);
                 for (SmeltingRecipe smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
                     ItemStack recipeOutput = smeltingRecipe.getResultItem();
                     if (!smeltingRecipe.isSpecial() && !smeltingRecipe.isIncomplete() && !recipeOutput.isEmpty()) {
