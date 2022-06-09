@@ -2,21 +2,21 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:ebony_logs"
+      "tag": "byg:wood/ebony_logs"
     }
   },
   "mainOutput": {
-    "item": "byg:ebony_planks",
-    "count": 6
+    "count": 6,
+    "item": "byg:ebony_planks"
   },
+  "secondaryChance": 0.25,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.25
+  }
 }

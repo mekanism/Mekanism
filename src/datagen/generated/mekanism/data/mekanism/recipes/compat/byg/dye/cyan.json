@@ -2,8 +2,8 @@
   "type": "mekanism:enriching",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "input": {
@@ -17,7 +17,7 @@
     ]
   },
   "output": {
-    "item": "minecraft:cyan_dye",
-    "count": 2
+    "count": 2,
+    "item": "minecraft:cyan_dye"
   }
 }

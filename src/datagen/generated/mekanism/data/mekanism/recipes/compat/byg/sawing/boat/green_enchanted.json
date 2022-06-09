@@ -2,8 +2,8 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "input": {
@@ -12,7 +12,7 @@
     }
   },
   "mainOutput": {
-    "item": "byg:green_enchanted_planks",
-    "count": 5
+    "count": 5,
+    "item": "byg:green_enchanted_planks"
   }
 }

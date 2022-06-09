@@ -1,7 +1,6 @@
 package mekanism.common.recipe.compat;
 
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
@@ -17,14 +16,14 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import potionstudios.byg.common.block.BYGBlocks;
-import potionstudios.byg.common.item.BYGItems;
+import potionstudios.byg.common.block.BYGWoodTypes;
+import potionstudios.byg.common.item.BYGBoatItem;
 import potionstudios.byg.reg.RegistryObject;
 
 @ParametersAreNonnullByDefault
@@ -47,75 +46,11 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
     }
 
     private void addPrecisionSawmillRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.ASPEN_PLANKS, BYGItems.ASPEN_BOAT, BYGBlocks.ASPEN_DOOR, BYGBlocks.ASPEN_FENCE_GATE,
-              BYGBlocks.ASPEN_PRESSURE_PLATE, BYGBlocks.ASPEN_TRAPDOOR, "aspen");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.BAOBAB_PLANKS, BYGItems.BAOBAB_BOAT, BYGBlocks.BAOBAB_DOOR, BYGBlocks.BAOBAB_FENCE_GATE,
-              BYGBlocks.BAOBAB_PRESSURE_PLATE, BYGBlocks.BAOBAB_TRAPDOOR, "baobab");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.BLUE_ENCHANTED_PLANKS, BYGItems.BLUE_ENCHANTED_BOAT, BYGBlocks.BLUE_ENCHANTED_DOOR,
-              BYGBlocks.BLUE_ENCHANTED_FENCE_GATE, BYGBlocks.BLUE_ENCHANTED_PRESSURE_PLATE, BYGBlocks.BLUE_ENCHANTED_TRAPDOOR, "blue_enchanted");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.BULBIS_PLANKS, null, BYGBlocks.BULBIS_DOOR, BYGBlocks.BULBIS_FENCE_GATE,
-              BYGBlocks.BULBIS_PRESSURE_PLATE, BYGBlocks.BULBIS_TRAPDOOR, "bulbis", "stems");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.CHERRY_PLANKS, BYGItems.CHERRY_BOAT, BYGBlocks.CHERRY_DOOR, BYGBlocks.CHERRY_FENCE_GATE,
-              BYGBlocks.CHERRY_PRESSURE_PLATE, BYGBlocks.CHERRY_TRAPDOOR, "cherry");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.CIKA_PLANKS, BYGItems.CIKA_BOAT, BYGBlocks.CIKA_DOOR, BYGBlocks.CIKA_FENCE_GATE,
-              BYGBlocks.CIKA_PRESSURE_PLATE, BYGBlocks.CIKA_TRAPDOOR, "cika");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.CYPRESS_PLANKS, BYGItems.CYPRESS_BOAT, BYGBlocks.CYPRESS_DOOR, BYGBlocks.CYPRESS_FENCE_GATE,
-              BYGBlocks.CYPRESS_PRESSURE_PLATE, BYGBlocks.CYPRESS_TRAPDOOR, "cypress");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.EBONY_PLANKS, BYGItems.EBONY_BOAT, BYGBlocks.EBONY_DOOR, BYGBlocks.EBONY_FENCE_GATE,
-              BYGBlocks.EBONY_PRESSURE_PLATE, BYGBlocks.EBONY_TRAPDOOR, "ebony");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.EMBUR_PLANKS, null, BYGBlocks.EMBUR_DOOR, BYGBlocks.EMBUR_FENCE_GATE,
-              BYGBlocks.EMBUR_PRESSURE_PLATE, BYGBlocks.EMBUR_TRAPDOOR, "embur", "pedus");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.ETHER_PLANKS, null, BYGBlocks.ETHER_DOOR, BYGBlocks.ETHER_FENCE_GATE,
-              BYGBlocks.ETHER_PRESSURE_PLATE, BYGBlocks.ETHER_TRAPDOOR, "ether");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.FIR_PLANKS, BYGItems.FIR_BOAT, BYGBlocks.FIR_DOOR, BYGBlocks.FIR_FENCE_GATE,
-              BYGBlocks.FIR_PRESSURE_PLATE, BYGBlocks.FIR_TRAPDOOR, "fir");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.GREEN_ENCHANTED_PLANKS, BYGItems.GREEN_ENCHANTED_BOAT, BYGBlocks.GREEN_ENCHANTED_DOOR,
-              BYGBlocks.GREEN_ENCHANTED_FENCE_GATE, BYGBlocks.GREEN_ENCHANTED_PRESSURE_PLATE, BYGBlocks.GREEN_ENCHANTED_TRAPDOOR, "green_enchanted");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.HOLLY_PLANKS, BYGItems.HOLLY_BOAT, BYGBlocks.HOLLY_DOOR, BYGBlocks.HOLLY_FENCE_GATE,
-              BYGBlocks.HOLLY_PRESSURE_PLATE, BYGBlocks.HOLLY_TRAPDOOR, "holly");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.IMPARIUS_PLANKS, null, BYGBlocks.IMPARIUS_DOOR, BYGBlocks.IMPARIUS_FENCE_GATE,
-              BYGBlocks.IMPARIUS_PRESSURE_PLATE, BYGBlocks.IMPARIUS_TRAPDOOR, "imparius", "stems");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.JACARANDA_PLANKS, BYGItems.JACARANDA_BOAT, BYGBlocks.JACARANDA_DOOR,
-              BYGBlocks.JACARANDA_FENCE_GATE, BYGBlocks.JACARANDA_PRESSURE_PLATE, BYGBlocks.JACARANDA_TRAPDOOR, "jacaranda");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.LAMENT_PLANKS, null, BYGBlocks.LAMENT_DOOR, BYGBlocks.LAMENT_FENCE_GATE,
-              BYGBlocks.LAMENT_PRESSURE_PLATE, BYGBlocks.LAMENT_TRAPDOOR, "lament");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.MAHOGANY_PLANKS, BYGItems.MAHOGANY_BOAT, BYGBlocks.MAHOGANY_DOOR, BYGBlocks.MAHOGANY_FENCE_GATE,
-              BYGBlocks.MAHOGANY_PRESSURE_PLATE, BYGBlocks.MAHOGANY_TRAPDOOR, "mahogany");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.MANGROVE_PLANKS, BYGItems.MANGROVE_BOAT, BYGBlocks.MANGROVE_DOOR, BYGBlocks.MANGROVE_FENCE_GATE,
-              BYGBlocks.MANGROVE_PRESSURE_PLATE, BYGBlocks.MANGROVE_TRAPDOOR, "mangrove");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.MAPLE_PLANKS, BYGItems.MAPLE_BOAT, BYGBlocks.MAPLE_DOOR, BYGBlocks.MAPLE_FENCE_GATE,
-              BYGBlocks.MAPLE_PRESSURE_PLATE, BYGBlocks.MAPLE_TRAPDOOR, "maple");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.NIGHTSHADE_PLANKS, null, BYGBlocks.NIGHTSHADE_DOOR, BYGBlocks.NIGHTSHADE_FENCE_GATE,
-              BYGBlocks.NIGHTSHADE_PRESSURE_PLATE, BYGBlocks.NIGHTSHADE_TRAPDOOR, "nightshade");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.PALM_PLANKS, BYGItems.PALM_BOAT, BYGBlocks.PALM_DOOR, BYGBlocks.PALM_FENCE_GATE,
-              BYGBlocks.PALM_PRESSURE_PLATE, BYGBlocks.PALM_TRAPDOOR, "palm");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.PINE_PLANKS, BYGItems.PINE_BOAT, BYGBlocks.PINE_DOOR, BYGBlocks.PINE_FENCE_GATE,
-              BYGBlocks.PINE_PRESSURE_PLATE, BYGBlocks.PINE_TRAPDOOR, "pine");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.RAINBOW_EUCALYPTUS_PLANKS, BYGItems.RAINBOW_EUCALYPTUS_BOAT, BYGBlocks.RAINBOW_EUCALYPTUS_DOOR,
-              BYGBlocks.RAINBOW_EUCALYPTUS_FENCE_GATE, BYGBlocks.RAINBOW_EUCALYPTUS_PRESSURE_PLATE, BYGBlocks.RAINBOW_EUCALYPTUS_TRAPDOOR, "rainbow_eucalyptus");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.REDWOOD_PLANKS, BYGItems.REDWOOD_BOAT, BYGBlocks.REDWOOD_DOOR, BYGBlocks.REDWOOD_FENCE_GATE,
-              BYGBlocks.REDWOOD_PRESSURE_PLATE, BYGBlocks.REDWOOD_TRAPDOOR, "redwood");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.SKYRIS_PLANKS, BYGItems.SKYRIS_BOAT, BYGBlocks.SKYRIS_DOOR, BYGBlocks.SKYRIS_FENCE_GATE,
-              BYGBlocks.SKYRIS_PRESSURE_PLATE, BYGBlocks.SKYRIS_TRAPDOOR, "skyris");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.SYTHIAN_PLANKS, null, BYGBlocks.SYTHIAN_DOOR, BYGBlocks.SYTHIAN_FENCE_GATE,
-              BYGBlocks.SYTHIAN_PRESSURE_PLATE, BYGBlocks.SYTHIAN_TRAPDOOR, "sythian", "stems");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.WILLOW_PLANKS, BYGItems.WILLOW_BOAT, BYGBlocks.WILLOW_DOOR, BYGBlocks.WILLOW_FENCE_GATE,
-              BYGBlocks.WILLOW_PRESSURE_PLATE, BYGBlocks.WILLOW_TRAPDOOR, "willow");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.WITCH_HAZEL_PLANKS, BYGItems.WITCH_HAZEL_BOAT, BYGBlocks.WITCH_HAZEL_DOOR,
-              BYGBlocks.WITCH_HAZEL_FENCE_GATE, BYGBlocks.WITCH_HAZEL_PRESSURE_PLATE, BYGBlocks.WITCH_HAZEL_TRAPDOOR, "witch_hazel");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.ZELKOVA_PLANKS, BYGItems.ZELKOVA_BOAT, BYGBlocks.ZELKOVA_DOOR, BYGBlocks.ZELKOVA_FENCE_GATE,
-              BYGBlocks.ZELKOVA_PRESSURE_PLATE, BYGBlocks.ZELKOVA_TRAPDOOR, "zelkova");
-    }
-
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable RegistryObject<? extends Item> boat,
-          ItemLike door, ItemLike fenceGate, ItemLike pressurePlate, ItemLike trapdoor, String name) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, pressurePlate, trapdoor, name, "logs");
-    }
-
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable RegistryObject<? extends Item> boat,
-          ItemLike door, ItemLike fenceGate, ItemLike pressurePlate, ItemLike trapdoor, String name, String logTagType) {
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat == null ? null : boat.get(), door, fenceGate,
-              tag(name + "_" + logTagType), pressurePlate, trapdoor, name, modLoaded);
+        for (BYGWoodTypes woodType : BYGWoodTypes.values()) {
+            RegistryObject<BYGBoatItem> boat = woodType.boat();
+            RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, woodType.planks(), boat == null ? null : boat.get(), woodType.door(),
+                  woodType.fenceGate(), woodType.logTag().item(), woodType.pressurePlate(), woodType.trapdoor(), woodType.toString(), modLoaded);
+        }
     }
 
     private void addSandRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

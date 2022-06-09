@@ -2,19 +2,19 @@
   "type": "mekanism:combining",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
+  "extraInput": {
+    "ingredient": {
+      "item": "byg:brimstone"
+    }
+  },
   "mainInput": {
     "amount": 8,
     "ingredient": {
       "tag": "forge:raw_materials/gold"
-    }
-  },
-  "extraInput": {
-    "ingredient": {
-      "item": "byg:brimstone"
     }
   },
   "output": {

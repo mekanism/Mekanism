@@ -38,8 +38,8 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     );
     private static final Set<String> COMPAT_RECIPES_TO_SKIP = Set.of(
           "ae2/",
-          "biomesoplenty/",
-          "byg/",//Biomes You'll Go
+          //"biomesoplenty/",
+          //"byg/",//Biomes You'll Go
           "ilikewood/",
           "ilikewoodxbiomesoplenty/",//I Like Wood Biomes O' Plenty
           "ilikewoodxbyg/"//I Like Wood Biomes You'll Go
@@ -67,7 +67,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
 
     @Override
     public void run(@Nonnull CachedOutput cache) throws IOException {
-        if (PATHS_TO_SKIP.isEmpty() && COMPAT_RECIPES_TO_SKIP.isEmpty()) {
+        if (PATHS_TO_SKIP.isEmpty() && COMPAT_RECIPES_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
             //Skip if we don't have any things to override and persist
             return;
         }

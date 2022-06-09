@@ -2,8 +2,8 @@
   "type": "mekanism:crushing",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "input": {
@@ -12,7 +12,7 @@
     }
   },
   "output": {
-    "item": "byg:soapstone",
-    "count": 2
+    "count": 2,
+    "item": "byg:soapstone"
   }
 }

@@ -2,8 +2,8 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "biomesoplenty",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
     }
   ],
   "input": {
@@ -12,7 +12,7 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:dead_planks",
-    "count": 5
+    "count": 5,
+    "item": "biomesoplenty:dead_planks"
   }
 }

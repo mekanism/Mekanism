@@ -2,8 +2,8 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "biomesoplenty",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
     }
   ],
   "input": {
@@ -12,11 +12,11 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:palm_planks",
-    "count": 6
+    "count": 6,
+    "item": "biomesoplenty:palm_planks"
   },
+  "secondaryChance": 0.25,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.25
+  }
 }

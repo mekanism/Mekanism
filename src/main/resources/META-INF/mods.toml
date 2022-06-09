@@ -36,12 +36,6 @@ license="MIT"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.mekanism]]
-    modId="wildfire_gender"
-    mandatory=false
-    versionRange="${wildfire_gender_version}"
-    ordering="AFTER"
-    side="BOTH"
-[[dependencies.mekanism]]
     modId="curios"
     mandatory=false
     versionRange="${curios_version}"

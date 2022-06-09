@@ -131,7 +131,7 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 ext {
     versionProperties = ["version"                : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version"         : loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "wildfire_gender_version": wildfire_gender_version_range, "curios_version": curios_version_range]
+                         "curios_version": curios_version_range]
     //Fallback pack format is the larger of the resource and data pack formats
     packProperties = ["pack_format"         : Math.max(Integer.parseInt(resource_pack_format), Integer.parseInt(data_pack_format)),
                       "resource_pack_format": resource_pack_format, "data_pack_format": data_pack_format]
@@ -156,6 +156,7 @@ def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet) {
             }
         }
         //TODO - 1.19: Figure out why this doesn't seem to be replacing the files datagen runs against
+        // It is because of the file reference that the folder pack doesn't then have the updated file
         def packMcMeta = copySpec {
             from(sourceSet.resources) {
                 include "pack.mcmeta"
@@ -424,11 +425,10 @@ dependencies {
     //TODO - 1.19: datagenmainImplementation once ae2 update
     datagenmainCompileOnly fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
-    //TODO - 1.19: Re-enable when these update
-    //datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
+    datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
+    datagenmainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
     //TODO - 1.19: datagenmainImplementation once these update
-    datagenmainCompileOnly fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
     datagenmainCompileOnly fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenmainCompileOnly fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenmainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
