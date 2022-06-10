@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Stray;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.network.NetworkHooks;
 
 public class EntityBabyStray extends Stray implements IBabyEntity {
@@ -22,7 +23,11 @@ public class EntityBabyStray extends Stray implements IBabyEntity {
 
     //Copy of stray spawn restrictions
     public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return checkMonsterSpawnRules(type, world, reason, pos, random) && (reason == MobSpawnType.SPAWNER || world.canSeeSky(pos));
+        BlockPos blockpos = pos;
+        do {
+            blockpos = blockpos.above();
+        } while (world.getBlockState(blockpos).is(Blocks.POWDER_SNOW));
+        return checkMonsterSpawnRules(type, world, reason, pos, random) && (reason == MobSpawnType.SPAWNER || world.canSeeSky(blockpos.below()));
     }
 
     public EntityBabyStray(EntityType<EntityBabyStray> type, Level world) {
