@@ -50,7 +50,11 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
     @Override
     public int getExperienceReward() {
         if (isBaby()) {
+            int oldXp = xpReward;
             xpReward = (int) (xpReward * 2.5F);
+            int reward = super.getExperienceReward();
+            xpReward = oldXp;
+            return reward;
         }
         return super.getExperienceReward();
     }
