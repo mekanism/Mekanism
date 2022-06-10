@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:combining",
+  "extraInput": {
+    "ingredient": {
+      "item": "minecraft:mud"
+    }
+  },
+  "mainInput": {
+    "ingredient": {
+      "item": "minecraft:mangrove_roots"
+    }
+  },
+  "output": {
+    "item": "minecraft:muddy_mangrove_roots"
+  }
+}

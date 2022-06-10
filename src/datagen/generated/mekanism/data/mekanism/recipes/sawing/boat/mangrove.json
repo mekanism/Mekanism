@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:mangrove_boat"
+    }
+  },
+  "mainOutput": {
+    "count": 5,
+    "item": "minecraft:mangrove_planks"
+  }
+}

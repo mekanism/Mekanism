@@ -1,0 +1,14 @@
+{
+  "values": [
+    "mekanism:tin_ore",
+    "mekanism:deepslate_tin_ore",
+    "mekanism:osmium_ore",
+    "mekanism:deepslate_osmium_ore",
+    "mekanism:uranium_ore",
+    "mekanism:deepslate_uranium_ore",
+    "mekanism:fluorite_ore",
+    "mekanism:deepslate_fluorite_ore",
+    "mekanism:lead_ore",
+    "mekanism:deepslate_lead_ore"
+  ]
+}

@@ -46,27 +46,37 @@ public class RecipeProviderUtil {
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, log, pressurePlate, trapdoor, name, null);
+          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name) {
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, name, null);
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name, @Nullable ICondition condition) {
+          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name,
+          @Nullable ICondition condition) {
         if (boat != null) {
             //Boat
             build(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(boat.asItem()),
+                  IngredientCreatorAccess.item().from(boat),
                   new ItemStack(planks, 5)
             ), basePath + "boat/" + name, condition);
+            if (chestBoat != null) {
+                //Chest Boat
+                build(consumer, SawmillRecipeBuilder.sawing(
+                      IngredientCreatorAccess.item().from(chestBoat),
+                      new ItemStack(boat),
+                      new ItemStack(Blocks.CHEST),
+                      1
+                ), basePath + "chest_boat/" + name, condition);
+            }
         }
         //Door
         build(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(door.asItem()),
+              IngredientCreatorAccess.item().from(door),
               new ItemStack(planks, 2)
         ), basePath + "door/" + name, condition);
         //Fence Gate
         build(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(fenceGate.asItem()),
+              IngredientCreatorAccess.item().from(fenceGate),
               new ItemStack(planks, 2),
               new ItemStack(Items.STICK, 4),
               1
@@ -80,12 +90,12 @@ public class RecipeProviderUtil {
         ), basePath + "log/" + name, condition);
         //Pressure plate
         build(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(pressurePlate.asItem()),
+              IngredientCreatorAccess.item().from(pressurePlate),
               new ItemStack(planks, 2)
         ), basePath + "pressure_plate/" + name, condition);
         //Trapdoor
         build(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(trapdoor.asItem()),
+              IngredientCreatorAccess.item().from(trapdoor),
               new ItemStack(planks, 3)
         ), basePath + "trapdoor/" + name, condition);
     }

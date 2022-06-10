@@ -31,12 +31,12 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
-        //Dirt -> clay
+        //Dirt -> mud
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Blocks.DIRT),
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
-              new ItemStack(Blocks.CLAY)
-        ).build(consumer, Mekanism.rl(basePath + "dirt_to_clay"));
+              new ItemStack(Blocks.MUD)
+        ).build(consumer, Mekanism.rl(basePath + "dirt_to_mud"));
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Tags.Items.GUNPOWDER),

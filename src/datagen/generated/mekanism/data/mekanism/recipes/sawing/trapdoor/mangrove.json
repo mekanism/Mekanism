@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:mangrove_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "minecraft:mangrove_planks"
+  }
+}
