@@ -13,6 +13,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.integration.lookingat.jade.MekanismJadePlugin;
+import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.PigmentRegistryObject;
@@ -414,9 +415,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addRobitSkins() {
         add(MekanismRobitSkins.BASE, "Default");
-        add(MekanismRobitSkins.LESBIAN, "Lesbian Pride");
-        add(MekanismRobitSkins.PRIDE, "Pride");
-        add(MekanismRobitSkins.TRANS, "Trans Pride");
+        for (RobitPrideSkinData data : RobitPrideSkinData.values()) {
+            add(MekanismRobitSkins.PRIDE_SKINS.get(data), data.displayName());
+        }
     }
 
     private void addSubtitles() {

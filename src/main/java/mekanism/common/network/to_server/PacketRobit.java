@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
@@ -11,6 +12,7 @@ import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -20,7 +22,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRobit implements IMekanismPacket {
 
-    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of("sara", List.of(MekanismRobitSkins.LESBIAN, MekanismRobitSkins.TRANS));
+    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of("sara", List.of(MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS), MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.LESBIAN)));
 
     private final RobitPacketType activeType;
     private final int entityId;
