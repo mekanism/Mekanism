@@ -2,27 +2,31 @@ package mekanism.client.texture;
 
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashingOutputStream;
-import mekanism.common.entity.RobitPrideSkinData;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraftforge.common.data.ExistingFileHelper;
-
-import javax.imageio.ImageIO;
+import cpw.mods.modlauncher.api.LamdbaExceptionUtils;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import javax.imageio.ImageIO;
+import mekanism.common.Mekanism;
+import mekanism.common.entity.RobitPrideSkinData;
+import mekanism.common.registries.MekanismRobitSkins;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataGenerator.Target;
+import net.minecraft.data.DataProvider;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class PrideRobitTextureProvider implements DataProvider {
+
     private final DataGenerator generator;
     private final ExistingFileHelper helper;
 
@@ -32,48 +36,34 @@ public class PrideRobitTextureProvider implements DataProvider {
         this.generator = generator;
         this.helper = helper;
     }
+
     @Override
-    public void run(CachedOutput cache) throws IOException {
-        BufferedImage image = getTexture();
-        for (RobitPrideSkinData skinData : RobitPrideSkinData.values()) {
-            transform(
-                    () -> {
-                        ColorModel cm = image.getColorModel();
-                        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-                        WritableRaster raster = image.copyData(null);
-                        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-                    },
-                    skinData,
-                    (prideTexture, index) -> {
-                        String fileName = skinData.lowerCaseName();
-                        index++;
-                        if (index != 1)
-                            fileName += index;
-                        fileName += ".png";
-                        Path path = this.generator.getOutputFolder().resolve(Paths.get(PackType.CLIENT_RESOURCES.getDirectory(), "mekanism", ROBIT_SKIN_PATH, fileName));
-
-                        try (ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-                             HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream)) {
-                            ImageIO.write(prideTexture,"PNG", hashingoutputstream);
-                            cache.writeIfNeeded(path, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
-
-                        } catch (IOException e) {
-                            throw new RuntimeException("couldn't write image", e);
-                        }
-                    }
-            );
-        }
-    }
-
-    /**
-     * this uses a method annotated with {@link com.google.common.annotations.VisibleForTesting}
-     */
-    private BufferedImage getTexture() throws IOException {
-        try {
-            Resource resource = helper.getResource(new ResourceLocation("mekanism", ROBIT_SKIN_PATH + "/robit.png"), PackType.CLIENT_RESOURCES);
-            return ImageIO.read(resource.open());
-        } catch (IOException e) {
-            throw new IOException("couldn't load robit texture", e);
+    @SuppressWarnings("UnstableApiUsage")
+    public void run(@Nonnull CachedOutput cache) throws IOException {
+        Path outputFolder = generator.getOutputFolder(Target.RESOURCE_PACK).resolve(Mekanism.MODID + "/" + ROBIT_SKIN_PATH);
+        Resource resource = helper.getResource(MekanismRobitSkins.BASE.getRegistryName(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
+        try (InputStream inputStream = resource.open()) {
+            BufferedImage image = ImageIO.read(inputStream);
+            for (RobitPrideSkinData skinData : RobitPrideSkinData.values()) {
+                transform(() -> {
+                          ColorModel cm = image.getColorModel();
+                          boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+                          WritableRaster raster = image.copyData(null);
+                          return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+                      }, skinData, LamdbaExceptionUtils.rethrowBiConsumer((prideTexture, index) -> {
+                          String fileName = skinData.lowerCaseName();
+                          if (++index != 1) {
+                              fileName += index;
+                          }
+                          Path path = outputFolder.resolve(fileName + ".png");
+                          try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                               HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
+                              ImageIO.write(prideTexture, "png", hashingOutputStream);
+                              cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
+                          }
+                      })
+                );
+            }
         }
     }
 
@@ -83,28 +73,28 @@ public class PrideRobitTextureProvider implements DataProvider {
             BufferedImage image = basicRobitTextureFactory.get();
             for (int chainIndex = 0; chainIndex < 4; chainIndex++) {
                 int maxStripeIndex = 9;
-                if (chainIndex == 0 || chainIndex == 2)
+                if (chainIndex == 0 || chainIndex == 2) {
                     maxStripeIndex = 3;
+                }
                 for (int stripeIndex = 0; stripeIndex < maxStripeIndex; stripeIndex++) {
                     int x = 0;
                     int y = 0;
                     switch (chainIndex) {
-                        case 0:
+                        case 0 -> {
                             x = 2 - stripeIndex;
                             y = 2;
-                            break;
-                        case 1:
-                            x = stripeIndex;
-                            break;
-                        case 2:
+                        }
+                        case 1 -> x = stripeIndex;
+                        case 2 -> {
                             x = stripeIndex + 6;
                             y = 2;
-                            break;
-                        case 3:
+                        }
+                        case 3 -> {
                             x = 8 - stripeIndex;
                             y = 4;
+                        }
                     }
-                    x+=15;
+                    x += 15;
                     paintStripe(image, rgb(stripeIndex, chainIndex, rotationIndex, data), x, y);
                 }
             }
@@ -113,29 +103,31 @@ public class PrideRobitTextureProvider implements DataProvider {
     }
 
     /**
+     * @param stripeIndex Stripe Index on the chain.
+     * @param chainIndex  The chain index (left, top, right, bottom). It starts on the left to hide a potential seam on the bottom
      *
-     * @param stripeIndex stripeIndex on chain
-     * @param chainIndex the chain index (left, top, right, bottom). It starts on the left to hide a potential seam on the bottom
-     * @param rotationIndex
-     * @param data
-     * @return color at that position
+     * @return Color at that position
      */
     private int rgb(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
         int index = stripeIndex + rotationIndex;
-        if (chainIndex > 2)
-            index+=3;
-        if (chainIndex > 1)
-            index+=9;
-        if (chainIndex > 0)
-            index+=3;
-        return data.getColor()[index%data.getColor().length];
+        if (chainIndex > 2) {
+            index += 3;
+        }
+        if (chainIndex > 1) {
+            index += 9;
+        }
+        if (chainIndex > 0) {
+            index += 3;
+        }
+        return data.getColor()[index % data.getColor().length];
     }
 
     private void paintStripe(BufferedImage robit, int colorRGB, int x, int y) {
-        robit.setRGB(x,y, colorRGB);
-        robit.setRGB(x,y+1, colorRGB);
+        robit.setRGB(x, y, colorRGB);
+        robit.setRGB(x, y + 1, colorRGB);
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return "Texture Provider";
