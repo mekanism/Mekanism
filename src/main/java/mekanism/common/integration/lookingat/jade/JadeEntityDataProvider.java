@@ -1,16 +1,22 @@
-package mekanism.common.integration.lookingat.hwyla;
+package mekanism.common.integration.lookingat.jade;
 
-import mcp.mobius.waila.api.IServerDataProvider;
+import mekanism.common.integration.lookingat.HwylaLookingAtHelper;
 import mekanism.common.integration.lookingat.LookingAtUtils;
-import mekanism.common.integration.lookingat.hwyla.HwylaDataProvider.HwylaLookingAtHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import snownee.jade.api.IServerDataProvider;
 
-public class HwylaEntityDataProvider implements IServerDataProvider<Entity> {
+public class JadeEntityDataProvider implements IServerDataProvider<Entity> {
 
-    static final HwylaEntityDataProvider INSTANCE = new HwylaEntityDataProvider();
+    static final JadeEntityDataProvider INSTANCE = new JadeEntityDataProvider();
+
+    @Override
+    public ResourceLocation getUid() {
+        return MekanismJadePlugin.ENTITY_DATA;
+    }
 
     @Override
     public void appendServerData(CompoundTag data, ServerPlayer player, Level world, Entity entity, boolean showDetails) {

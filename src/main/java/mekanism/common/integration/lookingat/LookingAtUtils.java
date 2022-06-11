@@ -3,21 +3,30 @@ package mekanism.common.integration.lookingat;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.ChemicalTankWrapper;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
+import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.functions.TriConsumer;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ILangEntry;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
@@ -32,6 +41,11 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -43,6 +57,13 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * Utils for simplifying the code for interacting with various mods that you look at things for (TOP, and Hwyla)
  */
 public class LookingAtUtils {
+
+    public static final ResourceLocation ENERGY = Mekanism.rl("energy");
+    public static final ResourceLocation FLUID = Mekanism.rl("fluid");
+    public static final ResourceLocation GAS = Mekanism.rl("gas");
+    public static final ResourceLocation INFUSE_TYPE = Mekanism.rl("infuse_type");
+    public static final ResourceLocation PIGMENT = Mekanism.rl("pigment");
+    public static final ResourceLocation SLURRY = Mekanism.rl("slurry");
 
     private LookingAtUtils() {
     }
@@ -205,4 +226,60 @@ public class LookingAtUtils {
         info.addChemicalElement(chemicalInTank, capacity);
     }
 
+    public static void appendHwylaTooltip(CompoundTag data, Consumer<Component> textConsumer, TriConsumer<Component, LookingAtElement, ResourceLocation> elementConsumer) {
+        if (data.contains(NBTConstants.MEK_DATA, Tag.TAG_LIST)) {
+            Component lastText = null;
+            //Copy the data we need and have from the server and pass it on to the tooltip rendering
+            ListTag list = data.getList(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND);
+            for (int i = 0; i < list.size(); i++) {
+                CompoundTag elementData = list.getCompound(i);
+                LookingAtElement element;
+                ResourceLocation name;
+                if (elementData.contains(HwylaLookingAtHelper.TEXT, Tag.TAG_STRING)) {
+                    Component text = Component.Serializer.fromJson(elementData.getString(HwylaLookingAtHelper.TEXT));
+                    if (text != null) {
+                        if (lastText != null) {
+                            //Fallback to printing the last text
+                            textConsumer.accept(lastText);
+                        }
+                        lastText = text;
+                    }
+                    continue;
+                } else if (elementData.contains(NBTConstants.ENERGY_STORED, Tag.TAG_STRING)) {
+                    element = new EnergyElement(FloatingLong.parseFloatingLong(elementData.getString(NBTConstants.ENERGY_STORED), true),
+                          FloatingLong.parseFloatingLong(elementData.getString(NBTConstants.MAX), true));
+                    name = LookingAtUtils.ENERGY;
+                } else if (elementData.contains(NBTConstants.FLUID_STORED, Tag.TAG_COMPOUND)) {
+                    element = new FluidElement(FluidStack.loadFluidStackFromNBT(elementData.getCompound(NBTConstants.FLUID_STORED)), elementData.getInt(NBTConstants.MAX));
+                    name = LookingAtUtils.FLUID;
+                } else if (elementData.contains(HwylaLookingAtHelper.CHEMICAL_STACK, Tag.TAG_COMPOUND)) {
+                    ChemicalStack<?> chemicalStack;
+                    CompoundTag chemicalData = elementData.getCompound(HwylaLookingAtHelper.CHEMICAL_STACK);
+                    if (chemicalData.contains(NBTConstants.GAS_NAME, Tag.TAG_STRING)) {
+                        chemicalStack = GasStack.readFromNBT(chemicalData);
+                        name = LookingAtUtils.GAS;
+                    } else if (chemicalData.contains(NBTConstants.INFUSE_TYPE_NAME, Tag.TAG_STRING)) {
+                        chemicalStack = InfusionStack.readFromNBT(chemicalData);
+                        name = LookingAtUtils.INFUSE_TYPE;
+                    } else if (chemicalData.contains(NBTConstants.PIGMENT_NAME, Tag.TAG_STRING)) {
+                        chemicalStack = PigmentStack.readFromNBT(chemicalData);
+                        name = LookingAtUtils.PIGMENT;
+                    } else if (chemicalData.contains(NBTConstants.SLURRY_NAME, Tag.TAG_STRING)) {
+                        chemicalStack = SlurryStack.readFromNBT(chemicalData);
+                        name = LookingAtUtils.SLURRY;
+                    } else {//Unknown chemical
+                        continue;
+                    }
+                    element = new ChemicalElement(chemicalStack, elementData.getLong(NBTConstants.MAX));
+                } else {//Skip, unknown
+                    continue;
+                }
+                elementConsumer.accept(lastText, element, name);
+                lastText = null;
+            }
+            if (lastText != null) {
+                textConsumer.accept(lastText);
+            }
+        }
+    }
 }

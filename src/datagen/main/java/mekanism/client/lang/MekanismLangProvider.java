@@ -11,6 +11,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.integration.lookingat.LookingAtUtils;
+import mekanism.common.integration.lookingat.jade.MekanismJadePlugin;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.PigmentRegistryObject;
@@ -35,6 +37,7 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 public class MekanismLangProvider extends BaseLanguageProvider {
@@ -461,7 +464,25 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismSounds.GEIGER_FAST, "Constant Geiger Counter clicks");
     }
 
+    private void addJade() {
+        addJadeConfigTooltip(MekanismJadePlugin.REMOVE_BUILTIN, "Remove overwritten builtin renderings");
+        addJadeConfigTooltip(MekanismJadePlugin.ENTITY_DATA, "Jade entity data provider");
+        addJadeConfigTooltip(MekanismJadePlugin.BLOCK_DATA, "Jade tile data provider");
+        addJadeConfigTooltip(MekanismJadePlugin.TOOLTIP_RENDERER, "Jade tooltip renderer");
+        addJadeConfigTooltip(LookingAtUtils.ENERGY, "Energy");
+        addJadeConfigTooltip(LookingAtUtils.FLUID, "Fluid");
+        addJadeConfigTooltip(LookingAtUtils.GAS, "Gas");
+        addJadeConfigTooltip(LookingAtUtils.INFUSE_TYPE, "Infuse Type");
+        addJadeConfigTooltip(LookingAtUtils.PIGMENT, "Pigment");
+        addJadeConfigTooltip(LookingAtUtils.SLURRY, "Slurry");
+    }
+
+    private void addJadeConfigTooltip(ResourceLocation location, String value) {
+        add("config.jade.plugin_" + location.getNamespace() + "." + location.getPath(), value);
+    }
+
     private void addMisc() {
+        addJade();
         //Upgrades
         add(APILang.UPGRADE_SPEED, "Speed");
         add(APILang.UPGRADE_SPEED_DESCRIPTION, "Increases speed of machinery.");
