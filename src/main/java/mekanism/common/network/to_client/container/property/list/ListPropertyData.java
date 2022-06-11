@@ -26,7 +26,7 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
             case STRING -> StringListPropertyData.read(property, buffer::readList);
             case FILTER -> FilterListPropertyData.read(property, buffer::readList);
             case FREQUENCY -> FrequencyListPropertyData.read(property, buffer::readList);
-            case REGISTRY_ENTRY -> RegistryEntryListPropertyData.read(property, buffer::readList);
+            case REGISTRY_ENTRY -> RegistryEntryListPropertyData.read(property, buffer);
         };
     }
 
@@ -39,6 +39,10 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
     public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
         buffer.writeEnum(listType);
+        writeList(buffer);
+    }
+
+    protected void writeList(FriendlyByteBuf buffer) {
         buffer.writeCollection(values, this::writeListElement);
     }
 

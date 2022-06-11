@@ -40,6 +40,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public enum PropertyType {
     BOOLEAN(Boolean.TYPE, false, (getter, setter) -> SyncableBoolean.create(() -> (boolean) getter.get(), setter::accept),
@@ -56,10 +57,7 @@ public enum PropertyType {
           (property, buffer) -> new LongPropertyData(property, buffer.readVarLong())),
     SHORT(Short.TYPE, (short) 0, (getter, setter) -> SyncableShort.create(() -> (short) getter.get(), setter::accept),
           (property, buffer) -> new ShortPropertyData(property, buffer.readShort())),
-    //TODO - 1.19: Figure out how to best represent the registry entry. Technically we don't use ContainerSync on any registry entries
-    // so it isn't the biggest deal that we are passing null and just not supporting it yet, but we need to fix this before we release
-    REGISTRY_ENTRY(null/*IForgeRegistryEntry.class*/, null, (supplier, consumer) -> SyncableRegistryEntry.create(null/*registry*/, (Supplier) supplier, (Consumer) consumer),
-          RegistryEntryPropertyData::readRegistryEntry),
+    REGISTRY_ENTRY(RegistryEntryPropertyData::readRegistryEntry),
     ITEM_STACK(ItemStack.class, ItemStack.EMPTY, (getter, setter) -> SyncableItemStack.create(() -> (ItemStack) getter.get(), setter::accept),
           (property, buffer) -> new ItemStackPropertyData(property, buffer.readItem())),
     FLUID_STACK(FluidStack.class, FluidStack.EMPTY, (getter, setter) -> SyncableFluidStack.create(() -> (FluidStack) getter.get(), setter::accept),
@@ -86,6 +84,16 @@ public enum PropertyType {
     private final BiFunction<Short, FriendlyByteBuf, PropertyData> dataCreatorFunction;
 
     private static final PropertyType[] VALUES = values();
+
+    PropertyType(BiFunction<Short, FriendlyByteBuf, PropertyData> dataCreatorFunction) {
+        this(null, null, null, dataCreatorFunction);
+    }
+
+    //For use by any specific registry types we might at some point need the annotation for
+    // potentially should have a better solution done than this
+    <V> PropertyType(Class<V> type, IForgeRegistry<V> registry, BiFunction<Short, FriendlyByteBuf, PropertyData> dataCreatorFunction) {
+        this(type, null, (supplier, consumer) -> SyncableRegistryEntry.create(registry, (Supplier<V>) supplier, (Consumer<V>) consumer), dataCreatorFunction);
+    }
 
     PropertyType(Class<?> type, Object defaultValue, BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction,
           BiFunction<Short, FriendlyByteBuf, PropertyData> dataCreatorFunction) {
@@ -114,6 +122,9 @@ public enum PropertyType {
     }
 
     public ISyncableData create(Supplier<Object> supplier, Consumer<Object> consumer) {
+        if (creatorFunction == null) {
+            throw new IllegalStateException(name() + " does not support annotation based syncing.");
+        }
         return creatorFunction.apply(supplier, consumer);
     }
 }

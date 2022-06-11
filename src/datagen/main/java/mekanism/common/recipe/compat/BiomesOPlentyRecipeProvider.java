@@ -66,7 +66,6 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Item> boat,
           RegistryObject<Item> chestBoat, RegistryObject<Block> door, RegistryObject<Block> fenceGate, RegistryObject<Block> pressurePlate, RegistryObject<Block> trapdoor,
           String name) {
-        //TODO - 1.19: Re-evaluate the logs tag
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks.get(), boat.get(), chestBoat.get(), door.get(), fenceGate.get(),
               tag(name + "_logs"), pressurePlate.get(), trapdoor.get(), name, modLoaded);
     }

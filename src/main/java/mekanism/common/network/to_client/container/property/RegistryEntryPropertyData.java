@@ -3,6 +3,7 @@ package mekanism.common.network.to_client.container.property;
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryManager;
 
 public class RegistryEntryPropertyData<V> extends PropertyData {
 
@@ -16,8 +17,10 @@ public class RegistryEntryPropertyData<V> extends PropertyData {
     }
 
     public static <V> RegistryEntryPropertyData<V> readRegistryEntry(short property, FriendlyByteBuf buffer) {
-        //Unused registry just do null for now
-        return new RegistryEntryPropertyData<>(property, null, buffer.readRegistryId());
+        //Copy of IForgeFriendlyByteBuf#readRegistryId but captures the registry
+        //TODO: If forge ever actually changes the registry name to being an id update this
+        IForgeRegistry<V> registry = RegistryManager.ACTIVE.getRegistry(buffer.readResourceLocation());
+        return new RegistryEntryPropertyData<>(property, registry, buffer.readRegistryIdUnsafe(registry));
     }
 
     @Override
