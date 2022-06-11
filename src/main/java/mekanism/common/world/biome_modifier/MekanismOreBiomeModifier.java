@@ -9,22 +9,21 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.world.ResizableOreFeature;
 import mekanism.common.world.ResizableOreFeatureConfig;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ModifiableBiomeInfo.BiomeInfo;
 
-//TODO - 1.19: Generate our modifiers so that they are actually loaded/added from the datapack
-public record MekanismOreBiomeModifier(OreType oreType) implements BiomeModifier {
+public record MekanismOreBiomeModifier(HolderSet<Biome> biomes, Decoration step, OreType oreType) implements BiomeModifier {
 
     @Override
     public void modify(Holder<Biome> biome, Phase phase, BiomeInfo.Builder builder) {
-        //TODO - 1.19: Figure out a way to represent all overworld biomes
-        if (phase == Phase.ADD /*&& this.biomes.contains(biome)*/) {
+        if (phase == Phase.ADD && biomes.contains(biome)) {
             BiomeGenerationSettingsBuilder generation = builder.getGenerationSettings();
             for (MekFeature<ResizableOreFeatureConfig, ResizableOreFeature> feature : MekanismFeatures.ORES.get(oreType)) {
-                generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, feature.placedFeature());
+                generation.addFeature(step, feature.placedFeature());
             }
         }
     }
@@ -36,6 +35,8 @@ public record MekanismOreBiomeModifier(OreType oreType) implements BiomeModifier
 
     public static Codec<MekanismOreBiomeModifier> makeCodec() {
         return RecordCodecBuilder.create(builder -> builder.group(
+              Biome.LIST_CODEC.fieldOf("biomes").forGetter(MekanismOreBiomeModifier::biomes),
+              Decoration.CODEC.fieldOf("step").forGetter(MekanismOreBiomeModifier::step),
               OreType.CODEC.fieldOf("oreType").forGetter(MekanismOreBiomeModifier::oreType)
         ).apply(builder, MekanismOreBiomeModifier::new));
     }

@@ -1,0 +1,6 @@
+{
+  "type": "mekanism:ore",
+  "biomes": "#minecraft:is_overworld",
+  "oreType": "osmium",
+  "step": "underground_ores"
+}

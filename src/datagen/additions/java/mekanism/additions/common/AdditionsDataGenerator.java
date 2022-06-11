@@ -33,6 +33,7 @@ public class AdditionsDataGenerator {
         //Server side data generators
         gen.addProvider(event.includeServer(), new AdditionsTagProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new AdditionsLootProvider(gen));
+        gen.addProvider(event.includeServer(), new AdditionsBiomeModifierProvider(gen));
         gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(gen, existingFileHelper));
     }
 }

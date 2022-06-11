@@ -1,0 +1,6 @@
+{
+  "type": "mekanism:ore",
+  "biomes": "#minecraft:is_overworld",
+  "oreType": "tin",
+  "step": "underground_ores"
+}
