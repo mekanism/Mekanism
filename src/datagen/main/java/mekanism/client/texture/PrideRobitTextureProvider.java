@@ -109,7 +109,8 @@ public class PrideRobitTextureProvider implements DataProvider {
      * @return Color at that position
      */
     private int rgb(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
-        int index = stripeIndex + rotationIndex;
+        //offset it by 12, so the pride flag always starts at the top by default
+        int index = stripeIndex + rotationIndex + 12;
         if (chainIndex > 2) {
             index += 9;
         }
