@@ -22,7 +22,9 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRobit implements IMekanismPacket {
 
-    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of("sara", List.of(MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS), MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.LESBIAN)));
+    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of(
+            "sara", getPrideSkins(RobitPrideSkinData.TRANS, RobitPrideSkinData.LESBIAN),
+            "agnor", getPrideSkins(RobitPrideSkinData.GAY));
 
     private final RobitPacketType activeType;
     private final int entityId;
@@ -50,6 +52,10 @@ public class PacketRobit implements IMekanismPacket {
         this.entityId = entityId;
         this.name = name;
         this.skin = skin;
+    }
+
+    private static List<IRobitSkinProvider> getPrideSkins(RobitPrideSkinData... prideSkinData) {
+        return Stream.of(prideSkinData).map(MekanismRobitSkins.PRIDE_SKINS::get).map( IRobitSkinProvider.class::cast).toList();
     }
 
     @Override

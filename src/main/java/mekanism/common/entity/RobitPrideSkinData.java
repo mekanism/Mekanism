@@ -14,6 +14,7 @@ public enum RobitPrideSkinData {
     GAY(0xFF078D70, 0xFF26CEAA, 0xFF99E8C2, 0xFFFFFFFF, 0xFF7BADE3, 0xFF5049CB, 0xFF3E1A78);
 
     private final int[] color;
+
     RobitPrideSkinData(int... color) {
         this.color = color;
     }
@@ -23,21 +24,6 @@ public enum RobitPrideSkinData {
     }
 
     public String lowerCaseName() {
-        return name().toLowerCase(Locale.ENGLISH);
-    }
-
-    public String displayName() {
-        if (this == PRIDE)
-            return "Pride";
-        StringBuilder builder = new StringBuilder();
-        for (char character: name().toCharArray()) {
-            if (builder.isEmpty()) {
-                builder.append(character);
-            } else {
-                builder.append(Character.toLowerCase(character));
-            }
-        }
-        builder.append(" Pride");
-        return builder.toString();
+        return name().toLowerCase(Locale.ROOT);
     }
 }

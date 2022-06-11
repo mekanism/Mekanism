@@ -15,10 +15,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 

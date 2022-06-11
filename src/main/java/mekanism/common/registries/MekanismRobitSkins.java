@@ -1,13 +1,14 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.ImmutableMap;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registration.impl.RobitSkinDeferredRegister;
 import mekanism.common.registration.impl.RobitSkinRegistryObject;
+import net.minecraft.Util;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class MekanismRobitSkins {
@@ -19,13 +20,11 @@ public class MekanismRobitSkins {
 
     public static final RobitSkinRegistryObject<RobitSkin> BASE = ROBIT_SKINS.register("robit");
 
-    public static final Map<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> PRIDE_SKINS;
-
-    static {
-        Map<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> tempMap = new HashMap<>();
+    public static final Map<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> PRIDE_SKINS = Util.make(() -> {
+        Map<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> internal = new EnumMap<>(RobitPrideSkinData.class);
         for (RobitPrideSkinData data: RobitPrideSkinData.values()) {
-            tempMap.put(data, ROBIT_SKINS.register(data.lowerCaseName(), data.getColor().length));
+            internal .put(data, ROBIT_SKINS.register(data.lowerCaseName(), data.getColor().length));
         }
-        PRIDE_SKINS = ImmutableMap.copyOf(tempMap);
-    }
+        return Collections.unmodifiableMap(internal);
+    });
 }

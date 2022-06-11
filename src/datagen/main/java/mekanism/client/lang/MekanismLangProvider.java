@@ -6,6 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -14,10 +15,7 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.integration.lookingat.jade.MekanismJadePlugin;
 import mekanism.common.entity.RobitPrideSkinData;
-import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.registration.impl.PigmentRegistryObject;
-import mekanism.common.registration.impl.SlurryRegistryObject;
+import mekanism.common.registration.impl.*;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -415,8 +413,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addRobitSkins() {
         add(MekanismRobitSkins.BASE, "Default");
-        for (RobitPrideSkinData data : RobitPrideSkinData.values()) {
-            add(MekanismRobitSkins.PRIDE_SKINS.get(data), data.displayName());
+        for (Map.Entry<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
+            RobitSkinRegistryObject<RobitSkin> prideSkin = entry.getValue();
+            String name = formatAndCapitalize(prideSkin.getInternalRegistryName());
+            if (entry.getKey() != RobitPrideSkinData.PRIDE) {
+                name += " Pride";
+            }
+            add(prideSkin, name);
         }
     }
 
