@@ -1,5 +1,6 @@
 package mekanism.api.chemical;
 
+import com.mojang.logging.LogUtils;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,8 +30,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     protected ChemicalStack(CHEMICAL chemical, long amount) {
         IForgeRegistry<CHEMICAL> registry = getRegistry();
         if (registry.getKey(chemical) == null) {
-            MekanismAPI.logger.fatal("Failed attempt to create a ChemicalStack for an unregistered Chemical {} (type {})", chemical.getRegistryName(),
-                  chemical.getClass().getName());
+            MekanismAPI.logger.error(LogUtils.FATAL_MARKER, "Failed attempt to create a ChemicalStack for an unregistered Chemical {} (type {})",
+                  chemical.getRegistryName(), chemical.getClass().getName());
             throw new IllegalArgumentException("Cannot create a ChemicalStack from an unregistered Chemical");
         }
         this.chemicalDelegate = registry.getDelegateOrThrow(chemical);

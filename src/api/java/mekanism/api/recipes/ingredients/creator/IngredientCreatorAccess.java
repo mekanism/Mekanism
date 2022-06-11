@@ -1,5 +1,6 @@
 package mekanism.api.recipes.ingredients.creator;
 
+import com.mojang.logging.LogUtils;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalType;
@@ -118,7 +119,7 @@ public class IngredientCreatorAccess {
             Class<?> clazz = Class.forName(className);
             setter.accept(type.cast(clazz.getField("INSTANCE").get(null)));
         } catch (ReflectiveOperationException ex) {
-            MekanismAPI.logger.fatal("Error retrieving {}, Mekanism may be absent, damaged, or outdated.", className);
+            MekanismAPI.logger.error(LogUtils.FATAL_MARKER, "Error retrieving {}, Mekanism may be absent, damaged, or outdated.", className);
         }
     }
 }

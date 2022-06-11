@@ -56,7 +56,7 @@ public class VoiceOutput extends Thread {
                 } catch (InterruptedException e) {
                     break;
                 } catch (Exception e) {
-                    Mekanism.logger.error(e);
+                    Mekanism.logger.error("VoiceServer: Unexpected Exception", e);
                 }
             }
         } catch (Exception e) {

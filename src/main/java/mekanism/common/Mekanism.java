@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -137,8 +138,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 @Mod(Mekanism.MODID)
 public class Mekanism {
@@ -154,7 +154,7 @@ public class Mekanism {
     /**
      * Mekanism logger instance
      */
-    public static final Logger logger = LogManager.getLogger(MOD_NAME);
+    public static final Logger logger = LogUtils.getLogger();
 
     /**
      * Mekanism mod instance
