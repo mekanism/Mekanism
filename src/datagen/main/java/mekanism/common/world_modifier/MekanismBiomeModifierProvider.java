@@ -1,11 +1,11 @@
-package mekanism.common.biome_modifier;
+package mekanism.common.world_modifier;
 
 import java.util.function.BiConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.world.biome_modifier.MekanismOreBiomeModifier;
-import mekanism.common.world.biome_modifier.MekanismSaltBiomeModifier;
+import mekanism.common.world.modifier.MekanismOreBiomeModifier;
+import mekanism.common.world.modifier.MekanismSaltBiomeModifier;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
@@ -22,8 +22,8 @@ public class MekanismBiomeModifierProvider extends BaseBiomeModifierProvider {
     }
 
     @Override
-    protected void getModifiers(Registry<Biome> biomeRegistry, BiConsumer<BiomeModifier, ResourceLocation> consumer) {
-        HolderSet.Named<Biome> isOverworldTag = new HolderSet.Named<>(biomeRegistry, BiomeTags.IS_OVERWORLD);
+    protected void getModifiers(RegistryGetter registryGetter, BiConsumer<BiomeModifier, ResourceLocation> consumer) {
+        HolderSet.Named<Biome> isOverworldTag = new HolderSet.Named<>(registryGetter.get(Registry.BIOME_REGISTRY), BiomeTags.IS_OVERWORLD);
         for (OreType oreType : EnumUtils.ORE_TYPES) {
             consumer.accept(new MekanismOreBiomeModifier(isOverworldTag, GenerationStep.Decoration.UNDERGROUND_ORES, oreType), Mekanism.rl(oreType.getSerializedName()));
         }

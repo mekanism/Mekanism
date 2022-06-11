@@ -3,8 +3,8 @@ package mekanism.common.registries;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BiomeModifierSerializerDeferredRegister;
 import mekanism.common.registration.impl.BiomeModifierSerializerRegistryObject;
-import mekanism.common.world.biome_modifier.MekanismOreBiomeModifier;
-import mekanism.common.world.biome_modifier.MekanismSaltBiomeModifier;
+import mekanism.common.world.modifier.MekanismOreBiomeModifier;
+import mekanism.common.world.modifier.MekanismSaltBiomeModifier;
 
 public class MekanismBiomeModifierSerializers {
 

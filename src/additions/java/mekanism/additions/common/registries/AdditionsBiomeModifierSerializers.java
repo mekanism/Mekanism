@@ -1,7 +1,7 @@
 package mekanism.additions.common.registries;
 
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.world.biome_modifier.BabyEntitySpawnBiomeModifier;
+import mekanism.additions.common.world.modifier.BabyEntitySpawnBiomeModifier;
 import mekanism.common.registration.impl.BiomeModifierSerializerDeferredRegister;
 import mekanism.common.registration.impl.BiomeModifierSerializerRegistryObject;
 

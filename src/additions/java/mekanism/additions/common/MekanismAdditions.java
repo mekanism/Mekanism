@@ -10,6 +10,7 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
+import mekanism.additions.common.registries.AdditionsStructureModifierSerializers;
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -52,7 +52,7 @@ public class MekanismAdditions implements IModModule {
     public static VoiceServerManager voiceManager;
 
     public MekanismAdditions() {
-        Mekanism.modulesLoaded.add(instance = this);
+        Mekanism.addModule(instance = this);
         MekanismAdditionsConfig.registerConfigs(ModLoadingContext.get());
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
@@ -65,8 +65,7 @@ public class MekanismAdditions implements IModModule {
         AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);
         AdditionsSounds.SOUND_EVENTS.register(modEventBus);
         AdditionsBiomeModifierSerializers.BIOME_MODIFIER_SERIALIZERS.register(modEventBus);
-
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, SpawnHelper::onStructureSpawnListGather);
+        AdditionsStructureModifierSerializers.STRUCTURE_MODIFIER_SERIALIZERS.register(modEventBus);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());

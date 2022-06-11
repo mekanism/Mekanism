@@ -6,6 +6,8 @@ import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
 import mekanism.additions.common.loot.AdditionsLootProvider;
 import mekanism.additions.common.recipe.AdditionsRecipeProvider;
+import mekanism.additions.common.world_modifier.AdditionsBiomeModifierProvider;
+import mekanism.additions.common.world_modifier.AdditionsStructureModifierProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,6 +36,7 @@ public class AdditionsDataGenerator {
         gen.addProvider(event.includeServer(), new AdditionsTagProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new AdditionsLootProvider(gen));
         gen.addProvider(event.includeServer(), new AdditionsBiomeModifierProvider(gen));
+        gen.addProvider(event.includeServer(), new AdditionsStructureModifierProvider(gen));
         gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(gen, existingFileHelper));
     }
 }

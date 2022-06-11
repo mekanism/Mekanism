@@ -48,7 +48,7 @@ public class MekanismTools implements IModModule {
     public final Version versionNumber;
 
     public MekanismTools() {
-        Mekanism.modulesLoaded.add(instance = this);
+        Mekanism.addModule(instance = this);
         MekanismToolsConfig.registerConfigs(ModLoadingContext.get());
         //Register the listener for special mob spawning (mobs with Mekanism armor/tools)
         MinecraftForge.EVENT_BUS.addListener(this::onLivingSpecialSpawn);

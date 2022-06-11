@@ -1,4 +1,4 @@
-package mekanism.common.world.biome_modifier;
+package mekanism.common.world.modifier;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

@@ -12,11 +12,17 @@ public enum BabyType implements StringRepresentable {
     STRAY,
     WITHER_SKELETON;
 
-    public static Codec<BabyType> CODEC = StringRepresentable.fromEnum(BabyType::values);
+    public static final Codec<BabyType> CODEC = StringRepresentable.fromEnum(BabyType::values);
+
+    private final String serializedName;
+
+    BabyType() {
+        this.serializedName = name().toLowerCase(Locale.ROOT);
+    }
 
     @Nonnull
     @Override
     public String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+        return serializedName;
     }
 }
