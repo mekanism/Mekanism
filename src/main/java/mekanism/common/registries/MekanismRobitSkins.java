@@ -23,7 +23,7 @@ public class MekanismRobitSkins {
     public static final Map<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> PRIDE_SKINS = Util.make(() -> {
         Map<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> internal = new EnumMap<>(RobitPrideSkinData.class);
         for (RobitPrideSkinData data: RobitPrideSkinData.values()) {
-            internal .put(data, ROBIT_SKINS.register(data.lowerCaseName(), data.getColor().length));
+            internal.put(data, ROBIT_SKINS.register(data.lowerCaseName(), data.getColor().length));
         }
         return Collections.unmodifiableMap(internal);
     });

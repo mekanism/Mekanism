@@ -73,7 +73,7 @@ public class PrideRobitTextureProvider implements DataProvider {
             BufferedImage image = basicRobitTextureFactory.get();
             for (int chainIndex = 0; chainIndex < 4; chainIndex++) {
                 int maxStripeIndex = 9;
-                if (chainIndex == 0 || chainIndex == 2) {
+                if (chainIndex == 1 || chainIndex == 3) {
                     maxStripeIndex = 3;
                 }
                 for (int stripeIndex = 0; stripeIndex < maxStripeIndex; stripeIndex++) {
@@ -81,17 +81,17 @@ public class PrideRobitTextureProvider implements DataProvider {
                     int y = 0;
                     switch (chainIndex) {
                         case 0 -> {
+                            x = 8 - stripeIndex;
+                            y = 4;
+                        }
+                        case 1 -> {
                             x = 2 - stripeIndex;
                             y = 2;
                         }
-                        case 1 -> x = stripeIndex;
-                        case 2 -> {
+                        case 2 -> x = stripeIndex;
+                        case 3 -> {
                             x = stripeIndex + 6;
                             y = 2;
-                        }
-                        case 3 -> {
-                            x = 8 - stripeIndex;
-                            y = 4;
                         }
                     }
                     x += 15;
@@ -104,20 +104,20 @@ public class PrideRobitTextureProvider implements DataProvider {
 
     /**
      * @param stripeIndex Stripe Index on the chain.
-     * @param chainIndex  The chain index (left, top, right, bottom). It starts on the left to hide a potential seam on the bottom
+     * @param chainIndex  The chain index (bottom, front(left), top, back(right)). It starts on the bottom to hide a potential seam on the bottom/back connection
      *
      * @return Color at that position
      */
     private int rgb(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
         int index = stripeIndex + rotationIndex;
         if (chainIndex > 2) {
-            index += 3;
-        }
-        if (chainIndex > 1) {
             index += 9;
         }
-        if (chainIndex > 0) {
+        if (chainIndex > 1) {
             index += 3;
+        }
+        if (chainIndex > 0) {
+            index += 9;
         }
         return data.getColor()[index % data.getColor().length];
     }
