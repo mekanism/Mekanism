@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:blue_ice"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "C": {
+      "tag": "forge:circuits/elite"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "#P#",
+    "HHH"
+  ],
+  "result": {
+    "item": "mekanism:module_motorized_servo_unit"
+  }
+}

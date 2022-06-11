@@ -1505,6 +1505,18 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Items.LIGHTNING_ROD)
               .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
               .build(consumer);
+        //Motorized Servo Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_MOTORIZED_SERVO)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.PREVIOUS, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR))
+              ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
+              .key(Pattern.CONSTANT, Blocks.BLUE_ICE)
+              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
         //Gravitational Modulating Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_GRAVITATIONAL_MODULATING)
               .pattern(RecipePattern.createPattern(

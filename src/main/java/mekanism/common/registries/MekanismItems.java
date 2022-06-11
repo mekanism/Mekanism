@@ -135,6 +135,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> MODULE_GYROSCOPIC_STABILIZATION = ITEMS.registerModule(MekanismModules.GYROSCOPIC_STABILIZATION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_HYDROSTATIC_REPULSOR = ITEMS.registerModule(MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_LOCOMOTIVE_BOOSTING = ITEMS.registerModule(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_MOTORIZED_SERVO = ITEMS.registerModule(MekanismModules.MOTORIZED_SERVO_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_HYDRAULIC_PROPULSION = ITEMS.registerModule(MekanismModules.HYDRAULIC_PROPULSION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_MAGNETIC_ATTRACTION = ITEMS.registerModule(MekanismModules.MAGNETIC_ATTRACTION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_FROST_WALKER = ITEMS.registerModule(MekanismModules.FROST_WALKER_UNIT);

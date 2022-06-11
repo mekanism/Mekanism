@@ -16,7 +16,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-//TODO - 1.19: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 1.20: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {

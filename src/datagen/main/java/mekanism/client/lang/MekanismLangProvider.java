@@ -1310,6 +1310,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit", "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
         add(MekanismModules.ELYTRA_UNIT, "Elytra Unit", "Applies an HDPE Reinforced Elytra to the MekaSuit.");
         add(MekanismModules.GYROSCOPIC_STABILIZATION_UNIT, "Gyroscopic Stabilization Unit", "Allows the user to act as though they are on solid ground.");
+        add(MekanismModules.MOTORIZED_SERVO_UNIT, "Motorized Servo Unit", "Uses motorized servos to reduce the strain of sneaking.");
         add(MekanismModules.HYDROSTATIC_REPULSOR_UNIT, "Hydrostatic Repulsor Unit", "Uses advanced technology to repel water, lowering the resistance felt while moving through it.");
         add(MekanismModules.CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit", "Evenly distributes charge throughout all worn MekaSuit armor.");
         add(MekanismModules.DOSIMETER_UNIT, "Dosimeter Unit", "Displays the user's current radiation dose in the HUD.");

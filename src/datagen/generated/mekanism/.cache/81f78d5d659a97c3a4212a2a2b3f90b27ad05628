@@ -1,4 +1,4 @@
-// 1.19	2022-06-10T15:01:39.5820627	Recipes: mekanism
+// 1.19	2022-06-10T22:33:30.011618	Recipes: mekanism
 76d04fb8c6d3843742c65aa81fc27c7baf08a732 data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 c55e764416488800531198c1a7605739ece64535 data/mekanism/recipes/atomic_disassembler.json
 b8659417402b744db4a14e2d085d5111877ab4a4 data/mekanism/recipes/bin/advanced.json
@@ -3140,6 +3140,7 @@ d6a23c27d0ed0c6ca86636f7bfd70a651b5310de data/mekanism/recipes/module_inhalation
 04258adce13ac03aadb1df811126891a49e242f4 data/mekanism/recipes/module_laser_dissipation_unit.json
 5fb2c129cecfdedec3dc9536c107926f2791fa0a data/mekanism/recipes/module_locomotive_boosting_unit.json
 43b8c206709c0956ad8ccbfa578049d91f874a62 data/mekanism/recipes/module_magnetic_attraction_unit.json
+4f70bf633afd6a9b3857b98d38b0bed552d90853 data/mekanism/recipes/module_motorized_servo_unit.json
 741c898c1335dc5b82aa4d276ffd411f3203bd64 data/mekanism/recipes/module_nutritional_injection_unit.json
 7aac4b309d185a89da4cfec1d79a931617128e85 data/mekanism/recipes/module_radiation_shielding_unit.json
 414298f02d84793b81478c78c281c8392679ce3d data/mekanism/recipes/module_shearing_unit.json
