@@ -10,7 +10,6 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
-import mekanism.api.robit.RobitSkin;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
@@ -166,7 +165,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public ResourceLocation getRegistryName() {
+    public final ResourceLocation getRegistryName() {
         //May be null if called before the object is registered
         IForgeRegistry<ModuleData<?>> registry = MekanismAPI.moduleRegistry();
         return registry == null ? null : registry.getKey(this);

@@ -98,7 +98,7 @@ public class RobitSkin implements IRobitSkinProvider {
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public ResourceLocation getRegistryName() {
+    public final ResourceLocation getRegistryName() {
         //May be null if called before the object is registered
         IForgeRegistry<RobitSkin> registry = MekanismAPI.robitSkinRegistry();
         return registry == null ? null : registry.getKey(this);

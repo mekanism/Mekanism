@@ -7,7 +7,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
@@ -49,7 +48,7 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    public ResourceLocation getRegistryName() {
+    public final ResourceLocation getRegistryName() {
         //May be null if called before the object is registered
         IForgeRegistry<InfuseType> registry = MekanismAPI.infuseTypeRegistry();
         return registry == null ? null : registry.getKey(this);
