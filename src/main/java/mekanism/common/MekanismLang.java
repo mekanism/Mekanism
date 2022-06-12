@@ -236,6 +236,8 @@ public enum MekanismLang implements ILangEntry {
     DANGER("gui", "danger"),
     COMPASS("gui", "compass"),
     RADIAL_SCREEN("gui", "radial_screen"),
+    VISUALS("gui", "visuals"),
+    VISUALS_TOO_BIG("gui", "visuals.too_big"),
     //GUI Issues
     ISSUES("gui", "issues"),
     ISSUE_NOT_ENOUGH_ENERGY("gui", "issues.no_energy"),
@@ -534,10 +536,6 @@ public enum MekanismLang implements ILangEntry {
     MINER_SILK("miner", "silk_touch"),
     MINER_RESET("miner", "reset"),
     MINER_INVERSE("miner", "inverse"),
-    //TODO - 1.19: Generify the lang path for the visuals and visuals too big, no sense doing it for the final 1.18 build which would remove some translations
-    // that then never get fixed
-    MINER_VISUALS("miner", "visuals"),
-    MINER_VISUALS_TOO_BIG("miner", "visuals.too_big"),
     MINER_REQUIRE_REPLACE("miner", "require_replace"),
     MINER_REQUIRE_REPLACE_INVERSE("miner", "require_replace.inverse"),
     MINER_RADIUS("miner", "radius"),

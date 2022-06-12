@@ -753,6 +753,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DANGER, "Danger");
         add(MekanismLang.COMPASS, "Compass");
         add(MekanismLang.RADIAL_SCREEN, "Radial Selector Screen");
+        add(MekanismLang.VISUALS, "Visuals: %1$s");
+        add(MekanismLang.VISUALS_TOO_BIG, "Area too large to display visuals.");
         //GUI Issues
         add(MekanismLang.ISSUES, "Issues:");
         add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY, " - Not enough energy to operate");
@@ -1062,8 +1064,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MINER_SILK, "Silk touch");
         add(MekanismLang.MINER_RESET, "Reset");
         add(MekanismLang.MINER_INVERSE, "Inverse mode");
-        add(MekanismLang.MINER_VISUALS, "Visuals: %1$s");
-        add(MekanismLang.MINER_VISUALS_TOO_BIG, "Radius too big to display visuals");
         add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %1$s");
         add(MekanismLang.MINER_REQUIRE_REPLACE_INVERSE, "Inverse mode requires replacement: %1$s");
         add(MekanismLang.MINER_RADIUS, "Radi: %1$s");

@@ -23,11 +23,11 @@ public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        Component visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(dataSource.isClientRendering()));
+        Component visualsComponent = MekanismLang.VISUALS.translate(OnOff.of(dataSource.isClientRendering()));
         if (dataSource.canDisplayVisuals()) {
             displayTooltips(matrix, mouseX, mouseY, visualsComponent);
         } else {
-            displayTooltips(matrix, mouseX, mouseY, visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED));
+            displayTooltips(matrix, mouseX, mouseY, visualsComponent, MekanismLang.VISUALS_TOO_BIG.translateColored(EnumColor.RED));
         }
     }
 

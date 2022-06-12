@@ -15,7 +15,7 @@ public class DataSerializerDeferredRegister extends WrappedDeferredRegister<Enti
     }
 
     public <T extends Enum<T>> DataSerializerRegistryObject<T> registerEnum(String name, Class<T> enumClass) {
-        return registerSimple(name, FriendlyByteBuf::writeEnum, buffer -> buffer.readEnum(enumClass));
+        return register(name, () -> EntityDataSerializer.simpleEnum(enumClass));
     }
 
     public <T> DataSerializerRegistryObject<T> registerSimple(String name, FriendlyByteBuf.Writer<T> writer, FriendlyByteBuf.Reader<T> reader) {

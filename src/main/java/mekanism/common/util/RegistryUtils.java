@@ -69,16 +69,15 @@ public class RegistryUtils {
     }
 
     @Nullable
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static ResourceLocation getName(Object element) {
-        //TODO - 1.19: Re-evaluate this
-        for (Registry<?> registry : Registry.REGISTRY) {
-            ResourceLocation registryName = ((Registry) registry).getKey(element);
-            if (registryName != null) {
-                return registryName;
-            }
-        }
-        for (Registry<?> registry : BuiltinRegistries.REGISTRY) {
+        ResourceLocation registryName = getName(Registry.REGISTRY, element);
+        return registryName == null ? getName(BuiltinRegistries.REGISTRY, element) : registryName;
+    }
+
+    @Nullable
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static ResourceLocation getName(Registry<? extends Registry<?>> registries, Object element) {
+        for (Registry<?> registry : registries) {
             ResourceLocation registryName = ((Registry) registry).getKey(element);
             if (registryName != null) {
                 return registryName;
