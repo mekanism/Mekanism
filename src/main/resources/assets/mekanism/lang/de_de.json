@@ -1097,8 +1097,6 @@
   "miner.mekanism.silk_enabled": "Seide: %1$s",
   "miner.mekanism.silk_touch": "Behutsamkeit",
   "miner.mekanism.to_mine": "Noch abzubauen: %1$s",
-  "miner.mekanism.visuals": "Anzeige: %1$s",
-  "miner.mekanism.visuals.too_big": "Radius zu groß um Grafiken anzuzeigen",
   "miner.mekanism.well": "Alles ist gut!",
   "module.mekanism.attack_amplification_unit": "Angriff-Verstärkungs-Einheit",
   "module.mekanism.blast_area": "%1$sx%1$s",
