@@ -1089,8 +1089,6 @@
   "miner.mekanism.silk_enabled": "Шёлк: %1$s",
   "miner.mekanism.silk_touch": "Шёлковое касание",
   "miner.mekanism.to_mine": "Добыть: %1$s",
-  "miner.mekanism.visuals": "Визуализация: %1$s",
-  "miner.mekanism.visuals.too_big": "Радиус слишком велик для визуализации",
   "miner.mekanism.well": "Всё хорошо!",
   "module.mekanism.attack_amplification_unit": "Модуль: Урон",
   "module.mekanism.blast_area": "%1$sx%1$s",
