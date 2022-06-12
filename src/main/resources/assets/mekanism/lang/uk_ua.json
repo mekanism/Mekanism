@@ -1097,8 +1097,6 @@
   "miner.mekanism.silk_enabled": "Шовк: %1$s",
   "miner.mekanism.silk_touch": "Шовковий дотик",
   "miner.mekanism.to_mine": "Викопати: %1$s",
-  "miner.mekanism.visuals": "Візуальні: %1$s",
-  "miner.mekanism.visuals.too_big": "Радіус занадто великий для відображення візуалізації",
   "miner.mekanism.well": "Все добре!",
   "module.mekanism.attack_amplification_unit": "Модуль \"Посилення атаки\"",
   "module.mekanism.blast_area": "%1$sx%1$s",
