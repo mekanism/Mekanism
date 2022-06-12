@@ -1108,8 +1108,6 @@
   "miner.mekanism.silk_enabled": "İpeksi: %1$s",
   "miner.mekanism.silk_touch": "İpeksi dokunuş",
   "miner.mekanism.to_mine": "Kaz: %1$s",
-  "miner.mekanism.visuals": "Taslaklar: %1$s",
-  "miner.mekanism.visuals.too_big": "Yarıçap taslağı göstermek için çok büyük",
   "miner.mekanism.well": "Her şey yolunda!",
   "module.mekanism.attack_amplification_unit": "Saldırı Güçlendirme Birimi",
   "module.mekanism.blast_area": "%1$sx%1$s",
