@@ -1,23 +1,7 @@
 {
   "parent": "mekanism:mekanism/teleportation_core",
-  "display": {
-    "icon": {
-      "item": "mekanism:quantum_entangloporter"
-    },
-    "title": {
-      "translate": "advancements.mekanism.quantum_entangloporter.title"
-    },
-    "description": {
-      "translate": "advancements.mekanism.quantum_entangloporter.description"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "quantum_entangloporter": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,7 +10,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.quantum_entangloporter.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:quantum_entangloporter"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.quantum_entangloporter.title"
     }
   },
   "requirements": [

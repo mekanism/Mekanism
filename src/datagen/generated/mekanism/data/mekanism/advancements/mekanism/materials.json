@@ -1,71 +1,7 @@
 {
   "parent": "mekanism:mekanism/root",
-  "display": {
-    "icon": {
-      "item": "mekanism:ingot_osmium"
-    },
-    "title": {
-      "translate": "advancements.mekanism.materials.title"
-    },
-    "description": {
-      "translate": "advancements.mekanism.materials.description"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
-    "osmium": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_osmium"
-            ]
-          }
-        ]
-      }
-    },
-    "tin": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_tin"
-            ]
-          }
-        ]
-      }
-    },
-    "lead": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_lead"
-            ]
-          }
-        ]
-      }
-    },
-    "uranium": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_uranium"
-            ]
-          }
-        ]
-      }
-    },
     "fluorite": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -74,7 +10,71 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "lead": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_lead"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "osmium": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_osmium"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "tin": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_tin"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "uranium": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_uranium"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.materials.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:ingot_osmium"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.materials.title"
     }
   },
   "requirements": [

@@ -1,23 +1,7 @@
 {
   "parent": "mekanism:mekanism/metallurgic_infuser",
-  "display": {
-    "icon": {
-      "item": "mekanism:steel_casing"
-    },
-    "title": {
-      "translate": "advancements.mekanism.steel_casing.title"
-    },
-    "description": {
-      "translate": "advancements.mekanism.steel_casing.description"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "steel_casing": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,7 +10,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.steel_casing.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:steel_casing"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.steel_casing.title"
     }
   },
   "requirements": [

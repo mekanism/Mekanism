@@ -1,23 +1,7 @@
 {
   "parent": "mekanism:mekanism/polonium",
-  "display": {
-    "icon": {
-      "item": "mekanism:qio_drive_array"
-    },
-    "title": {
-      "translate": "advancements.mekanism.qio_drive_array.title"
-    },
-    "description": {
-      "translate": "advancements.mekanism.qio_drive_array.description"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "qio_drive_array": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,7 +10,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.qio_drive_array.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:qio_drive_array"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.qio_drive_array.title"
     }
   },
   "requirements": [

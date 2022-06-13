@@ -11,6 +11,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.ModuleHelper;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -54,7 +55,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     @Override
     public JsonObject serializeToJson() {
         JsonObject object = super.serializeToJson();
-        object.addProperty(JsonConstants.ITEM, item.getRegistryName().toString());
+        object.addProperty(JsonConstants.ITEM, RegistryUtils.getName(item).toString());
         return object;
     }
 

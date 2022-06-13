@@ -1,35 +1,7 @@
 {
   "parent": "mekanism:mekanism/materials",
-  "display": {
-    "icon": {
-      "item": "mekanism:mekasuit_bodyarmor"
-    },
-    "title": {
-      "translate": "advancements.mekanism.mekasuit.title"
-    },
-    "description": {
-      "translate": "advancements.mekanism.mekasuit.description"
-    },
-    "frame": "goal",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
-    "helmet": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:mekasuit_helmet"
-            ]
-          }
-        ]
-      }
-    },
     "bodyarmor": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -38,22 +10,10 @@
             ]
           }
         ]
-      }
-    },
-    "pants": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:mekasuit_pants"
-            ]
-          }
-        ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "boots": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -62,10 +22,34 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:mekasuit_helmet"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "pants": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:mekasuit_pants"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "tool": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -74,7 +58,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.mekasuit.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:mekasuit_bodyarmor"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.mekasuit.title"
     }
   },
   "requirements": [

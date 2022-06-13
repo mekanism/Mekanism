@@ -9,10 +9,11 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.TickTrigger;
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -24,9 +25,10 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
     @Override
     protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
+        //TODO - 1.19: For performance reasons maybe we want to replace the tick trigger with a custom trigger that effectively is on join world?
         Advancement root = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ROOT)
               .display(MekanismBlocks.STEEL_BLOCK, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
-              .addCriterion("tick", new TickTrigger.TriggerInstance(EntityPredicate.Composite.ANY))
+              .addCriterion("tick", new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), EntityPredicate.Composite.ANY))
               .save(consumer, existingFileHelper);
         Advancement materials = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.MATERIALS)
               .parent(root)

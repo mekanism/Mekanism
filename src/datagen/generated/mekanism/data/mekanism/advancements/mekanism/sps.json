@@ -1,23 +1,7 @@
 {
   "parent": "mekanism:mekanism/plutonium",
-  "display": {
-    "icon": {
-      "item": "mekanism:sps_casing"
-    },
-    "title": {
-      "translate": "advancements.mekanism.sps.title"
-    },
-    "description": {
-      "translate": "advancements.mekanism.sps.description"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "sps_casing": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,10 +10,10 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "sps_port": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -38,7 +22,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.sps.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:sps_casing"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.sps.title"
     }
   },
   "requirements": [
