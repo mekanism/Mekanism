@@ -24,14 +24,13 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
+    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
         //TODO - 1.19: For performance reasons maybe we want to replace the tick trigger with a custom trigger that effectively is on join world?
-        Advancement root = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ROOT)
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ROOT)
               .display(MekanismBlocks.STEEL_BLOCK, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
               .addCriterion("tick", new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), EntityPredicate.Composite.ANY))
-              .save(consumer, existingFileHelper);
-        Advancement materials = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.MATERIALS)
-              .parent(root)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), FrameType.TASK)
               .orRequirements()
               .addCriterion("osmium", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
@@ -39,225 +38,191 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .addCriterion("lead", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD)))
               .addCriterion("uranium", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)))
               .addCriterion("fluorite", hasItems(MekanismItems.FLUORITE_GEM))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.FLUID_TANK)
-              .parent(root)
               .display(MekanismBlocks.BASIC_FLUID_TANK, FrameType.TASK)
               .addCriterion("fluid_tank", hasItems(MekanismBlocks.BASIC_FLUID_TANK))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.CHEMICAL_TANK)
-              .parent(root)
               .display(MekanismBlocks.BASIC_CHEMICAL_TANK, FrameType.TASK)
               .addCriterion("chemical_tank", hasItems(MekanismBlocks.BASIC_CHEMICAL_TANK))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.FULL_CANTEEN)
-              .parent(materials)
               .display(MekanismItems.CANTEEN, null, FrameType.TASK, true, true, true)
               .addCriterion("full_canteen", InventoryChangeTrigger.TriggerInstance.hasItems(FullCanteenItemPredicate.INSTANCE))
-              .save(consumer, existingFileHelper);
-        generateMetallurgy(consumer, existingFileHelper, materials);
-        generateDisassembly(consumer, existingFileHelper, materials);
+              .save(consumer, fileHelper);
+        generateMetallurgy(consumer);
+        generateDisassembly(consumer);
     }
 
-    private void generateMetallurgy(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement materials) {
-        Advancement infuser = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.METALLURGIC_INFUSER)
-              .parent(materials)
+    private void generateMetallurgy(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.METALLURGIC_INFUSER)
               .display(MekanismBlocks.METALLURGIC_INFUSER, FrameType.TASK)
               .addCriterion("metallurgic_infuser", hasItems(MekanismBlocks.METALLURGIC_INFUSER))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.STEEL_INGOT)
-              .parent(infuser)
               .display(MekanismItems.STEEL_INGOT, FrameType.TASK)
               .addCriterion("steel_ingot", hasItems(MekanismItems.STEEL_INGOT))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.STEEL_CASING)
-              .parent(infuser)
               .display(MekanismBlocks.STEEL_CASING, FrameType.TASK)
               .addCriterion("steel_casing", hasItems(MekanismBlocks.STEEL_CASING))
-              .save(consumer, existingFileHelper);
-        generateAlloys(consumer, existingFileHelper, infuser);
-        generateControls(consumer, existingFileHelper, infuser);
+              .save(consumer, fileHelper);
+        generateAlloys(consumer);
+        generateControls(consumer);
     }
 
-    private void generateAlloys(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement infuser) {
-        Advancement infusedAlloy = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.INFUSED_ALLOY)
-              .parent(infuser)
+    private void generateAlloys(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.INFUSED_ALLOY)
               .display(MekanismItems.INFUSED_ALLOY, FrameType.TASK)
               .addCriterion("infused_alloy", hasItems(MekanismItems.INFUSED_ALLOY))
-              .save(consumer, existingFileHelper);
-        Advancement reinforcedAlloy = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.REINFORCED_ALLOY)
-              .parent(infusedAlloy)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.REINFORCED_ALLOY)
               .display(MekanismItems.REINFORCED_ALLOY, FrameType.TASK)
               .addCriterion("reinforced_alloy", hasItems(MekanismItems.REINFORCED_ALLOY))
-              .save(consumer, existingFileHelper);
-        Advancement atomicAlloy = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ATOMIC_ALLOY)
-              .parent(reinforcedAlloy)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ATOMIC_ALLOY)
               .display(MekanismItems.ATOMIC_ALLOY, FrameType.GOAL)
               .addCriterion("atomic_alloy", hasItems(MekanismItems.ATOMIC_ALLOY))
-              .save(consumer, existingFileHelper);
-        generateSPS(consumer, existingFileHelper, atomicAlloy);
-        generateQIO(consumer, existingFileHelper, atomicAlloy);
-        generateTeleports(consumer, existingFileHelper, atomicAlloy);
+              .save(consumer, fileHelper);
+        generateSPS(consumer);
+        generateQIO(consumer);
+        generateTeleports(consumer);
     }
 
-    private void generateSPS(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement atomicAlloy) {
-        Advancement plutonium = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.PLUTONIUM)
-              .parent(atomicAlloy)
+    private void generateSPS(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.PLUTONIUM)
               .display(MekanismItems.PLUTONIUM_PELLET, FrameType.TASK)
               .addCriterion("plutonium", hasItems(MekanismItems.PLUTONIUM_PELLET))
-              .save(consumer, existingFileHelper);
-        Advancement sps = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.SPS)
-              .parent(plutonium)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.SPS)
               .display(MekanismBlocks.SPS_CASING, FrameType.TASK)
               .orRequirements()
               .addCriterion("sps_casing", hasItems(MekanismBlocks.SPS_CASING))
               .addCriterion("sps_port", hasItems(MekanismBlocks.SPS_PORT))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         //TODO: Was obfuscated for description. Do we want it like that or to have the actual description?
-        Advancement antimatter = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ANTIMATTER)
-              .parent(sps)
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ANTIMATTER)
               .display(MekanismItems.ANTIMATTER_PELLET, FrameType.TASK)
               .addCriterion("antimatter", hasItems(MekanismItems.ANTIMATTER_PELLET))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         //TODO: Was obfuscated for description. Do we want it like that or to have the actual description?
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.NUCLEOSYNTHESIZER)
-              .parent(antimatter)
               .display(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, FrameType.CHALLENGE)
               .addCriterion("nucleosynthesizer", hasItems(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
     }
 
-    private void generateQIO(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement atomicAlloy) {
-        Advancement polonium = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.POLONIUM)
-              .parent(atomicAlloy)
+    private void generateQIO(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.POLONIUM)
               .display(MekanismItems.POLONIUM_PELLET, FrameType.TASK)
               .addCriterion("polonium", hasItems(MekanismItems.POLONIUM_PELLET))
-              .save(consumer, existingFileHelper);
-        Advancement driveArray = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.QIO_DRIVE_ARRAY)
-              .parent(polonium)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.QIO_DRIVE_ARRAY)
               .display(MekanismBlocks.QIO_DRIVE_ARRAY, FrameType.TASK)
               .addCriterion("qio_drive_array", hasItems(MekanismBlocks.QIO_DRIVE_ARRAY))
-              .save(consumer, existingFileHelper);
-        generateQIODrives(consumer, existingFileHelper, driveArray);
-        generateQIODashboards(consumer, existingFileHelper, driveArray);
+              .save(consumer, fileHelper);
+        generateQIODrives(consumer);
+        generateQIODashboards(consumer);
     }
 
-    private void generateQIODrives(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement driveArray) {
-        Advancement basicQIODrive = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.BASIC_QIO_DRIVE)
-              .parent(driveArray)
+    private void generateQIODrives(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.BASIC_QIO_DRIVE)
               .display(MekanismItems.BASE_QIO_DRIVE, FrameType.TASK)
               .addCriterion("basic_qio_drive", hasItems(MekanismItems.BASE_QIO_DRIVE))
-              .save(consumer, existingFileHelper);
-        Advancement advancedQIODrive = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ADVANCED_QIO_DRIVE)
-              .parent(basicQIODrive)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ADVANCED_QIO_DRIVE)
               .display(MekanismItems.HYPER_DENSE_QIO_DRIVE, FrameType.TASK)
               .addCriterion("advanced_qio_drive", hasItems(MekanismItems.HYPER_DENSE_QIO_DRIVE))
-              .save(consumer, existingFileHelper);
-        Advancement eliteQIODrive = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ELITE_QIO_DRIVE)
-              .parent(advancedQIODrive)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ELITE_QIO_DRIVE)
               .display(MekanismItems.TIME_DILATING_QIO_DRIVE, FrameType.TASK)
               .addCriterion("elite_qio_drive", hasItems(MekanismItems.TIME_DILATING_QIO_DRIVE))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         //TODO: Was obfuscated for description. Do we want it like that or to have the actual description?
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ULTIMATE_QIO_DRIVE)
-              .parent(eliteQIODrive)
               .display(MekanismItems.SUPERMASSIVE_QIO_DRIVE, FrameType.CHALLENGE)
               .addCriterion("ultimate_qio_drive", hasItems(MekanismItems.SUPERMASSIVE_QIO_DRIVE))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
     }
 
-    private void generateQIODashboards(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement qiodrivearray) {
-        Advancement dashboard = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.QIO_DASHBOARD)
-              .parent(qiodrivearray)
+    private void generateQIODashboards(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.QIO_DASHBOARD)
               .display(MekanismBlocks.QIO_DASHBOARD, FrameType.TASK)
               .addCriterion("qio_dashboard", hasItems(MekanismBlocks.QIO_DASHBOARD))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.PORTABLE_QIO_DASHBOARD)
-              .parent(dashboard)
               .display(MekanismItems.PORTABLE_QIO_DASHBOARD, FrameType.GOAL)
               .addCriterion("portable_qio_dashboard", hasItems(MekanismItems.PORTABLE_QIO_DASHBOARD))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
     }
 
-    private void generateTeleports(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement atomicAlloy) {
-        Advancement teleportationCore = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.TELEPORTATION_CORE)
-              .parent(atomicAlloy)
+    private void generateTeleports(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.TELEPORTATION_CORE)
               .display(MekanismItems.TELEPORTATION_CORE, FrameType.TASK)
               .addCriterion("teleportation_core", hasItems(MekanismItems.TELEPORTATION_CORE))
-              .save(consumer, existingFileHelper);
-        Advancement teleporter = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.TELEPORTER)
-              .parent(teleportationCore)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.TELEPORTER)
               .display(MekanismBlocks.TELEPORTER, FrameType.TASK)
               .addCriterion("teleporter", hasItems(MekanismBlocks.TELEPORTER))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
-              .parent(teleporter)
               .display(MekanismItems.PORTABLE_TELEPORTER, FrameType.TASK)
               .addCriterion("portable_teleporter", hasItems(MekanismItems.PORTABLE_TELEPORTER))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.QUANTUM_ENTANGLOPORTER)
-              .parent(teleportationCore)
               .display(MekanismBlocks.QUANTUM_ENTANGLOPORTER, FrameType.TASK)
               .addCriterion("quantum_entangloporter", hasItems(MekanismBlocks.QUANTUM_ENTANGLOPORTER))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
     }
 
-    private void generateControls(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement infuser) {
-        Advancement basicControlCircuit = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.BASIC_CONTROL)
-              .parent(infuser)
+    private void generateControls(@Nonnull Consumer<Advancement> consumer) {
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.BASIC_CONTROL)
               .display(MekanismItems.BASIC_CONTROL_CIRCUIT, FrameType.TASK)
               .addCriterion("basic_control", hasItems(MekanismItems.BASIC_CONTROL_CIRCUIT))
-              .save(consumer, existingFileHelper);
-        Advancement advancedControlCircuit = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ADVANCED_CONTROL)
-              .parent(basicControlCircuit)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ADVANCED_CONTROL)
               .display(MekanismItems.ADVANCED_CONTROL_CIRCUIT, FrameType.TASK)
               .addCriterion("advanced_control", hasItems(MekanismItems.ADVANCED_CONTROL_CIRCUIT))
-              .save(consumer, existingFileHelper);
-        Advancement eliteControlCircuit = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ELITE_CONTROL)
-              .parent(advancedControlCircuit)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ELITE_CONTROL)
               .display(MekanismItems.ELITE_CONTROL_CIRCUIT, FrameType.TASK)
               .addCriterion("elite_control", hasItems(MekanismItems.ELITE_CONTROL_CIRCUIT))
-              .save(consumer, existingFileHelper);
-        Advancement ultimateControlCircuit = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ULTIMATE_CONTROL)
-              .parent(eliteControlCircuit)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ULTIMATE_CONTROL)
               .display(MekanismItems.ULTIMATE_CONTROL_CIRCUIT, FrameType.GOAL)
               .addCriterion("ultimate_control", hasItems(MekanismItems.ULTIMATE_CONTROL_CIRCUIT))
-              .save(consumer, existingFileHelper);
-        Advancement robit = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ROBIT)
-              .parent(ultimateControlCircuit)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ROBIT)
               .display(MekanismItems.ROBIT, FrameType.GOAL)
               .addCriterion("robit", hasItems(MekanismItems.ROBIT))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.DIGITAL_MINER)
-              .parent(robit)
               .display(MekanismBlocks.DIGITAL_MINER, FrameType.GOAL)
               .addCriterion("digital_miner", hasItems(MekanismBlocks.DIGITAL_MINER))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
     }
 
-    private void generateDisassembly(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper, Advancement materials) {
+    private void generateDisassembly(@Nonnull Consumer<Advancement> consumer) {
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.DISASSEMBLER)
-              .parent(materials)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, FrameType.TASK)
               .addCriterion("disassembler", hasItems(MekanismItems.ATOMIC_DISASSEMBLER))
-              .save(consumer, existingFileHelper);
-        Advancement mekasuit = ExtendedAdvancementBuilder.advancement(MekanismAdvancements.MEKASUIT)
-              .parent(materials)
+              .save(consumer, fileHelper);
+        ExtendedAdvancementBuilder.advancement(MekanismAdvancements.MEKASUIT)
               .display(MekanismItems.MEKASUIT_BODYARMOR, FrameType.GOAL)
               .addCriterion("helmet", hasItems(MekanismItems.MEKASUIT_HELMET))
               .addCriterion("bodyarmor", hasItems(MekanismItems.MEKASUIT_BODYARMOR))
               .addCriterion("pants", hasItems(MekanismItems.MEKASUIT_PANTS))
               .addCriterion("boots", hasItems(MekanismItems.MEKASUIT_BOOTS))
               .addCriterion("tool", hasItems(MekanismItems.MEKA_TOOL))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.UPGRADED_MEKASUIT)
-              .parent(mekasuit)
               .display(MekanismItems.MEKASUIT_BODYARMOR, null, FrameType.CHALLENGE, true, true, true)
               .addCriterion("helmet", hasMaxed(MekanismItems.MEKASUIT_HELMET))
               .addCriterion("bodyarmor", hasMaxed(MekanismItems.MEKASUIT_BODYARMOR))
               .addCriterion("pants", hasMaxed(MekanismItems.MEKASUIT_PANTS))
               .addCriterion("boots", hasMaxed(MekanismItems.MEKASUIT_BOOTS))
               .addCriterion("tool", hasMaxed(MekanismItems.MEKA_TOOL))
-              .save(consumer, existingFileHelper);
+              .save(consumer, fileHelper);
     }
 }

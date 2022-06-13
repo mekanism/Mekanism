@@ -1,4 +1,4 @@
-// 1.19	2022-06-13T10:58:51.9792058	Advancements: mekanism
+// 1.19	2022-06-13T16:29:36.6708942	Advancements: mekanism
 b06d559b00fbbb8392e0b79ab25c955a2c4f579d data/mekanism/advancements/mekanism/advanced_control.json
 5cfc25e7fb3798ea52a8b5884310efbc0f1bb557 data/mekanism/advancements/mekanism/advanced_qio_drive.json
 a4a85da33809f0db77c841845b24b70efb187fc2 data/mekanism/advancements/mekanism/antimatter.json
@@ -14,7 +14,7 @@ ee3f49a4928f0749676f76a8c8c32f39fbecf4d0 data/mekanism/advancements/mekanism/flu
 c4e515859c43ef23c1f76ea48566d54e5727dbe9 data/mekanism/advancements/mekanism/full_canteen.json
 2b2951a4aba45f0940cc94b8faffaf0fc96bc0bb data/mekanism/advancements/mekanism/infused_alloy.json
 3c639918e46ca716580a82443716bde704587c01 data/mekanism/advancements/mekanism/materials.json
-4f924cb77a6206eef8af93565768e634773c9a5b data/mekanism/advancements/mekanism/mekasuit.json
+c89ea67e490a57a6843d9a44e19e84fd276440ea data/mekanism/advancements/mekanism/mekasuit.json
 b7384b120c9bffeee4a7404cbeb48f1c3228591a data/mekanism/advancements/mekanism/metallurgic_infuser.json
 ac456f9cddb25d43e89bdbe9953d51ec58b756ab data/mekanism/advancements/mekanism/nucleosynthesizer.json
 10781567a95cbd0776ca116ab054ace70a4a228a data/mekanism/advancements/mekanism/plutonium.json
@@ -28,7 +28,7 @@ e09f9a5efc23438c431914a6c6326b023c469530 data/mekanism/advancements/mekanism/por
 21796f29be91c7c1c43c703c497353f0c7ad0326 data/mekanism/advancements/mekanism/robit.json
 aca380b1bf15c27ef3e1becacd301e1b84bedd55 data/mekanism/advancements/mekanism/root.json
 6761ccb26a1c6195899fe7fb76b5a7aa63ec861a data/mekanism/advancements/mekanism/sps.json
-360ff5cf0776a210d235d3d2a4e9d7ab844c1169 data/mekanism/advancements/mekanism/steel_casing.json
+c9f8a3b1f289f58f8b14259de2523f0c5a4f1d6b data/mekanism/advancements/mekanism/steel_casing.json
 5217f1ec56b184b387641f46c36180a0f153865e data/mekanism/advancements/mekanism/steel_ingot.json
 4e016743cfa44f6c514d5c10d6e3d3af0fa63d6a data/mekanism/advancements/mekanism/teleportation_core.json
 cf18fcbbf08b3c4f3e958e86d5c9a1b5528b4d5c data/mekanism/advancements/mekanism/teleporter.json

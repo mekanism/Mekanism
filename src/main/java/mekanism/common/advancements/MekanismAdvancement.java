@@ -1,16 +1,21 @@
 package mekanism.common.advancements;
 
+import javax.annotation.Nullable;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public record MekanismAdvancement(ResourceLocation path, String title, String description) {
+public record MekanismAdvancement(ResourceLocation path, String title, String description, @Nullable MekanismAdvancement parent) {
 
-    public MekanismAdvancement(String name) {
-        //TODO: Do we actually need to path to have the modid duplicated like this
-        this(Mekanism.rl(Mekanism.MODID + "/" + name), name, name);
+    public MekanismAdvancement(String name, @Nullable MekanismAdvancement parent) {
+        this(Mekanism.MODID, name, parent);
+    }
+
+    public MekanismAdvancement(String modid, String name, @Nullable MekanismAdvancement parent) {
+        //Note: specified mekanism modid is the grouping for the advancements, where the first one is the mod adding the advancement
+        this(new ResourceLocation(modid, Mekanism.MODID + "/" + name), name, name, parent);
     }
 
     public MekanismAdvancement {

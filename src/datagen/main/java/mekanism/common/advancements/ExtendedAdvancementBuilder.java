@@ -22,6 +22,9 @@ public class ExtendedAdvancementBuilder {
 
     private ExtendedAdvancementBuilder(MekanismAdvancement advancement) {
         this.advancement = advancement;
+        if (this.advancement.parent() != null) {
+            parent(this.advancement.parent().path());
+        }
     }
 
     public static ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {

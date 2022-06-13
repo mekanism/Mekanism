@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:mekanism/metallurgic_infuser",
+  "parent": "mekanism:mekanism/steel_ingot",
   "criteria": {
     "steel_casing": {
       "conditions": {

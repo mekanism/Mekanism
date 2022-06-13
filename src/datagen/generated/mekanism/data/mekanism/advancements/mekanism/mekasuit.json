@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:mekanism/materials",
+  "parent": "mekanism:mekanism/disassembler",
   "criteria": {
     "bodyarmor": {
       "conditions": {
