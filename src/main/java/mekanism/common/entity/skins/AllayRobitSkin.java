@@ -31,12 +31,10 @@ public class AllayRobitSkin extends RobitSkin {
     public boolean isUnlocked(@NotNull Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             //TODO: Do we eventually want to make a system for announcing unlocks, maybe using toast notifications
-            //we.... as if you weren't the only one actively maintaining this mod :)
             Advancement advancement = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("husbandry/allay_deliver_item_to_player"));
-            if (advancement != null)
-                return serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
-            return false;
+            return advancement != null && serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
         }
+        //Fallback, as currently the client does not validate if a skin is unlocked
         return true;
     }
 }
