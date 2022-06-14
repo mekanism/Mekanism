@@ -477,6 +477,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addAdvancements() {
+        //TODO - 1.19: Change descriptions to be more descriptive of what needs to be done. Only the names should be fancy
         add(MekanismAdvancements.ROOT, "Mekanism", "Welcome to Mekanism!");
         add(MekanismAdvancements.MATERIALS, "Meka-materials", "Advancements in technology");
         add(MekanismAdvancements.FLUID_TANK, "Better than buckets", "64-in-one");

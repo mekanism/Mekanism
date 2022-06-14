@@ -9,11 +9,11 @@ import net.minecraft.resources.ResourceLocation;
 
 public record MekanismAdvancement(ResourceLocation path, String title, String description, @Nullable MekanismAdvancement parent) {
 
-    public MekanismAdvancement(String name, @Nullable MekanismAdvancement parent) {
-        this(Mekanism.MODID, name, parent);
+    public MekanismAdvancement(@Nullable MekanismAdvancement parent, String name) {
+        this(parent, Mekanism.MODID, name);
     }
 
-    public MekanismAdvancement(String modid, String name, @Nullable MekanismAdvancement parent) {
+    public MekanismAdvancement(@Nullable MekanismAdvancement parent, String modid, String name) {
         //Note: specified mekanism modid is the grouping for the advancements, where the first one is the mod adding the advancement
         this(new ResourceLocation(modid, Mekanism.MODID + "/" + name), name, name, parent);
     }

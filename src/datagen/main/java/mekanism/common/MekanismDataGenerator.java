@@ -7,6 +7,7 @@ import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.client.state.MekanismBlockStateProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.advancements.MekanismAdvancementProvider;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
@@ -31,6 +32,8 @@ public class MekanismDataGenerator {
         bootstrapConfigs(Mekanism.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        //Bootstrap our advancement triggers as common setup doesn't run
+        MekanismCriteriaTriggers.init();
         //Client side data generators
         gen.addProvider(event.includeClient(), new MekanismLangProvider(gen));
         gen.addProvider(event.includeClient(), new PrideRobitTextureProvider(gen, existingFileHelper));

@@ -29,6 +29,7 @@ import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
@@ -394,6 +395,8 @@ public class Mekanism {
             MekanismTags.init();
             //Collect annotation scan data
             MekAnnotationScanner.collectScanData();
+            //Register advancement criteria
+            MekanismCriteriaTriggers.init();
             //Add chunk loading callbacks
             ForgeChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
             //Register dispenser behaviors
