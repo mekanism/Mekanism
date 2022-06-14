@@ -417,6 +417,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addRobitSkins() {
         add(MekanismRobitSkins.BASE, "Default");
+        add(MekanismRobitSkins.ALLAY, "Allay Costume");
         for (Map.Entry<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
             RobitSkinRegistryObject<RobitSkin> prideSkin = entry.getValue();
             String name = formatAndCapitalize(prideSkin.getInternalRegistryName());
