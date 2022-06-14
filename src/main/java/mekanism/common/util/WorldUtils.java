@@ -355,10 +355,6 @@ public class WorldUtils {
         if (isBlockLoaded(world, pos)) {
             world.getChunkAt(pos).setUnsaved(true);
         }
-        //TODO: This line below is now (1.16+) called by the mark chunk dirty method (without even validating if it is loaded).
-        // And with it causes issues where chunks are easily ghost loaded. Why was it added like that and do we need to somehow
-        // also update neighboring comparators
-        //world.updateComparatorOutputLevel(pos, world.getBlockState(pos).getBlock()); //Notify neighbors of changes
     }
 
     /**

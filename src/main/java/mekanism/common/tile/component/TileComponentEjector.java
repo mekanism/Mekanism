@@ -235,7 +235,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     public void setStrictInput(boolean strict) {
         if (strictInput != strict) {
             strictInput = strict;
-            WorldUtils.saveChunk(tile);
+            tile.markForSave();
         }
     }
 
@@ -247,7 +247,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     public void setOutputColor(EnumColor color) {
         if (outputColor != color) {
             outputColor = color;
-            WorldUtils.saveChunk(tile);
+            tile.markForSave();
         }
     }
 
@@ -261,7 +261,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             int ordinal = side.ordinal();
             if (inputColors[ordinal] != color) {
                 inputColors[ordinal] = color;
-                WorldUtils.saveChunk(tile);
+                tile.markForSave();
             }
         }
     }
@@ -336,7 +336,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         validateInputSide(side);
         int ordinal = side.ordinal();
         inputColors[ordinal] = TransporterUtils.increment(inputColors[ordinal]);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod
@@ -345,7 +345,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         validateInputSide(side);
         int ordinal = side.ordinal();
         inputColors[ordinal] = TransporterUtils.decrement(inputColors[ordinal]);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod(nameOverride = "setInputColor")
@@ -368,14 +368,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private void incrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.increment(outputColor);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod
     private void decrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.decrement(outputColor);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod(nameOverride = "setOutputColor")

@@ -17,7 +17,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -207,10 +206,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     private void markDirty() {
-        if (tile.hasLevel()) {
-            //Marks the chunk as dirty so it can properly save
-            WorldUtils.markChunkDirty(tile.getLevel(), tile.getBlockPos());
-        }
+        //Marks the chunk as dirty so it can properly save
+        tile.markForSave();
     }
 
     private LongSet getTileChunks() {
