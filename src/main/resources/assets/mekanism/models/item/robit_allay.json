@@ -53,10 +53,10 @@
 			"name": "base",
 			"from": [5, 1, 5],
 			"to": [11, 2, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8.5, 1.5, 8.5]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 1.5, 8.5]},
 			"faces": {
 				"north": {"uv": [13, 7, 16, 7.5], "texture": "#robit"},
-				"south": {"uv": [13, 7.5, 16, 8], "texture": "#robit"},
+				"south": {"uv": [13, 7, 16, 7.5], "texture": "#robit"},
 				"up": {"uv": [13, 3.5, 16, 7], "texture": "#robit"},
 				"down": {"uv": [13, 0, 16, 3.5], "texture": "#robit"}
 			}
