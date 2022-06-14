@@ -1,4 +1,4 @@
-package mekanism.common.entity;
+package mekanism.common.entity.skins;
 
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.Mekanism;
@@ -9,16 +9,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class AllayRobitSkin extends RobitSkin {
 
+    private static final ResourceLocation MODEL = Mekanism.rl("item/robit_allay");
+
     public AllayRobitSkin() {
-        super(new ResourceLocation[]{
-                Mekanism.rl( "allay"), Mekanism.rl("allay2")}
-        );
+        super(Mekanism.rl( "allay"), Mekanism.rl("allay2"));
     }
 
     @Nullable
     @Override
     public ResourceLocation getCustomModel() {
-        return Mekanism.rl("item/robit_allay");
+        return MODEL;
     }
 
     @Override
