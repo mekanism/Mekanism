@@ -27,4 +27,5 @@ public class MekanismRobitSkins {
         }
         return Collections.unmodifiableMap(internal);
     });
+    public static final RobitSkinRegistryObject<RobitSkin> ALLAY = ROBIT_SKINS.register("allay", AllayRobitSkin::new);
 }
