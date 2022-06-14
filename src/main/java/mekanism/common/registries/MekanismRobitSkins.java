@@ -2,6 +2,7 @@ package mekanism.common.registries;
 
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.Mekanism;
+import mekanism.common.entity.AllayRobitSkin;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registration.impl.RobitSkinDeferredRegister;
 import mekanism.common.registration.impl.RobitSkinRegistryObject;
