@@ -21,6 +21,9 @@ public class QIOGlobalItemLookup {
     public static final QIOGlobalItemLookup INSTANCE = new QIOGlobalItemLookup();
     private static final String DATA_HANDLER_NAME = "qio_type_cache";
 
+    private QIOGlobalItemLookup() {
+    }
+
     /**
      * Note: This can and will be null on the client side
      */
