@@ -318,6 +318,7 @@
   "config.jade.plugin_mekanism.gas": "氣體",
   "config.jade.plugin_mekanism.infuse_type": "灌注類型",
   "config.jade.plugin_mekanism.pigment": "顏色",
+  "config.jade.plugin_mekanism.remove_builtin": "移除覆寫的內建渲染氣",
   "config.jade.plugin_mekanism.slurry": "漿液",
   "config.jade.plugin_mekanism.tooltip_renderer": "Jade 模組工具提示渲染器",
   "configuration.mekanism.config_type": "%1$s 配置",
