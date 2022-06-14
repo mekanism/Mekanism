@@ -24,8 +24,7 @@ public class PacketRobit implements IMekanismPacket {
 
     private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of(
             "sara", getPrideSkins(RobitPrideSkinData.TRANS, RobitPrideSkinData.LESBIAN),
-            "agnor", getPrideSkins(RobitPrideSkinData.GAY),
-            "allay", List.<IRobitSkinProvider>of(MekanismRobitSkins.ALLAY)
+            "agnor", getPrideSkins(RobitPrideSkinData.GAY)
     );
 
     private static List<IRobitSkinProvider> getPrideSkins(RobitPrideSkinData... prideSkinData) {
