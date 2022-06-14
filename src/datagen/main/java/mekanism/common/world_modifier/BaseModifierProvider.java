@@ -12,11 +12,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataGenerator.Target;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import net.minecraftforge.common.util.Lazy;
 
 public abstract class BaseModifierProvider<MODIFIER> implements DataProvider {
@@ -26,12 +26,11 @@ public abstract class BaseModifierProvider<MODIFIER> implements DataProvider {
     protected final String modid;
     private final Path outputFolder;
 
-    protected BaseModifierProvider(DataGenerator gen, String modid, ResourceKey<Registry<MODIFIER>> registry, Codec<MODIFIER> modifierCodec) {
+    protected BaseModifierProvider(DataGenerator gen, String modid, ResourceKey<Registry<MODIFIER>> registry) {
         this.modid = modid;
-        this.modifierCodec = modifierCodec;
+        this.modifierCodec = (Codec<MODIFIER>) RegistryAccess.REGISTRIES.get(registry).codec();
         ResourceLocation registryId = registry.location();
-        this.outputFolder = gen.getOutputFolder().resolve(String.join("/", PackType.SERVER_DATA.getDirectory(), this.modid, registryId.getNamespace(),
-              registryId.getPath()));
+        this.outputFolder = gen.getOutputFolder(Target.DATA_PACK).resolve(String.join("/", this.modid, registryId.getNamespace(), registryId.getPath()));
     }
 
     @Override

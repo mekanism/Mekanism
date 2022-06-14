@@ -8,7 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public abstract class BaseStructureModifierProvider extends BaseModifierProvider<StructureModifier> {
 
     protected BaseStructureModifierProvider(DataGenerator gen, String modid) {
-        super(gen, modid, ForgeRegistries.Keys.STRUCTURE_MODIFIERS, StructureModifier.DIRECT_CODEC);
+        super(gen, modid, ForgeRegistries.Keys.STRUCTURE_MODIFIERS);
     }
 
     @Nonnull

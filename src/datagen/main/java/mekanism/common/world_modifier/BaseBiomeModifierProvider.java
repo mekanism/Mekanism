@@ -8,7 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public abstract class BaseBiomeModifierProvider extends BaseModifierProvider<BiomeModifier> {
 
     protected BaseBiomeModifierProvider(DataGenerator gen, String modid) {
-        super(gen, modid, ForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifier.DIRECT_CODEC);
+        super(gen, modid, ForgeRegistries.Keys.BIOME_MODIFIERS);
     }
 
     @Nonnull

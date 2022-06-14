@@ -73,6 +73,7 @@ import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.Mult
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataGenerator.Target;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -276,7 +277,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addExamples();
         for (Map.Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
             String examplePath = entry.getKey();
-            Path path = gen.getOutputFolder().resolve("data/" + modid + "/scripts/" + examplePath + ".zs");
+            Path path = gen.getOutputFolder(Target.DATA_PACK).resolve(modid + "/scripts/" + examplePath + ".zs");
             try {
                 save(cache, entry.getValue().build(), path);
             } catch (IOException e) {
