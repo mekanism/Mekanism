@@ -1,5 +1,5 @@
 {
-	
+	"parent": "mekanism:item/robit",
 	"credit": "Model by CyanideX, Modified by agnor99",
 	"loader": "mekanism:robit",
 	"elements": [
@@ -168,44 +168,5 @@
 				"down": {"uv": [12.5, 8, 13.5, 9], "texture": "#robit", "lightLevel": 3}
 			}
 		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [75, 45, 0],
-			"translation": [0, 2.5, 1.5],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [75, 45, 0],
-			"translation": [0, 2.5, 1.5],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, -45, 0],
-			"translation": [0, 3.25, 0],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, -45, 0],
-			"translation": [0, 3.25, 0],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"ground": {
-			"translation": [0, 3, 0],
-			"scale": [0.6, 0.6, 0.6]
-		},
-		"gui": {
-			"rotation": [30, -45, 0],
-			"translation": [1, 2, 0],
-			"scale": [0.8, 0.8, 0.8]
-		},
-		"head": {
-			"rotation": [0, -180, 0],
-			"translation": [0, 14.5, 0]
-		},
-		"fixed": {
-			"rotation": [0, -180, 0],
-			"translation": [0, 3, 0]
-		}
-	}
+	]
 }
