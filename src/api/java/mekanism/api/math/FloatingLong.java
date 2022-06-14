@@ -243,7 +243,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.plusEqual(toAdd)}
      */
     public FloatingLong plusEqual(FloatingLong toAdd) {
-        if ((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
+        if (toAdd.isZero()) {
+            return this;
+        } else if ((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
             return setAndClampValues(-1, MAX_DECIMAL);
         }
         long newValue = value + toAdd.value;
@@ -272,7 +274,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.minusEqual(toSubtract)}
      */
     public FloatingLong minusEqual(FloatingLong toSubtract) {
-        if (toSubtract.greaterThan(this)) {
+        if (toSubtract.isZero()) {
+            return this;
+        } else if (toSubtract.greaterOrEqual(this)) {
             //Clamp the result at zero as floating longs cannot become negative
             return setAndClampValues(0, (short) 0);
         }
@@ -298,8 +302,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.timesEqual(toMultiply)}
      */
     public FloatingLong timesEqual(FloatingLong toMultiply) {
-        //(a+b)*(c+d) where numbers represent decimal, numbers represent value
-        if (multiplyLongsWillOverFlow(value, toMultiply.value)) {
+        if (toMultiply.isZero()) {
+            return ZERO;
+        } else if (toMultiply.equals(ONE)) {
+            return this;
+        } else if (multiplyLongsWillOverFlow(value, toMultiply.value)) {
+            //(a+b)*(c+d) where numbers represent decimal, numbers represent value
             return MAX_VALUE;
         }
         FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
@@ -325,8 +333,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong divideEquals(FloatingLong toDivide) {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
-        } else if (this.isZero()) {
-            return FloatingLong.ZERO;
+        } else if (isZero()) {
+            return ZERO;
+        } else if (toDivide.equals(ONE)) {
+            return this;
         } else if (toDivide.decimal == 0) {
             //If we are dividing by a whole number, use our more optimized division algorithm
             return divideEquals(toDivide.value);
@@ -353,8 +363,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong divideEquals(long toDivide) {
         if (toDivide == 0) {
             throw new ArithmeticException("Division by zero");
-        } else if (this.isZero()) {
-            return FloatingLong.ZERO;
+        } else if (isZero()) {
+            return ZERO;
+        } else if (toDivide == 1) {
+            return this;
         }
         long val = Long.divideUnsigned(this.value, toDivide);
         long rem = Long.remainderUnsigned(this.value, toDivide);
@@ -395,12 +407,15 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public long divideToUnsignedLong(FloatingLong toDivide) {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
-        } else if (this.smallerThan(toDivide)) {
+        } else if (toDivide.equals(ONE)) {
+            //Directly return our value if we are dividing by one
+            return value;
+        } else if (smallerThan(toDivide)) {
             // Return early if operation will return < 1
             return 0;
         }
-        if (toDivide.greaterOrEqual(ONE)) {
-            //If toDivide >=1, then we don't care about this.decimal, so can optimize out accounting for that
+        if (toDivide.greaterThan(ONE)) {
+            //If toDivide > 1, then we don't care about this.decimal, so can optimize out accounting for that
             if (Long.compareUnsigned(toDivide.value, MAX_LONG_SHIFT) <= 0) { //don't case if *this* is < or > than shift
                 long div = toDivide.value * SINGLE_UNIT + toDivide.decimal;
                 return (Long.divideUnsigned(this.value, div) * SINGLE_UNIT) + Long.divideUnsigned(Long.remainderUnsigned(this.value, div) * SINGLE_UNIT, div);
@@ -480,7 +495,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return The {@link FloatingLong} representing the value of adding the given unsigned long to this {@link FloatingLong}.
      */
     public FloatingLong add(long toAdd) {
-        return add(FloatingLong.create(toAdd));
+        return add(create(toAdd));
     }
 
     /**
@@ -497,7 +512,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toAdd < 0) {
             throw new IllegalArgumentException("Addition called with negative number, this is not supported. FloatingLongs are always positive.");
         }
-        return add(FloatingLong.create(toAdd));
+        return add(create(toAdd));
     }
 
     /**
@@ -521,7 +536,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return The {@link FloatingLong} representing the value of subtracting the given unsigned long from this {@link FloatingLong}.
      */
     public FloatingLong subtract(long toSubtract) {
-        return subtract(FloatingLong.create(toSubtract));
+        return subtract(create(toSubtract));
     }
 
     /**
@@ -538,7 +553,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toSubtract < 0) {
             throw new IllegalArgumentException("Subtraction called with negative number, this is not supported. FloatingLongs are always positive.");
         }
-        return subtract(FloatingLong.create(toSubtract));
+        return subtract(create(toSubtract));
     }
 
     /**
@@ -562,7 +577,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return The {@link FloatingLong} representing the value of multiplying the given unsigned long with this {@link FloatingLong}.
      */
     public FloatingLong multiply(long toMultiply) {
-        return multiply(FloatingLong.create(toMultiply));
+        return multiply(create(toMultiply));
     }
 
     /**
@@ -579,7 +594,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toMultiply < 0) {
             throw new IllegalArgumentException("Multiply called with negative number, this is not supported. FloatingLongs are always positive.");
         }
-        return multiply(FloatingLong.createConst(toMultiply));
+        return multiply(createConst(toMultiply));
     }
 
     /**
@@ -625,7 +640,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toDivide < 0) {
             throw new IllegalArgumentException("Division called with negative number, this is not supported. FloatingLongs are always positive.");
         }
-        return divide(FloatingLong.create(toDivide));
+        return divide(create(toDivide));
     }
 
     /**

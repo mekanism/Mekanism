@@ -381,7 +381,14 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * @param operations Number of operations being performed.
      */
     protected void useEnergy(int operations) {
-        useEnergy.accept(perTickEnergy.get().multiply(operations));
+        FloatingLong energy = perTickEnergy.get();
+        if (operations == 1) {
+            //While floating long will short circuit any calculations if multiplied by one given we require making a copy to ensure we don't
+            // modify the source value, if we do the check here manually as well, then we can skip creating unnecessary objects
+            useEnergy.accept(energy);
+        } else {
+            useEnergy.accept(energy.multiply(operations));
+        }
     }
 
     /**
