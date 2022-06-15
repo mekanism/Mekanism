@@ -26,7 +26,6 @@
   "description.mekanismgenerators.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
   "description.mekanismgenerators.rotational_complex": "A connector that be placed on th' highest Turbine Rotor o' an Industrial Turbine t' carry kinetic energy into its Electromagnetic Coils.",
   "description.mekanismgenerators.solar_generator": "A generator that uses th' power o' th' sun t' produce energy.",
-  "fluid.mekanismgenerators.bioethanol": "Plant Rum",
   "item.mekanismgenerators.bioethanol_bucket": "Bucket o' Plant Rum",
   "item.mekanismgenerators.solar_panel": "Sun Collector",
   "reactor.mekanismgenerators.heat": "Hotness",
