@@ -32,7 +32,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.gear.IBlastingItem;
-import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -95,7 +94,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RenderTickHandler {
@@ -130,14 +128,6 @@ public class RenderTickHandler {
                 //If it is mark on our current screen that we are switching to JEI
                 screen.switchingToJEI = true;
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void filterTooltips(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
-        if (stack.getItem() instanceof IModuleContainerItem item) {
-            item.filterTooltips(stack, event.getToolTip());
         }
     }
 

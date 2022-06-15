@@ -2,12 +2,9 @@ package mekanism.common.content.gear;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.api.gear.EnchantmentBasedModule;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -24,8 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public interface IModuleContainerItem extends IItemHUDProvider {
 
@@ -108,44 +103,5 @@ public interface IModuleContainerItem extends IItemHUDProvider {
             }
         }
         return ret;
-    }
-
-    static boolean hasOtherEnchants(ItemStack stack) {
-        MatchedEnchants enchants = new MatchedEnchants(stack);
-        forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++);
-        return enchants.enchantments == null || enchants.matchedCount < enchants.enchantments.size();
-    }
-
-    default void filterTooltips(ItemStack stack, List<Component> tooltips) {
-        List<Component> enchantsToRemove = new ArrayList<>();
-        forMatchingEnchants(stack, new MatchedEnchants(stack),
-              (e, module) -> enchantsToRemove.add(module.getCustomInstance().getEnchantment().getFullname(module.getInstalledCount())));
-        tooltips.removeAll(enchantsToRemove);
-    }
-
-    static void forMatchingEnchants(ItemStack stack, MatchedEnchants enchants, BiConsumer<MatchedEnchants, IModule<? extends EnchantmentBasedModule<?>>> consumer) {
-        for (IModule<? extends EnchantmentBasedModule> module : MekanismAPI.getModuleHelper().loadAll(stack, EnchantmentBasedModule.class)) {
-            if (module.isEnabled() && enchants.getEnchantments().getOrDefault(module.getCustomInstance().getEnchantment(), 0) == module.getInstalledCount()) {
-                consumer.accept(enchants, (IModule<? extends EnchantmentBasedModule<?>>) module);
-            }
-        }
-    }
-
-    class MatchedEnchants {
-
-        private final ItemStack stack;
-        private Map<Enchantment, Integer> enchantments;
-        private int matchedCount;
-
-        public MatchedEnchants(ItemStack stack) {
-            this.stack = stack;
-        }
-
-        public Map<Enchantment, Integer> getEnchantments() {
-            if (enchantments == null) {
-                enchantments = EnchantmentHelper.getEnchantments(stack);
-            }
-            return enchantments;
-        }
     }
 }

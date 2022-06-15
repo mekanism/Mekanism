@@ -56,6 +56,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -75,6 +76,8 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -382,7 +385,20 @@ public final class MekanismUtils {
     }
 
     public static boolean lighterThanAirGas(FluidStack stack) {
-        return stack.getFluid().is(Tags.Fluids.GASEOUS) && stack.getFluid().getFluidType().getDensity(stack) < 0;
+        return stack.getFluid().is(Tags.Fluids.GASEOUS) && stack.getFluid().getFluidType().getDensity(stack) <= 0;
+    }
+
+    public static int getEnchantmentLevel(ListTag enchantments, Enchantment enchantment) {
+        //Copy of EnchantmentHelper#getTagEnchantmentLevel except modified to support being passed a tag
+        ResourceLocation enchantmentId = EnchantmentHelper.getEnchantmentId(enchantment);
+        for (int i = 0; i < enchantments.size(); ++i) {
+            CompoundTag compoundtag = enchantments.getCompound(i);
+            ResourceLocation id = EnchantmentHelper.getEnchantmentId(compoundtag);
+            if (id != null && id.equals(enchantmentId)) {
+                return EnchantmentHelper.getEnchantmentLevel(compoundtag);
+            }
+        }
+        return 0;
     }
 
     /**

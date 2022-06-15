@@ -13,6 +13,7 @@ public final class NBTConstants {
     public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
     public static final String COUNT = "Count";
     public static final String CUSTOM_NAME = "CustomName";
+    public static final String ENCHANTMENTS = "Enchantments";
     public static final String ID = "id";
     public static final String X = "x";
     public static final String Y = "y";

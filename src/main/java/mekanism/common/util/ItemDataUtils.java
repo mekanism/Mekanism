@@ -53,12 +53,7 @@ public final class ItemDataUtils {
             if (dataMap.isEmpty()) {
                 //If our data map no longer has any elements after removing a piece of stored data
                 // then remove the data tag to make the stack nice and clean again
-                CompoundTag tag = stack.getTag();
-                tag.remove(NBTConstants.MEK_DATA);
-                if (tag.isEmpty()) {
-                    //If the tag is fully empty now just remove it entirely
-                    stack.setTag(null);
-                }
+                stack.removeTagKey(NBTConstants.MEK_DATA);
             }
         }
     }
