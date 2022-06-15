@@ -121,7 +121,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     @Nullable
     static RecipeUpgradeData<?> getUpgradeData(@Nonnull RecipeUpgradeType type, @Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        switch (type) {
+        return switch (type) {
             case ENERGY -> getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);
             case FLUID -> getContainerUpgradeData(stack, NBTConstants.FLUID_TANKS, FluidRecipeData::new);
             case GAS -> getContainerUpgradeData(stack, NBTConstants.GAS_TANKS, GasRecipeData::new);
@@ -130,21 +130,21 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case SLURRY -> getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
             case ITEM -> {
                 ListTag inventory = ((ISustainedInventory) item).getInventory(stack);
-                return inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
+                yield  inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
             }
             case SECURITY -> {
                 UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
                 if (ownerUUID == null) {
-                    return null;
+                    yield null;
                 }
                 //Treat owner items as public even though they are private as we don't want to lower the output
                 // item's security just because it has one item that is owned
                 SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
-                return new SecurityRecipeData(ownerUUID, securityMode);
+                yield new SecurityRecipeData(ownerUUID, securityMode);
             }
             case SORTING -> {
                 boolean sorting = ItemDataUtils.getBoolean(stack, NBTConstants.SORTING);
-                return sorting ? SortingRecipeData.SORTING : null;
+                yield sorting ? SortingRecipeData.SORTING : null;
             }
             case UPGRADE -> UpgradesRecipeData.tryCreate(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
             case QIO_DRIVE -> {
@@ -154,12 +154,12 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                     long[] storedItems = ItemDataUtils.getLongArray(stack, NBTConstants.QIO_ITEM_MAP);
                     if (storedItems.length % 3 == 0) {
                         //Ensure we have valid data and not some unknown thing
-                        return new QIORecipeData(data, storedItems);
+                        yield  new QIORecipeData(data, storedItems);
                     }
                 }
+                yield null;
             }
-        }
-        return null;
+        };
     }
 
     @Nullable
