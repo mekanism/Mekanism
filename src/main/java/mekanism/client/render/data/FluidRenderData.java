@@ -2,7 +2,8 @@ package mekanism.client.render.data;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -17,7 +18,7 @@ public class FluidRenderData extends RenderData {
 
     @Override
     public boolean isGaseous() {
-        return fluidType.getFluid().getAttributes().isGaseous(fluidType);
+        return MekanismUtils.lighterThanAirGas(fluidType);
     }
 
     public int getColorARGB() {
@@ -36,7 +37,7 @@ public class FluidRenderData extends RenderData {
 
     @Override
     public TextureAtlasSprite getTexture() {
-        return MekanismRenderer.getFluidTexture(fluidType, FluidType.STILL);
+        return MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL);
     }
 
     @Override

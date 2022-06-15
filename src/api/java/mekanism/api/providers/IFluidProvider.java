@@ -32,11 +32,11 @@ public interface IFluidProvider extends IBaseProvider {
 
     @Override
     default Component getTextComponent() {
-        return getFluid().getAttributes().getDisplayName(getFluidStack(1));
+        return getFluid().getFluidType().getDescription(getFluidStack(1));
     }
 
     @Override
     default String getTranslationKey() {
-        return getFluid().getAttributes().getTranslationKey();
+        return getFluid().getFluidType().getDescriptionId();
     }
 }

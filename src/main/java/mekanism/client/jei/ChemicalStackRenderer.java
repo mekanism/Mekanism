@@ -23,7 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
 
@@ -36,7 +36,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     private final int height;
 
     public ChemicalStackRenderer() {
-        this(FluidAttributes.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEXTURE_SIZE, TEXTURE_SIZE);
+        this(FluidType.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEXTURE_SIZE, TEXTURE_SIZE);
     }
 
     public ChemicalStackRenderer(long capacityMb, int width, int height) {

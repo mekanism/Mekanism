@@ -82,8 +82,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -91,7 +89,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.UsernameCache;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
@@ -378,6 +379,10 @@ public final class MekanismUtils {
             case LOW -> !tile.isPowered();
             case PULSE -> tile.isPowered() && !tile.wasPowered();
         };
+    }
+
+    public static boolean lighterThanAirGas(FluidStack stack) {
+        return stack.getFluid().is(Tags.Fluids.GASEOUS) && stack.getFluid().getFluidType().getDensity(stack) < 0;
     }
 
     /**
@@ -707,7 +712,7 @@ public final class MekanismUtils {
      * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing(net.minecraft.tags.TagKey, double)} except calculates if a given
      * portion of the player is in the fluids.
      */
-    public static Map<Fluid, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
+    public static Map<FluidType, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
         AABB bb = modifyBoundingBox.apply(player.getBoundingBox().deflate(0.001));
         int xMin = Mth.floor(bb.minX);
         int xMax = Mth.ceil(bb.maxX);
@@ -719,7 +724,7 @@ public final class MekanismUtils {
             //If the position isn't actually loaded, just return there isn't any fluids
             return Collections.emptyMap();
         }
-        Map<Fluid, FluidInDetails> fluidsIn = new HashMap<>();
+        Map<FluidType, FluidInDetails> fluidsIn = new HashMap<>();
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = xMin; x < xMax; ++x) {
             for (int y = yMin; y < yMax; ++y) {
@@ -730,14 +735,8 @@ public final class MekanismUtils {
                         double fluidY = y + fluidState.getHeight(player.level, mutablePos);
                         if (bb.minY <= fluidY) {
                             //The fluid intersects the bounding box
-                            Fluid fluid = fluidState.getType();
-                            if (fluid instanceof FlowingFluid flowingFluid) {
-                                //Almost always will be flowing fluid but check just in case
-                                // and if it is grab the source state to not have duplicates
-                                fluid = flowingFluid.getSource();
-                            }
-                            FluidInDetails details = fluidsIn.computeIfAbsent(fluid, f -> new FluidInDetails());
-                            details.positions.add(mutablePos.immutable());
+                            FluidInDetails details = fluidsIn.computeIfAbsent(fluidState.getFluidType(), f -> new FluidInDetails());
+                            details.positions.put(mutablePos.immutable(), fluidState);
                             double actualFluidHeight;
                             if (fluidY > bb.maxY) {
                                 //Fluid goes past the top of the bounding box, limit it to the top
@@ -843,10 +842,10 @@ public final class MekanismUtils {
 
     public static class FluidInDetails {
 
-        private final List<BlockPos> positions = new ArrayList<>();
+        private final Map<BlockPos, FluidState> positions = new HashMap<>();
         private final Long2DoubleMap heights = new Long2DoubleArrayMap();
 
-        public List<BlockPos> getPositions() {
+        public Map<BlockPos, FluidState> getPositions() {
             return positions;
         }
 

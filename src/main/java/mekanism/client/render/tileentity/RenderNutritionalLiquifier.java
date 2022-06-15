@@ -17,7 +17,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
@@ -130,7 +130,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             return cachedModels.get(stage);
         }
         Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidType.STILL));
+        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidTextureType.STILL));
         model.minX = 0.001F;
         model.minY = 0.313F;
         model.minZ = 0.001F;

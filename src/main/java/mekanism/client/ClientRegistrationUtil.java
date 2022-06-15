@@ -193,15 +193,15 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void setRenderLayer(RenderType type, FluidRegistryObject<?, ?, ?, ?>... fluidROs) {
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
+    public static void setRenderLayer(RenderType type, FluidRegistryObject<?, ?, ?, ?, ?>... fluidROs) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidROs) {
             ItemBlockRenderTypes.setRenderLayer(fluidRO.getStillFluid(), type);
             ItemBlockRenderTypes.setRenderLayer(fluidRO.getFlowingFluid(), type);
         }
     }
 
-    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, FluidRegistryObject<?, ?, ?, ?>... fluidROs) {
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
+    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, FluidRegistryObject<?, ?, ?, ?, ?>... fluidROs) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidROs) {
             ItemBlockRenderTypes.setRenderLayer(fluidRO.getStillFluid(), predicate);
             ItemBlockRenderTypes.setRenderLayer(fluidRO.getFlowingFluid(), predicate);
         }

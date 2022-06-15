@@ -279,7 +279,7 @@ public class ClientRegistration {
               MekanismBlocks.DIVERSION_TRANSPORTER, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
         //Fluids (translucent)
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), fluidRO);
         }
         // Multi-Layer blocks (requiring both sold & translucent render layers)

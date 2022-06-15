@@ -26,7 +26,7 @@ import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
@@ -34,7 +34,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 @MethodsReturnNonnullByDefault
 public class GaugeDropperContentsHandler extends MergedTankContentsHandler<MergedTank> implements IMekanismFluidHandler, IFluidHandlerItem {
 
-    private static final int CAPACITY = 16 * FluidAttributes.BUCKET_VOLUME;
+    private static final int CAPACITY = 16 * FluidType.BUCKET_VOLUME;
     //TODO: Convert this to a long and make it a config option after making fluids be able to handle longs
     private static final int TRANSFER_RATE = 256;
 

@@ -1,4 +1,4 @@
-// 1.19	2022-06-10T15:01:39.62406	Tags: mekanism
+// 1.19	2022-06-14T20:50:14.8016937	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -37,6 +37,7 @@ f5cef9314ee390feebf4b2036219d1c3df23e351 data/forge/tags/blocks/storage_blocks/s
 88a67aad1e1becece2f0fa1763e5491173a9a577 data/forge/tags/fluids/brine.json
 f84e9ea02956bff6cb8a6f42a996f4fd76b5b6e9 data/forge/tags/fluids/chlorine.json
 f8df38beb1c963a31c812b4be0d083f39613ae41 data/forge/tags/fluids/ethene.json
+c89cec7cd39b1c8f94525b5de973e16f28e15d1e data/forge/tags/fluids/gaseous.json
 555239c6677bc996e706799ca3e0c73a2f28dd77 data/forge/tags/fluids/heavy_water.json
 54944dd6d3c202f1ae7b48892ab8e5c0455e655d data/forge/tags/fluids/hydrofluoric_acid.json
 a9009605ac7129dab40f28eb7fa05dd32e7e3a0c data/forge/tags/fluids/hydrogen.json
@@ -154,7 +155,7 @@ fc2b2dd5fbf2bde4bc6c245bae31790b24f54f7f data/forge/tags/items/yellow_cake_urani
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/blocks/miner_blacklist.json
 f38d75ae22ae01d504bba4c88d0d1dd19fa4b485 data/mekanism/tags/blocks/personal_storage.json
 890446b036d7f08c93b84681f06ee9a04f1ccd15 data/mekanism/tags/block_entity_type/cardboard_blacklist.json
-657b2c9c8300b9f1675ed2a3b057f1b3b0695275 data/mekanism/tags/entity_types/hurtable_vehicles.json
+8fc399abbc15c10c7d3f2504e6a5319a36d7484c data/mekanism/tags/entity_types/hurtable_vehicles.json
 ab7a3106f18b6b47d54a87a099ddd43adfa77368 data/mekanism/tags/items/alloys.json
 04c1c012b37c20d74587d644525f0beec6b23f5f data/mekanism/tags/items/alloys/atomic.json
 5db69586b6c50b2befacf44de1aedc4a5af092fe data/mekanism/tags/items/alloys/basic.json

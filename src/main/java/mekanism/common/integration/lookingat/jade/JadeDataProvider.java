@@ -17,7 +17,7 @@ public class JadeDataProvider implements IServerDataProvider<BlockEntity> {
 
     @Override
     public ResourceLocation getUid() {
-        return MekanismJadePlugin.BLOCK_DATA;
+        return JadeConstants.BLOCK_DATA;
     }
 
     @Override

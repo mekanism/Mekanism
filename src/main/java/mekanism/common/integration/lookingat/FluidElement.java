@@ -3,7 +3,7 @@ package mekanism.common.integration.lookingat;
 import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -32,7 +32,7 @@ public class FluidElement extends LookingAtElement {
 
     @Override
     public TextureAtlasSprite getIcon() {
-        return stored.isEmpty() ? null : MekanismRenderer.getFluidTexture(stored, FluidType.STILL);
+        return stored.isEmpty() ? null : MekanismRenderer.getFluidTexture(stored, FluidTextureType.STILL);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mekanism.common.integration.lookingat.jade;
 
 import mekanism.api.NBTConstants;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.lookingat.LookingAtUtils;
@@ -25,11 +24,6 @@ import snownee.jade.api.config.IPluginConfig;
 
 @WailaPlugin
 public class MekanismJadePlugin implements IWailaPlugin {
-
-    public static final ResourceLocation REMOVE_BUILTIN = Mekanism.rl("remove_builtin");
-    public static final ResourceLocation BLOCK_DATA = Mekanism.rl("data_provider");
-    public static final ResourceLocation ENTITY_DATA = Mekanism.rl("entity_data_provider");
-    public static final ResourceLocation TOOLTIP_RENDERER = Mekanism.rl("tooltip_renderer");
 
     private static final ResourceLocation FORGE_ENERGY = new ResourceLocation("fe");
     private static final ResourceLocation FORGE_FLUID = new ResourceLocation("fluid");
@@ -61,7 +55,7 @@ public class MekanismJadePlugin implements IWailaPlugin {
 
             @Override
             public ResourceLocation getUid() {
-                return REMOVE_BUILTIN;
+                return JadeConstants.REMOVE_BUILTIN;
             }
 
             @Override

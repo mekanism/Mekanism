@@ -7,6 +7,7 @@ import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.data.RenderData;
 import mekanism.client.render.data.ValveRenderData;
+import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 
 public final class ModelRenderer {
@@ -20,7 +21,7 @@ public final class ModelRenderer {
     private static final Map<ValveRenderData, Model3D> cachedValveFluids = new Object2ObjectOpenHashMap<>();
 
     public static int getStage(FluidStack stack, int stages, double scale) {
-        return getStage(stack.getFluid().getAttributes().isGaseous(stack), stages, scale);
+        return getStage(MekanismUtils.lighterThanAirGas(stack), stages, scale);
     }
 
     public static int getStage(boolean gaseous, int stages, double scale) {

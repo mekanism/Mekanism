@@ -1,6 +1,5 @@
 package mekanism.common.tag;
 
-import biomesoplenty.api.entity.BOPEntities;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
@@ -133,7 +132,8 @@ public class MekanismTagProvider extends BaseTagProvider {
                     EntityType.SPAWNER_MINECART,
                     EntityType.TNT_MINECART
               )
-              .addOptional(BOPEntities.BOAT.get(), BOPEntities.CHEST_BOAT.get())
+              //TODO - 1.19: Add back after they update to support fluid changes
+              //.addOptional(BOPEntities.BOAT.get(), BOPEntities.CHEST_BOAT.get())
               .addOptional(BYGEntities.BOAT.get(), BYGEntities.CHEST_BOAT.get())
         ;
     }
@@ -471,8 +471,9 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID);
         addToTag(MekanismTags.Fluids.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE);
         addToTag(MekanismTags.Fluids.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE);
+        addToTag(Tags.Fluids.GASEOUS, MekanismFluids.STEAM);
         //Prevent all our fluids from being duped by create
-        for (FluidRegistryObject<?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
             addToTag(CREATE_NO_INFINITE_FLUID, fluid);
         }
     }

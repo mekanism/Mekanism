@@ -63,9 +63,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(moduleData.getDescriptionTranslationKey(), description);
     }
 
-    protected void addFluid(FluidRegistryObject<?, ?, ?, ?> fluidRO, String name) {
-        add(fluidRO.getStillFluid().getAttributes().getTranslationKey(), name);
-        add(fluidRO.getFlowingFluid().getAttributes().getTranslationKey(), "Flowing " + name);
+    protected void addFluid(FluidRegistryObject<?, ?, ?, ?, ?> fluidRO, String name) {
         add(fluidRO.getBlock(), name);
         add(fluidRO.getBucket(), name + " Bucket");
     }

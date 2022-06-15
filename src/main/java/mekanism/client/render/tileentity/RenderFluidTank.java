@@ -8,16 +8,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
@@ -48,7 +50,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
                   MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT);
         }
-        if (!tile.valveFluid.isEmpty() && !tile.valveFluid.getFluid().getAttributes().isGaseous(tile.valveFluid)) {
+        if (!tile.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tile.valveFluid)) {
             if (buffer == null) {
                 buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             }
@@ -68,7 +70,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         }
         Model3D model = new Model3D();
         MekanismRenderer.prepFlowing(model, fluid);
-        if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
+        if (RenderProperties.get(fluid.getFluid()).getStillTexture(fluid) != null) {
             model.minX = 0.3225F;//0.3125 + .01;
             model.minY = 0.0625F + 0.875F * (stage / (float) stages);//0.0625 + 0.875 * (stage / (float) stages);
             model.minZ = 0.3225F;//0.3125 + .01;
@@ -86,8 +88,8 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             return cachedCenterFluids.get(fluid).get(stage);
         }
         Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
-        if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
+        model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
+        if (RenderProperties.get(fluid.getFluid()).getStillTexture(fluid) != null) {
             model.minX = 0.135F;//0.125 + .01;
             model.minY = 0.0725F;//0.0625 + .01;
             model.minZ = 0.135F;//0.125 + .01;

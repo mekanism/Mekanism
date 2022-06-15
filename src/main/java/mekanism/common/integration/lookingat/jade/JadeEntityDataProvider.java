@@ -15,7 +15,7 @@ public class JadeEntityDataProvider implements IServerDataProvider<Entity> {
 
     @Override
     public ResourceLocation getUid() {
-        return MekanismJadePlugin.ENTITY_DATA;
+        return JadeConstants.ENTITY_DATA;
     }
 
     @Override

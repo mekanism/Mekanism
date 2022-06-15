@@ -80,7 +80,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addToTag(GeneratorTags.Fluids.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL);
         addToTag(GeneratorTags.Fluids.TRITIUM, GeneratorsFluids.TRITIUM);
         //Prevent all our fluids from being duped by create
-        for (FluidRegistryObject<?, ?, ?, ?> fluid : GeneratorsFluids.FLUIDS.getAllFluids()) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : GeneratorsFluids.FLUIDS.getAllFluids()) {
             addToTag(MekanismTagProvider.CREATE_NO_INFINITE_FLUID, fluid);
         }
     }

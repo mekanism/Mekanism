@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextUtils;
@@ -36,7 +36,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
 
     @Override
     protected TextureAtlasSprite getIcon(FluidStack stack) {
-        return MekanismRenderer.getFluidTexture(stack, FluidType.STILL);
+        return MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL);
     }
 
     public static TankInfoProvider<FluidStack> getProvider(IExtendedFluidTank tank, List<IExtendedFluidTank> tanks) {

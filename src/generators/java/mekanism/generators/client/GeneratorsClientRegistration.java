@@ -70,7 +70,7 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.solid() || renderType == RenderType.translucent(),
               GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.HEAT_GENERATOR);
         //Fluids (translucent)
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : GeneratorsFluids.FLUIDS.getAllFluids()) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : GeneratorsFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), fluidRO);
         }
 

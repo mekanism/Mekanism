@@ -7,7 +7,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
@@ -61,7 +61,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             return fuelModels.get(side).get(stage);
         }
         Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidType.STILL));
+        model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidTextureType.STILL));
         switch (side) {
             case NORTH -> {
                 model.minZ = 0.499F;

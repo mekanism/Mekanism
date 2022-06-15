@@ -206,9 +206,9 @@ public abstract class BaseTagProvider implements DataProvider {
         getEntityTypeBuilder(tag).addTyped(IEntityTypeProvider::getEntityType, entityTypeProviders);
     }
 
-    protected void addToTag(TagKey<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
+    protected void addToTag(TagKey<Fluid> tag, FluidRegistryObject<?, ?, ?, ?, ?>... fluidRegistryObjects) {
         ForgeRegistryTagBuilder<Fluid> tagBuilder = getFluidBuilder(tag);
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.add(fluidRO.getStillFluid(), fluidRO.getFlowingFluid());
         }
     }

@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.common.DataGenJsonConstants;
+import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
@@ -48,10 +49,10 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
         return getVariantBuilder(blockProvider.getBlock());
     }
 
-    protected void registerFluidBlockStates(List<FluidRegistryObject<?, ?, ?, ?>> fluidROs) {
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
+    protected void registerFluidBlockStates(List<FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?>> fluidROs) {
+        for (FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?> fluidRO : fluidROs) {
             simpleBlock(fluidRO.getBlock(), models().getBuilder(RegistryUtils.getPath(fluidRO.getBlock())).texture(DataGenJsonConstants.PARTICLE,
-                  fluidRO.getStillFluid().getAttributes().getStillTexture()));
+                  fluidRO.getFluidType().getStillTexture()));
         }
     }
 

@@ -23,7 +23,7 @@ public class JadeTooltipRenderer implements IBlockComponentProvider, IEntityComp
 
     @Override
     public ResourceLocation getUid() {
-        return MekanismJadePlugin.TOOLTIP_RENDERER;
+        return JadeConstants.TOOLTIP_RENDERER;
     }
 
     @Override

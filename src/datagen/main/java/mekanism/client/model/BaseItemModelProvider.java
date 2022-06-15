@@ -52,7 +52,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     }
 
     protected void registerBuckets(FluidDeferredRegister register) {
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRegistryObject : register.getAllFluids()) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRegistryObject : register.getAllFluids()) {
             registerBucket(fluidRegistryObject);
         }
     }
@@ -92,7 +92,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     }
 
     //Note: This isn't the best way to do this in terms of model file validation, but it works
-    protected void registerBucket(FluidRegistryObject<?, ?, ?, ?> fluidRO) {
+    protected void registerBucket(FluidRegistryObject<?, ?, ?, ?, ?> fluidRO) {
         withExistingParent(RegistryUtils.getPath(fluidRO.getBucket()), new ResourceLocation("forge", "item/bucket"))
               .customLoader(DynamicBucketModelBuilder::begin)
               .fluid(fluidRO.getStillFluid());
