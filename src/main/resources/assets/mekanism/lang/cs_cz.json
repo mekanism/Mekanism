@@ -461,8 +461,6 @@
   "factory.mekanism.smelting": "Tavení",
   "filter.mekanism.oredictionificator": "Filtr Rudo-slovníku",
   "fission.mekanism.heated_coolant_tank": "Zásobník ohřáté chladící kapaliny",
-  "fluid.mekanism.flowing_hydrofluoric_acid": "Tekutoucí Kyselina Fluorovodíková",
-  "fluid.mekanism.hydrofluoric_acid": "Tekutá Kyselina Fluorovodíková",
   "frequency.mekanism.delete_confirm": "Opravdu chcete smazat tuto frekvenci? Tato akce je nevratná.",
   "gas.mekanism.antimatter": "Antihmota",
   "gas.mekanism.fissile_fuel": "Jaderné palivo",
