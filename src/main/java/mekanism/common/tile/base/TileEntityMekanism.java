@@ -89,6 +89,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.lib.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
@@ -236,7 +237,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling IMekanismStrictEnergyHandler
     private final EnergyHandlerManager energyHandlerManager;
-    private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
+    private final LastEnergyTracker lastEnergyTracker = new LastEnergyTracker();
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling IMekanismHeatHandler
@@ -581,7 +582,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             // we use persists, as only one reference should update
             tile.updateHeatCapacitors(null);
         }
-        tile.lastEnergyReceived = FloatingLong.ZERO;
+        //Set that we received zero energy so if it is a different tick than we last had,
+        // and we don't actually receive anything then we will properly update it to zero
+        tile.lastEnergyTracker.received(level.getGameTime(), FloatingLong.ZERO);
         //Only update the comparator state if we support comparators and need to update comparators
         if (tile.supportsComparator() && tile.updateComparators && !state.isAir()) {
             int newRedstoneLevel = tile.getRedstoneLevel();
@@ -781,7 +784,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (canHandleEnergy() && handles(SubstanceType.ENERGY)) {
-            container.track(SyncableFloatingLong.create(this::getInputRate, this::setInputRate));
+            container.track(SyncableFloatingLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
                 container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
@@ -1110,17 +1113,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         FloatingLong remainder = energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
         if (action.execute()) {
-            lastEnergyReceived = lastEnergyReceived.plusEqual(amount.subtract(remainder));
+            //If for some reason we don't have a level fall back to zero
+            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), amount.subtract(remainder));
         }
         return remainder;
     }
 
-    public FloatingLong getInputRate() {
-        return lastEnergyReceived;
-    }
-
-    protected void setInputRate(FloatingLong inputRate) {
-        this.lastEnergyReceived = inputRate;
+    public final FloatingLong getInputRate() {
+        return lastEnergyTracker.getLastEnergyReceived();
     }
     //End methods IMekanismStrictEnergyHandler
 
