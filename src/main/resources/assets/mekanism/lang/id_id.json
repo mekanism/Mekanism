@@ -1,4 +1,5 @@
 {
+  "assemblicator.mekanism.auto_mode_toggle": "Mode-Otomatis: %1$s",
   "assemblicator.mekanism.craft_available": "Rakit Barang Yang Tersedia",
   "assemblicator.mekanism.craft_single": "Rakit Satu Barang",
   "assemblicator.mekanism.encode_formula": "Menyandi Formula",
@@ -113,6 +114,7 @@
   "block.mekanism.induction_casing": "Bingkai Induksi",
   "block.mekanism.induction_port": "Port Induksi",
   "block.mekanism.industrial_alarm": "Alarm Industri",
+  "block.mekanism.laser": "Laser",
   "block.mekanism.laser_amplifier": "Penguat Laser",
   "block.mekanism.laser_tractor_beam": "Sinar Traktor Lasor",
   "block.mekanism.lead_ore": "Bijih Timbal",
@@ -232,6 +234,9 @@
   "command.mekanism.radiation.clear": "Menghapus radiasi pemain.",
   "command.mekanism.radiation.remove_all": "Menghapus semua sumber radiasi.",
   "command.mekanism.testrules": "Mengaktifkan keepInventory, and disabled doMobSpawning, doDaylightCycle, doWeatherCycle and mobGriefing!",
+  "config.jade.plugin_mekanism.energy": "Energi",
+  "config.jade.plugin_mekanism.fluid": "Cairan",
+  "config.jade.plugin_mekanism.gas": "Gas",
   "configuration.mekanism.no_eject.tooltip": "Pengeluaran otomatis tidak didukung, ektraksi menual mungkin masih bisa.",
   "configuration.mekanism.side": "Konfigurasi Sampingan",
   "configuration.mekanism.side.clear": "Hapus Konfigurasi Sisi (setel semua sisi menjadi tidak ada)",
