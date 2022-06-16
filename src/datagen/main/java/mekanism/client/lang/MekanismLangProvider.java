@@ -477,43 +477,61 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addAdvancements() {
-        //TODO - 1.19: Change descriptions to be more descriptive of what needs to be done. Only the names should be fancy
+        //TODO - 1.19: Re-order how these are declared to be the same order as what we settle on for MekanismAdvancements
         add(MekanismAdvancements.ROOT, "Mekanism", "Welcome to Mekanism!");
-        add(MekanismAdvancements.MATERIALS, "Meka-materials", "Advancements in technology");
-        add(MekanismAdvancements.FLUID_TANK, "Better than buckets", "64-in-one");
-        add(MekanismAdvancements.CHEMICAL_TANK, "High pressure gas", "64,000 mB of pressurized gas");
-        add(MekanismAdvancements.FULL_CANTEEN, "Full to the brim", "Ready to chow down");
-        add(MekanismAdvancements.METALLURGIC_INFUSER, "A metallur-what now?", "Craft a Metallurgic Infuser");
-        add(MekanismAdvancements.STEEL_INGOT, "Industrial revolution", "Create your first steel ingot");
-        add(MekanismAdvancements.STEEL_CASING, "The perfect foundation", "The basis for even the most advanced machines");
-        add(MekanismAdvancements.INFUSED_ALLOY, "Iron-Redstone Fusion!", "Iron + Redstone = ???");
-        add(MekanismAdvancements.REINFORCED_ALLOY, "Reinforcement", "Diamonds make everything better!");
-        add(MekanismAdvancements.ATOMIC_ALLOY, "A powerful alloy", "Atomic power!");
-        add(MekanismAdvancements.PLUTONIUM, "Plutonium  power", "Not polonium");
-        add(MekanismAdvancements.SPS, "Going supercritical", "Ready to phase shift");
-        add(MekanismAdvancements.ANTIMATTER, "Impossible material", "This shouldn't be here, reporting paradox");
-        add(MekanismAdvancements.NUCLEOSYNTHESIZER, "Matter manipulation", "Sending signal, fix inbound");
-        add(MekanismAdvancements.POLONIUM, "Polonium power", "Not plutonium");
-        add(MekanismAdvancements.QIO_DRIVE_ARRAY, "Quantum orchestra", "You are the conductor!");
-        add(MekanismAdvancements.BASIC_QIO_DRIVE, "Quantum level 1", "1/4 storage");
-        add(MekanismAdvancements.ADVANCED_QIO_DRIVE, "Quantum level 2", "Higher density");
-        add(MekanismAdvancements.ELITE_QIO_DRIVE, "Quantum level 3", "In the millions!");
-        add(MekanismAdvancements.ULTIMATE_QIO_DRIVE, "Super massive", "Parallel universe detected");
-        add(MekanismAdvancements.QIO_DASHBOARD, "Quantum peek", "Behold your storage");
-        add(MekanismAdvancements.PORTABLE_QIO_DASHBOARD, "Portable peek", "Behold your storage from anywhere!");
-        add(MekanismAdvancements.TELEPORTATION_CORE, "Instant teleportation", "Numerous applications!");
-        add(MekanismAdvancements.TELEPORTER, "Portals:online", "Instant travel");
-        add(MekanismAdvancements.PORTABLE_TELEPORTER, "Portable portals", "Instant travel from anywhere");
-        add(MekanismAdvancements.QUANTUM_ENTANGLOPORTER, "Quantum entanglement", "Instant resource transport");
-        add(MekanismAdvancements.BASIC_CONTROL, "Under control", "We have this all under control");
-        add(MekanismAdvancements.ADVANCED_CONTROL, "Better control", "Craft an advanced control circuit");
-        add(MekanismAdvancements.ELITE_CONTROL, "Precision control", "Precise!");
-        add(MekanismAdvancements.ULTIMATE_CONTROL, "Where's my supercomputer?", "Honey! Where is my supercomputer?");
-        add(MekanismAdvancements.ROBIT, "Welcome to the world", "Hello friend");
-        add(MekanismAdvancements.DIGITAL_MINER, "What is my purpose?", "Goodbye friend");
-        add(MekanismAdvancements.DISASSEMBLER, "Atomic disassembler", "Rapid disassembly.");
-        add(MekanismAdvancements.MEKASUIT, "Fully kitted", "A true mekanism outfit");
-        add(MekanismAdvancements.UPGRADED_MEKASUIT, "The ultimate suit", "True dedication");
+        add(MekanismAdvancements.MATERIALS, "First Steps", "Acquire some natural Mekanism resources");
+
+
+        add(MekanismAdvancements.FLUID_TANK, "Bigger Buckets", "Make a fluid tank to store your fluids");
+        add(MekanismAdvancements.CHEMICAL_TANK, "More Useful Than You Think", "Craft a place to store (almost) all your chemicals");
+        add(MekanismAdvancements.WASTE_REMOVAL, "Waste Removal", "Safe storage for your radioactive chemicals and disposal of Nuclear Waste");
+
+        add(MekanismAdvancements.FULL_CANTEEN, "Tasty Paste", "Fully fill a Canteen with Nutritional Paste");
+
+        add(MekanismAdvancements.METALLURGIC_INFUSER, "A Metallur-what now?", "Craft a Metallurgic Infuser");
+        add(MekanismAdvancements.STEEL_INGOT, "Industrial Revolution", "Infuse Iron with Carbon and repeat");
+        add(MekanismAdvancements.STEEL_CASING, "The Perfect Foundation", "Used in even the most advanced machines");
+
+        add(MekanismAdvancements.INFUSED_ALLOY, "Your First Alloy", "Infuse Iron with Redstone");
+        add(MekanismAdvancements.REINFORCED_ALLOY, "Make it Stronger", "Diamonds make everything better!");
+        add(MekanismAdvancements.ATOMIC_ALLOY, "Top Tier Alloy", "Create one of the strongest alloys in existence");
+
+        add(MekanismAdvancements.PLUTONIUM, "Plutonium, Not Polonium", "Refine your Nuclear Waste into Plutonium");
+        add(MekanismAdvancements.SPS, "Supercritical Phase Shifting?", "This thing doesn't seem safe");
+        add(MekanismAdvancements.ANTIMATTER, "Impossible Material", "Create matter that shouldn't be able to exist here");
+        add(MekanismAdvancements.NUCLEOSYNTHESIZER, "Matter Manipulation", "Craft an Antiprotonic Nucleosynthesizer and don't worry if you can't pronounce the name");
+
+        add(MekanismAdvancements.POLONIUM, "Polonium, Not Plutonium", "Refine your Nuclear Waste into Polonium");
+
+
+        add(MekanismAdvancements.QIO_DRIVE_ARRAY, "Quantum Item Orchestration", "Wait! Where are all the cables?");
+        add(MekanismAdvancements.BASIC_QIO_DRIVE, "The Most Basic Drive", "Create a QIO Drive to store your items in");
+        add(MekanismAdvancements.ADVANCED_QIO_DRIVE, "High Density Storage", "Increase the storage bandwidth of your QIO Drive");
+        add(MekanismAdvancements.ELITE_QIO_DRIVE, "It is all Relative", "Use relativity to 'further' increase the bandwidth");
+        add(MekanismAdvancements.ULTIMATE_QIO_DRIVE, "Parallel Universe Detected", "Where do all the items go");
+        add(MekanismAdvancements.QIO_DASHBOARD, "So Much More Than a Monitor", "Wait this thing has HOW MANY crafting windows?");
+        add(MekanismAdvancements.PORTABLE_QIO_DASHBOARD, "Who Needs Backpacks", "Craft a Portable QIO Dashboard");
+
+        add(MekanismAdvancements.TELEPORTATION_CORE, "The Basis of Teleportation", "Construct the core of all teleportation technology");
+        add(MekanismAdvancements.TELEPORTER, "Thinking With Portals", "Create and travel through a Teleporter");
+        add(MekanismAdvancements.PORTABLE_TELEPORTER, "Who Needs the Portal", "Craft a Portable Teleporter");
+        add(MekanismAdvancements.QUANTUM_ENTANGLOPORTER, "Quantum Entanglement", "Instant resource transportation");
+
+        add(MekanismAdvancements.BASIC_CONTROL_CIRCUIT, "A Simple Circuit", "Tricking a rock into thinking");
+        add(MekanismAdvancements.ADVANCED_CONTROL_CIRCUIT, "Advancing Technology", "Craft an Advanced Control Circuit");
+        add(MekanismAdvancements.ELITE_CONTROL_CIRCUIT, "Make it Precise", "Create a circuit with even more pathways");
+        add(MekanismAdvancements.ULTIMATE_CONTROL_CIRCUIT, "Where's my Supercomputer?", "Can this thing run Minecraft yet?");
+
+        add(MekanismAdvancements.ROBIT, "A New Best Friend!", "Craft a Robit");
+        add(MekanismAdvancements.ROBIT_AESTHETICS, "A New Coat of Paint", "Equip a Robit with a new coat of paint");
+
+        add(MekanismAdvancements.DIGITAL_MINER, "Trapped Inside", "Turn your best friend into a Digital Miner");
+        add(MekanismAdvancements.DICTIONARY, "Time to Learn", "Craft a Dictionary to learn the generic 'tags' of the world around you");
+        add(MekanismAdvancements.STONE_GENERATOR, "Replace With Stone", "Preventing holes in the ground since 2021");
+
+        add(MekanismAdvancements.DISASSEMBLER, "Needs More Speeeeed!", "Craft an Atomic Disassembler");
+        add(MekanismAdvancements.MEKASUIT, "Mekanist", "Protect yourself with a complete MekaSuit and a Meka-Tool");
+        add(MekanismAdvancements.UPGRADED_MEKASUIT, "True Dedication", "Install the max number of all modules in the MekaSuit and Meka-Tool");
     }
 
     private void add(MekanismAdvancement advancement, String title, String description) {

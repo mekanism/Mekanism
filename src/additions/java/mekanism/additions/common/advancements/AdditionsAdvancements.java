@@ -11,7 +11,7 @@ public class AdditionsAdvancements {
     }
 
     private static MekanismAdvancement advancement(@Nullable MekanismAdvancement parent, String name) {
-        return new MekanismAdvancement(parent, MekanismAdditions.MODID, name);
+        return new MekanismAdvancement(parent, MekanismAdditions.rl(name));
     }
 
     public static final MekanismAdvancement BALLOON = advancement(MekanismAdvancements.ROOT, "balloon");

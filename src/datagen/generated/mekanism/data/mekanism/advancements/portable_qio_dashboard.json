@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:qio_dashboard",
+  "criteria": {
+    "portable_qio_dashboard": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:portable_qio_dashboard"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.portable_qio_dashboard.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:portable_qio_dashboard"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.portable_qio_dashboard.title"
+    }
+  },
+  "requirements": [
+    [
+      "portable_qio_dashboard"
+    ]
+  ]
+}

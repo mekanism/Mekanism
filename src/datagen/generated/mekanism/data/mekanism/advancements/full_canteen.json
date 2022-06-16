@@ -1,0 +1,35 @@
+{
+  "parent": "mekanism:materials",
+  "criteria": {
+    "full_canteen": {
+      "conditions": {
+        "items": [
+          {
+            "type": "mekanism:full_canteen"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.full_canteen.description"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "mekanism:canteen"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.full_canteen.title"
+    }
+  },
+  "requirements": [
+    [
+      "full_canteen"
+    ]
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:chemical_tank",
+  "criteria": {
+    "radioactive_waste_barrel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:radioactive_waste_barrel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.waste_removal.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:radioactive_waste_barrel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.waste_removal.title"
+    }
+  },
+  "requirements": [
+    [
+      "radioactive_waste_barrel"
+    ]
+  ]
+}

@@ -10,7 +10,7 @@ public class GeneratorsAdvancements {
     }
 
     private static MekanismAdvancement advancement(@Nullable MekanismAdvancement parent, String name) {
-        return new MekanismAdvancement(parent, MekanismGenerators.MODID, name);
+        return new MekanismAdvancement(parent, MekanismGenerators.rl(name));
     }
 
     //TODO - 1.19: Various types of generators?

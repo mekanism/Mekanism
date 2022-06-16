@@ -26,7 +26,7 @@ public class ExtendedAdvancementBuilder {
         this.advancement = advancement;
         this.existingFileHelper = existingFileHelper;
         if (this.advancement.parent() != null) {
-            parent(this.advancement.parent().path());
+            parent(this.advancement.parent().name());
         }
     }
 
@@ -121,6 +121,6 @@ public class ExtendedAdvancementBuilder {
     }
 
     public Advancement save(Consumer<Advancement> consumer) {
-        return internal.save(consumer, advancement.path(), existingFileHelper);
+        return internal.save(consumer, advancement.name(), existingFileHelper);
     }
 }

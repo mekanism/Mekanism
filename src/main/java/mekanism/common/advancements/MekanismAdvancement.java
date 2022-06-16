@@ -2,25 +2,23 @@ package mekanism.common.advancements;
 
 import javax.annotation.Nullable;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.Mekanism;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public record MekanismAdvancement(ResourceLocation path, String title, String description, @Nullable MekanismAdvancement parent) {
+public record MekanismAdvancement(ResourceLocation name, String title, String description, @Nullable MekanismAdvancement parent) {
 
-    public MekanismAdvancement(@Nullable MekanismAdvancement parent, String name) {
-        this(parent, Mekanism.MODID, name);
+    public MekanismAdvancement(@Nullable MekanismAdvancement parent, ResourceLocation name) {
+        this(parent, name, getSubName(name.getPath()));
     }
 
-    public MekanismAdvancement(@Nullable MekanismAdvancement parent, String modid, String name) {
-        //Note: specified mekanism modid is the grouping for the advancements, where the first one is the mod adding the advancement
-        this(new ResourceLocation(modid, Mekanism.MODID + "/" + name), name, name, parent);
+    private MekanismAdvancement(@Nullable MekanismAdvancement parent, ResourceLocation name, String subName) {
+        this(name, subName, subName, parent);
     }
 
     public MekanismAdvancement {
-        title = Util.makeDescriptionId("advancements", new ResourceLocation(path.getNamespace(), title + ".title"));
-        description = Util.makeDescriptionId("advancements", new ResourceLocation(path.getNamespace(), description + ".description"));
+        title = Util.makeDescriptionId("advancements", new ResourceLocation(name.getNamespace(), title + ".title"));
+        description = Util.makeDescriptionId("advancements", new ResourceLocation(name.getNamespace(), description + ".description"));
     }
 
     public Component translateTitle() {
@@ -29,5 +27,15 @@ public record MekanismAdvancement(ResourceLocation path, String title, String de
 
     public Component translateDescription() {
         return TextComponentUtil.translate(description);
+    }
+
+    private static String getSubName(String path) {
+        int lastSeparator = path.lastIndexOf('/');
+        if (lastSeparator == -1) {
+            return path;
+        } else if (lastSeparator + 1 == path.length()) {
+            throw new IllegalArgumentException("Unexpected name portion");
+        }
+        return path.substring(lastSeparator + 1);
     }
 }

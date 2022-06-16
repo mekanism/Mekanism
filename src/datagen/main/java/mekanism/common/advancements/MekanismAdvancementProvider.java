@@ -1,21 +1,26 @@
 package mekanism.common.advancements;
 
-import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.triggers.ChangeRobitSkinTrigger;
+import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
+import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
@@ -24,35 +29,24 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         super(generator, existingFileHelper, Mekanism.MODID);
     }
 
+    //TODO - 1.19: xp rewards for any of these?
+
     @Override
     protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
-        //TODO - 1.19: For performance reasons maybe we want to replace the tick trigger with a custom trigger that effectively is on join world?
+        //TODO - 1.19: Reorganize these to follow their order better
         advancement(MekanismAdvancements.ROOT)
-              .display(MekanismBlocks.STEEL_BLOCK, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
-              .addCriterion("tick", new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), EntityPredicate.Composite.ANY))
+              .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
+              .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), EntityPredicate.Composite.ANY))
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), FrameType.TASK)
               .orCriteria(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
+                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM),
                     MekanismItems.FLUORITE_GEM
               ).save(consumer);
-        advancement(MekanismAdvancements.FLUID_TANK)
-              .displayAndCriterion(MekanismBlocks.BASIC_FLUID_TANK, FrameType.TASK)
-              .save(consumer);
-        advancement(MekanismAdvancements.CHEMICAL_TANK)
-              .displayAndCriterion(MekanismBlocks.BASIC_CHEMICAL_TANK, FrameType.TASK)
-              .save(consumer);
-        advancement(MekanismAdvancements.FULL_CANTEEN)
-              .display(MekanismItems.CANTEEN, null, FrameType.TASK, true, true, true)
-              .addCriterion("full_canteen", InventoryChangeTrigger.TriggerInstance.hasItems(FullCanteenItemPredicate.INSTANCE))
-              .save(consumer);
-        generateMetallurgy(consumer);
-        generateDisassembly(consumer);
-    }
 
-    private void generateMetallurgy(@Nonnull Consumer<Advancement> consumer) {
         advancement(MekanismAdvancements.METALLURGIC_INFUSER)
               .displayAndCriterion(MekanismBlocks.METALLURGIC_INFUSER, FrameType.TASK)
               .save(consumer);
@@ -62,11 +56,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.STEEL_CASING)
               .displayAndCriterion(MekanismBlocks.STEEL_CASING, FrameType.TASK)
               .save(consumer);
-        generateAlloys(consumer);
-        generateControls(consumer);
-    }
 
-    private void generateAlloys(@Nonnull Consumer<Advancement> consumer) {
         advancement(MekanismAdvancements.INFUSED_ALLOY)
               .displayAndCriterion(MekanismItems.INFUSED_ALLOY, FrameType.TASK)
               .save(consumer);
@@ -76,18 +66,36 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.ATOMIC_ALLOY)
               .displayAndCriterion(MekanismItems.ATOMIC_ALLOY, FrameType.GOAL)
               .save(consumer);
+
+        advancement(MekanismAdvancements.FLUID_TANK)
+              .displayAndCriterion(MekanismBlocks.BASIC_FLUID_TANK, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.CHEMICAL_TANK)
+              .displayAndCriterion(MekanismBlocks.BASIC_CHEMICAL_TANK, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.WASTE_REMOVAL)
+              .displayAndCriterion(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.FULL_CANTEEN)
+              .display(MekanismItems.CANTEEN, null, FrameType.TASK, true, true, true)
+              .addCriterion("full_canteen", InventoryChangeTrigger.TriggerInstance.hasItems(FullCanteenItemPredicate.INSTANCE))
+              .save(consumer);
+
         generateSPS(consumer);
         generateQIO(consumer);
         generateTeleports(consumer);
+        generateControls(consumer);
+        generateDisassembly(consumer);
     }
 
     private void generateSPS(@Nonnull Consumer<Advancement> consumer) {
         advancement(MekanismAdvancements.PLUTONIUM)
               .displayAndCriterion(MekanismItems.PLUTONIUM_PELLET, FrameType.TASK)
               .save(consumer);
+        //TODO: If we end up adding a criteria for creating a multiblock switch the criteria for this to using that
         advancement(MekanismAdvancements.SPS)
               .display(MekanismBlocks.SPS_CASING, FrameType.TASK)
-              .orCriteria(MekanismBlocks.SPS_CASING,
+              .andCriteria(MekanismBlocks.SPS_CASING,
                     MekanismBlocks.SPS_PORT
               ).save(consumer);
         advancement(MekanismAdvancements.ANTIMATTER)
@@ -138,7 +146,9 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .displayAndCriterion(MekanismItems.TELEPORTATION_CORE, FrameType.TASK)
               .save(consumer);
         advancement(MekanismAdvancements.TELEPORTER)
-              .displayAndCriterion(MekanismBlocks.TELEPORTER, FrameType.TASK)
+              .display(MekanismBlocks.TELEPORTER, FrameType.TASK)
+              .addCriterion(MekanismBlocks.TELEPORTER)
+              .addCriterion("teleport", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.TELEPORT.getId(), EntityPredicate.Composite.ANY))
               .save(consumer);
         advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
               .displayAndCriterion(MekanismItems.PORTABLE_TELEPORTER, FrameType.TASK)
@@ -149,23 +159,35 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
     }
 
     private void generateControls(@Nonnull Consumer<Advancement> consumer) {
-        advancement(MekanismAdvancements.BASIC_CONTROL)
+        advancement(MekanismAdvancements.BASIC_CONTROL_CIRCUIT)
               .displayAndCriterion(MekanismItems.BASIC_CONTROL_CIRCUIT, FrameType.TASK)
               .save(consumer);
-        advancement(MekanismAdvancements.ADVANCED_CONTROL)
+        advancement(MekanismAdvancements.ADVANCED_CONTROL_CIRCUIT)
               .displayAndCriterion(MekanismItems.ADVANCED_CONTROL_CIRCUIT, FrameType.TASK)
               .save(consumer);
-        advancement(MekanismAdvancements.ELITE_CONTROL)
+        advancement(MekanismAdvancements.ELITE_CONTROL_CIRCUIT)
               .displayAndCriterion(MekanismItems.ELITE_CONTROL_CIRCUIT, FrameType.TASK)
               .save(consumer);
-        advancement(MekanismAdvancements.ULTIMATE_CONTROL)
+        advancement(MekanismAdvancements.ULTIMATE_CONTROL_CIRCUIT)
               .displayAndCriterion(MekanismItems.ULTIMATE_CONTROL_CIRCUIT, FrameType.GOAL)
               .save(consumer);
         advancement(MekanismAdvancements.ROBIT)
               .displayAndCriterion(MekanismItems.ROBIT, FrameType.GOAL)
               .save(consumer);
+        ItemStack skinnedRobit = MekanismItems.ROBIT.getItemStack();
+        MekanismItems.ROBIT.get().setSkin(skinnedRobit, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS).getSkin());
+        advancement(MekanismAdvancements.ROBIT_AESTHETICS)
+              .display(skinnedRobit, null, FrameType.TASK, true, true, true)
+              .addCriterion("change_skin", ChangeRobitSkinTrigger.TriggerInstance.toAny())
+              .save(consumer);
         advancement(MekanismAdvancements.DIGITAL_MINER)
               .displayAndCriterion(MekanismBlocks.DIGITAL_MINER, FrameType.GOAL)
+              .save(consumer);
+        advancement(MekanismAdvancements.DICTIONARY)
+              .displayAndCriterion(MekanismItems.DICTIONARY, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.STONE_GENERATOR)
+              .displayAndCriterion(MekanismItems.STONE_GENERATOR_UPGRADE, FrameType.TASK)
               .save(consumer);
     }
 
@@ -175,20 +197,24 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.MEKASUIT)
               .display(MekanismItems.MEKASUIT_BODYARMOR, FrameType.GOAL)
-              .andCriteria(MekanismItems.MEKASUIT_HELMET,
+              .addCriterion("full_set", InventoryChangeTrigger.TriggerInstance.hasItems(
+                    MekanismItems.MEKASUIT_HELMET,
                     MekanismItems.MEKASUIT_BODYARMOR,
                     MekanismItems.MEKASUIT_PANTS,
                     MekanismItems.MEKASUIT_BOOTS,
                     MekanismItems.MEKA_TOOL
-              ).save(consumer);
+              )).save(consumer);
+        //Require having all of them maxed at once
         advancement(MekanismAdvancements.UPGRADED_MEKASUIT)
               .display(MekanismItems.MEKASUIT_BODYARMOR, null, FrameType.CHALLENGE, true, true, true)
-              .andCriteria(Map.of(
-                    "helmet", hasMaxed(MekanismItems.MEKASUIT_HELMET),
-                    "bodyarmor", hasMaxed(MekanismItems.MEKASUIT_BODYARMOR),
-                    "pants", hasMaxed(MekanismItems.MEKASUIT_PANTS),
-                    "boots", hasMaxed(MekanismItems.MEKASUIT_BOOTS),
-                    "tool", hasMaxed(MekanismItems.MEKA_TOOL)
+              .addCriterion("maxed_gear", InventoryChangeTrigger.TriggerInstance.hasItems(Stream.of(
+                                MekanismItems.MEKASUIT_HELMET,
+                                MekanismItems.MEKASUIT_BODYARMOR,
+                                MekanismItems.MEKASUIT_PANTS,
+                                MekanismItems.MEKASUIT_BOOTS,
+                                MekanismItems.MEKA_TOOL
+                          ).map(item -> new MaxedModuleContainerItemPredicate<>(item.asItem()))
+                          .toArray(ItemPredicate[]::new)
               )).save(consumer);
     }
 }

@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:waste_removal",
+  "criteria": {
+    "pellet_plutonium": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:pellet_plutonium"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.plutonium.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:pellet_plutonium"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.plutonium.title"
+    }
+  },
+  "requirements": [
+    [
+      "pellet_plutonium"
+    ]
+  ]
+}

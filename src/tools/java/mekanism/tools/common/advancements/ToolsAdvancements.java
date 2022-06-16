@@ -11,7 +11,7 @@ public class ToolsAdvancements {
     }
 
     private static MekanismAdvancement advancement(@Nullable MekanismAdvancement parent, String name) {
-        return new MekanismAdvancement(parent, MekanismTools.MODID, name);
+        return new MekanismAdvancement(parent, MekanismTools.rl(name));
     }
 
     public static final MekanismAdvancement PAXEL = advancement(MekanismAdvancements.ROOT, "paxel");

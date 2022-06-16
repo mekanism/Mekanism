@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:metallurgic_infuser",
+  "criteria": {
+    "ingot_steel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_steel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.steel_ingot.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:ingot_steel"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.steel_ingot.title"
+    }
+  },
+  "requirements": [
+    [
+      "ingot_steel"
+    ]
+  ]
+}

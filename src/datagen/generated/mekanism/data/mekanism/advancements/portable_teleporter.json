@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:teleporter",
+  "criteria": {
+    "portable_teleporter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:portable_teleporter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.portable_teleporter.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:portable_teleporter"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.portable_teleporter.title"
+    }
+  },
+  "requirements": [
+    [
+      "portable_teleporter"
+    ]
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:atomic_alloy",
+  "criteria": {
+    "ultimate_control_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ultimate_control_circuit"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.ultimate_control_circuit.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:ultimate_control_circuit"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.ultimate_control_circuit.title"
+    }
+  },
+  "requirements": [
+    [
+      "ultimate_control_circuit"
+    ]
+  ]
+}
