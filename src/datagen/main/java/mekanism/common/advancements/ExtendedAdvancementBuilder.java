@@ -3,12 +3,14 @@ package mekanism.common.advancements;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -18,16 +20,18 @@ public class ExtendedAdvancementBuilder {
 
     private final Advancement.Builder internal = Advancement.Builder.advancement();
     private final MekanismAdvancement advancement;
+    private final ExistingFileHelper existingFileHelper;
 
-    private ExtendedAdvancementBuilder(MekanismAdvancement advancement) {
+    private ExtendedAdvancementBuilder(MekanismAdvancement advancement, ExistingFileHelper existingFileHelper) {
         this.advancement = advancement;
+        this.existingFileHelper = existingFileHelper;
         if (this.advancement.parent() != null) {
             parent(this.advancement.parent().path());
         }
     }
 
-    public static ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
-        return new ExtendedAdvancementBuilder(advancement);
+    public static ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement, ExistingFileHelper existingFileHelper) {
+        return new ExtendedAdvancementBuilder(advancement, existingFileHelper);
     }
 
     public ExtendedAdvancementBuilder parent(Advancement parent) {
@@ -55,6 +59,11 @@ public class ExtendedAdvancementBuilder {
         return display(item, null, frame, true, true, false);
     }
 
+    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, FrameType frame) {
+        display(item, frame);
+        return addCriterion(item);
+    }
+
     public ExtendedAdvancementBuilder display(DisplayInfo display) {
         return runInternal(builder -> builder.display(display));
     }
@@ -67,9 +76,26 @@ public class ExtendedAdvancementBuilder {
         return runInternal(builder -> builder.rewards(rewards));
     }
 
+    public ExtendedAdvancementBuilder orCriteria(ItemLike... items) {
+        if (items.length > 1) {
+            internal.requirements(RequirementsStrategy.OR);
+        }
+        for (ItemLike item : items) {
+            addCriterion(item);
+        }
+        return this;
+    }
+
     public ExtendedAdvancementBuilder orCriteria(Map<String, CriterionTriggerInstance> criteria) {
         internal.requirements(RequirementsStrategy.OR);
         return andCriteria(criteria);
+    }
+
+    public ExtendedAdvancementBuilder andCriteria(ItemLike... items) {
+        for (ItemLike item : items) {
+            addCriterion(item);
+        }
+        return this;
     }
 
     public ExtendedAdvancementBuilder andCriteria(Map<String, CriterionTriggerInstance> criteria) {
@@ -81,6 +107,10 @@ public class ExtendedAdvancementBuilder {
         return runInternal(builder -> builder.addCriterion(key, criterion));
     }
 
+    public ExtendedAdvancementBuilder addCriterion(ItemLike item) {
+        return addCriterion(RegistryUtils.getPath(item.asItem()), InventoryChangeTrigger.TriggerInstance.hasItems(item));
+    }
+
     public ExtendedAdvancementBuilder requirements(String[][] requirements) {
         return runInternal(builder -> builder.requirements(requirements));
     }
@@ -90,7 +120,7 @@ public class ExtendedAdvancementBuilder {
         return this;
     }
 
-    public Advancement save(Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
+    public Advancement save(Consumer<Advancement> consumer) {
         return internal.save(consumer, advancement.path(), existingFileHelper);
     }
 }

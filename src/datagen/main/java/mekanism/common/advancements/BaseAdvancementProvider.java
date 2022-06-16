@@ -11,7 +11,6 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public abstract class BaseAdvancementProvider extends AdvancementProvider {
@@ -39,11 +38,11 @@ public abstract class BaseAdvancementProvider extends AdvancementProvider {
 
     protected abstract void registerAdvancements(Consumer<Advancement> consumer);
 
-    protected CriterionTriggerInstance hasItems(ItemLike... items) {
-        return InventoryChangeTrigger.TriggerInstance.hasItems(items);
-    }
-
     protected CriterionTriggerInstance hasMaxed(ItemRegistryObject<? extends IModuleContainerItem> item) {
         return InventoryChangeTrigger.TriggerInstance.hasItems(new MaxedModuleContainerItemPredicate<>(item.asItem()));
+    }
+
+    protected ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
+        return ExtendedAdvancementBuilder.advancement(advancement, fileHelper);
     }
 }
