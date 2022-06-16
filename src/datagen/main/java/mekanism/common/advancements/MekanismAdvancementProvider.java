@@ -1,5 +1,6 @@
 package mekanism.common.advancements;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
@@ -23,6 +24,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         super(generator, existingFileHelper, Mekanism.MODID);
     }
 
+    //TODO - 1.19: Should some of these things use tags?? unsure
     @Override
     protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
         //TODO - 1.19: For performance reasons maybe we want to replace the tick trigger with a custom trigger that effectively is on join world?
@@ -32,13 +34,12 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), FrameType.TASK)
-              .orRequirements()
-              .addCriterion("osmium", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
-              .addCriterion("tin", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)))
-              .addCriterion("lead", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD)))
-              .addCriterion("uranium", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)))
-              .addCriterion("fluorite", hasItems(MekanismItems.FLUORITE_GEM))
-              .save(consumer, fileHelper);
+              .orCriteria(Map.of(
+                    "osmium", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
+                    "tin", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)),
+                    "uranium", hasItems(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)),
+                    "fluorite", hasItems(MekanismItems.FLUORITE_GEM)
+              )).save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.FLUID_TANK)
               .display(MekanismBlocks.BASIC_FLUID_TANK, FrameType.TASK)
               .addCriterion("fluid_tank", hasItems(MekanismBlocks.BASIC_FLUID_TANK))
@@ -97,10 +98,10 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.SPS)
               .display(MekanismBlocks.SPS_CASING, FrameType.TASK)
-              .orRequirements()
-              .addCriterion("sps_casing", hasItems(MekanismBlocks.SPS_CASING))
-              .addCriterion("sps_port", hasItems(MekanismBlocks.SPS_PORT))
-              .save(consumer, fileHelper);
+              .orCriteria(Map.of(
+                    "sps_casing", hasItems(MekanismBlocks.SPS_CASING),
+                    "sps_port", hasItems(MekanismBlocks.SPS_PORT)
+              )).save(consumer, fileHelper);
         //TODO: Was obfuscated for description. Do we want it like that or to have the actual description?
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.ANTIMATTER)
               .display(MekanismItems.ANTIMATTER_PELLET, FrameType.TASK)
@@ -210,19 +211,21 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.MEKASUIT)
               .display(MekanismItems.MEKASUIT_BODYARMOR, FrameType.GOAL)
-              .addCriterion("helmet", hasItems(MekanismItems.MEKASUIT_HELMET))
-              .addCriterion("bodyarmor", hasItems(MekanismItems.MEKASUIT_BODYARMOR))
-              .addCriterion("pants", hasItems(MekanismItems.MEKASUIT_PANTS))
-              .addCriterion("boots", hasItems(MekanismItems.MEKASUIT_BOOTS))
-              .addCriterion("tool", hasItems(MekanismItems.MEKA_TOOL))
-              .save(consumer, fileHelper);
+              .andCriteria(Map.of(
+                    "helmet", hasItems(MekanismItems.MEKASUIT_HELMET),
+                    "bodyarmor", hasItems(MekanismItems.MEKASUIT_BODYARMOR),
+                    "pants", hasItems(MekanismItems.MEKASUIT_PANTS),
+                    "boots", hasItems(MekanismItems.MEKASUIT_BOOTS),
+                    "tool", hasItems(MekanismItems.MEKA_TOOL)
+              )).save(consumer, fileHelper);
         ExtendedAdvancementBuilder.advancement(MekanismAdvancements.UPGRADED_MEKASUIT)
               .display(MekanismItems.MEKASUIT_BODYARMOR, null, FrameType.CHALLENGE, true, true, true)
-              .addCriterion("helmet", hasMaxed(MekanismItems.MEKASUIT_HELMET))
-              .addCriterion("bodyarmor", hasMaxed(MekanismItems.MEKASUIT_BODYARMOR))
-              .addCriterion("pants", hasMaxed(MekanismItems.MEKASUIT_PANTS))
-              .addCriterion("boots", hasMaxed(MekanismItems.MEKASUIT_BOOTS))
-              .addCriterion("tool", hasMaxed(MekanismItems.MEKA_TOOL))
-              .save(consumer, fileHelper);
+              .andCriteria(Map.of(
+                    "helmet", hasMaxed(MekanismItems.MEKASUIT_HELMET),
+                    "bodyarmor", hasMaxed(MekanismItems.MEKASUIT_BODYARMOR),
+                    "pants", hasMaxed(MekanismItems.MEKASUIT_PANTS),
+                    "boots", hasMaxed(MekanismItems.MEKASUIT_BOOTS),
+                    "tool", hasMaxed(MekanismItems.MEKA_TOOL)
+              )).save(consumer, fileHelper);
     }
 }

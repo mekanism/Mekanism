@@ -1,11 +1,10 @@
 package mekanism.common.advancements;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import mekanism.api.datagen.recipe.RecipeCriterion;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
@@ -68,24 +67,18 @@ public class ExtendedAdvancementBuilder {
         return runInternal(builder -> builder.rewards(rewards));
     }
 
-    public ExtendedAdvancementBuilder addCriterion(RecipeCriterion criterion) {
-        return addCriterion(criterion.name(), criterion.criterion());
+    public ExtendedAdvancementBuilder orCriteria(Map<String, CriterionTriggerInstance> criteria) {
+        internal.requirements(RequirementsStrategy.OR);
+        return andCriteria(criteria);
+    }
+
+    public ExtendedAdvancementBuilder andCriteria(Map<String, CriterionTriggerInstance> criteria) {
+        criteria.forEach(internal::addCriterion);
+        return this;
     }
 
     public ExtendedAdvancementBuilder addCriterion(String key, CriterionTriggerInstance criterion) {
         return runInternal(builder -> builder.addCriterion(key, criterion));
-    }
-
-    public ExtendedAdvancementBuilder addCriterion(String key, Criterion criterion) {
-        return runInternal(builder -> builder.addCriterion(key, criterion));
-    }
-
-    public ExtendedAdvancementBuilder orRequirements() {
-        return requirements(RequirementsStrategy.OR);
-    }
-
-    public ExtendedAdvancementBuilder requirements(RequirementsStrategy strategy) {
-        return runInternal(builder -> builder.requirements(strategy));
     }
 
     public ExtendedAdvancementBuilder requirements(String[][] requirements) {
