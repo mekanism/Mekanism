@@ -1,0 +1,31 @@
+{
+  "parent": "mekanism:materials",
+  "criteria": {
+    "use_dropper": {
+      "conditions": {
+        "action": "any"
+      },
+      "trigger": "mekanism:use_gauge_dropper"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.cleaning_gauges.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:gauge_dropper"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.cleaning_gauges.title"
+    }
+  },
+  "requirements": [
+    [
+      "use_dropper"
+    ]
+  ]
+}

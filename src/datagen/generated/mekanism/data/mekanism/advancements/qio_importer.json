@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:qio_drive_array",
+  "criteria": {
+    "qio_importer": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:qio_importer"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.qio_importer.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:qio_importer"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.qio_importer.title"
+    }
+  },
+  "requirements": [
+    [
+      "qio_importer"
+    ]
+  ]
+}

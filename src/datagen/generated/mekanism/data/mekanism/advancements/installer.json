@@ -1,0 +1,76 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "advanced_tier_installer": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:advanced_tier_installer"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "basic_tier_installer": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_tier_installer"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "elite_tier_installer": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:elite_tier_installer"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "ultimate_tier_installer": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ultimate_tier_installer"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.installer.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:basic_tier_installer"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.installer.title"
+    }
+  },
+  "requirements": [
+    [
+      "basic_tier_installer",
+      "advanced_tier_installer",
+      "elite_tier_installer",
+      "ultimate_tier_installer"
+    ]
+  ]
+}

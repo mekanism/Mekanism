@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:item_transport",
+  "criteria": {
+    "restrictive_transporter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:restrictive_transporter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.restrictive_item_transport.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:restrictive_transporter"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.restrictive_item_transport.title"
+    }
+  },
+  "requirements": [
+    [
+      "restrictive_transporter"
+    ]
+  ]
+}

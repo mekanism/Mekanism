@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:materials",
+  "criteria": {
+    "unbox": {
+      "conditions": {},
+      "trigger": "mekanism:unbox_cardboard_box"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.moving_blocks.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:cardboard_box"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.moving_blocks.title"
+    }
+  },
+  "requirements": [
+    [
+      "unbox"
+    ]
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:chemical_tank",
+  "criteria": {
+    "jetpack": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:jetpack"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.hydrogen_powered_flight.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:jetpack"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.hydrogen_powered_flight.title"
+    }
+  },
+  "requirements": [
+    [
+      "jetpack"
+    ]
+  ]
+}

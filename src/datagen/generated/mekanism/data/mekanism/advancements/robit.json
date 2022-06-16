@@ -1,17 +1,19 @@
 {
   "parent": "mekanism:atomic_alloy",
   "criteria": {
-    "robit": {
+    "summon": {
       "conditions": {
-        "items": [
+        "entity": [
           {
-            "items": [
-              "mekanism:robit"
-            ]
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "mekanism:robit"
+            }
           }
         ]
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "minecraft:summoned_entity"
     }
   },
   "display": {
@@ -31,7 +33,7 @@
   },
   "requirements": [
     [
-      "robit"
+      "summon"
     ]
   ]
 }

@@ -42,6 +42,10 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement ULTIMATE_QIO_DRIVE = advancement(ELITE_QIO_DRIVE, "ultimate_qio_drive");
     public static final MekanismAdvancement QIO_DASHBOARD = advancement(QIO_DRIVE_ARRAY, "qio_dashboard");
     public static final MekanismAdvancement PORTABLE_QIO_DASHBOARD = advancement(QIO_DASHBOARD, "portable_qio_dashboard");
+    public static final MekanismAdvancement QIO_EXPORTER = advancement(QIO_DRIVE_ARRAY, "qio_exporter");
+    public static final MekanismAdvancement QIO_IMPORTER = advancement(QIO_DRIVE_ARRAY, "qio_importer");
+    public static final MekanismAdvancement QIO_REDSTONE_ADAPTER = advancement(QIO_DRIVE_ARRAY, "qio_redstone_adapter");
+
     public static final MekanismAdvancement TELEPORTATION_CORE = advancement(ATOMIC_ALLOY, "teleportation_core");
     public static final MekanismAdvancement TELEPORTER = advancement(TELEPORTATION_CORE, "teleporter");
     public static final MekanismAdvancement PORTABLE_TELEPORTER = advancement(TELEPORTER, "portable_teleporter");
@@ -61,7 +65,6 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement MEKASUIT = advancement(DISASSEMBLER, "mekasuit");
     public static final MekanismAdvancement UPGRADED_MEKASUIT = advancement(MEKASUIT, "upgraded_mekasuit");
 
-    //TODO
     public static final MekanismAdvancement ITEM_TRANSPORT = advancement(STEEL_INGOT, "item_transport");
     public static final MekanismAdvancement RESTRICTIVE_ITEM_TRANSPORT = advancement(ITEM_TRANSPORT, "restrictive_item_transport");
     public static final MekanismAdvancement DIVERSION_ITEM_TRANSPORT = advancement(ITEM_TRANSPORT, "diversion_item_transport");
@@ -72,38 +75,37 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement ENERGY_TRANSPORT = advancement(STEEL_INGOT, "energy_transport");
     public static final MekanismAdvancement HEAT_TRANSPORT = advancement(STEEL_INGOT, "heat_transport");
 
-    /*public static final MekanismAdvancement CONFIGURATOR = advancement(TODO, "configurator");
-    public static final MekanismAdvancement NETWORK_READER = advancement(TODO, "network_reader");
+    public static final MekanismAdvancement CONFIGURATOR = advancement(INFUSED_ALLOY, "configurator");
+    public static final MekanismAdvancement NETWORK_READER = advancement(INFUSED_ALLOY, "network_reader");
 
-    public static final MekanismAdvancement ENRICHER = advancement(TODO, "enricher");
+    public static final MekanismAdvancement ENRICHER = advancement(STEEL_CASING, "enricher");
     public static final MekanismAdvancement INFUSING_EFFICIENCY = advancement(ENRICHER, "infusing_efficiency");
+    public static final MekanismAdvancement YELLOW_CAKE = advancement(ENRICHER, "yellow_cake");
 
-    //TODO: Security desk
-    public static final MekanismAdvancement MACHINE_SECURITY = advancement(TODO, "machine_security");*/
+    public static final MekanismAdvancement MACHINE_SECURITY = advancement(ELITE_CONTROL_CIRCUIT, "machine_security");
 
-    /*public static final MekanismAdvancement PERSONAL_STORAGE = advancement(TODO, "personal_storage");
+    public static final MekanismAdvancement PERSONAL_STORAGE = advancement(BASIC_CONTROL_CIRCUIT, "personal_storage");
+    public static final MekanismAdvancement SIMPLE_MASS_STORAGE = advancement(BASIC_CONTROL_CIRCUIT, "simple_mass_storage");
 
-    //TODO: Bins maybe name different
-    public static final MekanismAdvancement SIMPLE_MASS_STORAGE = advancement(TODO, "simple_mass_storage");
+    public static final MekanismAdvancement MOVING_BLOCKS = advancement(MATERIALS, "moving_blocks");
 
-    //TODO - 1.19: Cardboard box
-    public static final MekanismAdvancement MOVING_BLOCKS = advancement(TODO, "moving_blocks");
+    public static final MekanismAdvancement PLAYING_WITH_FIRE = advancement(ADVANCED_CONTROL_CIRCUIT, "playing_with_fire");
+    public static final MekanismAdvancement RUNNING_FREE = advancement(BASIC_CONTROL_CIRCUIT, "running_free");
+    public static final MekanismAdvancement HYDROGEN_POWERED_FLIGHT = advancement(CHEMICAL_TANK, "hydrogen_powered_flight");
 
-    //TODO: Flamethrower
-    public static final MekanismAdvancement PLAYING_WITH_FIRE = advancement(TODO, "playing_with_fire");
+    public static final MekanismAdvancement BREATHING_ASSISTANCE = advancement(CHEMICAL_TANK, "breathing_assistance");
 
-    //TODO: Scuba gear
-    public static final MekanismAdvancement BREATHING_ASSISTANCE = advancement(TODO, "breathing_assistance");*/
+    public static final MekanismAdvancement RADIATION_PREVENTION = advancement(WASTE_REMOVAL, "radiation_prevention");
+    public static final MekanismAdvancement ENVIRONMENTAL_RADIATION = advancement(WASTE_REMOVAL, "environmental_radiation");
+    public static final MekanismAdvancement PERSONAL_RADIATION = advancement(ENVIRONMENTAL_RADIATION, "personal_radiation");
+
+    public static final MekanismAdvancement AUTOMATED_CRAFTING = advancement(STEEL_CASING, "automated_crafting");
+
+    public static final MekanismAdvancement CLEANING_GAUGES = advancement(MATERIALS, "cleaning_gauges");
+
+    public static final MekanismAdvancement CONFIGURATION_COPYING = advancement(BASIC_CONTROL_CIRCUIT, "configuration_copying");
+
+    public static final MekanismAdvancement INSTALLER = advancement(BASIC_CONTROL_CIRCUIT, "installer");
 
     //TODO - 1.19: Add advancements for various machines? Not sure where is a good breaking point
-    //TODO - 1.19: Advancements:
-    // Geiger Counter
-    // Dosimeter
-    // Formulaic Assemblicator (atomated crafting)
-    // Gauge dropper
-    // installers?
-    // configuration card
-    // qio importer exporter and level emitter if not already there
-
-
 }

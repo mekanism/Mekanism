@@ -1,0 +1,40 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "copy": {
+      "conditions": {
+        "copy": true
+      },
+      "trigger": "mekanism:configuration_card"
+    },
+    "paste": {
+      "conditions": {
+        "copy": false
+      },
+      "trigger": "mekanism:configuration_card"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.configuration_copying.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:configuration_card"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.configuration_copying.title"
+    }
+  },
+  "requirements": [
+    [
+      "copy"
+    ],
+    [
+      "paste"
+    ]
+  ]
+}

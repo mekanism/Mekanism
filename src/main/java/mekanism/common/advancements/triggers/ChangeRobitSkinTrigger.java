@@ -51,7 +51,7 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
         } else {
             skin = null;
         }
-        return new TriggerInstance(id, playerPredicate, skin);
+        return new TriggerInstance(playerPredicate, skin);
     }
 
     public void trigger(ServerPlayer player, RobitSkin skin) {
@@ -63,8 +63,8 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
         @Nullable
         private final RobitSkin skin;
 
-        public TriggerInstance(ResourceLocation criterion, EntityPredicate.Composite playerPredicate, @Nullable RobitSkin skin) {
-            super(criterion, playerPredicate);
+        public TriggerInstance(EntityPredicate.Composite playerPredicate, @Nullable RobitSkin skin) {
+            super(MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.getId(), playerPredicate);
             this.skin = skin;
         }
 
@@ -79,11 +79,11 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
         }
 
         public static ChangeRobitSkinTrigger.TriggerInstance toAny() {
-            return new ChangeRobitSkinTrigger.TriggerInstance(MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.getId(), EntityPredicate.Composite.ANY, null);
+            return new ChangeRobitSkinTrigger.TriggerInstance(EntityPredicate.Composite.ANY, null);
         }
 
         public static ChangeRobitSkinTrigger.TriggerInstance toSkin(IRobitSkinProvider skinProvider) {
-            return new ChangeRobitSkinTrigger.TriggerInstance(MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.getId(), EntityPredicate.Composite.ANY, skinProvider.getSkin());
+            return new ChangeRobitSkinTrigger.TriggerInstance(EntityPredicate.Composite.ANY, skinProvider.getSkin());
         }
     }
 }

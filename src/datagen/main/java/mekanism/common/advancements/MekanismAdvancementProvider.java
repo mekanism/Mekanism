@@ -1,14 +1,19 @@
 package mekanism.common.advancements;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.triggers.ChangeRobitSkinTrigger;
+import mekanism.common.advancements.triggers.ConfigurationCardTrigger;
+import mekanism.common.advancements.triggers.UnboxCardboardBoxTrigger;
+import mekanism.common.advancements.triggers.UseGaugeDropperTrigger;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.resource.PrimaryResource;
@@ -19,6 +24,8 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.advancements.critereon.SummonedEntityTrigger;
+import net.minecraft.advancements.critereon.UsingItemTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -76,6 +83,14 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.WASTE_REMOVAL)
               .displayAndCriterion(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, FrameType.TASK)
               .save(consumer);
+        advancement(MekanismAdvancements.RADIATION_PREVENTION)
+              .display(MekanismItems.HAZMAT_GOWN, FrameType.TASK)
+              .addCriterion("full_set", InventoryChangeTrigger.TriggerInstance.hasItems(
+                    MekanismItems.HAZMAT_MASK,
+                    MekanismItems.HAZMAT_GOWN,
+                    MekanismItems.HAZMAT_PANTS,
+                    MekanismItems.HAZMAT_BOOTS
+              )).save(consumer);
         advancement(MekanismAdvancements.FULL_CANTEEN)
               .display(MekanismItems.CANTEEN, null, FrameType.TASK, true, true, true)
               .addCriterion("full_canteen", InventoryChangeTrigger.TriggerInstance.hasItems(FullCanteenItemPredicate.INSTANCE))
@@ -86,6 +101,113 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         generateTeleports(consumer);
         generateControls(consumer);
         generateDisassembly(consumer);
+
+        advancement(MekanismAdvancements.INSTALLER)
+              .display(MekanismItems.BASIC_TIER_INSTALLER, FrameType.TASK)
+              .orCriteria(MekanismItems.BASIC_TIER_INSTALLER,
+                    MekanismItems.ADVANCED_TIER_INSTALLER,
+                    MekanismItems.ELITE_TIER_INSTALLER,
+                    MekanismItems.ULTIMATE_TIER_INSTALLER
+              ).save(consumer);
+        advancement(MekanismAdvancements.CONFIGURATION_COPYING)
+              .display(MekanismItems.CONFIGURATION_CARD, FrameType.TASK)
+              .andCriteria(Map.of(
+                    "copy", ConfigurationCardTrigger.TriggerInstance.copy(),
+                    "paste", ConfigurationCardTrigger.TriggerInstance.paste()
+              )).save(consumer);
+
+        advancement(MekanismAdvancements.CLEANING_GAUGES)
+              .display(MekanismItems.GAUGE_DROPPER, FrameType.GOAL)
+              .addCriterion("use_dropper", UseGaugeDropperTrigger.TriggerInstance.any())
+              .save(consumer);
+
+        advancement(MekanismAdvancements.AUTOMATED_CRAFTING)
+              .displayAndCriterion(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.BREATHING_ASSISTANCE)
+              .display(MekanismItems.SCUBA_MASK, FrameType.GOAL)
+              .addCriterion("scuba_gear", InventoryChangeTrigger.TriggerInstance.hasItems(
+                    MekanismItems.SCUBA_MASK,
+                    MekanismItems.SCUBA_TANK
+              )).save(consumer);
+
+        //TODO - 1.19: Test these using item triggers, and if they don't work properly make our own
+        advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
+              .display(MekanismItems.GEIGER_COUNTER, FrameType.TASK)
+              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY,
+                    ItemPredicate.Builder.item().of(MekanismItems.GEIGER_COUNTER).build()))
+              .save(consumer);
+        advancement(MekanismAdvancements.PERSONAL_RADIATION)
+              .display(MekanismItems.DOSIMETER, FrameType.TASK)
+              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY,
+                    ItemPredicate.Builder.item().of(MekanismItems.DOSIMETER).build()))
+              .save(consumer);
+
+        //TODO - 1.19:Figure out these things
+        advancement(MekanismAdvancements.ENRICHER)
+              .displayAndCriterion(MekanismBlocks.ENRICHMENT_CHAMBER, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.INFUSING_EFFICIENCY)
+              .display(MekanismItems.ENRICHED_REDSTONE, FrameType.TASK)
+              .orCriteria(MekanismItems.ENRICHED_CARBON,
+                    MekanismItems.ENRICHED_REDSTONE,
+                    MekanismItems.ENRICHED_DIAMOND,
+                    MekanismItems.ENRICHED_OBSIDIAN,
+                    MekanismItems.ENRICHED_GOLD,
+                    MekanismItems.ENRICHED_TIN
+              ).save(consumer);
+        advancement(MekanismAdvancements.YELLOW_CAKE)
+              .displayAndCriterion(MekanismItems.YELLOW_CAKE_URANIUM, FrameType.GOAL)
+              .save(consumer);
+
+        advancement(MekanismAdvancements.PLAYING_WITH_FIRE)
+              .displayAndCriterion(MekanismItems.FLAMETHROWER, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.RUNNING_FREE)
+              .displayAndCriterion(MekanismItems.FREE_RUNNERS, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.HYDROGEN_POWERED_FLIGHT)
+              .displayAndCriterion(MekanismItems.JETPACK, FrameType.TASK)
+              .save(consumer);
+
+        advancement(MekanismAdvancements.MOVING_BLOCKS)
+              .display(MekanismBlocks.CARDBOARD_BOX, FrameType.TASK)
+              .addCriterion("unbox", UnboxCardboardBoxTrigger.TriggerInstance.unbox())
+              .save(consumer);
+
+        advancement(MekanismAdvancements.CONFIGURATOR)
+              .displayAndCriterion(MekanismItems.CONFIGURATOR, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.NETWORK_READER)
+              .displayAndCriterion(MekanismItems.NETWORK_READER, FrameType.TASK)
+              .save(consumer);
+
+        advancement(MekanismAdvancements.ITEM_TRANSPORT)
+              .displayAndCriterion(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, FrameType.TASK)
+              .save(consumer);
+
+        advancement(MekanismAdvancements.RESTRICTIVE_ITEM_TRANSPORT)
+              .displayAndCriterion(MekanismBlocks.RESTRICTIVE_TRANSPORTER, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.DIVERSION_ITEM_TRANSPORT)
+              .displayAndCriterion(MekanismBlocks.DIVERSION_TRANSPORTER, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.SORTER)
+              .displayAndCriterion(MekanismBlocks.LOGISTICAL_SORTER, FrameType.GOAL)
+              .save(consumer);
+
+        advancement(MekanismAdvancements.FLUID_TRANSPORT)
+              .displayAndCriterion(MekanismBlocks.BASIC_MECHANICAL_PIPE, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.CHEMICAL_TRANSPORT)
+              .displayAndCriterion(MekanismBlocks.BASIC_PRESSURIZED_TUBE, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.ENERGY_TRANSPORT)
+              .displayAndCriterion(MekanismBlocks.BASIC_UNIVERSAL_CABLE, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.HEAT_TRANSPORT)
+              .displayAndCriterion(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, FrameType.TASK)
+              .save(consumer);
     }
 
     private void generateSPS(@Nonnull Consumer<Advancement> consumer) {
@@ -113,6 +235,17 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.QIO_DRIVE_ARRAY)
               .displayAndCriterion(MekanismBlocks.QIO_DRIVE_ARRAY, FrameType.TASK)
               .save(consumer);
+
+        advancement(MekanismAdvancements.QIO_EXPORTER)
+              .displayAndCriterion(MekanismBlocks.QIO_EXPORTER, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.QIO_IMPORTER)
+              .displayAndCriterion(MekanismBlocks.QIO_IMPORTER, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.QIO_REDSTONE_ADAPTER)
+              .displayAndCriterion(MekanismBlocks.QIO_REDSTONE_ADAPTER, FrameType.TASK)
+              .save(consumer);
+
         generateQIODrives(consumer);
         generateQIODashboards(consumer);
     }
@@ -171,8 +304,22 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.ULTIMATE_CONTROL_CIRCUIT)
               .displayAndCriterion(MekanismItems.ULTIMATE_CONTROL_CIRCUIT, FrameType.GOAL)
               .save(consumer);
+
+        advancement(MekanismAdvancements.SIMPLE_MASS_STORAGE)
+              .displayAndCriterion(MekanismBlocks.BASIC_BIN, FrameType.TASK)
+              .save(consumer);
+        advancement(MekanismAdvancements.PERSONAL_STORAGE)
+              .display(MekanismBlocks.PERSONAL_CHEST, FrameType.TASK)
+              .orCriteria(MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST)
+              .save(consumer);
+
+        advancement(MekanismAdvancements.MACHINE_SECURITY)
+              .displayAndCriterion(MekanismBlocks.SECURITY_DESK, FrameType.TASK)
+              .save(consumer);
+
         advancement(MekanismAdvancements.ROBIT)
-              .displayAndCriterion(MekanismItems.ROBIT, FrameType.GOAL)
+              .display(MekanismItems.ROBIT, FrameType.GOAL)
+              .addCriterion("summon", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(MekanismEntityTypes.ROBIT.getEntityType())))
               .save(consumer);
         ItemStack skinnedRobit = MekanismItems.ROBIT.getItemStack();
         MekanismItems.ROBIT.get().setSkin(skinnedRobit, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS).getSkin());

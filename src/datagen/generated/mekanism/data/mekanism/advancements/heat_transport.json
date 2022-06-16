@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:steel_ingot",
+  "criteria": {
+    "basic_thermodynamic_conductor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_thermodynamic_conductor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.heat_transport.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:basic_thermodynamic_conductor"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.heat_transport.title"
+    }
+  },
+  "requirements": [
+    [
+      "basic_thermodynamic_conductor"
+    ]
+  ]
+}

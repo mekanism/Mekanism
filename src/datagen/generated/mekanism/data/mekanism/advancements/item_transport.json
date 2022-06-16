@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:steel_ingot",
+  "criteria": {
+    "basic_logistical_transporter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_logistical_transporter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanism.item_transport.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanism:basic_logistical_transporter"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanism.item_transport.title"
+    }
+  },
+  "requirements": [
+    [
+      "basic_logistical_transporter"
+    ]
+  ]
+}

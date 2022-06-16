@@ -28,10 +28,12 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -101,6 +103,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 world.addFreshEntity(robit);
                 world.gameEvent(player, GameEvent.ENTITY_PLACE, robit.blockPosition());
                 stack.shrink(1);
+                CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayer) player, robit);
             }
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
