@@ -388,8 +388,10 @@ dependencies {
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${previous_minecraft_version}:${jei_version}:api")
-    //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //TODO: Re-enable in dev once https://github.com/Chisel-Team/ConnectedTexturesMod/issues/174 is fixed
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
@@ -398,12 +400,12 @@ dependencies {
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    //TODO - 1.19: Re-enable after they support changes to config and calling get early
+    /*runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
-    }
+    }*/
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
-    //TODO - 1.19: Re-enable after it supports new fluid api
-    //runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
     compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
 
     //TODO - 1.19: Switch back to implementation once these update
@@ -426,10 +428,9 @@ dependencies {
     //TODO - 1.19: datagenmainImplementation once ae2 update
     datagenmainCompileOnly fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
-    //TODO - 1.19: Re-enable when it updates to support the fluid changes
+    //TODO - 1.19: Re-enable when it updates to support the config get changes
     //datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
-    //TODO - 1.19: datagenmainImplementation once these update to the fluid changes
     datagenmainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
     //TODO - 1.19: datagenmainImplementation once these update
     datagenmainCompileOnly fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")

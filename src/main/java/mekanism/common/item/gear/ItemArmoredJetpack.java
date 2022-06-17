@@ -68,7 +68,7 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
         @Override
         public int getDefenseForSlot(EquipmentSlot slotType) {
-            return slotType == EquipmentSlot.CHEST ? MekanismConfig.gear.armoredJetpackArmor.get() : 0;
+            return slotType == EquipmentSlot.CHEST ? MekanismConfig.gear.armoredJetpackArmor.getOrDefault() : 0;
         }
 
         @Override
@@ -78,12 +78,12 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
         @Override
         public float getToughness() {
-            return MekanismConfig.gear.armoredJetpackToughness.get();
+            return MekanismConfig.gear.armoredJetpackToughness.getOrDefault();
         }
 
         @Override
         public float getKnockbackResistance() {
-            return MekanismConfig.gear.armoredJetpackKnockbackResistance.get();
+            return MekanismConfig.gear.armoredJetpackKnockbackResistance.getOrDefault();
         }
     }
 }

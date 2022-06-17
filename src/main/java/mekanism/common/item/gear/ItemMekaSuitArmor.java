@@ -556,22 +556,22 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         @Override
         public int getDefenseForSlot(@Nonnull EquipmentSlot slot) {
             return switch (slot) {
-                case FEET -> MekanismConfig.gear.mekaSuitBootsArmor.get();
-                case LEGS -> MekanismConfig.gear.mekaSuitPantsArmor.get();
-                case CHEST -> MekanismConfig.gear.mekaSuitBodyArmorArmor.get();
-                case HEAD -> MekanismConfig.gear.mekaSuitHelmetArmor.get();
+                case FEET -> MekanismConfig.gear.mekaSuitBootsArmor.getOrDefault();
+                case LEGS -> MekanismConfig.gear.mekaSuitPantsArmor.getOrDefault();
+                case CHEST -> MekanismConfig.gear.mekaSuitBodyArmorArmor.getOrDefault();
+                case HEAD -> MekanismConfig.gear.mekaSuitHelmetArmor.getOrDefault();
                 default -> 0;
             };
         }
 
         @Override
         public float getToughness() {
-            return MekanismConfig.gear.mekaSuitToughness.get();
+            return MekanismConfig.gear.mekaSuitToughness.getOrDefault();
         }
 
         @Override
         public float getKnockbackResistance() {
-            return MekanismConfig.gear.mekaSuitKnockbackResistance.get();
+            return MekanismConfig.gear.mekaSuitKnockbackResistance.getOrDefault();
         }
 
         @Nonnull

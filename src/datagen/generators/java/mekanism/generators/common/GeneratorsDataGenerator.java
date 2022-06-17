@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import mekanism.common.MekanismDataGenerator;
 import mekanism.generators.client.GeneratorsBlockStateProvider;
 import mekanism.generators.client.GeneratorsItemModelProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
@@ -20,6 +21,7 @@ public class GeneratorsDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
+        MekanismDataGenerator.bootstrapConfigs(MekanismGenerators.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         //Client side data generators

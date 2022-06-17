@@ -60,6 +60,7 @@ import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.machine.TileEntityElectricPump;
@@ -386,7 +387,7 @@ public class MekanismJEI implements IModPlugin {
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
         IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
         IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
-        registry.addRecipeTransferHandler(CraftingRobitContainer.class, RecipeTypes.CRAFTING, 1, 9, 10, 36);
+        registry.addRecipeTransferHandler(CraftingRobitContainer.class, MekanismContainerTypes.CRAFTING_ROBIT.get(), RecipeTypes.CRAFTING, 1, 9, 10, 36);
         registry.addRecipeTransferHandler(new FormulaicRecipeTransferInfo());
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, QIODashboardContainer.class), RecipeTypes.CRAFTING);
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, PortableQIODashboardContainer.class), RecipeTypes.CRAFTING);

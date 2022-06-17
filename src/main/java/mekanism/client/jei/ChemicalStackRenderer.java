@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
@@ -48,18 +47,6 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         this.tooltipMode = tooltipMode;
         this.width = width;
         this.height = height;
-    }
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public void render(@Nonnull PoseStack matrix, int xPosition, int yPosition, @Nullable STACK stack) {
-        if (stack != null) {
-            matrix.pushPose();
-            matrix.translate(xPosition, yPosition, 0);
-            render(matrix, stack);
-            matrix.popPose();
-        }
     }
 
     @Override

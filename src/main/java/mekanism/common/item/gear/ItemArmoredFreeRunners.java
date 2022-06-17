@@ -67,7 +67,7 @@ public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttribut
     private static class ArmoredFreeRunnerMaterial extends FreeRunnerMaterial {
         @Override
         public int getDefenseForSlot(EquipmentSlot slotType) {
-            return slotType == EquipmentSlot.FEET ? MekanismConfig.gear.armoredFreeRunnerArmor.get() : 0;
+            return slotType == EquipmentSlot.FEET ? MekanismConfig.gear.armoredFreeRunnerArmor.getOrDefault() : 0;
         }
 
         @Override
@@ -77,12 +77,12 @@ public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttribut
 
         @Override
         public float getToughness() {
-            return MekanismConfig.gear.armoredFreeRunnerToughness.get();
+            return MekanismConfig.gear.armoredFreeRunnerToughness.getOrDefault();
         }
 
         @Override
         public float getKnockbackResistance() {
-            return MekanismConfig.gear.armoredFreeRunnerKnockbackResistance.get();
+            return MekanismConfig.gear.armoredFreeRunnerKnockbackResistance.getOrDefault();
         }
     }
 }

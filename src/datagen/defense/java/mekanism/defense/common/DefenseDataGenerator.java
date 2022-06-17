@@ -1,5 +1,6 @@
 package mekanism.defense.common;
 
+import mekanism.common.MekanismDataGenerator;
 import mekanism.defense.client.DefenseLangProvider;
 import mekanism.defense.common.loot.DefenseLootProvider;
 import net.minecraft.data.DataGenerator;
@@ -17,6 +18,7 @@ public class DefenseDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
+        MekanismDataGenerator.bootstrapConfigs(MekanismDefense.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         //Client side data generators

@@ -8,6 +8,7 @@ import mekanism.additions.common.loot.AdditionsLootProvider;
 import mekanism.additions.common.recipe.AdditionsRecipeProvider;
 import mekanism.additions.common.world_modifier.AdditionsBiomeModifierProvider;
 import mekanism.additions.common.world_modifier.AdditionsStructureModifierProvider;
+import mekanism.common.MekanismDataGenerator;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,6 +24,7 @@ public class AdditionsDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
+        MekanismDataGenerator.bootstrapConfigs(MekanismAdditions.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         //Client side data generators

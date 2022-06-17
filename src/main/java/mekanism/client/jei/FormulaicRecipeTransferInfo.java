@@ -2,6 +2,7 @@ package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
@@ -9,7 +10,7 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
@@ -21,27 +22,18 @@ public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<Formulai
     }
 
     @Override
+    public Optional<MenuType<FormulaicAssemblicatorContainer>> getMenuType() {
+        return Optional.empty();
+    }
+
+    @Override
     public RecipeType<CraftingRecipe> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public ResourceLocation getRecipeCategoryUid() {
-        return getRecipeType().getUid();
-    }
-
-    @Override
     public boolean canHandle(FormulaicAssemblicatorContainer container, CraftingRecipe recipe) {
         return true;
-    }
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public Class<CraftingRecipe> getRecipeClass() {
-        return CraftingRecipe.class;
     }
 
     @Override

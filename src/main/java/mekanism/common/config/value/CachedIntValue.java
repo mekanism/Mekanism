@@ -17,6 +17,13 @@ public class CachedIntValue extends CachedValue<Integer> implements IntSupplier 
         return new CachedIntValue(config, internal);
     }
 
+    public int getOrDefault() {
+        if (resolved || isLoaded()) {
+            return get();
+        }
+        return internal.getDefault();
+    }
+
     public int get() {
         if (!resolved) {
             //If we don't have a cached value or need to resolve it again, get it from the actual ConfigValue

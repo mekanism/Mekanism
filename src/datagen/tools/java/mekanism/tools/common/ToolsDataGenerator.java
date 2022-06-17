@@ -1,5 +1,6 @@
 package mekanism.tools.common;
 
+import mekanism.common.MekanismDataGenerator;
 import mekanism.tools.client.ToolsItemModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
@@ -18,6 +19,7 @@ public class ToolsDataGenerator {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
+        MekanismDataGenerator.bootstrapConfigs(MekanismTools.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         //Client side data generators

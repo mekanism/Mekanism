@@ -70,7 +70,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     @Override
     public int getPaxelMaxUses() {
-        return paxelMaxUses.get();
+        return paxelMaxUses.getOrDefault();
     }
 
     @Override
@@ -80,12 +80,12 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     @Override
     public float getPaxelDamage() {
-        return paxelDamage.get();
+        return paxelDamage.getOrDefault();
     }
 
     @Override
     public float getPaxelAtkSpeed() {
-        return paxelAtkSpeed.get();
+        return paxelAtkSpeed.getOrDefault();
     }
 
     @Override

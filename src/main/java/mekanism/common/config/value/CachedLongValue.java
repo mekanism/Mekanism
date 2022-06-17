@@ -17,6 +17,13 @@ public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
         return new CachedLongValue(config, internal);
     }
 
+    public long getOrDefault() {
+        if (resolved || isLoaded()) {
+            return get();
+        }
+        return internal.getDefault();
+    }
+
     public long get() {
         if (!resolved) {
             //If we don't have a cached value or need to resolve it again, get it from the actual ConfigValue
