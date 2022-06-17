@@ -94,12 +94,8 @@
 			"to": [7.5, 6, 7],
 			"rotation": {"angle": 22.5, "axis": "y", "origin": [7.5, 6, 7]},
 			"faces": {
-				"north": {"uv": [0, 0, 0, 5], "texture": "#missing", "lightLevel": 3},
 				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit", "lightLevel": 3},
-				"south": {"uv": [0, 0, 0, 5], "texture": "#missing", "lightLevel": 3},
-				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit", "lightLevel": 3},
-				"up": {"uv": [0, 0, 8, 0], "rotation": 270, "texture": "#missing", "lightLevel": 3},
-				"down": {"uv": [0, 0, 8, 0], "rotation": 90, "texture": "#missing", "lightLevel": 3}
+				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit", "lightLevel": 3}
 			}
 		},
 		{
@@ -108,12 +104,8 @@
 			"to": [8.5, 6, 7],
 			"rotation": {"angle": -22.5, "axis": "y", "origin": [8.5, 6, 7]},
 			"faces": {
-				"north": {"uv": [0, 0, 0, 5], "texture": "#missing", "lightLevel": 3},
 				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit", "lightLevel": 3},
-				"south": {"uv": [0, 0, 0, 5], "texture": "#missing", "lightLevel": 3},
-				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit", "lightLevel": 3},
-				"up": {"uv": [0, 0, 8, 0], "rotation": 270, "texture": "#missing", "lightLevel": 3},
-				"down": {"uv": [0, 0, 8, 0], "rotation": 90, "texture": "#missing", "lightLevel": 3}
+				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit", "lightLevel": 3}
 			}
 		},
 		{
