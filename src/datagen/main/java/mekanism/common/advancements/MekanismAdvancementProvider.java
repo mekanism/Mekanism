@@ -39,7 +39,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
     //TODO - 1.19: xp rewards for any of these?
 
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
         //TODO - 1.19: Reorganize these to follow their order better
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
@@ -131,7 +131,6 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                     MekanismItems.SCUBA_TANK
               )).save(consumer);
 
-        //TODO - 1.19: Test these using item triggers, and if they don't work properly make our own
         advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
               .display(MekanismItems.GEIGER_COUNTER, FrameType.TASK)
               .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY,
@@ -143,7 +142,6 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                     ItemPredicate.Builder.item().of(MekanismItems.DOSIMETER).build()))
               .save(consumer);
 
-        //TODO - 1.19:Figure out these things
         advancement(MekanismAdvancements.ENRICHER)
               .displayAndCriterion(MekanismBlocks.ENRICHMENT_CHAMBER, FrameType.TASK)
               .save(consumer);
@@ -208,6 +206,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.HEAT_TRANSPORT)
               .displayAndCriterion(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, FrameType.TASK)
               .save(consumer);
+
+        //TODO - 1.19:Figure out these things
     }
 
     private void generateSPS(@Nonnull Consumer<Advancement> consumer) {

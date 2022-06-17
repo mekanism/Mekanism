@@ -2,6 +2,7 @@ package mekanism.generators.common.advancements;
 
 import javax.annotation.Nullable;
 import mekanism.common.advancements.MekanismAdvancement;
+import mekanism.common.advancements.MekanismAdvancements;
 import mekanism.generators.common.MekanismGenerators;
 
 public class GeneratorsAdvancements {
@@ -13,6 +14,8 @@ public class GeneratorsAdvancements {
         return new MekanismAdvancement(parent, MekanismGenerators.rl(name));
     }
 
-    //TODO - 1.19: Various types of generators?
-    //public static final MekanismAdvancement BALLOON = advancement("balloon", null);
+    public static final MekanismAdvancement HEAT_GENERATOR = advancement(MekanismAdvancements.MATERIALS, "heat_generator");
+    public static final MekanismAdvancement SOLAR_GENERATOR = advancement(HEAT_GENERATOR, "solar_generator");
+    public static final MekanismAdvancement WIND_GENERATOR = advancement(HEAT_GENERATOR, "wind_generator");
+    public static final MekanismAdvancement BURN_THE_GAS = advancement(WIND_GENERATOR, "burn_the_gas");
 }

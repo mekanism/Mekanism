@@ -20,9 +20,9 @@ public class MekanismCriteriaTriggers {
 
     private static final List<CriterionTrigger<?>> lazyToRegister = new ArrayList<>();
 
-    //TODO - 1.19: Require parent advancements to be unlocked??
-    //TODO - 1.19: Test all these custom triggers
-    public static final PlayerTrigger LOGGED_IN = lazyRegister("logged_in", PlayerTrigger::new);
+    //TODO: Eventually we may want to require parent advancements to be unlocked as one of the "and" conditions. So that then once the parent unlocks
+    // if they already completed all the other requirements it auto unlocks as well, but then they can't skip things
+    public static final PlayerTrigger LOGGED_IN = lazyRegister("logged_in", PlayerTrigger::new);//TODO - 1.19: Test
     public static final PlayerTrigger TELEPORT = lazyRegister("teleport", PlayerTrigger::new);
     public static final ConfigurationCardTrigger CONFIGURATION_CARD = lazyRegister("configuration_card", ConfigurationCardTrigger::new);
     public static final ChangeRobitSkinTrigger CHANGE_ROBIT_SKIN = lazyRegister("change_robit_skin", ChangeRobitSkinTrigger::new);

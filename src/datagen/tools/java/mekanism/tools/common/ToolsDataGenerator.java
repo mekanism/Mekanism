@@ -28,5 +28,6 @@ public class ToolsDataGenerator {
         //Server side data generators
         gen.addProvider(event.includeServer(), new ToolsTagProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new ToolsRecipeProvider(gen, existingFileHelper));
+        gen .addProvider(event.includeServer(), new ToolsAdvancementProvider(gen, existingFileHelper));
     }
 }

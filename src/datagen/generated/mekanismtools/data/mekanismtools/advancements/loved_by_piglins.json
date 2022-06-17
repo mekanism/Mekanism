@@ -1,0 +1,77 @@
+{
+  "parent": "mekanismtools:alternate_armor",
+  "criteria": {
+    "refined_glowstone_boots": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:refined_glowstone_boots"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "refined_glowstone_chestplate": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:refined_glowstone_chestplate"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "refined_glowstone_helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:refined_glowstone_helmet"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "refined_glowstone_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:refined_glowstone_leggings"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanismtools.loved_by_piglins.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "mekanismtools:refined_glowstone_chestplate",
+      "nbt": "{Damage:0}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanismtools.loved_by_piglins.title"
+    }
+  },
+  "requirements": [
+    [
+      "refined_glowstone_helmet",
+      "refined_glowstone_chestplate",
+      "refined_glowstone_leggings",
+      "refined_glowstone_boots"
+    ]
+  ]
+}

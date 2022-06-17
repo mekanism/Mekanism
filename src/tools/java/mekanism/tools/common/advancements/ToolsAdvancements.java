@@ -15,10 +15,9 @@ public class ToolsAdvancements {
     }
 
     public static final MekanismAdvancement PAXEL = advancement(MekanismAdvancements.ROOT, "paxel");
-    //TODO - 1.19: Evaluate some of the better armor/tools etc as it may not be as good as some vanilla things?
-    // so maybe we want to call it by something else
-    public static final MekanismAdvancement BETTER_ARMOR = advancement(MekanismAdvancements.MATERIALS, "better_armor");
-    public static final MekanismAdvancement BETTER_TOOLS = advancement(MekanismAdvancements.MATERIALS, "better_tools");
-    public static final MekanismAdvancement BETTER_SHIELDS = advancement(MekanismAdvancements.MATERIALS, "better_shields");
-    public static final MekanismAdvancement BETTER_THAN_NETHERITE = advancement(BETTER_ARMOR, "better_than_netherite");
+    public static final MekanismAdvancement ALTERNATE_ARMOR = advancement(MekanismAdvancements.MATERIALS, "alternate_armor");
+    public static final MekanismAdvancement ALTERNATE_TOOLS = advancement(MekanismAdvancements.MATERIALS, "alternate_tools");
+    public static final MekanismAdvancement NOT_ENOUGH_SHIELDING = advancement(MekanismAdvancements.MATERIALS, "not_enough_shielding");
+    public static final MekanismAdvancement BETTER_THAN_NETHERITE = advancement(ALTERNATE_ARMOR, "better_than_netherite");
+    public static final MekanismAdvancement LOVED_BY_PIGLINS = advancement(ALTERNATE_ARMOR, "loved_by_piglins");
 }

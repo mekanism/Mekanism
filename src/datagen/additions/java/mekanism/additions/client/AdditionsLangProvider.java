@@ -3,6 +3,7 @@ package mekanism.additions.client;
 import java.util.Map;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.advancements.AdditionsAdvancements;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -26,6 +27,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         addBlocks();
         addEntities();
         addSubtitles();
+        addAdvancements();
         addMisc();
     }
 
@@ -72,6 +74,13 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
 
     private void addSubtitles() {
         add(AdditionsSounds.POP, "Balloon pops");
+    }
+
+    private void addAdvancements() {
+        add(AdditionsAdvancements.BALLOON, "Reach for the Skies", "Craft any color Balloon");
+        add(AdditionsAdvancements.POP_POP, "Pop Pop", "Pop a balloon");
+        add(AdditionsAdvancements.GLOW_IN_THE_DARK, "Glow in the Dark", "Craft any color Glow Panel");
+        add(AdditionsAdvancements.NOT_THE_BABIES, "Not the Babies", "Kill any baby Mekanism Addition's mob");
     }
 
     private void addMisc() {

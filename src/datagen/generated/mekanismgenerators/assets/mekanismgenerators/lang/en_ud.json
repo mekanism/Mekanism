@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "ǝuǝꞁʎɥʇƎ uɹnq oʇ ɹoʇɐɹǝuǝ⅁ ᵷuᴉuɹnᗺ-sɐ⅁ ɐ ʇɟɐɹƆ",
+  "advancements.mekanismgenerators.burn_the_gas.title": "sɐ⅁ ǝɥʇ uɹnᗺ",
+  "advancements.mekanismgenerators.heat_generator.description": "ɹǝʍod ᵷuᴉʞɐɯ ʇɹɐʇs oʇ ɹoʇɐɹǝuǝ⅁ ʇɐǝH ɐ ʇɟɐɹƆ",
+  "advancements.mekanismgenerators.heat_generator.title": "ɹoʇɐɹǝuǝ⅁ ʇsɹᴉℲ ɹno⅄",
+  "advancements.mekanismgenerators.solar_generator.description": "ʎᵷɹǝuǝ ǝɯᴉʇʎɐp ǝꞁqɐʍǝuǝᴚ",
+  "advancements.mekanismgenerators.solar_generator.title": "unS ǝɥʇ ɟo ɹǝʍoԀ",
+  "advancements.mekanismgenerators.wind_generator.description": "ʎqɹɐǝu puᴉʍ ǝɯos sᴉ ǝɹǝɥʇ ʎꞁꞁnɟǝdoH",
+  "advancements.mekanismgenerators.wind_generator.title": "uᴉdS ʎqɐᗺ uᴉdS",
   "block.mekanismgenerators.advanced_solar_generator": "ɹoʇɐɹǝuǝ⅁ ɹɐꞁoS pǝɔuɐʌpⱯ",
   "block.mekanismgenerators.bio_generator": "ɹoʇɐɹǝuǝ⅁-oᴉᗺ",
   "block.mekanismgenerators.bioethanol": "ꞁouɐɥʇǝoᴉᗺ",

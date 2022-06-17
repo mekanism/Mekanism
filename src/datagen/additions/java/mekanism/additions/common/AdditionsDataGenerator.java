@@ -40,5 +40,6 @@ public class AdditionsDataGenerator {
         gen.addProvider(event.includeServer(), new AdditionsBiomeModifierProvider(gen));
         gen.addProvider(event.includeServer(), new AdditionsStructureModifierProvider(gen));
         gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(gen, existingFileHelper));
+        gen.addProvider(event.includeServer(), new AdditionsAdvancementProvider(gen, existingFileHelper));
     }
 }

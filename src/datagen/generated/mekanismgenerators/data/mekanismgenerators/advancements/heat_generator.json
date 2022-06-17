@@ -1,0 +1,37 @@
+{
+  "parent": "mekanism:materials",
+  "criteria": {
+    "heat_generator": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismgenerators:heat_generator"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mekanismgenerators.heat_generator.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mekanismgenerators:heat_generator"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mekanismgenerators.heat_generator.title"
+    }
+  },
+  "requirements": [
+    [
+      "heat_generator"
+    ]
+  ]
+}

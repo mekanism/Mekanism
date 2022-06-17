@@ -11,6 +11,7 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.advancements.MekanismAdvancements;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.integration.lookingat.LookingAtUtils;
@@ -20,8 +21,6 @@ import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registration.impl.RobitSkinRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
-import mekanism.common.advancements.MekanismAdvancements;
-import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -569,11 +568,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.RADIATION_PREVENTION, "Radiation Prevention", "Protect yourself from radiation with a Hazmat Suit");
         add(MekanismAdvancements.MOVING_BLOCKS, "Moving Blocks", "Use a Cardboard Box to move another block");
         //TODO: Needs to be done/added
-    }
-
-    private void add(MekanismAdvancement advancement, String title, String description) {
-        add(advancement.title(), title);
-        add(advancement.description(), description);
     }
 
     private void addJade() {

@@ -12,6 +12,7 @@ import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -26,22 +27,12 @@ public class ExtendedAdvancementBuilder {
         this.advancement = advancement;
         this.existingFileHelper = existingFileHelper;
         if (this.advancement.parent() != null) {
-            parent(this.advancement.parent().name());
+            internal.parent(this.advancement.parent().name());
         }
     }
 
     public static ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement, ExistingFileHelper existingFileHelper) {
         return new ExtendedAdvancementBuilder(advancement, existingFileHelper);
-    }
-
-    public ExtendedAdvancementBuilder parent(Advancement parent) {
-        internal.parent(parent);
-        return this;
-    }
-
-    public ExtendedAdvancementBuilder parent(ResourceLocation parentId) {
-        internal.parent(parentId);
-        return this;
     }
 
     public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable ResourceLocation background, FrameType frame, boolean showToast, boolean announceToChat,
@@ -121,6 +112,8 @@ public class ExtendedAdvancementBuilder {
     }
 
     public Advancement save(Consumer<Advancement> consumer) {
-        return internal.save(consumer, advancement.name(), existingFileHelper);
+        Advancement built = internal.save(consumer, advancement.name(), existingFileHelper);
+        existingFileHelper.trackGenerated(built.getId(), PackType.SERVER_DATA, ".json", "advancements");
+        return built;
     }
 }
