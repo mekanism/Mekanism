@@ -155,8 +155,6 @@ def setupTasks(SourceSet sourceSet, SourceSet datagenSourceSet) {
                 expand versionProperties
             }
         }
-        //TODO - 1.19: Figure out why this doesn't seem to be replacing the files datagen runs against
-        // It is because of the file reference that the folder pack doesn't then have the updated file
         def packMcMeta = copySpec {
             from(sourceSet.resources) {
                 include "pack.mcmeta"
