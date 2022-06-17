@@ -17,4 +17,5 @@ license="MIT"
     modId="mekanism"
     mandatory=true
     versionRange="[${version}]"
+    ordering="AFTER"
     side="BOTH"
