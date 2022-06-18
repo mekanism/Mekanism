@@ -1,4 +1,4 @@
-package mekanism.patchouli
+package mekanism.patchouli.generators
 
 import mekanism.patchouli.dsl.IGuideEntry
 import java.util.HashSet

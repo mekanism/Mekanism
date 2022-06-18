@@ -5,7 +5,7 @@ import mekanism.generators.client.GeneratorsItemModelProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
-import mekanism.patchouli.GeneratorsBookProvider;
+import mekanism.patchouli.generators.GeneratorsBookProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

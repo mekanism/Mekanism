@@ -1,4 +1,4 @@
-package mekanism.patchouli
+package mekanism.patchouli.generators
 
 import mekanism.patchouli.dsl.IGuideCategory
 import java.util.Locale
