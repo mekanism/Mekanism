@@ -81,9 +81,11 @@ public class TextComponentUtil {
                 current = translate(fluid.getFluidType().getDescriptionId());
             } else if (component instanceof Direction direction) {
                 current = getTranslatedDirection(direction);
+            } else if (component instanceof Boolean bool) {
+                current = getTranslatedBoolean(bool);
             } else {
                 //Fallback to a generic replacement
-                // this handles strings, booleans, numbers, and any type we don't necessarily know about
+                // this handles strings, numbers, and any type we don't necessarily know about
                 current = getString(component.toString());
             }
             if (current == null) {
@@ -107,15 +109,19 @@ public class TextComponentUtil {
         return result;
     }
 
+    private static MutableComponent getTranslatedBoolean(boolean bool) {
+        return (bool ? APILang.TRUE_LOWER : APILang.FALSE_LOWER).translate();
+    }
+
     private static MutableComponent getTranslatedDirection(Direction direction) {
-        return switch (direction) {
-            case DOWN -> APILang.DOWN.translate();
-            case UP -> APILang.UP.translate();
-            case NORTH -> APILang.NORTH.translate();
-            case SOUTH -> APILang.SOUTH.translate();
-            case WEST -> APILang.WEST.translate();
-            case EAST -> APILang.EAST.translate();
-        };
+        return (switch (direction) {
+            case DOWN -> APILang.DOWN;
+            case UP -> APILang.UP;
+            case NORTH -> APILang.NORTH;
+            case SOUTH -> APILang.SOUTH;
+            case WEST -> APILang.WEST;
+            case EAST -> APILang.EAST;
+        }).translate();
     }
 
     /**
@@ -194,6 +200,8 @@ public class TextComponentUtil {
                 current = translate(fluid.getFluidType().getDescriptionId());
             } else if (component instanceof Direction direction) {
                 current = getTranslatedDirection(direction);
+            } else if (component instanceof Boolean bool) {
+                current = getTranslatedBoolean(bool);
             }
             //Formatting
             else if (component instanceof EnumColor color && cachedStyle.getColor() == null) {
@@ -223,7 +231,7 @@ public class TextComponentUtil {
                     current = ((EnumColor) component).getName();
                 } else {
                     //Fallback to a direct replacement just so that we can properly color it
-                    // this handles strings, booleans, numbers, and any type we don't necessarily know about
+                    // this handles strings, numbers, and any type we don't necessarily know about
                     current = getString(component.toString());
                 }
             } else if (component instanceof String) {

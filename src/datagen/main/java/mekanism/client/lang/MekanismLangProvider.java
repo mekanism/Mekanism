@@ -861,6 +861,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SET, "Set:");
         add(MekanismLang.TRUE, "True");
         add(MekanismLang.FALSE, "False");
+        add(APILang.TRUE_LOWER, "true");
+        add(APILang.FALSE_LOWER, "false");
         add(MekanismLang.CLOSE, "Close");
         add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %1$s");
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %1$s");
