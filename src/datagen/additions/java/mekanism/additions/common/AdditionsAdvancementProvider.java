@@ -1,12 +1,12 @@
 package mekanism.additions.common;
 
-import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.BaseAdvancementProvider;
@@ -42,13 +42,13 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(AdditionsAdvancements.NOT_THE_BABIES)
               .display(Items.WITHER_SKELETON_SKULL, FrameType.GOAL)
-              .orCriteria(Map.of(
-                    "creeper", kill(AdditionsEntityTypes.BABY_CREEPER),
-                    "enderman", kill(AdditionsEntityTypes.BABY_ENDERMAN),
-                    "skeleton", kill(AdditionsEntityTypes.BABY_SKELETON),
-                    "stray", kill(AdditionsEntityTypes.BABY_STRAY),
-                    "wither_skeleton", kill(AdditionsEntityTypes.BABY_WITHER_SKELETON)
-              )).save(consumer);
+              .orCriteria(
+                    new RecipeCriterion("creeper", kill(AdditionsEntityTypes.BABY_CREEPER)),
+                    new RecipeCriterion("enderman", kill(AdditionsEntityTypes.BABY_ENDERMAN)),
+                    new RecipeCriterion("skeleton", kill(AdditionsEntityTypes.BABY_SKELETON)),
+                    new RecipeCriterion("stray", kill(AdditionsEntityTypes.BABY_STRAY)),
+                    new RecipeCriterion("wither_skeleton", kill(AdditionsEntityTypes.BABY_WITHER_SKELETON))
+              ).save(consumer);
     }
 
     private KilledTrigger.TriggerInstance kill(IEntityTypeProvider entityTypeProvider) {

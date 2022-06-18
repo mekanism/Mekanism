@@ -1,8 +1,8 @@
 package mekanism.common.advancements;
 
-import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -77,8 +77,10 @@ public class ExtendedAdvancementBuilder {
         return this;
     }
 
-    public ExtendedAdvancementBuilder orCriteria(Map<String, CriterionTriggerInstance> criteria) {
-        internal.requirements(RequirementsStrategy.OR);
+    public ExtendedAdvancementBuilder orCriteria(RecipeCriterion... criteria) {
+        if (criteria.length > 1) {
+            internal.requirements(RequirementsStrategy.OR);
+        }
         return andCriteria(criteria);
     }
 
@@ -89,8 +91,13 @@ public class ExtendedAdvancementBuilder {
         return this;
     }
 
-    public ExtendedAdvancementBuilder andCriteria(Map<String, CriterionTriggerInstance> criteria) {
-        criteria.forEach(internal::addCriterion);
+    public ExtendedAdvancementBuilder andCriteria(RecipeCriterion... criteria) {
+        if (criteria.length == 0) {
+            throw new IllegalArgumentException("No criteria specified");
+        }
+        for (RecipeCriterion criterion : criteria) {
+            internal.addCriterion(criterion.name(), criterion.criterion());
+        }
         return this;
     }
 

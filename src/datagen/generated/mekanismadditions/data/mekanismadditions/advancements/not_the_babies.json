@@ -89,11 +89,11 @@
   },
   "requirements": [
     [
-      "stray",
-      "wither_skeleton",
-      "skeleton",
       "creeper",
-      "enderman"
+      "enderman",
+      "skeleton",
+      "stray",
+      "wither_skeleton"
     ]
   ]
 }

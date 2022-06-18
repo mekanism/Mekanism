@@ -1,9 +1,9 @@
 package mekanism.common.advancements;
 
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.triggers.ChangeRobitSkinTrigger;
 import mekanism.common.advancements.triggers.ConfigurationCardTrigger;
@@ -111,10 +111,10 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               ).save(consumer);
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)
               .display(MekanismItems.CONFIGURATION_CARD, FrameType.TASK)
-              .andCriteria(Map.of(
-                    "copy", ConfigurationCardTrigger.TriggerInstance.copy(),
-                    "paste", ConfigurationCardTrigger.TriggerInstance.paste()
-              )).save(consumer);
+              .andCriteria(
+                    new RecipeCriterion("copy", ConfigurationCardTrigger.TriggerInstance.copy()),
+                    new RecipeCriterion("paste", ConfigurationCardTrigger.TriggerInstance.paste())
+              ).save(consumer);
 
         advancement(MekanismAdvancements.CLEANING_GAUGES)
               .display(MekanismItems.GAUGE_DROPPER, FrameType.GOAL)
