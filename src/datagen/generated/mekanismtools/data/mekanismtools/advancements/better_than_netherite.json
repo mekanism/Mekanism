@@ -1,49 +1,11 @@
 {
   "parent": "mekanismtools:alternate_armor",
   "criteria": {
-    "refined_obsidian_boots": {
+    "armor": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanismtools:refined_obsidian_boots"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_obsidian_chestplate": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_obsidian_chestplate"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_obsidian_helmet": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_obsidian_helmet"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_obsidian_leggings": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_obsidian_leggings"
-            ]
+            "tag": "mekanismtools:advancements/refined_obsidian_armor"
           }
         ]
       },
@@ -65,10 +27,7 @@
   },
   "requirements": [
     [
-      "refined_obsidian_helmet",
-      "refined_obsidian_chestplate",
-      "refined_obsidian_leggings",
-      "refined_obsidian_boots"
+      "armor"
     ]
   ]
 }

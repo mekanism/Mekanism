@@ -13,8 +13,6 @@ import mekanism.common.advancements.BaseAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.KilledTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Items;
@@ -30,7 +28,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
         advancement(AdditionsAdvancements.BALLOON)
               .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), FrameType.TASK)
-              .addCriterion("balloon", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(AdditionsTags.Items.BALLOONS).build()))
+              .addCriterion("balloon", hasItems(AdditionsTags.Items.BALLOONS))
               .save(consumer);
         advancement(AdditionsAdvancements.POP_POP)
               .display(AdditionsItems.BALLOONS.get(EnumColor.RED), null, FrameType.GOAL, true, true, true)
@@ -38,17 +36,20 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(AdditionsAdvancements.GLOW_IN_THE_DARK)
               .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE), FrameType.TASK)
-              .addCriterion("glow_panel", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(AdditionsTags.Items.GLOW_PANELS).build()))
+              .addCriterion("glow_panel", hasItems(AdditionsTags.Items.GLOW_PANELS))
               .save(consumer);
         advancement(AdditionsAdvancements.NOT_THE_BABIES)
               .display(Items.WITHER_SKELETON_SKULL, FrameType.GOAL)
-              .orCriteria(
-                    new RecipeCriterion("creeper", kill(AdditionsEntityTypes.BABY_CREEPER)),
-                    new RecipeCriterion("enderman", kill(AdditionsEntityTypes.BABY_ENDERMAN)),
-                    new RecipeCriterion("skeleton", kill(AdditionsEntityTypes.BABY_SKELETON)),
-                    new RecipeCriterion("stray", kill(AdditionsEntityTypes.BABY_STRAY)),
-                    new RecipeCriterion("wither_skeleton", kill(AdditionsEntityTypes.BABY_WITHER_SKELETON))
+              .orCriteria(killCriterion(AdditionsEntityTypes.BABY_CREEPER),
+                    killCriterion(AdditionsEntityTypes.BABY_ENDERMAN),
+                    killCriterion(AdditionsEntityTypes.BABY_SKELETON),
+                    killCriterion(AdditionsEntityTypes.BABY_STRAY),
+                    killCriterion(AdditionsEntityTypes.BABY_WITHER_SKELETON)
               ).save(consumer);
+    }
+
+    private RecipeCriterion killCriterion(IEntityTypeProvider entityTypeProvider) {
+        return new RecipeCriterion(entityTypeProvider.getName(), kill(entityTypeProvider));
     }
 
     private KilledTrigger.TriggerInstance kill(IEntityTypeProvider entityTypeProvider) {

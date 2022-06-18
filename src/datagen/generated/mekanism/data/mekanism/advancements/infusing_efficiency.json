@@ -1,73 +1,11 @@
 {
   "parent": "mekanism:enricher",
   "criteria": {
-    "enriched_carbon": {
+    "enriched_material": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:enriched_carbon"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "enriched_diamond": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:enriched_diamond"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "enriched_gold": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:enriched_gold"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "enriched_redstone": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:enriched_redstone"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "enriched_refined_obsidian": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:enriched_refined_obsidian"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "enriched_tin": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:enriched_tin"
-            ]
+            "tag": "mekanism:enriched"
           }
         ]
       },
@@ -87,12 +25,7 @@
   },
   "requirements": [
     [
-      "enriched_carbon",
-      "enriched_redstone",
-      "enriched_diamond",
-      "enriched_refined_obsidian",
-      "enriched_gold",
-      "enriched_tin"
+      "enriched_material"
     ]
   ]
 }

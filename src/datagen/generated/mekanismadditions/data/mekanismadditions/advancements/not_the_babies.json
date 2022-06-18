@@ -1,7 +1,7 @@
 {
   "parent": "mekanism:root",
   "criteria": {
-    "creeper": {
+    "baby_creeper": {
       "conditions": {
         "entity": [
           {
@@ -15,7 +15,7 @@
       },
       "trigger": "minecraft:player_killed_entity"
     },
-    "enderman": {
+    "baby_enderman": {
       "conditions": {
         "entity": [
           {
@@ -29,7 +29,7 @@
       },
       "trigger": "minecraft:player_killed_entity"
     },
-    "skeleton": {
+    "baby_skeleton": {
       "conditions": {
         "entity": [
           {
@@ -43,7 +43,7 @@
       },
       "trigger": "minecraft:player_killed_entity"
     },
-    "stray": {
+    "baby_stray": {
       "conditions": {
         "entity": [
           {
@@ -57,7 +57,7 @@
       },
       "trigger": "minecraft:player_killed_entity"
     },
-    "wither_skeleton": {
+    "baby_wither_skeleton": {
       "conditions": {
         "entity": [
           {
@@ -86,11 +86,11 @@
   },
   "requirements": [
     [
-      "creeper",
-      "enderman",
-      "skeleton",
-      "stray",
-      "wither_skeleton"
+      "baby_creeper",
+      "baby_enderman",
+      "baby_skeleton",
+      "baby_stray",
+      "baby_wither_skeleton"
     ]
   ]
 }

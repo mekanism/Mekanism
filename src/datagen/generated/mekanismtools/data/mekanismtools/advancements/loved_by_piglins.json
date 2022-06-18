@@ -1,49 +1,11 @@
 {
   "parent": "mekanismtools:alternate_armor",
   "criteria": {
-    "refined_glowstone_boots": {
+    "armor": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanismtools:refined_glowstone_boots"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_glowstone_chestplate": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_glowstone_chestplate"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_glowstone_helmet": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_glowstone_helmet"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_glowstone_leggings": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_glowstone_leggings"
-            ]
+            "tag": "mekanismtools:advancements/refined_glowstone_armor"
           }
         ]
       },
@@ -65,10 +27,7 @@
   },
   "requirements": [
     [
-      "refined_glowstone_helmet",
-      "refined_glowstone_chestplate",
-      "refined_glowstone_leggings",
-      "refined_glowstone_boots"
+      "armor"
     ]
   ]
 }

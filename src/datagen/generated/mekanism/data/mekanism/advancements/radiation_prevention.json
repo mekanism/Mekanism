@@ -6,21 +6,9 @@
         "items": [
           {
             "items": [
-              "mekanism:hazmat_mask"
-            ]
-          },
-          {
-            "items": [
-              "mekanism:hazmat_gown"
-            ]
-          },
-          {
-            "items": [
-              "mekanism:hazmat_pants"
-            ]
-          },
-          {
-            "items": [
+              "mekanism:hazmat_mask",
+              "mekanism:hazmat_gown",
+              "mekanism:hazmat_pants",
               "mekanism:hazmat_boots"
             ]
           }

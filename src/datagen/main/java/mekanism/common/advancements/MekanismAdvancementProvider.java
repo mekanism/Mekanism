@@ -18,10 +18,10 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.advancements.critereon.SummonedEntityTrigger;
@@ -85,7 +85,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_PREVENTION)
               .display(MekanismItems.HAZMAT_GOWN, FrameType.TASK)
-              .addCriterion("full_set", InventoryChangeTrigger.TriggerInstance.hasItems(
+              .addCriterion("full_set", hasAllItems(
                     MekanismItems.HAZMAT_MASK,
                     MekanismItems.HAZMAT_GOWN,
                     MekanismItems.HAZMAT_PANTS,
@@ -93,7 +93,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               )).save(consumer);
         advancement(MekanismAdvancements.FULL_CANTEEN)
               .display(MekanismItems.CANTEEN, null, FrameType.TASK, true, true, true)
-              .addCriterion("full_canteen", InventoryChangeTrigger.TriggerInstance.hasItems(FullCanteenItemPredicate.INSTANCE))
+              .addCriterion("full_canteen", hasItems(FullCanteenItemPredicate.INSTANCE))
               .save(consumer);
 
         generateSPS(consumer);
@@ -126,20 +126,18 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.BREATHING_ASSISTANCE)
               .display(MekanismItems.SCUBA_MASK, FrameType.GOAL)
-              .addCriterion("scuba_gear", InventoryChangeTrigger.TriggerInstance.hasItems(
+              .addCriterion("scuba_gear", hasAllItems(
                     MekanismItems.SCUBA_MASK,
                     MekanismItems.SCUBA_TANK
               )).save(consumer);
 
         advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
               .display(MekanismItems.GEIGER_COUNTER, FrameType.TASK)
-              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY,
-                    ItemPredicate.Builder.item().of(MekanismItems.GEIGER_COUNTER).build()))
+              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY, predicate(MekanismItems.GEIGER_COUNTER)))
               .save(consumer);
         advancement(MekanismAdvancements.PERSONAL_RADIATION)
               .display(MekanismItems.DOSIMETER, FrameType.TASK)
-              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY,
-                    ItemPredicate.Builder.item().of(MekanismItems.DOSIMETER).build()))
+              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY, predicate(MekanismItems.DOSIMETER)))
               .save(consumer);
 
         advancement(MekanismAdvancements.ENRICHER)
@@ -147,13 +145,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.INFUSING_EFFICIENCY)
               .display(MekanismItems.ENRICHED_REDSTONE, FrameType.TASK)
-              .orCriteria(MekanismItems.ENRICHED_CARBON,
-                    MekanismItems.ENRICHED_REDSTONE,
-                    MekanismItems.ENRICHED_DIAMOND,
-                    MekanismItems.ENRICHED_OBSIDIAN,
-                    MekanismItems.ENRICHED_GOLD,
-                    MekanismItems.ENRICHED_TIN
-              ).save(consumer);
+              .addCriterion("enriched_material", hasItems(MekanismTags.Items.ENRICHED))
+              .save(consumer);
         advancement(MekanismAdvancements.YELLOW_CAKE)
               .displayAndCriterion(MekanismItems.YELLOW_CAKE_URANIUM, FrameType.GOAL)
               .save(consumer);
@@ -279,8 +272,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .displayAndCriterion(MekanismItems.TELEPORTATION_CORE, FrameType.TASK)
               .save(consumer);
         advancement(MekanismAdvancements.TELEPORTER)
-              .display(MekanismBlocks.TELEPORTER, FrameType.TASK)
-              .addCriterion(MekanismBlocks.TELEPORTER)
+              .displayAndCriterion(MekanismBlocks.TELEPORTER, FrameType.TASK)
               .addCriterion("teleport", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.TELEPORT.getId(), EntityPredicate.Composite.ANY))
               .save(consumer);
         advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
@@ -344,7 +336,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.MEKASUIT)
               .display(MekanismItems.MEKASUIT_BODYARMOR, FrameType.GOAL)
-              .addCriterion("full_set", InventoryChangeTrigger.TriggerInstance.hasItems(
+              .addCriterion("full_set", hasAllItems(
                     MekanismItems.MEKASUIT_HELMET,
                     MekanismItems.MEKASUIT_BODYARMOR,
                     MekanismItems.MEKASUIT_PANTS,
@@ -354,7 +346,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         //Require having all of them maxed at once
         advancement(MekanismAdvancements.UPGRADED_MEKASUIT)
               .display(MekanismItems.MEKASUIT_BODYARMOR, null, FrameType.CHALLENGE, true, true, true)
-              .addCriterion("maxed_gear", InventoryChangeTrigger.TriggerInstance.hasItems(Stream.of(
+              .addCriterion("maxed_gear", hasItems(Stream.of(
                                 MekanismItems.MEKASUIT_HELMET,
                                 MekanismItems.MEKASUIT_BODYARMOR,
                                 MekanismItems.MEKASUIT_PANTS,

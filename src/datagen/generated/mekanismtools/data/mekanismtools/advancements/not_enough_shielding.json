@@ -1,73 +1,11 @@
 {
   "parent": "mekanism:materials",
   "criteria": {
-    "bronze_shield": {
+    "shields": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanismtools:bronze_shield"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "lapis_lazuli_shield": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:lapis_lazuli_shield"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "osmium_shield": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:osmium_shield"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_glowstone_shield": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_glowstone_shield"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "refined_obsidian_shield": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:refined_obsidian_shield"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "steel_shield": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanismtools:steel_shield"
-            ]
+            "tag": "mekanismtools:advancements/shields"
           }
         ]
       },
@@ -88,12 +26,7 @@
   },
   "requirements": [
     [
-      "bronze_shield",
-      "lapis_lazuli_shield",
-      "osmium_shield",
-      "refined_glowstone_shield",
-      "refined_obsidian_shield",
-      "steel_shield"
+      "shields"
     ]
   ]
 }

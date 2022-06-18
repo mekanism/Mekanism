@@ -1,4 +1,4 @@
-// 1.19	2022-06-08T16:04:20.7848607	Tags: mekanismtools
+// 1.19	2022-06-18T11:47:15.8045059	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/forge/tags/blocks/mineable/paxel.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_bronze_tool.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_lapis_lazuli_tool.json
@@ -6,5 +6,11 @@
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_refined_glowstone_tool.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_refined_obsidian_tool.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_steel_tool.json
+2418d94809a6f473078953f1d8596c5276dc098c data/mekanismtools/tags/items/advancements/alternate_armor.json
+95ce2d941316e82f205d38c2f3ab4dc1b8c14f27 data/mekanismtools/tags/items/advancements/alternate_tools.json
+42b75d266dc237446a26e97d26b7632ac88246f0 data/mekanismtools/tags/items/advancements/any_paxel.json
+4b2c0ee85fec7ddd4d5fd69eb7b305bd1d38c389 data/mekanismtools/tags/items/advancements/refined_glowstone_armor.json
+c4a35f6685a78e8929ad72d6b06f67582b6f911b data/mekanismtools/tags/items/advancements/refined_obsidian_armor.json
+6e3b9e4ae09c24327f7264b4e22d031964f76244 data/mekanismtools/tags/items/advancements/shields.json
 e803e7c6cf8511602cd6292cf9a1d6c3bf0fa63c data/minecraft/tags/items/cluster_max_harvestables.json
 963dabde7436e2cfac6afb1312f24e0eea0b43d4 data/minecraft/tags/items/piglin_loved.json
