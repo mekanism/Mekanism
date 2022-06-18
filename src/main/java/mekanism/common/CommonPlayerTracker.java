@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -40,6 +41,7 @@ public class CommonPlayerTracker {
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
             player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
             //player.sendMessage(ALPHA_WARNING, Util.NIL_UUID);
+            MekanismCriteriaTriggers.LOGGED_IN.trigger(serverPlayer);
         }
     }
 

@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:steel_ingot",
+  "criteria": {
+    "steel_casing": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:steel_casing"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.steel_casing.description"
+    },
+    "icon": {
+      "item": "mekanism:steel_casing"
+    },
+    "title": {
+      "translate": "advancements.mekanism.steel_casing.title"
+    }
+  }
+}

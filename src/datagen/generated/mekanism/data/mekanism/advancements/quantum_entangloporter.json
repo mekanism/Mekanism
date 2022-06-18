@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:teleportation_core",
+  "criteria": {
+    "quantum_entangloporter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:quantum_entangloporter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.quantum_entangloporter.description"
+    },
+    "icon": {
+      "item": "mekanism:quantum_entangloporter"
+    },
+    "title": {
+      "translate": "advancements.mekanism.quantum_entangloporter.title"
+    }
+  }
+}

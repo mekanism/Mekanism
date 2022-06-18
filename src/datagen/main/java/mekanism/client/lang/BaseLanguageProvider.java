@@ -8,6 +8,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
+import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.registration.impl.FluidRegistryObject;
@@ -66,6 +67,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void addFluid(FluidRegistryObject<?, ?, ?, ?, ?> fluidRO, String name) {
         add(fluidRO.getBlock(), name);
         add(fluidRO.getBucket(), name + " Bucket");
+    }
+
+    protected void add(MekanismAdvancement advancement, String title, String description) {
+        add(advancement.title(), title);
+        add(advancement.description(), description);
     }
 
     @Override

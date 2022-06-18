@@ -1,0 +1,44 @@
+{
+  "parent": "mekanism:steel_casing",
+  "criteria": {
+    "seismic_reader": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:seismic_reader"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "seismic_vibrator": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:seismic_vibrator"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "view_vibrations": {
+      "conditions": {},
+      "trigger": "mekanism:view_vibrations"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.seismic_vibrations.description"
+    },
+    "icon": {
+      "item": "mekanism:seismic_vibrator"
+    },
+    "title": {
+      "translate": "advancements.mekanism.seismic_vibrations.title"
+    }
+  }
+}

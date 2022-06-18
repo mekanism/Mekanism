@@ -1,0 +1,23 @@
+{
+  "parent": "mekanism:radiation_poisoning",
+  "criteria": {
+    "death": {
+      "conditions": {
+        "killed": true
+      },
+      "trigger": "mekanism:radiation_damage"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.radiation_poisoning_death.description"
+    },
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:player_head"
+    },
+    "title": {
+      "translate": "advancements.mekanism.radiation_poisoning_death.title"
+    }
+  }
+}

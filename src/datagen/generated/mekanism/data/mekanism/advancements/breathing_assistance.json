@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:chemical_tank",
+  "criteria": {
+    "scuba_gear": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:scuba_mask"
+            ]
+          },
+          {
+            "items": [
+              "mekanism:scuba_tank"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.breathing_assistance.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:scuba_mask"
+    },
+    "title": {
+      "translate": "advancements.mekanism.breathing_assistance.title"
+    }
+  }
+}

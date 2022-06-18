@@ -1,5 +1,6 @@
 package mekanism.tools.common;
 
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
@@ -46,11 +47,14 @@ public class ToolsTagProvider extends BaseTagProvider {
         getBlockBuilder(ToolsTags.Blocks.NEEDS_REFINED_GLOWSTONE_TOOL);
         getBlockBuilder(ToolsTags.Blocks.NEEDS_REFINED_OBSIDIAN_TOOL);
         getBlockBuilder(ToolsTags.Blocks.NEEDS_STEEL_TOOL);
-        ForgeRegistryTagBuilder<Item> clusterBuilder = getItemBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES);
+        createTag(getItemBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES), item -> item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel);
+    }
+
+    private void createTag(ForgeRegistryTagBuilder<Item> tag, Predicate<Item> matcher) {
         for (IItemProvider itemProvider : ToolsItems.ITEMS.getAllItems()) {
             Item item = itemProvider.asItem();
-            if (item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel) {
-                clusterBuilder.add(item);
+            if (matcher.test(item)) {
+                tag.add(item);
             }
         }
     }

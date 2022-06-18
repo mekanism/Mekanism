@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Craft a Gas-Burning Generator to burn Ethylene",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Burn the Gas",
+  "advancements.mekanismgenerators.heat_generator.description": "Craft a Heat Generator to start making power",
+  "advancements.mekanismgenerators.heat_generator.title": "Your First Generator",
+  "advancements.mekanismgenerators.solar_generator.description": "Renewable daytime energy",
+  "advancements.mekanismgenerators.solar_generator.title": "Power of the Sun",
+  "advancements.mekanismgenerators.wind_generator.description": "Hopefully there is some wind nearby",
+  "advancements.mekanismgenerators.wind_generator.title": "Spin Baby Spin",
   "block.mekanismgenerators.advanced_solar_generator": "Advanced Solar Generator",
   "block.mekanismgenerators.bio_generator": "Bio-Generator",
   "block.mekanismgenerators.bioethanol": "Bioethanol",

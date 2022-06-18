@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:steel_casing",
+  "criteria": {
+    "formulaic_assemblicator": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:formulaic_assemblicator"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.automated_crafting.description"
+    },
+    "icon": {
+      "item": "mekanism:formulaic_assemblicator"
+    },
+    "title": {
+      "translate": "advancements.mekanism.automated_crafting.title"
+    }
+  }
+}

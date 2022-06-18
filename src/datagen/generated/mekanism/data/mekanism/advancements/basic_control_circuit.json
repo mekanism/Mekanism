@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:metallurgic_infuser",
+  "criteria": {
+    "basic_control_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_control_circuit"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.basic_control_circuit.description"
+    },
+    "icon": {
+      "item": "mekanism:basic_control_circuit"
+    },
+    "title": {
+      "translate": "advancements.mekanism.basic_control_circuit.title"
+    }
+  }
+}

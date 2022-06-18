@@ -3,6 +3,7 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
@@ -15,6 +16,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -63,6 +65,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 //TODO: Do we need to call onBlockPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
                 //data.blockState.getBlock().onBlockPlacedBy(world, pos, data.blockState, player, new ItemStack(data.block));
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
+                MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.trigger((ServerPlayer) player);
             }
         }
         return InteractionResult.sidedSuccess(world.isClientSide);

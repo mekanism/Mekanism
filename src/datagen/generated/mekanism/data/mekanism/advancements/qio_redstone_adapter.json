@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:qio_drive_array",
+  "criteria": {
+    "qio_redstone_adapter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:qio_redstone_adapter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.qio_redstone_adapter.description"
+    },
+    "icon": {
+      "item": "mekanism:qio_redstone_adapter"
+    },
+    "title": {
+      "translate": "advancements.mekanism.qio_redstone_adapter.title"
+    }
+  }
+}

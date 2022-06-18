@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:elite_control_circuit",
+  "criteria": {
+    "solar_neutron_activator": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:solar_neutron_activator"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.sna.description"
+    },
+    "icon": {
+      "item": "mekanism:solar_neutron_activator"
+    },
+    "title": {
+      "translate": "advancements.mekanism.sna.title"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "parent": "mekanismgenerators:heat_generator",
+  "criteria": {
+    "wind_generator": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismgenerators:wind_generator"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanismgenerators.wind_generator.description"
+    },
+    "icon": {
+      "item": "mekanismgenerators:wind_generator"
+    },
+    "title": {
+      "translate": "advancements.mekanismgenerators.wind_generator.title"
+    }
+  }
+}

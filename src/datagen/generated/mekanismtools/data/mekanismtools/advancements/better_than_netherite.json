@@ -1,0 +1,33 @@
+{
+  "parent": "mekanismtools:alternate_armor",
+  "criteria": {
+    "armor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:refined_obsidian_helmet",
+              "mekanismtools:refined_obsidian_chestplate",
+              "mekanismtools:refined_obsidian_leggings",
+              "mekanismtools:refined_obsidian_boots"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanismtools.better_than_netherite.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanismtools:refined_obsidian_chestplate",
+      "nbt": "{Damage:0}"
+    },
+    "title": {
+      "translate": "advancements.mekanismtools.better_than_netherite.title"
+    }
+  }
+}

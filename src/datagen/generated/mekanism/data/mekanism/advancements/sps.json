@@ -1,0 +1,40 @@
+{
+  "parent": "mekanism:plutonium",
+  "criteria": {
+    "sps_casing": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:sps_casing"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "sps_port": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:sps_port"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.sps.description"
+    },
+    "icon": {
+      "item": "mekanism:sps_casing"
+    },
+    "title": {
+      "translate": "advancements.mekanism.sps.title"
+    }
+  }
+}

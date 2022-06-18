@@ -29,6 +29,7 @@ import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
@@ -69,6 +70,8 @@ import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
+import mekanism.common.item.predicate.FullCanteenItemPredicate;
+import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
@@ -106,6 +109,7 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
@@ -391,6 +395,8 @@ public class Mekanism {
             MekanismTags.init();
             //Collect annotation scan data
             MekAnnotationScanner.collectScanData();
+            //Register advancement criteria
+            MekanismCriteriaTriggers.init();
             //Add chunk loading callbacks
             ForgeChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
             //Register dispenser behaviors
@@ -400,6 +406,9 @@ public class Mekanism {
             registerDispenseBehavior(new ModuleDispenseBehavior(), MekanismItems.MEKA_TOOL);
             registerDispenseBehavior(new MekaSuitDispenseBehavior(), MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS,
                   MekanismItems.MEKASUIT_BOOTS);
+            //Register custom item predicates
+            ItemPredicate.register(FullCanteenItemPredicate.ID, json -> FullCanteenItemPredicate.INSTANCE);
+            ItemPredicate.register(MaxedModuleContainerItemPredicate.ID, MaxedModuleContainerItemPredicate::fromJson);
         });
 
         //Register player tracker

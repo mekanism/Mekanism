@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:atomic_alloy",
+  "criteria": {
+    "teleportation_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:teleportation_core"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.teleportation_core.description"
+    },
+    "icon": {
+      "item": "mekanism:teleportation_core"
+    },
+    "title": {
+      "translate": "advancements.mekanism.teleportation_core.title"
+    }
+  }
+}

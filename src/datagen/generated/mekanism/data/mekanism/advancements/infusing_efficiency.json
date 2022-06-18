@@ -1,0 +1,26 @@
+{
+  "parent": "mekanism:enricher",
+  "criteria": {
+    "enriched_material": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:enriched"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.infusing_efficiency.description"
+    },
+    "icon": {
+      "item": "mekanism:enriched_redstone"
+    },
+    "title": {
+      "translate": "advancements.mekanism.infusing_efficiency.title"
+    }
+  }
+}

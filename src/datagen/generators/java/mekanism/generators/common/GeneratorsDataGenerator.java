@@ -35,5 +35,6 @@ public class GeneratorsDataGenerator {
         gen.addProvider(event.includeServer(), new GeneratorsTagProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new GeneratorsLootProvider(gen));
         gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(gen, existingFileHelper));
+        gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(gen, existingFileHelper));
     }
 }

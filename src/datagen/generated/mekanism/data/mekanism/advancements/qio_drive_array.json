@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:polonium",
+  "criteria": {
+    "qio_drive_array": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:qio_drive_array"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.qio_drive_array.description"
+    },
+    "icon": {
+      "item": "mekanism:qio_drive_array"
+    },
+    "title": {
+      "translate": "advancements.mekanism.qio_drive_array.title"
+    }
+  }
+}

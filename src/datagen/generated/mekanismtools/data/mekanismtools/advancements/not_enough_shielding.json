@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:materials",
+  "criteria": {
+    "shields": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:bronze_shield",
+              "mekanismtools:lapis_lazuli_shield",
+              "mekanismtools:osmium_shield",
+              "mekanismtools:refined_glowstone_shield",
+              "mekanismtools:refined_obsidian_shield",
+              "mekanismtools:steel_shield"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanismtools.not_enough_shielding.description"
+    },
+    "icon": {
+      "item": "mekanismtools:osmium_shield",
+      "nbt": "{Damage:0}"
+    },
+    "title": {
+      "translate": "advancements.mekanismtools.not_enough_shielding.title"
+    }
+  }
+}

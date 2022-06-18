@@ -1,0 +1,32 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "installer": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_tier_installer",
+              "mekanism:advanced_tier_installer",
+              "mekanism:elite_tier_installer",
+              "mekanism:ultimate_tier_installer"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.installer.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:basic_tier_installer"
+    },
+    "title": {
+      "translate": "advancements.mekanism.installer.title"
+    }
+  }
+}

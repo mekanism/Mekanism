@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:robit",
+  "criteria": {
+    "digital_miner": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:digital_miner"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.digital_miner.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:digital_miner"
+    },
+    "title": {
+      "translate": "advancements.mekanism.digital_miner.title"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:qio_drive_array",
+  "criteria": {
+    "qio_dashboard": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:qio_dashboard"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.qio_dashboard.description"
+    },
+    "icon": {
+      "item": "mekanism:qio_dashboard"
+    },
+    "title": {
+      "translate": "advancements.mekanism.qio_dashboard.title"
+    }
+  }
+}

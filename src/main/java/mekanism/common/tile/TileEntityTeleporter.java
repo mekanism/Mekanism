@@ -21,6 +21,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -280,6 +281,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
                     if (teleportedEntity instanceof ServerPlayer player) {
                         alignPlayer(player, teleporterTargetPos, teleporter);
+                        MekanismCriteriaTriggers.TELEPORT.trigger(player);
                     }
                     for (Coord4D coords : activeCoords) {
                         Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);

@@ -1,0 +1,22 @@
+{
+  "parent": "mekanism:robit",
+  "criteria": {
+    "change_skin": {
+      "conditions": {},
+      "trigger": "mekanism:change_robit_skin"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.robit_aesthetics.description"
+    },
+    "hidden": true,
+    "icon": {
+      "item": "mekanism:robit",
+      "nbt": "{mekData:{skin:\"mekanism:trans\"}}"
+    },
+    "title": {
+      "translate": "advancements.mekanism.robit_aesthetics.title"
+    }
+  }
+}

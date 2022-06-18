@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:basic_qio_drive",
+  "criteria": {
+    "qio_drive_hyper_dense": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:qio_drive_hyper_dense"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.advanced_qio_drive.description"
+    },
+    "icon": {
+      "item": "mekanism:qio_drive_hyper_dense"
+    },
+    "title": {
+      "translate": "advancements.mekanism.advanced_qio_drive.title"
+    }
+  }
+}

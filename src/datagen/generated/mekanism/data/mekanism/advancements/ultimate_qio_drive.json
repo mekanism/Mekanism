@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:elite_qio_drive",
+  "criteria": {
+    "qio_drive_supermassive": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:qio_drive_supermassive"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.ultimate_qio_drive.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "item": "mekanism:qio_drive_supermassive"
+    },
+    "title": {
+      "translate": "advancements.mekanism.ultimate_qio_drive.title"
+    }
+  }
+}

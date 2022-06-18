@@ -1,0 +1,43 @@
+{
+  "parent": "mekanism:waste_removal",
+  "criteria": {
+    "full_set": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:hazmat_mask"
+            ]
+          },
+          {
+            "items": [
+              "mekanism:hazmat_gown"
+            ]
+          },
+          {
+            "items": [
+              "mekanism:hazmat_pants"
+            ]
+          },
+          {
+            "items": [
+              "mekanism:hazmat_boots"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.radiation_prevention.description"
+    },
+    "icon": {
+      "item": "mekanism:hazmat_gown"
+    },
+    "title": {
+      "translate": "advancements.mekanism.radiation_prevention.title"
+    }
+  }
+}

@@ -42,6 +42,7 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -722,9 +723,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public boolean setSkin(@Nonnull IRobitSkinProvider skinProvider, @Nullable Player player) {
         Objects.requireNonNull(skinProvider, "Robit skin cannot be null.");
         RobitSkin skin = skinProvider.getSkin();
+        if (getSkin() == skin) {
+            //Don't do anything if the robit already has that skin selected
+            return true;
+        }
         if (player != null) {
             if (!MekanismAPI.getSecurityUtils().canAccess(player, this) || !skin.isUnlocked(player)) {
                 return false;
+            }
+            if (player instanceof ServerPlayer serverPlayer) {
+                MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.trigger(serverPlayer, skin);
             }
         }
         entityData.set(SKIN, skin);

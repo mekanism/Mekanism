@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:qio_dashboard",
+  "criteria": {
+    "portable_qio_dashboard": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:portable_qio_dashboard"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.portable_qio_dashboard.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:portable_qio_dashboard"
+    },
+    "title": {
+      "translate": "advancements.mekanism.portable_qio_dashboard.title"
+    }
+  }
+}

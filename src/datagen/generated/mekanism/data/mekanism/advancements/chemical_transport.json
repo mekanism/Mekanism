@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:steel_ingot",
+  "criteria": {
+    "basic_pressurized_tube": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_pressurized_tube"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.chemical_transport.description"
+    },
+    "icon": {
+      "item": "mekanism:basic_pressurized_tube"
+    },
+    "title": {
+      "translate": "advancements.mekanism.chemical_transport.title"
+    }
+  }
+}

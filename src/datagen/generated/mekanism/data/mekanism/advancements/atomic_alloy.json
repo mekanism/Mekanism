@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:reinforced_alloy",
+  "criteria": {
+    "alloy_atomic": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:alloy_atomic"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.atomic_alloy.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:alloy_atomic"
+    },
+    "title": {
+      "translate": "advancements.mekanism.atomic_alloy.title"
+    }
+  }
+}
