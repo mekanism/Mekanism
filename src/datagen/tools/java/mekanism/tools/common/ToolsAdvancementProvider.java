@@ -1,13 +1,24 @@
 package mekanism.tools.common;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import mekanism.tools.common.advancements.ToolsAdvancements;
+import mekanism.tools.common.item.ItemMekanismArmor;
+import mekanism.tools.common.item.ItemMekanismAxe;
+import mekanism.tools.common.item.ItemMekanismHoe;
+import mekanism.tools.common.item.ItemMekanismPaxel;
+import mekanism.tools.common.item.ItemMekanismPickaxe;
+import mekanism.tools.common.item.ItemMekanismShield;
+import mekanism.tools.common.item.ItemMekanismShovel;
+import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ToolsAdvancementProvider extends BaseAdvancementProvider {
@@ -20,28 +31,41 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
     protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
         advancement(ToolsAdvancements.PAXEL)
               .display(ToolsItems.DIAMOND_PAXEL, FrameType.TASK)
-              .addCriterion("any_paxel", hasItems(ToolsTags.Items.ADVANCEMENTS_ANY_PAXEL))
+              .orCriteria("any_paxel", getItems(item -> item instanceof ItemMekanismPaxel))
               .save(consumer);
         advancement(ToolsAdvancements.ALTERNATE_ARMOR)
               .display(ToolsItems.OSMIUM_CHESTPLATE, FrameType.TASK)
-              .addCriterion("armor", hasItems(ToolsTags.Items.ADVANCEMENTS_ALTERNATE_ARMOR))
+              .orCriteria("armor", getItems(item -> item instanceof ItemMekanismArmor))
               .save(consumer);
         advancement(ToolsAdvancements.ALTERNATE_TOOLS)
               .display(ToolsItems.OSMIUM_PICKAXE, FrameType.TASK)
-              .addCriterion("tools", hasItems(ToolsTags.Items.ADVANCEMENTS_ALTERNATE_TOOLS))
+              .orCriteria("tools", getItems(item -> item instanceof ItemMekanismAxe || item instanceof ItemMekanismHoe || item instanceof ItemMekanismPickaxe ||
+                                                    item instanceof ItemMekanismShovel || item instanceof ItemMekanismSword))
               .save(consumer);
         advancement(ToolsAdvancements.NOT_ENOUGH_SHIELDING)
               .display(ToolsItems.OSMIUM_SHIELD, FrameType.TASK)
-              .addCriterion("shields", hasItems(ToolsTags.Items.ADVANCEMENTS_SHIELDS))
+              .orCriteria("shields", getItems(item -> item instanceof ItemMekanismShield))
               .save(consumer);
 
         advancement(ToolsAdvancements.BETTER_THAN_NETHERITE)
               .display(ToolsItems.REFINED_OBSIDIAN_CHESTPLATE, FrameType.GOAL)
-              .addCriterion("armor", hasItems(ToolsTags.Items.ADVANCEMENTS_REFINED_OBSIDIAN))
-              .save(consumer);
+              .orCriteria("armor", ToolsItems.REFINED_OBSIDIAN_HELMET,
+                    ToolsItems.REFINED_OBSIDIAN_CHESTPLATE,
+                    ToolsItems.REFINED_OBSIDIAN_LEGGINGS,
+                    ToolsItems.REFINED_OBSIDIAN_BOOTS
+              ).save(consumer);
         advancement(ToolsAdvancements.LOVED_BY_PIGLINS)
               .display(ToolsItems.REFINED_GLOWSTONE_CHESTPLATE, FrameType.GOAL)
-              .addCriterion("armor", hasItems(ToolsTags.Items.ADVANCEMENTS_REFINED_GLOWSTONE))
-              .save(consumer);
+              .orCriteria("armor", ToolsItems.REFINED_GLOWSTONE_HELMET,
+                    ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
+                    ToolsItems.REFINED_GLOWSTONE_LEGGINGS,
+                    ToolsItems.REFINED_GLOWSTONE_BOOTS
+              ).save(consumer);
+    }
+
+    private ItemLike[] getItems(Predicate<Item> matcher) {
+        return ToolsItems.ITEMS.getAllItems().stream()
+              .filter(itemProvider -> matcher.test(itemProvider.asItem()))
+              .toArray(ItemLike[]::new);
     }
 }

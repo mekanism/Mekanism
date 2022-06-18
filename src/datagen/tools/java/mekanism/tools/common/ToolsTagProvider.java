@@ -5,17 +5,8 @@ import javax.annotation.Nullable;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.ForgeRegistryTagBuilder;
-import mekanism.tools.common.ToolsTags.Items;
-import mekanism.tools.common.config.MekanismToolsConfig;
-import mekanism.tools.common.item.ItemMekanismArmor;
-import mekanism.tools.common.item.ItemMekanismAxe;
-import mekanism.tools.common.item.ItemMekanismHoe;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismPickaxe;
-import mekanism.tools.common.item.ItemMekanismShield;
-import mekanism.tools.common.item.ItemMekanismShovel;
-import mekanism.tools.common.item.ItemMekanismSword;
-import mekanism.tools.common.item.ItemRefinedGlowstoneArmor;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
@@ -31,7 +22,6 @@ public class ToolsTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags() {
-        addAdvancementRelated();
         addToTag(ItemTags.PIGLIN_LOVED,
               ToolsItems.GOLD_PAXEL,
               ToolsItems.REFINED_GLOWSTONE_PICKAXE,
@@ -58,23 +48,6 @@ public class ToolsTagProvider extends BaseTagProvider {
         getBlockBuilder(ToolsTags.Blocks.NEEDS_REFINED_OBSIDIAN_TOOL);
         getBlockBuilder(ToolsTags.Blocks.NEEDS_STEEL_TOOL);
         createTag(getItemBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES), item -> item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel);
-    }
-
-    private void addAdvancementRelated() {
-        createTag(getItemBuilder(ToolsTags.Items.ADVANCEMENTS_ANY_PAXEL), item -> item instanceof ItemMekanismPaxel);
-        createTag(getItemBuilder(ToolsTags.Items.ADVANCEMENTS_ALTERNATE_TOOLS), item -> item instanceof ItemMekanismAxe || item instanceof ItemMekanismHoe ||
-                                                                                        item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismShovel ||
-                                                                                        item instanceof ItemMekanismSword);
-        createTag(getItemBuilder(ToolsTags.Items.ADVANCEMENTS_SHIELDS), item -> item instanceof ItemMekanismShield);
-        createTag(getItemBuilder(ToolsTags.Items.ADVANCEMENTS_REFINED_GLOWSTONE), item -> item instanceof ItemRefinedGlowstoneArmor);
-        createTag(getItemBuilder(ToolsTags.Items.ADVANCEMENTS_REFINED_OBSIDIAN), item -> item instanceof ItemMekanismArmor armor &&
-                                                                                         armor.getMaterial() == MekanismToolsConfig.tools.refinedObsidian);
-        ForgeRegistryTagBuilder<Item> alternateArmorBuilder = getItemBuilder(Items.ADVANCEMENTS_ALTERNATE_ARMOR).add(
-              ToolsTags.Items.ADVANCEMENTS_REFINED_GLOWSTONE,
-              ToolsTags.Items.ADVANCEMENTS_REFINED_OBSIDIAN
-        );
-        createTag(alternateArmorBuilder, item -> item instanceof ItemMekanismArmor armor && armor.getMaterial() != MekanismToolsConfig.tools.refinedObsidian &&
-              !(item instanceof ItemRefinedGlowstoneArmor));
     }
 
     private void createTag(ForgeRegistryTagBuilder<Item> tag, Predicate<Item> matcher) {
