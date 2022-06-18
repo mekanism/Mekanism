@@ -28,10 +28,5 @@
     "title": {
       "translate": "advancements.mekanismadditions.pop_pop.title"
     }
-  },
-  "requirements": [
-    [
-      "pop"
-    ]
-  ]
+  }
 }

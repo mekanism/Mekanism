@@ -25,10 +25,5 @@
     "title": {
       "translate": "advancements.mekanism.atomic_alloy.title"
     }
-  },
-  "requirements": [
-    [
-      "alloy_atomic"
-    ]
-  ]
+  }
 }

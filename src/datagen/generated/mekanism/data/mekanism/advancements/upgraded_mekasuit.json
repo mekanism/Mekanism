@@ -41,10 +41,5 @@
     "title": {
       "translate": "advancements.mekanism.upgraded_mekasuit.title"
     }
-  },
-  "requirements": [
-    [
-      "maxed_gear"
-    ]
-  ]
+  }
 }

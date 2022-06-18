@@ -25,10 +25,5 @@
     "title": {
       "translate": "advancements.mekanism.portable_qio_dashboard.title"
     }
-  },
-  "requirements": [
-    [
-      "portable_qio_dashboard"
-    ]
-  ]
+  }
 }

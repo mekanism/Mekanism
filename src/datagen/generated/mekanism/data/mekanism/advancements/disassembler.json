@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanism.disassembler.title"
     }
-  },
-  "requirements": [
-    [
-      "atomic_disassembler"
-    ]
-  ]
+  }
 }

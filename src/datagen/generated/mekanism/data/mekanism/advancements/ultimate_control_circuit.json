@@ -25,10 +25,5 @@
     "title": {
       "translate": "advancements.mekanism.ultimate_control_circuit.title"
     }
-  },
-  "requirements": [
-    [
-      "ultimate_control_circuit"
-    ]
-  ]
+  }
 }

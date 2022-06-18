@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanism.reinforced_alloy.title"
     }
-  },
-  "requirements": [
-    [
-      "alloy_reinforced"
-    ]
-  ]
+  }
 }

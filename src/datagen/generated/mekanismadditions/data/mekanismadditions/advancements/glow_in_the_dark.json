@@ -22,10 +22,5 @@
     "title": {
       "translate": "advancements.mekanismadditions.glow_in_the_dark.title"
     }
-  },
-  "requirements": [
-    [
-      "glow_panel"
-    ]
-  ]
+  }
 }

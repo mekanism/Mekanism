@@ -25,10 +25,5 @@
     "title": {
       "translate": "advancements.mekanism.digital_miner.title"
     }
-  },
-  "requirements": [
-    [
-      "digital_miner"
-    ]
-  ]
+  }
 }

@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanism.fluid_transport.title"
     }
-  },
-  "requirements": [
-    [
-      "basic_mechanical_pipe"
-    ]
-  ]
+  }
 }

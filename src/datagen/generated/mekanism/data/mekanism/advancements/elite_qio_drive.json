@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanism.elite_qio_drive.title"
     }
-  },
-  "requirements": [
-    [
-      "qio_drive_time_dilating"
-    ]
-  ]
+  }
 }

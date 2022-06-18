@@ -25,7 +25,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
+    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
         advancement(AdditionsAdvancements.BALLOON)
               .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), FrameType.TASK)
               .addCriterion("balloon", hasItems(AdditionsTags.Items.BALLOONS))

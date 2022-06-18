@@ -28,10 +28,5 @@
     "title": {
       "translate": "advancements.mekanism.materials.title"
     }
-  },
-  "requirements": [
-    [
-      "material"
-    ]
-  ]
+  }
 }

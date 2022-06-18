@@ -27,10 +27,5 @@
     "title": {
       "translate": "advancements.mekanism.installer.title"
     }
-  },
-  "requirements": [
-    [
-      "installer"
-    ]
-  ]
+  }
 }

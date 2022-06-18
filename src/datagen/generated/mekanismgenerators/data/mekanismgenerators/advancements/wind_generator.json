@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanismgenerators.wind_generator.title"
     }
-  },
-  "requirements": [
-    [
-      "wind_generator"
-    ]
-  ]
+  }
 }

@@ -23,10 +23,5 @@
     "title": {
       "translate": "advancements.mekanism.full_canteen.title"
     }
-  },
-  "requirements": [
-    [
-      "full_canteen"
-    ]
-  ]
+  }
 }

@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanismgenerators.heat_generator.title"
     }
-  },
-  "requirements": [
-    [
-      "heat_generator"
-    ]
-  ]
+  }
 }

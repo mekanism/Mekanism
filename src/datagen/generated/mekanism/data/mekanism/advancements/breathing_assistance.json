@@ -30,10 +30,5 @@
     "title": {
       "translate": "advancements.mekanism.breathing_assistance.title"
     }
-  },
-  "requirements": [
-    [
-      "scuba_gear"
-    ]
-  ]
+  }
 }

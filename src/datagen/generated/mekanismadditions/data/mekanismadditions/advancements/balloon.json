@@ -22,10 +22,5 @@
     "title": {
       "translate": "advancements.mekanismadditions.balloon.title"
     }
-  },
-  "requirements": [
-    [
-      "balloon"
-    ]
-  ]
+  }
 }

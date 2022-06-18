@@ -24,13 +24,5 @@
     "title": {
       "translate": "advancements.mekanism.configuration_copying.title"
     }
-  },
-  "requirements": [
-    [
-      "copy"
-    ],
-    [
-      "paste"
-    ]
-  ]
+  }
 }

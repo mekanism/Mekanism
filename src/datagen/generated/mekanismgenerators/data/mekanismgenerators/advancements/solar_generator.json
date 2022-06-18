@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanismgenerators.solar_generator.title"
     }
-  },
-  "requirements": [
-    [
-      "solar_generator"
-    ]
-  ]
+  }
 }

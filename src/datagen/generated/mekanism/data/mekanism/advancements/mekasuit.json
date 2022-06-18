@@ -45,10 +45,5 @@
     "title": {
       "translate": "advancements.mekanism.mekasuit.title"
     }
-  },
-  "requirements": [
-    [
-      "full_set"
-    ]
-  ]
+  }
 }

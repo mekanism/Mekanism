@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanism.basic_qio_drive.title"
     }
-  },
-  "requirements": [
-    [
-      "qio_drive_base"
-    ]
-  ]
+  }
 }

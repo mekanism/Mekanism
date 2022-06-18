@@ -38,7 +38,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
     //TODO - 1.19: xp rewards for any of these?
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
+    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
               .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), EntityPredicate.Composite.ANY))

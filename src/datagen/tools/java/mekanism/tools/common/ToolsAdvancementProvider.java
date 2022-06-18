@@ -28,7 +28,7 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
+    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
         advancement(ToolsAdvancements.PAXEL)
               .display(ToolsItems.DIAMOND_PAXEL, FrameType.TASK)
               .orCriteria("any_paxel", getItems(item -> item instanceof ItemMekanismPaxel))

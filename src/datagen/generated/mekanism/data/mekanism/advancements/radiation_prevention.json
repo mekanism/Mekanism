@@ -39,10 +39,5 @@
     "title": {
       "translate": "advancements.mekanism.radiation_prevention.title"
     }
-  },
-  "requirements": [
-    [
-      "full_set"
-    ]
-  ]
+  }
 }

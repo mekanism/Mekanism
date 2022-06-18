@@ -22,10 +22,5 @@
     "title": {
       "translate": "advancements.mekanism.personal_radiation.title"
     }
-  },
-  "requirements": [
-    [
-      "use_dosimeter"
-    ]
-  ]
+  }
 }

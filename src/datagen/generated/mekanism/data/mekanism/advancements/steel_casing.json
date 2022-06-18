@@ -24,10 +24,5 @@
     "title": {
       "translate": "advancements.mekanism.steel_casing.title"
     }
-  },
-  "requirements": [
-    [
-      "steel_casing"
-    ]
-  ]
+  }
 }

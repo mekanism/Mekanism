@@ -48,10 +48,5 @@
     "title": {
       "translate": "advancements.mekanismtools.alternate_armor.title"
     }
-  },
-  "requirements": [
-    [
-      "armor"
-    ]
-  ]
+  }
 }

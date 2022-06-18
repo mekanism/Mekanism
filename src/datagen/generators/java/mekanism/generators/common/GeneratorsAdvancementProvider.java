@@ -17,7 +17,7 @@ public class GeneratorsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer, @Nonnull ExistingFileHelper existingFileHelper) {
+    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
         advancement(GeneratorsAdvancements.HEAT_GENERATOR)
               .displayAndCriterion(GeneratorsBlocks.HEAT_GENERATOR, FrameType.TASK)
               .save(consumer);

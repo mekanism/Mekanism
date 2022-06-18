@@ -29,10 +29,5 @@
     "title": {
       "translate": "advancements.mekanismtools.loved_by_piglins.title"
     }
-  },
-  "requirements": [
-    [
-      "armor"
-    ]
-  ]
+  }
 }
