@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:steel_casing",
+  "criteria": {
+    "electric_pump": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:electric_pump"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.pump.description"
+    },
+    "icon": {
+      "item": "mekanism:electric_pump"
+    },
+    "title": {
+      "translate": "advancements.mekanism.pump.title"
+    }
+  }
+}

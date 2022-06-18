@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:purification_chamber",
+  "criteria": {
+    "chemical_injection_chamber": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:chemical_injection_chamber"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.injection_chamber.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:chemical_injection_chamber"
+    },
+    "title": {
+      "translate": "advancements.mekanism.injection_chamber.title"
+    }
+  }
+}

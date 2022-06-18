@@ -480,14 +480,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.MATERIALS, "First Steps", "Acquire some natural Mekanism resources");
 
         add(MekanismAdvancements.CLEANING_GAUGES, "Cleaning Gauges", "Use a Gauge Dropper on any Gauge in a Mekanism GUI");
-        add(MekanismAdvancements.FULL_CANTEEN, "Tasty Paste", "Fully fill a Canteen with Nutritional Paste");
-        add(MekanismAdvancements.MOVING_BLOCKS, "Moving Blocks", "Use a Cardboard Box to move another block");
 
-        add(MekanismAdvancements.METALLURGIC_INFUSER, "A Metallur-what now?", "Craft a Metallurgic Infuser");
+        add(MekanismAdvancements.METALLURGIC_INFUSER, "A Metallur-what?", "Craft a Metallurgic Infuser");
         add(MekanismAdvancements.STEEL_INGOT, "Industrial Revolution", "Infuse Iron with Carbon and repeat");
         add(MekanismAdvancements.STEEL_CASING, "The Perfect Foundation", "Used in even the most advanced machines");
 
-        add(MekanismAdvancements.INFUSED_ALLOY, "Your First Alloy", "Infuse Iron with Redstone");
+        add(MekanismAdvancements.INFUSED_ALLOY, "The Alloy That Started it All", "Infuse Iron with Redstone");
         add(MekanismAdvancements.REINFORCED_ALLOY, "Make it Stronger", "Diamonds make everything better!");
         add(MekanismAdvancements.ATOMIC_ALLOY, "Top Tier Alloy", "Create one of the strongest alloys in existence");
 
@@ -496,11 +494,19 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.ELITE_CONTROL_CIRCUIT, "Make it Precise", "Create a circuit with even more pathways");
         add(MekanismAdvancements.ULTIMATE_CONTROL_CIRCUIT, "Where's my Supercomputer?", "Can this thing run Minecraft yet?");
 
+        add(MekanismAdvancements.ALLOY_UPGRADING, "In Place Transmitter Upgrades", "Upgrade transmitters in world using the next tier of alloy");
+        add(MekanismAdvancements.LASER, "Shooting Lasers", "Craft a Laser");
+        add(MekanismAdvancements.AUTO_COLLECTION, "A Real Short Trip", "Tractor beams pull in the drops of blocks they break");
+
+        add(MekanismAdvancements.ALARM, "Making Noise", "Alarms are loud, especially the industrial kind");
         add(MekanismAdvancements.INSTALLER, "In Place Upgrades", "Craft any tier of Installer to upgrade your factories in place");
+        add(MekanismAdvancements.FACTORY, "The Factory Must Grow!", "Make any kind of factory");
         add(MekanismAdvancements.CONFIGURATION_COPYING, "Ctrl+C, Ctrl+V", "Use a configuration card to copy the configuration of one machine to another");
         add(MekanismAdvancements.RUNNING_FREE, "Running Free", "Protect yourself from falling with a pair of Free Runners");
         add(MekanismAdvancements.PLAYING_WITH_FIRE, "Playing With Fire", "Be responsible and don't burn down any forests");
         add(MekanismAdvancements.MACHINE_SECURITY, "Personal Security", "Create a Security Desk to more easily secure your machines");
+        add(MekanismAdvancements.SOLAR_NEUTRON_ACTIVATOR, "Does Not Use Neutrinos", "Craft a Solar Neutron Activator");
+        add(MekanismAdvancements.STABILIZING_CHUNKS, "Stabilizing Chunks", "Craft a Dimensional Stabilizer and an Anchor Upgrade");
 
         add(MekanismAdvancements.PERSONAL_STORAGE, "Mine All Mine", "Create a personal storage item to securely store items");
         add(MekanismAdvancements.SIMPLE_MASS_STORAGE, "Basic Mass Storage", "Create a bin to store large amounts of one item");
@@ -517,6 +523,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.ENVIRONMENTAL_RADIATION, "Think of the Environment", "Use a Geiger Counter to see how badly your experiments irradiated the environment");
         add(MekanismAdvancements.PERSONAL_RADIATION, "That Wasn't Smart", "Use a Dosimeter to see how badly you irradiated yourself");
         add(MekanismAdvancements.RADIATION_PREVENTION, "Radiation Prevention", "Protect yourself from radiation with a Hazmat Suit");
+        add(MekanismAdvancements.RADIATION_POISONING, "Can Really Taste the Radiation", "Take damage from radiation poisoning");
+        add(MekanismAdvancements.RADIATION_POISONING_DEATH, "Not Great, Not Terrible", "Die to radiation poisoning");
 
         add(MekanismAdvancements.PLUTONIUM, "Plutonium, Not Polonium", "Refine your Nuclear Waste into Plutonium");
         add(MekanismAdvancements.SPS, "Supercritical Phase Shifting?", "This thing doesn't seem safe");
@@ -539,7 +547,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.TELEPORTATION_CORE, "The Basis of Teleportation", "Construct the core of all teleportation technology");
         add(MekanismAdvancements.QUANTUM_ENTANGLOPORTER, "Quantum Entanglement", "Instant resource transportation");
         add(MekanismAdvancements.TELEPORTER, "Thinking With Portals", "Create and travel through a Teleporter");
-        add(MekanismAdvancements.PORTABLE_TELEPORTER, "Who Needs the Portal", "Craft a Portable Teleporter");
+        add(MekanismAdvancements.PORTABLE_TELEPORTER, "Beam Me Up Scotty", "Craft a Portable Teleporter");
 
         add(MekanismAdvancements.ROBIT, "A New Best Friend!", "Craft and place a Robit on a Chargepad");
         add(MekanismAdvancements.ROBIT_AESTHETICS, "A New Coat of Paint", "Equip a Robit with a new coat of paint");
@@ -549,6 +557,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismAdvancements.DISASSEMBLER, "Needs More Speeeeed!", "Craft an Atomic Disassembler");
         add(MekanismAdvancements.MEKASUIT, "Mekanist", "Protect yourself with a complete MekaSuit and a Meka-Tool");
+        add(MekanismAdvancements.MODIFICATION_STATION, "Making Modifications", "Craft a Modification Station to upgrade your MekaSuit and Meka-Tool");
         add(MekanismAdvancements.UPGRADED_MEKASUIT, "True Dedication", "Install the max number of all modules in the MekaSuit and Meka-Tool");
 
         add(MekanismAdvancements.FLUID_TRANSPORT, "Transporting Fluids", "Craft a Mechanical Pipe");
@@ -560,11 +569,28 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.DIVERSION_ITEM_TRANSPORT, "Network Splitter", "Precise side control");
         add(MekanismAdvancements.SORTER, "Advanced Item Sorting", "Filter which items you are sending where");
 
-        add(MekanismAdvancements.AUTOMATED_CRAFTING, "A Smart Crafting Table", "Craft a machine to do the crafting for you");
+        add(MekanismAdvancements.ENERGY_CUBE, "Save it for Later", "Build an Energy Cube to store your excess power in");
 
-        add(MekanismAdvancements.ENRICHER, "Enrich All the Things!", "Make an Enrichment Chamber to increase material efficiency");
+        add(MekanismAdvancements.AUTOMATED_CRAFTING, "A Smart Crafting Table", "Craft a machine to do the crafting for you");
+        add(MekanismAdvancements.SEISMIC_VIBRATIONS, "Just Vibing", "Craft a Seismic Vibrator and Seismic Reader, and then view the world beneath you");
+        add(MekanismAdvancements.PAINTING_MACHINE, "Lets Paint!", "Craft a Painting Machine to change the color of items");
+
+        add(MekanismAdvancements.ENRICHER, "Getting More From Less", "Make an Enrichment Chamber to increase material efficiency");
         add(MekanismAdvancements.INFUSING_EFFICIENCY, "Infusing Efficiency", "Enrich your infusion inputs to increase their efficiency");
         add(MekanismAdvancements.YELLOW_CAKE, "Look Don't Eat", "Create some cake that must not be eaten");
+
+        add(MekanismAdvancements.PURIFICATION_CHAMBER, "Continue Purifying", "Craft a Purification Chamber and make even more from less!");
+        add(MekanismAdvancements.INJECTION_CHAMBER, "Injecting... 1, 2, 3, 4", "Inject Chemicals, get more resources");
+        add(MekanismAdvancements.CHEMICAL_CRYSTALLIZER, "The Most Bang for Your Buck", "Craft a Chemical Crystallizer, Dissolution Chamber and Washer");
+
+        add(MekanismAdvancements.SAWMILL, "Cut Cut Cut", "Craft a Precision Sawmill");
+        add(MekanismAdvancements.MOVING_BLOCKS, "Moving Blocks", "Use a Cardboard Box to move another block");
+
+        add(MekanismAdvancements.PUMP, "Picking Up Fluids", "Craft an Electric Pump in order to automatically 'suck up' fluids");
+        add(MekanismAdvancements.PLENISHER, "Now in Reverse", "Craft a Fluidic Plenisher to place the fluids back!");
+
+        add(MekanismAdvancements.LIQUIFIER, "Liquefy Then Drink", "Craft a Nutritional Liquifier to liquefy your food");
+        add(MekanismAdvancements.FULL_CANTEEN, "Tasty Paste", "Fully fill a Canteen with Nutritional Paste");
     }
 
     private void addJade() {

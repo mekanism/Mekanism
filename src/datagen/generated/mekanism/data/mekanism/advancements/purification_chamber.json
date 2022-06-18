@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:enricher",
+  "criteria": {
+    "purification_chamber": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:purification_chamber"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.purification_chamber.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:purification_chamber"
+    },
+    "title": {
+      "translate": "advancements.mekanism.purification_chamber.title"
+    }
+  }
+}

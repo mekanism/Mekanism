@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
@@ -57,6 +58,9 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             //Hurt randomly
             if (rand.nextBoolean()) {
                 entity.hurt(MekanismDamageSource.RADIATION, strength);
+                if (entity instanceof ServerPlayer player) {
+                    MekanismCriteriaTriggers.RADIATION_DAMAGE.trigger(player);
+                }
             }
         }
 

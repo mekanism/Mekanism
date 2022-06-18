@@ -1,0 +1,22 @@
+{
+  "parent": "mekanism:personal_radiation",
+  "criteria": {
+    "poisoned": {
+      "conditions": {
+        "killed": false
+      },
+      "trigger": "mekanism:radiation_damage"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.radiation_poisoning.description"
+    },
+    "icon": {
+      "item": "mekanism:radioactive_waste_barrel"
+    },
+    "title": {
+      "translate": "advancements.mekanism.radiation_poisoning.title"
+    }
+  }
+}

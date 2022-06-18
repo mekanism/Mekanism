@@ -10,6 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
@@ -63,7 +64,9 @@ public class ItemSeismicReader extends ItemEnergized {
                 }
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
             }
-            MekanismContainerTypes.SEISMIC_READER.tryOpenGui((ServerPlayer) player, hand, stack);
+            ServerPlayer serverPlayer = (ServerPlayer) player;
+            MekanismCriteriaTriggers.VIEW_VIBRATIONS.trigger(serverPlayer);
+            MekanismContainerTypes.SEISMIC_READER.tryOpenGui(serverPlayer, hand, stack);
         }
         return InteractionResultHolder.consume(stack);
     }

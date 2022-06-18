@@ -21,6 +21,7 @@
     "description": {
       "translate": "advancements.mekanism.installer.description"
     },
+    "frame": "goal",
     "icon": {
       "item": "mekanism:basic_tier_installer"
     },

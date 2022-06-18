@@ -16,8 +16,6 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement MATERIALS = advancement(ROOT, "materials");
 
     public static final MekanismAdvancement CLEANING_GAUGES = advancement(MATERIALS, "cleaning_gauges");
-    public static final MekanismAdvancement FULL_CANTEEN = advancement(MATERIALS, "full_canteen");
-    public static final MekanismAdvancement MOVING_BLOCKS = advancement(MATERIALS, "moving_blocks");
 
     public static final MekanismAdvancement METALLURGIC_INFUSER = advancement(MATERIALS, "metallurgic_infuser");
     public static final MekanismAdvancement STEEL_INGOT = advancement(METALLURGIC_INFUSER, "steel_ingot");
@@ -32,11 +30,19 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement ELITE_CONTROL_CIRCUIT = advancement(REINFORCED_ALLOY, "elite_control_circuit");
     public static final MekanismAdvancement ULTIMATE_CONTROL_CIRCUIT = advancement(ATOMIC_ALLOY, "ultimate_control_circuit");
 
+    public static final MekanismAdvancement ALLOY_UPGRADING = advancement(INFUSED_ALLOY, "alloy_upgrading");
+    public static final MekanismAdvancement LASER = advancement(REINFORCED_ALLOY, "laser");
+    public static final MekanismAdvancement AUTO_COLLECTION = advancement(LASER, "auto_collection");
+
+    public static final MekanismAdvancement ALARM = advancement(BASIC_CONTROL_CIRCUIT, "alarm");
     public static final MekanismAdvancement INSTALLER = advancement(BASIC_CONTROL_CIRCUIT, "installer");
+    public static final MekanismAdvancement FACTORY = advancement(BASIC_CONTROL_CIRCUIT, "factory");
     public static final MekanismAdvancement CONFIGURATION_COPYING = advancement(BASIC_CONTROL_CIRCUIT, "configuration_copying");
     public static final MekanismAdvancement RUNNING_FREE = advancement(BASIC_CONTROL_CIRCUIT, "running_free");
     public static final MekanismAdvancement PLAYING_WITH_FIRE = advancement(ADVANCED_CONTROL_CIRCUIT, "playing_with_fire");
     public static final MekanismAdvancement MACHINE_SECURITY = advancement(ELITE_CONTROL_CIRCUIT, "machine_security");
+    public static final MekanismAdvancement SOLAR_NEUTRON_ACTIVATOR = advancement(ELITE_CONTROL_CIRCUIT, "sna");
+    public static final MekanismAdvancement STABILIZING_CHUNKS = advancement(ULTIMATE_CONTROL_CIRCUIT, "stabilizing_chunks");
 
     public static final MekanismAdvancement PERSONAL_STORAGE = advancement(BASIC_CONTROL_CIRCUIT, "personal_storage");
     public static final MekanismAdvancement SIMPLE_MASS_STORAGE = advancement(BASIC_CONTROL_CIRCUIT, "simple_mass_storage");
@@ -53,6 +59,8 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement ENVIRONMENTAL_RADIATION = advancement(WASTE_REMOVAL, "environmental_radiation");
     public static final MekanismAdvancement PERSONAL_RADIATION = advancement(ENVIRONMENTAL_RADIATION, "personal_radiation");
     public static final MekanismAdvancement RADIATION_PREVENTION = advancement(WASTE_REMOVAL, "radiation_prevention");
+    public static final MekanismAdvancement RADIATION_POISONING = advancement(PERSONAL_RADIATION, "radiation_poisoning");
+    public static final MekanismAdvancement RADIATION_POISONING_DEATH = advancement(RADIATION_POISONING, "radiation_poisoning_death");
 
     public static final MekanismAdvancement PLUTONIUM = advancement(WASTE_REMOVAL, "plutonium");
     public static final MekanismAdvancement SPS = advancement(PLUTONIUM, "sps");
@@ -85,7 +93,8 @@ public class MekanismAdvancements {
 
     public static final MekanismAdvancement DISASSEMBLER = advancement(ATOMIC_ALLOY, "disassembler");
     public static final MekanismAdvancement MEKASUIT = advancement(DISASSEMBLER, "mekasuit");
-    public static final MekanismAdvancement UPGRADED_MEKASUIT = advancement(MEKASUIT, "upgraded_mekasuit");
+    public static final MekanismAdvancement MODIFICATION_STATION = advancement(DISASSEMBLER, "modification_station");
+    public static final MekanismAdvancement UPGRADED_MEKASUIT = advancement(MODIFICATION_STATION, "upgraded_mekasuit");
 
     public static final MekanismAdvancement FLUID_TRANSPORT = advancement(STEEL_INGOT, "fluid_transport");
     public static final MekanismAdvancement CHEMICAL_TRANSPORT = advancement(STEEL_INGOT, "chemical_transport");
@@ -96,11 +105,26 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement DIVERSION_ITEM_TRANSPORT = advancement(ITEM_TRANSPORT, "diversion_item_transport");
     public static final MekanismAdvancement SORTER = advancement(ITEM_TRANSPORT, "logistical_sorter");
 
+    public static final MekanismAdvancement ENERGY_CUBE = advancement(STEEL_CASING, "energy_cube");
+
     public static final MekanismAdvancement AUTOMATED_CRAFTING = advancement(STEEL_CASING, "automated_crafting");
+    public static final MekanismAdvancement SEISMIC_VIBRATIONS = advancement(STEEL_CASING, "seismic_vibrations");
+    public static final MekanismAdvancement PAINTING_MACHINE = advancement(ADVANCED_CONTROL_CIRCUIT, "painting_machine");
 
     public static final MekanismAdvancement ENRICHER = advancement(STEEL_CASING, "enricher");
     public static final MekanismAdvancement INFUSING_EFFICIENCY = advancement(ENRICHER, "infusing_efficiency");
     public static final MekanismAdvancement YELLOW_CAKE = advancement(ENRICHER, "yellow_cake");
 
-    //TODO - 1.19: Add advancements for various machines? Not sure where is a good breaking point
+    public static final MekanismAdvancement PURIFICATION_CHAMBER = advancement(ENRICHER, "purification_chamber");
+    public static final MekanismAdvancement INJECTION_CHAMBER = advancement(PURIFICATION_CHAMBER, "injection_chamber");
+    public static final MekanismAdvancement CHEMICAL_CRYSTALLIZER = advancement(INJECTION_CHAMBER, "chemical_crystallizer");
+
+    public static final MekanismAdvancement SAWMILL = advancement(STEEL_CASING, "sawmill");
+    public static final MekanismAdvancement MOVING_BLOCKS = advancement(SAWMILL, "moving_blocks");
+
+    public static final MekanismAdvancement PUMP = advancement(STEEL_CASING, "pump");
+    public static final MekanismAdvancement PLENISHER = advancement(PUMP, "plenisher");
+
+    public static final MekanismAdvancement LIQUIFIER = advancement(STEEL_CASING, "liquifier");
+    public static final MekanismAdvancement FULL_CANTEEN = advancement(LIQUIFIER, "full_canteen");
 }

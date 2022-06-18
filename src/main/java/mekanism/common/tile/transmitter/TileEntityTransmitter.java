@@ -11,6 +11,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
@@ -38,6 +39,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -345,6 +347,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 transmitterNetwork.invalidate(null);
                 if (!player.isCreative()) {
                     stack.shrink(1);
+                }
+                if (player instanceof ServerPlayer serverPlayer) {
+                    MekanismCriteriaTriggers.ALLOY_UPGRADE.trigger(serverPlayer);
                 }
             }
         }

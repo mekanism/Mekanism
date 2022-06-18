@@ -5,8 +5,11 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.Mekanism;
 import net.minecraft.advancements.Advancement;
@@ -97,5 +100,11 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         return hasItems(Arrays.stream(tags)
               .map(tag -> ItemPredicate.Builder.item().of(tag).build())
               .toArray(ItemPredicate[]::new));
+    }
+
+    protected static ItemLike[] getItems(List<? extends IItemProvider> items, Predicate<Item> matcher) {
+        return items.stream()
+              .filter(itemProvider -> matcher.test(itemProvider.asItem()))
+              .toArray(ItemLike[]::new);
     }
 }

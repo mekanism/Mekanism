@@ -55,5 +55,6 @@ public class JsonConstants {
     //Advancement Triggers
     public static final String ACTION = "action";
     public static final String COPY = "copy";
+    public static final String KILLED = "killed";
     public static final String SKIN = "skin";
 }

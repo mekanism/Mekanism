@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:mekasuit",
+  "parent": "mekanism:modification_station",
   "criteria": {
     "maxed_gear": {
       "conditions": {

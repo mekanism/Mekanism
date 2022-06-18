@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:advanced_control_circuit",
+  "criteria": {
+    "painting_machine": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:painting_machine"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.painting_machine.description"
+    },
+    "icon": {
+      "item": "mekanism:painting_machine"
+    },
+    "title": {
+      "translate": "advancements.mekanism.painting_machine.title"
+    }
+  }
+}

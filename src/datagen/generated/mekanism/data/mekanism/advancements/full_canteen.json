@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:materials",
+  "parent": "mekanism:liquifier",
   "criteria": {
     "full_canteen": {
       "conditions": {
@@ -16,6 +16,7 @@
     "description": {
       "translate": "advancements.mekanism.full_canteen.description"
     },
+    "frame": "goal",
     "hidden": true,
     "icon": {
       "item": "mekanism:canteen"

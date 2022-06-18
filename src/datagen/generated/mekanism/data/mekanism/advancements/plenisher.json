@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:pump",
+  "criteria": {
+    "fluidic_plenisher": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:fluidic_plenisher"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.plenisher.description"
+    },
+    "icon": {
+      "item": "mekanism:fluidic_plenisher"
+    },
+    "title": {
+      "translate": "advancements.mekanism.plenisher.title"
+    }
+  }
+}

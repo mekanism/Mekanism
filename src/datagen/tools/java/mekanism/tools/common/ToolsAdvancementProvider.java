@@ -64,8 +64,6 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     private ItemLike[] getItems(Predicate<Item> matcher) {
-        return ToolsItems.ITEMS.getAllItems().stream()
-              .filter(itemProvider -> matcher.test(itemProvider.asItem()))
-              .toArray(ItemLike[]::new);
+        return getItems(ToolsItems.ITEMS.getAllItems(), matcher);
     }
 }
