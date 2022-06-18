@@ -1,60 +1,16 @@
 {
   "parent": "mekanism:root",
   "criteria": {
-    "fluorite_gem": {
+    "material": {
       "conditions": {
         "items": [
           {
             "items": [
+              "mekanism:ingot_osmium",
+              "mekanism:ingot_tin",
+              "mekanism:ingot_lead",
+              "mekanism:ingot_uranium",
               "mekanism:fluorite_gem"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "ingot_lead": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_lead"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "ingot_osmium": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_osmium"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "ingot_tin": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_tin"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "ingot_uranium": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:ingot_uranium"
             ]
           }
         ]
@@ -75,11 +31,7 @@
   },
   "requirements": [
     [
-      "ingot_osmium",
-      "ingot_tin",
-      "ingot_lead",
-      "ingot_uranium",
-      "fluorite_gem"
+      "material"
     ]
   ]
 }

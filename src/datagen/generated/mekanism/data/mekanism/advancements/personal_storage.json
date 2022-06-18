@@ -1,23 +1,12 @@
 {
   "parent": "mekanism:basic_control_circuit",
   "criteria": {
-    "personal_barrel": {
+    "storage": {
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:personal_barrel"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "personal_chest": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
+              "mekanism:personal_barrel",
               "mekanism:personal_chest"
             ]
           }
@@ -39,8 +28,7 @@
   },
   "requirements": [
     [
-      "personal_barrel",
-      "personal_chest"
+      "storage"
     ]
   ]
 }

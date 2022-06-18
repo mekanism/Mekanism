@@ -45,7 +45,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), FrameType.TASK)
-              .orCriteria(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
+              .orCriteria("material", MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM),
@@ -100,7 +100,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(MekanismAdvancements.INSTALLER)
               .display(MekanismItems.BASIC_TIER_INSTALLER, FrameType.TASK)
-              .orCriteria(MekanismItems.BASIC_TIER_INSTALLER,
+              .orCriteria("installer", MekanismItems.BASIC_TIER_INSTALLER,
                     MekanismItems.ADVANCED_TIER_INSTALLER,
                     MekanismItems.ELITE_TIER_INSTALLER,
                     MekanismItems.ULTIMATE_TIER_INSTALLER
@@ -124,7 +124,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(MekanismAdvancements.PERSONAL_STORAGE)
               .display(MekanismBlocks.PERSONAL_CHEST, FrameType.TASK)
-              .orCriteria(MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST)
+              .orCriteria("storage", MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST)
               .save(consumer);
         advancement(MekanismAdvancements.SIMPLE_MASS_STORAGE)
               .displayAndCriterion(MekanismBlocks.BASIC_BIN, FrameType.TASK)

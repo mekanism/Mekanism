@@ -40,12 +40,12 @@ public abstract class BaseAdvancementProvider extends AdvancementProvider {
         return InventoryChangeTrigger.TriggerInstance.hasItems(predicates);
     }
 
-    protected static ItemPredicate predicate(ItemLike... items) {
-        return ItemPredicate.Builder.item().of(items).build();
+    public static InventoryChangeTrigger.TriggerInstance hasAllItems(ItemLike... items) {
+        return InventoryChangeTrigger.TriggerInstance.hasItems(items);
     }
 
-    protected static CriterionTriggerInstance hasAllItems(ItemLike... items) {
-        return hasItems(predicate(items));
+    protected static ItemPredicate predicate(ItemLike... items) {
+        return ItemPredicate.Builder.item().of(items).build();
     }
 
     @SafeVarargs

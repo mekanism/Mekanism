@@ -1,47 +1,14 @@
 {
   "parent": "mekanism:basic_control_circuit",
   "criteria": {
-    "advanced_tier_installer": {
+    "installer": {
       "conditions": {
         "items": [
           {
             "items": [
-              "mekanism:advanced_tier_installer"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "basic_tier_installer": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:basic_tier_installer"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "elite_tier_installer": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "mekanism:elite_tier_installer"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "ultimate_tier_installer": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
+              "mekanism:basic_tier_installer",
+              "mekanism:advanced_tier_installer",
+              "mekanism:elite_tier_installer",
               "mekanism:ultimate_tier_installer"
             ]
           }
@@ -63,10 +30,7 @@
   },
   "requirements": [
     [
-      "basic_tier_installer",
-      "advanced_tier_installer",
-      "elite_tier_installer",
-      "ultimate_tier_installer"
+      "installer"
     ]
   ]
 }

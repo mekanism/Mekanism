@@ -6,7 +6,11 @@
         "items": [
           {
             "items": [
-              "mekanism:scuba_mask",
+              "mekanism:scuba_mask"
+            ]
+          },
+          {
+            "items": [
               "mekanism:scuba_tank"
             ]
           }

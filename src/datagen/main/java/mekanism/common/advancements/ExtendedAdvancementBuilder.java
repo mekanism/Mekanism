@@ -11,6 +11,7 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ItemStack;
@@ -66,14 +67,11 @@ public class ExtendedAdvancementBuilder {
         return runInternal(builder -> builder.rewards(rewards));
     }
 
-    public ExtendedAdvancementBuilder orCriteria(ItemLike... items) {
-        if (items.length > 1) {
-            internal.requirements(RequirementsStrategy.OR);
+    public ExtendedAdvancementBuilder orCriteria(String key, ItemLike... items) {
+        if (items.length == 0) {
+            throw new IllegalArgumentException("No items specified");
         }
-        for (ItemLike item : items) {
-            addCriterion(item);
-        }
-        return this;
+        return addCriterion(key, InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items).build()));
     }
 
     public ExtendedAdvancementBuilder orCriteria(RecipeCriterion... criteria) {
