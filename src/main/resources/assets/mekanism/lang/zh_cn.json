@@ -313,7 +313,7 @@
   "condensentrator.mekanism.toggle": "切换操作",
   "config.jade.plugin_mekanism.data_provider": "玉（Jade）模组 方块数据提供选项",
   "config.jade.plugin_mekanism.energy": "能量",
-  "config.jade.plugin_mekanism.entity_data_provider": "玉（Jade）模组 生物数据提供选项",
+  "config.jade.plugin_mekanism.entity_data_provider": "玉（Jade）模组 实体数据提供选项",
   "config.jade.plugin_mekanism.fluid": "流体",
   "config.jade.plugin_mekanism.gas": "气体",
   "config.jade.plugin_mekanism.infuse_type": "灌注类型",
