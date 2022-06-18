@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.logistical_sorter.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:logistical_sorter"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.logistical_sorter.title"
     }

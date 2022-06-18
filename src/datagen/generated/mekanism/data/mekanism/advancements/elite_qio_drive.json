@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.elite_qio_drive.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:qio_drive_time_dilating"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.elite_qio_drive.title"
     }

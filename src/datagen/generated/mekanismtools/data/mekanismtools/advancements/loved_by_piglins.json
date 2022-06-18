@@ -51,17 +51,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismtools.loved_by_piglins.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanismtools:refined_glowstone_chestplate",
       "nbt": "{Damage:0}"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismtools.loved_by_piglins.title"
     }

@@ -13,16 +13,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.personal_radiation.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:dosimeter"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.personal_radiation.title"
     }

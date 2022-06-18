@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.metallurgic_infuser.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:metallurgic_infuser"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.metallurgic_infuser.title"
     }

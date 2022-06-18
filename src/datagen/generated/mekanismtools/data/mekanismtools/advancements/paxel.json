@@ -147,17 +147,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismtools.paxel.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanismtools:diamond_paxel",
       "nbt": "{Damage:0}"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismtools.paxel.title"
     }

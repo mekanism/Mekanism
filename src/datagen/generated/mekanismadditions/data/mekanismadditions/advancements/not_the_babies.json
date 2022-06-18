@@ -73,16 +73,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismadditions.not_the_babies.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "minecraft:wither_skeleton_skull"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismadditions.not_the_babies.title"
     }

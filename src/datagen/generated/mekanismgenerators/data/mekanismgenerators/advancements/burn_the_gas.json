@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismgenerators.burn_the_gas.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanismgenerators:gas_burning_generator"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismgenerators.burn_the_gas.title"
     }

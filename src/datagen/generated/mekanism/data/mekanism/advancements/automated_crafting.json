@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.automated_crafting.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:formulaic_assemblicator"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.automated_crafting.title"
     }

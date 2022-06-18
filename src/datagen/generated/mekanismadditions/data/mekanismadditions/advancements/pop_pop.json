@@ -17,7 +17,6 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismadditions.pop_pop.description"
     },
@@ -26,7 +25,6 @@
     "icon": {
       "item": "mekanismadditions:red_balloon"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismadditions.pop_pop.title"
     }

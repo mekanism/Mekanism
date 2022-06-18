@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.machine_security.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:security_desk"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.machine_security.title"
     }

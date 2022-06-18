@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.enricher.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:enrichment_chamber"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.enricher.title"
     }

@@ -30,7 +30,6 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.upgraded_mekasuit.description"
     },
@@ -39,7 +38,6 @@
     "icon": {
       "item": "mekanism:mekasuit_bodyarmor"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.upgraded_mekasuit.title"
     }

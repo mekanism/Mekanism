@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismgenerators.heat_generator.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanismgenerators:heat_generator"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismgenerators.heat_generator.title"
     }

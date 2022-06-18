@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.diversion_item_transport.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:diversion_transporter"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.diversion_item_transport.title"
     }

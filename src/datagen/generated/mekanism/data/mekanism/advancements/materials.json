@@ -63,16 +63,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.materials.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:ingot_osmium"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.materials.title"
     }

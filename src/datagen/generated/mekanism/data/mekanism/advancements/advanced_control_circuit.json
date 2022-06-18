@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.advanced_control_circuit.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:advanced_control_circuit"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.advanced_control_circuit.title"
     }

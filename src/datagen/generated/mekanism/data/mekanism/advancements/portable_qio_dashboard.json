@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.portable_qio_dashboard.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:portable_qio_dashboard"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.portable_qio_dashboard.title"
     }

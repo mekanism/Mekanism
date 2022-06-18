@@ -13,16 +13,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismadditions.balloon.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanismadditions:aqua_balloon"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismadditions.balloon.title"
     }

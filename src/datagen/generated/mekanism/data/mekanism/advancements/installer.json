@@ -51,16 +51,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.installer.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:basic_tier_installer"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.installer.title"
     }

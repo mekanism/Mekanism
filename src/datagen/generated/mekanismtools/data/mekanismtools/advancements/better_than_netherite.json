@@ -51,17 +51,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismtools.better_than_netherite.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanismtools:refined_obsidian_chestplate",
       "nbt": "{Damage:0}"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismtools.better_than_netherite.title"
     }

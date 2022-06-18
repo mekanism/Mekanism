@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.infused_alloy.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:alloy_infused"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.infused_alloy.title"
     }

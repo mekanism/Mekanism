@@ -35,16 +35,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.mekasuit.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:mekasuit_bodyarmor"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.mekasuit.title"
     }

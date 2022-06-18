@@ -13,16 +13,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.full_canteen.description"
     },
-    "frame": "task",
     "hidden": true,
     "icon": {
       "item": "mekanism:canteen"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.full_canteen.title"
     }

@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.atomic_alloy.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:alloy_atomic"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.atomic_alloy.title"
     }

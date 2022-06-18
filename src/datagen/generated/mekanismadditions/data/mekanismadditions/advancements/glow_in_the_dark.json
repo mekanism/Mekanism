@@ -13,16 +13,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismadditions.glow_in_the_dark.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanismadditions:orange_glow_panel"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismadditions.glow_in_the_dark.title"
     }

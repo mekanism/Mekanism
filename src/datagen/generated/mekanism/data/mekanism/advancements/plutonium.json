@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.plutonium.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:pellet_plutonium"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.plutonium.title"
     }

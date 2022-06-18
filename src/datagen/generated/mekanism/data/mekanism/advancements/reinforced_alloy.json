@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.reinforced_alloy.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:alloy_reinforced"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.reinforced_alloy.title"
     }

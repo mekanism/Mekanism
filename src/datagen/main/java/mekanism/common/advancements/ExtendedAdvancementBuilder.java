@@ -37,8 +37,7 @@ public class ExtendedAdvancementBuilder {
 
     public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable ResourceLocation background, FrameType frame, boolean showToast, boolean announceToChat,
           boolean hidden) {
-        internal.display(stack, advancement.translateTitle(), advancement.translateDescription(), background, frame, showToast, announceToChat, hidden);
-        return this;
+        return display(new MinimizingDisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), background, frame, showToast, announceToChat, hidden));
     }
 
     public ExtendedAdvancementBuilder display(ItemLike item, @Nullable ResourceLocation background, FrameType frame, boolean showToast, boolean announceToChat,

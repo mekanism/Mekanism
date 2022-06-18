@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.qio_redstone_adapter.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:qio_redstone_adapter"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.qio_redstone_adapter.title"
     }

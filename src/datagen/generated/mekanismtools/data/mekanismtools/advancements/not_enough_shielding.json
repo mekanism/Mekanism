@@ -75,17 +75,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanismtools.not_enough_shielding.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanismtools:osmium_shield",
       "nbt": "{Damage:0}"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanismtools.not_enough_shielding.title"
     }

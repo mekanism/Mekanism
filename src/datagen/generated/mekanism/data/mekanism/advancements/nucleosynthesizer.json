@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.nucleosynthesizer.description"
     },
     "frame": "challenge",
-    "hidden": false,
     "icon": {
       "item": "mekanism:antiprotonic_nucleosynthesizer"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.nucleosynthesizer.title"
     }

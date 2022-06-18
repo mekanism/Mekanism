@@ -9,16 +9,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.cleaning_gauges.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:gauge_dropper"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.cleaning_gauges.title"
     }

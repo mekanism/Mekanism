@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.running_free.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:free_runners"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.running_free.title"
     }

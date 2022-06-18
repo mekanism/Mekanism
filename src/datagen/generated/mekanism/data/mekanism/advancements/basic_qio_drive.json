@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.basic_qio_drive.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:qio_drive_base"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.basic_qio_drive.title"
     }

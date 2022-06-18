@@ -27,16 +27,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.personal_storage.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:personal_chest"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.personal_storage.title"
     }

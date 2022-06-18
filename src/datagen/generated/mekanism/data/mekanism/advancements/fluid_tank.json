@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.fluid_tank.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:basic_fluid_tank"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.fluid_tank.title"
     }

@@ -20,16 +20,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.breathing_assistance.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:scuba_mask"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.breathing_assistance.title"
     }

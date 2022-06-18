@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.yellow_cake.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:yellow_cake_uranium"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.yellow_cake.title"
     }

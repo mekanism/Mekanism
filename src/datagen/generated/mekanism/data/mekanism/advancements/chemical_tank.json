@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.chemical_tank.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:basic_chemical_tank"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.chemical_tank.title"
     }

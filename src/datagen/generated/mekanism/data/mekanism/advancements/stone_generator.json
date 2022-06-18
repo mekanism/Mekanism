@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.stone_generator.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:upgrade_stone_generator"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.stone_generator.title"
     }

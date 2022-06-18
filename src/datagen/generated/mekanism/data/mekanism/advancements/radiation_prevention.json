@@ -30,16 +30,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mekanism.radiation_prevention.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mekanism:hazmat_gown"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mekanism.radiation_prevention.title"
     }

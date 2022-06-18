@@ -12,7 +12,6 @@
       "translate": "advancements.mekanism.root.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mekanism:atomic_disassembler"
     },
