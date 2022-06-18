@@ -476,19 +476,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addAdvancements() {
-        //TODO - 1.19: Re-order how these are declared to be the same order as what we settle on for MekanismAdvancements
         add(MekanismAdvancements.ROOT, "Mekanism", "Welcome to Mekanism!");
         add(MekanismAdvancements.MATERIALS, "First Steps", "Acquire some natural Mekanism resources");
 
-        add(MekanismAdvancements.FLUID_TANK, "Bigger Buckets", "Make a Fluid Tank to store your fluids");
-        add(MekanismAdvancements.CHEMICAL_TANK, "More Useful Than You Think", "Craft a place to store (almost) all your chemicals");
-        add(MekanismAdvancements.WASTE_REMOVAL, "Waste Removal", "Safe storage for your radioactive chemicals and disposal of Nuclear Waste");
-        add(MekanismAdvancements.SIMPLE_MASS_STORAGE, "Basic Mass Storage", "Create a bin to store large amounts of one item");
-        add(MekanismAdvancements.PERSONAL_STORAGE, "Mine All Mine", "Create a personal storage item to securely store items");
-
-        add(MekanismAdvancements.MACHINE_SECURITY, "Personal Security", "Create a Security Desk to more easily secure your machines");
-
+        add(MekanismAdvancements.CLEANING_GAUGES, "Cleaning Gauges", "Use a Gauge Dropper on any Gauge in a Mekanism GUI");
         add(MekanismAdvancements.FULL_CANTEEN, "Tasty Paste", "Fully fill a Canteen with Nutritional Paste");
+        add(MekanismAdvancements.MOVING_BLOCKS, "Moving Blocks", "Use a Cardboard Box to move another block");
 
         add(MekanismAdvancements.METALLURGIC_INFUSER, "A Metallur-what now?", "Craft a Metallurgic Infuser");
         add(MekanismAdvancements.STEEL_INGOT, "Industrial Revolution", "Infuse Iron with Carbon and repeat");
@@ -497,6 +490,33 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.INFUSED_ALLOY, "Your First Alloy", "Infuse Iron with Redstone");
         add(MekanismAdvancements.REINFORCED_ALLOY, "Make it Stronger", "Diamonds make everything better!");
         add(MekanismAdvancements.ATOMIC_ALLOY, "Top Tier Alloy", "Create one of the strongest alloys in existence");
+
+        add(MekanismAdvancements.BASIC_CONTROL_CIRCUIT, "A Simple Circuit", "Tricking a rock into thinking");
+        add(MekanismAdvancements.ADVANCED_CONTROL_CIRCUIT, "Advancing Technology", "Craft an Advanced Control Circuit");
+        add(MekanismAdvancements.ELITE_CONTROL_CIRCUIT, "Make it Precise", "Create a circuit with even more pathways");
+        add(MekanismAdvancements.ULTIMATE_CONTROL_CIRCUIT, "Where's my Supercomputer?", "Can this thing run Minecraft yet?");
+
+        add(MekanismAdvancements.INSTALLER, "In Place Upgrades", "Craft any tier of Installer to upgrade your factories in place");
+        add(MekanismAdvancements.CONFIGURATION_COPYING, "Ctrl+C, Ctrl+V", "Use a configuration card to copy the configuration of one machine to another");
+        add(MekanismAdvancements.RUNNING_FREE, "Running Free", "Protect yourself from falling with a pair of Free Runners");
+        add(MekanismAdvancements.PLAYING_WITH_FIRE, "Playing With Fire", "Be responsible and don't burn down any forests");
+        add(MekanismAdvancements.MACHINE_SECURITY, "Personal Security", "Create a Security Desk to more easily secure your machines");
+
+        add(MekanismAdvancements.PERSONAL_STORAGE, "Mine All Mine", "Create a personal storage item to securely store items");
+        add(MekanismAdvancements.SIMPLE_MASS_STORAGE, "Basic Mass Storage", "Create a bin to store large amounts of one item");
+
+        add(MekanismAdvancements.CONFIGURATOR, "Configure Everything", "Craft a configurator to change the settings of blocks");
+        add(MekanismAdvancements.NETWORK_READER, "Reading the Network", "View the contents of a transmitter network");
+        add(MekanismAdvancements.FLUID_TANK, "Bigger Buckets", "Make a Fluid Tank to store your fluids");
+        add(MekanismAdvancements.CHEMICAL_TANK, "More Useful Than You Think", "Craft a place to store (almost) all your chemicals");
+
+        add(MekanismAdvancements.BREATHING_ASSISTANCE, "Breathe Easy", "Craft some Scuba Gear to refill your oxygen supply under water and filter out contaminants");
+        add(MekanismAdvancements.HYDROGEN_POWERED_FLIGHT, "Hydrogen Powered Flight", "Use a Jetpack to take to the skies");
+
+        add(MekanismAdvancements.WASTE_REMOVAL, "Waste Removal", "Safe storage for your radioactive chemicals and disposal of Nuclear Waste");
+        add(MekanismAdvancements.ENVIRONMENTAL_RADIATION, "Think of the Environment", "Use a Geiger Counter to see how badly your experiments irradiated the environment");
+        add(MekanismAdvancements.PERSONAL_RADIATION, "That Wasn't Smart", "Use a Dosimeter to see how badly you irradiated yourself");
+        add(MekanismAdvancements.RADIATION_PREVENTION, "Radiation Prevention", "Protect yourself from radiation with a Hazmat Suit");
 
         add(MekanismAdvancements.PLUTONIUM, "Plutonium, Not Polonium", "Refine your Nuclear Waste into Plutonium");
         add(MekanismAdvancements.SPS, "Supercritical Phase Shifting?", "This thing doesn't seem safe");
@@ -509,26 +529,20 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.QIO_EXPORTER, "Automated Exporting", "Automate the removal of items from your QIO");
         add(MekanismAdvancements.QIO_IMPORTER, "Automated Importing", "Automate the addition of items to your QIO");
         add(MekanismAdvancements.QIO_REDSTONE_ADAPTER, "Number Based Automation", "Craft a QIO Redstone Adapter");
+        add(MekanismAdvancements.QIO_DASHBOARD, "So Much More Than a Monitor", "Wait this thing has HOW MANY crafting windows?");
+        add(MekanismAdvancements.PORTABLE_QIO_DASHBOARD, "Who Needs Backpacks", "Craft a Portable QIO Dashboard");
         add(MekanismAdvancements.BASIC_QIO_DRIVE, "The Most Basic Drive", "Create a QIO Drive to store your items in");
         add(MekanismAdvancements.ADVANCED_QIO_DRIVE, "High Density Storage", "Increase the storage bandwidth of your QIO Drive");
         add(MekanismAdvancements.ELITE_QIO_DRIVE, "It is all Relative", "Use relativity to 'further' increase the bandwidth");
         add(MekanismAdvancements.ULTIMATE_QIO_DRIVE, "Parallel Universe Detected", "Where do all the items go");
-        add(MekanismAdvancements.QIO_DASHBOARD, "So Much More Than a Monitor", "Wait this thing has HOW MANY crafting windows?");
-        add(MekanismAdvancements.PORTABLE_QIO_DASHBOARD, "Who Needs Backpacks", "Craft a Portable QIO Dashboard");
 
         add(MekanismAdvancements.TELEPORTATION_CORE, "The Basis of Teleportation", "Construct the core of all teleportation technology");
+        add(MekanismAdvancements.QUANTUM_ENTANGLOPORTER, "Quantum Entanglement", "Instant resource transportation");
         add(MekanismAdvancements.TELEPORTER, "Thinking With Portals", "Create and travel through a Teleporter");
         add(MekanismAdvancements.PORTABLE_TELEPORTER, "Who Needs the Portal", "Craft a Portable Teleporter");
-        add(MekanismAdvancements.QUANTUM_ENTANGLOPORTER, "Quantum Entanglement", "Instant resource transportation");
-
-        add(MekanismAdvancements.BASIC_CONTROL_CIRCUIT, "A Simple Circuit", "Tricking a rock into thinking");
-        add(MekanismAdvancements.ADVANCED_CONTROL_CIRCUIT, "Advancing Technology", "Craft an Advanced Control Circuit");
-        add(MekanismAdvancements.ELITE_CONTROL_CIRCUIT, "Make it Precise", "Create a circuit with even more pathways");
-        add(MekanismAdvancements.ULTIMATE_CONTROL_CIRCUIT, "Where's my Supercomputer?", "Can this thing run Minecraft yet?");
 
         add(MekanismAdvancements.ROBIT, "A New Best Friend!", "Craft and place a Robit on a Chargepad");
         add(MekanismAdvancements.ROBIT_AESTHETICS, "A New Coat of Paint", "Equip a Robit with a new coat of paint");
-
         add(MekanismAdvancements.DIGITAL_MINER, "Trapped Inside", "Turn your best friend into a Digital Miner");
         add(MekanismAdvancements.DICTIONARY, "Time to Learn", "Craft a Dictionary to learn the generic 'tags' of the world around you");
         add(MekanismAdvancements.STONE_GENERATOR, "Replace With Stone", "Preventing holes in the ground since 2021");
@@ -537,37 +551,20 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.MEKASUIT, "Mekanist", "Protect yourself with a complete MekaSuit and a Meka-Tool");
         add(MekanismAdvancements.UPGRADED_MEKASUIT, "True Dedication", "Install the max number of all modules in the MekaSuit and Meka-Tool");
 
-        add(MekanismAdvancements.INSTALLER, "In Place Upgrades", "Craft any tier of Installer to upgrade your factories in place");
-        add(MekanismAdvancements.CONFIGURATION_COPYING, "Ctrl+C, Ctrl+V", "Use a configuration card to copy the configuration of one machine to another");
+        add(MekanismAdvancements.FLUID_TRANSPORT, "Transporting Fluids", "Craft a Mechanical Pipe");
+        add(MekanismAdvancements.CHEMICAL_TRANSPORT, "Transporting Chemicals", "Craft a Pressurized Tube");
+        add(MekanismAdvancements.ENERGY_TRANSPORT, "Transporting Energy", "Craft a Universal Cable");
+        add(MekanismAdvancements.HEAT_TRANSPORT, "Transferring Heat", "Craft a Thermodynamic Conductor");
+        add(MekanismAdvancements.ITEM_TRANSPORT, "Transporting Items", "Craft a Logistical Transporter");
+        add(MekanismAdvancements.RESTRICTIVE_ITEM_TRANSPORT, "Restrictive Network", "Lowers the priority of a path for transporting items");
+        add(MekanismAdvancements.DIVERSION_ITEM_TRANSPORT, "Network Splitter", "Precise side control");
+        add(MekanismAdvancements.SORTER, "Advanced Item Sorting", "Filter which items you are sending where");
 
-        add(MekanismAdvancements.CLEANING_GAUGES, "Cleaning Gauges", "Use a Gauge Dropper on any Gauge in a Mekanism GUI");
-        add(MekanismAdvancements.ENVIRONMENTAL_RADIATION, "Think of the Environment", "Use a Geiger Counter to see how badly your experiments irradiated the environment");
-        add(MekanismAdvancements.PERSONAL_RADIATION, "That Wasn't Smart", "Use a Dosimeter to see how badly you irradiated yourself");
-
-        add(MekanismAdvancements.BREATHING_ASSISTANCE, "Breathe Easy", "Craft some Scuba Gear to refill your oxygen supply under water and filter out contaminants");
         add(MekanismAdvancements.AUTOMATED_CRAFTING, "A Smart Crafting Table", "Craft a machine to do the crafting for you");
 
         add(MekanismAdvancements.ENRICHER, "Enrich All the Things!", "Make an Enrichment Chamber to increase material efficiency");
         add(MekanismAdvancements.INFUSING_EFFICIENCY, "Infusing Efficiency", "Enrich your infusion inputs to increase their efficiency");
         add(MekanismAdvancements.YELLOW_CAKE, "Look Don't Eat", "Create some cake that must not be eaten");
-
-        add(MekanismAdvancements.PLAYING_WITH_FIRE, "Playing With Fire", "Be responsible and don't burn down any forests");
-        add(MekanismAdvancements.RUNNING_FREE, "Running Free", "Protect yourself from falling with a pair of Free Runners");
-        add(MekanismAdvancements.HYDROGEN_POWERED_FLIGHT, "Hydrogen Powered Flight", "Use a Jetpack to take to the skies");
-
-        add(MekanismAdvancements.CONFIGURATOR, "Configure Everything", "Craft a configurator to change the settings of blocks");
-        add(MekanismAdvancements.NETWORK_READER, "Reading the Network", "View the contents of a transmitter network");
-        add(MekanismAdvancements.ITEM_TRANSPORT, "Transporting Items", "Craft a Logistical Transporter");
-        add(MekanismAdvancements.RESTRICTIVE_ITEM_TRANSPORT, "Restrictive Network", "Lowers the priority of a path for transporting items");
-        add(MekanismAdvancements.DIVERSION_ITEM_TRANSPORT, "Network Splitter", "Precise side control");
-        add(MekanismAdvancements.SORTER, "Advanced Item Sorting", "Filter which items you are sending where");
-        add(MekanismAdvancements.FLUID_TRANSPORT, "Transporting Fluids", "Craft a Mechanical Pipe");
-        add(MekanismAdvancements.CHEMICAL_TRANSPORT, "Transporting Chemicals", "Craft a Pressurized Tube");
-        add(MekanismAdvancements.ENERGY_TRANSPORT, "Transporting Energy", "Craft a Universal Cable");
-        add(MekanismAdvancements.HEAT_TRANSPORT, "Transferring Heat", "Craft a Thermodynamic Conductor");
-        add(MekanismAdvancements.RADIATION_PREVENTION, "Radiation Prevention", "Protect yourself from radiation with a Hazmat Suit");
-        add(MekanismAdvancements.MOVING_BLOCKS, "Moving Blocks", "Use a Cardboard Box to move another block");
-        //TODO: Needs to be done/added
     }
 
     private void addJade() {
