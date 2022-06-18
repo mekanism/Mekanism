@@ -16,6 +16,7 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
@@ -35,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -86,6 +88,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addDusts();
         addGems();
         addFluids();
+        addGameEvents();
         addGasTags();
         addSlurryTags();
         addInfuseTags();
@@ -476,6 +479,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
             addToTag(CREATE_NO_INFINITE_FLUID, fluid);
         }
+    }
+
+    private void addGameEvents() {
+        addToTag(GameEventTags.VIBRATIONS, MekanismGameEvents.SEISMIC_VIBRATION);
+        addToTag(GameEventTags.WARDEN_CAN_LISTEN, MekanismGameEvents.SEISMIC_VIBRATION);
     }
 
     private void addGasTags() {

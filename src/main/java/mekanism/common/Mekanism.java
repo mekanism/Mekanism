@@ -92,6 +92,7 @@ import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismHeightProviderTypes;
 import mekanism.common.registries.MekanismInfuseTypes;
@@ -227,6 +228,7 @@ public class Mekanism {
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        MekanismGameEvents.GAME_EVENTS.register(modEventBus);
         MekanismSounds.SOUND_EVENTS.register(modEventBus);
         MekanismParticleTypes.PARTICLE_TYPES.register(modEventBus);
         MekanismHeightProviderTypes.HEIGHT_PROVIDER_TYPES.register(modEventBus);

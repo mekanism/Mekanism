@@ -21,11 +21,13 @@ import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.registration.impl.FluidRegistryObject;
+import mekanism.common.registration.impl.GameEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -33,6 +35,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
@@ -54,6 +57,7 @@ public abstract class BaseTagProvider implements DataProvider {
         addTagType(TagType.ENTITY_TYPE);
         addTagType(TagType.FLUID);
         addTagType(TagType.BLOCK_ENTITY_TYPE);
+        addTagType(TagType.GAME_EVENT);
         addTagType(TagType.GAS);
         addTagType(TagType.INFUSE_TYPE);
         addTagType(TagType.PIGMENT);
@@ -96,8 +100,8 @@ public abstract class BaseTagProvider implements DataProvider {
 
     private <TYPE> void act(@Nonnull CachedOutput cache, TagType<TYPE> tagType, Map<TagKey<?>, TagBuilder> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
-            //Create a dummy forge registry tags provider and pass all our collected data through to it
-            new ForgeRegistryTagsProvider<>(gen, tagType.getRegistry(), modid, existingFileHelper) {
+            //Create a dummy provider and pass all our collected data through to it
+            tagType.getRegistry().map(forgeRegistry -> new ForgeRegistryTagsProvider<>(gen, forgeRegistry, modid, existingFileHelper) {
                 @Override
                 protected void addTags() {
                     //Add each tag builder to the wrapped provider's builder
@@ -109,7 +113,19 @@ public abstract class BaseTagProvider implements DataProvider {
                 public String getName() {
                     return tagType.name() + " Tags: " + modid;
                 }
-            }.run(cache);
+            }, vanillaRegistry -> new TagsProvider<>(gen, vanillaRegistry, modid, existingFileHelper) {
+                @Override
+                protected void addTags() {
+                    //Add each tag builder to the wrapped provider's builder
+                    tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.location(), tagBuilder));
+                }
+
+                @Nonnull
+                @Override
+                public String getName() {
+                    return tagType.name() + " Tags: " + modid;
+                }
+            }).run(cache);
         }
     }
 
@@ -136,6 +152,10 @@ public abstract class BaseTagProvider implements DataProvider {
 
     protected ForgeRegistryTagBuilder<BlockEntityType<?>> getTileEntityTypeBuilder(TagKey<BlockEntityType<?>> tag) {
         return getBuilder(TagType.BLOCK_ENTITY_TYPE, tag);
+    }
+
+    protected ForgeRegistryTagBuilder<GameEvent> getGameEventBuilder(TagKey<GameEvent> tag) {
+        return getBuilder(TagType.GAME_EVENT, tag);
     }
 
     protected ForgeRegistryTagBuilder<Gas> getGasBuilder(TagKey<Gas> tag) {
@@ -200,6 +220,10 @@ public abstract class BaseTagProvider implements DataProvider {
             itemTagBuilder.add(blockProvider.asItem());
             blockTagBuilder.add(blockProvider.getBlock());
         }
+    }
+
+    protected void addToTag(TagKey<GameEvent> tag, GameEventRegistryObject<?>... gameEventROs) {
+        getGameEventBuilder(tag).addTyped(GameEventRegistryObject::get, gameEventROs);
     }
 
     protected void addToTag(TagKey<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
