@@ -19,6 +19,7 @@ import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataGenerator.PathProvider;
 import net.minecraft.data.DataGenerator.Target;
 import net.minecraft.data.DataProvider;
 import net.minecraft.server.packs.PackType;
@@ -40,7 +41,7 @@ public class PrideRobitTextureProvider implements DataProvider {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public void run(@Nonnull CachedOutput cache) throws IOException {
-        Path outputFolder = generator.getOutputFolder(Target.RESOURCE_PACK).resolve(Mekanism.MODID + "/" + ROBIT_SKIN_PATH);
+        PathProvider pathProvider = generator.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
         Resource resource = helper.getResource(MekanismRobitSkins.BASE.getRegistryName(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
         try (InputStream inputStream = resource.open()) {
             BufferedImage image = ImageIO.read(inputStream);
@@ -55,7 +56,7 @@ public class PrideRobitTextureProvider implements DataProvider {
                           if (++index != 1) {
                               fileName += index;
                           }
-                          Path path = outputFolder.resolve(fileName + ".png");
+                          Path path = pathProvider.file(Mekanism.rl(fileName), "png");
                           try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                                HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
                               ImageIO.write(prideTexture, "png", hashingOutputStream);

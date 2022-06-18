@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import cpw.mods.modlauncher.api.LamdbaExceptionUtils;
-import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
@@ -22,15 +21,14 @@ import net.minecraftforge.common.util.Lazy;
 public abstract class BaseModifierProvider<MODIFIER> implements DataProvider {
 
     private static final Lazy<RegistryOps<JsonElement>> OPS = Lazy.of(() -> RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.builtinCopy()));
+    private final DataGenerator.PathProvider pathProvider;
     private final Codec<MODIFIER> modifierCodec;
     protected final String modid;
-    private final Path outputFolder;
 
     protected BaseModifierProvider(DataGenerator gen, String modid, ResourceKey<Registry<MODIFIER>> registry) {
         this.modid = modid;
         this.modifierCodec = (Codec<MODIFIER>) RegistryAccess.REGISTRIES.get(registry).codec();
-        ResourceLocation registryId = registry.location();
-        this.outputFolder = gen.getOutputFolder(Target.DATA_PACK).resolve(String.join("/", this.modid, registryId.getNamespace(), registryId.getPath()));
+        this.pathProvider = gen.createPathProvider(Target.DATA_PACK, getPath(registry.location()));
     }
 
     @Override
@@ -45,10 +43,13 @@ public abstract class BaseModifierProvider<MODIFIER> implements DataProvider {
                   JsonElement encoded = modifierCodec.encodeStart(ops, modifier)
                         //Log  an error message if it fails
                         .getOrThrow(false, msg -> Mekanism.logger.error("Failed to encode {}: {}", name, msg));
-                  String outputName = name.getNamespace().equals("minecraft") ? name.getPath() : name.getNamespace() + "/" + name.getPath();
-                  DataProvider.saveStable(cache, encoded, outputFolder.resolve(outputName + ".json"));
+                  DataProvider.saveStable(cache, encoded, pathProvider.json(new ResourceLocation(modid, getPath(name))));
               }
         ));
+    }
+
+    private static String getPath(ResourceLocation rl) {
+        return rl.getNamespace().equals("minecraft") ? rl.getPath() : rl.getNamespace() + "/" + rl.getPath();
     }
 
     protected abstract void getModifiers(RegistryGetter registryGetter, BiConsumer<MODIFIER, ResourceLocation> consumer);

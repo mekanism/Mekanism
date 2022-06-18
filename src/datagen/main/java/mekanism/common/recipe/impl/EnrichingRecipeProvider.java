@@ -61,6 +61,11 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(MekanismBlocks.SALT_BLOCK),
               MekanismItems.SALT.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "salt"));
+        //String
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Items.COBWEB),
+              new ItemStack(Items.STRING, 9)//Value based on bedrock crafting recipe
+        ).build(consumer, Mekanism.rl(basePath + "string"));
     }
 
     private void addEnrichingConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

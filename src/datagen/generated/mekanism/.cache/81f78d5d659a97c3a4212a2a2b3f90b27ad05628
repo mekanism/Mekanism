@@ -1,4 +1,4 @@
-// 1.19	2022-06-14T20:50:14.7697199	Recipes: mekanism
+// 1.19	2022-06-18T16:58:28.8234171	Recipes: mekanism
 76d04fb8c6d3843742c65aa81fc27c7baf08a732 data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 c55e764416488800531198c1a7605739ece64535 data/mekanism/recipes/atomic_disassembler.json
 b8659417402b744db4a14e2d085d5111877ab4a4 data/mekanism/recipes/bin/advanced.json
@@ -2849,6 +2849,7 @@ d29bd127a88b0cd1af339a3bd7a1a0739b664b8a data/mekanism/recipes/enriching/enriche
 8c651de32338f2ff6c2d994079000d3a751c935a data/mekanism/recipes/enriching/glowstone_dust.json
 32fe26595a8e076132aece5344128acb213254c8 data/mekanism/recipes/enriching/hdpe_sheet.json
 a3409a928d4bb17deb57a202d9e6a1df3502819a data/mekanism/recipes/enriching/salt.json
+84eb796c7cd8556204a91b4f636acd731d8b1a94 data/mekanism/recipes/enriching/string.json
 8f90468094f7407166d56523252225bd895fd2f5 data/mekanism/recipes/enrichment_chamber.json
 ee9dd6940784878a130f539ec4179702aa7bf610 data/mekanism/recipes/evaporating/brine.json
 686174271489546f0df393167550c855a489ce7b data/mekanism/recipes/evaporating/lithium.json
