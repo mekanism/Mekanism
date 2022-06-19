@@ -1,6 +1,9 @@
 {
+  "advancements.mekanismtools.alternate_tools.description": "Stwórz dowolne narzędzie lub broń (z wyjątkiem łopasiekilofów) z Mekanism Tools",
   "advancements.mekanismtools.better_than_netherite.title": "Lepszy niż netheryt",
   "advancements.mekanismtools.loved_by_piglins.title": "Uwielbiany przez pigliny",
+  "advancements.mekanismtools.not_enough_shielding.description": "Stwórz dowolną tarczę dodaną przez Mekanism Tools",
+  "advancements.mekanismtools.paxel.description": "Stwórz dowolny łopasiekilof (kilof, siekiera, łopata)",
   "advancements.mekanismtools.paxel.title": "Multinarzędzie",
   "item.mekanismtools.bronze_axe": "Siekiera z brązu",
   "item.mekanismtools.bronze_boots": "Buty z brązu",
