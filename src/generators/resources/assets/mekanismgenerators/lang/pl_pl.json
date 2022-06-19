@@ -1,4 +1,7 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Stwórz generator spalania gazowego, aby spalać etylen",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Spal gaz",
+  "advancements.mekanismgenerators.heat_generator.description": "Stwórz generator cieplny, aby zacząć produkować energię",
   "advancements.mekanismgenerators.heat_generator.title": "Twój pierwszy generator",
   "advancements.mekanismgenerators.solar_generator.title": "Potęga słońca",
   "block.mekanismgenerators.advanced_solar_generator": "Zaawansowany generator słoneczny",
