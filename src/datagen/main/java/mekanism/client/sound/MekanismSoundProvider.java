@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.data.DataGenerator;
@@ -21,64 +22,65 @@ public class MekanismSoundProvider extends BaseSoundProvider {
 
     private void addTileSoundEvents() {
         String basePath = "tile/";
-        addSoundEventWithSubtitle(MekanismSounds.CHARGEPAD, Mekanism.rl(basePath + "chargepad"));
-        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_CRYSTALLIZER, Mekanism.rl(basePath + "chemical_crystallizer"));
-        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_DISSOLUTION_CHAMBER, Mekanism.rl(basePath + "chemical_dissolution_chamber"));
-        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_INFUSER, Mekanism.rl(basePath + "chemical_infuser"));
-        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_INJECTION_CHAMBER, Mekanism.rl(basePath + "chemical_injection_chamber"));
-        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_OXIDIZER, Mekanism.rl(basePath + "chemical_oxidizer"));
-        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_WASHER, Mekanism.rl(basePath + "chemical_washer"));
-        addSoundEventWithSubtitle(MekanismSounds.COMBINER, Mekanism.rl(basePath + "combiner"));
-        addSoundEventWithSubtitle(MekanismSounds.OSMIUM_COMPRESSOR, Mekanism.rl(basePath + "compressor"));
-        addSoundEventWithSubtitle(MekanismSounds.CRUSHER, Mekanism.rl(basePath + "crusher"));
-        addSoundEventWithSubtitle(MekanismSounds.ELECTROLYTIC_SEPARATOR, Mekanism.rl(basePath + "electrolytic_separator"));
-        addSoundEventWithSubtitle(MekanismSounds.ENRICHMENT_CHAMBER, Mekanism.rl(basePath + "enrichment_chamber"));
-        addSoundEventWithSubtitle(MekanismSounds.LASER, Mekanism.rl(basePath + "laser"));
-        addSoundEventWithSubtitle(MekanismSounds.LOGISTICAL_SORTER, Mekanism.rl(basePath + "logistical_sorter"));
-        addSoundEventWithSubtitle(MekanismSounds.METALLURGIC_INFUSER, Mekanism.rl(basePath + "metallurgic_infuser"));
-        addSoundEventWithSubtitle(MekanismSounds.PRECISION_SAWMILL, Mekanism.rl(basePath + "precision_sawmill"));
-        addSoundEventWithSubtitle(MekanismSounds.PRESSURIZED_REACTION_CHAMBER, Mekanism.rl(basePath + "pressurized_reaction_chamber"));
-        addSoundEventWithSubtitle(MekanismSounds.PURIFICATION_CHAMBER, Mekanism.rl(basePath + "purification_chamber"));
-        addSoundEventWithSubtitle(MekanismSounds.RESISTIVE_HEATER, Mekanism.rl(basePath + "resistive_heater"));
-        addSoundEventWithSubtitle(MekanismSounds.ROTARY_CONDENSENTRATOR, Mekanism.rl(basePath + "rotary_condensentrator"));
-        addSoundEventWithSubtitle(MekanismSounds.ENERGIZED_SMELTER, Mekanism.rl(basePath + "energized_smelter"));
-        addSoundEventWithSubtitle(MekanismSounds.ISOTOPIC_CENTRIFUGE, Mekanism.rl(basePath + "isotopic_centrifuge"));
-        addSoundEventWithSubtitle(MekanismSounds.NUTRITIONAL_LIQUIFIER, Mekanism.rl(basePath + "nutritional_liquifier"));
-        addSoundEventWithSubtitle(MekanismSounds.INDUSTRIAL_ALARM, Mekanism.rl(basePath + "industrial_alarm"), 128);
-        addSoundEventWithSubtitle(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, Mekanism.rl(basePath + "antiprotonic_nucleosynthesizer"));
-        addSoundEventWithSubtitle(MekanismSounds.PAINTING_MACHINE, Mekanism.rl(basePath + "painting_machine"));
-        addSoundEventWithSubtitle(MekanismSounds.PIGMENT_EXTRACTOR, Mekanism.rl(basePath + "pigment_extractor"));
-        addSoundEventWithSubtitle(MekanismSounds.PIGMENT_MIXER, Mekanism.rl(basePath + "pigment_mixer"));
-        addSoundEventWithSubtitle(MekanismSounds.SPS, Mekanism.rl(basePath + "sps"));
+        addSoundEventWithSubtitle(MekanismSounds.CHARGEPAD, basePath + "chargepad");
+        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_CRYSTALLIZER, basePath + "chemical_crystallizer");
+        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_DISSOLUTION_CHAMBER, basePath + "chemical_dissolution_chamber");
+        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_INFUSER, basePath + "chemical_infuser");
+        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_INJECTION_CHAMBER, basePath + "chemical_injection_chamber");
+        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_OXIDIZER, basePath + "chemical_oxidizer");
+        addSoundEventWithSubtitle(MekanismSounds.CHEMICAL_WASHER, basePath + "chemical_washer");
+        addSoundEventWithSubtitle(MekanismSounds.COMBINER, basePath + "combiner");
+        addSoundEventWithSubtitle(MekanismSounds.OSMIUM_COMPRESSOR, basePath + "compressor");
+        addSoundEventWithSubtitle(MekanismSounds.CRUSHER, basePath + "crusher");
+        addSoundEventWithSubtitle(MekanismSounds.ELECTROLYTIC_SEPARATOR, basePath + "electrolytic_separator");
+        addSoundEventWithSubtitle(MekanismSounds.ENRICHMENT_CHAMBER, basePath + "enrichment_chamber");
+        addSoundEventWithSubtitle(MekanismSounds.LASER, basePath + "laser");
+        addSoundEventWithSubtitle(MekanismSounds.LOGISTICAL_SORTER, basePath + "logistical_sorter");
+        addSoundEventWithSubtitle(MekanismSounds.METALLURGIC_INFUSER, basePath + "metallurgic_infuser");
+        addSoundEventWithSubtitle(MekanismSounds.PRECISION_SAWMILL, basePath + "precision_sawmill");
+        addSoundEventWithSubtitle(MekanismSounds.PRESSURIZED_REACTION_CHAMBER, basePath + "pressurized_reaction_chamber");
+        addSoundEventWithSubtitle(MekanismSounds.PURIFICATION_CHAMBER, basePath + "purification_chamber");
+        addSoundEventWithSubtitle(MekanismSounds.RESISTIVE_HEATER, basePath + "resistive_heater");
+        addSoundEventWithSubtitle(MekanismSounds.ROTARY_CONDENSENTRATOR, basePath + "rotary_condensentrator");
+        addSoundEventWithSubtitle(MekanismSounds.ENERGIZED_SMELTER, basePath + "energized_smelter");
+        addSoundEventWithSubtitle(MekanismSounds.ISOTOPIC_CENTRIFUGE, basePath + "isotopic_centrifuge");
+        addSoundEventWithSubtitle(MekanismSounds.NUTRITIONAL_LIQUIFIER, basePath + "nutritional_liquifier");
+        addSoundEventWithSubtitle(MekanismSounds.INDUSTRIAL_ALARM, basePath + "industrial_alarm", sound -> sound.attenuationDistance(128));
+        addSoundEventWithSubtitle(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, basePath + "antiprotonic_nucleosynthesizer");
+        addSoundEventWithSubtitle(MekanismSounds.PAINTING_MACHINE, basePath + "painting_machine");
+        addSoundEventWithSubtitle(MekanismSounds.PIGMENT_EXTRACTOR, basePath + "pigment_extractor");
+        addSoundEventWithSubtitle(MekanismSounds.PIGMENT_MIXER, basePath + "pigment_mixer");
+        addSoundEventWithSubtitle(MekanismSounds.SPS, basePath + "sps");
     }
 
     private void addItemSoundEvents() {
         String basePath = "item/";
-        addSoundEventWithSubtitle(MekanismSounds.HYDRAULIC, Mekanism.rl(basePath + "hydraulic"));
-        addSoundEventWithSubtitle(MekanismSounds.FLAMETHROWER_IDLE, Mekanism.rl(basePath + "flamethrower_idle"));
-        addSoundEventWithSubtitle(MekanismSounds.FLAMETHROWER_ACTIVE, Mekanism.rl(basePath + "flamethrower_active"));
-        addSoundEventWithSubtitle(MekanismSounds.SCUBA_MASK, Mekanism.rl(basePath + "scuba_mask"));
-        addSoundEventWithSubtitle(MekanismSounds.JETPACK, Mekanism.rl(basePath + "jetpack"));
-        addSoundEventWithSubtitle(MekanismSounds.GRAVITATIONAL_MODULATION_UNIT, Mekanism.rl(basePath + "gravitational_modulation_unit"));
+        addSoundEventWithSubtitle(MekanismSounds.HYDRAULIC, basePath + "hydraulic");
+        addSoundEventWithSubtitle(MekanismSounds.FLAMETHROWER_IDLE, basePath + "flamethrower_idle");
+        addSoundEventWithSubtitle(MekanismSounds.FLAMETHROWER_ACTIVE, basePath + "flamethrower_active");
+        addSoundEventWithSubtitle(MekanismSounds.SCUBA_MASK, basePath + "scuba_mask");
+        addSoundEventWithSubtitle(MekanismSounds.JETPACK, basePath + "jetpack");
+        addSoundEventWithSubtitle(MekanismSounds.GRAVITATIONAL_MODULATION_UNIT, basePath + "gravitational_modulation_unit");
 
-        addSoundEventWithSubtitle(MekanismSounds.GEIGER_SLOW, Mekanism.rl(basePath + "geiger_slow"));
-        addSoundEventWithSubtitle(MekanismSounds.GEIGER_MEDIUM, Mekanism.rl(basePath + "geiger_medium"));
-        addSoundEventWithSubtitle(MekanismSounds.GEIGER_ELEVATED, Mekanism.rl(basePath + "geiger_elevated"));
-        addSoundEventWithSubtitle(MekanismSounds.GEIGER_FAST, Mekanism.rl(basePath + "geiger_fast"));
+        addSoundEventWithSubtitle(MekanismSounds.GEIGER_SLOW, basePath + "geiger_slow");
+        addSoundEventWithSubtitle(MekanismSounds.GEIGER_MEDIUM, basePath + "geiger_medium");
+        addSoundEventWithSubtitle(MekanismSounds.GEIGER_ELEVATED, basePath + "geiger_elevated");
+        addSoundEventWithSubtitle(MekanismSounds.GEIGER_FAST, basePath + "geiger_fast");
     }
 
     private void addHolidaySoundEvents() {
         String basePath = "holiday/";
         //Use the non holiday subtitles
-        addSoundEvent(MekanismSounds.CHRISTMAS1, Mekanism.rl(basePath + "nutcracker1"), MekanismSounds.ENRICHMENT_CHAMBER);
-        addSoundEvent(MekanismSounds.CHRISTMAS2, Mekanism.rl(basePath + "nutcracker2"), MekanismSounds.METALLURGIC_INFUSER);
-        addSoundEvent(MekanismSounds.CHRISTMAS3, Mekanism.rl(basePath + "nutcracker3"), MekanismSounds.PURIFICATION_CHAMBER);
-        addSoundEvent(MekanismSounds.CHRISTMAS4, Mekanism.rl(basePath + "nutcracker4"), MekanismSounds.ENERGIZED_SMELTER);
-        addSoundEvent(MekanismSounds.CHRISTMAS5, Mekanism.rl(basePath + "nutcracker5"), MekanismSounds.CRUSHER);
+        addSoundEvent(MekanismSounds.CHRISTMAS1, basePath + "nutcracker1", MekanismSounds.ENRICHMENT_CHAMBER);
+        addSoundEvent(MekanismSounds.CHRISTMAS2, basePath + "nutcracker2", MekanismSounds.METALLURGIC_INFUSER);
+        addSoundEvent(MekanismSounds.CHRISTMAS3, basePath + "nutcracker3", MekanismSounds.PURIFICATION_CHAMBER);
+        addSoundEvent(MekanismSounds.CHRISTMAS4, basePath + "nutcracker4", MekanismSounds.ENERGIZED_SMELTER);
+        addSoundEvent(MekanismSounds.CHRISTMAS5, basePath + "nutcracker5", MekanismSounds.CRUSHER);
     }
 
     private void addGuiSoundEvents() {
         String basePath = "gui/";
-        addSoundEvent(MekanismSounds.BEEP, Mekanism.rl(basePath + "beep"));
+        //Manually call this to skip applying a subtitle
+        addSoundEvent(MekanismSounds.BEEP, basePath + "beep", UnaryOperator.identity(), sound -> sound.pitch(0.8F));
     }
 }

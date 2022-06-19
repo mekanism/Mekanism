@@ -1,7 +1,10 @@
 {
   "gui.digital_beep": {
     "sounds": [
-      "mekanism:gui/beep"
+      {
+        "name": "mekanism:gui/beep",
+        "pitch": 0.8
+      }
     ]
   },
   "item.flamethrower.active": {
