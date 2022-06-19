@@ -1,6 +1,10 @@
 {
+  "advancements.mekanismadditions.balloon.description": "Stwórz dowolny balon",
+  "advancements.mekanismadditions.balloon.title": "Sięgnij nieba",
   "advancements.mekanismadditions.glow_in_the_dark.description": "Stwórz dowolny panel świetlny",
   "advancements.mekanismadditions.glow_in_the_dark.title": "Świeci w ciemności",
+  "advancements.mekanismadditions.not_the_babies.description": "Zabij dowolne dziecko moba z Mekanism Additions",
+  "advancements.mekanismadditions.not_the_babies.title": "Tylko nie dzieci",
   "block.mekanismadditions.aqua_glow_panel": "Morski panel świetlny",
   "block.mekanismadditions.aqua_plastic": "Morski blok plastiku",
   "block.mekanismadditions.aqua_plastic_fence": "Morska plastikowa bariera",
