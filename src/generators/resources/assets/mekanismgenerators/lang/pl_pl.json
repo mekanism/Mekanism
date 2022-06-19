@@ -1,4 +1,6 @@
 {
+  "advancements.mekanismgenerators.heat_generator.title": "Twój pierwszy generator",
+  "advancements.mekanismgenerators.solar_generator.title": "Potęga słońca",
   "block.mekanismgenerators.advanced_solar_generator": "Zaawansowany generator słoneczny",
   "block.mekanismgenerators.bio_generator": "Biogenerator",
   "block.mekanismgenerators.bioethanol": "Bioetanol",
