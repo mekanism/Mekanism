@@ -1,4 +1,10 @@
 {
+  "advancements.mekanismadditions.balloon.description": "任意の色のバルーンをクラフトする",
+  "advancements.mekanismadditions.balloon.title": "空に手を伸ばせ",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "任意の色の発光パネルをクラフトする",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "暗がりに光る",
+  "advancements.mekanismadditions.not_the_babies.description": "Mekanism Additionで追加される子供モブを倒す",
+  "advancements.mekanismadditions.pop_pop.description": "風船を飛ばす",
   "block.mekanismadditions.aqua_glow_panel": "水色の発光パネル",
   "block.mekanismadditions.aqua_plastic": "水色のプラスチックブロック",
   "block.mekanismadditions.aqua_plastic_fence": "水色のプラスチックフェンス",
