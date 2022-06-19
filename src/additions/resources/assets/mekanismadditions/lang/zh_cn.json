@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismadditions.balloon.description": "合成任意颜色的气球",
+  "advancements.mekanismadditions.balloon.title": "欲与天公试比高",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "合成任意颜色的发光荧光板",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "照亮黑夜",
+  "advancements.mekanismadditions.not_the_babies.description": "杀死任意通用机械添加的宝宝生物",
+  "advancements.mekanismadditions.not_the_babies.title": "这不可爱",
+  "advancements.mekanismadditions.pop_pop.description": "打破一个气球",
+  "advancements.mekanismadditions.pop_pop.title": "啪 啪",
   "block.mekanismadditions.aqua_glow_panel": "水色荧光板",
   "block.mekanismadditions.aqua_plastic": "水色塑料块",
   "block.mekanismadditions.aqua_plastic_fence": "水色塑料栅栏",
