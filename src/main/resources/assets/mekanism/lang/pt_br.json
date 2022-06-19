@@ -1,4 +1,11 @@
 {
+  "advancements.mekanism.advanced_control_circuit.description": "Crie um Circuito de Controle Avançado",
+  "advancements.mekanism.advanced_control_circuit.title": "Tecnologia Avançada",
+  "advancements.mekanism.advanced_qio_drive.description": "Aumente a largura de banda de armazenamento do seu QIO Drive",
+  "advancements.mekanism.advanced_qio_drive.title": "Armazenamento de Alta Densidade",
+  "advancements.mekanism.alarm.description": "Os alarmes são altos, especialmente o tipo industrial",
+  "advancements.mekanism.alarm.title": "Fazendo Barulho",
+  "advancements.mekanism.alloy_upgrading.description": "Melhore os transmissores no mundo usando o próximo nível de liga",
   "assemblicator.mekanism.auto_mode_toggle": "Modo automático: %1$s",
   "assemblicator.mekanism.craft_available": "Criar itens disponíveis",
   "assemblicator.mekanism.craft_single": "Criar um item",
