@@ -1,4 +1,11 @@
 {
+  "advancements.mekanismadditions.balloon.description": "製作任一顏色的氣球",
+  "advancements.mekanismadditions.balloon.title": "飛向天空",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "製作任一顏色的螢光板",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "在黑暗中發光",
+  "advancements.mekanismadditions.not_the_babies.description": "擊殺任一種Mekanism Addition的怪物寶寶",
+  "advancements.mekanismadditions.pop_pop.description": "弄破一顆氣球",
+  "advancements.mekanismadditions.pop_pop.title": "啪 啪",
   "block.mekanismadditions.aqua_glow_panel": "水藍色螢光板",
   "block.mekanismadditions.aqua_plastic": "水藍色塑料方塊",
   "block.mekanismadditions.aqua_plastic_fence": "水藍色塑料柵欄",
