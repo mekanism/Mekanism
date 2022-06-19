@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Etanolü yakmak için bir Gaz-Yakıcı Jeneratörü üret",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Gazı Yak",
+  "advancements.mekanismgenerators.heat_generator.description": "Enerji üretmeye başlamak için bir Isı Jeneratörü üret",
+  "advancements.mekanismgenerators.heat_generator.title": "İlk Jeneratörün",
+  "advancements.mekanismgenerators.solar_generator.description": "Yenilenebilir gündüz enerjisi",
+  "advancements.mekanismgenerators.solar_generator.title": "Güneşin Gücü",
+  "advancements.mekanismgenerators.wind_generator.description": "Umarım yakınlarda biraz rüzgar vardır",
+  "advancements.mekanismgenerators.wind_generator.title": "Dön bebek dön",
   "block.mekanismgenerators.advanced_solar_generator": "Gelişmiş Solar Jeneratör",
   "block.mekanismgenerators.bio_generator": "Biyo-Jeneratör",
   "block.mekanismgenerators.bioethanol": "Biyoetanol",
