@@ -1,4 +1,13 @@
 {
+  "advancements.mekanismtools.alternate_armor.description": "製作任一件Mekanism Tools的盔甲",
+  "advancements.mekanismtools.alternate_armor.title": "更多盔甲種類!",
+  "advancements.mekanismtools.alternate_tools.description": "製作任一種Mekanism Tools的工具或武器(除了鎬尖斧)",
+  "advancements.mekanismtools.alternate_tools.title": "更多工具種類!",
+  "advancements.mekanismtools.better_than_netherite.title": "比獄髓還要更好",
+  "advancements.mekanismtools.loved_by_piglins.description": "強化螢光石盔甲比金製的還要更亮!",
+  "advancements.mekanismtools.not_enough_shielding.description": "製作任一種Mekanism Tools的盾牌",
+  "advancements.mekanismtools.paxel.description": "製作任一種鎬尖斧(鎬子, 斧頭, 鏟子)",
+  "advancements.mekanismtools.paxel.title": "多功能工具",
   "item.mekanismtools.bronze_axe": "青銅斧",
   "item.mekanismtools.bronze_boots": "青銅靴子",
   "item.mekanismtools.bronze_chestplate": "青銅胸甲",
