@@ -1,4 +1,11 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "製作一臺燃氣發電機來燃燒乙烯",
+  "advancements.mekanismgenerators.burn_the_gas.title": "燃燒氣體",
+  "advancements.mekanismgenerators.heat_generator.description": "製作一臺熱力發電機來開始發電",
+  "advancements.mekanismgenerators.heat_generator.title": "你的第一臺發電機",
+  "advancements.mekanismgenerators.solar_generator.description": "可再生的日間能源",
+  "advancements.mekanismgenerators.solar_generator.title": "太陽的力量",
+  "advancements.mekanismgenerators.wind_generator.description": "希望這附近有風",
   "block.mekanismgenerators.advanced_solar_generator": "高級太陽能發電機",
   "block.mekanismgenerators.bio_generator": "生物能發電機",
   "block.mekanismgenerators.bioethanol": "生物乙醇",
