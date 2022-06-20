@@ -300,7 +300,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     private class ChunkLoader extends TileComponentChunkLoader<TileEntityDimensionalStabilizer> {
 
         public ChunkLoader(TileEntityDimensionalStabilizer tile) {
-            super(tile);
+            super(tile, true);
         }
 
         @Override

@@ -201,7 +201,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 //If the player cannot use the recipe, don't allow crafting
                 return false;
             }
-            //Unload the recipe for the player
+            //Unlock the recipe for the player
             player.awardRecipes(Collections.singleton(lastRecipe));
         }
         return true;
