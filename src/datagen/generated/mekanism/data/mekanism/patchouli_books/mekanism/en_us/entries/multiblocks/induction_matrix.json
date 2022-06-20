@@ -2,5 +2,56 @@
   "name": "Induction Matrix",
   "category": "multiblocks",
   "icon": "mekanism:basic_induction_cell",
-  "pages": []
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:induction_casing",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:induction_port",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:basic_induction_cell",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:advanced_induction_cell",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:elite_induction_cell",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:ultimate_induction_cell",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:basic_induction_provider",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:advanced_induction_provider",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:elite_induction_provider",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:ultimate_induction_provider",
+      "link_recipe": true
+    }
+  ]
 }

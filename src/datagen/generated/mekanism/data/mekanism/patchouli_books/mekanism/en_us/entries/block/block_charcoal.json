@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.block_charcoal",
+  "category": "blocks",
+  "icon": "mekanism:block_charcoal",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:block_charcoal",
+      "link_recipe": true,
+      "text": "Storage block for Charcoal."
+    }
+  ],
+  "read_by_default": true
+}

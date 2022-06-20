@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.industrial_alarm",
+  "category": "blocks",
+  "icon": "mekanism:industrial_alarm",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:industrial_alarm",
+      "link_recipe": true,
+      "text": "WEE WOO WEE WOO$(p)Redstone powered alarm for warning purposes."
+    }
+  ],
+  "read_by_default": true
+}

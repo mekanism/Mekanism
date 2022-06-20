@@ -21,6 +21,11 @@
       "type": "spotlight",
       "item": "mekanism:nugget_bronze",
       "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:block_bronze",
+      "link_recipe": true
     }
   ],
   "read_by_default": true

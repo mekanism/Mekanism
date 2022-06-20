@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.security_desk",
+  "category": "blocks",
+  "icon": "mekanism:security_desk",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:security_desk",
+      "link_recipe": true,
+      "text": "Used for adjusting the security of Mekanism blocks and items."
+    }
+  ],
+  "read_by_default": true
+}

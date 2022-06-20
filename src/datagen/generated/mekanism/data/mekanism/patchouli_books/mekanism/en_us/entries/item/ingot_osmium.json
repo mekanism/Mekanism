@@ -14,6 +14,11 @@
     },
     {
       "type": "spotlight",
+      "item": "mekanism:deepslate_osmium_ore",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
       "item": "mekanism:shard_osmium",
       "link_recipe": true
     },
@@ -40,6 +45,11 @@
     {
       "type": "spotlight",
       "item": "mekanism:ingot_osmium",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:raw_osmium",
       "link_recipe": true
     },
     {

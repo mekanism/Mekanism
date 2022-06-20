@@ -1,11 +1,11 @@
 {
   "name": "item.mekanism.scuba_tank",
   "category": "items_gear",
-  "icon": "mekanism:scuba_tank{\"HideFlags\":2}",
+  "icon": "mekanism:scuba_tank",
   "pages": [
     {
       "type": "spotlight",
-      "item": "mekanism:scuba_tank{\"HideFlags\":2}",
+      "item": "mekanism:scuba_tank",
       "link_recipe": true,
       "text": "A piece of equipment worn in the chest armor slot that provides underwater respiration when a $(l:item/scuba_mask)Scuba Mask$(/l) is worn. The Scuba Tank must be filled with Oxygen gas in order to function."
     },

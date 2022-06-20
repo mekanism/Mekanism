@@ -1,7 +1,7 @@
 {
   "name": "Hazmat Suit",
   "category": "items_gear",
-  "icon": "mekanism:hazmat_gown{\"HideFlags\":2}",
+  "icon": "mekanism:hazmat_gown",
   "pages": [
     {
       "type": "text",
@@ -9,25 +9,25 @@
     },
     {
       "type": "spotlight",
-      "item": "mekanism:hazmat_mask{\"HideFlags\":2}",
+      "item": "mekanism:hazmat_mask",
       "link_recipe": true,
       "text": "For your face."
     },
     {
       "type": "spotlight",
-      "item": "mekanism:hazmat_gown{\"HideFlags\":2}",
+      "item": "mekanism:hazmat_gown",
       "link_recipe": true,
       "text": "For your torso."
     },
     {
       "type": "spotlight",
-      "item": "mekanism:hazmat_pants{\"HideFlags\":2}",
+      "item": "mekanism:hazmat_pants",
       "link_recipe": true,
       "text": "For your legs."
     },
     {
       "type": "spotlight",
-      "item": "mekanism:hazmat_boots{\"HideFlags\":2}",
+      "item": "mekanism:hazmat_boots",
       "link_recipe": true,
       "text": "For your feet."
     }

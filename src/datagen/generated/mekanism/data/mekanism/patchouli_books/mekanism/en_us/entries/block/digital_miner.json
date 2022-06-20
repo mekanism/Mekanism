@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.digital_miner",
+  "category": "blocks",
+  "icon": "mekanism:digital_miner",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:digital_miner",
+      "link_recipe": true,
+      "text": "Now you're thinking with portals!$(p)Advanced mining equipment that can mine blocks via teleportation."
+    }
+  ],
+  "read_by_default": true
+}

@@ -2,5 +2,26 @@
   "name": "boiler.mekanism.thermoelectric_boiler",
   "category": "multiblocks",
   "icon": "mekanism:boiler_valve",
-  "pages": []
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:superheating_element",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:pressure_disperser",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:boiler_casing",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:boiler_valve",
+      "link_recipe": true
+    }
+  ]
 }

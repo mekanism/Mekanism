@@ -2,5 +2,11 @@
   "name": "Teleporter",
   "category": "multiblocks",
   "icon": "mekanism:teleporter",
-  "pages": []
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:teleporter_frame",
+      "link_recipe": true
+    }
+  ]
 }

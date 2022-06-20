@@ -37,6 +37,21 @@
           "B": "mekanism:thermal_evaporation_controller[active=false,facing=east]"
         }
       }
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:thermal_evaporation_controller",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:thermal_evaporation_valve",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:thermal_evaporation_block",
+      "link_recipe": true
     }
   ]
 }

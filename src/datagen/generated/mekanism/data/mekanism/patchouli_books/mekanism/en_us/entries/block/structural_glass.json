@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.structural_glass",
+  "category": "blocks",
+  "icon": "mekanism:structural_glass",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:structural_glass",
+      "link_recipe": true,
+      "text": "Glass that can be used in many Multiblocks."
+    }
+  ],
+  "read_by_default": true
+}

@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.osmium_compressor",
+  "category": "blocks",
+  "icon": "mekanism:osmium_compressor",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:osmium_compressor",
+      "link_recipe": true,
+      "text": "Infuses Liquid Osmium into various materials to make things such as $(l:item/ingot_refined_glowstone)Refined Glowstone$(/l) and $(l:item/ingot_refined_obsidian)Refined Obsidian$(/l)"
+    }
+  ],
+  "read_by_default": true
+}

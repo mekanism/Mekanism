@@ -1,0 +1,18 @@
+{
+  "name": "block.mekanism.radioactive_waste_barrel",
+  "category": "blocks",
+  "icon": "mekanism:radioactive_waste_barrel",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:radioactive_waste_barrel",
+      "link_recipe": true,
+      "text": "Stores radioactive chemicals. Can be stacked vertically to increase overall capacity."
+    },
+    {
+      "type": "text",
+      "text": "WARNING: radioactive contents will disperse into the atmosphere when broken."
+    }
+  ],
+  "read_by_default": true
+}

@@ -1,17 +1,17 @@
 {
   "name": "item.mekanism.jetpack",
   "category": "items_gear",
-  "icon": "mekanism:jetpack{\"HideFlags\":2}",
+  "icon": "mekanism:jetpack",
   "pages": [
     {
       "type": "spotlight",
-      "item": "mekanism:jetpack{\"HideFlags\":2}",
+      "item": "mekanism:jetpack",
       "link_recipe": true,
-      "text": "The Jetpack is an item that allows the player to fly, equippable in the chestplate slot. It uses Hydrogen gas as a fuel, of which it can store up to 24,000 mB."
+      "text": "We here at Mekanism, Inc. are not responsible for any incidents involving fall damage.$(p)The Jetpack is an item that allows the player to fly, equippable in the chestplate slot. It uses $(l:gas/hydrogen)Hydrogen$(/l) as a fuel, of which it can store up to 24,000 mB."
     },
     {
       "type": "text",
-      "text": "The Jetpack can be filled up wherever Hydrogen gas is outputted into a slot.$(br)Here are a few examples:$(li)It can be placed in the $(l:block/electrolytic_separator)Electrolytic Separator's$(/l) left output slot (where Hydrogen is outputted) after placing water in the machine's input slot$(li)It can be placed in a $(l:tanks/gas)Chemical Tank's$(/l) output slot.$(br2)While worn, the Jetpack displays the Hydrogen remaining and the mode active in the bottom left corner.",
+      "text": "The Jetpack can be filled up wherever Hydrogen gas is outputted into a slot.$(br)Here are a few examples:$(li)It can be placed in the $(l:block/electrolytic_separator)Electrolytic Separator's$(/l) hydrogen slot after placing water in the machine's input slot$(li)It can be placed in a $(l:tanks/gas)Chemical Tank's$(/l) output slot.$(br2)While worn, the Jetpack displays the Hydrogen remaining and the mode active in the bottom left corner.",
       "title": "Fueling"
     },
     {

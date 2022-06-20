@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.crusher",
+  "category": "blocks",
+  "icon": "mekanism:crusher",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:crusher",
+      "link_recipe": true,
+      "text": "Smash things into smaller things.$(p)Not used for ore multiplication, see the $(l:block/enrichment_chamber)Enrichment Chamber$(/l) for that."
+    }
+  ],
+  "read_by_default": true
+}

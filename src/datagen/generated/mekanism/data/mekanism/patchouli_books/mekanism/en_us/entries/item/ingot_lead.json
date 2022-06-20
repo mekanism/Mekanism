@@ -14,6 +14,11 @@
     },
     {
       "type": "spotlight",
+      "item": "mekanism:deepslate_uranium_ore",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
       "item": "mekanism:shard_uranium",
       "link_recipe": true
     },
@@ -40,6 +45,11 @@
     {
       "type": "spotlight",
       "item": "mekanism:ingot_uranium",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:raw_uranium",
       "link_recipe": true
     },
     {

@@ -1,0 +1,14 @@
+{
+  "name": "block.mekanism.combiner",
+  "category": "blocks",
+  "icon": "mekanism:combiner",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:combiner",
+      "link_recipe": true,
+      "text": "Recombines materials into ore with the addition of rocks.$(p)Modpack makers are responsible for balancing recipes with other mods."
+    }
+  ],
+  "read_by_default": true
+}

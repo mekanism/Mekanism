@@ -1,17 +1,17 @@
 {
   "name": "item.mekanism.atomic_disassembler",
   "category": "items_gear",
-  "icon": "mekanism:atomic_disassembler{\"HideFlags\":2}",
+  "icon": "mekanism:atomic_disassembler",
   "pages": [
     {
       "type": "spotlight",
-      "item": "mekanism:atomic_disassembler{\"HideFlags\":2}",
+      "item": "mekanism:atomic_disassembler",
       "link_recipe": true,
       "text": "The Atomic Disassembler is Mekanism's an all-in-one tool, essentially the ultimate, electronic version of the Paxel (working at any mining level). Also functions as a Hoe & Scoop (Forestry)$(p)The Atomic Disassembler has multiple modes that can be cycled with $(k:sneak) + right click."
     },
     {
       "type": "text",
-      "text": "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool $(l:items/modules/mekanism:module_farming_unit)Farming Unit$(/l)",
+      "text": "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool $(l:item/modules/mekanism:farming_unit)Farming Unit$(/l)",
       "title": "Normal Mode"
     },
     {
