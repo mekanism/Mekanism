@@ -1,4 +1,7 @@
 {
+  "advancements.mekanismgenerators.heat_generator.description": "Crie um Gerador a Calor para iniciar a criação de energia",
+  "advancements.mekanismgenerators.heat_generator.title": "A primeira geração",
+  "advancements.mekanismgenerators.solar_generator.title": "Poder Solar",
   "block.mekanismgenerators.advanced_solar_generator": "Gerador a Energia Solar Avançado",
   "block.mekanismgenerators.bio_generator": "Biogerador",
   "block.mekanismgenerators.bioethanol": "Bioetanol",
