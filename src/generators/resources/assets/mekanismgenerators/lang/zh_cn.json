@@ -1,5 +1,5 @@
 {
-  "advancements.mekanismgenerators.burn_the_gas.description": "制作一个燃气发电机来燃烧乙烯",
+  "advancements.mekanismgenerators.burn_the_gas.description": "合成燃气发电机来燃烧乙烯",
   "advancements.mekanismgenerators.burn_the_gas.title": "燃烧气体",
   "advancements.mekanismgenerators.heat_generator.description": "合成热力发电机来发电",
   "advancements.mekanismgenerators.heat_generator.title": "你的第一台发电机",
@@ -92,7 +92,7 @@
   "fission.mekanismgenerators.heated_coolant_tank": "加热过的冷却液箱",
   "fission.mekanismgenerators.heating_rate": "加热速率：%1$s mB/t",
   "fission.mekanismgenerators.invalid_bad_control_rod": "无法成型，控制棒组件在%1$s的位置不正确。",
-  "fission.mekanismgenerators.invalid_bad_fuel_assembly": "不能成型，在%1$s处缺少控制棒的燃料组件。",
+  "fission.mekanismgenerators.invalid_bad_fuel_assembly": "无法成型，在%1$s处缺少控制棒的燃料组件。",
   "fission.mekanismgenerators.invalid_extra_control_rod": "无法成型，发现有额外的控制棒组件在%1$s。",
   "fission.mekanismgenerators.invalid_malformed_fuel_assembly": "无法成型，在%1$s放置的裂变燃料组件是无效的。",
   "fission.mekanismgenerators.invalid_missing_fuel_assembly": "无法成型，没有燃料组件结构。",
