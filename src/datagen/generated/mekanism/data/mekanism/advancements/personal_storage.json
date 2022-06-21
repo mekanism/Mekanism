@@ -5,10 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:personal_barrel",
-              "mekanism:personal_chest"
-            ]
+            "tag": "mekanism:personal_storage"
           }
         ]
       },
