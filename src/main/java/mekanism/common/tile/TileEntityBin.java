@@ -166,7 +166,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void handleUpdateTag(@Nonnull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, locked -> binSlot.setLocked(locked));
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, binSlot::setLocked);
     }
 
     //Methods relating to IComputerTile
