@@ -206,4 +206,5 @@ public final class NBTConstants {
     public static final String USED_NODES = "usedNodes";
     public static final String USED_SO_FAR = "usedSoFar";
     public static final String WORLD_GEN_VERSION = "mekWorldGenVersion";
+    public static final String LOCKED = "locked";
 }

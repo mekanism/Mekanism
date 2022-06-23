@@ -6,6 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.inventory.slot.BinInventorySlot;
+import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -83,6 +84,12 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         } else if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return InteractionResult.SUCCESS;
         } else if (!world.isClientSide) {
+            if (player.getItemInHand(hand).isEmpty() && player.isShiftKeyDown() && bin.getTier() != BinTier.CREATIVE &&
+                    !bin.getBinSlot().getStack().isEmpty()) {
+                // Only lock if there is an item stored
+                bin.changeLock();
+                return InteractionResult.SUCCESS;
+            }
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());
             if (binSlot.getCount() < binMaxSize) {

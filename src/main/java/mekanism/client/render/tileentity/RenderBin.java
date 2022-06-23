@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -55,7 +56,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             //if the bin has an item stack and the face isn't covered by a solid side
             Optional<BlockState> blockState = WorldUtils.getBlockState(world, coverPos);
             if (blockState.isEmpty() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(world, coverPos, facing.getOpposite())) {
-                Component amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
                 matrix.pushPose();
                 //TODO: Come up with a better way to do this hack? Basically we adjust the normals so that the lighting
                 // isn't screwy when it tries to apply the diffuse lighting as we aren't able to disable diffuse lighting
@@ -87,9 +87,16 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
                 Minecraft.getInstance().getItemRenderer().renderStatic(binSlot.getStack(), TransformType.GUI, light, overlayLight, matrix, renderer,
                       MathUtils.clampToInt(tile.getBlockPos().asLong()));
                 matrix.popPose();
-                renderText(matrix, renderer, light, overlayLight, amount, facing, 0.02F);
+                renderText(matrix, renderer, light, overlayLight, getCount(tile), facing, 0.02F);
             }
         }
+    }
+
+    protected MutableComponent getCount(TileEntityBin bin) {
+        if (bin.getTier() == BinTier.CREATIVE)
+            return MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
+        return TextComponentUtil.build(bin.getBinSlot().getCount())
+                .withStyle(s -> s.withColor(bin.getBinSlot().isLocked() ? EnumColor.AQUA.getColor() : EnumColor.WHITE.getColor()));
     }
 
     @Override
@@ -145,7 +152,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         int realWidth = (int) Math.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
-        font.drawInBatch(TextComponentUtil.build(EnumColor.WHITE, text), offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
+        font.drawInBatch(text, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
               false, matrix.last().pose(), renderer, false, 0, light);
         matrix.popPose();
     }

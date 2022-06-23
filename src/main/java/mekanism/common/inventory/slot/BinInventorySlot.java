@@ -7,12 +7,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNonnullByDefault
@@ -27,6 +30,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     private final boolean isCreative;
+    private boolean isLocked;
 
     private BinInventorySlot(@Nullable IContentsListener listener, BinTier tier) {
         super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, validator, listener, 0, 0);
@@ -82,6 +86,28 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        return StackUtils.size(current, Math.min(getCount(), current.getMaxStackSize()));
+        // If locked, the last item can't be extracted
+        return StackUtils.size(current, Math.min(isLocked ? getCount() - 1 : getCount(), current.getMaxStackSize()));
+    }
+
+    public void setLocked(boolean locked) {
+        this.isLocked = locked;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        final CompoundTag nbt = super.serializeNBT();
+        nbt.putBoolean(NBTConstants.LOCKED, isLocked);
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        super.deserializeNBT(nbt);
+        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.LOCKED, this::setLocked);
     }
 }

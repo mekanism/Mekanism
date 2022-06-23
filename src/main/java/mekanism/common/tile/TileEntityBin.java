@@ -121,6 +121,14 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         return InteractionResult.PASS;
     }
 
+    public void changeLock() {
+        final boolean newValue = binSlot.isLocked();
+        binSlot.setLocked(!newValue);
+        sendUpdatePacket();
+        if (getLevel() != null)
+            getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
+    }
+
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
         if (upgradeData instanceof BinUpgradeData data) {
@@ -150,6 +158,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT());
+        updateTag.putBoolean(NBTConstants.LOCKED, binSlot.isLocked());
         return updateTag;
     }
 
@@ -157,6 +166,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void handleUpdateTag(@Nonnull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, locked -> binSlot.setLocked(locked));
     }
 
     //Methods relating to IComputerTile
