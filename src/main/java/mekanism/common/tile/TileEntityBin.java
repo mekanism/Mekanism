@@ -121,8 +121,12 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         return InteractionResult.PASS;
     }
 
-    public void changeLock() {
-        binSlot.setLocked(!binSlot.isLocked());
+    public void toggleLock() {
+        setLocked(!binSlot.isLocked());
+    }
+
+    public void setLocked(boolean isLocked) {
+        binSlot.setLocked(isLocked);
         sendUpdatePacket();
         markForSave();
         if (getLevel() != null) {
@@ -175,10 +179,24 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     private int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());
     }
-    
+
     @ComputerMethod
     private boolean isLocked() {
         return getBinSlot().isLocked();
+    }
+
+    @ComputerMethod
+    private void lock() {
+        if (!binSlot.isLocked() && !binSlot.isEmpty() && getTier() != BinTier.CREATIVE) {
+            setLocked(true);
+        }
+    }
+
+    @ComputerMethod
+    private void unlock() {
+        if (binSlot.isLocked() && !binSlot.isEmpty() && getTier() != BinTier.CREATIVE) {
+            setLocked(false);
+        }
     }
     //End methods IComputerTile
 }

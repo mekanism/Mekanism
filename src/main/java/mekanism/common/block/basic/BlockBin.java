@@ -88,7 +88,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             if (stack.isEmpty() && player.isShiftKeyDown() && bin.getTier() != BinTier.CREATIVE &&
                     !bin.getBinSlot().getStack().isEmpty()) {
                 // Only lock if there is an item stored
-                bin.changeLock();
+                bin.toggleLock();
                 return InteractionResult.SUCCESS;
             }
             BinInventorySlot binSlot = bin.getBinSlot();
