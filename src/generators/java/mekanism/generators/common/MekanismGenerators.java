@@ -111,7 +111,7 @@ public class MekanismGenerators implements IModModule {
         packetHandler.initialize();
 
         //Finalization
-        Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
+        Mekanism.logger.info("Loaded 'Mekanism: Generators' module.");
     }
 
     private void imcQueue(InterModEnqueueEvent event) {

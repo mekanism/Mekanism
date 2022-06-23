@@ -69,7 +69,7 @@ public class MekanismDefense implements IModModule {
         packetHandler.initialize();
 
         //Finalization
-        Mekanism.logger.info("Loaded 'Mekanism Defense' module.");
+        Mekanism.logger.info("Loaded 'Mekanism: Defense' module.");
     }
 
     private void serverStopped(ServerStoppedEvent event) {
