@@ -174,5 +174,9 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     private int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());
     }
+    @ComputerMethod
+    private boolean isLocked() {
+        return getBinSlot().isLocked();
+    }
     //End methods IComputerTile
 }
