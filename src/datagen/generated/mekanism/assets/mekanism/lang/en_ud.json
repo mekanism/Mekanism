@@ -1559,6 +1559,7 @@
   "tooltip.mekanism.inventory": "%s :ʎɹoʇuǝʌuI",
   "tooltip.mekanism.item_amount": "%s :ʇunoɯɐ ɯǝʇI",
   "tooltip.mekanism.jei.amount.with.capacity": "ᗺɯ %2$s / %1$s",
+  "tooltip.mekanism.locked": "%s :ɯǝʇᴉ oʇ pǝʞɔoꞀ",
   "tooltip.mekanism.mode": "%s :ǝpoW",
   "tooltip.mekanism.mode.free_runners": "%s :ǝpoW sɹǝuunᴚ",
   "tooltip.mekanism.mode.jetpack": "%s :ǝpoW ʞɔɐdʇǝՐ",

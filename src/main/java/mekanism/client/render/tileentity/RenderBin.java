@@ -95,8 +95,8 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     protected MutableComponent getCount(TileEntityBin bin) {
         if (bin.getTier() == BinTier.CREATIVE)
             return MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
-        return TextComponentUtil.build(bin.getBinSlot().getCount())
-                .withStyle(s -> s.withColor(bin.getBinSlot().isLocked() ? EnumColor.AQUA.getColor() : EnumColor.WHITE.getColor()));
+        final BinInventorySlot slot = bin.getBinSlot();
+        return TextComponentUtil.build(slot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, slot.getCount());
     }
 
     @Override
