@@ -84,7 +84,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         } else if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return InteractionResult.SUCCESS;
         } else if (!world.isClientSide) {
-            if (player.getItemInHand(hand).isEmpty() && player.isShiftKeyDown() && bin.getTier() != BinTier.CREATIVE &&
+            final ItemStack stack = player.getItemInHand(hand);
+            if (stack.isEmpty() && player.isShiftKeyDown() && bin.getTier() != BinTier.CREATIVE &&
                     !bin.getBinSlot().getStack().isEmpty()) {
                 // Only lock if there is an item stored
                 bin.changeLock();
@@ -93,7 +94,6 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());
             if (binSlot.getCount() < binMaxSize) {
-                ItemStack stack = player.getItemInHand(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);

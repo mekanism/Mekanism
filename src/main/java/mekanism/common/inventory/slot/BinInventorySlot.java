@@ -55,7 +55,15 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        return super.extractItem(amount, action.combine(!isCreative), automationType);
+        // TODO: this doesn't seem to work; hoppers infinitely extract
+        final ItemStack old = getStack().copy();
+        final ItemStack extracted = super.extractItem(amount, action.combine(!isCreative), automationType);
+        if (isLocked && current.isEmpty()) {
+            old.setCount(1);
+            setStackUnchecked(old);
+            extracted.shrink(1);
+        }
+        return extracted;
     }
 
     /**

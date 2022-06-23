@@ -122,11 +122,12 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     public void changeLock() {
-        final boolean newValue = binSlot.isLocked();
-        binSlot.setLocked(!newValue);
+        binSlot.setLocked(!binSlot.isLocked());
         sendUpdatePacket();
-        if (getLevel() != null)
+        markForSave();
+        if (getLevel() != null) {
             getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
+        }
     }
 
     @Override
@@ -174,6 +175,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     private int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());
     }
+    
     @ComputerMethod
     private boolean isLocked() {
         return getBinSlot().isLocked();

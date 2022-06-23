@@ -46,8 +46,9 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
                     tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(slot.getCount())));
                 }
 
-                if (slot.isLocked())
+                if (slot.isLocked()) {
                     tooltip.add(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, ForgeRegistries.ITEMS.getKey(slot.getStack().getItem())));
+                }
             }
             if (tier == BinTier.CREATIVE) {
                 tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
