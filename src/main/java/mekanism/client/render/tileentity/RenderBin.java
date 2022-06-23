@@ -49,7 +49,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     protected void render(TileEntityBin tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         Level world = tile.getLevel();
         BinInventorySlot binSlot = tile.getBinSlot();
-        if (world != null && !binSlot.isEmpty()) {
+        if (world != null && (!binSlot.isEmpty() || binSlot.isLocked())) {
             Direction facing = tile.getDirection();
             //position of the block covering the front side
             BlockPos coverPos = tile.getBlockPos().relative(facing);
@@ -84,7 +84,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
                 matrix.scale(16, 16, 16);
                 //Calculate lighting based on the light at the block the bin is facing
                 light = LevelRenderer.getLightColor(world, tile.getBlockPos().relative(facing));
-                Minecraft.getInstance().getItemRenderer().renderStatic(binSlot.getStack(), TransformType.GUI, light, overlayLight, matrix, renderer,
+                Minecraft.getInstance().getItemRenderer().renderStatic(binSlot.getRenderStack(), TransformType.GUI, light, overlayLight, matrix, renderer,
                       MathUtils.clampToInt(tile.getBlockPos().asLong()));
                 matrix.popPose();
                 renderText(matrix, renderer, light, overlayLight, getCount(tile), facing, 0.02F);
@@ -97,7 +97,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             return MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
         }
         final BinInventorySlot slot = bin.getBinSlot();
-        return TextComponentUtil.build(slot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, slot.getCount());
+        return TextComponentUtil.build(slot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, slot.getActualCount());
     }
 
     @Override

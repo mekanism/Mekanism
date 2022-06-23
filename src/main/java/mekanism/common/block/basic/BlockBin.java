@@ -85,11 +85,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             return InteractionResult.SUCCESS;
         } else if (!world.isClientSide) {
             final ItemStack stack = player.getItemInHand(hand);
-            if (stack.isEmpty() && player.isShiftKeyDown() && bin.getTier() != BinTier.CREATIVE &&
-                    !bin.getBinSlot().getStack().isEmpty()) {
-                // Only lock if there is an item stored
-                bin.toggleLock();
-                return InteractionResult.SUCCESS;
+            if (stack.isEmpty() && player.isShiftKeyDown()) {
+                return bin.toggleLock() ? InteractionResult.SUCCESS : InteractionResult.FAIL;
             }
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());

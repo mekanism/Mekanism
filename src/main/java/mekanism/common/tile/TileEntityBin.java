@@ -121,17 +121,23 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         return InteractionResult.PASS;
     }
 
-    public void toggleLock() {
-        setLocked(!binSlot.isLocked());
+    public boolean toggleLock() {
+        return setLocked(!binSlot.isLocked());
     }
 
-    public void setLocked(boolean isLocked) {
-        binSlot.setLocked(isLocked);
-        sendUpdatePacket();
-        markForSave();
-        if (getLevel() != null) {
-            getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
+    public boolean setLocked(boolean isLocked) {
+        if (getTier() == BinTier.CREATIVE) {
+            return false;
         }
+        final boolean changed = binSlot.setLocked(isLocked, false);
+        if (changed) {
+            sendUpdatePacket();
+            markForSave();
+            if (getLevel() != null) {
+                getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
+            }
+        }
+        return changed;
     }
 
     @Override
@@ -171,7 +177,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void handleUpdateTag(@Nonnull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, binSlot::setLocked);
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, l -> binSlot.setLocked(l, true));
     }
 
     //Methods relating to IComputerTile
@@ -186,17 +192,13 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @ComputerMethod
-    private void lock() {
-        if (!binSlot.isLocked() && !binSlot.isEmpty() && getTier() != BinTier.CREATIVE) {
-            setLocked(true);
-        }
+    private boolean lock() {
+        return setLocked(true);
     }
 
     @ComputerMethod
-    private void unlock() {
-        if (binSlot.isLocked() && !binSlot.isEmpty() && getTier() != BinTier.CREATIVE) {
-            setLocked(false);
-        }
+    private boolean unlock() {
+        return setLocked(false);
     }
     //End methods IComputerTile
 }
