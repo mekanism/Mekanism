@@ -1,5 +1,6 @@
 package mekanism.common.tag;
 
+import biomesoplenty.api.entity.BOPEntities;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
@@ -135,8 +136,7 @@ public class MekanismTagProvider extends BaseTagProvider {
                     EntityType.SPAWNER_MINECART,
                     EntityType.TNT_MINECART
               )
-              //TODO - 1.19: Add back after they update to support fluid changes
-              //.addOptional(BOPEntities.BOAT.get(), BOPEntities.CHEST_BOAT.get())
+              .addOptional(BOPEntities.BOAT.get(), BOPEntities.CHEST_BOAT.get())
               .addOptional(BYGEntities.BOAT.get(), BYGEntities.CHEST_BOAT.get())
         ;
     }

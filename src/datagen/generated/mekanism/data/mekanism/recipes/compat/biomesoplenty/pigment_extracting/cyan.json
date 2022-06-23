@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:glowflower"
+    }
+  },
+  "output": {
+    "amount": 768,
+    "pigment": "mekanism:cyan"
+  }
+}

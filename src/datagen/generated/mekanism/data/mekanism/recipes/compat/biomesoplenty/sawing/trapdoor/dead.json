@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:dead_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "biomesoplenty:dead_planks"
+  }
+}

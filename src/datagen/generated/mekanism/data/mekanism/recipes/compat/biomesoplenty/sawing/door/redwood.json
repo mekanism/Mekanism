@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:redwood_door"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "biomesoplenty:redwood_planks"
+  }
+}

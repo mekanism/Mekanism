@@ -1,0 +1,29 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "biomesoplenty:orange_sandstone"
+      },
+      {
+        "item": "biomesoplenty:chiseled_orange_sandstone"
+      },
+      {
+        "item": "biomesoplenty:cut_orange_sandstone"
+      },
+      {
+        "item": "biomesoplenty:smooth_orange_sandstone"
+      }
+    ]
+  },
+  "output": {
+    "count": 2,
+    "item": "biomesoplenty:orange_sand"
+  }
+}

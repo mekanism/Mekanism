@@ -1,4 +1,4 @@
-/*package mekanism.common.integration.energy.fluxnetworks;
+package mekanism.common.integration.energy.fluxnetworks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -8,8 +8,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
@@ -27,11 +30,7 @@ public class FNEnergyCompat implements IEnergyCompat {
 
     @Override
     public boolean isMatchingCapability(@Nonnull Capability<?> capability) {
-        if (Mekanism.hooks.FluxNetworksLoaded) {
-            //Ensure we check that Flux networks is loaded before attempting to access their capability
-            return capability == FN_ENERGY_CAPABILITY;
-        }
-        return false;
+        return capability == FN_ENERGY_CAPABILITY;
     }
 
     @Override
@@ -50,4 +49,4 @@ public class FNEnergyCompat implements IEnergyCompat {
     public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
         return CapabilityUtils.getCapability(provider, FN_ENERGY_CAPABILITY, side).lazyMap(FNStrictEnergyHandler::new);
     }
-}*/
+}

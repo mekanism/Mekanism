@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:jacaranda_fence_gate"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "biomesoplenty:jacaranda_planks"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "count": 4,
+    "item": "minecraft:stick"
+  }
+}

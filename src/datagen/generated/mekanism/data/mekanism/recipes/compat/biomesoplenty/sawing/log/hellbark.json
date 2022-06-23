@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "tag": "biomesoplenty:hellbark_logs"
+    }
+  },
+  "mainOutput": {
+    "count": 6,
+    "item": "biomesoplenty:hellbark_planks"
+  },
+  "secondaryChance": 0.25,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

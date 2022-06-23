@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "biomesoplenty:orange_cosmos"
+      },
+      {
+        "item": "biomesoplenty:burning_blossom"
+      }
+    ]
+  },
+  "output": {
+    "amount": 768,
+    "pigment": "mekanism:orange"
+  }
+}

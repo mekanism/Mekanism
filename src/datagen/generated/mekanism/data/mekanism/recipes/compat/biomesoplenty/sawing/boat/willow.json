@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:willow_boat"
+    }
+  },
+  "mainOutput": {
+    "count": 5,
+    "item": "biomesoplenty:willow_planks"
+  }
+}

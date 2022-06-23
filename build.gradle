@@ -436,10 +436,9 @@ dependencies {
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    //TODO - 1.19: Re-enable after they support changes to config and calling get early
-    /*runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
-    }*/
+    }
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
     compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
@@ -450,8 +449,7 @@ dependencies {
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
-    //TODO - 1.18: Support flux networks again when it ports
-    //compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
+    compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
     def cc = fg.deobf("curse.maven:cc-tweaked-282001:${cc_tweaked_id}")
@@ -464,8 +462,7 @@ dependencies {
     //TODO - 1.19: datagenMainImplementation once ae2 update
     datagenMainCompileOnly fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenMainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
-    //TODO - 1.19: Re-enable when it updates to support the config get changes
-    //datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
+    datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
     datagenMainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
     //TODO - 1.19: datagenmainImplementation once these update
