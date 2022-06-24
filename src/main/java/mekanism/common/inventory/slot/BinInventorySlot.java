@@ -46,7 +46,7 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (isLocked && !ItemHandlerHelper.canItemStacksStack(stack, lockStack)) {
+        if (isLocked && isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, lockStack)) {
             // When locked, we need to make sure an item of other type is not inserted
             return stack;
         }
@@ -79,12 +79,6 @@ public class BinInventorySlot extends BasicInventorySlot {
         return super.setStackSize(amount, action.combine(!isCreative));
     }
 
-    @Override
-    public int getLimit(ItemStack stack) {
-        final int normalLimit = super.getLimit(stack);
-        return isLocked ? normalLimit - 1 : normalLimit;
-    }
-
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
@@ -102,33 +96,24 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        // If locked, the last item can't be extracted
         return StackUtils.size(current, Math.min(getCount(), current.getMaxStackSize()));
     }
 
     /**
      * Modifies the lock state of the slot.
      * @param locked if the slot should be locked
-     * @param clientSide if this method is called client side
      * @return if the lock state was modified
      */
     @CanIgnoreReturnValue
-    public boolean setLocked(boolean locked, boolean clientSide) {
-        if (this.isLocked == locked || (getStack().isEmpty() && !this.isLocked)) {
+    public boolean setLocked(boolean locked) {
+        if (this.isLocked == locked || (isEmpty() && !this.isLocked)) {
             return false;
         }
         this.isLocked = locked;
         if (locked) {
-            lockStack = getStack().copy();
-            lockStack.setCount(1);
-            if (!clientSide) {
-                current.shrink(1); // One of the items is now frozen
-            }
+            lockStack =  StackUtils.size(current, 1);
         } else {
             lockStack = ItemStack.EMPTY;
-            if (!clientSide) {
-                current.grow(1); // We want to re-add the frozen item
-            }
         }
         return true;
     }
@@ -145,27 +130,18 @@ public class BinInventorySlot extends BasicInventorySlot {
         return lockStack;
     }
 
-    /**
-     * Similar to {@link #getCount()} except, if the bin is locked, the "lock item" is added to the count.
-     * @return the actual stack count
-     */
-    public int getActualCount() {
-        final int count = getCount();
-        return isLocked() ? count + 1 : count;
-    }
-
     @Override
     public CompoundTag serializeNBT() {
         final CompoundTag nbt = super.serializeNBT();
         nbt.putBoolean(NBTConstants.LOCKED, isLocked);
-        nbt.put("lockStack", lockStack.serializeNBT());
+        nbt.put(NBTConstants.LOCK_STACK, lockStack.serializeNBT());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.LOCKED, t -> setLocked(t, false));
-        NBTUtils.setItemStackIfPresent(nbt, "lockStack", s -> this.lockStack = s);
+        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.LOCKED, this::setLocked);
+        NBTUtils.setItemStackIfPresent(nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
     }
 }

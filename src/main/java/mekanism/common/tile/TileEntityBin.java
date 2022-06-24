@@ -11,6 +11,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -129,15 +130,15 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         if (getTier() == BinTier.CREATIVE) {
             return false;
         }
-        final boolean changed = binSlot.setLocked(isLocked, false);
-        if (changed) {
+        if (binSlot.setLocked(isLocked)) {
             sendUpdatePacket();
             markForSave();
             if (getLevel() != null) {
                 getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
             }
+            return true;
         }
-        return changed;
+        return false;
     }
 
     @Override
@@ -145,6 +146,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         if (upgradeData instanceof BinUpgradeData data) {
             redstone = data.redstone();
             binSlot.setStack(data.binSlot().getStack());
+            binSlot.setLocked(data.binSlot().isLocked());
         } else {
             super.parseUpgradeData(upgradeData);
         }
@@ -177,7 +179,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void handleUpdateTag(@Nonnull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, l -> binSlot.setLocked(l, true));
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, binSlot::setLocked);
     }
 
     //Methods relating to IComputerTile
@@ -192,13 +194,16 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @ComputerMethod
-    private boolean lock() {
-        return setLocked(true);
+    private void lock() throws ComputerException {
+        if (getTier() == BinTier.CREATIVE) throw new ComputerException("Creative bins cannot be locked!");
+        if (getBinSlot().isEmpty()) throw new ComputerException("Empty bins cannot be locked!");
+        if (!setLocked(true)) throw new ComputerException("This bin is already locked!");
     }
 
     @ComputerMethod
-    private boolean unlock() {
-        return setLocked(false);
+    private void unlock() throws ComputerException {
+        if (getTier() == BinTier.CREATIVE) throw new ComputerException("Creative bins cannot be unlocked!");
+        if (!setLocked(true)) throw new ComputerException("This bin is not locked!");
     }
     //End methods IComputerTile
 }

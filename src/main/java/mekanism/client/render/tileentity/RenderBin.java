@@ -97,7 +97,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             return MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
         }
         final BinInventorySlot slot = bin.getBinSlot();
-        return TextComponentUtil.build(slot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, slot.getActualCount());
+        return TextComponentUtil.build(slot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, slot.getCount());
     }
 
     @Override
