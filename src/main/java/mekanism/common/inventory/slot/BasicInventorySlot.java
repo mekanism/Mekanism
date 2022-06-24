@@ -312,7 +312,7 @@ public class BasicInventorySlot implements IInventorySlot {
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.ITEM, current.save(new CompoundTag()));
+            nbt.put(NBTConstants.ITEM, current.serializeNBT());
             if (getCount() > current.getMaxStackSize()) {
                 nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
             }

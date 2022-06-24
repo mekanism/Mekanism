@@ -165,8 +165,7 @@ public class QIOGlobalItemLookup {
 
         public CompoundTag getNbtRepresentation() {
             if (nbtRepresentation == null) {
-                nbtRepresentation = new CompoundTag();
-                getStack().save(nbtRepresentation);
+                nbtRepresentation = getStack().serializeNBT();
                 //Override to ensure that it gets stored with a count of one in case it was raw
                 // and that then when we read it we don't create it with extra size
                 nbtRepresentation.putByte(NBTConstants.COUNT, (byte) 1);

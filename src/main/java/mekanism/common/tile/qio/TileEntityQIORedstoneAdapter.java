@@ -88,7 +88,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
         if (itemType != null) {
-            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundTag()));
+            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.getStack().serializeNBT());
         }
         dataMap.putLong(NBTConstants.AMOUNT, count);
     }
