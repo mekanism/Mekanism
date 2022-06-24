@@ -106,7 +106,10 @@ public class BinInventorySlot extends BasicInventorySlot {
      */
     @CanIgnoreReturnValue
     public boolean setLocked(boolean locked) {
-        if (this.isLocked == locked || (isEmpty() && !this.isLocked)) {
+        // Don't lock if:
+        // - we already have the same state as the one we're supposed to switch to
+        // - we're asked to lock, but we're empty
+        if (this.isLocked == locked || (isEmpty() && locked)) {
             return false;
         }
         this.isLocked = locked;
@@ -133,15 +136,21 @@ public class BinInventorySlot extends BasicInventorySlot {
     @Override
     public CompoundTag serializeNBT() {
         final CompoundTag nbt = super.serializeNBT();
-        nbt.putBoolean(NBTConstants.LOCKED, isLocked);
         nbt.put(NBTConstants.LOCK_STACK, lockStack.serializeNBT());
+        nbt.putBoolean(NBTConstants.LOCKED, isLocked);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.LOCKED, this::setLocked);
         NBTUtils.setItemStackIfPresent(nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
+        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.LOCKED, s -> isLocked = s);
+    }
+
+    public void copy(BinInventorySlot other) {
+        setStack(other.getStack());
+        isLocked = other.isLocked;
+        lockStack = other.lockStack;
     }
 }

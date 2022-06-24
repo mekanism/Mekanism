@@ -131,9 +131,9 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
             return false;
         }
         if (binSlot.setLocked(isLocked)) {
-            sendUpdatePacket();
-            markForSave();
-            if (getLevel() != null) {
+            if (getLevel() != null && !isRemote()) {
+                sendUpdatePacket();
+                markForSave();
                 getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
             }
             return true;
@@ -145,8 +145,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
         if (upgradeData instanceof BinUpgradeData data) {
             redstone = data.redstone();
-            binSlot.setStack(data.binSlot().getStack());
-            binSlot.setLocked(data.binSlot().isLocked());
+            binSlot.copy(data.binSlot());
         } else {
             super.parseUpgradeData(upgradeData);
         }
