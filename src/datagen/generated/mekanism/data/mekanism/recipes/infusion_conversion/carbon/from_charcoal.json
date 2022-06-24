@@ -11,7 +11,7 @@
     ]
   },
   "output": {
-    "infuse_type": "mekanism:carbon",
-    "amount": 20
+    "amount": 20,
+    "infuse_type": "mekanism:carbon"
   }
 }

@@ -28,7 +28,8 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
     public ItemArmoredJetpack(Properties properties) {
         super(ARMORED_JETPACK_MATERIAL, properties);
-        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.armoredJetpackArmor, MekanismConfig.gear.armoredJetpackToughness);
+        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.armoredJetpackArmor, MekanismConfig.gear.armoredJetpackToughness,
+              MekanismConfig.gear.armoredJetpackKnockbackResistance);
     }
 
     @Override
@@ -57,6 +58,8 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
         UUID modifier = ARMOR_MODIFIER_UUID_PER_SLOT[getSlot().getIndex()];
         builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
+        builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().getKnockbackResistance(),
+              Operation.ADDITION));
     }
 
     @ParametersAreNonnullByDefault
@@ -65,7 +68,7 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
         @Override
         public int getDefenseForSlot(EquipmentSlot slotType) {
-            return slotType == EquipmentSlot.CHEST ? MekanismConfig.gear.armoredJetpackArmor.get() : 0;
+            return slotType == EquipmentSlot.CHEST ? MekanismConfig.gear.armoredJetpackArmor.getOrDefault() : 0;
         }
 
         @Override
@@ -75,7 +78,12 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
         @Override
         public float getToughness() {
-            return MekanismConfig.gear.armoredJetpackToughness.get();
+            return MekanismConfig.gear.armoredJetpackToughness.getOrDefault();
+        }
+
+        @Override
+        public float getKnockbackResistance() {
+            return MekanismConfig.gear.armoredJetpackKnockbackResistance.getOrDefault();
         }
     }
 }

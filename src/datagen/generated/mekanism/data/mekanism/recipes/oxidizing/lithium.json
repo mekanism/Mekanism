@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "gas": "mekanism:lithium",
-    "amount": 100
+    "amount": 100,
+    "gas": "mekanism:lithium"
   }
 }

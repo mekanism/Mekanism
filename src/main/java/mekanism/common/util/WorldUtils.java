@@ -21,7 +21,6 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -38,7 +37,9 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.Contract;
 
 public class WorldUtils {
@@ -356,10 +357,6 @@ public class WorldUtils {
         if (isBlockLoaded(world, pos)) {
             world.getChunkAt(pos).setUnsaved(true);
         }
-        //TODO: This line below is now (1.16+) called by the mark chunk dirty method (without even validating if it is loaded).
-        // And with it causes issues where chunks are easily ghost loaded. Why was it added like that and do we need to somehow
-        // also update neighboring comparators
-        //world.updateComparatorOutputLevel(pos, world.getBlockState(pos).getBlock()); //Notify neighbors of changes
     }
 
     /**
@@ -414,7 +411,8 @@ public class WorldUtils {
 
     public static boolean tryPlaceContainedLiquid(@Nullable Player player, Level world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
         Fluid fluid = fluidStack.getFluid();
-        if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
+        FluidType fluidType = fluid.getFluidType();
+        if (!fluidType.canBePlacedInLevel(world, pos, fluidStack)) {
             //If there is no fluid, or it cannot be placed in the world just
             return false;
         }
@@ -422,19 +420,19 @@ public class WorldUtils {
         boolean isReplaceable = state.canBeReplaced(fluid);
         boolean canContainFluid = state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(world, pos, state, fluid);
         if (state.isAir() || isReplaceable || canContainFluid) {
-            if (world.dimensionType().ultraWarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
-                fluid.getAttributes().vaporize(player, world, pos, fluidStack);
+            if (world.dimensionType().ultraWarm() && fluidType.isVaporizedOnPlacement(world, pos, fluidStack)) {
+                fluidType.onVaporize(player, world, pos, fluidStack);
             } else if (canContainFluid) {
-                if (!((LiquidBlockContainer) state.getBlock()).placeLiquid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
+                if (!((LiquidBlockContainer) state.getBlock()).placeLiquid(world, pos, state, fluidType.getStateForPlacement(world, pos, fluidStack))) {
                     //If something went wrong return that we couldn't actually place it
                     return false;
                 }
-                playEmptySound(player, world, pos, fluidStack);
+                playEmptySound(player, world, pos, fluidType, fluidStack);
             } else {
                 if (!world.isClientSide() && isReplaceable && !state.getMaterial().isLiquid()) {
                     world.destroyBlock(pos, true);
                 }
-                playEmptySound(player, world, pos, fluidStack);
+                playEmptySound(player, world, pos, fluidType, fluidStack);
                 world.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
             }
             return true;
@@ -442,8 +440,8 @@ public class WorldUtils {
         return side != null && tryPlaceContainedLiquid(player, world, pos.relative(side), fluidStack, null);
     }
 
-    private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack) {
-        SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound(world, pos);
+    private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, FluidType fluidType, @Nonnull FluidStack fluidStack) {
+        SoundEvent soundevent = fluidType.getSound(player, world, pos, SoundActions.BUCKET_EMPTY);
         if (soundevent == null) {
             soundevent = MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         }
@@ -453,9 +451,11 @@ public class WorldUtils {
     public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
         if (soundEvent == null) {
             Fluid fluid = fluidStack.getFluid();
-            soundEvent = fluid.getPickupSound().orElseGet(() -> fluid.getAttributes().getFillSound(world, pos));
+            soundEvent = fluid.getPickupSound().orElseGet(() -> fluid.getFluidType().getSound(player, world, pos, SoundActions.BUCKET_FILL));
         }
-        world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (soundEvent != null) {
+            world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
     }
 
     /**

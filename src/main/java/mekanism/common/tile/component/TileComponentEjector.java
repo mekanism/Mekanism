@@ -48,14 +48,13 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
 
     private final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
-    private final EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
+    private final EnumColor[] inputColors = new EnumColor[6];
     private final LongSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
@@ -192,12 +191,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 continue;
             }
             ISlotInfo slotInfo = info.getSlotInfo(dataType);
-            if (slotInfo instanceof InventorySlotInfo) {
+            if (slotInfo instanceof InventorySlotInfo inventorySlotInfo) {
                 //Validate the slot info is of the correct type
                 Set<Direction> outputs = info.getSidesForData(dataType);
                 if (!outputs.isEmpty()) {
-                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()),
-                          ((InventorySlotInfo) slotInfo).getSlots());
+                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()), inventorySlotInfo.getSlots());
                     if (!ejectMap.isEmpty()) {
                         for (Direction side : outputs) {
                             BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
@@ -237,7 +235,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     public void setStrictInput(boolean strict) {
         if (strictInput != strict) {
             strictInput = strict;
-            WorldUtils.saveChunk(tile);
+            tile.markForSave();
         }
     }
 
@@ -249,7 +247,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     public void setOutputColor(EnumColor color) {
         if (outputColor != color) {
             outputColor = color;
-            WorldUtils.saveChunk(tile);
+            tile.markForSave();
         }
     }
 
@@ -263,7 +261,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             int ordinal = side.ordinal();
             if (inputColors[ordinal] != color) {
                 inputColors[ordinal] = color;
-                WorldUtils.saveChunk(tile);
+                tile.markForSave();
             }
         }
     }
@@ -275,8 +273,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public void read(CompoundTag nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_EJECTOR, Tag.TAG_COMPOUND)) {
-            CompoundTag ejectorNBT = nbtTags.getCompound(NBTConstants.COMPONENT_EJECTOR);
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_EJECTOR, ejectorNBT -> {
             strictInput = ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT);
             NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor, color -> outputColor = color);
             //Input colors
@@ -284,7 +281,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 int index = i;
                 NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR + index, TransporterUtils::readColor, color -> inputColors[index] = color);
             }
-        }
+        });
     }
 
     @Override
@@ -339,7 +336,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         validateInputSide(side);
         int ordinal = side.ordinal();
         inputColors[ordinal] = TransporterUtils.increment(inputColors[ordinal]);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod
@@ -348,7 +345,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         validateInputSide(side);
         int ordinal = side.ordinal();
         inputColors[ordinal] = TransporterUtils.decrement(inputColors[ordinal]);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod(nameOverride = "setInputColor")
@@ -371,14 +368,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private void incrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.increment(outputColor);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod
     private void decrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.decrement(outputColor);
-        WorldUtils.saveChunk(tile);
+        tile.markForSave();
     }
 
     @ComputerMethod(nameOverride = "setOutputColor")

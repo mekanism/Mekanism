@@ -14,7 +14,7 @@
     ]
   },
   "output": {
-    "item": "minecraft:light_gray_dye",
-    "count": 2
+    "count": 2,
+    "item": "minecraft:light_gray_dye"
   }
 }

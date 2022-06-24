@@ -1,19 +1,22 @@
 package mekanism.api.chemical;
 
+import com.mojang.logging.LogUtils;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.IRegistryDelegate;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -22,18 +25,24 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     private boolean isEmpty;
     private long amount;
     @Nonnull
-    private final IRegistryDelegate<CHEMICAL> chemicalDelegate;
+    private final Holder.Reference<CHEMICAL> chemicalDelegate;
 
     protected ChemicalStack(CHEMICAL chemical, long amount) {
-        this.chemicalDelegate = getDelegate(chemical);
+        IForgeRegistry<CHEMICAL> registry = getRegistry();
+        if (registry.getKey(chemical) == null) {
+            MekanismAPI.logger.error(LogUtils.FATAL_MARKER, "Failed attempt to create a ChemicalStack for an unregistered Chemical {} (type {})",
+                  chemical.getRegistryName(), chemical.getClass().getName());
+            throw new IllegalArgumentException("Cannot create a ChemicalStack from an unregistered Chemical");
+        }
+        this.chemicalDelegate = registry.getDelegateOrThrow(chemical);
         this.amount = amount;
         updateEmpty();
     }
 
     /**
-     * Used for checking the chemical is valid and registered.
+     * Registry the chemical is a part of.
      */
-    protected abstract IRegistryDelegate<CHEMICAL> getDelegate(CHEMICAL chemical);
+    protected abstract IForgeRegistry<CHEMICAL> getRegistry();
 
     /**
      * Helper ot get the empty version of this chemical.
@@ -287,7 +296,9 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @param buffer - Buffer to write to.
      */
     public void writeToPacket(FriendlyByteBuf buffer) {
-        buffer.writeRegistryId(getType());
-        buffer.writeVarLong(getAmount());
+        buffer.writeRegistryId(getRegistry(), getType());
+        if (!isEmpty()) {
+            buffer.writeVarLong(getAmount());
+        }
     }
 }

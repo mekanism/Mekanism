@@ -27,6 +27,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     @Nullable
     private Coord4D cachedCoord;
     private boolean cacheCoord;
+    private long lastSave;
 
     public TileEntityUpdateable(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
         super(type.get(), pos, state);
@@ -56,6 +57,14 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     /**
+     * Called when the tile is permanently removed
+     *
+     * @implNote We only need to handle logic that happens when removed and not unloaded as if it happens for both then setRemoved will handle it
+     */
+    public void blockRemoved() {
+    }
+
+    /**
      * Used for checking if we need to update comparators.
      *
      * @apiNote Only call on the server
@@ -76,7 +85,12 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         //Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
         // and if our block supports having a comparator signal, instead of always doing it
         if (level != null) {
-            WorldUtils.markChunkDirty(level, worldPosition);
+            long time = level.getGameTime();
+            if (lastSave != time) {
+                //Only mark the chunk as dirty at most once per tick
+                WorldUtils.markChunkDirty(level, worldPosition);
+                lastSave = time;
+            }
             if (updateComparator && !isRemote()) {
                 markDirtyComparator();
             }

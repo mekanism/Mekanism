@@ -7,7 +7,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.common.DataGenJsonConstants;
+import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.FluidRegistryObject;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
@@ -47,14 +49,10 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
         return getVariantBuilder(blockProvider.getBlock());
     }
 
-    protected String name(Block block) {
-        return block.getRegistryName().getPath();
-    }
-
-    protected void registerFluidBlockStates(List<FluidRegistryObject<?, ?, ?, ?>> fluidROs) {
-        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidROs) {
-            simpleBlock(fluidRO.getBlock(), models().getBuilder(name(fluidRO.getBlock())).texture(DataGenJsonConstants.PARTICLE,
-                  fluidRO.getStillFluid().getAttributes().getStillTexture()));
+    protected void registerFluidBlockStates(List<FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?>> fluidROs) {
+        for (FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?> fluidRO : fluidROs) {
+            simpleBlock(fluidRO.getBlock(), models().getBuilder(RegistryUtils.getPath(fluidRO.getBlock())).texture(DataGenJsonConstants.PARTICLE,
+                  fluidRO.getFluidType().getStillTexture()));
         }
     }
 
@@ -70,5 +68,9 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
                   .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + angleOffset) % 360)
                   .build();
         }, toSkip);
+    }
+
+    protected void simpleBlockItem(IBlockProvider block, ModelFile model) {
+        super.simpleBlockItem(block.getBlock(), model);
     }
 }

@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "infuse_type": "mekanism:bio",
-    "amount": 5
+    "amount": 5,
+    "infuse_type": "mekanism:bio"
   }
 }

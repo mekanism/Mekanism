@@ -42,6 +42,7 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -141,12 +142,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
-    private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.getSerializer());
+    private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.get());
     private static final EntityDataAccessor<String> OWNER_NAME = define(EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.getSerializer());
+    private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.get());
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DROP_PICKUP = define(EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<RobitSkin> SKIN = define(MekanismDataSerializers.<RobitSkin>getRegistryEntrySerializer());
+    private static final EntityDataAccessor<RobitSkin> SKIN = define(MekanismDataSerializers.ROBIT_SKIN.get());
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -425,7 +426,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.getItemStack();
-        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = capability.get();
             if (energyHandlerItem.getEnergyContainerCount() > 0) {
@@ -467,7 +468,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
-        nbtTags.putInt(NBTConstants.SECURITY_MODE, getSecurityMode().ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, getSecurityMode());
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
@@ -476,7 +477,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
-        nbtTags.putString(NBTConstants.SKIN, getSkin().getRegistryName().toString());
+        NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistry(), getSkin());
     }
 
     @Override
@@ -722,9 +723,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public boolean setSkin(@Nonnull IRobitSkinProvider skinProvider, @Nullable Player player) {
         Objects.requireNonNull(skinProvider, "Robit skin cannot be null.");
         RobitSkin skin = skinProvider.getSkin();
+        if (getSkin() == skin) {
+            //Don't do anything if the robit already has that skin selected
+            return true;
+        }
         if (player != null) {
             if (!MekanismAPI.getSecurityUtils().canAccess(player, this) || !skin.isUnlocked(player)) {
                 return false;
+            }
+            if (player instanceof ServerPlayer serverPlayer) {
+                MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.trigger(serverPlayer, skin);
             }
         }
         entityData.set(SKIN, skin);
@@ -783,12 +791,18 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capabilityCache.isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        } else if (capabilityCache.canResolve(capability)) {
-            return capabilityCache.getCapabilityUnchecked(capability, side);
+        if (capabilityCache != null) {
+            //Validate the cache is not null. In theory this should never happen unless some mod is trying to access capabilities
+            // before our entity is done constructing, but there are cases such as the size event where based on when they are
+            // fired if it is based on the entity's caps then the first call will happen before the enitity has finished
+            // constructing. See https://github.com/mekanism/Mekanism/issues/7490
+            if (capabilityCache.isCapabilityDisabled(capability, side)) {
+                return LazyOptional.empty();
+            } else if (capabilityCache.canResolve(capability)) {
+                return capabilityCache.getCapabilityUnchecked(capability, side);
+            }
         }
-        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
+        //Call to LivingEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);
     }
 

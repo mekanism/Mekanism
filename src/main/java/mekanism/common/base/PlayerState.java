@@ -1,13 +1,12 @@
 package mekanism.common.base;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
+import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.sound.PlayerSound.SoundType;
@@ -19,7 +18,6 @@ import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.to_client.PacketFlyingSync;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
-import mekanism.common.network.to_client.PacketStepHeightSync;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
 import mekanism.common.registries.MekanismModules;
@@ -27,17 +25,24 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 
 public class PlayerState {
+
+    private static final UUID STEP_ASSIST_MODIFIER_UUID = UUID.fromString("026E638A-570D-48F2-BA91-3E86BBB26576");
+    private static final UUID SWIM_BOOST_MODIFIER_UUID = UUID.fromString("B8BEEC12-741C-47C3-A74D-AA00F0D2ACF0");
 
     private final Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
     private final Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
-    private final Object2FloatMap<UUID> stepAssistedPlayers = new Object2FloatOpenHashMap<>();
     private final Map<UUID, FlightInfo> flightInfoMap = new Object2ObjectOpenHashMap<>();
 
     private LevelAccessor world;
@@ -50,7 +55,6 @@ public class PlayerState {
         if (isRemote) {
             SoundHandler.clearPlayerSounds();
         } else {
-            stepAssistedPlayers.clear();
             flightInfoMap.clear();
         }
     }
@@ -73,18 +77,14 @@ public class PlayerState {
     }
 
     public void clearPlayerServerSideOnly(UUID uuid) {
-        stepAssistedPlayers.removeFloat(uuid);
         flightInfoMap.remove(uuid);
     }
 
     public void reapplyServerSideOnly(Player player) {
-        //For when the dimension changes/we need to reapply the step assist/flight info values to the client
+        //For when the dimension changes/we need to reapply the flight info values to the client
         UUID uuid = player.getUUID();
-        if (stepAssistedPlayers.containsKey(uuid)) {
-            updateClientServerStepHeight(player, stepAssistedPlayers.getFloat(uuid));
-        }
-        if (flightInfoMap.containsKey(uuid)) {
-            FlightInfo flightInfo = flightInfoMap.get(uuid);
+        FlightInfo flightInfo = flightInfoMap.get(uuid);
+        if (flightInfo != null) {
             if (flightInfo.wasFlyingAllowed || flightInfo.wasFlying) {
                 updateClientServerFlight(player, flightInfo.wasFlyingAllowed, flightInfo.wasFlying);
             }
@@ -178,27 +178,38 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(Player player) {
-        UUID uuid = player.getUUID();
-        float additionalHeight = CommonPlayerTickHandler.getStepBoost(player);
-        if (additionalHeight == 0) {
-            if (stepAssistedPlayers.containsKey(uuid)) {
-                //If we don't have step assist, but we previously did, remove it and lower the step height
-                stepAssistedPlayers.removeFloat(uuid);
-                updateClientServerStepHeight(player, 0.6F);
-            }
-        } else {
-            float totalHeight = 0.6F + additionalHeight;
-            if (!stepAssistedPlayers.containsKey(uuid) || stepAssistedPlayers.getFloat(uuid) != totalHeight) {
-                //If we should be able to have auto step, but we don't have it set yet, or our stored amount is different, update
-                stepAssistedPlayers.put(uuid, totalHeight);
-                updateClientServerStepHeight(player, totalHeight);
-            }
-        }
+        updateAttribute(player, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", () -> CommonPlayerTickHandler.getStepBoost(player));
     }
 
-    private void updateClientServerStepHeight(Player player, float value) {
-        player.maxUpStep = value;
-        Mekanism.packetHandler().sendTo(new PacketStepHeightSync(value), (ServerPlayer) player);
+    // ----------------------
+    //
+    // Swim boost state tracking
+    //
+    // ----------------------
+
+    public void updateSwimBoost(Player player) {
+        updateAttribute(player, ForgeMod.SWIM_SPEED.get(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", () -> CommonPlayerTickHandler.getSwimBoost(player));
+    }
+
+    private void updateAttribute(Player player, Attribute attribute, UUID uuid, String name, FloatSupplier additionalSupplier) {
+        AttributeInstance attributeInstance = player.getAttribute(attribute);
+        if (attributeInstance != null) {
+            AttributeModifier existing = attributeInstance.getModifier(uuid);
+            float additional = additionalSupplier.getAsFloat();
+            if (existing != null) {
+                if (existing.getAmount() == additional) {
+                    //If we already have it set to the correct value just exit
+                    //Note: We don't need to check for if it is equal to zero as we should never have the attribute applied then
+                    return;
+                }
+                //Otherwise, remove the no longer valid value, so we can add it again properly
+                attributeInstance.removeModifier(existing);
+            }
+            if (additional > 0) {
+                //If we should have the attribute, but we don't have it set yet, or our stored amount was different, update
+                attributeInstance.addTransientModifier(new AttributeModifier(uuid, name, additional, Operation.ADDITION));
+            }
+        }
     }
 
     // ----------------------

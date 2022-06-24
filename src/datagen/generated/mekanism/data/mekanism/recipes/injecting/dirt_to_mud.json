@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 1,
+    "tag": "mekanism:water_vapor"
+  },
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:dirt"
+    }
+  },
+  "output": {
+    "item": "minecraft:mud"
+  }
+}

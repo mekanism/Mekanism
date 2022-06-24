@@ -6,11 +6,11 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:oak_planks",
-    "count": 8
+    "count": 8,
+    "item": "minecraft:oak_planks"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:redstone"
-  },
-  "secondaryChance": 1.0
+  }
 }

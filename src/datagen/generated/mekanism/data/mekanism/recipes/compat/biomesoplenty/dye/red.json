@@ -2,8 +2,8 @@
   "type": "mekanism:enriching",
   "conditions": [
     {
-      "modid": "biomesoplenty",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
     }
   ],
   "input": {
@@ -12,7 +12,7 @@
     }
   },
   "output": {
-    "item": "minecraft:red_dye",
-    "count": 2
+    "count": 2,
+    "item": "minecraft:red_dye"
   }
 }

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cobweb"
+    }
+  },
+  "output": {
+    "count": 9,
+    "item": "minecraft:string"
+  }
+}

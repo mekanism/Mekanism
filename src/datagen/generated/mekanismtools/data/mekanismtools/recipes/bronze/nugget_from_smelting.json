@@ -1,6 +1,7 @@
 {
   "type": "minecraft:smelting",
-  "result": "mekanism:nugget_bronze",
+  "cookingtime": 200,
+  "experience": 0.1,
   "ingredient": [
     {
       "item": "mekanismtools:bronze_helmet"
@@ -33,6 +34,5 @@
       "item": "mekanismtools:bronze_paxel"
     }
   ],
-  "cookingtime": 200,
-  "experience": 0.1
+  "result": "mekanism:nugget_bronze"
 }

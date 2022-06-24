@@ -1,0 +1,32 @@
+{
+  "parent": "mekanism:root",
+  "criteria": {
+    "material": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:ingot_osmium",
+              "mekanism:ingot_tin",
+              "mekanism:ingot_lead",
+              "mekanism:ingot_uranium",
+              "mekanism:fluorite_gem"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.materials.description"
+    },
+    "icon": {
+      "item": "mekanism:ingot_osmium"
+    },
+    "title": {
+      "translate": "advancements.mekanism.materials.title"
+    }
+  }
+}

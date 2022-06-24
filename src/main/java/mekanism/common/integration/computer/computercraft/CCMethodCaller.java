@@ -57,10 +57,10 @@ public abstract class CCMethodCaller {
     }
 
     /**
-     * Basically a copy of dan200.computercraft.core.asm.TaskCallback as suggested on https://github.com/SquidDev-CC/CC-Tweaked/discussions/728 due to there not being a
-     * method via the API to do this. Ideally eventually it will be replaced by a method on ILuaContext that we can just call
+     * Basically a copy of dan200.computercraft.core.asm.TaskCallback as <a href="https://github.com/SquidDev-CC/CC-Tweaked/discussions/728">suggested</a> due to there
+     * not being a method via the API to do this. Ideally eventually it will be replaced by a method on ILuaContext that we can just call
      *
-     * https://github.com/SquidDev-CC/CC-Tweaked/blob/mc-1.16.x/LICENSE
+     * <a href="https://github.com/SquidDev-CC/CC-Tweaked/blob/mc-1.16.x/LICENSE">Original License</a>
      */
     private static class TaskCallback implements ILuaCallback {
 

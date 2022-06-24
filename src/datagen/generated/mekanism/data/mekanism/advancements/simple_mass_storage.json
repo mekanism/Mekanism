@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "basic_bin": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_bin"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.simple_mass_storage.description"
+    },
+    "icon": {
+      "item": "mekanism:basic_bin"
+    },
+    "title": {
+      "translate": "advancements.mekanism.simple_mass_storage.title"
+    }
+  }
+}

@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "infuse_type": "mekanism:redstone",
-    "amount": 90
+    "amount": 90,
+    "infuse_type": "mekanism:redstone"
   }
 }

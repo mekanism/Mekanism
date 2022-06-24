@@ -16,9 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class NucleosynthesizingRecipeSerializer<RECIPE extends NucleosynthesizingRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
+public class NucleosynthesizingRecipeSerializer<RECIPE extends NucleosynthesizingRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
 
@@ -36,12 +35,11 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
                                GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
         GasStackIngredient gasIngredient = IngredientCreatorAccess.gas().deserialize(gasInput);
 
-        int duration;
         JsonElement ticks = json.get(JsonConstants.DURATION);
         if (!GsonHelper.isNumberValue(ticks)) {
             throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
         }
-        duration = ticks.getAsJsonPrimitive().getAsInt();
+        int duration = ticks.getAsJsonPrimitive().getAsInt();
         if (duration <= 0) {
             throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
         }

@@ -124,23 +124,14 @@ public abstract class Frequency implements IFrequency {
     public void write(FriendlyByteBuf buffer) {
         getType().write(buffer);
         buffer.writeUtf(name);
-        if (ownerUUID == null) {
-            buffer.writeBoolean(false);
-        } else {
-            buffer.writeBoolean(true);
-            buffer.writeUUID(ownerUUID);
-        }
+        BasePacketHandler.writeOptional(buffer, ownerUUID, FriendlyByteBuf::writeUUID);
         buffer.writeUtf(MekanismUtils.getLastKnownUsername(ownerUUID));
         buffer.writeBoolean(publicFreq);
     }
 
     protected void read(FriendlyByteBuf dataStream) {
         name = BasePacketHandler.readString(dataStream);
-        if (dataStream.readBoolean()) {
-            ownerUUID = dataStream.readUUID();
-        } else {
-            ownerUUID = null;
-        }
+        ownerUUID = BasePacketHandler.readOptional(dataStream, FriendlyByteBuf::readUUID);
         clientOwner = BasePacketHandler.readString(dataStream);
         publicFreq = dataStream.readBoolean();
     }

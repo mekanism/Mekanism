@@ -2,9 +2,12 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -15,44 +18,41 @@
             },
             {
               "function": "minecraft:copy_nbt",
-              "source": "block_entity",
               "ops": [
                 {
+                  "op": "replace",
                   "source": "componentFrequency",
-                  "target": "mekData.componentFrequency",
-                  "op": "replace"
+                  "target": "mekData.componentFrequency"
                 },
                 {
+                  "op": "replace",
                   "source": "componentSecurity.owner",
-                  "target": "mekData.owner",
-                  "op": "replace"
+                  "target": "mekData.owner"
                 },
                 {
+                  "op": "replace",
                   "source": "componentSecurity.securityMode",
-                  "target": "mekData.securityMode",
-                  "op": "replace"
+                  "target": "mekData.securityMode"
                 },
                 {
+                  "op": "replace",
                   "source": "amount",
-                  "target": "mekData.amount",
-                  "op": "replace"
+                  "target": "mekData.amount"
                 },
                 {
+                  "op": "replace",
                   "source": "singleItem",
-                  "target": "mekData.singleItem",
-                  "op": "replace"
+                  "target": "mekData.singleItem"
                 }
-              ]
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:qio_redstone_adapter"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

@@ -3,7 +3,6 @@ package mekanism.generators.common.tile.fusion;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -27,7 +26,6 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -35,7 +33,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IConfigurable {
+public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
     public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT, pos, state);
@@ -82,11 +80,6 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    public boolean persistInventory() {
-        return false;
-    }
-
-    @Override
     protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {
@@ -103,7 +96,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             if (!(adj instanceof TileEntityFusionReactorBlock)) {
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
             }
         }
         return null;
@@ -114,7 +107,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.sendMessage(MekanismUtils.logFormat(GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))));
         }
         return InteractionResult.SUCCESS;
     }

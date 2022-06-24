@@ -1,31 +1,33 @@
 package mekanism.api.gear;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
-import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegistryEntry<ModuleData<?>> implements IHasTranslationKey, IModuleDataProvider<MODULE> {
+public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModuleDataProvider<MODULE> {
 
     private final NonNullSupplier<MODULE> supplier;
     private final IItemProvider itemProvider;
     private final int maxStackSize;
     private final Rarity rarity;
-    private final boolean exclusive;
+    private final int exclusive;
     private final boolean handlesModeChange;
     private final boolean rendersHUD;
     private final boolean noDisable;
@@ -87,11 +89,23 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     }
 
     /**
-     * Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled.
+     * Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
      *
-     * @return {@code true} if this module type is exclusive.
+     * @param mask Mask of all {@link ExclusiveFlag flags} to check exclusivity against.
+     *
+     * @return {@code true} if this module type is exclusive of the given flags
+     *
+     * @since 10.2.3
      */
-    public final boolean isExclusive() {
+    public final boolean isExclusive(int mask) {
+        return (exclusive & mask) != 0;
+    }
+
+    /**
+     * Gets the mask of {@link ExclusiveFlag} for this module type.
+     * @since 10.2.3
+     */
+    public final int getExclusiveFlags() {
         return exclusive;
     }
 
@@ -149,6 +163,14 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         return descriptionTranslationKey;
     }
 
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public final ResourceLocation getRegistryName() {
+        //May be null if called before the object is registered
+        IForgeRegistry<ModuleData<?>> registry = MekanismAPI.moduleRegistry();
+        return registry == null ? null : registry.getKey(this);
+    }
+
     /**
      * Builder for setting various values of {@link ModuleData}.
      */
@@ -178,8 +200,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
          * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
          *
          * @apiNote Strictly speaking a new instance of the custom module does not need to be returned if {@link ICustomModule#init(IModule, ModuleConfigItemCreator)}
-         * creates no config items so there is no unique data, but it is easier to just return a new instance each time unless you are using {@link
-         * #marker(IItemProvider)}.
+         * creates no config items so there is no unique data, but it is easier to just return a new instance each time unless you are using
+         * {@link #marker(IItemProvider)}.
          */
         public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(@Nonnull NonNullSupplier<MODULE> customModule,
               @Nonnull IItemProvider itemProvider) {
@@ -190,7 +212,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         private final IItemProvider itemProvider;
         private Rarity rarity = Rarity.COMMON;
         private int maxStackSize = 1;
-        private boolean exclusive;
+        private int exclusive;
         private boolean handlesModeChange;
         private boolean rendersHUD;
         private boolean noDisable;
@@ -225,16 +247,29 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled.
+         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+         *
+         * @param mask {@link ExclusiveFlag} mask
+         * @since 10.2.3
          */
-        public ModuleDataBuilder<MODULE> exclusive() {
-            exclusive = true;
+        public ModuleDataBuilder<MODULE> exclusive(int mask) {
+            exclusive = mask;
             return this;
         }
 
         /**
-         * Marks this module type as being able to handle mode changes. In addition to using this method {@link ICustomModule#changeMode(IModule, Player, ItemStack, int,
-         * boolean)} should be implemented.
+         * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
+         *
+         * @param flags {@link ExclusiveFlag} flags for the exclusive mask
+         * @since 10.2.3
+         */
+        public ModuleDataBuilder<MODULE> exclusive(ExclusiveFlag... flags) {
+            return exclusive(flags.length == 0 ? ExclusiveFlag.ANY : ExclusiveFlag.getCompoundMask(flags));
+        }
+
+        /**
+         * Marks this module type as being able to handle mode changes. In addition to using this method
+         * {@link ICustomModule#changeMode(IModule, Player, ItemStack, int, boolean)} should be implemented.
          */
         public ModuleDataBuilder<MODULE> handlesModeChange() {
             handlesModeChange = true;
@@ -275,5 +310,65 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
             disabledByDefault = true;
             return this;
         }
+    }
+
+    /**
+     * Enum of flags for module exclusivity channels
+     * @since 10.2.3
+     */
+    public enum ExclusiveFlag {
+        /**
+         * This flag indicates that this module uses interaction without a target
+         */
+        INTERACT_EMPTY,
+        /**
+         * This flag indicates that this module uses interaction with an entity
+         */
+        INTERACT_ENTITY,
+        /**
+         * This flag indicates that this module uses interaction with a block
+         */
+        INTERACT_BLOCK,
+        /**
+         * This flag indicates that this module changes what pressing jump does
+         */
+        OVERRIDE_JUMP,
+        /**
+         * This flag indicates that this module changes what blocks drop
+         */
+        OVERRIDE_DROPS;
+
+        /**
+         * Gets the mask for this flag
+         */
+        public int getMask() {
+            return 1 << ordinal();
+        }
+
+        /**
+         * Helper to get the mask of the combination of the given input flags
+         *
+         * @param flags {@link ExclusiveFlag Flags} to combine into a mask.
+         *
+         * @returns Mask representing all the given {@link ExclusiveFlag flags}.
+         */
+        public static int getCompoundMask(ExclusiveFlag... flags) {
+            return Arrays.stream(flags).mapToInt(ExclusiveFlag::getMask).reduce(NONE, (result, mask) -> result | mask);
+        }
+
+        /**
+         * The mask for no flags
+         */
+        public static final int NONE = 0;
+
+        /**
+         * The mask for the combination of all flags
+         */
+        public static final int ANY = -1;
+
+        /**
+         * The mask for the combination of all interact flags
+         */
+        public static final int INTERACT_ANY = getCompoundMask(INTERACT_EMPTY, INTERACT_ENTITY, INTERACT_BLOCK);
     }
 }

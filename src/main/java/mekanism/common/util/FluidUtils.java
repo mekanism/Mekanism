@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IFluidProvider;
@@ -20,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -36,7 +36,7 @@ public final class FluidUtils {
         IExtendedFluidTank dummyTank = BasicFluidTank.create(capacity, null);
         //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
         dummyTank.setStack(provider.getFluidStack(dummyTank.getCapacity()));
-        ItemDataUtils.setList(toFill, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
+        ItemDataUtils.writeContainers(toFill, NBTConstants.FLUID_TANKS, Collections.singletonList(dummyTank));
         //The item is now filled return it for convenience
         return toFill;
     }
@@ -50,7 +50,13 @@ public final class FluidUtils {
             if (fluidStack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
                 return OptionalInt.of(0xFFDB6B19);
             }
-            return OptionalInt.of(fluidStack.getFluid().getAttributes().getColor(fluidStack));
+            try {
+                //Try to get the color tint of the fluid. There is a chance this will fail on servers even though
+                // we only call this on the client side. But just in case try catch it in case something causes
+                // it to be called on the server
+                return OptionalInt.of(RenderProperties.get(fluidStack.getFluid()).getColorTint(fluidStack));
+            } catch (Throwable ignored) {
+            }
         }
         return OptionalInt.empty();
     }

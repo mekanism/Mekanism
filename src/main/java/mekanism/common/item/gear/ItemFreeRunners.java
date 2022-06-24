@@ -31,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -43,7 +44,11 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     private static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
     public ItemFreeRunners(Properties properties) {
-        super(FREE_RUNNER_MATERIAL, EquipmentSlot.FEET, properties.rarity(Rarity.RARE).setNoRepair());
+        this(FREE_RUNNER_MATERIAL, properties);
+    }
+
+    public ItemFreeRunners(ArmorMaterial material, Properties properties) {
+        super(material, EquipmentSlot.FEET, properties.rarity(Rarity.RARE).setNoRepair());
     }
 
     @Override
@@ -60,7 +65,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.freeRunnerMaxEnergy.get()));
         }
     }
@@ -115,7 +120,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         if (mode != newMode) {
             setMode(stack, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode)));
             }
         }
     }

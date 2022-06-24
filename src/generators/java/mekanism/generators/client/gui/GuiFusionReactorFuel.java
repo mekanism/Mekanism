@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.gauge.GaugeType;

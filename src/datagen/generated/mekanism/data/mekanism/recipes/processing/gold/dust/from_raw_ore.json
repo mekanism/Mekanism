@@ -7,7 +7,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dust_gold",
-    "count": 4
+    "count": 4,
+    "item": "mekanism:dust_gold"
   }
 }

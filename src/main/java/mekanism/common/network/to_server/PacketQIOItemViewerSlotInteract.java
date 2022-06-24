@@ -3,6 +3,7 @@ package mekanism.common.network.to_server;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.IMekanismPacket;
@@ -45,33 +46,41 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
             QIOFrequency freq = container.getFrequency();
             ItemStack curStack = player.containerMenu.getCarried();
             if (freq != null) {
-                if (type == Type.TAKE) {
-                    ItemStack ret = freq.removeByType(freq.getTypeByUUID(typeUUID), count);
-                    if (curStack.isEmpty()) {
-                        player.containerMenu.setCarried(ret);
-                    } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
-                        curStack.grow(ret.getCount());
-                    }
-                    player.connection.send(new ClientboundContainerSetSlotPacket(-1, container.incrementStateId(), -1, player.containerMenu.getCarried()));
-                } else if (type == Type.SHIFT_TAKE) {
-                    HashedItem itemType = freq.getTypeByUUID(typeUUID);
-                    if (itemType != null) {
-                        ItemStack ret = freq.removeByType(itemType, itemType.getStack().getMaxStackSize());
-                        ItemStack remainder = container.insertIntoPlayerInventory(player.getUUID(), ret);
-                        if (!remainder.isEmpty()) {
-                            remainder = freq.addItem(remainder);
-                            if (!remainder.isEmpty()) {
-                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({}). This shouldn't happen!", remainder);
-                            }
-                        }
-                    }
-                } else if (type == Type.PUT) {
+                if (type == Type.PUT) {
                     if (!curStack.isEmpty()) {
                         ItemStack rejects = freq.addItem(StackUtils.size(curStack, Math.min(count, curStack.getCount())));
                         ItemStack newStack = StackUtils.size(curStack, curStack.getCount() - (count - rejects.getCount()));
                         player.containerMenu.setCarried(newStack);
                     }
                     player.connection.send(new ClientboundContainerSetSlotPacket(-1, container.incrementStateId(), -1, player.containerMenu.getCarried()));
+                } else {
+                    HashedItem itemType = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(typeUUID);
+                    if (itemType != null) {
+                        if (type == Type.TAKE) {
+                            //Should always be true but validate it before actually removing from the QIO
+                            if (InventoryUtils.areItemsStackable(curStack, itemType.getStack())) {
+                                ItemStack ret = freq.removeByType(itemType, count);
+                                if (curStack.isEmpty()) {
+                                    player.containerMenu.setCarried(ret);
+                                } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
+                                    curStack.grow(ret.getCount());
+                                }
+                                player.connection.send(new ClientboundContainerSetSlotPacket(-1, container.incrementStateId(), -1,
+                                      player.containerMenu.getCarried()));
+                            }
+                        } else if (type == Type.SHIFT_TAKE) {
+                            ItemStack ret = freq.removeByType(itemType, itemType.getStack().getMaxStackSize());
+                            if (!ret.isEmpty()) {
+                                ItemStack remainder = container.insertIntoPlayerInventory(player.getUUID(), ret);
+                                if (!remainder.isEmpty()) {
+                                    remainder = freq.addItem(remainder);
+                                    if (!remainder.isEmpty()) {
+                                        Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({}). This shouldn't happen!", remainder);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

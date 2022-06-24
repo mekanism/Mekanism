@@ -46,8 +46,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
     @Nullable
     @Override
     public FluidRecipeData merge(FluidRecipeData other) {
-        List<IExtendedFluidTank> allTanks = new ArrayList<>(fluidTanks.size() + other.fluidTanks.size());
-        allTanks.addAll(fluidTanks);
+        List<IExtendedFluidTank> allTanks = new ArrayList<>(fluidTanks);
         allTanks.addAll(other.fluidTanks);
         return new FluidRecipeData(allTanks);
     }
@@ -108,7 +107,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         }
         if (hasData) {
             //We managed to transfer it all into valid slots, so save it to the stack
-            ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(fluidTanks));
+            ItemDataUtils.writeContainers(stack, NBTConstants.FLUID_TANKS, fluidTanks);
         }
         return true;
     }

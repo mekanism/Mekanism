@@ -18,6 +18,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +37,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public TileEntitySeismicVibrator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SEISMIC_VIBRATOR, pos, state);
         cacheCoord();
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull
@@ -73,6 +74,9 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 setActive(true);
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                if (ticker % 40 == 0) {//Every two seconds allow for a new vibration to be sent
+                    level.gameEvent(null, MekanismGameEvents.SEISMIC_VIBRATION.get(), worldPosition);
+                }
             } else {
                 setActive(false);
             }

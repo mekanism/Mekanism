@@ -16,7 +16,7 @@ import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -48,7 +48,7 @@ public class GuiTextField extends GuiElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
 
-        textField = new EditBox(getFont(), this.x, this.y, width, height, TextComponent.EMPTY);
+        textField = new EditBox(getFont(), this.x, this.y, width, height, Component.empty());
         textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {
@@ -143,8 +143,8 @@ public class GuiTextField extends GuiElement {
 
     private void updateTextField() {
         //width is scaled based on text scale
-        int iconOffsetX = iconType != null ? iconType.getOffsetX() : 0;
-        textField.setWidth(Math.round((width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - iconOffsetX) * (1 / textScale)));
+        int iconOffsetX = iconType == null ? 0 : iconType.getOffsetX();
+        textField.setWidth(Math.round((width - (checkmarkButton == null ? 0 : textField.getHeight() + 2) - iconOffsetX) * (1 / textScale)));
         textField.setX(x + textOffsetX + 2 + iconOffsetX);
         textField.y = y + textOffsetY + 1 + (int) ((height / 2F) - 4);
     }

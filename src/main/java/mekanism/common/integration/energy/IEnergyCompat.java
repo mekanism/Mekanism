@@ -23,9 +23,9 @@ public interface IEnergyCompat {
     /**
      * Gets the capability this compat integrates with.
      *
-     * @return The capability this compat is integrating with. Or {@code null} if the capability is not usable.
+     * @return The capability this compat is integrating with.
      */
-    @Nullable
+    @Nonnull
     Capability<?> getCapability();
 
     /**

@@ -18,13 +18,18 @@ public class Builders {
         }
 
         @Override
-        public void build(Level world, BlockPos start) {
+        public void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
-            buildInteriorLayer(world, start, 1, MekanismBlocks.SUPERHEATING_ELEMENT.getBlock());
             buildInteriorLayers(world, start, 2, 14, Blocks.AIR);
-            buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
             buildInteriorLayer(world, start, 16, Blocks.AIR);
+            if (empty) {
+                buildInteriorLayer(world, start, 1, Blocks.AIR);
+                buildInteriorLayer(world, start, 15, Blocks.AIR);
+            } else {
+                buildInteriorLayer(world, start, 1, MekanismBlocks.SUPERHEATING_ELEMENT.getBlock());
+                buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
+            }
         }
 
         @Override
@@ -40,7 +45,7 @@ public class Builders {
         }
 
         @Override
-        public void build(Level world, BlockPos start) {
+        public void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 16, Blocks.AIR);
@@ -59,11 +64,15 @@ public class Builders {
         }
 
         @Override
-        public void build(Level world, BlockPos start) {
+        public void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
-            buildInteriorLayers(world, start, 1, 15, MekanismBlocks.ULTIMATE_INDUCTION_CELL.getBlock());
-            buildInteriorLayer(world, start, 16, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER.getBlock());
+            if (empty) {
+                buildInteriorLayers(world, start, 1, 16, Blocks.AIR);
+            } else {
+                buildInteriorLayers(world, start, 1, 15, MekanismBlocks.ULTIMATE_INDUCTION_CELL.getBlock());
+                buildInteriorLayer(world, start, 16, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER.getBlock());
+            }
         }
 
         @Override
@@ -79,7 +88,7 @@ public class Builders {
         }
 
         @Override
-        public void build(Level world, BlockPos start) {
+        public void build(Level world, BlockPos start, boolean empty) {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 17, Blocks.AIR);
@@ -99,7 +108,7 @@ public class Builders {
         }
 
         @Override
-        protected void build(Level world, BlockPos start) {
+        protected void build(Level world, BlockPos start, boolean empty) {
             buildPartialFrame(world, start, 1);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 5, Blocks.AIR);

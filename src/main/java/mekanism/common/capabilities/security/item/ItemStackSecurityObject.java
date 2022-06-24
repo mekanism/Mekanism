@@ -1,12 +1,13 @@
 package mekanism.common.capabilities.security.item;
 
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
@@ -45,9 +46,9 @@ public class ItemStackSecurityObject extends ItemStackOwnerObject implements ISe
     }
 
     @Override
-    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
+    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
         //Note: We intentionally don't call super and instead handle resolving owner capabilities via a combined capability resolver
         // that handles owner and security items
-        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.security(this));
+        consumer.accept(BasicCapabilityResolver.security(this));
     }
 }

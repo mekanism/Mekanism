@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -34,20 +33,17 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
         addRenderableWidget(new GuiMergedChemicalBar<>(this, tile, tile.getChemicalTank(), 42, 16, 116, 10, true));
         addRenderableWidget(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
             List<Component> ret = new ArrayList<>();
-            Current current = tile.getChemicalTank().getCurrent();
-            if (current == Current.EMPTY) {
-                ret.add(MekanismLang.CHEMICAL.translate(MekanismLang.NONE));
-                ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tile.getTier().getStorage())));
-            } else if (current == Current.GAS) {
-                addStored(ret, tile.getChemicalTank().getGasTank(), MekanismLang.GAS);
-            } else if (current == Current.INFUSION) {
-                addStored(ret, tile.getChemicalTank().getInfusionTank(), MekanismLang.INFUSE_TYPE);
-            } else if (current == Current.PIGMENT) {
-                addStored(ret, tile.getChemicalTank().getPigmentTank(), MekanismLang.PIGMENT);
-            } else if (current == Current.SLURRY) {
-                addStored(ret, tile.getChemicalTank().getSlurryTank(), MekanismLang.SLURRY);
-            } else {
-                throw new IllegalStateException("Unknown current type");
+            switch (tile.getChemicalTank().getCurrent()) {
+                case EMPTY -> {
+                    ret.add(MekanismLang.CHEMICAL.translate(MekanismLang.NONE));
+                    ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE :
+                                                                       TextUtils.format(tile.getTier().getStorage())));
+                }
+                case GAS -> addStored(ret, tile.getChemicalTank().getGasTank(), MekanismLang.GAS);
+                case INFUSION -> addStored(ret, tile.getChemicalTank().getInfusionTank(), MekanismLang.INFUSE_TYPE);
+                case PIGMENT -> addStored(ret, tile.getChemicalTank().getPigmentTank(), MekanismLang.PIGMENT);
+                case SLURRY -> addStored(ret, tile.getChemicalTank().getSlurryTank(), MekanismLang.SLURRY);
+                default -> throw new IllegalStateException("Unknown current type");
             }
             return ret;
         }));

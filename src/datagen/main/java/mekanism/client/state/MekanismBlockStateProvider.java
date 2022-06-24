@@ -4,6 +4,7 @@ import java.util.Map;
 import mekanism.client.model.MekanismBlockModelProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockOre;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
@@ -14,6 +15,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -61,7 +63,19 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
         BlockModelBuilder openBarrel = models().getBuilder(MekanismBlocks.PERSONAL_BARREL.getName() + "_open").parent(barrelModel)
               .texture("top", Mekanism.rl("block/personal_barrel/top_open"));
         directionalBlock(MekanismBlocks.PERSONAL_BARREL.getBlock(), state -> state.getValue(BlockStateProperties.OPEN) ? openBarrel : barrelModel);
-        models().withExistingParent("item/" + MekanismBlocks.PERSONAL_BARREL.getName(), modLoc("block/" + MekanismBlocks.PERSONAL_BARREL.getName()));
+        simpleBlockItem(MekanismBlocks.PERSONAL_BARREL, barrelModel);
+
+        BlockModelBuilder stabilizerModel = models().cubeBottomTop(MekanismBlocks.DIMENSIONAL_STABILIZER.getName(),
+              Mekanism.rl("block/dimensional_stabilizer/side"),
+              Mekanism.rl("block/dimensional_stabilizer/bottom"),
+              Mekanism.rl("block/dimensional_stabilizer/top")
+        );
+        BlockModelBuilder activeStabilizer = models().getBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER.getName() + "_active").parent(stabilizerModel)
+              .texture("top", Mekanism.rl("block/dimensional_stabilizer/top_active"))
+              .texture("side", Mekanism.rl("block/dimensional_stabilizer/side_active"));
+        simpleBlockItem(MekanismBlocks.DIMENSIONAL_STABILIZER, stabilizerModel);
+        getVariantBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER.getBlock())
+              .forAllStates(state -> new ConfiguredModel[]{new ConfiguredModel(Attribute.isActive(state) ? activeStabilizer : stabilizerModel)});
     }
 
     private void addOreBlock(ResourceLocation basicCube, BlockRegistryObject<BlockOre, ?> oreBlock, String path) {
@@ -69,6 +83,6 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
         ModelFile file = models().withExistingParent(path, basicCube)
               .texture("all", modLoc("block/" + name));
         simpleBlock(oreBlock.getBlock(), file);
-        models().withExistingParent("item/" + name, modLoc(path));
+        simpleBlockItem(oreBlock, file);
     }
 }

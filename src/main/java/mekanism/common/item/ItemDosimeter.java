@@ -1,13 +1,15 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
-import net.minecraft.Util;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -28,9 +30,12 @@ public class ItemDosimeter extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
-                      player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
-                            UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.NIL_UUID));
+                player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
+                    double radiation = MekanismAPI.getRadiationManager().isRadiationEnabled() ? c.getRadiation() : 0;
+                    player.sendSystemMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(radiation),
+                          UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
+                    CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
+                });
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }

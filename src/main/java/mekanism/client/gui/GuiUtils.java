@@ -163,8 +163,7 @@ public class GuiUtils {
         vertexBuffer.vertex(matrix4f, x + width, y + height, zLevel).uv(sprite.getU1(), sprite.getV1()).endVertex();
         vertexBuffer.vertex(matrix4f, x + width, y, zLevel).uv(sprite.getU1(), sprite.getV0()).endVertex();
         vertexBuffer.vertex(matrix4f, x, y, zLevel).uv(sprite.getU0(), sprite.getV0()).endVertex();
-        vertexBuffer.end();
-        BufferUploader.end(vertexBuffer);
+        BufferUploader.drawWithShader(vertexBuffer.end());
         RenderSystem.disableBlend();
     }
 
@@ -240,8 +239,7 @@ public class GuiUtils {
                 vertexBuffer.vertex(matrix4f, x, y + maskTop, zLevel).uv(uLocalMin, vLocalMin).endVertex();
             }
         }
-        vertexBuffer.end();
-        BufferUploader.end(vertexBuffer);
+        BufferUploader.drawWithShader(vertexBuffer.end());
         if (blend) {
             RenderSystem.disableBlend();
         }
@@ -280,7 +278,12 @@ public class GuiUtils {
                 RenderSystem.applyModelViewMatrix();
                 renderer.renderAndDecorateItem(stack, xAxis, yAxis);
                 if (overlay) {
+                    //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
+                    // for rendering the stored count so that it doesn't clip with later windows
+                    float previousOffset = renderer.blitOffset;
+                    renderer.blitOffset -= 25;
                     renderer.renderGuiItemDecorations(font, stack, xAxis, yAxis, text);
+                    renderer.blitOffset = previousOffset;
                 }
                 modelViewStack.popPose();
                 RenderSystem.applyModelViewMatrix();

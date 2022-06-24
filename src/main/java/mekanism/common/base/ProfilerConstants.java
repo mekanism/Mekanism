@@ -11,11 +11,13 @@ public class ProfilerConstants {
     public static final String CHEMICAL_DISSOLUTION_CHAMBER = "chemicalDissolutionChamber";
     public static final String CONFIGURABLE_MACHINE = "configurableMachine";
     public static final String DIGITAL_MINER = "digitalMiner";
+    public static final String DIMENSIONAL_STABILIZER = "dimensionalStabilizer";
     public static final String DYNAMIC_TANK = "dynamicTank";
     public static final String ENERGY_CUBE = "energyCube";
     public static final String FLUID_TANK = "fluidTank";
     public static final String INDUSTRIAL_ALARM = "industrialAlarm";
     public static final String MEKANISM_OUTLINE = "mekOutline";
+    public static final String AREA_MINE_OUTLINE = "areaMineOutline";
     public static final String NUTRITIONAL_LIQUIFIER = "nutritionalLiquifier";
     public static final String PERSONAL_CHEST = "personalChest";
     public static final String PIGMENT_MIXER = "pigmentMixer";

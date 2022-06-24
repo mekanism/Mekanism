@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:basic_pressurized_tube",
-    "count": 8
+  "key": {
+    "#": {
+      "tag": "forge:glass"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     "S#S"
   ],
-  "key": {
-    "S": {
-      "tag": "forge:ingots/steel"
-    },
-    "#": {
-      "tag": "forge:glass"
-    }
+  "result": {
+    "count": 8,
+    "item": "mekanism:basic_pressurized_tube"
   }
 }

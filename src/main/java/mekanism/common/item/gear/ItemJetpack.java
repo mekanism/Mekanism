@@ -7,30 +7,25 @@ import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
+import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
@@ -40,7 +35,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 
-public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem {
+public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem, IJetpackItem {
 
     private static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
@@ -75,11 +70,22 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
-        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
+        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getJetpackMode(stack).getTextComponent()));
     }
 
-    public JetpackMode getMode(ItemStack stack) {
+    @Override
+    public boolean canUseJetpack(ItemStack stack) {
+        return hasGas(stack);
+    }
+
+    @Override
+    public JetpackMode getJetpackMode(ItemStack stack) {
         return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
+    }
+
+    @Override
+    public void useJetpackFuel(ItemStack stack) {
+        useGas(stack, 1);
     }
 
     public void setMode(ItemStack stack, JetpackMode mode) {
@@ -90,9 +96,9 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         if (slotType == getSlot()) {
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
+            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getJetpackMode(stack)));
             GasStack stored = GasStack.EMPTY;
-            Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+            Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
             if (capability.isPresent()) {
                 IGasHandler gasHandlerItem = capability.get();
                 if (gasHandlerItem.getTanks() > 0) {
@@ -105,12 +111,12 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Override
     public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-        JetpackMode mode = getMode(stack);
+        JetpackMode mode = getJetpackMode(stack);
         JetpackMode newMode = mode.adjust(shift);
         if (mode != newMode) {
             setMode(stack, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.JETPACK_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.JETPACK_MODE_CHANGE.translate(newMode)));
             }
         }
     }
@@ -126,42 +132,6 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
             return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
         }
         return super.getDefaultTooltipHideFlags(stack);
-    }
-
-    public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
-        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
-        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_hover.png")),
-        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_off.png"));
-
-        private static final JetpackMode[] MODES = values();
-        private final ILangEntry langEntry;
-        private final EnumColor color;
-        private final ResourceLocation hudIcon;
-
-        JetpackMode(ILangEntry langEntry, EnumColor color, ResourceLocation hudIcon) {
-            this.langEntry = langEntry;
-            this.color = color;
-            this.hudIcon = hudIcon;
-        }
-
-        @Override
-        public Component getTextComponent() {
-            return langEntry.translateColored(color);
-        }
-
-        @Nonnull
-        @Override
-        public JetpackMode byIndex(int index) {
-            return byIndexStatic(index);
-        }
-
-        public ResourceLocation getHUDIcon() {
-            return hudIcon;
-        }
-
-        public static JetpackMode byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
-        }
     }
 
     @ParametersAreNonnullByDefault

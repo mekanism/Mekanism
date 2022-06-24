@@ -88,14 +88,15 @@ public interface Attribute {
     }
 
     @Nullable
+    @SuppressWarnings("unchecked")
     static <TIER extends ITier> TIER getTier(Block block, Class<TIER> tierClass) {
         AttributeTier<TIER> attr = get(block, AttributeTier.class);
-        return attr == null ? null : attr.getTier();
+        return attr == null ? null : attr.tier();
     }
 
     @Nullable
     static BaseTier getBaseTier(Block block) {
         AttributeTier<?> attr = get(block, AttributeTier.class);
-        return attr == null ? null : attr.getTier().getBaseTier();
+        return attr == null ? null : attr.tier().getBaseTier();
     }
 }

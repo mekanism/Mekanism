@@ -157,7 +157,7 @@ public class HUDRenderer {
         float angle = 180 - Mth.lerp(partialTick, minecraft.player.yHeadRotO, minecraft.player.yHeadRot);
         matrix.pushPose();
         matrix.scale(0.7F, 0.7F, 0.7F);
-        Component coords = MekanismLang.GENERIC_BLOCK_POS.translate((int) minecraft.player.getX(), (int) minecraft.player.getY(), (int) minecraft.player.getZ());
+        Component coords = MekanismLang.GENERIC_BLOCK_POS.translate(minecraft.player.getBlockX(), minecraft.player.getBlockY(), minecraft.player.getBlockZ());
         minecraft.font.draw(matrix, coords, -minecraft.font.width(coords) / 2F, -4, color);
         matrix.popPose();
         matrix.mulPose(Vector3f.XP.rotationDegrees(-60));

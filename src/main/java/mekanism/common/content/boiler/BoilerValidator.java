@@ -42,15 +42,14 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
     }
 
     @Override
-    public FormationResult postcheck(BoilerMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
+    public FormationResult postcheck(BoilerMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         Set<BlockPos> dispersers = new ObjectOpenHashSet<>();
         Set<BlockPos> elements = new ObjectOpenHashSet<>();
-        for (BlockPos pos : innerNodes) {
+        for (BlockPos pos : structure.internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityPressureDisperser) {
                 dispersers.add(pos);
             } else if (tile instanceof TileEntitySuperheatingElement) {
-                structure.internalLocations.add(pos);
                 elements.add(pos);
             }
         }

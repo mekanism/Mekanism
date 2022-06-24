@@ -1,13 +1,14 @@
 package mekanism.common.registries;
 
+import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleDosimeterUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
-import mekanism.common.content.gear.mekasuit.ModuleFrostWalkerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGeigerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
 import mekanism.common.content.gear.mekasuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
@@ -15,16 +16,17 @@ import mekanism.common.content.gear.mekasuit.ModuleMagneticAttractionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleNutritionalInjectionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
+import mekanism.common.content.gear.mekatool.ModuleBlastingUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
 import mekanism.common.content.gear.mekatool.ModuleShearingUnit;
-import mekanism.common.content.gear.mekatool.ModuleSilkTouchUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.registration.impl.ModuleDeferredRegister;
 import mekanism.common.registration.impl.ModuleRegistryObject;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 //Note: We need to declare our item providers like we do so that they don't end up being null due to us referencing these objects from the items
 @SuppressWarnings({"Convert2MethodRef", "FunctionalExpressionCanBeFolded"})
@@ -52,17 +54,19 @@ public class MekanismModules {
           ModuleAttackAmplificationUnit::new, () -> MekanismItems.MODULE_ATTACK_AMPLIFICATION.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON)
                 .rendersHUD());
     public static final ModuleRegistryObject<ModuleFarmingUnit> FARMING_UNIT = MODULES.register("farming_unit", ModuleFarmingUnit::new,
-          () -> MekanismItems.MODULE_FARMING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON).exclusive());
-    //TODO: Eventually we may want to come up with a better exclusive method given realistically the shearing unit and farming unit don't need to be
-    // exclusive of each other, but they both should be exclusive in regards to the teleportation unit
+          () -> MekanismItems.MODULE_FARMING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_BLOCK));
     public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.register("shearing_unit", ModuleShearingUnit::new,
-          () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).exclusive());
-    public static final ModuleRegistryObject<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = MODULES.register("silk_touch_unit", ModuleSilkTouchUnit::new,
-          () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.rarity(Rarity.RARE));
+          () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).exclusive(ExclusiveFlag.INTERACT_ENTITY, ExclusiveFlag.INTERACT_BLOCK));
+    public static final ModuleRegistryObject<?> SILK_TOUCH_UNIT = MODULES.registerEnchantBased("silk_touch_unit", () -> Enchantments.SILK_TOUCH,
+          () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.rarity(Rarity.RARE).exclusive(ExclusiveFlag.OVERRIDE_DROPS));
+    public static final ModuleRegistryObject<?> FORTUNE_UNIT = MODULES.registerEnchantBased("fortune_unit", () -> Enchantments.BLOCK_FORTUNE,
+          () -> MekanismItems.MODULE_FORTUNE.asItem(), builder -> builder.maxStackSize(3).rarity(Rarity.RARE).exclusive(ExclusiveFlag.OVERRIDE_DROPS));
+    public static final ModuleRegistryObject<ModuleBlastingUnit> BLASTING_UNIT = MODULES.register("blasting_unit", ModuleBlastingUnit::new,
+          () -> MekanismItems.MODULE_BLASTING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).rendersHUD());
     public static final ModuleRegistryObject<ModuleVeinMiningUnit> VEIN_MINING_UNIT = MODULES.register("vein_mining_unit", ModuleVeinMiningUnit::new,
           () -> MekanismItems.MODULE_VEIN_MINING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).rendersHUD());
     public static final ModuleRegistryObject<ModuleTeleportationUnit> TELEPORTATION_UNIT = MODULES.register("teleportation_unit", ModuleTeleportationUnit::new,
-          () -> MekanismItems.MODULE_TELEPORTATION.asItem(), builder -> builder.rarity(Rarity.EPIC).exclusive());
+          () -> MekanismItems.MODULE_TELEPORTATION.asItem(), builder -> builder.rarity(Rarity.EPIC).exclusive(ExclusiveFlag.INTERACT_ANY));
 
     //Helmet
     public static final ModuleRegistryObject<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = MODULES.register("electrolytic_breathing_unit",
@@ -81,12 +85,13 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleGeigerUnit> GEIGER_UNIT = MODULES.register("geiger_unit",
           ModuleGeigerUnit::new, () -> MekanismItems.MODULE_GEIGER.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
     public static final ModuleRegistryObject<ModuleJetpackUnit> JETPACK_UNIT = MODULES.register("jetpack_unit",
-          ModuleJetpackUnit::new, () -> MekanismItems.MODULE_JETPACK.asItem(), builder -> builder.rarity(Rarity.RARE).handlesModeChange().rendersHUD().exclusive());
+          ModuleJetpackUnit::new, () -> MekanismItems.MODULE_JETPACK.asItem(), builder -> builder.rarity(Rarity.RARE).handlesModeChange().rendersHUD()
+                .exclusive(ExclusiveFlag.OVERRIDE_JUMP));
     public static final ModuleRegistryObject<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = MODULES.register("charge_distribution_unit",
           ModuleChargeDistributionUnit::new, () -> MekanismItems.MODULE_CHARGE_DISTRIBUTION.asItem(), builder -> builder.rarity(Rarity.RARE));
     public static final ModuleRegistryObject<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = MODULES.register("gravitational_modulating_unit",
           ModuleGravitationalModulatingUnit::new, () -> MekanismItems.MODULE_GRAVITATIONAL_MODULATING.asItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange()
-                .rendersHUD().exclusive());
+                .rendersHUD().exclusive(ExclusiveFlag.OVERRIDE_JUMP));
     public static final ModuleRegistryObject<?> ELYTRA_UNIT = MODULES.registerMarker("elytra_unit", () -> MekanismItems.MODULE_ELYTRA.asItem(),
           builder -> builder.rarity(Rarity.EPIC));
 
@@ -94,6 +99,12 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = MODULES.register("locomotive_boosting_unit",
           ModuleLocomotiveBoostingUnit::new, () -> MekanismItems.MODULE_LOCOMOTIVE_BOOSTING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE)
                 .handlesModeChange());
+    public static final ModuleRegistryObject<?> GYROSCOPIC_STABILIZATION_UNIT = MODULES.registerMarker("gyroscopic_stabilization_unit",
+          () -> MekanismItems.MODULE_GYROSCOPIC_STABILIZATION.asItem(), builder -> builder.rarity(Rarity.RARE));
+    public static final ModuleRegistryObject<ModuleHydrostaticRepulsorUnit> HYDROSTATIC_REPULSOR_UNIT = MODULES.register("hydrostatic_repulsor_unit",
+          ModuleHydrostaticRepulsorUnit::new, () -> MekanismItems.MODULE_HYDROSTATIC_REPULSOR.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE));
+    public static final ModuleRegistryObject<?> MOTORIZED_SERVO_UNIT = MODULES.registerEnchantBased("motorized_servo_unit", () -> Enchantments.SWIFT_SNEAK,
+          () -> MekanismItems.MODULE_MOTORIZED_SERVO.asItem(), builder -> builder.maxStackSize(5).rarity(Rarity.RARE));
 
     //Boots
     public static final ModuleRegistryObject<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = MODULES.register("hydraulic_propulsion_unit",
@@ -101,6 +112,6 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleMagneticAttractionUnit> MAGNETIC_ATTRACTION_UNIT = MODULES.register("magnetic_attraction_unit",
           ModuleMagneticAttractionUnit::new, () -> MekanismItems.MODULE_MAGNETIC_ATTRACTION.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE)
                 .handlesModeChange());
-    public static final ModuleRegistryObject<ModuleFrostWalkerUnit> FROST_WALKER_UNIT = MODULES.register("frost_walker_unit", ModuleFrostWalkerUnit::new,
+    public static final ModuleRegistryObject<?> FROST_WALKER_UNIT = MODULES.registerEnchantBased("frost_walker_unit", () -> Enchantments.FROST_WALKER,
           () -> MekanismItems.MODULE_FROST_WALKER.asItem(), builder -> builder.maxStackSize(2).rarity(Rarity.RARE));
 }

@@ -1,17 +1,22 @@
 package mekanism.common.item.gear;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -20,6 +25,7 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
@@ -39,30 +45,42 @@ import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler.Fl
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
-import mekanism.common.item.gear.ItemJetpack.JetpackMode;
+import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.lib.attribute.AttributeCache;
+import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.client.IItemRenderProperties;
@@ -70,7 +88,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem, IJetpackItem, IAttributeRefresher {
 
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new LinkedHashSet<>(List.of(
           DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRY_OUT,
@@ -85,6 +103,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
 
+    private final AttributeCache attributeCache;
     //TODO: Expand this system so that modules can maybe define needed tanks?
     private final Set<GasTankSpec> gasTankSpecs = new HashSet<>();
     private final Set<FluidTankSpec> fluidTankSpecs = new HashSet<>();
@@ -95,6 +114,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     public ItemMekaSuitArmor(EquipmentSlot slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
+        CachedIntValue armorConfig;
         if (slot == EquipmentSlot.HEAD) {
             fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
                   (gas, automationType, stack) -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT),
@@ -102,23 +122,28 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             absorption = 0.15F;
             laserDissipation = 0.15;
             laserRefraction = 0.2;
+            armorConfig = MekanismConfig.gear.mekaSuitHelmetArmor;
         } else if (slot == EquipmentSlot.CHEST) {
             gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
                   (gas, automationType, stack) -> hasModule(stack, MekanismModules.JETPACK_UNIT), gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;
             laserDissipation = 0.3;
             laserRefraction = 0.4;
+            armorConfig = MekanismConfig.gear.mekaSuitBodyArmorArmor;
         } else if (slot == EquipmentSlot.LEGS) {
             absorption = 0.3F;
             laserDissipation = 0.1875;
             laserRefraction = 0.25;
+            armorConfig = MekanismConfig.gear.mekaSuitPantsArmor;
         } else if (slot == EquipmentSlot.FEET) {
             absorption = 0.15F;
             laserDissipation = 0.1125;
             laserRefraction = 0.15;
+            armorConfig = MekanismConfig.gear.mekaSuitBootsArmor;
         } else {
             throw new IllegalArgumentException("Unknown Equipment Slot Type");
         }
+        this.attributeCache = new AttributeCache(this, armorConfig, MekanismConfig.gear.mekaSuitToughness, MekanismConfig.gear.mekaSuitKnockbackResistance);
     }
 
     @Override
@@ -180,14 +205,26 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean isFoil(@Nonnull ItemStack stack) {
-        return !stack.isEmpty() && super.isFoil(stack) && IModuleContainerItem.hasOtherEnchants(stack);
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        if (stack.isEmpty()) {
+            return 0;
+        }
+        //Enchantments in our data
+        ListTag enchantments = ItemDataUtils.getList(stack, NBTConstants.ENCHANTMENTS);
+        return Math.max(MekanismUtils.getEnchantmentLevel(enchantments, enchantment), super.getEnchantmentLevel(stack, enchantment));
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.deserializeEnchantments(ItemDataUtils.getList(stack, NBTConstants.ENCHANTMENTS));
+        super.getAllEnchantments(stack).forEach((enchantment, level) -> enchantments.merge(enchantment, level, Math::max));
+        return enchantments;
     }
 
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             ItemStack stack = new ItemStack(this);
             items.add(StorageUtils.getFilledEnergyVariant(stack, getMaxEnergy(stack)));
         }
@@ -216,7 +253,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         capabilities.add(RadiationShieldingHandler.create(item -> isModuleEnabled(item, MekanismModules.RADIATION_SHIELDING_UNIT) ?
                                                                   ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         capabilities.add(LaserDissipationHandler.create(item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserDissipation : 0,
-                    item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
+              item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
         if (!gasTankSpecs.isEmpty()) {
             capabilities.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
         }
@@ -227,7 +264,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Nonnull
     public GasStack useGas(ItemStack stack, Gas type, long amount) {
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             return gasHandlerItem.extractChemical(new GasStack(type, amount), Action.EXECUTE);
@@ -236,7 +273,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public GasStack getContainedGas(ItemStack stack, Gas type) {
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             for (int i = 0; i < gasHandlerItem.getTanks(); i++) {
@@ -307,10 +344,30 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
                     }
                 }
-                entity.gameEvent(GameEvent.ELYTRA_FREE_FALL);
+                entity.gameEvent(GameEvent.ELYTRA_GLIDE);
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean canUseJetpack(ItemStack stack) {
+        return slot == EquipmentSlot.CHEST && (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT) ? ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get()) :
+                                               getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask())));
+    }
+
+    @Override
+    public JetpackMode getJetpackMode(ItemStack stack) {
+        IModule<ModuleJetpackUnit> module = getModule(stack, MekanismModules.JETPACK_UNIT);
+        if (module != null && module.isEnabled()) {
+            return module.getCustomInstance().getMode();
+        }
+        return JetpackMode.DISABLED;
+    }
+
+    @Override
+    public void useJetpackFuel(ItemStack stack) {
+        useGas(stack, MekanismGases.HYDROGEN.get(), 1);
     }
 
     private FloatingLong getMaxEnergy(ItemStack stack) {
@@ -321,6 +378,31 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     private FloatingLong getChargeRate(ItemStack stack) {
         IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
         return module == null ? MekanismConfig.gear.mekaSuitBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
+    }
+
+    @Nonnull
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, @Nonnull ItemStack stack) {
+        return slot == getSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    }
+
+    @Override
+    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+        UUID modifier = ARMOR_MODIFIER_UUID_PER_SLOT[getSlot().getIndex()];
+        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
+        builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().getKnockbackResistance(),
+              Operation.ADDITION));
+    }
+
+    @Override
+    public int getDefense() {
+        return getMaterial().getDefenseForSlot(getSlot());
+    }
+
+    @Override
+    public float getToughness() {
+        return getMaterial().getToughness();
     }
 
     public static float getDamageAbsorbed(Player player, DamageSource source, float amount) {
@@ -473,17 +555,23 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
         @Override
         public int getDefenseForSlot(@Nonnull EquipmentSlot slot) {
-            return ArmorMaterials.NETHERITE.getDefenseForSlot(slot);
+            return switch (slot) {
+                case FEET -> MekanismConfig.gear.mekaSuitBootsArmor.getOrDefault();
+                case LEGS -> MekanismConfig.gear.mekaSuitPantsArmor.getOrDefault();
+                case CHEST -> MekanismConfig.gear.mekaSuitBodyArmorArmor.getOrDefault();
+                case HEAD -> MekanismConfig.gear.mekaSuitHelmetArmor.getOrDefault();
+                default -> 0;
+            };
         }
 
         @Override
         public float getToughness() {
-            return ArmorMaterials.NETHERITE.getToughness();
+            return MekanismConfig.gear.mekaSuitToughness.getOrDefault();
         }
 
         @Override
         public float getKnockbackResistance() {
-            return ArmorMaterials.NETHERITE.getKnockbackResistance();
+            return MekanismConfig.gear.mekaSuitKnockbackResistance.getOrDefault();
         }
 
         @Nonnull

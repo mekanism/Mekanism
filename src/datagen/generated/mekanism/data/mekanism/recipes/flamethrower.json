@@ -1,28 +1,28 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:flamethrower"
-  },
-  "pattern": [
-    "III",
-    "ITS",
-    "#C#"
-  ],
   "key": {
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
+    "#": {
+      "tag": "forge:ingots/bronze"
     },
     "C": {
       "tag": "forge:circuits/advanced"
-    },
-    "#": {
-      "tag": "forge:ingots/bronze"
     },
     "I": {
       "tag": "forge:ingots/tin"
     },
     "S": {
       "item": "minecraft:flint_and_steel"
+    },
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
     }
+  },
+  "pattern": [
+    "III",
+    "ITS",
+    "#C#"
+  ],
+  "result": {
+    "item": "mekanism:flamethrower"
   }
 }

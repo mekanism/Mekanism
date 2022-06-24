@@ -1,5 +1,6 @@
 package mekanism.common.recipe;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -210,7 +211,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
-            world = DistExecutor.safeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
+            world = DistExecutor.unsafeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
             if (world == null) {
                 //If we failed, then return no recipes
                 return Collections.emptyList();
@@ -221,13 +222,15 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
             //Note: This is a fresh mutable list that gets returned
             List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
             if (this == SMELTING.get()) {
+                //Ensure the recipes can be modified
+                recipes = new ArrayList<>(recipes);
                 for (SmeltingRecipe smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
                     ItemStack recipeOutput = smeltingRecipe.getResultItem();
                     if (!smeltingRecipe.isSpecial() && !smeltingRecipe.isIncomplete() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
                         NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();
                         ItemStackIngredient input;
-                        if (ingredients.size() == 0) {
+                        if (ingredients.isEmpty()) {
                             //Something went wrong
                             continue;
                         } else {

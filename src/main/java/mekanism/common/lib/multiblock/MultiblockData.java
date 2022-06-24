@@ -40,7 +40,6 @@ import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidRelative;
 import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
-import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
@@ -56,18 +55,15 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
       IPigmentTracker, ISlurryTracker {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
-    public final Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
-    public Set<ValveData> valves = new ObjectOpenHashSet<>();
-
     /**
      * @apiNote This set is only used for purposes of caching all known valid inner blocks of a multiblock structure, for use in checking if we need to revalidate the
-     * multiblock when something changes, cases we want to skip are inner nodes just changing state (for example, super heating elements being activated). While we could
-     * use internal locations in this case, it might not cut it for the other multiblocks that don't mark all their internal pieces as "internal multiblocks". This set is
+     * multiblock when something changes, cases we want to skip are inner nodes just changing state (for example, super heating elements being activated) This set is
      * not synced or checked anywhere (for things like equals) as it is only used on the server and isn't part of the structure's information. It also is not the most
      * accurate of checks that get done against this as there is no way to tell if the state actually changed or if the block changed entirely, but assuming no one is
      * replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
      */
-    public Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
+    public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
+    public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
@@ -84,6 +80,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     @ContainerSync
     private boolean formed;
+    public boolean recheckStructure;
 
     private int currentRedstoneLevel;
 
@@ -170,9 +167,9 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void onCreated(Level world) {
         for (BlockPos pos : internalLocations) {
-            TileEntityInternalMultiblock tile = WorldUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
-            if (tile != null) {
-                tile.setMultiblock(inventoryID);
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+            if (tile instanceof IInternalMultiblock internalMultiblock) {
+                internalMultiblock.setMultiblock(this);
             }
         }
 
@@ -224,13 +221,17 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void remove(Level world) {
         for (BlockPos pos : internalLocations) {
-            TileEntityInternalMultiblock tile = WorldUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
-            if (tile != null) {
-                tile.setMultiblock(null);
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+            if (tile instanceof IInternalMultiblock internalMultiblock) {
+                internalMultiblock.setMultiblock(null);
             }
         }
         inventoryID = null;
         formed = false;
+        recheckStructure = false;
+    }
+
+    public void meltdownHappened(Level world) {
     }
 
     public void readUpdateTag(CompoundTag tag) {
@@ -358,11 +359,15 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
         for (Direction direction : EnumUtils.DIRECTIONS) {
             BlockPos neighborPos = pos.relative(direction);
-            if (!locations.contains(neighborPos) && !internalLocations.contains(neighborPos)) {
+            if (!isKnownLocation(neighborPos)) {
                 directionsToEmit.add(direction);
             }
         }
         return directionsToEmit;
+    }
+
+    public boolean isKnownLocation(BlockPos pos) {
+        return locations.contains(pos) || internalLocations.contains(pos);
     }
 
     public Collection<ValveData> getValveData() {

@@ -39,6 +39,6 @@ public class TankCache extends MultiblockCache<TankMultiblockData> {
     @Override
     public void save(CompoundTag nbtTags) {
         super.save(nbtTags);
-        nbtTags.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.EDIT_MODE, editMode);
     }
 }

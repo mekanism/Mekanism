@@ -61,9 +61,15 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(MekanismBlocks.SALT_BLOCK),
               MekanismItems.SALT.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "salt"));
+        //String
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Items.COBWEB),
+              new ItemStack(Items.STRING, 9)//Value based on bedrock crafting recipe
+        ).build(consumer, Mekanism.rl(basePath + "string"));
     }
 
     private void addEnrichingConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+        addEnrichingMudConversionRecipes(consumer, basePath + "mud/");
         addEnrichingStoneConversionRecipes(consumer, basePath + "stone/");
         addEnrichingBlackstoneConversionRecipes(consumer, basePath + "blackstone/");
         addEnrichingDeepslateConversionRecipes(consumer, basePath + "deepslate/");
@@ -125,6 +131,19 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.NETHER_BRICKS),
               new ItemStack(Blocks.CHISELED_NETHER_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "nether_bricks_to_chiseled_nether_bricks"));
+    }
+
+    private void addEnrichingMudConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+        //Mud -> clay
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.MUD),
+              new ItemStack(Blocks.CLAY)
+        ).build(consumer, Mekanism.rl(basePath + "to_clay"));
+        //Packed mud -> mud bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.PACKED_MUD),
+              new ItemStack(Blocks.MUD_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "packed_to_bricks"));
     }
 
     private void addEnrichingStoneConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

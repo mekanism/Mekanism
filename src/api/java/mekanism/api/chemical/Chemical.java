@@ -10,21 +10,17 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.tags.IReverseTag;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryEntry<CHEMICAL> implements IChemicalProvider<CHEMICAL>, IHasTextComponent,
-      IHasTranslationKey {
+public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements IChemicalProvider<CHEMICAL> {
 
     private final ChemicalTags<CHEMICAL> chemicalTags;
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
@@ -46,6 +42,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
 
     @Nonnull
     @Override
+    @SuppressWarnings("unchecked")
     public CHEMICAL getChemical() {
         return (CHEMICAL) this;
     }
@@ -200,4 +197,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
      * @return {@code true} if this chemical is the empty instance, {@code false} otherwise.
      */
     public abstract boolean isEmptyType();
+
+    @Override
+    public abstract ResourceLocation getRegistryName();
 }

@@ -1,5 +1,9 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:purple"
+  },
   "itemInput": {
     "ingredient": {
       "type": "forge:difference",
@@ -10,10 +14,6 @@
         "item": "minecraft:purple_carpet"
       }
     }
-  },
-  "chemicalInput": {
-    "amount": 32,
-    "pigment": "mekanism:purple"
   },
   "output": {
     "item": "minecraft:purple_carpet"

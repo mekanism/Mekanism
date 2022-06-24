@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:laser",
+  "criteria": {
+    "laser_tractor_beam": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:laser_tractor_beam"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.auto_collection.description"
+    },
+    "icon": {
+      "item": "mekanism:laser_tractor_beam"
+    },
+    "title": {
+      "translate": "advancements.mekanism.auto_collection.title"
+    }
+  }
+}

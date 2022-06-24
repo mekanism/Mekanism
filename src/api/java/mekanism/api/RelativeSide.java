@@ -45,37 +45,22 @@ public enum RelativeSide implements IHasTranslationKey {
      * @return The direction representing which side of the block this RelativeSide is actually representing based on the direction it is facing.
      */
     public Direction getDirection(@Nonnull Direction facing) {
-        if (this == FRONT) {
-            return facing;
-        } else if (this == BACK) {
-            return facing.getOpposite();
-        } else if (this == LEFT) {
-            if (facing == Direction.DOWN || facing == Direction.UP) {
-                return Direction.EAST;
-            }
-            return facing.getClockWise();
-        } else if (this == RIGHT) {
-            if (facing == Direction.DOWN || facing == Direction.UP) {
-                return Direction.WEST;
-            }
-            return facing.getCounterClockWise();
-        } else if (this == TOP) {
-            if (facing == Direction.DOWN) {
-                return Direction.NORTH;
-            } else if (facing == Direction.UP) {
-                return Direction.SOUTH;
-            }
-            return Direction.UP;
-        } else if (this == BOTTOM) {
-            if (facing == Direction.DOWN) {
-                return Direction.SOUTH;
-            } else if (facing == Direction.UP) {
-                return Direction.NORTH;
-            }
-            return Direction.DOWN;
-        }
-        //Fallback to north though we should never get here
-        return Direction.NORTH;
+        return switch (this) {
+            case FRONT -> facing;
+            case BACK -> facing.getOpposite();
+            case LEFT -> facing == Direction.DOWN || facing == Direction.UP ? Direction.EAST : facing.getClockWise();
+            case RIGHT -> facing == Direction.DOWN || facing == Direction.UP ? Direction.WEST : facing.getCounterClockWise();
+            case TOP -> switch (facing) {
+                case DOWN -> Direction.NORTH;
+                case UP -> Direction.SOUTH;
+                default -> Direction.UP;
+            };
+            case BOTTOM -> switch (facing) {
+                case DOWN -> Direction.SOUTH;
+                case UP -> Direction.NORTH;
+                default -> Direction.DOWN;
+            };
+        };
     }
 
     /**
@@ -94,15 +79,13 @@ public enum RelativeSide implements IHasTranslationKey {
         } else if (side == facing.getOpposite()) {
             return BACK;
         } else if (facing == Direction.DOWN || facing == Direction.UP) {
-            if (side == Direction.NORTH) {
-                return facing == Direction.DOWN ? TOP : BOTTOM;
-            } else if (side == Direction.SOUTH) {
-                return facing == Direction.DOWN ? BOTTOM : TOP;
-            } else if (side == Direction.WEST) {
-                return RIGHT;
-            } else if (side == Direction.EAST) {
-                return LEFT;
-            }
+            return switch (side) {
+                case NORTH -> facing == Direction.DOWN ? TOP : BOTTOM;
+                case SOUTH -> facing == Direction.DOWN ? BOTTOM : TOP;
+                case WEST -> RIGHT;
+                case EAST -> LEFT;
+                default -> throw new IllegalStateException("Case should have been caught earlier.");
+            };
         } else if (side == Direction.DOWN) {
             return BOTTOM;
         } else if (side == Direction.UP) {

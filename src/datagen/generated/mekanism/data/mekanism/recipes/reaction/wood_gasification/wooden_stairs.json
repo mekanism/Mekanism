@@ -1,10 +1,6 @@
 {
   "type": "mekanism:reaction",
-  "itemInput": {
-    "ingredient": {
-      "tag": "minecraft:wooden_stairs"
-    }
-  },
+  "duration": 22,
   "fluidInput": {
     "amount": 15,
     "tag": "minecraft:water"
@@ -13,9 +9,13 @@
     "amount": 15,
     "gas": "mekanism:oxygen"
   },
-  "duration": 22,
   "gasOutput": {
-    "gas": "mekanism:hydrogen",
-    "amount": 15
+    "amount": 15,
+    "gas": "mekanism:hydrogen"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "minecraft:wooden_stairs"
+    }
   }
 }

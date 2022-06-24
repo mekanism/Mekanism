@@ -1,16 +1,16 @@
 {
   "type": "mekanism:purifying",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
   "itemInput": {
     "ingredient": {
       "tag": "forge:raw_materials/uranium"
     }
   },
-  "chemicalInput": {
-    "amount": 1,
-    "gas": "mekanism:oxygen"
-  },
   "output": {
-    "item": "mekanism:clump_uranium",
-    "count": 2
+    "count": 2,
+    "item": "mekanism:clump_uranium"
   }
 }

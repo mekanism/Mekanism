@@ -2,8 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
@@ -15,54 +13,61 @@
             },
             {
               "function": "minecraft:copy_nbt",
-              "source": "block_entity",
               "ops": [
                 {
+                  "op": "replace",
                   "source": "componentSecurity.owner",
-                  "target": "mekData.owner",
-                  "op": "replace"
+                  "target": "mekData.owner"
                 },
                 {
+                  "op": "replace",
                   "source": "componentSecurity.securityMode",
-                  "target": "mekData.securityMode",
-                  "op": "replace"
+                  "target": "mekData.securityMode"
                 },
                 {
+                  "op": "replace",
                   "source": "componentUpgrade",
-                  "target": "mekData.componentUpgrade",
-                  "op": "replace"
+                  "target": "mekData.componentUpgrade"
                 },
                 {
+                  "op": "replace",
                   "source": "componentConfig",
-                  "target": "mekData.componentConfig",
-                  "op": "replace"
+                  "target": "mekData.componentConfig"
                 },
                 {
+                  "op": "replace",
                   "source": "componentEjector",
-                  "target": "mekData.componentEjector",
-                  "op": "replace"
+                  "target": "mekData.componentEjector"
                 },
                 {
+                  "op": "replace",
+                  "source": "sorting",
+                  "target": "mekData.sorting"
+                },
+                {
+                  "op": "replace",
                   "source": "controlType",
-                  "target": "mekData.controlType",
-                  "op": "replace"
+                  "target": "mekData.controlType"
                 },
                 {
+                  "op": "replace",
                   "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers",
-                  "op": "replace"
+                  "target": "mekData.EnergyContainers"
                 },
                 {
+                  "op": "replace",
                   "source": "Items",
-                  "target": "mekData.Items",
-                  "op": "replace"
+                  "target": "mekData.Items"
                 }
-              ]
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:elite_combining_factory"
         }
-      ]
+      ],
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

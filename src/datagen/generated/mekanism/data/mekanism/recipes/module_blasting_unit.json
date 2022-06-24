@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:tnt"
+    },
+    "A": {
+      "tag": "forge:alloys/ultimate"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "H": {
+      "tag": "forge:pellets/polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "CPC",
+    "HHH"
+  ],
+  "result": {
+    "item": "mekanism:module_blasting_unit"
+  }
+}

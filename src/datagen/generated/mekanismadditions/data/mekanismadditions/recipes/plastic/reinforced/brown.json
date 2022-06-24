@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismadditions:brown_reinforced_plastic",
-    "count": 4
+  "key": {
+    "#": {
+      "item": "mekanismadditions:brown_plastic"
+    },
+    "O": {
+      "tag": "forge:dusts/osmium"
+    }
   },
   "pattern": [
     " # ",
     "#O#",
     " # "
   ],
-  "key": {
-    "O": {
-      "tag": "forge:dusts/osmium"
-    },
-    "#": {
-      "item": "mekanismadditions:brown_plastic"
-    }
+  "result": {
+    "count": 4,
+    "item": "mekanismadditions:brown_reinforced_plastic"
   }
 }

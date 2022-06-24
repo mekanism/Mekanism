@@ -21,7 +21,6 @@ public class JsonConstants {
     public static final String SLURRY = "slurry";
     public static final String FLUID = "fluid";
     public static final String BASE = "base";
-    public static final String WITHOUT = "without";
 
     //Recipes
     public static final String TYPE = "type";
@@ -52,4 +51,10 @@ public class JsonConstants {
 
     //Transmitter model
     public static final String GLASS = "glass";
+
+    //Advancement Triggers
+    public static final String ACTION = "action";
+    public static final String COPY = "copy";
+    public static final String KILLED = "killed";
+    public static final String SKIN = "skin";
 }

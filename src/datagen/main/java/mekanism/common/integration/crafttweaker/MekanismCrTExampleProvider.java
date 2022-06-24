@@ -62,6 +62,7 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.FluidTags;
@@ -71,7 +72,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
@@ -137,7 +138,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment(imports -> descriptionSignature(imports, ICrTSlurryStack.class))
               .blankLine()
               .addComponent(imports -> () -> imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(" +
-                                             new CrTGasStack(MekanismGases.HYDROGEN.getStack(FluidAttributes.BUCKET_VOLUME)).getCommandString() +
+                                             new CrTGasStack(MekanismGases.HYDROGEN.getStack(FluidType.BUCKET_VOLUME)).getCommandString() +
                                              ", \"Hydrogen is a basic gas that is produced in an electrolytic separator\");")
         ;
     }
@@ -519,7 +520,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         @Override
         public String asString() {
             return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(" +
-                   describer.apply((STACK) chemicalProvider.getStack(FluidAttributes.BUCKET_VOLUME)).getCommandString() + ");";
+                   describer.apply(ChemicalUtil.withAmount(chemicalProvider, FluidType.BUCKET_VOLUME)).getCommandString() + ");";
         }
     }
 

@@ -33,7 +33,7 @@ public class ItemAlloy extends Item {
             Level world = context.getLevel();
             BlockPos pos = context.getClickedPos();
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getClickedFace());
+            LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION, context.getClickedFace());
             if (capability.isPresent()) {
                 if (!world.isClientSide) {
                     capability.resolve().get().onAlloyInteraction(player, context.getItemInHand(), tier);

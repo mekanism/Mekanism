@@ -15,6 +15,8 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.tier.BaseTier;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
@@ -31,6 +33,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -55,7 +58,7 @@ public class PacketDropperUse implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player == null || tankId < 0) {
             return;
         }
@@ -74,7 +77,7 @@ public class PacketDropperUse implements IMekanismPacket {
                         // check if the block the tank is in is a tiered block and if it is, and it is creative
                         // don't allow clearing the tank
                         Block block = tile.getBlockType();
-                        if (Attribute.has(block, AttributeTier.class) && Attribute.get(block, AttributeTier.class).getTier().getBaseTier() == BaseTier.CREATIVE) {
+                        if (Attribute.has(block, AttributeTier.class) && Attribute.get(block, AttributeTier.class).tier().getBaseTier() == BaseTier.CREATIVE) {
                             return;
                         }
                     }
@@ -85,7 +88,7 @@ public class PacketDropperUse implements IMekanismPacket {
     }
 
     private <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
-          Player player, ItemStack stack, Coord4D coord) {
+          ServerPlayer player, ItemStack stack, Coord4D coord) {
         if (tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
             if (fluidTank != null) {
@@ -103,7 +106,7 @@ public class PacketDropperUse implements IMekanismPacket {
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void handleChemicalTanks(
-          Player player, ItemStack stack, List<TANK> tanks, Coord4D coord) {
+          ServerPlayer player, ItemStack stack, List<TANK> tanks, Coord4D coord) {
         //This method is a workaround for Eclipse's compiler showing an error/warning if we try to just assign the tanks
         // to a variable in handleTankType and then have the size check and call to handleChemicalTank happen there
         if (tankId < tanks.size()) {
@@ -111,7 +114,7 @@ public class PacketDropperUse implements IMekanismPacket {
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(Player player, ItemStack stack,
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(ServerPlayer player, ItemStack stack,
           IChemicalTank<CHEMICAL, STACK> tank, Coord4D coord) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
@@ -121,6 +124,7 @@ public class PacketDropperUse implements IMekanismPacket {
                     MekanismAPI.getRadiationManager().dumpRadiation(coord, gasTank.getStack());
                 }
                 tank.setEmpty();
+                MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
             }
         } else {
             Optional<IChemicalHandler<CHEMICAL, STACK>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank)).resolve();
@@ -134,9 +138,11 @@ public class PacketDropperUse implements IMekanismPacket {
                         if (action == DropperAction.FILL_DROPPER) {
                             //Insert chemical into dropper
                             transferBetweenTanks(tank, itemTank, player);
+                            MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
                         } else if (action == DropperAction.DRAIN_DROPPER) {
                             //Extract chemical from dropper
                             transferBetweenTanks(itemTank, tank, player);
+                            MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
                         }
                     }
                 }
@@ -144,10 +150,11 @@ public class PacketDropperUse implements IMekanismPacket {
         }
     }
 
-    private void handleFluidTank(Player player, ItemStack stack, IExtendedFluidTank fluidTank) {
+    private void handleFluidTank(ServerPlayer player, ItemStack stack, IExtendedFluidTank fluidTank) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             fluidTank.setEmpty();
+            MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
             return;
         }
         Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
@@ -159,9 +166,11 @@ public class PacketDropperUse implements IMekanismPacket {
                     if (action == DropperAction.FILL_DROPPER) {
                         //Insert fluid into dropper
                         transferBetweenTanks(fluidTank, itemFluidTank, player);
+                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
                     } else if (action == DropperAction.DRAIN_DROPPER) {
                         //Extract fluid from dropper
                         transferBetweenTanks(itemFluidTank, fluidTank, player);
+                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
                     }
                 }
             }

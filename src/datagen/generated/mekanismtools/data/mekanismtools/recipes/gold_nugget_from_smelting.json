@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "result": "minecraft:gold_nugget",
+  "cookingtime": 200,
+  "experience": 0.1,
   "ingredient": {
     "item": "mekanismtools:gold_paxel"
   },
-  "cookingtime": 200,
-  "experience": 0.1
+  "result": "minecraft:gold_nugget"
 }

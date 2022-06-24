@@ -10,7 +10,6 @@ import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -80,7 +79,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
             if (channel != newChannel) {
                 setChannel(stack, newChannel);
                 if (displayChangeMessage) {
-                    player.sendMessage(MekanismUtils.logFormat(AdditionsLang.CHANNEL_CHANGE.translate(newChannel)), Util.NIL_UUID);
+                    player.sendSystemMessage(MekanismUtils.logFormat(AdditionsLang.CHANNEL_CHANGE.translate(newChannel)));
                 }
             }
         }

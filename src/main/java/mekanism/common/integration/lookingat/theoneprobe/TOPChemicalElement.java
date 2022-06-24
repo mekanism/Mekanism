@@ -10,8 +10,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.common.Mekanism;
 import mekanism.common.integration.lookingat.ChemicalElement;
+import mekanism.common.integration.lookingat.LookingAtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -27,13 +27,13 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
     @Nullable
     public static TOPChemicalElement create(ChemicalStack<?> stored, long capacity) {
         if (stored instanceof GasStack) {
-            return new TOPChemicalElement(GasElementFactory.ID, stored, capacity);
+            return new TOPChemicalElement(LookingAtUtils.GAS, stored, capacity);
         } else if (stored instanceof InfusionStack) {
-            return new TOPChemicalElement(InfuseTypeElementFactory.ID, stored, capacity);
+            return new TOPChemicalElement(LookingAtUtils.INFUSE_TYPE, stored, capacity);
         } else if (stored instanceof PigmentStack) {
-            return new TOPChemicalElement(PigmentElementFactory.ID, stored, capacity);
+            return new TOPChemicalElement(LookingAtUtils.PIGMENT, stored, capacity);
         } else if (stored instanceof SlurryStack) {
-            return new TOPChemicalElement(SlurryElementFactory.ID, stored, capacity);
+            return new TOPChemicalElement(LookingAtUtils.SLURRY, stored, capacity);
         }
         return null;
     }
@@ -51,61 +51,53 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
 
     public static class GasElementFactory implements IElementFactory {
 
-        private static final ResourceLocation ID = Mekanism.rl("gas");
-
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(ID, ChemicalUtils.readGasStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), ChemicalUtils.readGasStack(buf), buf.readVarLong());
         }
 
         @Override
         public ResourceLocation getId() {
-            return ID;
+            return LookingAtUtils.GAS;
         }
     }
 
     public static class InfuseTypeElementFactory implements IElementFactory {
 
-        private static final ResourceLocation ID = Mekanism.rl("infuse_type");
-
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(ID, ChemicalUtils.readInfusionStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), ChemicalUtils.readInfusionStack(buf), buf.readVarLong());
         }
 
         @Override
         public ResourceLocation getId() {
-            return ID;
+            return LookingAtUtils.INFUSE_TYPE;
         }
     }
 
     public static class PigmentElementFactory implements IElementFactory {
 
-        private static final ResourceLocation ID = Mekanism.rl("pigment");
-
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(ID, ChemicalUtils.readPigmentStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), ChemicalUtils.readPigmentStack(buf), buf.readVarLong());
         }
 
         @Override
         public ResourceLocation getId() {
-            return ID;
+            return LookingAtUtils.PIGMENT;
         }
     }
 
     public static class SlurryElementFactory implements IElementFactory {
 
-        private static final ResourceLocation ID = Mekanism.rl("slurry");
-
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(ID, ChemicalUtils.readSlurryStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), ChemicalUtils.readSlurryStack(buf), buf.readVarLong());
         }
 
         @Override
         public ResourceLocation getId() {
-            return ID;
+            return LookingAtUtils.SLURRY;
         }
     }
 }

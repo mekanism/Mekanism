@@ -25,7 +25,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.item.GuiDictionary.DictionaryTagType;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -76,7 +76,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
             gui().renderItem(matrix, stack, x, y);
         } else if (target instanceof FluidStack stack) {
             MekanismRenderer.color(stack);
-            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidType.STILL), TilingDirection.DOWN_RIGHT);
+            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
         } else if (target instanceof ChemicalStack<?> stack) {
             MekanismRenderer.color(stack);
@@ -177,10 +177,10 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                     ));
                 });
                 //Get tags of any contained chemicals
-                addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS_HANDLER_CAPABILITY);
-                addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION_HANDLER_CAPABILITY);
-                addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT_HANDLER_CAPABILITY);
-                addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY_HANDLER_CAPABILITY);
+                addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS_HANDLER);
+                addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION_HANDLER);
+                addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT_HANDLER);
+                addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY_HANDLER);
                 //TODO: Support other types of things?
             }
         } else if (newTarget instanceof FluidStack fluidStack) {

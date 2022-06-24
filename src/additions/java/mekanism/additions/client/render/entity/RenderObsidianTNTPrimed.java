@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
@@ -15,9 +16,12 @@ import net.minecraft.util.Mth;
 
 public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
 
+    private final BlockRenderDispatcher blockRenderer;
+
     public RenderObsidianTNTPrimed(EntityRendererProvider.Context context) {
         super(context);
         shadowRadius = 0.5F;
+        this.blockRenderer = context.getBlockRenderDispatcher();
     }
 
     @Override
@@ -36,7 +40,8 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         matrix.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         matrix.translate(-0.5, -0.5, 0.5);
         matrix.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-        TntMinecartRenderer.renderWhiteSolidBlock(AdditionsBlocks.OBSIDIAN_TNT.getBlock().defaultBlockState(), matrix, renderer, light, tnt.getFuse() / 5 % 2 == 0);
+        TntMinecartRenderer.renderWhiteSolidBlock(blockRenderer, AdditionsBlocks.OBSIDIAN_TNT.getBlock().defaultBlockState(), matrix, renderer, light,
+              tnt.getFuse() / 5 % 2 == 0);
         matrix.popPose();
         super.render(tnt, entityYaw, partialTick, matrix, renderer, light);
     }

@@ -1,22 +1,22 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:fluidic_plenisher"
+  "key": {
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "I": {
+      "tag": "forge:ingots/tin"
+    },
+    "P": {
+      "item": "mekanism:electric_pump"
+    }
   },
   "pattern": [
     "III",
     "CPC",
     "III"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:electric_pump"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "I": {
-      "tag": "forge:ingots/tin"
-    }
+  "result": {
+    "item": "mekanism:fluidic_plenisher"
   }
 }

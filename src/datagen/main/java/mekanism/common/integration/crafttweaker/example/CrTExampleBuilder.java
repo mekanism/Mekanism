@@ -34,6 +34,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return importsComponent;
     }
 
+    @SuppressWarnings("unchecked")
     private BUILDER_TYPE getThis() {
         return (BUILDER_TYPE) this;
     }

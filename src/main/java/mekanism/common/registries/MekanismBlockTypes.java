@@ -9,6 +9,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
+import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
@@ -76,6 +77,7 @@ import mekanism.common.tile.machine.TileEntityChemicalWasher;
 import mekanism.common.tile.machine.TileEntityCombiner;
 import mekanism.common.tile.machine.TileEntityCrusher;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityElectricPump;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.machine.TileEntityEnergizedSmelter;
@@ -441,12 +443,11 @@ public class MekanismBlockTypes {
           .withComputerSupport("oredictionificator")
           .build();
     // Quantum Entangloporter
-    public static final Machine<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = MachineBuilder
-          .createMachine(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
+    public static final BlockTypeTile<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER)
           .withGui(() -> MekanismContainerTypes.QUANTUM_ENTANGLOPORTER)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
-          .with(new AttributeStateFacing(BlockStateProperties.FACING))
-          .without(AttributeStateActive.class, AttributeParticleFX.class, AttributeRedstone.class, AttributeComparator.class)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING), Attributes.INVENTORY, Attributes.SECURITY)
           .withCustomShape(BlockShapes.QUANTUM_ENTANGLOPORTER)
           .withComputerSupport("quantumEntangloporter")
           .build();
@@ -544,6 +545,15 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
           .withComputerSupport("paintingMachine")
           .build();
+    // Dimensional Stabilizer
+    public static final Machine<TileEntityDimensionalStabilizer> DIMENSIONAL_STABILIZER = MachineBuilder
+          .createMachine(() -> MekanismTileEntityTypes.DIMENSIONAL_STABILIZER, MekanismLang.DESCRIPTION_DIMENSIONAL_STABILIZER)
+          .withGui(() -> MekanismContainerTypes.DIMENSIONAL_STABILIZER)
+          .without(AttributeStateFacing.class, AttributeParticleFX.class)
+          .withEnergyConfig(MekanismConfig.usage.dimensionalStabilizer, MekanismConfig.storage.dimensionalStabilizer)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.ENERGY))
+          .withComputerSupport("dimensionalStabilizer")
+          .build();
 
     // QIO Drive Array
     public static final BlockTypeTile<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = BlockTileBuilder
@@ -593,69 +603,77 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityDynamicTank> DYNAMIC_TANK = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_TANK, MekanismLang.DESCRIPTION_DYNAMIC_TANK)
           .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK, MekanismLang.DYNAMIC_TANK)
-          .with(Attributes.INVENTORY, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY)
+          .externalMultiblock()
           .build();
     // Dynamic Valve
     public static final BlockTypeTile<TileEntityDynamicValve> DYNAMIC_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
           .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK, MekanismLang.DYNAMIC_TANK)
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR)
+          .externalMultiblock()
           .withComputerSupport("dynamicValve")
           .build();
     // Boiler Casing
     public static final BlockTypeTile<TileEntityBoilerCasing> BOILER_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_CASING, MekanismLang.DESCRIPTION_BOILER_CASING)
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER, MekanismLang.BOILER)
-          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .externalMultiblock()
           .build();
     // Boiler Valve
     public static final BlockTypeTile<TileEntityBoilerValve> BOILER_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER, MekanismLang.BOILER)
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR, new AttributeStateBoilerValveMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR, new AttributeStateBoilerValveMode())
+          .externalMultiblock()
           .withComputerSupport("boilerValve")
           .build();
     // Pressure Disperser
-    public static final BlockTypeTile<TileEntityPressureDisperser> PRESSURE_DISPERSER =
-          BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.PRESSURE_DISPERSER, MekanismLang.DESCRIPTION_PRESSURE_DISPERSER)
-                .with(Attributes.MULTIBLOCK, AttributeMobSpawn.NEVER)
-                .build();
+    public static final BlockTypeTile<TileEntityPressureDisperser> PRESSURE_DISPERSER = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.PRESSURE_DISPERSER, MekanismLang.DESCRIPTION_PRESSURE_DISPERSER)
+          .internalMultiblock()
+          .build();
     // Superheating Element
-    public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =
-          BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT)
-                .with(Attributes.ACTIVE_LIGHT, Attributes.MULTIBLOCK, AttributeMobSpawn.NEVER)
-                .build();
+    public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT = BlockTileBuilder
+          .createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT)
+          .with(Attributes.ACTIVE_LIGHT)
+          .internalMultiblock()
+          .build();
     // Induction Casing
     public static final BlockTypeTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)
           .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX, MekanismLang.MATRIX)
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR)
+          .externalMultiblock()
           .build();
     // Induction Port
     public static final BlockTypeTile<TileEntityInductionPort> INDUCTION_PORT = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_PORT, MekanismLang.DESCRIPTION_INDUCTION_PORT)
           .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX, MekanismLang.MATRIX)
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.ACTIVE)
+          .externalMultiblock()
           .withComputerSupport("inductionPort")
           .build();
     // Thermal Evaporation Controller
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
           .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.EVAPORATION_PLANT)
-          .with(Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(9), Attributes.MULTIBLOCK,
-                AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(9))
+          .externalMultiblock()
           .withComputerSupport("thermalEvaporationController")
           .build();
     // Thermal Evaporation Valve
     public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-          .with(Attributes.COMPARATOR, new AttributeCustomResistance(9), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.COMPARATOR, new AttributeCustomResistance(9))
+          .externalMultiblock()
           .withComputerSupport("thermalEvaporationValve")
           .build();
     // Thermal Evaporation Block
     public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK)
-          .with(new AttributeCustomResistance(9), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(new AttributeCustomResistance(9))
+          .externalMultiblock()
           .build();
     // Teleporter Frame
     public static final BlockType TELEPORTER_FRAME = BlockTypeBuilder
@@ -682,14 +700,14 @@ public class MekanismBlockTypes {
     // Structural Glass
     public static final BlockTypeTile<TileEntityStructuralGlass> STRUCTURAL_GLASS = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.STRUCTURAL_GLASS, MekanismLang.DESCRIPTION_STRUCTURAL_GLASS)
-          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.NEVER)
+          .with(AttributeMultiblock.STRUCTURAL, AttributeMobSpawn.NEVER)
           .build();
     // SPS Casing
     public static final BlockTypeTile<TileEntitySPSCasing> SPS_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_CASING, MekanismLang.DESCRIPTION_SPS_CASING)
           .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
-          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .externalMultiblock()
           .build();
     // SPS Port
     public static final BlockTypeTile<TileEntitySPSPort> SPS_PORT = BlockTileBuilder
@@ -697,7 +715,8 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
           .withEnergyConfig(MekanismConfig.storage.spsPort)
-          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.ACTIVE)
+          .with(Attributes.ACTIVE)
+          .externalMultiblock()
           .withComputerSupport("spsPort")
           .build();
     // Supercharged Coil
@@ -705,6 +724,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.SUPERCHARGED_COIL, MekanismLang.DESCRIPTION_SUPERCHARGED_COIL)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
           .withCustomShape(BlockShapes.SUPERCHARGED_COIL)
+          .internalMultiblock()
           .build();
 
     // Induction Cells
@@ -762,13 +782,15 @@ public class MekanismBlockTypes {
     private static <TILE extends TileEntityInductionCell> BlockTypeTile<TILE> createInductionCell(InductionCellTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
         return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_CELL)
               .withEnergyConfig(tier::getMaxEnergy)
-              .with(new AttributeTier<>(tier), AttributeMobSpawn.NEVER)
+              .with(new AttributeTier<>(tier))
+              .internalMultiblock()
               .build();
     }
 
     private static <TILE extends TileEntityInductionProvider> BlockTypeTile<TILE> createInductionProvider(InductionProviderTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
         return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_PROVIDER)
-              .with(new AttributeTier<>(tier), AttributeMobSpawn.NEVER)
+              .with(new AttributeTier<>(tier))
+              .internalMultiblock()
               .build();
     }
 

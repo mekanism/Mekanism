@@ -1,15 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismtools:osmium_helmet"
+  "key": {
+    "I": {
+      "tag": "forge:ingots/osmium"
+    }
   },
   "pattern": [
     "III",
     "I I"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/osmium"
-    }
+  "result": {
+    "item": "mekanismtools:osmium_helmet"
   }
 }

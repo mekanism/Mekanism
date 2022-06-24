@@ -1,25 +1,25 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:chemical_dissolution_chamber"
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "I": {
+      "tag": "forge:ingots/refined_obsidian"
+    },
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
   },
   "pattern": [
     "ITI",
     "CXC",
     "ITI"
   ],
-  "key": {
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    },
-    "I": {
-      "tag": "forge:ingots/refined_obsidian"
-    },
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+  "result": {
+    "item": "mekanism:chemical_dissolution_chamber"
   }
 }

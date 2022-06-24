@@ -63,7 +63,7 @@ public class MekanismGenerators implements IModModule {
     public static final MultiblockManager<FusionReactorMultiblockData> fusionReactorManager = new MultiblockManager<>("fusionReactor", FusionReactorCache::new, FusionReactorValidator::new);
 
     public MekanismGenerators() {
-        Mekanism.modulesLoaded.add(instance = this);
+        Mekanism.addModule(instance = this);
         MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
@@ -102,16 +102,16 @@ public class MekanismGenerators implements IModModule {
             GeneratorTags.init();
             //Register dispenser behaviors
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
+            //Register extended build commands (in enqueue as it is not thread safe)
+            BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
+            BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
+            BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
         });
-
-        BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
-        BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
-        BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
 
         packetHandler.initialize();
 
         //Finalization
-        Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
+        Mekanism.logger.info("Loaded 'Mekanism: Generators' module.");
     }
 
     private void imcQueue(InterModEnqueueEvent event) {

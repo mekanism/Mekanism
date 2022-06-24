@@ -1,16 +1,16 @@
 {
   "type": "mekanism:nucleosynthesizing",
+  "duration": 500,
+  "gasInput": {
+    "amount": 2,
+    "gas": "mekanism:antimatter"
+  },
   "itemInput": {
     "ingredient": {
       "item": "minecraft:yellow_wool"
     }
   },
-  "gasInput": {
-    "amount": 2,
-    "gas": "mekanism:antimatter"
-  },
   "output": {
     "item": "minecraft:glowstone"
-  },
-  "duration": 500
+  }
 }

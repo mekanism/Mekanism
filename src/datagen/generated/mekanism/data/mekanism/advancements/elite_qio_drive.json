@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:advanced_qio_drive",
+  "criteria": {
+    "qio_drive_time_dilating": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:qio_drive_time_dilating"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.elite_qio_drive.description"
+    },
+    "icon": {
+      "item": "mekanism:qio_drive_time_dilating"
+    },
+    "title": {
+      "translate": "advancements.mekanism.elite_qio_drive.title"
+    }
+  }
+}

@@ -20,9 +20,11 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Base recipe builder that declares various common methods between our different builders.
@@ -113,6 +115,20 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
                   .rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
         }
         consumer.accept(getResult(id));
+    }
+
+    /**
+     * Builds this recipe basing the name on the output item.
+     *
+     * @param consumer Finished Recipe Consumer.
+     * @param output       Output to base the recipe name off of.
+     */
+    protected void build(Consumer<FinishedRecipe> consumer, ItemLike output) {
+        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output.asItem());
+        if (registryName == null) {
+            throw new IllegalStateException("Could not retrieve registry name for output.");
+        }
+        build(consumer, registryName);
     }
 
     /**

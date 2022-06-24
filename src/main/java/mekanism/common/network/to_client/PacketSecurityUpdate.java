@@ -67,24 +67,18 @@ public class PacketSecurityUpdate implements IMekanismPacket {
         if (isUpdate) {
             buffer.writeUUID(playerUUID);
             buffer.writeUtf(playerUsername);
-            if (securityData == null) {
-                buffer.writeBoolean(false);
-            } else {
-                buffer.writeBoolean(true);
-                securityData.write(buffer);
-            }
+            BasePacketHandler.writeOptional(buffer, securityData, (buf, data) -> data.write(buf));
         } else {
             List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null).getFrequencies());
             //In theory no owner should be null but handle the case anyway just in case
             frequencies.removeIf(frequency -> frequency.getOwner() == null);
-            buffer.writeVarInt(frequencies.size());
-            for (SecurityFrequency frequency : frequencies) {
+            buffer.writeCollection(frequencies, (buf, frequency) -> {
                 UUID owner = frequency.getOwner();
                 //We remove all null cases above
-                buffer.writeUUID(owner);
-                new SecurityData(frequency).write(buffer);
-                buffer.writeUtf(MekanismUtils.getLastKnownUsername(owner));
-            }
+                buf.writeUUID(owner);
+                new SecurityData(frequency).write(buf);
+                buf.writeUtf(MekanismUtils.getLastKnownUsername(owner));
+            });
         }
     }
 
@@ -93,9 +87,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
         if (packet.isUpdate) {
             packet.playerUUID = buffer.readUUID();
             packet.playerUsername = BasePacketHandler.readString(buffer);
-            if (buffer.readBoolean()) {
-                packet.securityData = SecurityData.read(buffer);
-            }
+            packet.securityData = BasePacketHandler.readOptional(buffer, SecurityData::read);
         } else {
             int frequencySize = buffer.readVarInt();
             packet.securityMap = new Object2ObjectOpenHashMap<>(frequencySize);

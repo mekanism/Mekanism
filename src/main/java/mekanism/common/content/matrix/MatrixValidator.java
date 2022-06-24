@@ -3,7 +3,6 @@ package mekanism.common.content.matrix;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
@@ -57,7 +56,7 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
     }
 
     @Override
-    public FormationResult postcheck(MatrixMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
+    public FormationResult postcheck(MatrixMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         cells.forEach(structure::addCell);
         providers.forEach(structure::addProvider);
         return FormationResult.SUCCESS;

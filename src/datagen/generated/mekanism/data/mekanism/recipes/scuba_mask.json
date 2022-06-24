@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:scuba_mask"
+  "key": {
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     " S ",
     "GCG",
     "S S"
   ],
-  "key": {
-    "G": {
-      "tag": "forge:glass"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "S": {
-      "tag": "forge:ingots/steel"
-    }
+  "result": {
+    "item": "mekanism:scuba_mask"
   }
 }

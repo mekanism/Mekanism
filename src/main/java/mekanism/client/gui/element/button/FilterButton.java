@@ -27,7 +27,7 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -51,8 +51,7 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
           ObjIntConsumer<IFilter<?>> onPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, x, y, width, height, TextComponent.EMPTY,
-              () -> onPress.accept(getFilter(filters, filterIndex, index), filterIndex.getAsInt() + index), null);
+        super(gui, x, y, width, height, Component.empty(), () -> onPress.accept(getFilter(filters, filterIndex, index), filterIndex.getAsInt() + index), null);
         this.index = index;
         this.filterIndex = filterIndex;
         this.filters = filters;

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -39,17 +40,20 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -72,8 +76,13 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
     }
 
     @Override
-    public Class<CraftingRecipe> getRecipeClass() {
-        return CraftingRecipe.class;
+    public Optional<MenuType<CONTAINER>> getMenuType() {
+        return Optional.empty();
+    }
+
+    @Override
+    public RecipeType<CraftingRecipe> getRecipeType() {
+        return RecipeTypes.CRAFTING;
     }
 
     @Nullable

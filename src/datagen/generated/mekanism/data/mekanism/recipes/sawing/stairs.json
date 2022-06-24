@@ -6,11 +6,11 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:stick",
-    "count": 9
+    "count": 9,
+    "item": "minecraft:stick"
   },
+  "secondaryChance": 0.375,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.375
+  }
 }

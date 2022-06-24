@@ -6,20 +6,19 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IRobitSkinProvider;
-import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSkinProvider, IHasTranslationKey, IHasTextComponent {
+public class RobitSkin implements IRobitSkinProvider {
 
     private final List<ResourceLocation> textures;
     private String translationKey;
@@ -95,5 +94,13 @@ public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSk
     @Override
     public Component getTextComponent() {
         return TextComponentUtil.translate(getTranslationKey());
+    }
+
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public final ResourceLocation getRegistryName() {
+        //May be null if called before the object is registered
+        IForgeRegistry<RobitSkin> registry = MekanismAPI.robitSkinRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 }

@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "copy": {
+      "conditions": {
+        "copy": true
+      },
+      "trigger": "mekanism:configuration_card"
+    },
+    "paste": {
+      "conditions": {
+        "copy": false
+      },
+      "trigger": "mekanism:configuration_card"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.configuration_copying.description"
+    },
+    "icon": {
+      "item": "mekanism:configuration_card"
+    },
+    "title": {
+      "translate": "advancements.mekanism.configuration_copying.title"
+    }
+  }
+}

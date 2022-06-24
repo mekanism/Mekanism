@@ -1,0 +1,26 @@
+{
+  "parent": "mekanism:root",
+  "criteria": {
+    "balloon": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanismadditions:balloons"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanismadditions.balloon.description"
+    },
+    "icon": {
+      "item": "mekanismadditions:aqua_balloon"
+    },
+    "title": {
+      "translate": "advancements.mekanismadditions.balloon.title"
+    }
+  }
+}

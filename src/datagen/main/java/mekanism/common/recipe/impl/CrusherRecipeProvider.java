@@ -66,6 +66,16 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Tags.Items.GRAVEL),
               new ItemStack(Blocks.SAND)
         ).build(consumer, Mekanism.rl(basePath + "gravel_to_sand"));
+        //Mud bricks -> packed mud
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Blocks.MUD_BRICKS),
+              new ItemStack(Blocks.PACKED_MUD)
+        ).build(consumer, Mekanism.rl(basePath + "mud_bricks_to_packed"));
+        //Break music disc 5
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Items.MUSIC_DISC_5),
+              new ItemStack(Items.DISC_FRAGMENT_5, 9)
+        ).build(consumer, Mekanism.rl(basePath + "break_disc_5"));
         //TODO: Do we just want to make a clear and red tag for sandstone?
         //Red Sandstone -> Sand
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "red_sandstone_to_sand", null, Blocks.RED_SAND, Blocks.RED_SANDSTONE,

@@ -1,13 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:fission_fuel_assembly"
-  },
-  "pattern": [
-    "ISI",
-    "ITI",
-    "ISI"
-  ],
   "key": {
     "I": {
       "tag": "forge:ingots/lead"
@@ -18,5 +10,13 @@
     "T": {
       "item": "mekanism:basic_chemical_tank"
     }
+  },
+  "pattern": [
+    "ISI",
+    "ITI",
+    "ISI"
+  ],
+  "result": {
+    "item": "mekanismgenerators:fission_fuel_assembly"
   }
 }

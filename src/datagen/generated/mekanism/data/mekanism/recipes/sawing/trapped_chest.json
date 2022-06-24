@@ -6,11 +6,11 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:oak_planks",
-    "count": 8
+    "count": 8,
+    "item": "minecraft:oak_planks"
   },
+  "secondaryChance": 0.75,
   "secondaryOutput": {
     "item": "minecraft:tripwire_hook"
-  },
-  "secondaryChance": 0.75
+  }
 }

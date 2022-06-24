@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.registration.impl.RecipeSerializerRegistryObject;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +44,7 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
     @Nonnull
     @Override
     public ResourceLocation getId() {
-        return serializer.getRegistryName();
+        return RegistryUtils.getName(getType());
     }
 
     @Nullable

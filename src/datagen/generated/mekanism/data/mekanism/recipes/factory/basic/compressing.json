@@ -1,16 +1,8 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:basic_compressing_factory"
-  },
-  "pattern": [
-    "ACA",
-    "IPI",
-    "ACA"
-  ],
   "key": {
-    "P": {
-      "item": "mekanism:osmium_compressor"
+    "A": {
+      "tag": "mekanism:alloys/basic"
     },
     "C": {
       "tag": "forge:circuits/basic"
@@ -18,8 +10,16 @@
     "I": {
       "tag": "forge:ingots/iron"
     },
-    "A": {
-      "tag": "mekanism:alloys/basic"
+    "P": {
+      "item": "mekanism:osmium_compressor"
     }
+  },
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "result": {
+    "item": "mekanism:basic_compressing_factory"
   }
 }

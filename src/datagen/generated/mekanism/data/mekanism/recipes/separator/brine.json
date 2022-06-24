@@ -5,11 +5,11 @@
     "tag": "forge:brine"
   },
   "leftGasOutput": {
-    "gas": "mekanism:sodium",
-    "amount": 1
+    "amount": 1,
+    "gas": "mekanism:sodium"
   },
   "rightGasOutput": {
-    "gas": "mekanism:chlorine",
-    "amount": 1
+    "amount": 1,
+    "gas": "mekanism:chlorine"
   }
 }

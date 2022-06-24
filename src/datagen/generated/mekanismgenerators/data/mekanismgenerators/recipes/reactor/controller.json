@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:fusion_reactor_controller"
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "F": {
+      "item": "mekanismgenerators:fusion_reactor_frame"
+    },
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
+    }
   },
   "pattern": [
     "CGC",
     "FTF",
     "FFF"
   ],
-  "key": {
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
-    "G": {
-      "tag": "forge:glass_panes"
-    },
-    "F": {
-      "item": "mekanismgenerators:fusion_reactor_frame"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    }
+  "result": {
+    "item": "mekanismgenerators:fusion_reactor_controller"
   }
 }

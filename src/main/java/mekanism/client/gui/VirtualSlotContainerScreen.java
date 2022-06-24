@@ -16,7 +16,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-//TODO - 1.19: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 1.20: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {
@@ -32,7 +32,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         for (Slot slot : menu.slots) {
             //Like super.getSelectedSlot except uses our isMouseOverSlot so
             // that our redirection doesn't break this
-            if (isMouseOverSlot(slot, mouseX, mouseY) && slot.isActive()) {
+            if (slot.isActive() && isMouseOverSlot(slot, mouseX, mouseY)) {
                 return slot;
             }
         }
@@ -59,6 +59,8 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void renderFloatingItem(@Nonnull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
+            //Note: We ignore if the virtual slot is not actually available as we still want to transition back to the spot
+            // it was in visually
             if (stack == this.snapbackItem && this.snapbackEnd instanceof IVirtualSlot returningVirtualSlot) {
                 //Use an instance equality check to see if we are rendering the returning stack (used in touch screens)
                 // if we are and the slot we are returning to is a virtual one, so the position may be changing
@@ -131,7 +133,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         if (button != 0 && button != 1 && !pickBlockButton) {
             checkHotbarMouseClicked(button);
         } else if (slot.index != -1) {
-            if (minecraft.options.touchscreen) {
+            if (minecraft.options.touchscreen().get()) {
                 if (slot.hasItem()) {
                     this.clickedSlot = slot;
                     this.draggingItem = ItemStack.EMPTY;

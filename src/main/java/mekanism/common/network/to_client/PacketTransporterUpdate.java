@@ -8,6 +8,7 @@ import mekanism.common.content.network.transmitter.DiversionTransporter;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
@@ -95,17 +96,14 @@ public class PacketTransporterUpdate implements IMekanismPacket {
             stack.write(transporter, buffer);
         } else {
             //Batch
-            buffer.writeVarInt(updates.size());
-            for (Int2ObjectMap.Entry<TransporterStack> entry : updates.int2ObjectEntrySet()) {
-                buffer.writeVarInt(entry.getIntKey());
-                entry.getValue().write(transporter, buffer);
-            }
-            buffer.writeVarInt(deletes.size());
-            for (int toDelete : deletes) {
-                buffer.writeVarInt(toDelete);
-            }
+            BasePacketHandler.writeMap(buffer, updates, (key, value, buf) -> {
+                buf.writeVarInt(key);
+                value.write(transporter, buf);
+            });
+            buffer.writeCollection(deletes, FriendlyByteBuf::writeVarInt);
         }
         if (isDiversion) {
+            //Note: Doesn't make use of read/write array as we know the size so can skip sending it
             for (DiversionControl mode : modes) {
                 buffer.writeEnum(mode);
             }
@@ -120,16 +118,8 @@ public class PacketTransporterUpdate implements IMekanismPacket {
             packet.stack = TransporterStack.readFromPacket(buffer);
         } else {
             //Batch
-            int updatesSize = buffer.readVarInt();
-            packet.updates = new Int2ObjectOpenHashMap<>(updatesSize);
-            for (int i = 0; i < updatesSize; i++) {
-                packet.updates.put(buffer.readVarInt(), TransporterStack.readFromPacket(buffer));
-            }
-            int deletesSize = buffer.readVarInt();
-            packet.deletes = new IntOpenHashSet(deletesSize);
-            for (int i = 0; i < deletesSize; i++) {
-                packet.deletes.add(buffer.readVarInt());
-            }
+            packet.updates = BasePacketHandler.readMap(buffer, Int2ObjectOpenHashMap::new, FriendlyByteBuf::readVarInt, TransporterStack::readFromPacket);
+            packet.deletes = buffer.readCollection(IntOpenHashSet::new, FriendlyByteBuf::readVarInt);
         }
         if (packet.isDiversion) {
             packet.modes = new DiversionControl[EnumUtils.DIRECTIONS.length];

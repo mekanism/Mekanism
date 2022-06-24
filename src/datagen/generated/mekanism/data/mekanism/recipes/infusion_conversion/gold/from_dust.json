@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "infuse_type": "mekanism:gold",
-    "amount": 10
+    "amount": 10,
+    "infuse_type": "mekanism:gold"
   }
 }

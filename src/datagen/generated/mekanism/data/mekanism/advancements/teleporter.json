@@ -1,0 +1,32 @@
+{
+  "parent": "mekanism:teleportation_core",
+  "criteria": {
+    "teleport": {
+      "conditions": {},
+      "trigger": "mekanism:teleport"
+    },
+    "teleporter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:teleporter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.teleporter.description"
+    },
+    "icon": {
+      "item": "mekanism:teleporter"
+    },
+    "title": {
+      "translate": "advancements.mekanism.teleporter.title"
+    }
+  }
+}

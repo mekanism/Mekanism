@@ -1,17 +1,17 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "tag": "mekanism:tin"
+  },
   "itemInput": {
     "amount": 3,
     "ingredient": {
       "tag": "forge:dusts/copper"
     }
   },
-  "chemicalInput": {
-    "amount": 10,
-    "tag": "mekanism:tin"
-  },
   "output": {
-    "item": "mekanism:dust_bronze",
-    "count": 4
+    "count": 4,
+    "item": "mekanism:dust_bronze"
   }
 }

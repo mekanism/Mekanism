@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_lead"
+    }
+  },
+  "output": {
+    "count": 12,
+    "item": "mekanism:dust_lead"
+  }
+}

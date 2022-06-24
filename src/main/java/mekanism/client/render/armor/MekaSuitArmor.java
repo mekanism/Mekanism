@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -62,6 +61,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -195,7 +195,7 @@ public class MekaSuitArmor implements ICustomArmor {
     }
 
     private static List<BakedQuad> getQuads(ModelData data, Set<String> parts, Set<String> ledParts, @Nullable QuadTransformation transform) {
-        Random random = Minecraft.getInstance().level.getRandom();
+        RandomSource random = Minecraft.getInstance().level.getRandom();
         List<BakedQuad> quads = new ArrayList<>();
         //Note: We need to use a new list to not accidentally pollute the cached bake quads with the LED quads that we match them with
         // this also means that we can avoid even baking the data against empty part lists entirely
@@ -610,12 +610,10 @@ public class MekaSuitArmor implements ICustomArmor {
         }
     }
 
-    private static class MekaSuitModelConfiguration implements IModelConfiguration {
+    private record MekaSuitModelConfiguration(Set<String> parts) implements IModelConfiguration {
 
-        private final Set<String> parts;
-
-        public MekaSuitModelConfiguration(Set<String> parts) {
-            this.parts = parts.isEmpty() ? Collections.emptySet() : Collections.unmodifiableSet(parts);
+        private MekaSuitModelConfiguration {
+            parts = parts.isEmpty() ? Collections.emptySet() : Collections.unmodifiableSet(parts);
         }
 
         @Nullable
@@ -678,21 +676,6 @@ public class MekaSuitArmor implements ICustomArmor {
         @Override
         public boolean getPartVisibility(@Nonnull IModelGeometryPart part) {
             return parts.contains(part.name());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == this) {
-                return true;
-            } else if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            return parts.equals(((MekaSuitModelConfiguration) o).parts);
-        }
-
-        @Override
-        public int hashCode() {
-            return parts.hashCode();
         }
     }
 }

@@ -4,12 +4,12 @@
     "amount": 1,
     "pigment": "mekanism:green"
   },
+  "output": {
+    "amount": 2,
+    "pigment": "mekanism:lime"
+  },
   "rightInput": {
     "amount": 1,
     "pigment": "mekanism:white"
-  },
-  "output": {
-    "pigment": "mekanism:lime",
-    "amount": 2
   }
 }

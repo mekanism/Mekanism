@@ -23,6 +23,7 @@ public class BoxedChemicalHandler {
     private final Map<ChemicalType, LazyOptional<? extends IChemicalHandler<?, ?>>> handlers = new EnumMap<>(ChemicalType.class);
 
     @Nullable
+    @SuppressWarnings("unchecked")
     public <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IChemicalHandler<CHEMICAL, STACK> getHandlerFor(ChemicalType chemicalType) {
         if (handlers.containsKey(chemicalType)) {
             Optional<? extends IChemicalHandler<?, ?>> handler = handlers.get(chemicalType).resolve();

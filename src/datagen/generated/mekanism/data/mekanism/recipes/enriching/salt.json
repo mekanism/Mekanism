@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:salt",
-    "count": 4
+    "count": 4,
+    "item": "mekanism:salt"
   }
 }

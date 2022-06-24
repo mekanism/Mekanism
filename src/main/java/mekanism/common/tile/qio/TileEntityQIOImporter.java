@@ -17,7 +17,6 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -126,15 +125,15 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        super.writeSustainedData(itemStack);
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.AUTO, importWithoutFilter);
+    public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
+        dataMap.putBoolean(NBTConstants.AUTO, importWithoutFilter);
     }
 
     @Override
-    public void readSustainedData(ItemStack itemStack) {
-        super.readSustainedData(itemStack);
-        importWithoutFilter = ItemDataUtils.getBoolean(itemStack, NBTConstants.AUTO);
+    public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.AUTO, value -> importWithoutFilter = value);
     }
 
     @Override
@@ -142,18 +141,6 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         Map<String, String> remap = super.getTileDataRemap();
         remap.put(NBTConstants.AUTO, NBTConstants.AUTO);
         return remap;
-    }
-
-    @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        data.putBoolean(NBTConstants.AUTO, importWithoutFilter);
-    }
-
-    @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        NBTUtils.setBooleanIfPresent(data, NBTConstants.AUTO, value -> importWithoutFilter = value);
     }
 
     //Methods relating to IComputerTile

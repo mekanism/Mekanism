@@ -17,6 +17,13 @@ public class CachedShortValue extends CachedValue<Short> implements ShortSupplie
         return new CachedShortValue(config, internal);
     }
 
+    public short getOrDefault() {
+        if (resolved || isLoaded()) {
+            return get();
+        }
+        return internal.getDefault();
+    }
+
     public short get() {
         if (!resolved) {
             //If we don't have a cached value or need to resolve it again, get it from the actual ConfigValue

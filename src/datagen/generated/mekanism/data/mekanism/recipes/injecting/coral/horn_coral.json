@@ -1,13 +1,13 @@
 {
   "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 3,
+    "tag": "mekanism:water_vapor"
+  },
   "itemInput": {
     "ingredient": {
       "item": "minecraft:dead_horn_coral"
     }
-  },
-  "chemicalInput": {
-    "amount": 3,
-    "tag": "mekanism:water_vapor"
   },
   "output": {
     "item": "minecraft:horn_coral"

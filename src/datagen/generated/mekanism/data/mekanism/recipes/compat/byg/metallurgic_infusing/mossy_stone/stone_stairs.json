@@ -1,19 +1,19 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "itemInput": {
     "ingredient": {
       "item": "minecraft:stone_stairs"
     }
-  },
-  "chemicalInput": {
-    "amount": 10,
-    "tag": "mekanism:bio"
   },
   "output": {
     "item": "byg:mossy_stone_stairs"

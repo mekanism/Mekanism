@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public interface IFluidProvider extends IBaseProvider {
 
@@ -26,16 +27,16 @@ public interface IFluidProvider extends IBaseProvider {
 
     @Override
     default ResourceLocation getRegistryName() {
-        return getFluid().getRegistryName();
+        return ForgeRegistries.FLUIDS.getKey(getFluid());
     }
 
     @Override
     default Component getTextComponent() {
-        return getFluid().getAttributes().getDisplayName(getFluidStack(1));
+        return getFluid().getFluidType().getDescription(getFluidStack(1));
     }
 
     @Override
     default String getTranslationKey() {
-        return getFluid().getAttributes().getTranslationKey();
+        return getFluid().getFluidType().getDescriptionId();
     }
 }

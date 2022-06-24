@@ -9,7 +9,7 @@ import mekanism.api.providers.IGasProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.IRegistryDelegate;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * GasStack - a specified amount of a defined Gas with certain properties.
@@ -40,12 +40,8 @@ public final class GasStack extends ChemicalStack<Gas> {
     }
 
     @Override
-    protected IRegistryDelegate<Gas> getDelegate(Gas gas) {
-        if (MekanismAPI.gasRegistry().getKey(gas) == null) {
-            MekanismAPI.logger.fatal("Failed attempt to create a GasStack for an unregistered Gas {} (type {})", gas.getRegistryName(), gas.getClass().getName());
-            throw new IllegalArgumentException("Cannot create a GasStack from an unregistered Gas");
-        }
-        return gas.delegate;
+    protected IForgeRegistry<Gas> getRegistry() {
+        return MekanismAPI.gasRegistry();
     }
 
     @Override
@@ -76,12 +72,11 @@ public final class GasStack extends ChemicalStack<Gas> {
     }
 
     public static GasStack readFromPacket(FriendlyByteBuf buf) {
-        Gas gas = buf.readRegistryId();
-        long amount = buf.readVarLong();
+        Gas gas = buf.readRegistryIdSafe(Gas.class);
         if (gas.isEmptyType()) {
             return EMPTY;
         }
-        return new GasStack(gas, amount);
+        return new GasStack(gas, buf.readVarLong());
     }
 
     /**

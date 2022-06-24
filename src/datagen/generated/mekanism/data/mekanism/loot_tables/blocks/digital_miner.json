@@ -2,8 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "main",
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
@@ -15,94 +13,96 @@
             },
             {
               "function": "minecraft:copy_nbt",
-              "source": "block_entity",
               "ops": [
                 {
+                  "op": "replace",
                   "source": "componentSecurity.owner",
-                  "target": "mekData.owner",
-                  "op": "replace"
+                  "target": "mekData.owner"
                 },
                 {
+                  "op": "replace",
                   "source": "componentSecurity.securityMode",
-                  "target": "mekData.securityMode",
-                  "op": "replace"
+                  "target": "mekData.securityMode"
                 },
                 {
+                  "op": "replace",
                   "source": "componentUpgrade",
-                  "target": "mekData.componentUpgrade",
-                  "op": "replace"
+                  "target": "mekData.componentUpgrade"
                 },
                 {
+                  "op": "replace",
                   "source": "inverseReplace",
-                  "target": "mekData.inverseReplace",
-                  "op": "replace"
+                  "target": "mekData.inverseReplace"
                 },
                 {
+                  "op": "replace",
                   "source": "pull",
-                  "target": "mekData.pull",
-                  "op": "replace"
+                  "target": "mekData.pull"
                 },
                 {
+                  "op": "replace",
                   "source": "max",
-                  "target": "mekData.max",
-                  "op": "replace"
+                  "target": "mekData.max"
                 },
                 {
+                  "op": "replace",
                   "source": "radius",
-                  "target": "mekData.radius",
-                  "op": "replace"
+                  "target": "mekData.radius"
                 },
                 {
+                  "op": "replace",
                   "source": "filters",
-                  "target": "mekData.filters",
-                  "op": "replace"
+                  "target": "mekData.filters"
                 },
                 {
+                  "op": "replace",
                   "source": "eject",
-                  "target": "mekData.eject",
-                  "op": "replace"
+                  "target": "mekData.eject"
                 },
                 {
+                  "op": "replace",
                   "source": "silkTouch",
-                  "target": "mekData.silkTouch",
-                  "op": "replace"
+                  "target": "mekData.silkTouch"
                 },
                 {
+                  "op": "replace",
                   "source": "min",
-                  "target": "mekData.min",
-                  "op": "replace"
+                  "target": "mekData.min"
                 },
                 {
+                  "op": "replace",
                   "source": "replaceStack",
-                  "target": "mekData.replaceStack",
-                  "op": "replace"
+                  "target": "mekData.replaceStack"
                 },
                 {
+                  "op": "replace",
                   "source": "inverse",
-                  "target": "mekData.inverse",
-                  "op": "replace"
+                  "target": "mekData.inverse"
                 },
                 {
+                  "op": "replace",
                   "source": "controlType",
-                  "target": "mekData.controlType",
-                  "op": "replace"
+                  "target": "mekData.controlType"
                 },
                 {
+                  "op": "replace",
                   "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers",
-                  "op": "replace"
+                  "target": "mekData.EnergyContainers"
                 },
                 {
+                  "op": "replace",
                   "source": "Items",
-                  "target": "mekData.Items",
-                  "op": "replace"
+                  "target": "mekData.Items"
                 }
-              ]
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:digital_miner"
         }
-      ]
+      ],
+      "name": "main",
+      "rolls": 1.0
     }
   ]
 }

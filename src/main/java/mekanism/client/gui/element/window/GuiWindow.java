@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
+import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
@@ -20,7 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiWindow extends GuiTexturedElement {
+public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
     private static final Color OVERLAY_COLOR = Color.rgbai(60, 60, 60, 128);
 

@@ -1,0 +1,63 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "componentSecurity.owner",
+                  "target": "mekData.owner"
+                },
+                {
+                  "op": "replace",
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode"
+                },
+                {
+                  "op": "replace",
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade"
+                },
+                {
+                  "op": "replace",
+                  "source": "stabilizerChunksToLoad",
+                  "target": "mekData.stabilizerChunksToLoad"
+                },
+                {
+                  "op": "replace",
+                  "source": "controlType",
+                  "target": "mekData.controlType"
+                },
+                {
+                  "op": "replace",
+                  "source": "EnergyContainers",
+                  "target": "mekData.EnergyContainers"
+                },
+                {
+                  "op": "replace",
+                  "source": "Items",
+                  "target": "mekData.Items"
+                }
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "mekanism:dimensional_stabilizer"
+        }
+      ],
+      "name": "main",
+      "rolls": 1.0
+    }
+  ]
+}

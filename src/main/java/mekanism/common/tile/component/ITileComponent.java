@@ -15,6 +15,12 @@ public interface ITileComponent {
     default void invalidate() {
     }
 
+    /**
+     * Called when the tile is permanently removed
+     */
+    default void removed() {
+    }
+
     default void trackForMainContainer(MekanismContainer container) {
     }
 

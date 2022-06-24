@@ -14,12 +14,12 @@ import net.minecraft.world.phys.Vec3;
 public interface QuadTransformation {
 
     // down up north south west east
-    Direction[][] ROTATION_MATRIX = new Direction[][]{{Direction.SOUTH, Direction.NORTH, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN},
-                                                      {Direction.NORTH, Direction.SOUTH, Direction.UP, Direction.UP, Direction.UP, Direction.UP},
-                                                      {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST},
-                                                      {Direction.UP, Direction.DOWN, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST},
-                                                      {Direction.WEST, Direction.WEST, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH},
-                                                      {Direction.EAST, Direction.EAST, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH}};
+    Direction[][] ROTATION_MATRIX = {{Direction.SOUTH, Direction.NORTH, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN},
+                                     {Direction.NORTH, Direction.SOUTH, Direction.UP, Direction.UP, Direction.UP, Direction.UP},
+                                     {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST},
+                                     {Direction.UP, Direction.DOWN, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST},
+                                     {Direction.WEST, Direction.WEST, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH},
+                                     {Direction.EAST, Direction.EAST, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH}};
 
     QuadTransformation identity = q -> {
     };
@@ -105,7 +105,7 @@ public interface QuadTransformation {
 
         @Override
         public int hashCode() {
-            return side != null ? side.hashCode() : -1;
+            return side == null ? -1 : side.hashCode();
         }
     }
 
@@ -241,7 +241,7 @@ public interface QuadTransformation {
 
         @Override
         public int hashCode() {
-            return texture != null ? texture.hashCode() : -1;
+            return texture == null ? -1 : texture.hashCode();
         }
     }
 

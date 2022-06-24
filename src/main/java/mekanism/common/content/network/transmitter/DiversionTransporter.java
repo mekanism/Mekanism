@@ -15,7 +15,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -56,7 +55,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     @Nonnull
     private CompoundTag writeModes(@Nonnull CompoundTag nbtTags) {
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            nbtTags.putInt(NBTConstants.MODE + i, modes[i].ordinal());
+            NBTUtils.writeEnum(nbtTags, NBTConstants.MODE + i, modes[i]);
         }
         return nbtTags;
     }
@@ -100,7 +99,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         side = getTransmitterTile().getSideLookingAt(player, side);
         DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);
-        player.sendMessage(MekanismUtils.logFormat(MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)));
         return InteractionResult.SUCCESS;
     }
 

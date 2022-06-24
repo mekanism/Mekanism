@@ -1,6 +1,7 @@
 {
   "type": "minecraft:smelting",
-  "result": "mekanism:nugget_refined_obsidian",
+  "cookingtime": 200,
+  "experience": 0.1,
   "ingredient": [
     {
       "item": "mekanismtools:refined_obsidian_helmet"
@@ -33,6 +34,5 @@
       "item": "mekanismtools:refined_obsidian_paxel"
     }
   ],
-  "cookingtime": 200,
-  "experience": 0.1
+  "result": "mekanism:nugget_refined_obsidian"
 }

@@ -7,7 +7,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class FilterSelectButton extends MekanismButton {
@@ -19,7 +19,7 @@ public class FilterSelectButton extends MekanismButton {
     private final boolean down;
 
     public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, Runnable onPress, IHoverable onHover) {
-        super(gui, x, y, 11, 7, TextComponent.EMPTY, onPress, onHover);
+        super(gui, x, y, 11, 7, Component.empty(), onPress, onHover);
         this.down = down;
     }
 

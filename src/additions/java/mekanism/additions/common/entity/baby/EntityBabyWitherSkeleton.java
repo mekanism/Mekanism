@@ -9,7 +9,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.WitherSkeleton;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -47,11 +46,15 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton implements IBabyEnt
     }
 
     @Override
-    protected int getExperienceReward(@Nonnull Player player) {
+    public int getExperienceReward() {
         if (isBaby()) {
+            int oldXp = xpReward;
             xpReward = (int) (xpReward * 2.5F);
+            int reward = super.getExperienceReward();
+            xpReward = oldXp;
+            return reward;
         }
-        return super.getExperienceReward(player);
+        return super.getExperienceReward();
     }
 
     @Override

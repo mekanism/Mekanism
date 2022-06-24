@@ -142,62 +142,62 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return shieldDurability.get();
+        return shieldDurability.getOrDefault();
     }
 
     @Override
     public float getSwordDamage() {
-        return swordDamage.get();
+        return swordDamage.getOrDefault();
     }
 
     @Override
     public float getSwordAtkSpeed() {
-        return swordAtkSpeed.get();
+        return swordAtkSpeed.getOrDefault();
     }
 
     @Override
     public float getShovelDamage() {
-        return shovelDamage.get();
+        return shovelDamage.getOrDefault();
     }
 
     @Override
     public float getShovelAtkSpeed() {
-        return shovelAtkSpeed.get();
+        return shovelAtkSpeed.getOrDefault();
     }
 
     @Override
     public float getAxeDamage() {
-        return axeDamage.get();
+        return axeDamage.getOrDefault();
     }
 
     @Override
     public float getAxeAtkSpeed() {
-        return axeAtkSpeed.get();
+        return axeAtkSpeed.getOrDefault();
     }
 
     @Override
     public float getPickaxeDamage() {
-        return pickaxeDamage.get();
+        return pickaxeDamage.getOrDefault();
     }
 
     @Override
     public float getPickaxeAtkSpeed() {
-        return pickaxeAtkSpeed.get();
+        return pickaxeAtkSpeed.getOrDefault();
     }
 
     @Override
     public float getHoeDamage() {
-        return hoeDamage.get();
+        return hoeDamage.getOrDefault();
     }
 
     @Override
     public float getHoeAtkSpeed() {
-        return hoeAtkSpeed.get();
+        return hoeAtkSpeed.getOrDefault();
     }
 
     @Override
     public int getPaxelMaxUses() {
-        return paxelMaxUses.get();
+        return paxelMaxUses.getOrDefault();
     }
 
     @Override
@@ -207,27 +207,27 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     @Override
     public float getPaxelDamage() {
-        return paxelDamage.get();
+        return paxelDamage.getOrDefault();
     }
 
     @Override
     public float getPaxelAtkSpeed() {
-        return paxelAtkSpeed.get();
+        return paxelAtkSpeed.getOrDefault();
     }
 
     @Override
     public int getUses() {
-        return toolMaxUses.get();
+        return toolMaxUses.getOrDefault();
     }
 
     @Override
     public float getSpeed() {
-        return efficiency.get();
+        return efficiency.getOrDefault();
     }
 
     @Override
     public float getAttackDamageBonus() {
-        return attackDamage.get();
+        return attackDamage.getOrDefault();
     }
 
     @Override
@@ -245,10 +245,10 @@ public class MaterialCreator extends BaseMekanismMaterial {
     @Override
     public int getDurabilityForSlot(EquipmentSlot slotType) {
         return switch (slotType) {
-            case FEET -> bootDurability.get();
-            case LEGS -> leggingDurability.get();
-            case CHEST -> chestplateDurability.get();
-            case HEAD -> helmetDurability.get();
+            case FEET -> bootDurability.getOrDefault();
+            case LEGS -> leggingDurability.getOrDefault();
+            case CHEST -> chestplateDurability.getOrDefault();
+            case HEAD -> helmetDurability.getOrDefault();
             default -> fallBack.getDurabilityForSlot(slotType);
         };
     }
@@ -256,10 +256,10 @@ public class MaterialCreator extends BaseMekanismMaterial {
     @Override
     public int getDefenseForSlot(EquipmentSlot slotType) {
         return switch (slotType) {
-            case FEET -> bootArmor.get();
-            case LEGS -> leggingArmor.get();
-            case CHEST -> chestplateArmor.get();
-            case HEAD -> helmetArmor.get();
+            case FEET -> bootArmor.getOrDefault();
+            case LEGS -> leggingArmor.getOrDefault();
+            case CHEST -> chestplateArmor.getOrDefault();
+            case HEAD -> helmetArmor.getOrDefault();
             default -> fallBack.getDefenseForSlot(slotType);
         };
     }
@@ -276,7 +276,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     @Override
     public float getToughness() {
-        return toughness.get();
+        return toughness.getOrDefault();
     }
 
     @Nonnull
@@ -318,6 +318,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     @Override
     public float getKnockbackResistance() {
-        return knockbackResistance.get();
+        return knockbackResistance.getOrDefault();
     }
 }

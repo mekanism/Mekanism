@@ -1,6 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import mekanism.api.IConfigCardAccess;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
@@ -13,14 +12,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
+public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration {
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;//does not tick!
 
     public TileEntityConfigurableMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Override

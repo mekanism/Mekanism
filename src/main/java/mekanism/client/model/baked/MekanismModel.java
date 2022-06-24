@@ -10,6 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -120,10 +121,10 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         @Override
         public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
               ResourceLocation modelLocation) {
-            for (Direction direction : blockPart.faces.keySet()) {
-                BlockElementFace face = blockPart.faces.get(direction);
+            for (Map.Entry<Direction, BlockElementFace> entry : blockPart.faces.entrySet()) {
+                BlockElementFace face = entry.getValue();
                 TextureAtlasSprite sprite = spriteGetter.apply(owner.resolveTexture(face.texture));
-                BakedQuad quad = BlockModel.makeBakedQuad(blockPart, face, sprite, direction, modelTransform, modelLocation);
+                BakedQuad quad = BlockModel.makeBakedQuad(blockPart, face, sprite, entry.getKey(), modelTransform, modelLocation);
                 if (litFaceMap.containsKey(face)) {
                     quad = new Quad(quad).transform(QuadTransformation.light(litFaceMap.getInt(face) / 15F)).bake();
                 }

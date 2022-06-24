@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:disassembler",
+  "criteria": {
+    "modification_station": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:modification_station"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.modification_station.description"
+    },
+    "icon": {
+      "item": "mekanism:modification_station"
+    },
+    "title": {
+      "translate": "advancements.mekanism.modification_station.title"
+    }
+  }
+}

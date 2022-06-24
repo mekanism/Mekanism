@@ -2,8 +2,8 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "biomesoplenty",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
     }
   ],
   "input": {
@@ -12,12 +12,12 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:fir_planks",
-    "count": 2
+    "count": 2,
+    "item": "biomesoplenty:fir_planks"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:stick",
-    "count": 4
-  },
-  "secondaryChance": 1.0
+    "count": 4,
+    "item": "minecraft:stick"
+  }
 }

@@ -124,10 +124,12 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
         return chemicalType == stack.getChemicalType() && testTypeInternal(stack.getChemicalStack());
     }
 
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testInternal(STACK stack) {
         return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).test(stack);
     }
 
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testTypeInternal(STACK stack) {
         return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).testType(stack);
     }

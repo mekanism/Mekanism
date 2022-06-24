@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:module_frost_walker_unit"
+  "key": {
+    "#": {
+      "item": "mekanism:hydrogen_bucket"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
   },
   "pattern": [
     "A#A",
     "APA",
     "H#H"
   ],
-  "key": {
-    "A": {
-      "tag": "forge:alloys/elite"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
-    "#": {
-      "item": "mekanism:hydrogen_bucket"
-    },
-    "H": {
-      "item": "mekanism:pellet_polonium"
-    }
+  "result": {
+    "item": "mekanism:module_frost_walker_unit"
   }
 }

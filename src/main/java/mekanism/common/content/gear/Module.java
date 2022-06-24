@@ -28,7 +28,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -186,16 +185,15 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
      * @param callback - will run after the NBT data is saved
      */
     public void save(@Nullable Runnable callback) {
-        CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+        CompoundTag modulesTag = ItemDataUtils.getOrAddCompound(container, NBTConstants.MODULES);
         String registryName = data.getRegistryName().toString();
         CompoundTag nbt = modulesTag.getCompound(registryName);
         nbt.putInt(NBTConstants.AMOUNT, installed);
         for (ModuleConfigItem<?> item : configItems) {
             item.write(nbt);
         }
-
+        //If the modules tag doesn't contain a match then we are on a new entry and have to make sure to add it
         modulesTag.put(registryName, nbt);
-        ItemDataUtils.setCompound(container, NBTConstants.MODULES, modulesTag);
 
         if (callback != null) {
             callback.run();
@@ -276,7 +274,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         for (Module<?> module : ModuleHelper.INSTANCE.loadAll(getContainer())) {
             if (module.getData() != getData()) {
                 // disable other exclusive modules if this is an exclusive module, as this one will now be active
-                if (getData().isExclusive() && module.getData().isExclusive()) {
+                if (getData().isExclusive(module.getData().getExclusiveFlags())) {
                     module.setDisabledForce(false);
                 }
                 if (handlesModeChange() && module.handlesModeChange()) {
@@ -293,7 +291,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public void displayModeChange(Player player, Component modeName, IHasTextComponent mode) {
-        player.sendMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, mode)), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, mode)));
     }
 
     @Override
@@ -305,6 +303,6 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         } else {
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.DARK_RED, MekanismLang.MODULE_DISABLED_LOWER);
         }
-        player.sendMessage(MekanismUtils.logFormat(message), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(message));
     }
 }

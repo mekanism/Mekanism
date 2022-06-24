@@ -25,7 +25,7 @@ public class PacketRadiationData implements IMekanismPacket {
     }
 
     public static void sync(ServerPlayer player) {
-        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
+        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c ->
               Mekanism.packetHandler().sendTo(new PacketRadiationData(RadiationPacketType.PLAYER, c.getRadiation()), player));
     }
 
@@ -36,7 +36,7 @@ public class PacketRadiationData implements IMekanismPacket {
         } else if (type == RadiationPacketType.PLAYER) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
-                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(radiation));
+                player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.set(radiation));
             }
         }
     }

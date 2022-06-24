@@ -10,7 +10,6 @@ import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -46,7 +45,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
                 text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
                       TextUtils.format(stored.getAmount()), TextUtils.getPercent(tile.getGasScale()));
             }
-            player.sendMessage(text, Util.NIL_UUID);
+            player.sendSystemMessage(text);
         }
         return InteractionResult.sidedSuccess(world.isClientSide);
     }

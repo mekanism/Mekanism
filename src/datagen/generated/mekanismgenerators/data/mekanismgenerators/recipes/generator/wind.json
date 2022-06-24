@@ -1,13 +1,5 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanismgenerators:wind_generator"
-  },
-  "pattern": [
-    " O ",
-    "OAO",
-    "ECE"
-  ],
   "key": {
     "A": {
       "tag": "mekanism:alloys/infused"
@@ -21,5 +13,13 @@
     "O": {
       "tag": "forge:ingots/osmium"
     }
+  },
+  "pattern": [
+    " O ",
+    "OAO",
+    "ECE"
+  ],
+  "result": {
+    "item": "mekanismgenerators:wind_generator"
   }
 }

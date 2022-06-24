@@ -14,7 +14,7 @@
     ]
   },
   "output": {
-    "pigment": "mekanism:light_gray",
-    "amount": 768
+    "amount": 768,
+    "pigment": "mekanism:light_gray"
   }
 }

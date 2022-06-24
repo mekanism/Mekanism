@@ -21,6 +21,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -99,7 +100,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         super(MekanismBlocks.TELEPORTER, pos, state);
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.TELEPORTER, true, true, false);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
         cacheCoord();
     }
 
@@ -125,7 +126,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             //If the frame is horizontal always face towards the other portion of the frame
             side = teleporter.frameDirection;
         } else {
-            for (Direction iterSide : MekanismUtils.SIDE_DIRS) {
+            for (Direction iterSide : EnumUtils.HORIZONTAL_DIRECTIONS) {
                 if (player.level.isEmptyBlock(target.relative(iterSide))) {
                     side = iterSide;
                     break;
@@ -163,7 +164,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         shouldRender = status == 1 || status > 4;
         EnumColor prevColor = color;
         TeleporterFrequency freq = getFrequency(FrequencyType.TELEPORTER);
-        color = freq != null ? freq.getColor() : null;
+        color = freq == null ? null : freq.getColor();
         if (shouldRender != prevShouldRender) {
             //This also means the comparator output changed so notify the neighbors we have a change
             WorldUtils.notifyLoadedNeighborsOfTileChange(level, getBlockPos());
@@ -280,6 +281,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
                     if (teleportedEntity instanceof ServerPlayer player) {
                         alignPlayer(player, teleporterTargetPos, teleporter);
+                        MekanismCriteriaTriggers.TELEPORT.trigger(player);
                     }
                     for (Coord4D coords : activeCoords) {
                         Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
@@ -589,7 +591,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
         if (color != null) {
-            updateTag.putInt(NBTConstants.COLOR, color.ordinal());
+            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, color);
         }
         return updateTag;
     }

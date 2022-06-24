@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
@@ -46,7 +45,7 @@ public class ChunkCommand {
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
                             ColumnPos column = ColumnPosArgument.getColumnPos(ctx, "pos");
-                            return watch(ctx.getSource(), new ChunkPos(column.x, column.z));
+                            return watch(ctx.getSource(), column.toChunkPos());
                         }));
         }
 
@@ -67,7 +66,7 @@ public class ChunkCommand {
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
                             ColumnPos column = ColumnPosArgument.getColumnPos(ctx, "pos");
-                            return unwatch(ctx.getSource(), new ChunkPos(column.x, column.z));
+                            return unwatch(ctx.getSource(), column.toChunkPos());
                         }));
         }
 
@@ -125,7 +124,7 @@ public class ChunkCommand {
         ChunkPos pos = event.getChunk().getPos();
         if (chunkWatchers.contains(pos.toLong())) {
             Component message = direction.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(pos));
-            event.getWorld().players().forEach(player -> player.sendMessage(message, Util.NIL_UUID));
+            event.getWorld().players().forEach(player -> player.sendSystemMessage(message));
         }
     }
 

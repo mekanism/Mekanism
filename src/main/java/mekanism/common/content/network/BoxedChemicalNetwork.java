@@ -16,7 +16,6 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
@@ -158,15 +157,11 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     private void adoptBuffer(BoxedChemicalNetwork net) {
-        Current netCurrent = net.chemicalTank.getCurrent();
-        if (netCurrent == Current.GAS) {
-            moveBuffer(getGasTank(), net.getGasTank());
-        } else if (netCurrent == Current.INFUSION) {
-            moveBuffer(getInfusionTank(), net.getInfusionTank());
-        } else if (netCurrent == Current.PIGMENT) {
-            moveBuffer(getPigmentTank(), net.getPigmentTank());
-        } else if (netCurrent == Current.SLURRY) {
-            moveBuffer(getSlurryTank(), net.getSlurryTank());
+        switch (net.chemicalTank.getCurrent()) {
+            case GAS -> moveBuffer(getGasTank(), net.getGasTank());
+            case INFUSION -> moveBuffer(getInfusionTank(), net.getInfusionTank());
+            case PIGMENT -> moveBuffer(getPigmentTank(), net.getPigmentTank());
+            case SLURRY -> moveBuffer(getSlurryTank(), net.getSlurryTank());
         }
     }
 
@@ -243,7 +238,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@Nonnull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
-        if (chemical instanceof GasStack stack && chemical.has(GasAttributes.Radiation.class)) {
+        if (chemical instanceof GasStack stack) {
             // Handle radiation leakage
             MekanismAPI.getRadiationManager().dumpRadiation(triggerTransmitter.getTileCoord(), stack);
         }
@@ -392,6 +387,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         return slurryTanks;
     }
 
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void setStack(STACK stack, IChemicalTank<?, ?> tank) {
         ((IChemicalTank<CHEMICAL, STACK>) tank).setStack(stack);
     }

@@ -1,6 +1,5 @@
 package mekanism.common.network.to_client.container.property.list;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.lib.frequency.Frequency;
@@ -12,12 +11,8 @@ public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends List
         super(property, ListType.FREQUENCY, values);
     }
 
-    public static <FREQUENCY extends Frequency> FrequencyListPropertyData<FREQUENCY> read(short property, int elements, FriendlyByteBuf buffer) {
-        List<FREQUENCY> values = new ArrayList<>(elements);
-        for (int i = 0; i < elements; i++) {
-            values.add(Frequency.readFromPacket(buffer));
-        }
-        return new FrequencyListPropertyData<>(property, values);
+    static <FREQUENCY extends Frequency> FrequencyListPropertyData<FREQUENCY> read(short property, ListPropertyReader<FREQUENCY> reader) {
+        return new FrequencyListPropertyData<>(property, reader.apply(Frequency::readFromPacket));
     }
 
     @Override

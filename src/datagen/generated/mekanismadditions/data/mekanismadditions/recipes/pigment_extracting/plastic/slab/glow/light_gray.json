@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "pigment": "mekanism:light_gray",
-    "amount": 21
+    "amount": 21,
+    "pigment": "mekanism:light_gray"
   }
 }

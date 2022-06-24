@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "byg"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:redwood_chest_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:redwood_boat"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:chest"
+  }
+}

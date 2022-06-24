@@ -68,7 +68,7 @@ public class WorldConfig extends BaseMekanismConfig {
         return ores.get(oreVeinType.type()).veinConfigs.get(oreVeinType.index());
     }
 
-    public record OreVeinConfig(BooleanSupplier shouldGenerate, IntSupplier perChunk, IntSupplier maxVeinSize, FloatSupplier discardChanceOnAirExposure,
+    public record OreVeinConfig(BooleanSupplier shouldGenerate, CachedIntValue perChunk, IntSupplier maxVeinSize, FloatSupplier discardChanceOnAirExposure,
                                 ConfigurableHeightRange range) {
     }
 
@@ -120,7 +120,7 @@ public class WorldConfig extends BaseMekanismConfig {
                   .define("shouldGenerate", true));
             //The max for perChunk and vein size are the values of the max number of blocks in a chunk.
             this.perChunk = CachedIntValue.wrap(config, builder.comment("Chance that salt generates in a chunk.")
-                  .defineInRange("perChunk", perChunk, 1, (DimensionType.MAX_Y - DimensionType.MIN_Y) / 2));
+                  .defineInRange("perChunk", perChunk, 1, 256));
             this.minRadius = CachedIntValue.wrap(config, builder.comment("Base radius of a vein of salt.")
                   .defineInRange("minRadius", baseRadius, 1, 4));
             this.maxRadius = CachedIntValue.wrap(config, builder.comment("Extended variability (spread) for the radius in a vein of salt.")

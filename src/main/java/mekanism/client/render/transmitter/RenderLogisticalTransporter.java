@@ -95,7 +95,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             ItemStack itemStack = player.getInventory().getSelected();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
                 BlockHitResult rayTraceResult = MekanismUtils.rayTrace(player);
-                if (!rayTraceResult.getType().equals(Type.MISS) && rayTraceResult.getBlockPos().equals(pos)) {
+                if (rayTraceResult.getType() != Type.MISS && rayTraceResult.getBlockPos().equals(pos)) {
                     Direction side = tile.getSideLookingAt(player, rayTraceResult.getDirection());
                     matrix.pushPose();
                     matrix.scale(0.5F, 0.5F, 0.5F);

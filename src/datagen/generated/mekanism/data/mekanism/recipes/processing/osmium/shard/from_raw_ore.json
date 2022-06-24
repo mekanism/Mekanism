@@ -1,17 +1,17 @@
 {
   "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:hydrogen_chloride"
+  },
   "itemInput": {
     "amount": 3,
     "ingredient": {
       "tag": "forge:raw_materials/osmium"
     }
   },
-  "chemicalInput": {
-    "amount": 1,
-    "gas": "mekanism:hydrogen_chloride"
-  },
   "output": {
-    "item": "mekanism:shard_osmium",
-    "count": 8
+    "count": 8,
+    "item": "mekanism:shard_osmium"
   }
 }

@@ -1,9 +1,11 @@
 package mekanism.common.integration.projecte;
 
+import java.io.IOException;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
 import moze_intel.projecte.api.data.CustomConversionProvider;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 
 public class MekanismCustomConversions extends CustomConversionProvider {
@@ -21,6 +23,11 @@ public class MekanismCustomConversions extends CustomConversionProvider {
               //Give hdpe pellets a lowish emc value so that things like plastic have EMC values
               .before(MekanismItems.HDPE_PELLET, 32)
         ;
+    }
+
+    @Override
+    public void run(@Nonnull CachedOutput cache) throws IOException {
+        //TODO - 1.19: Remove this after ProjectE updates and accounts for the change in the path
     }
 
     @Nonnull

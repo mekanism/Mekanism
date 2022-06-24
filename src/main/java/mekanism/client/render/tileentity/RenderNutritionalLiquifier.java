@@ -17,7 +17,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
@@ -91,7 +91,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             Minecraft.getInstance().getItemRenderer().renderStatic(stack, TransformType.GROUND, light, overlayLight, matrix, renderer,
                   MathUtils.clampToInt(tile.getBlockPos().asLong()));
             matrix.popPose();
-            if (active && Minecraft.getInstance().options.particles != ParticleStatus.MINIMAL) {
+            if (active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
                 //Render eating particles
                 PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
                 if (!Minecraft.getInstance().isPaused()) {
@@ -100,7 +100,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                         pseudoParticles.lastTick = tile.getLevel().getGameTime();
                         pseudoParticles.particles.removeIf(PseudoParticle::tick);
                     }
-                    int rate = Minecraft.getInstance().options.particles == ParticleStatus.DECREASED ? 12 : 4;
+                    int rate = Minecraft.getInstance().options.particles().get() == ParticleStatus.DECREASED ? 12 : 4;
                     if (tile.getLevel().getGameTime() % rate == 0) {
                         pseudoParticles.particles.add(new PseudoParticle(tile.getLevel(), stack));
                     }
@@ -130,7 +130,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             return cachedModels.get(stage);
         }
         Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidType.STILL));
+        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidTextureType.STILL));
         model.minX = 0.001F;
         model.minY = 0.313F;
         model.minZ = 0.001F;
@@ -234,10 +234,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
 
             //Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
             //vector3f1.transform(quaternion);
-            Vector3f[] vectors = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F),
-                                                new Vector3f(-1.0F, 1.0F, 0.0F),
-                                                new Vector3f(1.0F, 1.0F, 0.0F),
-                                                new Vector3f(1.0F, -1.0F, 0.0F)};
+            Vector3f[] vectors = {new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
+                                  new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
             for (int i = 0; i < 4; ++i) {
                 Vector3f vector3f = vectors[i];
                 vector3f.transform(quaternion);

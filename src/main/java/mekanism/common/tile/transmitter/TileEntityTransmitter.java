@@ -11,6 +11,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
@@ -35,10 +36,10 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -62,8 +63,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType(), pos, state);
         this.transmitter = createTransmitter(blockProvider);
         cacheCoord();
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
-        addCapabilityResolver(new BasicSidedCapabilityResolver<>(this, Capabilities.CONFIGURABLE_CAPABILITY, ProxyConfigurable::new));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION, this));
+        addCapabilityResolver(new BasicSidedCapabilityResolver<>(this, Capabilities.CONFIGURABLE, ProxyConfigurable::new));
     }
 
     protected abstract Transmitter<?, ?, ?> createTransmitter(IBlockProvider blockProvider);
@@ -136,10 +137,16 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void setRemoved() {
+    public void onChunkUnloaded() {
         if (!isRemote()) {
+            //Only take the transmitter's share if it was unloaded and not if we are being removed
             getTransmitter().takeShare();
         }
+        super.onChunkUnloaded();
+    }
+
+    @Override
+    public void setRemoved() {
         super.setRemoved();
         onWorldSeparate();
         getTransmitter().remove();
@@ -217,7 +224,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             getTransmitter().onModeChange(Direction.from3DDataValue(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();
-            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.getConnectionTypeRaw(hitSide)), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.getConnectionTypeRaw(hitSide)));
             sendUpdatePacket();
         }
         return InteractionResult.SUCCESS;
@@ -248,7 +255,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             }
         }
         //Center position
-        list.add(isSmall ? BlockSmallTransmitter.center : BlockLargeTransmitter.center);
+        list.add(isSmall ? BlockSmallTransmitter.CENTER : BlockLargeTransmitter.CENTER);
         return list;
     }
 
@@ -340,6 +347,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 transmitterNetwork.invalidate(null);
                 if (!player.isCreative()) {
                     stack.shrink(1);
+                }
+                if (player instanceof ServerPlayer serverPlayer) {
+                    MekanismCriteriaTriggers.ALLOY_UPGRADE.trigger(serverPlayer);
                 }
             }
         }

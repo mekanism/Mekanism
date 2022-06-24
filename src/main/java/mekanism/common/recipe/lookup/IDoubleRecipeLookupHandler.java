@@ -11,6 +11,7 @@ import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
@@ -119,14 +120,14 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
          * cleaner.
          */
         default boolean containsRecipeBA(INPUT inputA, CHEMICAL inputB) {
-            return containsRecipeBA(inputA, (STACK) inputB.getStack(1));
+            return containsRecipeBA(inputA, ChemicalUtil.withAmount(inputB, 1));
         }
 
         /**
          * Helper wrapper to convert a chemical to a chemical stack and pass it to {@link #containsRecipeB(Object)} to make validity predicates easier and cleaner.
          */
         default boolean containsRecipeB(CHEMICAL input) {
-            return containsRecipeB((STACK) input.getStack(1));
+            return containsRecipeB(ChemicalUtil.withAmount(input, 1));
         }
     }
 

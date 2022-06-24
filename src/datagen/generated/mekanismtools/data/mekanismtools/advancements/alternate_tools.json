@@ -1,0 +1,58 @@
+{
+  "parent": "mekanism:materials",
+  "criteria": {
+    "tools": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:bronze_pickaxe",
+              "mekanismtools:bronze_axe",
+              "mekanismtools:bronze_shovel",
+              "mekanismtools:bronze_hoe",
+              "mekanismtools:bronze_sword",
+              "mekanismtools:lapis_lazuli_pickaxe",
+              "mekanismtools:lapis_lazuli_axe",
+              "mekanismtools:lapis_lazuli_shovel",
+              "mekanismtools:lapis_lazuli_hoe",
+              "mekanismtools:lapis_lazuli_sword",
+              "mekanismtools:osmium_pickaxe",
+              "mekanismtools:osmium_axe",
+              "mekanismtools:osmium_shovel",
+              "mekanismtools:osmium_hoe",
+              "mekanismtools:osmium_sword",
+              "mekanismtools:refined_glowstone_pickaxe",
+              "mekanismtools:refined_glowstone_axe",
+              "mekanismtools:refined_glowstone_shovel",
+              "mekanismtools:refined_glowstone_hoe",
+              "mekanismtools:refined_glowstone_sword",
+              "mekanismtools:refined_obsidian_pickaxe",
+              "mekanismtools:refined_obsidian_axe",
+              "mekanismtools:refined_obsidian_shovel",
+              "mekanismtools:refined_obsidian_hoe",
+              "mekanismtools:refined_obsidian_sword",
+              "mekanismtools:steel_pickaxe",
+              "mekanismtools:steel_axe",
+              "mekanismtools:steel_shovel",
+              "mekanismtools:steel_hoe",
+              "mekanismtools:steel_sword"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanismtools.alternate_tools.description"
+    },
+    "icon": {
+      "item": "mekanismtools:osmium_pickaxe",
+      "nbt": "{Damage:0}"
+    },
+    "title": {
+      "translate": "advancements.mekanismtools.alternate_tools.title"
+    }
+  }
+}

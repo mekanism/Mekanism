@@ -64,7 +64,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addRenderableWidget(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addRenderableWidget(new GuiSecurityLight(this, 144, 77, () -> {
             SecurityFrequency frequency = tile.getFreq();
-            return !isOwner(frequency) ? 2 : frequency.isOverridden() ? 0 : 1;
+            if (!isOwner(frequency)) {
+                return 2;
+            }
+            return frequency.isOverridden() ? 0 : 1;
         }));
         addRenderableWidget(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addRenderableWidget(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));

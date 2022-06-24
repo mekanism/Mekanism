@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:module_excavation_escalation_unit"
+  "key": {
+    "#": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "A": {
+      "tag": "forge:alloys/advanced"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
   },
   "pattern": [
     "A#A",
     "APA",
     "HHH"
   ],
-  "key": {
-    "A": {
-      "tag": "forge:alloys/advanced"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
-    "#": {
-      "item": "minecraft:iron_pickaxe"
-    },
-    "H": {
-      "item": "mekanism:hdpe_sheet"
-    }
+  "result": {
+    "item": "mekanism:module_excavation_escalation_unit"
   }
 }

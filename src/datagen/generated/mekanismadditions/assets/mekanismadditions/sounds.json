@@ -1,8 +1,8 @@
 {
   "entity.balloon.pop": {
-    "subtitle": "sound_event.mekanismadditions.entity.balloon.pop",
     "sounds": [
       "mekanismadditions:pop"
-    ]
+    ],
+    "subtitle": "sound_event.mekanismadditions.entity.balloon.pop"
   }
 }

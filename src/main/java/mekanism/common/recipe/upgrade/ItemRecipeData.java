@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +39,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
     private final List<IInventorySlot> slots;
 
     ItemRecipeData(ListTag slots) {
-        this.slots = readContents(slots);
+        this(readContents(slots));
     }
 
     private ItemRecipeData(List<IInventorySlot> slots) {
@@ -48,8 +49,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
     @Nullable
     @Override
     public ItemRecipeData merge(ItemRecipeData other) {
-        List<IInventorySlot> allSlots = new ArrayList<>(slots.size() + other.slots.size());
-        allSlots.addAll(slots);
+        List<IInventorySlot> allSlots = new ArrayList<>(slots);
         allSlots.addAll(other.slots);
         return new ItemRecipeData(allSlots);
     }
@@ -62,12 +62,12 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         Item item = stack.getItem();
         boolean isBin = item instanceof ItemBlockBin;
         Optional<IItemHandler> capability = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
-        List<IInventorySlot> slots = new ArrayList<>();
+        List<IInventorySlot> stackSlots = new ArrayList<>();
         if (capability.isPresent()) {
             IItemHandler itemHandler = capability.get();
             for (int i = 0; i < itemHandler.getSlots(); i++) {
                 int slot = i;
-                slots.add(new DummyInventorySlot(itemHandler.getSlotLimit(slot), itemStack -> itemHandler.isItemValid(slot, itemStack), isBin));
+                stackSlots.add(new DummyInventorySlot(itemHandler.getSlotLimit(slot), itemStack -> itemHandler.isItemValid(slot, itemStack), isBin));
             }
         } else if (item instanceof BlockItem blockItem) {
             TileEntityMekanism tile = getTileFromBlock(blockItem.getBlock());
@@ -77,18 +77,18 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             }
             for (int i = 0; i < tile.getSlots(); i++) {
                 int slot = i;
-                slots.add(new DummyInventorySlot(tile.getSlotLimit(slot), itemStack -> tile.isItemValid(slot, itemStack), isBin));
+                stackSlots.add(new DummyInventorySlot(tile.getSlotLimit(slot), itemStack -> tile.isItemValid(slot, itemStack), isBin));
             }
         } else if (item instanceof ItemRobit) {
             //Special casing for the robit so that we don't void items from a personal chest when upgrading to a robit
             //Inventory slots
             for (int slotY = 0; slotY < 3; slotY++) {
                 for (int slotX = 0; slotX < 9; slotX++) {
-                    slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
+                    stackSlots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
                 }
             }
             //Energy slot
-            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> {
+            stackSlots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> {
                 if (EnergyCompatUtils.hasStrictEnergyHandler(itemStack)) {
                     return true;
                 }
@@ -96,15 +96,15 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                 return foundRecipe != null && !foundRecipe.getOutput(itemStack).isZero();
             }, false));
             //Smelting input slot
-            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemStack), false));
+            stackSlots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemStack), false));
             //Smelting output slot
-            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
+            stackSlots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
         } else if (item instanceof ISustainedInventory sustainedInventory) {
             //Fallback just save it all
-            for (IInventorySlot slot : this.slots) {
+            for (IInventorySlot slot : slots) {
                 if (!slot.isEmpty()) {
                     //We have no information about what our item supports, but we have at least some stacks we want to transfer
-                    sustainedInventory.setInventory(DataHandlerUtils.writeContainers(this.slots), stack);
+                    sustainedInventory.setInventory(DataHandlerUtils.writeContainers(slots), stack);
                     return true;
                 }
             }
@@ -112,8 +112,11 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         } else {
             return false;
         }
-        if (slots.isEmpty()) {
-            //We don't actually have any tanks in the output
+        return applyToStack(slots, stackSlots, toWrite -> ((ISustainedInventory) stack.getItem()).setInventory(toWrite, stack));
+    }
+
+    static boolean applyToStack(List<IInventorySlot> dataSlots, List<IInventorySlot> stackSlots, Consumer<ListTag> stackWriter) {
+        if (stackSlots.isEmpty()) {
             return true;
         }
         //TODO: Improve the logic so that it maybe tries multiple different slot combinations
@@ -121,7 +124,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             @Nonnull
             @Override
             public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-                return slots;
+                return stackSlots;
             }
 
             @Override
@@ -129,7 +132,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             }
         };
         boolean hasData = false;
-        for (IInventorySlot slot : this.slots) {
+        for (IInventorySlot slot : dataSlots) {
             if (!slot.isEmpty()) {
                 if (!ItemHandlerHelper.insertItemStacked(outputHandler, slot.getStack(), false).isEmpty()) {
                     //If we have a remainder something failed so bail
@@ -140,13 +143,13 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         }
         if (hasData) {
             //We managed to transfer it all into valid slots, so save it to the stack
-            ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(slots), stack);
+            stackWriter.accept(DataHandlerUtils.writeContainers(stackSlots));
         }
         return true;
     }
 
     public static List<IInventorySlot> readContents(@Nullable ListTag contents) {
-        if (contents == null) {
+        if (contents == null || contents.isEmpty()) {
             return Collections.emptyList();
         }
         int count = DataHandlerUtils.getMaxId(contents, NBTConstants.SLOT);

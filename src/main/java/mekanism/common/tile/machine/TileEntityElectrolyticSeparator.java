@@ -3,6 +3,7 @@ package mekanism.common.tile.machine;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -26,7 +27,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.capabilities.energy.ElectrolyticSeparatorEnergyContainer;
+import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -68,12 +69,10 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -94,6 +93,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
      * The maximum amount of gas this block can store.
      */
     private static final long MAX_GAS = 2_400;
+    private static final BiFunction<FloatingLong, TileEntityElectrolyticSeparator, FloatingLong> BASE_ENERGY_CALCULATOR =
+          (base, tile) -> base.multiply(tile.getRecipeEnergyMultiplier());
 
     /**
      * This separator's water slot.
@@ -123,7 +124,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private final IOutputHandler<@NonNull ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
-    private ElectrolyticSeparatorEnergyContainer energyContainer;
+    private FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private FluidInventorySlot fluidSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftOutputItem")
@@ -199,7 +200,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = ElectrolyticSeparatorEnergyContainer.input(this, listener));
+        builder.addContainer(energyContainer = FixedUsageEnergyContainer.input(this, BASE_ENERGY_CALCULATOR, listener));
         return builder.build();
     }
 
@@ -313,7 +314,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    public ElectrolyticSeparatorEnergyContainer getEnergyContainer() {
+    public FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> getEnergyContainer() {
         return energyContainer;
     }
 
@@ -329,29 +330,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
+    public void writeSustainedData(CompoundTag dataMap) {
+        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_LEFT, dumpLeft);
+        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
-        data.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
-        data.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
-        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        dumpLeft = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_LEFT));
-        dumpRight = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_RIGHT));
+    public void readSustainedData(CompoundTag dataMap) {
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
     }
 
     @Override

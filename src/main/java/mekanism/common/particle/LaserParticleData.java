@@ -7,13 +7,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class LaserParticleData implements ParticleOptions {
+public record LaserParticleData(Direction direction, double distance, float energyScale) implements ParticleOptions {
 
     public static final Deserializer<LaserParticleData> DESERIALIZER = new Deserializer<>() {
         @Nonnull
@@ -35,20 +35,10 @@ public class LaserParticleData implements ParticleOptions {
         }
     };
     public static final Codec<LaserParticleData> CODEC = RecordCodecBuilder.create(val -> val.group(
-          MekanismUtils.DIRECTION_CODEC.fieldOf("direction").forGetter(data -> data.direction),
+          Direction.CODEC.fieldOf("direction").forGetter(data -> data.direction),
           Codec.DOUBLE.fieldOf("distance").forGetter(data -> data.distance),
           Codec.FLOAT.fieldOf("energyScale").forGetter(data -> data.energyScale)
     ).apply(val, LaserParticleData::new));
-
-    public final Direction direction;
-    public final double distance;
-    public final float energyScale;
-
-    public LaserParticleData(Direction direction, double distance, float energyScale) {
-        this.direction = direction;
-        this.distance = distance;
-        this.energyScale = energyScale;
-    }
 
     @Nonnull
     @Override
@@ -66,6 +56,6 @@ public class LaserParticleData implements ParticleOptions {
     @Nonnull
     @Override
     public String writeToString() {
-        return String.format(Locale.ROOT, "%s %d %.2f %.2f", getType().getRegistryName(), direction.ordinal(), distance, energyScale);
+        return String.format(Locale.ROOT, "%s %d %.2f %.2f", RegistryUtils.getName(getType()), direction.ordinal(), distance, energyScale);
     }
 }

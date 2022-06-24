@@ -87,8 +87,8 @@ public class TransporterManager {
             int toAccept = count;
             boolean needsSimulation = false;
             if (destCount > 0) {
-                if (!InventoryUtils.areItemsStackable(inventoryInfo.inventory[slot], stack) || destCount >= max) {
-                    //If the destination isn't empty and not stackable, or it is currently full, move along
+                if (destCount >= max || !InventoryUtils.areItemsStackable(inventoryInfo.inventory[slot], stack)) {
+                    //If the destination is currently full, or it isn't empty and not stackable, move along
                     continue;
                 } else if (max > maxStackSize && mergedCount > maxStackSize) {
                     //If we have items in the destination, and the max amount is larger than

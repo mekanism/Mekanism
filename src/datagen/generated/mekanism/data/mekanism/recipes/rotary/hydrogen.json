@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:hydrogen"
   },
-  "gasOutput": {
-    "gas": "mekanism:hydrogen",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:hydrogen"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:hydrogen"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:hydrogen",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:hydrogen"
   }
 }

@@ -2,8 +2,8 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "input": {
@@ -12,7 +12,7 @@
     }
   },
   "mainOutput": {
-    "item": "byg:holly_planks",
-    "count": 2
+    "count": 2,
+    "item": "byg:holly_planks"
   }
 }

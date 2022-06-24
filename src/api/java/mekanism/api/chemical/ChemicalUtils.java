@@ -46,7 +46,7 @@ public class ChemicalUtils {
      * @return Gas Stack.
      */
     public static GasStack readGasStack(FriendlyByteBuf buffer) {
-        return buffer.readBoolean() ? GasStack.readFromPacket(buffer) : GasStack.EMPTY;
+        return readStack(buffer, GasStack::readFromPacket, GasStack.EMPTY);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ChemicalUtils {
      * @return Infusion Stack.
      */
     public static InfusionStack readInfusionStack(FriendlyByteBuf buffer) {
-        return buffer.readBoolean() ? InfusionStack.readFromPacket(buffer) : InfusionStack.EMPTY;
+        return readStack(buffer, InfusionStack::readFromPacket, InfusionStack.EMPTY);
     }
 
     /**
@@ -68,7 +68,7 @@ public class ChemicalUtils {
      * @return Pigment Stack.
      */
     public static PigmentStack readPigmentStack(FriendlyByteBuf buffer) {
-        return buffer.readBoolean() ? PigmentStack.readFromPacket(buffer) : PigmentStack.EMPTY;
+        return readStack(buffer, PigmentStack::readFromPacket, PigmentStack.EMPTY);
     }
 
     /**
@@ -79,7 +79,20 @@ public class ChemicalUtils {
      * @return Slurry Stack.
      */
     public static SlurryStack readSlurryStack(FriendlyByteBuf buffer) {
-        return buffer.readBoolean() ? SlurryStack.readFromPacket(buffer) : SlurryStack.EMPTY;
+        return readStack(buffer, SlurryStack::readFromPacket, SlurryStack.EMPTY);
+    }
+
+    /**
+     * Helper to read a Chemical Stack from a buffer.
+     *
+     * @param buffer Buffer to read from.
+     * @param reader How to read it if it isn't empty.
+     * @param empty  Empty variant.
+     *
+     * @return Chemical Stack.
+     */
+    private static <STACK extends ChemicalStack<?>> STACK readStack(FriendlyByteBuf buffer, Function<FriendlyByteBuf, STACK> reader, STACK empty) {
+        return buffer.readBoolean() ? reader.apply(buffer) : empty;
     }
 
     /**

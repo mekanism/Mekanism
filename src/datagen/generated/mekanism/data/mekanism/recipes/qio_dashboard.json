@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:qio_dashboard"
+  "key": {
+    "A": {
+      "tag": "forge:pellets/polonium"
+    },
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    }
   },
   "pattern": [
     "IAI",
     "AGA",
     "ITI"
   ],
-  "key": {
-    "G": {
-      "tag": "forge:glass_panes"
-    },
-    "A": {
-      "tag": "forge:pellets/polonium"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    },
-    "I": {
-      "tag": "forge:ingots/lead"
-    }
+  "result": {
+    "item": "mekanism:qio_dashboard"
   }
 }

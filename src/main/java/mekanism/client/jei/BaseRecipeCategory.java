@@ -128,20 +128,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public Class<? extends RECIPE> getRecipeClass() {
-        return getRecipeType().getRecipeClass();
-    }
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public ResourceLocation getUid() {
-        return getRecipeType().getUid();
-    }
-
-    @Override
     public Component getTitle() {
         return component;
     }

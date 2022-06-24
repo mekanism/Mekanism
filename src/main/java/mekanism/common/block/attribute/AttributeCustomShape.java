@@ -1,16 +1,20 @@
 package mekanism.common.block.attribute;
 
+import java.util.Arrays;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class AttributeCustomShape implements Attribute {
+public record AttributeCustomShape(VoxelShape[] bounds) implements Attribute {
 
-    private final VoxelShape[] bounds;
-
-    public AttributeCustomShape(VoxelShape[] bounds) {
-        this.bounds = bounds;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        return o instanceof AttributeCustomShape other && Arrays.equals(bounds, other.bounds);
     }
 
-    public VoxelShape[] getBounds() {
-        return bounds;
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(bounds);
     }
 }

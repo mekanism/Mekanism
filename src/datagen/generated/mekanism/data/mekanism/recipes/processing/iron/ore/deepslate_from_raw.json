@@ -1,14 +1,14 @@
 {
   "type": "mekanism:combining",
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone/deepslate"
+    }
+  },
   "mainInput": {
     "amount": 8,
     "ingredient": {
       "tag": "forge:raw_materials/iron"
-    }
-  },
-  "extraInput": {
-    "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
     }
   },
   "output": {

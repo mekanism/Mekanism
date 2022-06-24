@@ -8,9 +8,9 @@
   "mainOutput": {
     "item": "minecraft:carved_pumpkin"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:pumpkin_seeds",
-    "count": 4
-  },
-  "secondaryChance": 1.0
+    "count": 4,
+    "item": "minecraft:pumpkin_seeds"
+  }
 }

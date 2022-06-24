@@ -1,22 +1,22 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:elite_fluid_tank"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/reinforced"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "P": {
+      "item": "mekanism:advanced_fluid_tank"
+    }
   },
   "pattern": [
     "AIA",
     "IPI",
     "AIA"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:advanced_fluid_tank"
-    },
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    }
+  "result": {
+    "item": "mekanism:elite_fluid_tank"
   }
 }

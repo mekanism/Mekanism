@@ -1,13 +1,5 @@
 {
   "type": "mekanismtools:paxel",
-  "result": {
-    "item": "mekanismtools:gold_paxel"
-  },
-  "pattern": [
-    "APS",
-    " R ",
-    " R "
-  ],
   "key": {
     "A": {
       "item": "minecraft:golden_axe"
@@ -15,11 +7,19 @@
     "P": {
       "item": "minecraft:golden_pickaxe"
     },
-    "S": {
-      "item": "minecraft:golden_shovel"
-    },
     "R": {
       "tag": "forge:rods/wooden"
+    },
+    "S": {
+      "item": "minecraft:golden_shovel"
     }
+  },
+  "pattern": [
+    "APS",
+    " R ",
+    " R "
+  ],
+  "result": {
+    "item": "mekanismtools:gold_paxel"
   }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.gear.config.ModuleEnumData;
@@ -58,7 +59,7 @@ public class GuiModuleScreen extends GuiElement {
 
         if (module != null) {
             int startY = 3;
-            if (module.getData().isExclusive()) {
+            if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
                 startY += 13;
             }
             if (module.getData().getMaxStackSize() > 1) {
@@ -124,7 +125,7 @@ public class GuiModuleScreen extends GuiElement {
 
         if (currentModule != null) {
             int startY = relativeY + 5;
-            if (currentModule.getData().isExclusive()) {
+            if (currentModule.getData().isExclusive(ExclusiveFlag.ANY)) {
                 Component comp = MekanismLang.MODULE_EXCLUSIVE.translate();
                 drawTextWithScale(matrix, comp, relativeX + 5, startY, 0x635BD4, 0.8F);
                 startY += 13;

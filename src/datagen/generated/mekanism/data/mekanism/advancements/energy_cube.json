@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:steel_casing",
+  "criteria": {
+    "basic_energy_cube": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_energy_cube"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.energy_cube.description"
+    },
+    "icon": {
+      "item": "mekanism:basic_energy_cube"
+    },
+    "title": {
+      "translate": "advancements.mekanism.energy_cube.title"
+    }
+  }
+}

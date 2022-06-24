@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:sodium"
   },
-  "gasOutput": {
-    "gas": "mekanism:sodium",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:sodium"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:sodium"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:sodium",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:sodium"
   }
 }

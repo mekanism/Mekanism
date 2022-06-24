@@ -12,6 +12,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -43,6 +44,14 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     @Override
     public final boolean isEmptyType() {
         return this == MekanismAPI.EMPTY_INFUSE_TYPE;
+    }
+
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public final ResourceLocation getRegistryName() {
+        //May be null if called before the object is registered
+        IForgeRegistry<InfuseType> registry = MekanismAPI.infuseTypeRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 
     @Override

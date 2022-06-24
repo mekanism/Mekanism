@@ -42,7 +42,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     public TileEntityLaserAmplifier(BlockPos pos, BlockState state) {
         super(MekanismBlocks.LASER_AMPLIFIER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         data.putString(NBTConstants.MIN, minThreshold.toString());
         data.putString(NBTConstants.MAX, maxThreshold.toString());
         data.putInt(NBTConstants.TIME, delay);
-        data.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
+        NBTUtils.writeEnum(data, NBTConstants.OUTPUT_MODE, outputMode);
     }
 
     @Override

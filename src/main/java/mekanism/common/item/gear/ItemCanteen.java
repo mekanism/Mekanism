@@ -63,7 +63,7 @@ public class ItemCanteen extends CapabilityItem {
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             items.add(FluidUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.canteenMaxStorage.get(), MekanismFluids.NUTRITIONAL_PASTE));
         }
     }
@@ -77,7 +77,7 @@ public class ItemCanteen extends CapabilityItem {
                 player.getFoodData().eat(needed, needed * MekanismConfig.general.nutritionalPasteSaturation.get());
                 FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(),
                       FluidAction.EXECUTE));
-                world.gameEvent(entityLiving, GameEvent.DRINKING_FINISH, entityLiving.eyeBlockPosition());
+                entityLiving.gameEvent(GameEvent.DRINK);
             }
         }
         return stack;

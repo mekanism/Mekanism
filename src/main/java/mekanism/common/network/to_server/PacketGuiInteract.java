@@ -3,10 +3,10 @@ package mekanism.common.network.to_server;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -120,33 +120,32 @@ public class PacketGuiInteract implements IMekanismPacket {
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(interactionType);
-        if (interactionType == Type.ENTITY) {
-            buffer.writeEnum(entityInteraction);
-            buffer.writeVarInt(entityID);
-            buffer.writeVarInt(extra);
-        } else if (interactionType == Type.INT) {
-            buffer.writeEnum(interaction);
-            buffer.writeBlockPos(tilePosition);
-            //TODO - 1.18?: Eventually we may want to try to make some form of this that can compact negatives better as well
-            buffer.writeVarInt(extra);
-        } else if (interactionType == Type.ITEM) {
-            buffer.writeEnum(itemInteraction);
-            buffer.writeBlockPos(tilePosition);
-            buffer.writeItem(extraItem);
+        switch (interactionType) {
+            case ENTITY -> {
+                buffer.writeEnum(entityInteraction);
+                buffer.writeVarInt(entityID);
+                buffer.writeVarInt(extra);
+            }
+            case INT -> {
+                buffer.writeEnum(interaction);
+                buffer.writeBlockPos(tilePosition);
+                //TODO - 1.18?: Eventually we may want to try to make some form of this that can compact negatives better as well
+                buffer.writeVarInt(extra);
+            }
+            case ITEM -> {
+                buffer.writeEnum(itemInteraction);
+                buffer.writeBlockPos(tilePosition);
+                buffer.writeItem(extraItem);
+            }
         }
     }
 
     public static PacketGuiInteract decode(FriendlyByteBuf buffer) {
-        Type type = buffer.readEnum(Type.class);
-        if (type == Type.ENTITY) {
-            return new PacketGuiInteract(buffer.readEnum(GuiInteractionEntity.class), buffer.readVarInt(), buffer.readVarInt());
-        } else if (type == Type.INT) {
-            return new PacketGuiInteract(buffer.readEnum(GuiInteraction.class), buffer.readBlockPos(), buffer.readVarInt());
-        } else if (type == Type.ITEM) {
-            return new PacketGuiInteract(buffer.readEnum(GuiInteractionItem.class), buffer.readBlockPos(), buffer.readItem());
-        }
-        Mekanism.logger.error("Received malformed GUI interaction packet.");
-        return null;
+        return switch (buffer.readEnum(Type.class)) {
+            case ENTITY -> new PacketGuiInteract(buffer.readEnum(GuiInteractionEntity.class), buffer.readVarInt(), buffer.readVarInt());
+            case INT -> new PacketGuiInteract(buffer.readEnum(GuiInteraction.class), buffer.readBlockPos(), buffer.readVarInt());
+            case ITEM -> new PacketGuiInteract(buffer.readEnum(GuiInteractionItem.class), buffer.readBlockPos(), buffer.readItem());
+        };
     }
 
     public enum GuiInteractionItem {
@@ -376,6 +375,12 @@ public class PacketGuiInteract implements IMekanismPacket {
                 amplifier.setDelay(extra);
             }
         }),
+
+        TOGGLE_CHUNKLOAD((tile, player, extra) -> {
+            if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
+                stabilizer.toggleChunkLoadingAt(extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
+            }
+        })
 
         ;
 

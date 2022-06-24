@@ -2,12 +2,8 @@ package mekanism.common.resource.ore;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
@@ -36,8 +32,7 @@ public enum OreType implements StringRepresentable {
           new BaseOreConfig("normal", 8, 0.25F, 9, HeightShape.TRAPEZOID, OreAnchor.aboveBottom(-24), OreAnchor.absolute(64))
     );
 
-    public static Codec<OreType> CODEC = StringRepresentable.fromEnum(OreType::values, OreType::byName);
-    private static final Map<String, OreType> NAME_LOOKUP = Arrays.stream(values()).collect(Collectors.toMap(OreType::getSerializedName, oreType -> oreType));
+    public static Codec<OreType> CODEC = StringRepresentable.fromEnum(OreType::values);
 
     private final List<BaseOreConfig> baseConfigs;
     private final IResource resource;
@@ -88,11 +83,6 @@ public enum OreType implements StringRepresentable {
     @Override
     public String getSerializedName() {
         return resource.getRegistrySuffix();
-    }
-
-    @Nullable
-    private static OreType byName(String name) {
-        return NAME_LOOKUP.get(name);
     }
 
     public record OreVeinType(OreType type, int index) {

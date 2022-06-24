@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:block_raw_tin"
+  "key": {
+    "#": {
+      "tag": "forge:raw_materials/tin"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:raw_materials/tin"
-    }
+  "result": {
+    "item": "mekanism:block_raw_tin"
   }
 }

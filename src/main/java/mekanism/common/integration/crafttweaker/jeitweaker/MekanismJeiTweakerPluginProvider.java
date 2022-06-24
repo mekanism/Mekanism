@@ -24,7 +24,8 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import net.minecraftforge.fluids.FluidAttributes;
+import mekanism.common.util.ChemicalUtil;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @JeiTweakerPlugin
@@ -60,7 +61,7 @@ public class MekanismJeiTweakerPluginProvider implements JeiTweakerPluginProvide
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>> void
     addEnumerators(IngredientEnumeratorRegistration registration, IngredientTypeHolder<CRT_STACK, STACK> typeHolder, IForgeRegistry<CHEMICAL> registry) {
         registration.registerEnumerator(typeHolder.get(), IngredientEnumerator.ofJei(typeHolder.get(),
-              registry.getValues().stream().map(chemical -> (STACK) chemical.getStack(FluidAttributes.BUCKET_VOLUME)).toList()
+              registry.getValues().stream().map(chemical -> ChemicalUtil.<CHEMICAL, STACK>withAmount(chemical, FluidType.BUCKET_VOLUME)).toList()
         ));
     }
 }

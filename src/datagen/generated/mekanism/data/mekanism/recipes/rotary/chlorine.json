@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:chlorine"
   },
-  "gasOutput": {
-    "gas": "mekanism:chlorine",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:chlorine"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:chlorine"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:chlorine",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:chlorine"
   }
 }

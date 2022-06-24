@@ -22,7 +22,7 @@ public class StrictEnergyCompat implements IEnergyCompat {
     @Nonnull
     @Override
     public Capability<IStrictEnergyHandler> getCapability() {
-        return Capabilities.STRICT_ENERGY_CAPABILITY;
+        return Capabilities.STRICT_ENERGY;
     }
 
     @Nonnull

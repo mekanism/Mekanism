@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderFluidTankItem extends MekanismISTER {
@@ -70,8 +71,8 @@ public class RenderFluidTankItem extends MekanismISTER {
             return cachedCenterFluids.get(fluid).get(stage);
         }
         Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
-        if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
+        model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
+        if (RenderProperties.get(fluid.getFluid()).getStillTexture(fluid) != null) {
             model.minX = 0.135F;//0.125 + .01;
             model.minY = 0.0725F;//0.0625 + .01;
             model.minZ = 0.135F;//0.125 + .01;

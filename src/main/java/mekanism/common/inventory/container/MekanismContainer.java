@@ -53,7 +53,6 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -64,7 +63,6 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class MekanismContainer extends AbstractContainerMenu implements ISecurityContainer {
 
@@ -403,8 +401,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     @Nonnull
     protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull Player player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
         int difference = slotStack.getCount() - stackToInsert.getCount();
-        currentSlot.remove(difference);
-        ItemStack newStack = StackUtils.size(slotStack, difference);
+        ItemStack newStack = currentSlot.remove(difference);
         currentSlot.onTake(player, newStack);
         return newStack;
     }
@@ -509,6 +506,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
+    public void trackArray(boolean[][] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            for (int j = 0; j < arrayIn[i].length; j++) {
+                track(SyncableBoolean.create(arrayIn, i, j));
+            }
+        }
+    }
+
     public void handleWindowProperty(short property, boolean value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableBoolean syncable) {
@@ -589,7 +594,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public <V extends IForgeRegistryEntry<V>> void handleWindowProperty(short property, @Nonnull V value) {
+    public <V> void handleWindowProperty(short property, @Nonnull V value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableRegistryEntry) {
             ((SyncableRegistryEntry<V>) data).set(value);

@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:energy_tablet"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "I": {
+      "tag": "forge:ingots/gold"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    }
   },
   "pattern": [
     "RIR",
     "AIA",
     "RIR"
   ],
-  "key": {
-    "R": {
-      "tag": "forge:dusts/redstone"
-    },
-    "I": {
-      "tag": "forge:ingots/gold"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    }
+  "result": {
+    "item": "mekanism:energy_tablet"
   }
 }

@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:item/shield",
-  "textures": {
-    "particle": "minecraft:block/lapis_block"
-  },
   "overrides": [
     {
+      "model": "mekanismtools:item/lapis_lazuli_shield_blocking",
       "predicate": {
         "mekanismtools:blocking": 1.0
-      },
-      "model": "mekanismtools:item/lapis_lazuli_shield_blocking"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "particle": "minecraft:block/lapis_block"
+  }
 }

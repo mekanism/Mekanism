@@ -20,42 +20,35 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 
-//TODO - 1.19: rename these objects to not end with _CAPABILITY as it is a given based on the class
-// this just seems like a class that has a higher likelihood of people accessing our internals even
-// when they don't need to, so we are just leaving the names be for now to avoid breaking any mods
-// that are improperly accessing these
 public class Capabilities {
 
     private Capabilities() {
     }
 
-    public static final Capability<IGasHandler> GAS_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IGasHandler> GAS_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IInfusionHandler> INFUSION_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IPigmentHandler> PIGMENT_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ISlurryHandler> SLURRY_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IHeatHandler> HEAT_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IPigmentHandler> PIGMENT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IStrictEnergyHandler> STRICT_ENERGY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<ISlurryHandler> SLURRY_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IConfigurable> CONFIGURABLE = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IHeatHandler> HEAT_HANDLER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IAlloyInteraction> ALLOY_INTERACTION = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IStrictEnergyHandler> STRICT_ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IConfigCardAccess> CONFIG_CARD = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IConfigurable> CONFIGURABLE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IEvaporationSolar> EVAPORATION_SOLAR = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ILaserReceptor> LASER_RECEPTOR = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<ILaserDissipation> LASER_DISSIPATION = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IRadiationShielding> RADIATION_SHIELDING = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static final Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-
-    public static final Capability<ILaserDissipation> LASER_DISSIPATION_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-
-    public static final Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-
-    public static final Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IRadiationEntity> RADIATION_ENTITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static final Capability<IOwnerObject> OWNER_OBJECT = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<ISecurityObject> SECURITY_OBJECT = CapabilityManager.get(new CapabilityToken<>() {});

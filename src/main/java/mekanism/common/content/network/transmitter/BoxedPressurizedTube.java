@@ -190,6 +190,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         setStackClearOthers(saveShare.getChemicalStack(), chemicalTank.getTankForType(saveShare.getChemicalType()));
     }
 
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void setStackClearOthers(STACK stack, IChemicalTank<?, ?> tank) {
         ((IChemicalTank<CHEMICAL, STACK>) tank).setStack(stack);
         for (IChemicalTank<?, ?> tankToClear : chemicalTank.getAllTanks()) {
@@ -323,6 +324,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
      * @return remainder
      */
     @Nonnull
+    @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK takeChemical(ChemicalType type, STACK stack, Action action) {
         IChemicalTank<CHEMICAL, STACK> tank;
         if (hasTransmitterNetwork()) {

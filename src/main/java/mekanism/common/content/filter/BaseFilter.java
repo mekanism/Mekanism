@@ -14,6 +14,7 @@ import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,7 +33,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     @Override
     public CompoundTag write(CompoundTag nbtTags) {
-        nbtTags.putInt(NBTConstants.TYPE, getFilterType().ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.TYPE, getFilterType());
         return nbtTags;
     }
 

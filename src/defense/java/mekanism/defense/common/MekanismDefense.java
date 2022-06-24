@@ -38,7 +38,7 @@ public class MekanismDefense implements IModModule {
     private final DefensePacketHandler packetHandler;
 
     public MekanismDefense() {
-        Mekanism.modulesLoaded.add(instance = this);
+        Mekanism.addModule(instance = this);
         MekanismDefenseConfig.registerConfigs(ModLoadingContext.get());
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
 
@@ -69,7 +69,7 @@ public class MekanismDefense implements IModModule {
         packetHandler.initialize();
 
         //Finalization
-        Mekanism.logger.info("Loaded 'Mekanism Defense' module.");
+        Mekanism.logger.info("Loaded 'Mekanism: Defense' module.");
     }
 
     private void serverStopped(ServerStoppedEvent event) {

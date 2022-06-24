@@ -1,7 +1,7 @@
 package mekanism.common.registration.impl;
 
 import javax.annotation.Nullable;
-import mekanism.common.registration.WrappedForgeDeferredRegister;
+import mekanism.common.registration.WrappedDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class TileEntityTypeDeferredRegister extends WrappedForgeDeferredRegister<BlockEntityType<?>> {
+public class TileEntityTypeDeferredRegister extends WrappedDeferredRegister<BlockEntityType<?>> {
 
     public TileEntityTypeDeferredRegister(String modid) {
         super(modid, ForgeRegistries.BLOCK_ENTITIES);

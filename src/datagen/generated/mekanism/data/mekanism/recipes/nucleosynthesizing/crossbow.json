@@ -1,20 +1,20 @@
 {
   "type": "mekanism:nucleosynthesizing",
-  "itemInput": {
-    "ingredient": {
-      "type": "forge:nbt",
-      "item": "minecraft:bow",
-      "count": 1,
-      "nbt": "{Damage:0}"
-    }
-  },
+  "duration": 200,
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:antimatter"
   },
+  "itemInput": {
+    "ingredient": {
+      "type": "forge:nbt",
+      "count": 1,
+      "item": "minecraft:bow",
+      "nbt": "{Damage:0}"
+    }
+  },
   "output": {
     "item": "minecraft:crossbow",
     "nbt": "{Damage:0}"
-  },
-  "duration": 200
+  }
 }

@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "byg"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "tag": "byg:wood/white_mangrove_logs"
+    }
+  },
+  "mainOutput": {
+    "count": 6,
+    "item": "byg:white_mangrove_planks"
+  },
+  "secondaryChance": 0.25,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

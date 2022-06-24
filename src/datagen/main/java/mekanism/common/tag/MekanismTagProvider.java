@@ -17,6 +17,7 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
@@ -36,6 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -65,7 +67,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         return MekanismBlocks.BLOCKS.getAllBlocks();
     }
 
-
     @Override
     protected void registerTags() {
         addProcessedResources();
@@ -88,6 +89,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addDusts();
         addGems();
         addFluids();
+        addGameEvents();
         addGasTags();
         addSlurryTags();
         addInfuseTags();
@@ -115,6 +117,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(BlockTags.AXOLOTLS_SPAWNABLE_ON, MekanismBlocks.SALT_BLOCK);
         addToTag(ItemTags.CLUSTER_MAX_HARVESTABLES, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
         addToTag(ItemTags.FREEZE_IMMUNE_WEARABLES, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
+        addToTag(BlockTags.SCULK_REPLACEABLE, MekanismBlocks.SALT_BLOCK);
     }
 
     private void addEntities() {
@@ -123,33 +126,35 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
         addToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
         getBuilder(TagType.ENTITY_TYPE, MekanismTags.Entities.HURTABLE_VEHICLES).add(
-              EntityType.BOAT,
-              EntityType.MINECART,
-              EntityType.CHEST_MINECART,
-              EntityType.COMMAND_BLOCK_MINECART,
-              EntityType.FURNACE_MINECART,
-              EntityType.HOPPER_MINECART,
-              EntityType.SPAWNER_MINECART,
-              EntityType.TNT_MINECART
-        ).addOptional(
-              BOPEntities.BOAT,
-              BYGEntities.BOAT
-        );
+                    EntityType.BOAT,
+                    EntityType.CHEST_BOAT,
+                    EntityType.MINECART,
+                    EntityType.CHEST_MINECART,
+                    EntityType.COMMAND_BLOCK_MINECART,
+                    EntityType.FURNACE_MINECART,
+                    EntityType.HOPPER_MINECART,
+                    EntityType.SPAWNER_MINECART,
+                    EntityType.TNT_MINECART
+              )
+              .addOptional(BOPEntities.BOAT.get(), BOPEntities.CHEST_BOAT.get())
+              .addOptional(BYGEntities.BOAT.get(), BYGEntities.CHEST_BOAT.get())
+        ;
     }
 
     private void addProcessedResources() {
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             TagKey<Item> tag = addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
-            switch (item.getRowKey()) {
-                case SHARD -> getItemBuilder(MekanismTags.Items.SHARDS).add(tag);
-                case CRYSTAL -> getItemBuilder(MekanismTags.Items.CRYSTALS).add(tag);
-                case DUST -> getItemBuilder(Tags.Items.DUSTS).add(tag);
-                case DIRTY_DUST -> getItemBuilder(MekanismTags.Items.DIRTY_DUSTS).add(tag);
-                case CLUMP -> getItemBuilder(MekanismTags.Items.CLUMPS).add(tag);
-                case INGOT -> getItemBuilder(Tags.Items.INGOTS).add(tag);
-                case RAW -> getItemBuilder(Tags.Items.RAW_MATERIALS).add(tag);
-                case NUGGET -> getItemBuilder(Tags.Items.NUGGETS).add(tag);
-            }
+            getItemBuilder(switch (item.getRowKey()) {
+                case SHARD -> MekanismTags.Items.SHARDS;
+                case CRYSTAL -> MekanismTags.Items.CRYSTALS;
+                case DUST -> Tags.Items.DUSTS;
+                case DIRTY_DUST -> MekanismTags.Items.DIRTY_DUSTS;
+                case CLUMP -> MekanismTags.Items.CLUMPS;
+                case INGOT -> Tags.Items.INGOTS;
+                case RAW -> Tags.Items.RAW_MATERIALS;
+                case NUGGET -> Tags.Items.NUGGETS;
+                default -> throw new IllegalStateException("Unexpected resource type for primary resource.");
+            }).add(tag);
         }
     }
 
@@ -329,6 +334,8 @@ public class MekanismTagProvider extends BaseTagProvider {
             }
             addToTags(Tags.Items.ORES_IN_GROUND_DEEPSLATE, Tags.Blocks.ORES_IN_GROUND_DEEPSLATE, oreBlockType.deepslate());
             addToTags(Tags.Items.ORES_IN_GROUND_STONE, Tags.Blocks.ORES_IN_GROUND_STONE, oreBlockType.stone());
+            addToTag(BlockTags.OVERWORLD_CARVER_REPLACEABLES, oreBlockType.stone(), oreBlockType.deepslate());
+            addToTag(BlockTags.SNAPS_GOAT_HORN, oreBlockType.stone(), oreBlockType.deepslate());
         }
     }
 
@@ -404,6 +411,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addGems() {
         addToTag(MekanismTags.Items.GEMS_FLUORITE, MekanismItems.FLUORITE_GEM);
+        getItemBuilder(Tags.Items.GEMS).add(MekanismTags.Items.GEMS_FLUORITE);
     }
 
     private void addPellets() {
@@ -466,10 +474,16 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID);
         addToTag(MekanismTags.Fluids.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE);
         addToTag(MekanismTags.Fluids.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE);
+        addToTag(Tags.Fluids.GASEOUS, MekanismFluids.STEAM);
         //Prevent all our fluids from being duped by create
-        for (FluidRegistryObject<?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
             addToTag(CREATE_NO_INFINITE_FLUID, fluid);
         }
+    }
+
+    private void addGameEvents() {
+        addToTag(GameEventTags.VIBRATIONS, MekanismGameEvents.SEISMIC_VIBRATION);
+        addToTag(GameEventTags.WARDEN_CAN_LISTEN, MekanismGameEvents.SEISMIC_VIBRATION);
     }
 
     private void addGasTags() {
@@ -562,6 +576,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
               MekanismBlocks.PIGMENT_EXTRACTOR, MekanismBlocks.PIGMENT_MIXER, MekanismBlocks.PAINTING_MACHINE,
               MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL,
+              MekanismBlocks.DIMENSIONAL_STABILIZER,
               MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER
         );
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.getFactoryBlocks());

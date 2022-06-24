@@ -1,5 +1,8 @@
 package mekanism.common.content.evaporation;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -50,6 +53,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.fluids.FluidStack;
 
 public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
@@ -89,7 +94,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @ContainerSync
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
-    private final IEvaporationSolar[] solars = new IEvaporationSolar[4];
+    private final Int2ObjectMap<NonNullConsumer<LazyOptional<IEvaporationSolar>>> cachedSolarListeners = new Int2ObjectArrayMap<>(4);
+    private final Int2ObjectMap<LazyOptional<IEvaporationSolar>> cachedSolar = new Int2ObjectArrayMap<>(4);
 
     private final IOutputHandler<@NonNull FluidStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
@@ -260,20 +266,24 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @ComputerMethod
     private int getActiveSolars() {
         int ret = 0;
-        for (IEvaporationSolar solar : solars) {
-            if (solar != null && solar.canSeeSun()) {
+        for (LazyOptional<IEvaporationSolar> capability : cachedSolar.values()) {
+            if (capability.map(IEvaporationSolar::canSeeSun).orElse(false)) {
                 ret++;
             }
         }
         return ret;
     }
 
-    private void updateSolarSpot(Level world, BlockPos pos, int i) {
+    private void updateSolarSpot(Level world, BlockPos pos, int corner) {
+        //If we have the corner cached remove it
+        cachedSolar.remove(corner);
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        if (tile == null || tile.isRemoved()) {
-            solars[i] = null;
-        } else {
-            solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN).resolve().orElse(null);
+        if (tile != null && !tile.isRemoved()) {
+            LazyOptional<IEvaporationSolar> capability = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR, Direction.DOWN);
+            if (capability.isPresent()) {
+                capability.addListener(cachedSolarListeners.computeIfAbsent(corner, c -> new RefreshListener(this, c)));
+                cachedSolar.put(corner, capability);
+            }
         }
     }
 
@@ -305,5 +315,44 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getFluidAmount(), inputTank.getCapacity());
+    }
+
+    @Override
+    public void remove(Level world) {
+        //Clear the cached solar panels so that we don't hold references to them and prevent them from being able to be garbage collected
+        cachedSolar.clear();
+        super.remove(world);
+    }
+
+    private static class RefreshListener implements NonNullConsumer<LazyOptional<IEvaporationSolar>> {
+
+        //Note: We only keep a weak reference to the multiblock from inside the listener so that if it gets unformed it can be released from memory
+        // instead of being referenced by the listener still in the tile in a neighboring chunk
+        private final WeakReference<EvaporationMultiblockData> multiblock;
+        private final int corner;
+
+        private RefreshListener(EvaporationMultiblockData multiblock, int corner) {
+            this.multiblock = new WeakReference<>(multiblock);
+            this.corner = corner;
+        }
+
+        @Override
+        public void accept(@Nonnull LazyOptional<IEvaporationSolar> ignored) {
+            EvaporationMultiblockData multiblockData = multiblock.get();
+            //Check to make sure the multiblock is still valid and that the position we are going to check is actually still loaded
+            if (multiblockData != null && multiblockData.isFormed()) {
+                BlockPos maxPos = multiblockData.getMaxPos();
+                BlockPos pos = switch (corner) {
+                    case 1 -> maxPos.west(3);
+                    case 2 -> maxPos.north(3);
+                    case 3 -> maxPos.offset(-3, 0, -3);
+                    default -> maxPos;//Corner 0
+                };
+                if (WorldUtils.isBlockLoaded(multiblockData.getWorld(), pos)) {
+                    //Refresh the solar
+                    multiblockData.updateSolarSpot(multiblockData.getWorld(), pos, corner);
+                }
+            }
+        }
     }
 }

@@ -69,7 +69,7 @@ public class PathfinderCache {
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof PathData data && data.startTransporter.equals(startTransporter) && data.end.equals(end) && data.endSide.equals(endSide);
+            return obj instanceof PathData data && data.startTransporter.equals(startTransporter) && data.end.equals(end) && data.endSide == endSide;
         }
 
         @Override

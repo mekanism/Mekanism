@@ -11,7 +11,7 @@ public interface IItemSustainedInventory extends ISustainedInventory {
     @Override
     default void setInventory(ListTag nbtTags, Object... data) {
         if (data[0] instanceof ItemStack stack) {
-            ItemDataUtils.setList(stack, NBTConstants.ITEMS, nbtTags);
+            ItemDataUtils.setListOrRemove(stack, NBTConstants.ITEMS, nbtTags);
         }
     }
 
@@ -21,5 +21,9 @@ public interface IItemSustainedInventory extends ISustainedInventory {
             return ItemDataUtils.getList(stack, NBTConstants.ITEMS);
         }
         return null;
+    }
+
+    default boolean canContentsDrop(ItemStack stack) {
+        return true;
     }
 }

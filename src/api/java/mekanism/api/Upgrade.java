@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -45,18 +46,27 @@ public enum Upgrade implements IHasTranslationKey {
      * @param nbtTags Stored upgrades.
      *
      * @return Installed upgrade map.
+     *
+     * @implNote Unmodifiable if empty.
      */
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundTag nbtTags) {
-        Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
+        Map<Upgrade, Integer> upgrades = null;
         if (nbtTags != null && nbtTags.contains(NBTConstants.UPGRADES, Tag.TAG_LIST)) {
             ListTag list = nbtTags.getList(NBTConstants.UPGRADES, Tag.TAG_COMPOUND);
             for (int tagCount = 0; tagCount < list.size(); tagCount++) {
                 CompoundTag compound = list.getCompound(tagCount);
                 Upgrade upgrade = byIndexStatic(compound.getInt(NBTConstants.TYPE));
-                upgrades.put(upgrade, Math.min(upgrade.maxStack, compound.getInt(NBTConstants.AMOUNT)));
+                //Validate the nbt isn't malformed with a negative or zero amount
+                int installed = Math.max(0, Math.min(upgrade.maxStack, compound.getInt(NBTConstants.AMOUNT)));
+                if (installed > 0) {
+                    if (upgrades == null) {
+                        upgrades = new EnumMap<>(Upgrade.class);
+                    }
+                    upgrades.put(upgrade, installed);
+                }
             }
         }
-        return upgrades;
+        return upgrades == null ? Collections.emptyMap() : upgrades;
     }
 
     /**

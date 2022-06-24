@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:atomic_alloy",
+  "criteria": {
+    "atomic_disassembler": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:atomic_disassembler"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.disassembler.description"
+    },
+    "icon": {
+      "item": "mekanism:atomic_disassembler"
+    },
+    "title": {
+      "translate": "advancements.mekanism.disassembler.title"
+    }
+  }
+}

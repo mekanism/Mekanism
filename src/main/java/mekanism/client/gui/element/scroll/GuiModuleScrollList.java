@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
+import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -106,7 +107,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         forEachModule((module, multipliedElement) -> {
             IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
             if (instance != null) {
-                int color = module.isExclusive() ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
+                int color = module.isExclusive(ExclusiveFlag.ANY) ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
                 drawScaledTextScaledBound(matrix, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
             }
         });

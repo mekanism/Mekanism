@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:hazmat_mask"
+  "key": {
+    "D": {
+      "tag": "forge:dyes/orange"
+    },
+    "I": {
+      "tag": "forge:ingots/lead"
+    }
   },
   "pattern": [
     "III",
     "IDI"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/lead"
-    },
-    "D": {
-      "tag": "forge:dyes/orange"
-    }
+  "result": {
+    "item": "mekanism:hazmat_mask"
   }
 }

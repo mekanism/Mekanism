@@ -1,16 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:heat_generator"
-  },
-  "pattern": [
-    "III",
-    "WOW",
-    "CFC"
-  ],
   "key": {
-    "W": {
-      "tag": "minecraft:planks"
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "F": {
+      "item": "minecraft:furnace"
     },
     "I": {
       "tag": "forge:ingots/iron"
@@ -18,11 +13,16 @@
     "O": {
       "tag": "forge:ingots/osmium"
     },
-    "C": {
-      "tag": "forge:ingots/copper"
-    },
-    "F": {
-      "item": "minecraft:furnace"
+    "W": {
+      "tag": "minecraft:planks"
     }
+  },
+  "pattern": [
+    "III",
+    "WOW",
+    "CFC"
+  ],
+  "result": {
+    "item": "mekanismgenerators:heat_generator"
   }
 }

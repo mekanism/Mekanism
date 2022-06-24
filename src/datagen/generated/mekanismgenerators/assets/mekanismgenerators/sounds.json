@@ -1,50 +1,50 @@
 {
-  "tile.machine.fusion_reactor": {
-    "subtitle": "sound_event.mekanismgenerators.tile.machine.fusion_reactor",
-    "sounds": [
-      "mekanismgenerators:fusion_reactor"
-    ]
-  },
-  "tile.machine.fission_reactor": {
-    "subtitle": "sound_event.mekanismgenerators.tile.machine.fission_reactor",
-    "sounds": [
-      "mekanismgenerators:fission_reactor"
-    ]
-  },
   "tile.generator.bio": {
-    "subtitle": "sound_event.mekanismgenerators.tile.generator.bio",
     "sounds": [
       "mekanismgenerators:generator/bio"
-    ]
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.bio"
   },
   "tile.generator.gas": {
-    "subtitle": "sound_event.mekanismgenerators.tile.generator.gas",
     "sounds": [
       "mekanismgenerators:generator/gas_burning"
-    ]
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.gas"
   },
   "tile.generator.heat": {
-    "subtitle": "sound_event.mekanismgenerators.tile.generator.heat",
     "sounds": [
       "mekanismgenerators:generator/heat"
-    ]
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.heat"
   },
   "tile.generator.solar": {
-    "subtitle": "sound_event.mekanismgenerators.tile.generator.solar",
     "sounds": [
       {
-        "name": "mekanismgenerators:generator/solar",
-        "attenuation_distance": 8
+        "attenuation_distance": 8,
+        "name": "mekanismgenerators:generator/solar"
       }
-    ]
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.solar"
   },
   "tile.generator.wind": {
-    "subtitle": "sound_event.mekanismgenerators.tile.generator.wind",
     "sounds": [
       {
-        "name": "mekanismgenerators:generator/wind",
-        "attenuation_distance": 8
+        "attenuation_distance": 8,
+        "name": "mekanismgenerators:generator/wind"
       }
-    ]
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.wind"
+  },
+  "tile.machine.fission_reactor": {
+    "sounds": [
+      "mekanismgenerators:fission_reactor"
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.machine.fission_reactor"
+  },
+  "tile.machine.fusion_reactor": {
+    "sounds": [
+      "mekanismgenerators:fusion_reactor"
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.machine.fusion_reactor"
   }
 }

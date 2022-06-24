@@ -9,18 +9,17 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
 
-public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<TYPE>, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>>
-      extends BaseFilter<FILTER> {
+public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> extends BaseFilter<FILTER> {
 
     @Nullable
     private TagKey<TYPE> filterLocation;
@@ -104,7 +103,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.FILTER, getFilterText());
         if (selectedOutput != getFallbackElement()) {
-            nbtTags.putString(NBTConstants.SELECTED, selectedOutput.getRegistryName().toString());
+            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SELECTED, getRegistry(), selectedOutput);
         }
         return nbtTags;
     }
@@ -122,17 +121,14 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
         super.write(buffer);
         //Realistically the filter location shouldn't be null except when the filter is first being created
         // but handle it being null just in case
-        buffer.writeBoolean(filterLocation != null);
-        if (filterLocation != null) {
-            buffer.writeResourceLocation(filterLocation.location());
-        }
-        buffer.writeResourceLocation(selectedOutput.getRegistryName());
+        BasePacketHandler.writeOptional(buffer, filterLocation, (buf, location) -> buf.writeResourceLocation(location.location()));
+        buffer.writeResourceLocation(getRegistry().getKey(selectedOutput));
         buffer.writeBoolean(isValid);
     }
 
     @Override
     public void read(FriendlyByteBuf buffer) {
-        setFilter(buffer.readBoolean() ? buffer.readResourceLocation() : null);
+        setFilter(BasePacketHandler.readOptional(buffer, FriendlyByteBuf::readResourceLocation));
         setSelectedOrFallback(buffer.readResourceLocation());
         isValid = buffer.readBoolean();
     }

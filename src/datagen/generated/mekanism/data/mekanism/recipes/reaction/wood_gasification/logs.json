@@ -1,11 +1,6 @@
 {
   "type": "mekanism:reaction",
-  "itemInput": {
-    "amount": 4,
-    "ingredient": {
-      "tag": "minecraft:logs"
-    }
-  },
+  "duration": 600,
   "fluidInput": {
     "amount": 400,
     "tag": "minecraft:water"
@@ -14,12 +9,17 @@
     "amount": 400,
     "gas": "mekanism:oxygen"
   },
-  "duration": 600,
+  "gasOutput": {
+    "amount": 400,
+    "gas": "mekanism:hydrogen"
+  },
+  "itemInput": {
+    "amount": 4,
+    "ingredient": {
+      "tag": "minecraft:logs"
+    }
+  },
   "itemOutput": {
     "item": "mekanism:dust_charcoal"
-  },
-  "gasOutput": {
-    "gas": "mekanism:hydrogen",
-    "amount": 400
   }
 }

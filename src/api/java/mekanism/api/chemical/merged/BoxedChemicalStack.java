@@ -42,17 +42,15 @@ public class BoxedChemicalStack implements IHasTextComponent {
      */
     public static BoxedChemicalStack read(@Nullable CompoundTag nbt) {
         ChemicalType chemicalType = ChemicalType.fromNBT(nbt);
-        ChemicalStack<?> stack = null;
-        if (chemicalType == ChemicalType.GAS) {
-            stack = GasStack.readFromNBT(nbt);
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            stack = InfusionStack.readFromNBT(nbt);
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            stack = PigmentStack.readFromNBT(nbt);
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            stack = SlurryStack.readFromNBT(nbt);
+        if (chemicalType == null) {
+            return EMPTY;
         }
-        return chemicalType == null || stack == null ? EMPTY : new BoxedChemicalStack(chemicalType, stack);
+        return new BoxedChemicalStack(chemicalType, switch (chemicalType) {
+            case GAS -> GasStack.readFromNBT(nbt);
+            case INFUSION -> InfusionStack.readFromNBT(nbt);
+            case PIGMENT -> PigmentStack.readFromNBT(nbt);
+            case SLURRY -> SlurryStack.readFromNBT(nbt);
+        });
     }
 
     private final ChemicalType chemicalType;

@@ -17,6 +17,13 @@ public class CachedDoubleValue extends CachedValue<Double> implements DoubleSupp
         return new CachedDoubleValue(config, internal);
     }
 
+    public double getOrDefault() {
+        if (resolved || isLoaded()) {
+            return get();
+        }
+        return internal.getDefault();
+    }
+
     public double get() {
         if (!resolved) {
             //If we don't have a cached value or need to resolve it again, get it from the actual ConfigValue

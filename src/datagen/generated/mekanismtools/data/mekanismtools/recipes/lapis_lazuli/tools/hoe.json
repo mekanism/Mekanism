@@ -1,13 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismtools:lapis_lazuli_hoe"
-  },
-  "pattern": [
-    "II",
-    " R",
-    " R"
-  ],
   "key": {
     "I": {
       "tag": "forge:gems/lapis"
@@ -15,5 +7,13 @@
     "R": {
       "tag": "forge:rods/wooden"
     }
+  },
+  "pattern": [
+    "II",
+    " R",
+    " R"
+  ],
+  "result": {
+    "item": "mekanismtools:lapis_lazuli_hoe"
   }
 }

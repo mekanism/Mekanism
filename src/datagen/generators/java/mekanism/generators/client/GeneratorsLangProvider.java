@@ -3,6 +3,7 @@ package mekanism.generators.client;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.advancements.GeneratorsAdvancements;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
@@ -24,6 +25,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         addFluids();
         addGases();
         addSubtitles();
+        addAdvancements();
         addMisc();
     }
 
@@ -81,6 +83,13 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsSounds.HEAT_GENERATOR, "Heat generator hums");
         add(GeneratorsSounds.SOLAR_GENERATOR, "Solar generator hums");
         add(GeneratorsSounds.WIND_GENERATOR, "Wind generator wooshes");
+    }
+
+    private void addAdvancements() {
+        add(GeneratorsAdvancements.HEAT_GENERATOR, "Your First Generator", "Craft a Heat Generator to start making power");
+        add(GeneratorsAdvancements.SOLAR_GENERATOR, "Power of the Sun", "Renewable daytime energy");
+        add(GeneratorsAdvancements.WIND_GENERATOR, "Spin Baby Spin", "Hopefully there is some wind nearby");
+        add(GeneratorsAdvancements.BURN_THE_GAS, "Burn the Gas", "Craft a Gas-Burning Generator to burn Ethylene");
     }
 
     private void addMisc() {

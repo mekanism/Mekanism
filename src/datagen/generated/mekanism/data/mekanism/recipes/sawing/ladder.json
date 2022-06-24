@@ -7,7 +7,7 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:stick",
-    "count": 7
+    "count": 7,
+    "item": "minecraft:stick"
   }
 }

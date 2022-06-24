@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:electrolytic_core"
+  "key": {
+    "#": {
+      "tag": "forge:dusts/gold"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "I": {
+      "tag": "forge:dusts/iron"
+    },
+    "O": {
+      "tag": "forge:dusts/osmium"
+    }
   },
   "pattern": [
     "AOA",
     "IA#",
     "AOA"
   ],
-  "key": {
-    "O": {
-      "tag": "forge:dusts/osmium"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "#": {
-      "tag": "forge:dusts/gold"
-    },
-    "I": {
-      "tag": "forge:dusts/iron"
-    }
+  "result": {
+    "item": "mekanism:electrolytic_core"
   }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:cherry_chest_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:cherry_boat"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:chest"
+  }
+}

@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:uranium_hexafluoride"
   },
-  "gasOutput": {
-    "gas": "mekanism:uranium_hexafluoride",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:uranium_hexafluoride"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:uranium_hexafluoride"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:uranium_hexafluoride",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:uranium_hexafluoride"
   }
 }

@@ -6,42 +6,42 @@
       }
     },
     {
+      "apply": {
+        "model": "mekanismadditions:block/plastic/fence_side",
+        "uvlock": true
+      },
       "when": {
         "north": "true"
-      },
-      "apply": {
-        "model": "mekanismadditions:block/plastic/fence_side",
-        "uvlock": true
       }
     },
     {
+      "apply": {
+        "model": "mekanismadditions:block/plastic/fence_side",
+        "uvlock": true,
+        "y": 180
+      },
       "when": {
         "south": "true"
-      },
-      "apply": {
-        "model": "mekanismadditions:block/plastic/fence_side",
-        "y": 180,
-        "uvlock": true
       }
     },
     {
+      "apply": {
+        "model": "mekanismadditions:block/plastic/fence_side",
+        "uvlock": true,
+        "y": 270
+      },
       "when": {
         "west": "true"
-      },
-      "apply": {
-        "model": "mekanismadditions:block/plastic/fence_side",
-        "y": 270,
-        "uvlock": true
       }
     },
     {
-      "when": {
-        "east": "true"
-      },
       "apply": {
         "model": "mekanismadditions:block/plastic/fence_side",
-        "y": 90,
-        "uvlock": true
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "true"
       }
     }
   ]

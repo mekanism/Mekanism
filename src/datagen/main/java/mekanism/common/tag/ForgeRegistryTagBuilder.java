@@ -1,21 +1,26 @@
 package mekanism.common.tag;
 
+import com.mojang.datafixers.util.Either;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagBuilder;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 //Based off of TagsProvider.TagAppender but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations
-public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
+public class ForgeRegistryTagBuilder<TYPE> {
 
-    private final Tag.Builder builder;
+    private final Either<IForgeRegistry<TYPE>, Registry<TYPE>> registry;
+    private final TagBuilder builder;
     private final String modID;
 
-    public ForgeRegistryTagBuilder(Tag.Builder builder, String modID) {
+    public ForgeRegistryTagBuilder(Either<IForgeRegistry<TYPE>, Registry<TYPE>> registry, TagBuilder builder, String modID) {
+        this.registry = registry;
         this.builder = builder;
         this.modID = modID;
     }
@@ -25,23 +30,27 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
         return addTyped(Supplier::get, elements);
     }
 
+    private ResourceLocation getKey(TYPE element) {
+        return registry.map(r -> r.getKey(element), r -> r.getKey(element));
+    }
+
     @SafeVarargs
     public final ForgeRegistryTagBuilder<TYPE> add(TYPE... elements) {
-        return add(IForgeRegistryEntry::getRegistryName, elements);
+        return add(this::getKey, elements);
     }
 
     @SafeVarargs
     public final <T> ForgeRegistryTagBuilder<TYPE> addTyped(Function<T, TYPE> converter, T... elements) {
-        return add(converter.andThen(IForgeRegistryEntry::getRegistryName), elements);
+        return add(converter.andThen(this::getKey), elements);
     }
 
     @SafeVarargs
     public final ForgeRegistryTagBuilder<TYPE> add(TagKey<TYPE>... tags) {
-        return apply(rl -> builder.addTag(rl, modID), TagKey::location, tags);
+        return apply(builder::addTag, TagKey::location, tags);
     }
 
-    public ForgeRegistryTagBuilder<TYPE> add(Tag.Entry tag) {
-        builder.add(tag, modID);
+    public ForgeRegistryTagBuilder<TYPE> add(TagEntry tag) {
+        builder.add(tag);
         return this;
     }
 
@@ -52,7 +61,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
 
     @SafeVarargs
     public final <T> ForgeRegistryTagBuilder<TYPE> add(Function<T, ResourceLocation> locationGetter, T... elements) {
-        return apply(rl -> builder.addElement(rl, modID), locationGetter, elements);
+        return apply(builder::addElement, locationGetter, elements);
     }
 
     public ForgeRegistryTagBuilder<TYPE> replace() {
@@ -66,7 +75,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
 
     @SafeVarargs
     public final ForgeRegistryTagBuilder<TYPE> addOptional(TYPE... elements) {
-        return addOptional(IForgeRegistryEntry::getRegistryName, elements);
+        return addOptional(this::getKey, elements);
     }
 
     public ForgeRegistryTagBuilder<TYPE> addOptional(ResourceLocation... locations) {
@@ -75,7 +84,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
 
     @SafeVarargs
     public final <T> ForgeRegistryTagBuilder<TYPE> addOptional(Function<T, ResourceLocation> locationGetter, T... elements) {
-        return add(Tag.OptionalElementEntry::new, locationGetter, elements);
+        return add(TagEntry::optionalElement, locationGetter, elements);
     }
 
     @SafeVarargs
@@ -89,17 +98,17 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
 
     @SafeVarargs
     public final <T> ForgeRegistryTagBuilder<TYPE> addOptionalTag(Function<T, ResourceLocation> locationGetter, T... elements) {
-        return add(Tag.OptionalTagEntry::new, locationGetter, elements);
+        return add(TagEntry::optionalTag, locationGetter, elements);
     }
 
     @SafeVarargs
-    private <T> ForgeRegistryTagBuilder<TYPE> add(Function<ResourceLocation, Tag.Entry> entryCreator, Function<T, ResourceLocation> locationGetter, T... elements) {
+    private <T> ForgeRegistryTagBuilder<TYPE> add(Function<ResourceLocation, TagEntry> entryCreator, Function<T, ResourceLocation> locationGetter, T... elements) {
         return apply(rl -> add(entryCreator.apply(rl)), locationGetter, elements);
     }
 
     @SafeVarargs
     public final ForgeRegistryTagBuilder<TYPE> remove(TYPE... elements) {
-        return remove(IForgeRegistryEntry::getRegistryName, elements);
+        return remove(this::getKey, elements);
     }
 
     public ForgeRegistryTagBuilder<TYPE> remove(ResourceLocation... locations) {

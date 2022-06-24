@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
@@ -29,7 +30,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
 
     @Override
     public boolean place(@Nonnull FeaturePlaceContext<ResizableOreFeatureConfig> context) {
-        Random random = context.random();
+        RandomSource random = context.random();
         BlockPos pos = context.origin();
         WorldGenLevel world = context.level();
         ResizableOreFeatureConfig config = context.config();
@@ -59,7 +60,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
         return false;
     }
 
-    protected boolean doPlace(WorldGenLevel world, Random random, ResizableOreFeatureConfig config, double xMin, double xMax, double zMin, double zMax, double yMin,
+    protected boolean doPlace(WorldGenLevel world, RandomSource random, ResizableOreFeatureConfig config, double xMin, double xMax, double zMin, double zMax, double yMin,
           double yMax, int minXStart, int minYStart, int minZStart, int width, int height) {
         BitSet bitset = new BitSet(width * height * width);
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
@@ -155,7 +156,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
         return i > 0;
     }
 
-    private static boolean canPlaceOre(BlockState state, Function<BlockPos, BlockState> adjacentStateAccessor, Random random, float discardChanceOnAirExposure,
+    private static boolean canPlaceOre(BlockState state, Function<BlockPos, BlockState> adjacentStateAccessor, RandomSource random, float discardChanceOnAirExposure,
           TargetBlockState targetState, BlockPos.MutableBlockPos mutablePos) {
         if (!targetState.target.test(state, random)) {
             return false;
@@ -166,7 +167,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
         }
     }
 
-    private static boolean shouldSkipAirCheck(Random random, float discardChanceOnAirExposure) {
+    private static boolean shouldSkipAirCheck(RandomSource random, float discardChanceOnAirExposure) {
         if (discardChanceOnAirExposure <= 0.0F) {
             return true;
         } else if (discardChanceOnAirExposure >= 1.0F) {

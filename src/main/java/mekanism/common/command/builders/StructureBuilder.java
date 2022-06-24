@@ -18,7 +18,7 @@ public abstract class StructureBuilder {
         this.sizeZ = sizeZ;
     }
 
-    protected abstract void build(Level world, BlockPos start);
+    protected abstract void build(Level world, BlockPos start, boolean empty);
 
     protected void buildFrame(Level world, BlockPos start) {
         buildPartialFrame(world, start, -1);

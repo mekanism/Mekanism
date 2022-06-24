@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:infused_alloy",
+  "criteria": {
+    "basic_chemical_tank": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_chemical_tank"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.chemical_tank.description"
+    },
+    "icon": {
+      "item": "mekanism:basic_chemical_tank"
+    },
+    "title": {
+      "translate": "advancements.mekanism.chemical_tank.title"
+    }
+  }
+}

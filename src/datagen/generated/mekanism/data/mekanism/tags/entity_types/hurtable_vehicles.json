@@ -1,6 +1,7 @@
 {
   "values": [
     "minecraft:boat",
+    "minecraft:chest_boat",
     "minecraft:minecart",
     "minecraft:chest_minecart",
     "minecraft:command_block_minecart",
@@ -13,7 +14,15 @@
       "required": false
     },
     {
+      "id": "biomesoplenty:chest_boat",
+      "required": false
+    },
+    {
       "id": "byg:boat",
+      "required": false
+    },
+    {
+      "id": "byg:chest_boat",
       "required": false
     }
   ]

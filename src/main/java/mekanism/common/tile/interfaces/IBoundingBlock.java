@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport, IOffsetCapability, IUpgradeTile {
 
     Set<Capability<?>> ALWAYS_PROXY = Set.of(
-          Capabilities.CONFIG_CARD_CAPABILITY,
+          Capabilities.CONFIG_CARD,
           Capabilities.OWNER_OBJECT,
           Capabilities.SECURITY_OBJECT
     );

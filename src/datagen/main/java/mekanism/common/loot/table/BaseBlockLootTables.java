@@ -238,7 +238,7 @@ public abstract class BaseBlockLootTables extends BlockLoot {
     /**
      * Like vanilla's {@link BlockLoot#applyExplosionCondition(ItemLike, ConditionUserBuilder)} except with a boolean for if it is explosion resistant.
      */
-    private static <T> T applyExplosionCondition(boolean explosionResistant, ConditionUserBuilder<T> condition) {
+    private static <T extends ConditionUserBuilder<T>> T applyExplosionCondition(boolean explosionResistant, ConditionUserBuilder<T> condition) {
         return explosionResistant ? condition.unwrap() : condition.when(ExplosionCondition.survivesExplosion());
     }
 

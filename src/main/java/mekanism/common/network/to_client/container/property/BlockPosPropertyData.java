@@ -2,6 +2,7 @@ package mekanism.common.network.to_client.container.property;
 
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -23,11 +24,6 @@ public class BlockPosPropertyData extends PropertyData {
     @Override
     public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
-        if (value == null) {
-            buffer.writeBoolean(false);
-        } else {
-            buffer.writeBoolean(true);
-            buffer.writeBlockPos(value);
-        }
+        BasePacketHandler.writeOptional(buffer, value, FriendlyByteBuf::writeBlockPos);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.resolver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,9 @@ public class EnergyCapabilityResolver implements ICapabilityResolver {
 
     @Override
     public void invalidateAll() {
-        cachedCapabilities.values().forEach(this::invalidate);
+        for (LazyOptional<?> lazyOptional : new ArrayList<>(cachedCapabilities.values())) {
+            invalidate(lazyOptional);
+        }
     }
 
     protected void invalidate(@Nullable LazyOptional<?> cachedCapability) {

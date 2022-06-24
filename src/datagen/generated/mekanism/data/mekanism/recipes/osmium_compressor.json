@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:osmium_compressor"
-  },
-  "pattern": [
-    "ACA",
-    "BXB",
-    "ACA"
-  ],
   "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
     "B": {
       "item": "minecraft:bucket"
     },
     "C": {
       "tag": "forge:circuits/advanced"
     },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
     "X": {
       "item": "mekanism:steel_casing"
     }
+  },
+  "pattern": [
+    "ACA",
+    "BXB",
+    "ACA"
+  ],
+  "result": {
+    "item": "mekanism:osmium_compressor"
   }
 }

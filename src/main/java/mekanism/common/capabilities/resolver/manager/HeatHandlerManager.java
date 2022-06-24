@@ -15,6 +15,6 @@ import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 public class HeatHandlerManager extends CapabilityHandlerManager<IHeatCapacitorHolder, IHeatCapacitor, IHeatHandler, ISidedHeatHandler> {
 
     public HeatHandlerManager(@Nullable IHeatCapacitorHolder holder, @Nonnull ISidedHeatHandler baseHandler) {
-        super(holder, baseHandler, Capabilities.HEAT_HANDLER_CAPABILITY, ProxyHeatHandler::new, IHeatCapacitorHolder::getHeatCapacitors);
+        super(holder, baseHandler, Capabilities.HEAT_HANDLER, ProxyHeatHandler::new, IHeatCapacitorHolder::getHeatCapacitors);
     }
 }

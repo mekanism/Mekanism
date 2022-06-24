@@ -34,6 +34,8 @@ public class BlockStateHelper {
     //Fluid logged.
     public static final EnumProperty<FluidLogType> FLUID_LOGGED = EnumProperty.create("fluid_logged", FluidLogType.class);
 
+    public static final BlockBehaviour.StatePredicate NEVER_PREDICATE = (state, world, pos) -> false;
+
     public static BlockState getDefaultState(@Nonnull BlockState state) {
         Block block = state.getBlock();
         for (Attribute attr : Attribute.getAll(block)) {
@@ -71,13 +73,7 @@ public class BlockStateHelper {
      * fluid a block may be fluid logged with and then use that light level instead if it is higher.
      */
     public static BlockBehaviour.Properties applyLightLevelAdjustments(BlockBehaviour.Properties properties) {
-        return applyLightLevelAdjustments(properties, state -> {
-            Block block = state.getBlock();
-            if (block instanceof IStateFluidLoggable fluidLoggable) {
-                return fluidLoggable.getFluid(state).getType().getAttributes().getLuminosity();
-            }
-            return 0;
-        });
+        return applyLightLevelAdjustments(properties, state -> state.getBlock() instanceof IStateFluidLoggable fluidLoggable ? fluidLoggable.getFluidLightLevel(state) : 0);
     }
 
     /**

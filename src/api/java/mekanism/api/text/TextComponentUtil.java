@@ -10,8 +10,6 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -78,14 +76,16 @@ public class TextComponentUtil {
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof FluidStack stack) {
-                current = translate(stack.getTranslationKey());
+                current = stack.getDisplayName().copy();
             } else if (component instanceof Fluid fluid) {
-                current = translate(fluid.getAttributes().getTranslationKey());
+                current = translate(fluid.getFluidType().getDescriptionId());
             } else if (component instanceof Direction direction) {
                 current = getTranslatedDirection(direction);
+            } else if (component instanceof Boolean bool) {
+                current = getTranslatedBoolean(bool);
             } else {
                 //Fallback to a generic replacement
-                // this handles strings, booleans, numbers, and any type we don't necessarily know about
+                // this handles strings, numbers, and any type we don't necessarily know about
                 current = getString(component.toString());
             }
             if (current == null) {
@@ -109,15 +109,19 @@ public class TextComponentUtil {
         return result;
     }
 
+    private static MutableComponent getTranslatedBoolean(boolean bool) {
+        return (bool ? APILang.TRUE_LOWER : APILang.FALSE_LOWER).translate();
+    }
+
     private static MutableComponent getTranslatedDirection(Direction direction) {
-        return switch (direction) {
-            case DOWN -> APILang.DOWN.translate();
-            case UP -> APILang.UP.translate();
-            case NORTH -> APILang.NORTH.translate();
-            case SOUTH -> APILang.SOUTH.translate();
-            case WEST -> APILang.WEST.translate();
-            case EAST -> APILang.EAST.translate();
-        };
+        return (switch (direction) {
+            case DOWN -> APILang.DOWN;
+            case UP -> APILang.UP;
+            case NORTH -> APILang.NORTH;
+            case SOUTH -> APILang.SOUTH;
+            case WEST -> APILang.WEST;
+            case EAST -> APILang.EAST;
+        }).translate();
     }
 
     /**
@@ -127,8 +131,8 @@ public class TextComponentUtil {
      *
      * @return String Text Component.
      */
-    public static TextComponent getString(String component) {
-        return new TextComponent(cleanString(component));
+    public static MutableComponent getString(String component) {
+        return Component.literal(cleanString(component));
     }
 
     /**
@@ -151,8 +155,8 @@ public class TextComponentUtil {
      *
      * @return Translation Text Component.
      */
-    public static TranslatableComponent translate(String key, Object... args) {
-        return new TranslatableComponent(key, args);
+    public static MutableComponent translate(String key, Object... args) {
+        return Component.translatable(key, args);
     }
 
     /**
@@ -164,7 +168,7 @@ public class TextComponentUtil {
      *
      * @return Translation Text Component.
      */
-    public static TranslatableComponent smartTranslate(String key, Object... components) {
+    public static MutableComponent smartTranslate(String key, Object... components) {
         if (components.length == 0) {
             //If we don't have any args just short circuit to creating the translation key
             return translate(key);
@@ -191,11 +195,13 @@ public class TextComponentUtil {
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof FluidStack stack) {
-                current = translate(stack.getTranslationKey());
+                current = stack.getDisplayName().copy();
             } else if (component instanceof Fluid fluid) {
-                current = translate(fluid.getAttributes().getTranslationKey());
+                current = translate(fluid.getFluidType().getDescriptionId());
             } else if (component instanceof Direction direction) {
                 current = getTranslatedDirection(direction);
+            } else if (component instanceof Boolean bool) {
+                current = getTranslatedBoolean(bool);
             }
             //Formatting
             else if (component instanceof EnumColor color && cachedStyle.getColor() == null) {
@@ -225,7 +231,7 @@ public class TextComponentUtil {
                     current = ((EnumColor) component).getName();
                 } else {
                     //Fallback to a direct replacement just so that we can properly color it
-                    // this handles strings, booleans, numbers, and any type we don't necessarily know about
+                    // this handles strings, numbers, and any type we don't necessarily know about
                     current = getString(component.toString());
                 }
             } else if (component instanceof String) {

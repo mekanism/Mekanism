@@ -1,0 +1,26 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "storage": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:personal_storage"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.personal_storage.description"
+    },
+    "icon": {
+      "item": "mekanism:personal_chest"
+    },
+    "title": {
+      "translate": "advancements.mekanism.personal_storage.title"
+    }
+  }
+}

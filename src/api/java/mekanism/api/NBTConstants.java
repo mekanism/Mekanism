@@ -11,7 +11,9 @@ public final class NBTConstants {
     //Ones that also are used for interacting with forge/vanilla
     public static final String BASE = "Base";
     public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
+    public static final String COUNT = "Count";
     public static final String CUSTOM_NAME = "CustomName";
+    public static final String ENCHANTMENTS = "Enchantments";
     public static final String ID = "id";
     public static final String X = "x";
     public static final String Y = "y";
@@ -26,7 +28,6 @@ public final class NBTConstants {
     public static final String CURRENT_CONNECTIONS = "connections";
     public static final String HAS_STRUCTURE = "hasStructure";
     public static final String HEIGHT = "height";
-    public static final String HOT = "hot";
     public static final String INVENTORY_ID = "inventoryID";
     public static final String LOWER_VOLUME = "lowerVolume";
     public static final String MUFFLING_COUNT = "muffling";
@@ -188,6 +189,7 @@ public final class NBTConstants {
     public static final String SLURRY_STORED = "slurry";
     public static final String SLURRY_TANKS = "SlurryTanks";
     public static final String SORTING = "sorting";
+    public static final String STABILIZER_CHUNKS_TO_LOAD = "stabilizerChunksToLoad";
     public static final String STATE = "state";
     public static final String STOCK_CONTROL = "stockControl";
     public static final String STORED = "stored";

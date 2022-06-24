@@ -120,6 +120,7 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_PRE_STORED("generic", "pre_pre_colon"),
     GENERIC_BLOCK_POS("generic", "block_pos"),
     GENERIC_HEX("generic", "hex"),
+    GENERIC_LIST("generic", "list"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
@@ -139,6 +140,7 @@ public enum MekanismLang implements ILangEntry {
     COMMAND_ERROR_TPOP_EMPTY("command", "error.tpop.empty"),
     COMMAND_BUILD_REMOVED("command", "build.removed"),
     COMMAND_BUILD_BUILT("command", "build.built"),
+    COMMAND_BUILD_BUILT_EMPTY("command", "build.built.empty"),
     COMMAND_ERROR_BUILD_MISS("command", "error.build.miss"),
     COMMAND_RADIATION_ADD("command", "radiation.add"),
     COMMAND_RADIATION_GET("command", "radiation.get"),
@@ -234,6 +236,8 @@ public enum MekanismLang implements ILangEntry {
     DANGER("gui", "danger"),
     COMPASS("gui", "compass"),
     RADIAL_SCREEN("gui", "radial_screen"),
+    VISUALS("gui", "visuals"),
+    VISUALS_TOO_BIG("gui", "visuals.too_big"),
     //GUI Issues
     ISSUES("gui", "issues"),
     ISSUE_NOT_ENOUGH_ENERGY("gui", "issues.no_energy"),
@@ -316,6 +320,9 @@ public enum MekanismLang implements ILangEntry {
     //Oredictionificator
     LAST_ITEM("oredictionificator", "last_item"),
     NEXT_ITEM("oredictionificator", "next_item"),
+    //Stabilizer
+    STABILIZER_CENTER("gui", "stabilizer.center"),
+    STABILIZER_TOGGLE_LOADING("gui", "stabilizer.toggle_loading"),
     //Status
     STATUS("status", "format"),
     STATUS_OK("status", "ok"),
@@ -375,7 +382,6 @@ public enum MekanismLang implements ILangEntry {
     CONDENSENTRATING("condensentrator", "condensentrating"),
     DECONDENSENTRATING("condensentrator", "decondensentrating"),
     //Upgrades
-    UPGRADE_DISPLAY("upgrade", "display"),
     UPGRADE_DISPLAY_LEVEL("upgrade", "display.level"),
     UPGRADES_EFFECT("gui", "upgrades.effect"),
     UPGRADES("gui", "upgrades"),
@@ -530,8 +536,6 @@ public enum MekanismLang implements ILangEntry {
     MINER_SILK("miner", "silk_touch"),
     MINER_RESET("miner", "reset"),
     MINER_INVERSE("miner", "inverse"),
-    MINER_VISUALS("miner", "visuals"),
-    MINER_VISUALS_TOO_BIG("miner", "visuals.too_big"),
     MINER_REQUIRE_REPLACE("miner", "require_replace"),
     MINER_REQUIRE_REPLACE_INVERSE("miner", "require_replace.inverse"),
     MINER_RADIUS("miner", "radius"),
@@ -742,6 +746,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_SPS_CASING("description", "sps_casing"),
     DESCRIPTION_SPS_PORT("description", "sps_port"),
     DESCRIPTION_SUPERCHARGED_COIL("description", "supercharged_coil"),
+    DESCRIPTION_DIMENSIONAL_STABILIZER("description", "dimensional_stabilizer"),
     //Factory Type
     SMELTING("factory", "smelting"),
     ENRICHING("factory", "enriching"),
@@ -759,6 +764,8 @@ public enum MekanismLang implements ILangEntry {
     MODULE_DAMAGE("module", "damage"),
     MODULE_TWEAKER("module", "module_tweaker"),
     MODULE_INSTALLED("module", "installed"),
+    MODULE_SUPPORTED("module", "supported"),
+    MODULE_CONFLICTING("module", "conflicting"),
     MODULE_STACKABLE("module", "stackable"),
     MODULE_EXCLUSIVE("module", "exclusive"),
     MODULE_HANDLE_MODE_CHANGE("module", "handle_mode_change"),
@@ -770,9 +777,13 @@ public enum MekanismLang implements ILangEntry {
     MODULE_STEP_ASSIST("module", "step_assist"),
     MODULE_RANGE("module", "range"),
     MODULE_SPRINT_BOOST("module", "sprint_boost"),
+    MODULE_SWIM_BOOST("module", "swim_boost"),
     MODULE_EXTENDED_MODE("module", "extended_mode"),
     MODULE_EXTENDED_ENABLED("module", "extended_enabled"),
     MODULE_EXCAVATION_RANGE("module", "mining_range"),
+    MODULE_BLAST_RADIUS("module", "blast_radius"),
+    MODULE_BLASTING_ENABLED("module", "blasting_enabled"),
+    MODULE_BLAST_AREA("module", "blast_area"),
     MODULE_EFFICIENCY("module", "efficiency"),
     MODULE_BREATHING_HELD("module", "breathing.held"),
     MODULE_JETPACK_MODE("module", "jetpack_mode"),

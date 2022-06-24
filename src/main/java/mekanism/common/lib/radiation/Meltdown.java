@@ -1,12 +1,13 @@
 package mekanism.common.lib.radiation;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -91,7 +92,7 @@ public class Meltdown {
     private void createExplosion(Level world, double x, double y, double z, float radius, boolean causesFire, Explosion.BlockInteraction mode) {
         Explosion explosion = new MeltdownExplosion(world, x, y, z, radius, causesFire, mode, multiblockID);
         //Calculate which block positions should get broken based on the logic that would happen in Explosion#explode
-        List<BlockPos> toBlow = new ArrayList<>();
+        ObjectArrayList<BlockPos> toBlow = new ObjectArrayList<>();
         for (int j = 0; j < 16; ++j) {
             for (int k = 0; k < 16; ++k) {
                 for (int l = 0; l < 16; ++l) {
@@ -137,7 +138,7 @@ public class Meltdown {
         //Next go through the different locations that were inside our reactor that should have exploded and make sure
         // that if they didn't explode that we manually run the logic to make them "explode" so that the reactor stops
         //Note: Shuffle so that the drops don't end up all in one corner of an explosion
-        Collections.shuffle(toBlow, world.random);
+        Util.shuffle(toBlow, world.random);
         List<Pair<ItemStack, BlockPos>> drops = new ArrayList<>();
         for (BlockPos toExplode : toBlow) {
             BlockState state = world.getBlockState(toExplode);

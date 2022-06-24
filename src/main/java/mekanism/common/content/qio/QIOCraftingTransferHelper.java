@@ -268,7 +268,7 @@ public class QIOCraftingTransferHelper {
     /**
      * Class to help keep track of the inventory contents for simulating if there is room to shuffle the items around
      */
-    public static abstract class BaseSimulatedInventory {
+    public abstract static class BaseSimulatedInventory {
 
         private final ItemStack[] inventory;
         private final int[] stackSizes;

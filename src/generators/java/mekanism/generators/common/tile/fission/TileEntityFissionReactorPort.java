@@ -3,7 +3,6 @@ package mekanism.generators.common.tile.fission;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -25,7 +24,6 @@ import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -34,7 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing implements IConfigurable {
+public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
 
     public TileEntityFissionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FISSION_REACTOR_PORT, pos, state);
@@ -60,7 +58,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             if (!(adj instanceof TileEntityFissionReactorPort)) {
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
             }
         }
         return null;
@@ -109,7 +107,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (!isRemote()) {
             FissionPortMode mode = getMode().getNext();
             setMode(mode);
-            player.sendMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)));
         }
         return InteractionResult.SUCCESS;
     }

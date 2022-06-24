@@ -27,7 +27,8 @@ public class ForceRetrogenCommand {
         return Commands.literal("retrogen")
               .requires(cs -> cs.hasPermission(2))
               .executes(ctx -> {
-                  ColumnPos pos = new ColumnPos(new BlockPos(ctx.getSource().getPosition()));
+                  BlockPos blockPos = new BlockPos(ctx.getSource().getPosition());
+                  ColumnPos pos = new ColumnPos(blockPos.getX(), blockPos.getZ());
                   return addChunksToRegen(ctx.getSource(), pos, pos);
               }).then(Commands.argument("from", ColumnPosArgument.columnPos())
                     .executes(ctx -> {
@@ -42,10 +43,10 @@ public class ForceRetrogenCommand {
         if (!MekanismConfig.world.enableRegeneration.get()) {
             throw RETROGEN_NOT_ENABLED.create();
         }
-        int xStart = Math.min(start.x, end.x);
-        int xEnd = Math.max(start.x, end.x);
-        int zStart = Math.min(start.z, end.z);
-        int zEnd = Math.max(start.z, end.z);
+        int xStart = Math.min(start.x(), end.x());
+        int xEnd = Math.max(start.x(), end.x());
+        int zStart = Math.min(start.z(), end.z());
+        int zEnd = Math.max(start.z(), end.z());
         //TODO: Switch this to something like !World.isValidXZPosition (issue is it is private)
         if (xStart < -30000000 || zStart < -30000000 || xEnd >= 30000000 || zEnd >= 30000000) {
             throw BlockPosArgument.ERROR_OUT_OF_WORLD.create();

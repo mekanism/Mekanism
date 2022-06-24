@@ -1,6 +1,5 @@
 package mekanism.generators.common.content.gear.mekasuit;
 
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,8 +16,9 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fluids.FluidType;
 
 @ParametersAreNonnullByDefault
 public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothermalGeneratorUnit> {
@@ -29,9 +29,9 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
         if (energyContainer != null && !energyContainer.getNeeded().isZero()) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
-            Map<Fluid, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, bb -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
+            Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, bb -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
                   Math.min(bb.minY + legHeight, bb.maxY), bb.maxZ));
-            for (Map.Entry<Fluid, FluidInDetails> entry : fluidsIn.entrySet()) {
+            for (Map.Entry<FluidType, FluidInDetails> entry : fluidsIn.entrySet()) {
                 FluidInDetails details = entry.getValue();
                 double height = details.getMaxHeight();
                 if (height < 0.25) {
@@ -39,9 +39,9 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                     continue;
                 }
                 double temperature = 0;
-                List<BlockPos> positions = details.getPositions();
-                for (BlockPos position : positions) {
-                    temperature += entry.getKey().getAttributes().getTemperature(player.level, position);
+                Map<BlockPos, FluidState> positions = details.getPositions();
+                for (Map.Entry<BlockPos, FluidState> positionEntry : positions.entrySet()) {
+                    temperature += entry.getKey().getTemperature(positionEntry.getValue(), player.level, positionEntry.getKey());
                 }
                 //Divide the temperature by how many positions there are in case there is a difference due to the position in the world
                 // Strictly speaking we should take the height of the position into account for calculating the average as a "weighted"

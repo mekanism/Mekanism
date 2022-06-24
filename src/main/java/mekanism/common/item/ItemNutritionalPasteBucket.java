@@ -21,7 +21,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
 public class ItemNutritionalPasteBucket extends BucketItem {
@@ -45,7 +45,7 @@ public class ItemNutritionalPasteBucket extends BucketItem {
     @Override
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         if (MekanismUtils.isPlayingMode(player)) {
-            int needed = Math.min(20 - player.getFoodData().getFoodLevel(), FluidAttributes.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            int needed = Math.min(20 - player.getFoodData().getFoodLevel(), FluidType.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 return ItemUtils.startUsingInstantly(level, player, hand);
             }
@@ -57,7 +57,7 @@ public class ItemNutritionalPasteBucket extends BucketItem {
     @Override
     public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
         if (entity instanceof Player player && MekanismUtils.isPlayingMode(player)) {
-            int needed = Math.min(20 - player.getFoodData().getFoodLevel(), FluidAttributes.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            int needed = Math.min(20 - player.getFoodData().getFoodLevel(), FluidType.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 if (entity instanceof ServerPlayer serverPlayer) {
                     CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);

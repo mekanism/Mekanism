@@ -1,13 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:steel_casing"
-  },
-  "pattern": [
-    "SGS",
-    "GOG",
-    "SGS"
-  ],
   "key": {
     "G": {
       "tag": "forge:glass"
@@ -18,5 +10,13 @@
     "S": {
       "tag": "forge:ingots/steel"
     }
+  },
+  "pattern": [
+    "SGS",
+    "GOG",
+    "SGS"
+  ],
+  "result": {
+    "item": "mekanism:steel_casing"
   }
 }

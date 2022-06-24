@@ -122,9 +122,9 @@ public final class TransporterPathfinder {
                 Destination destination = destinations.get(i);
                 List<BlockPos> path = destination.getPath();
                 BlockPos pos = path.get(0);
-                if (outputter.rrTarget.getPos().equals(pos)) {
+                if (outputter.rrTarget.pos().equals(pos)) {
                     Direction sideOfDest = WorldUtils.sideDifference(path.get(1), pos);
-                    if (outputter.rrTarget.getSide().equals(sideOfDest)) {
+                    if (outputter.rrTarget.side() == sideOfDest) {
                         //When we find one that matches
                         if (i == destinationCount - 1) {
                             // if we are the last element mark that the next target is the first one

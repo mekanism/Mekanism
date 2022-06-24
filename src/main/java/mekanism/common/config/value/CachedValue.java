@@ -9,12 +9,14 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 public abstract class CachedValue<T> {
 
+    private final IMekanismConfig config;
     protected final ConfigValue<T> internal;
     private Set<IConfigValueInvalidationListener> invalidationListeners;
 
     protected CachedValue(IMekanismConfig config, ConfigValue<T> internal) {
+        this.config = config;
         this.internal = internal;
-        config.addCachedValue(this);
+        this.config.addCachedValue(this);
     }
 
     public boolean hasInvalidationListeners() {
@@ -48,6 +50,10 @@ public abstract class CachedValue<T> {
         if (clearCachedValue(hasInvalidationListeners())) {
             invalidationListeners.forEach(IConfigValueInvalidationListener::run);
         }
+    }
+
+    protected boolean isLoaded() {
+        return config.getConfigSpec().isLoaded();
     }
 
     @FunctionalInterface

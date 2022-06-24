@@ -16,22 +16,14 @@ public class DataGenJsonConstants {
     public static final String KEY = "key";
     public static final String PATTERN = "pattern";
     public static final String RESULT = "result";
-    //Sound Events
-    public static final String REPLACE = "replace";//Note: Also used for tags
-    public static final String SUBTITLE = "subtitle";
-    public static final String SOUNDS = "sounds";
-    //Sounds
-    public static final String NAME = "name";
-    public static final String VOLUME = "volume";
-    public static final String PITCH = "pitch";
-    public static final String WEIGHT = "weight";
-    public static final String STREAM = "stream";
-    public static final String ATTENUATION_DISTANCE = "attenuation_distance";
-    public static final String PRELOAD = "preload";
-    public static final String TYPE = "type";
+
+    //Advancements
+    public static final String ANNOUNCE_TO_CHAT = "announce_to_chat";
+    public static final String FRAME = "frame";
+    public static final String HIDDEN = "hidden";
+    public static final String REQUIREMENTS = "requirements";
+    public static final String SHOW_TOAST = "show_toast";
 
     //Model builder key constants:
-    public static final String LOADER = "loader";
-    public static final String FLUID = "fluid";
     public static final String PARTICLE = "particle";
 }

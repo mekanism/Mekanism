@@ -202,8 +202,8 @@ public class VoxelCuboid implements IShape {
 
         public static final CuboidSide[] SIDES = values();
 
-        private static final CuboidSide[][] ORDERED = new CuboidSide[][]{{WEST, BOTTOM, NORTH}, {EAST, TOP, SOUTH}};
-        private static final CuboidSide[] OPPOSITES = new CuboidSide[]{TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};
+        private static final CuboidSide[][] ORDERED = {{WEST, BOTTOM, NORTH}, {EAST, TOP, SOUTH}};
+        private static final CuboidSide[] OPPOSITES = {TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};
 
         private final Axis axis;
         private final Face face;
@@ -245,7 +245,7 @@ public class VoxelCuboid implements IShape {
 
     public static class CuboidBuilder {
 
-        private final BlockPosBuilder[] bounds = new BlockPosBuilder[]{new BlockPosBuilder(), new BlockPosBuilder()};
+        private final BlockPosBuilder[] bounds = {new BlockPosBuilder(), new BlockPosBuilder()};
 
         public boolean isSet(CuboidSide side) {
             return bounds[side.getFace().ordinal()].isSet(side.getAxis());

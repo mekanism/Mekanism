@@ -68,7 +68,7 @@ public class ItemPortableQIODashboard extends CapabilityItem implements IFrequen
     @Override
     public void setFrequency(ItemStack stack, Frequency frequency) {
         IFrequencyItem.super.setFrequency(stack, frequency);
-        setColor(stack, frequency != null ? ((QIOFrequency) frequency).getColor() : null);
+        setColor(stack, frequency == null ? null : ((QIOFrequency) frequency).getColor());
     }
 
     @Override

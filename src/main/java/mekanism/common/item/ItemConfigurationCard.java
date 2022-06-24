@@ -10,18 +10,20 @@ import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -57,7 +59,7 @@ public class ItemConfigurationCard extends Item {
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).resolve();
+        Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD, side).resolve();
         if (configCardSupport.isPresent()) {
             if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                 return InteractionResult.FAIL;
@@ -69,10 +71,10 @@ public class ItemConfigurationCard extends Item {
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
-                    data.putString(NBTConstants.DATA_TYPE, configCardAccess.getConfigurationDataType().getRegistryName().toString());
+                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, ForgeRegistries.BLOCK_ENTITIES, configCardAccess.getConfigurationDataType());
                     ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
-                    player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))),
-                          Util.NIL_UUID);
+                    player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))));
+                    MekanismCriteriaTriggers.CONFIGURATION_CARD.trigger((ServerPlayer) player, true);
                 }
             } else {
                 CompoundTag data = getData(stack);
@@ -85,10 +87,11 @@ public class ItemConfigurationCard extends Item {
                     if (configCardAccess.isConfigurationDataCompatible(storedType)) {
                         configCardAccess.setConfigurationData(player, data);
                         configCardAccess.configurationDataSet();
-                        player.sendMessage(MekanismUtils.logFormat(EnumColor.DARK_GREEN, MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
-                              getConfigCardName(data))), Util.NIL_UUID);
+                        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.DARK_GREEN, MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
+                              getConfigCardName(data))));
+                        MekanismCriteriaTriggers.CONFIGURATION_CARD.trigger((ServerPlayer) player, false);
                     } else {
-                        player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.CONFIG_CARD_UNEQUAL), Util.NIL_UUID);
+                        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.CONFIG_CARD_UNEQUAL));
                     }
                 }
             }

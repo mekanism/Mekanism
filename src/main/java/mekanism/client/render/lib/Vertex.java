@@ -110,23 +110,23 @@ public class Vertex {
         for (int i = 0; i < format.getElements().size(); i++) {
             VertexFormatElement element = format.getElements().get(i);
             switch (element.getUsage()) {
-                case POSITION:
+                case POSITION -> {
                     ret[i][0] = (float) pos.x();
                     ret[i][1] = (float) pos.y();
                     ret[i][2] = (float) pos.z();
-                    break;
-                case NORMAL:
+                }
+                case NORMAL -> {
                     ret[i][0] = (float) normal.x();
                     ret[i][1] = (float) normal.y();
                     ret[i][2] = (float) normal.z();
-                    break;
-                case COLOR:
+                }
+                case COLOR -> {
                     ret[i][0] = color.rf();
                     ret[i][1] = color.gf();
                     ret[i][2] = color.bf();
                     ret[i][3] = color.af();
-                    break;
-                case UV:
+                }
+                case UV -> {
                     if (element.getIndex() == 0) {
                         ret[i][0] = texU;
                         ret[i][1] = texV;
@@ -134,9 +134,7 @@ public class Vertex {
                         ret[i][0] = lightU;
                         ret[i][1] = lightV;
                     }
-                    break;
-                default:
-                    break;
+                }
             }
         }
         return ret;

@@ -17,6 +17,13 @@ public class CachedBooleanValue extends CachedValue<Boolean> implements BooleanS
         return new CachedBooleanValue(config, internal);
     }
 
+    public boolean getOrDefault() {
+        if (resolved || isLoaded()) {
+            return get();
+        }
+        return internal.getDefault();
+    }
+
     public boolean get() {
         if (!resolved) {
             //If we don't have a cached value or need to resolve it again, get it from the actual ConfigValue

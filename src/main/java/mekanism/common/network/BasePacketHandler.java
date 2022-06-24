@@ -1,7 +1,12 @@
 package mekanism.common.network;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import javax.annotation.Nullable;
+import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Version;
@@ -54,6 +59,52 @@ public abstract class BasePacketHandler {
         buffer.writeDouble(vector.x());
         buffer.writeDouble(vector.y());
         buffer.writeDouble(vector.z());
+    }
+
+    //Like FriendlyByteBuf#writeOptional but with nullable things instead
+    public static <TYPE> void writeOptional(FriendlyByteBuf buffer, @Nullable TYPE value, BiConsumer<FriendlyByteBuf, TYPE> writer) {
+        if (value == null) {
+            buffer.writeBoolean(false);
+        } else {
+            buffer.writeBoolean(true);
+            writer.accept(buffer, value);
+        }
+    }
+
+    //Like FriendlyByteBuf#writeOptional but with nullable things instead
+    @Nullable
+    public static <TYPE> TYPE readOptional(FriendlyByteBuf buffer, Function<FriendlyByteBuf, TYPE> reader) {
+        return buffer.readBoolean() ? reader.apply(buffer) : null;
+    }
+
+    public static <TYPE> void writeArray(FriendlyByteBuf buffer, TYPE[] array, BiConsumer<TYPE, FriendlyByteBuf> writer) {
+        buffer.writeVarInt(array.length);
+        for (TYPE element : array) {
+            writer.accept(element, buffer);
+        }
+    }
+
+    public static <TYPE> TYPE[] readArray(FriendlyByteBuf buffer, IntFunction<TYPE[]> arrayFactory, Function<FriendlyByteBuf, TYPE> reader) {
+        TYPE[] array = arrayFactory.apply(buffer.readVarInt());
+        for (int element = 0; element < array.length; element++) {
+            array[element] = reader.apply(buffer);
+        }
+        return array;
+    }
+
+    public static <KEY, VALUE> void writeMap(FriendlyByteBuf buffer, Map<KEY, VALUE> map, TriConsumer<KEY, VALUE, FriendlyByteBuf> writer) {
+        buffer.writeVarInt(map.size());
+        map.forEach((key, value) -> writer.accept(key, value, buffer));
+    }
+
+    public static <KEY, VALUE, MAP extends Map<KEY, VALUE>> MAP readMap(FriendlyByteBuf buffer, IntFunction<MAP> mapFactory, Function<FriendlyByteBuf, KEY> keyReader,
+          Function<FriendlyByteBuf, VALUE> valueReader) {
+        int elements = buffer.readVarInt();
+        MAP map = mapFactory.apply(elements);
+        for (int element = 0; element < elements; element++) {
+            map.put(keyReader.apply(buffer), valueReader.apply(buffer));
+        }
+        return map;
     }
 
     public static void log(String logFormat, Object... params) {

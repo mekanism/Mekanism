@@ -1,12 +1,12 @@
-/*package mekanism.common.integration.energy.fluxnetworks;
+package mekanism.common.integration.energy.fluxnetworks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
 @ParametersAreNonnullByDefault
@@ -26,7 +26,7 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong getEnergy(int container) {
-        return container == 0 ? EnergyType.FORGE.convertFrom(storage.getEnergyStoredL()) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getEnergyStoredL()) : FloatingLong.ZERO;
     }
 
     @Override
@@ -36,21 +36,21 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong getMaxEnergy(int container) {
-        return container == 0 ? EnergyType.FORGE.convertFrom(storage.getMaxEnergyStoredL()) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(storage.getMaxEnergyStoredL()) : FloatingLong.ZERO;
     }
 
     @Override
     public FloatingLong getNeededEnergy(int container) {
-        return container == 0 ? EnergyType.FORGE.convertFrom(Math.max(0, storage.getMaxEnergyStoredL() - storage.getEnergyStoredL())) : FloatingLong.ZERO;
+        return container == 0 ? EnergyUnit.FORGE_ENERGY.convertFrom(Math.max(0, storage.getMaxEnergyStoredL() - storage.getEnergyStoredL())) : FloatingLong.ZERO;
     }
 
     @Override
     public FloatingLong insertEnergy(int container, FloatingLong amount, @Nonnull Action action) {
-        if (container == 0 && storage.canReceiveL()) {
-            long inserted = storage.receiveEnergyL(EnergyType.FORGE.convertToAsLong(amount), action.simulate());
+        if (container == 0 && storage.canReceive()) {
+            long inserted = storage.receiveEnergyL(EnergyUnit.FORGE_ENERGY.convertToAsLong(amount), action.simulate());
             if (inserted > 0) {
                 //Only bother converting back if any was able to be inserted
-                return amount.subtract(EnergyType.FORGE.convertFrom(inserted));
+                return amount.subtract(EnergyUnit.FORGE_ENERGY.convertFrom(inserted));
             }
         }
         return amount;
@@ -58,9 +58,9 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong extractEnergy(int container, FloatingLong amount, @Nonnull Action action) {
-        if (container == 0 && storage.canExtractL()) {
-            return EnergyType.FORGE.convertFrom(storage.extractEnergyL(EnergyType.FORGE.convertToAsLong(amount), action.simulate()));
+        if (container == 0 && storage.canExtract()) {
+            return EnergyUnit.FORGE_ENERGY.convertFrom(storage.extractEnergyL(EnergyUnit.FORGE_ENERGY.convertToAsLong(amount), action.simulate()));
         }
         return FloatingLong.ZERO;
     }
-}*/
+}

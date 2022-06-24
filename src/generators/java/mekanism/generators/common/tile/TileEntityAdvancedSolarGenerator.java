@@ -19,7 +19,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     public TileEntityAdvancedSolarGenerator(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.advancedSolarGeneration.get().multiply(2));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.EVAPORATION_SOLAR_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.EVAPORATION_SOLAR, this));
     }
 
     @Override

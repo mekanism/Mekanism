@@ -70,7 +70,7 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        return getInventory(stack) != null ? 1 : 64;
+        return getInventory(stack) == null ? 64 : 1;
     }
 
     @Nonnull
@@ -116,13 +116,14 @@ public class ItemCraftingFormula extends Item {
         }
         ListTag tagList = new ListTag();
         for (int slotCount = 0; slotCount < 9; slotCount++) {
-            if (!inv.get(slotCount).isEmpty()) {
+            ItemStack slotStack = inv.get(slotCount);
+            if (!slotStack.isEmpty()) {
                 CompoundTag tagCompound = new CompoundTag();
                 tagCompound.putByte(NBTConstants.SLOT, (byte) slotCount);
-                inv.get(slotCount).save(tagCompound);
+                slotStack.save(tagCompound);
                 tagList.add(tagCompound);
             }
         }
-        ItemDataUtils.setList(stack, NBTConstants.ITEMS, tagList);
+        ItemDataUtils.setListOrRemove(stack, NBTConstants.ITEMS, tagList);
     }
 }

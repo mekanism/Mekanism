@@ -1,13 +1,13 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 40,
+    "tag": "mekanism:refined_obsidian"
+  },
   "itemInput": {
     "ingredient": {
       "tag": "mekanism:alloys/reinforced"
     }
-  },
-  "chemicalInput": {
-    "amount": 40,
-    "tag": "mekanism:refined_obsidian"
   },
   "output": {
     "item": "mekanism:alloy_atomic"

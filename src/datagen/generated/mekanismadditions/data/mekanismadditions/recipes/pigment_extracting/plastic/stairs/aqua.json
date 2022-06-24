@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "pigment": "mekanism:aqua",
-    "amount": 32
+    "amount": 32,
+    "pigment": "mekanism:aqua"
   }
 }

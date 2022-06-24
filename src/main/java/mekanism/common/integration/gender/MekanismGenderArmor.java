@@ -1,9 +1,10 @@
 package mekanism.common.integration.gender;
 
 import com.wildfire.api.IGenderArmor;
-import mekanism.common.capabilities.CapabilityCache;
+import java.util.function.Consumer;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -61,7 +62,7 @@ public final class MekanismGenderArmor extends ItemCapability implements IGender
     }
 
     @Override
-    protected void addCapabilityResolvers(CapabilityCache capabilityCache) {
-        capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(GENDER_ARMOR_CAPABILITY, this));
+    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
+        consumer.accept(BasicCapabilityResolver.constant(GENDER_ARMOR_CAPABILITY, this));
     }
 }

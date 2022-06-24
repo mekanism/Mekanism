@@ -159,7 +159,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         double refractionPercent = 0;
                         for (ItemStack armor : livingEntity.getArmorSlots()) {
                             if (!armor.isEmpty()) {
-                                Optional<ILaserDissipation> capability = armor.getCapability(Capabilities.LASER_DISSIPATION_CAPABILITY).resolve();
+                                Optional<ILaserDissipation> capability = armor.getCapability(Capabilities.LASER_DISSIPATION).resolve();
                                 if (capability.isPresent()) {
                                     ILaserDissipation laserDissipation = capability.get();
                                     dissipationPercent += laserDissipation.getDissipationPercent();
@@ -265,7 +265,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     digging = result.getType() == Type.MISS ? null : hitPos;
                     diggingProgress = FloatingLong.ZERO;
                 }
-                Optional<ILaserReceptor> capability = CapabilityUtils.getCapability(WorldUtils.getTileEntity(level, hitPos), Capabilities.LASER_RECEPTOR_CAPABILITY,
+                Optional<ILaserReceptor> capability = CapabilityUtils.getCapability(WorldUtils.getTileEntity(level, hitPos), Capabilities.LASER_RECEPTOR,
                       result.getDirection()).resolve();
                 if (capability.isPresent() && !capability.get().canLasersDig()) {
                     //Give the energy to the receptor

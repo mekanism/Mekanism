@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:bio_fuel",
-    "count": 7
+    "count": 7,
+    "item": "mekanism:bio_fuel"
   }
 }

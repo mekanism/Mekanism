@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "mekanism:block/dimensional_stabilizer/bottom",
+    "side": "mekanism:block/dimensional_stabilizer/side",
+    "top": "mekanism:block/dimensional_stabilizer/top"
+  }
+}

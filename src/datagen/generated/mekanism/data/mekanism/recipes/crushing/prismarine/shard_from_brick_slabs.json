@@ -7,7 +7,7 @@
     }
   },
   "output": {
-    "item": "minecraft:prismarine_shard",
-    "count": 9
+    "count": 9,
+    "item": "minecraft:prismarine_shard"
   }
 }

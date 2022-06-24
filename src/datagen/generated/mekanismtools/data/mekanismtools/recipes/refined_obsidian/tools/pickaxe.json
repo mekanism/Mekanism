@@ -1,13 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismtools:refined_obsidian_pickaxe"
-  },
-  "pattern": [
-    "III",
-    " R ",
-    " R "
-  ],
   "key": {
     "I": {
       "tag": "forge:ingots/refined_obsidian"
@@ -15,5 +7,13 @@
     "R": {
       "tag": "forge:rods/wooden"
     }
+  },
+  "pattern": [
+    "III",
+    " R ",
+    " R "
+  ],
+  "result": {
+    "item": "mekanismtools:refined_obsidian_pickaxe"
   }
 }

@@ -1,25 +1,25 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:purification_chamber"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    },
+    "P": {
+      "item": "mekanism:enrichment_chamber"
+    }
   },
   "pattern": [
     "ACA",
     "OPO",
     "ACA"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:enrichment_chamber"
-    },
-    "O": {
-      "tag": "forge:ingots/osmium"
-    },
-    "C": {
-      "tag": "forge:circuits/advanced"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    }
+  "result": {
+    "item": "mekanism:purification_chamber"
   }
 }

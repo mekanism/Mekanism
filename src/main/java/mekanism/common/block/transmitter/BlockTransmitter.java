@@ -1,14 +1,14 @@
 package mekanism.common.block.transmitter;
 
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMaps;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismItems;
@@ -35,13 +35,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public abstract class BlockTransmitter extends BlockMekanism implements IStateFluidLoggable {
 
-    private static final Map<ConnectionInfo, VoxelShape> cachedShapes = new HashMap<>();
+    //Max retained size if we used a HashMap with a key of record(Size, ConnectionType[6]) ~= 1,343,576B
+    //Max retained size packing it like this 163,987B
+    private static final Short2ObjectMap<VoxelShape> cachedShapes = Short2ObjectMaps.synchronize(new Short2ObjectOpenHashMap<>());
 
     protected BlockTransmitter() {
         super(BlockBehaviour.Properties.of(Material.PISTON).strength(1, 6));
@@ -149,34 +152,36 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             return getCenter();
         }
         Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
-        ConnectionType[] connectionTypes = new ConnectionType[transmitter.getConnectionTypesRaw().length];
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            //Get the actual connection types
-            connectionTypes[i] = transmitter.getConnectionType(EnumUtils.DIRECTIONS[i]);
-        }
-        ConnectionInfo info = new ConnectionInfo(tile.getTransmitterType().getSize(), connectionTypes);
-        if (cachedShapes.containsKey(info)) {
-            return cachedShapes.get(info);
-        }
-        //If we don't have a cached version of our shape, then we need to calculate it
-        List<VoxelShape> shapes = new ArrayList<>();
+        //Created a pack key as follows:
+        // first four bits of a short are used to represent size (realistically first three are ignored and fourth represents small or large)
+        // last 12 bits are separated into 6 sides each of 2 bits that represent the connection type
+        int packedKey = tile.getTransmitterType().getSize().ordinal() << 12;
         for (Direction side : EnumUtils.DIRECTIONS) {
-            ConnectionType connectionType = connectionTypes[side.ordinal()];
-            if (connectionType != ConnectionType.NONE) {
-                shapes.add(getSide(connectionType, side));
+            //Get the actual connection types
+            ConnectionType connectionType = transmitter.getConnectionType(side);
+            //Bit shift in increments of two based on which side we are on
+            packedKey |= connectionType.ordinal() << (side.ordinal() * 2);
+        }
+        //We can cast this to a short as we don't use more bits than are in a short, we just use an int to simplify bit shifting
+        return cachedShapes.computeIfAbsent((short) packedKey, packed -> {
+            //If we don't have a cached version of our shape, then we need to calculate it
+            //size = Size.byIndexStatic(packed >> 12);
+            List<VoxelShape> shapes = new ArrayList<>(EnumUtils.DIRECTIONS.length);
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                //Unpack the ordinal of the connection type (shift so that significant bits are the two rightmost
+                // and then read those two bits
+                int index = (packed >> (side.ordinal() * 2)) & 0b11;
+                ConnectionType connectionType = ConnectionType.byIndexStatic(index);
+                if (connectionType != ConnectionType.NONE) {
+                    shapes.add(getSide(connectionType, side));
+                }
             }
-        }
-        VoxelShape center = getCenter();
-        if (shapes.isEmpty()) {
-            cachedShapes.put(info, center);
-            return center;
-        }
-        shapes.add(center);
-        VoxelShape shape = VoxelShapeUtils.combine(shapes);
-        cachedShapes.put(info, shape);
-        return shape;
-    }
-
-    private record ConnectionInfo(Size size, ConnectionType[] connectionTypes) {
+            VoxelShape center = getCenter();
+            if (shapes.isEmpty()) {
+                return center;
+            }
+            //Call batchCombine directly rather than just combine so that we can skip a few checks
+            return VoxelShapeUtils.batchCombine(center, BooleanOp.OR, true, shapes);
+        });
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.common.network.to_client.container.property.list;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.content.filter.BaseFilter;
@@ -13,12 +12,9 @@ public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPrope
         super(property, ListType.FILTER, values);
     }
 
-    public static <FILTER extends IFilter<?>> FilterListPropertyData<FILTER> read(short property, int elements, FriendlyByteBuf buffer) {
-        List<FILTER> values = new ArrayList<>(elements);
-        for (int i = 0; i < elements; i++) {
-            values.add((FILTER) BaseFilter.readFromPacket(buffer));
-        }
-        return new FilterListPropertyData<>(property, values);
+    @SuppressWarnings("unchecked")
+    static <FILTER extends IFilter<?>> FilterListPropertyData<FILTER> read(short property, ListPropertyReader<FILTER> reader) {
+        return new FilterListPropertyData<>(property, reader.apply(buf -> (FILTER) BaseFilter.readFromPacket(buf)));
     }
 
     @Override

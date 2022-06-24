@@ -25,5 +25,5 @@ public interface IChemicalConstant {
     /**
      * @return Brightness
      */
-    int getLuminosity();
+    int getLightLevel();
 }

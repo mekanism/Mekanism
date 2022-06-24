@@ -8,7 +8,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
@@ -82,10 +82,10 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     @Override
     public TextureAtlasSprite getIcon() {
         if (dummy || getTank() == null) {
-            return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
+            return MekanismRenderer.getFluidTexture(dummyType, FluidTextureType.STILL);
         }
         FluidStack fluid = getTank().getFluid();
-        return MekanismRenderer.getFluidTexture(fluid.isEmpty() ? dummyType : fluid, FluidType.STILL);
+        return MekanismRenderer.getFluidTexture(fluid.isEmpty() ? dummyType : fluid, FluidTextureType.STILL);
     }
 
     @Override

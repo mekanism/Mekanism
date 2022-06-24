@@ -372,7 +372,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public List<IScrollableSlot> getQIOItemList() {
-        return !searchQuery.isEmpty() ? searchList : itemList;
+        return searchQuery.isEmpty() ? itemList : searchList;
     }
 
     public long getCountCapacity() {
@@ -388,7 +388,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public int getTotalTypes() {
-        return itemList != null ? itemList.size() : 0;
+        return itemList == null ? 0 : itemList.size();
     }
 
     public byte getSelectedCraftingGrid() {

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
@@ -23,7 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
 
@@ -36,7 +35,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     private final int height;
 
     public ChemicalStackRenderer() {
-        this(FluidAttributes.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEXTURE_SIZE, TEXTURE_SIZE);
+        this(FluidType.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEXTURE_SIZE, TEXTURE_SIZE);
     }
 
     public ChemicalStackRenderer(long capacityMb, int width, int height) {
@@ -48,18 +47,6 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         this.tooltipMode = tooltipMode;
         this.width = width;
         this.height = height;
-    }
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public void render(@Nonnull PoseStack matrix, int xPosition, int yPosition, @Nullable STACK stack) {
-        if (stack != null) {
-            matrix.pushPose();
-            matrix.translate(xPosition, yPosition, 0);
-            render(matrix, stack);
-            matrix.popPose();
-        }
     }
 
     @Override

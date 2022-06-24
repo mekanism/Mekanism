@@ -8,6 +8,7 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityBoundingBlock;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +35,7 @@ public class AttributeHasBounding implements Attribute {
                     level.removeBlock(p, false);
                 } else {
                     Mekanism.logger.warn("Skipping removing block, expected bounding block but the block at {} in {} was {}", p, level.dimension().location(),
-                          boundingState.getBlock().getRegistryName());
+                          RegistryUtils.getName(boundingState.getBlock()));
                 }
             }
         });

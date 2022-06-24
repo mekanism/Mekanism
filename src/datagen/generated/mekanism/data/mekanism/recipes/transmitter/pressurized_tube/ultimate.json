@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ultimate_pressurized_tube",
-    "count": 8
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "P": {
+      "item": "mekanism:elite_pressurized_tube"
+    }
   },
   "pattern": [
     "PPP",
     "PAP",
     "PPP"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:elite_pressurized_tube"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    }
+  "result": {
+    "count": 8,
+    "item": "mekanism:ultimate_pressurized_tube"
   }
 }

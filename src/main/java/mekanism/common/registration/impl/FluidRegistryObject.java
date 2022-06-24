@@ -7,15 +7,22 @@ import mekanism.api.providers.IFluidProvider;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.RegistryObject;
 
 @ParametersAreNonnullByDefault
-public class FluidRegistryObject<STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem> implements IFluidProvider {
+public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
+      implements IFluidProvider {
 
+    private RegistryObject<TYPE> fluidTypeRO;
     private RegistryObject<STILL> stillRO;
     private RegistryObject<FLOWING> flowingRO;
     private RegistryObject<BLOCK> blockRO;
     private RegistryObject<BUCKET> bucketRO;
+
+    public TYPE getFluidType() {
+        return fluidTypeRO.get();
+    }
 
     public STILL getStillFluid() {
         return stillRO.get();
@@ -34,6 +41,10 @@ public class FluidRegistryObject<STILL extends Fluid, FLOWING extends Fluid, BLO
     }
 
     //Make sure these update methods are package local as only the FluidDeferredRegister should be messing with them
+    void updateFluidType(RegistryObject<TYPE> fluidTypeRO) {
+        this.fluidTypeRO = Objects.requireNonNull(fluidTypeRO);
+    }
+
     void updateStill(RegistryObject<STILL> stillRO) {
         this.stillRO = Objects.requireNonNull(stillRO);
     }

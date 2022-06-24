@@ -67,18 +67,31 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         FissionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
             switch (logicType) {
-                case ACTIVATION:
-                    return isPowered() ? RedstoneStatus.POWERED : RedstoneStatus.IDLE;
-                case TEMPERATURE:
-                    return multiblock.heatCapacitor.getTemperature() >= FissionReactorMultiblockData.MIN_DAMAGE_TEMPERATURE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
-                case EXCESS_WASTE:
-                    return multiblock.wasteTank.getNeeded() == 0 ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
-                case DAMAGED:
-                    return multiblock.reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
-                case DEPLETED:
-                    return multiblock.fuelTank.isEmpty() ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
-                default:
-                    break;
+                case ACTIVATION -> {
+                    if (isPowered()) {
+                        return RedstoneStatus.POWERED;
+                    }
+                }
+                case TEMPERATURE -> {
+                    if (multiblock.heatCapacitor.getTemperature() >= FissionReactorMultiblockData.MIN_DAMAGE_TEMPERATURE) {
+                        return RedstoneStatus.OUTPUTTING;
+                    }
+                }
+                case EXCESS_WASTE -> {
+                    if (multiblock.wasteTank.getNeeded() == 0) {
+                        return RedstoneStatus.OUTPUTTING;
+                    }
+                }
+                case DAMAGED -> {
+                    if (multiblock.reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE) {
+                        return RedstoneStatus.OUTPUTTING;
+                    }
+                }
+                case DEPLETED -> {
+                    if (multiblock.fuelTank.isEmpty()) {
+                        return RedstoneStatus.OUTPUTTING;
+                    }
+                }
             }
         }
         return RedstoneStatus.IDLE;
@@ -114,7 +127,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void saveAdditional(@Nonnull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
-        nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
     }
 
     @Override

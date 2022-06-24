@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ingot_osmium"
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/osmium"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:nuggets/osmium"
-    }
+  "result": {
+    "item": "mekanism:ingot_osmium"
   }
 }

@@ -173,10 +173,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
-            invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, side);
-            invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, side);
-            invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, side);
-            invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, side);
+            invalidateCapability(Capabilities.GAS_HANDLER, side);
+            invalidateCapability(Capabilities.INFUSION_HANDLER, side);
+            invalidateCapability(Capabilities.PIGMENT_HANDLER, side);
+            invalidateCapability(Capabilities.SLURRY_HANDLER, side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {

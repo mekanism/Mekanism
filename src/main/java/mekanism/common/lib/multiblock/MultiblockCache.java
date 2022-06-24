@@ -191,7 +191,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         return heatCapacitors;
     }
 
-    public static abstract class CacheSubstance<HANDLER, ELEMENT> {
+    public abstract static class CacheSubstance<HANDLER, ELEMENT> {
 
         public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<>(NBTConstants.ITEMS) {
             @Override

@@ -1,8 +1,12 @@
 {
   "block.mekanismgenerators.advanced_solar_generator": "مولد الطاقة الشمسية المتقدم",
   "block.mekanismgenerators.bio_generator": "مولد حيوي",
+  "block.mekanismgenerators.bioethanol": "كحول أثيلي عضوي",
+  "block.mekanismgenerators.control_rod_assembly": "تجميع قضيب التحكم",
   "block.mekanismgenerators.deuterium": "الديوتريوم السائل",
   "block.mekanismgenerators.electromagnetic_coil": "الكتلة الكهرومغناطيسية",
+  "block.mekanismgenerators.fission_fuel_assembly": "تجميع الوقود الانشطاري",
+  "block.mekanismgenerators.fission_reactor_casing": "تغليف المفاعل الإنشطاري",
   "block.mekanismgenerators.fusion_fuel": "الوقود السائل D-T",
   "block.mekanismgenerators.gas_burning_generator": "مولد حرق الغاز",
   "block.mekanismgenerators.heat_generator": "مولد الحرارة",

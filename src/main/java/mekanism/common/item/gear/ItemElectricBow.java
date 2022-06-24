@@ -19,7 +19,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -37,7 +36,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -68,7 +66,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                     return;
                 }
             }
-            boolean infinity = player.isCreative() || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
+            boolean infinity = player.isCreative() || stack.getEnchantmentLevel(Enchantments.INFINITY_ARROWS) > 0;
             ItemStack ammo = player.getProjectile(stack);
             int charge = ForgeEventFactory.onArrowLoose(stack, world, player, getUseDuration(stack) - timeLeft, !ammo.isEmpty() || infinity);
             if (charge < 0) {
@@ -91,16 +89,16 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                     if (velocity == 1) {
                         arrowEntity.setCritArrow(true);
                     }
-                    int power = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+                    int power = stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
                     if (power > 0) {
                         arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() + 0.5 * power + 0.5);
                     }
-                    int punch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, stack);
+                    int punch = stack.getEnchantmentLevel(Enchantments.PUNCH_ARROWS);
                     if (punch > 0) {
                         arrowEntity.setKnockback(punch);
                     }
                     //Vanilla diff - set it on fire if the bow's mode is set to fire, even if there is no flame enchantment
-                    if (fireState || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
+                    if (fireState || stack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) {
                         arrowEntity.setSecondsOnFire(100);
                     }
                     //Vanilla diff - Instead of damaging the item we remove energy from it
@@ -156,7 +154,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.electricBowMaxEnergy.get()));
         }
     }
@@ -176,7 +174,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
             boolean newState = !getFireState(stack);
             setFireState(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true))), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true))));
             }
         }
     }

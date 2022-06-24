@@ -1,6 +1,7 @@
 package mekanism.common.tile.component;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -16,7 +17,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -27,17 +27,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
 import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoader> implements ITileComponent {
 
-    private static final Logger LOGGER = LogManager.getLogger("Mekanism TileComponentChunkLoader");
+    private static final Logger LOGGER = LogUtils.getLogger();
     /**
      * TileEntity implementing this component.
      */
     private final T tile;
     private final LongSet chunkSet = new LongOpenHashSet();
+    private final boolean forceTicks;
     @Nullable
     private ServerLevel prevWorld;
     @Nullable
@@ -45,8 +45,13 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     private boolean hasRegistered;
 
     public TileComponentChunkLoader(T tile) {
+        this(tile, false);
+    }
+
+    public TileComponentChunkLoader(T tile, boolean forceTicks) {
         this.tile = tile;
         this.tile.addComponent(this);
+        this.forceTicks = forceTicks;
     }
 
     public boolean canOperate() {
@@ -58,7 +63,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         LOGGER.debug("Attempting to remove {} chunk tickets. Pos: {} World: {}", tickets, pos, world.dimension().location());
         if (tickets > 0) {
             for (long chunkPos : chunkSet) {
-                ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), false, false);
+                ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), false, forceTicks);
             }
             chunkSet.clear();
             markDirty();
@@ -75,7 +80,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         LOGGER.debug("Attempting to add {} chunk tickets. Pos: {} World: {}", tickets, prevPos, world.dimension().location());
         if (tickets > 0) {
             for (ChunkPos chunkPos : chunks) {
-                ForgeChunkManager.forceChunk(world, Mekanism.MODID, prevPos, chunkPos.x, chunkPos.z, true, false);
+                ForgeChunkManager.forceChunk(world, Mekanism.MODID, prevPos, chunkPos.x, chunkPos.z, true, forceTicks);
                 chunkSet.add(chunkPos.toLong());
             }
             markDirty();
@@ -138,7 +143,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             if (!chunks.contains(chunkPos)) {
                                 //If the chunk is no longer in our chunks we want loaded
                                 // then we need to unforce the chunk and remove it
-                                ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), false, false);
+                                ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), false, forceTicks);
                                 chunkIt.remove();
                                 removed++;
                             }
@@ -148,7 +153,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             if (chunkSet.add(chunkPos)) {
                                 //If we didn't already have it in our chunk set and added actually added it as it is new
                                 // then we also need to force the chunk
-                                ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), true, false);
+                                ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), true, forceTicks);
                                 added++;
                             }
                         }
@@ -198,7 +203,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void invalidate() {
+    public void removed() {
         if (!tile.isRemote() && hasRegistered && prevWorld != null && prevPos != null) {
             //If we have any chunks registered remove them. When hasRegistered is true
             // prevWorld and prevPos should both be nonnull, but validate them just in case
@@ -207,10 +212,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     private void markDirty() {
-        if (tile.hasLevel()) {
-            //Marks the chunk as dirty so it can properly save
-            WorldUtils.markChunkDirty(tile.getLevel(), tile.getBlockPos());
-        }
+        //Marks the chunk as dirty so it can properly save
+        tile.markForSave();
     }
 
     private LongSet getTileChunks() {
@@ -241,87 +244,94 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 //Only bother looking at non ticking chunks as we don't register any "fully" ticking chunks
                 BlockPos pos = entry.getKey();
                 LongSet forcedChunks = entry.getValue().getFirst();
-                int ticketCount = forcedChunks.size();
-                LOGGER.debug("Validating tickets for: {}, BlockPos: {}, Forced chunks: {}, Ticking forced chunks: {}", worldName, pos, ticketCount,
+                LongSet tickingForcedChunks = entry.getValue().getSecond();
+                LOGGER.debug("Validating tickets for: {}, BlockPos: {}, Forced chunks: {}, Ticking forced chunks: {}", worldName, pos, forcedChunks.size(),
                       entry.getValue().getSecond().size());
-                if (ticketCount > 0) {
-                    //We expect this always be the case but just in case it is empty don't bother looking up the tile
-                    //Note: This does not use WorldUtils#getTileEntity as we want to force the chunk to load if it isn't loaded yet
-                    // so that we can properly validate it
-                    BlockEntity tile = world.getBlockEntity(pos);
-                    if (tile instanceof IChunkLoader) {
-                        TileComponentChunkLoader<?> chunkLoader = ((IChunkLoader) tile).getChunkLoader();
-                        if (chunkLoader.canOperate()) {
-                            if (!forcedChunks.equals(chunkLoader.chunkSet)) {
-                                //If there is a mismatch between the chunkSet and actual chunks
-                                // update the chunk set to trust what chunks the loader actually has registered
-                                LOGGER.debug("Mismatched chunkSet for chunk loader at position: {} in {}. Correcting.", pos, worldName);
-                                chunkLoader.chunkSet.clear();
-                                chunkLoader.chunkSet.addAll(forcedChunks);
-                                chunkLoader.markDirty();
-                            }
-                            //Next we validate that all the chunks are still properly contained and the chunks we want to load
-                            // didn't change (such as from the max radius of the digital miner becoming lower)
-                            LongSet chunks = chunkLoader.getTileChunks();
-                            if (chunks.isEmpty()) {
-                                //Probably never the case, but if we have no chunks that should be loaded anymore;
-                                // just release them all
-                                LOGGER.warn("Removing {} chunk tickets as they are no longer valid as this loader does not expect to have any tickets even "
-                                            + "though it is can operate. Pos: {} World: {}", ticketCount, pos, worldName);
-                                releaseAllTickets(chunkLoader, pos, ticketHelper);
-                            } else {
-                                //Calculate the differences to properly adjust which chunks are loaded and which ones are not
-                                int removed = 0;
-                                int added = 0;
-                                //Remove any chunk tickets that are not valid anymore
-                                LongIterator chunkIt = chunkLoader.chunkSet.iterator();
-                                while (chunkIt.hasNext()) {
-                                    long chunkPos = chunkIt.nextLong();
-                                    if (!chunks.contains(chunkPos)) {
-                                        //If the chunk is no longer in our chunks we want loaded, then we mark it for removal
-                                        ticketHelper.removeTicket(pos, chunkPos, false);
-                                        // and remove it from the set we are keeping track of
-                                        chunkIt.remove();
-                                        removed++;
-                                    }
-                                }
-                                //And add any that are valid now that weren't before
-                                // Note: We can safely call forceChunk here as nothing is iterating the list of forced chunks
-                                // as the loading validators get past a
-                                for (long chunkPos : chunks) {
-                                    if (chunkLoader.chunkSet.add(chunkPos)) {
-                                        //If we didn't already have it in our chunk set and added actually added it as it is new
-                                        // then we also need to force the chunk
-                                        ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), true, false);
-                                        added++;
-                                    }
-                                }
-                                //Mark the chunk loader as being initialized
-                                chunkLoader.hasRegistered = true;
-                                chunkLoader.prevWorld = world;
-                                chunkLoader.prevPos = pos;
-                                if (removed == 0 && added == 0) {
-                                    LOGGER.debug("Tickets for position: {} in {}, successfully validated.", pos, worldName);
-                                } else {
-                                    chunkLoader.markDirty();
-                                    //Note: Info level as this may be intended/expected when configs change (for example reducing max radius of digital miner),
-                                    // or if some of it needs to be recalculated such as the miner no longer having a target chunk
-                                    LOGGER.info("Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}",
-                                          removed, added, pos, worldName);
-                                }
-                            }
-                        } else {
-                            //Chunk loader can't operate anymore, release any tickets we have assigned to us that we loaded with
-                            // Note: Info level as this may be intended/expected when if the chunk loading config changed
-                            LOGGER.info("Removing {} chunk tickets as they are no longer valid as this loader cannot operate. Pos: {} World: {}", ticketCount,
-                                  pos, worldName);
+                validateTickets(world, worldName, pos, ticketHelper, forcedChunks, false);
+                validateTickets(world, worldName, pos, ticketHelper, tickingForcedChunks, true);
+            }
+        }
+
+        private void validateTickets(ServerLevel world, ResourceLocation worldName, BlockPos pos, TicketHelper ticketHelper, LongSet forcedChunks, boolean ticking) {
+            int ticketCount = forcedChunks.size();
+            if (ticketCount > 0) {
+                //We expect this always be the case but just in case it is empty don't bother looking up the tile
+                //Note: This does not use WorldUtils#getTileEntity as we want to force the chunk to load if it isn't loaded yet
+                // so that we can properly validate it
+                BlockEntity tile = world.getBlockEntity(pos);
+                if (tile instanceof IChunkLoader) {
+                    TileComponentChunkLoader<?> chunkLoader = ((IChunkLoader) tile).getChunkLoader();
+                    if (chunkLoader.canOperate()) {
+                        if (!forcedChunks.equals(chunkLoader.chunkSet)) {
+                            //If there is a mismatch between the chunkSet and actual chunks
+                            // update the chunk set to trust what chunks the loader actually has registered
+                            LOGGER.debug("Mismatched chunkSet for chunk loader at position: {} in {}. Correcting.", pos, worldName);
+                            chunkLoader.chunkSet.clear();
+                            chunkLoader.chunkSet.addAll(forcedChunks);
+                            chunkLoader.markDirty();
+                        }
+                        //Next we validate that all the chunks are still properly contained and the chunks we want to load
+                        // didn't change (such as from the max radius of the digital miner becoming lower)
+                        LongSet chunks = chunkLoader.getTileChunks();
+                        if (chunks.isEmpty()) {
+                            //Probably never the case, but if we have no chunks that should be loaded anymore;
+                            // just release them all
+                            LOGGER.warn("Removing {} chunk tickets as they are no longer valid as this loader does not expect to have any tickets even "
+                                        + "though it is can operate. Pos: {} World: {}", ticketCount, pos, worldName);
                             releaseAllTickets(chunkLoader, pos, ticketHelper);
+                        } else {
+                            //Calculate the differences to properly adjust which chunks are loaded and which ones are not
+                            int removed = 0;
+                            int added = 0;
+                            //Remove any chunk tickets that are not valid anymore
+                            LongIterator chunkIt = chunkLoader.chunkSet.iterator();
+                            while (chunkIt.hasNext()) {
+                                long chunkPos = chunkIt.nextLong();
+                                if (!chunks.contains(chunkPos) || ticking != chunkLoader.forceTicks) {
+                                    //If the chunk is no longer in our chunks we want loaded or restarting changed how it should tick,
+                                    // then we mark it for removal
+                                    ticketHelper.removeTicket(pos, chunkPos, ticking);
+                                    // and remove it from the set we are keeping track of
+                                    chunkIt.remove();
+                                    removed++;
+                                }
+                            }
+                            //And add any that are valid now that weren't before
+                            // Note: We can safely call forceChunk here as nothing is iterating the list of forced chunks
+                            // as the loading validators get past a
+                            for (long chunkPos : chunks) {
+                                if (chunkLoader.chunkSet.add(chunkPos) || ticking != chunkLoader.forceTicks) {
+                                    //If we didn't already have it in our chunk set and added, or we had removed it due to it fully ticking changing,
+                                    // then we also need to force the chunk
+                                    ForgeChunkManager.forceChunk(world, Mekanism.MODID, pos, (int) chunkPos, (int) (chunkPos >> 32), true, chunkLoader.forceTicks);
+                                    added++;
+                                }
+                            }
+                            //Mark the chunk loader as being initialized
+                            chunkLoader.hasRegistered = true;
+                            chunkLoader.prevWorld = world;
+                            chunkLoader.prevPos = pos;
+                            if (removed == 0 && added == 0) {
+                                LOGGER.debug("Tickets for position: {} in {}, successfully validated.", pos, worldName);
+                            } else {
+                                chunkLoader.markDirty();
+                                //Note: Info level as this may be intended/expected when configs change (for example reducing max radius of digital miner),
+                                // or if some of it needs to be recalculated such as the miner no longer having a target chunk
+                                LOGGER.info("Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}",
+                                      removed, added, pos, worldName);
+                            }
                         }
                     } else {
-                        //Not a valid chunk/tile, remove all positions
-                        LOGGER.warn("Block at {}, in {}, is not a valid chunk loader. Removing {} chunk tickets.", pos, worldName, ticketCount);
-                        ticketHelper.removeAllTickets(pos);
+                        //Chunk loader can't operate anymore, release any tickets we have assigned to us that we loaded with
+                        // Note: Info level as this may be intended/expected when if the chunk loading config changed
+                        LOGGER.info("Removing {} chunk tickets as they are no longer valid as this loader cannot operate. Pos: {} World: {}", ticketCount,
+                              pos, worldName);
+                        releaseAllTickets(chunkLoader, pos, ticketHelper);
                     }
+                } else {
+                    //Not a valid chunk/tile, remove all positions
+                    LOGGER.warn("Block at {}, in {}, is not a valid chunk loader. Removing {} chunk tickets.", pos, worldName, ticketCount);
+                    ticketHelper.removeAllTickets(pos);
                 }
             }
         }

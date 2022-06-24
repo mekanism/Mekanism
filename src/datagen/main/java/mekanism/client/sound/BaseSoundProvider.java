@@ -1,7 +1,7 @@
 package mekanism.client.sound;
 
+import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.data.DataGenerator;
@@ -25,27 +25,20 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
         return super.getName() + ": " + modid;
     }
 
-    protected void add(SoundEventRegistryObject<?> soundEventRO, SoundDefinition definition) {
-        add(soundEventRO.get(), definition);
+    protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, String path) {
+        addSoundEventWithSubtitle(soundEventRO, path, UnaryOperator.identity());
     }
 
-    protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location) {
-        add(soundEventRO, definition().with(sound(location)));
+    protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, String path, UnaryOperator<SoundDefinition.Sound> soundModifier) {
+        addSoundEvent(soundEventRO, path, definition -> definition.subtitle(soundEventRO.getTranslationKey()), soundModifier);
     }
 
-    protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location, int attenuationDistance) {
-        add(soundEventRO, definition(soundEventRO).with(sound(location).attenuationDistance(attenuationDistance)));
+    protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, String path, ILangEntry subtitle) {
+        addSoundEvent(soundEventRO, path, definition -> definition.subtitle(subtitle.getTranslationKey()), UnaryOperator.identity());
     }
 
-    protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location) {
-        add(soundEventRO, definition(soundEventRO).with(sound(location)));
-    }
-
-    protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location, ILangEntry subtitle) {
-        add(soundEventRO, definition(subtitle).with(sound(location)));
-    }
-
-    protected static SoundDefinition definition(IHasTranslationKey subtitle) {
-        return SoundDefinition.definition().subtitle(subtitle.getTranslationKey());
+    protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, String path, UnaryOperator<SoundDefinition> definitionModifier,
+          UnaryOperator<SoundDefinition.Sound> soundModifier) {
+        add(soundEventRO.get(), definitionModifier.apply(definition()).with(soundModifier.apply(sound(new ResourceLocation(modid, path)))));
     }
 }

@@ -21,8 +21,10 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.tags.TagUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -66,17 +68,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @Override
     public FluidStackIngredient read(FriendlyByteBuf buffer) {
         Objects.requireNonNull(buffer, "FluidStackIngredients cannot be read from a null packet buffer.");
-        IngredientType type = buffer.readEnum(IngredientType.class);
-        if (type == IngredientType.SINGLE) {
-            return from(FluidStack.readFromPacket(buffer));
-        } else if (type == IngredientType.TAGGED) {
-            return from(FluidTags.create(buffer.readResourceLocation()), buffer.readVarInt());
-        }
-        FluidStackIngredient[] ingredients = new FluidStackIngredient[buffer.readVarInt()];
-        for (int i = 0; i < ingredients.length; i++) {
-            ingredients[i] = read(buffer);
-        }
-        return createMulti(ingredients);
+        return switch (buffer.readEnum(IngredientType.class)) {
+            case SINGLE -> from(FluidStack.readFromPacket(buffer));
+            case TAGGED -> from(FluidTags.create(buffer.readResourceLocation()), buffer.readVarInt());
+            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, FluidStackIngredient[]::new, this::read));
+        };
     }
 
     @Override
@@ -222,7 +218,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, fluidInstance.getAmount());
-            json.addProperty(JsonConstants.FLUID, fluidInstance.getFluid().getRegistryName().toString());
+            json.addProperty(JsonConstants.FLUID, RegistryUtils.getName(fluidInstance.getFluid()).toString());
             if (fluidInstance.hasTag()) {
                 json.addProperty(JsonConstants.NBT, fluidInstance.getTag().toString());
             }
@@ -377,10 +373,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
-            buffer.writeVarInt(ingredients.length);
-            for (FluidStackIngredient ingredient : ingredients) {
-                ingredient.write(buffer);
-            }
+            BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
         }
 
         @Override

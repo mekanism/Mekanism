@@ -4,12 +4,12 @@
     "amount": 1,
     "gas": "mekanism:hydrogen"
   },
+  "output": {
+    "amount": 1,
+    "gas": "mekanism:hydrogen_chloride"
+  },
   "rightInput": {
     "amount": 1,
     "gas": "mekanism:chlorine"
-  },
-  "output": {
-    "gas": "mekanism:hydrogen_chloride",
-    "amount": 1
   }
 }

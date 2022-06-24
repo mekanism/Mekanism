@@ -1,22 +1,22 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:qio_drive_supermassive"
+  "key": {
+    "#": {
+      "tag": "forge:pellets/antimatter"
+    },
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "P": {
+      "item": "mekanism:qio_drive_time_dilating"
+    }
   },
   "pattern": [
     "IPI",
     "P#P",
     "IPI"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/lead"
-    },
-    "#": {
-      "tag": "forge:pellets/antimatter"
-    },
-    "P": {
-      "item": "mekanism:qio_drive_time_dilating"
-    }
+  "result": {
+    "item": "mekanism:qio_drive_supermassive"
   }
 }

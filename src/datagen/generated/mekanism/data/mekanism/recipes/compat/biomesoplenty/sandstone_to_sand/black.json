@@ -2,8 +2,8 @@
   "type": "mekanism:crushing",
   "conditions": [
     {
-      "modid": "biomesoplenty",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
     }
   ],
   "input": {
@@ -23,7 +23,7 @@
     ]
   },
   "output": {
-    "item": "biomesoplenty:black_sand",
-    "count": 2
+    "count": 2,
+    "item": "biomesoplenty:black_sand"
   }
 }

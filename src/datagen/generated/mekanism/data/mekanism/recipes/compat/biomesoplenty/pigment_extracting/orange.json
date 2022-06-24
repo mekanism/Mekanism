@@ -2,8 +2,8 @@
   "type": "mekanism:pigment_extracting",
   "conditions": [
     {
-      "modid": "biomesoplenty",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "biomesoplenty"
     }
   ],
   "input": {
@@ -17,7 +17,7 @@
     ]
   },
   "output": {
-    "pigment": "mekanism:orange",
-    "amount": 768
+    "amount": 768,
+    "pigment": "mekanism:orange"
   }
 }

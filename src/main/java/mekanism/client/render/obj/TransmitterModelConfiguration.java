@@ -76,8 +76,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
             boolean hasNorthSouth = has.test(Direction.NORTH) || has.test(Direction.SOUTH);
             boolean hasEastWest = has.test(Direction.EAST) || has.test(Direction.WEST);
             switch (side) {
-                case DOWN:
-                case UP:
+                case DOWN, UP -> {
                     if (hasNorthSouth && !hasEastWest || !hasNorthSouth && hasEastWest) {
                         if (has.test(Direction.NORTH) && has.test(Direction.SOUTH)) {
                             return IconStatus.NO_ROTATION;
@@ -85,9 +84,8 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                             return IconStatus.ROTATE_270;
                         }
                     }
-                    break;
-                case NORTH:
-                case SOUTH:
+                }
+                case NORTH, SOUTH -> {
                     if (hasUpDown && !hasEastWest || !hasUpDown && hasEastWest) {
                         if (has.test(Direction.UP) && has.test(Direction.DOWN)) {
                             return IconStatus.NO_ROTATION;
@@ -95,9 +93,8 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                             return IconStatus.ROTATE_270;
                         }
                     }
-                    break;
-                case WEST:
-                case EAST:
+                }
+                case WEST, EAST -> {
                     if (hasUpDown && !hasNorthSouth || !hasUpDown && hasNorthSouth) {
                         if (has.test(Direction.UP) && has.test(Direction.DOWN)) {
                             return IconStatus.NO_ROTATION;
@@ -105,7 +102,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                             return IconStatus.ROTATE_270;
                         }
                     }
-                    break;
+                }
             }
         }
         return IconStatus.NO_SHOW;

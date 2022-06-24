@@ -5,7 +5,11 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.ICustomModule;
+import mekanism.api.providers.IBaseProvider;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IModuleDataProvider;
+import mekanism.api.providers.IRobitSkinProvider;
+import mekanism.common.Mekanism;
 
 /**
  * Registers some "unused" and non instantiatable classes to ZenCode so that they can be resolved when ZenCode is resolving generics even if they don't need to be used on
@@ -47,6 +51,31 @@ public class DummyCrTNatives {
     public static class CrTNativeModuleDataProvider {
 
         private CrTNativeModuleDataProvider() {
+        }
+    }
+
+    //TODO - 1.18: Remove the below dummies once https://github.com/ZenCodeLang/ZenCode/issues/97 is resolved
+    @ZenRegister
+    @NativeTypeRegistration(value = IChemicalProvider.class, zenCodeName = "mods." + Mekanism.MODID + ".api.provider.ChemicalProvider" + DUMMY)
+    public static class CrTNativeChemicalProvider {
+
+        private CrTNativeChemicalProvider() {
+        }
+    }
+
+    @ZenRegister
+    @NativeTypeRegistration(value = IBaseProvider.class, zenCodeName = "mods." + Mekanism.MODID + ".api.provider.BaseProvider" + DUMMY)
+    public static class CrTNativeBaseProvider {
+
+        private CrTNativeBaseProvider() {
+        }
+    }
+
+    @ZenRegister
+    @NativeTypeRegistration(value = IRobitSkinProvider.class, zenCodeName = "mods." + Mekanism.MODID + ".api.provider.RobitSkinProvider" + DUMMY)
+    public static class CrTNativeRobitSkinProvider {
+
+        private CrTNativeRobitSkinProvider() {
         }
     }
 }

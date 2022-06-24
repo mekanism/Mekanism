@@ -2,6 +2,7 @@ package mekanism.common.capabilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,8 +39,10 @@ public class CapabilityCache {
         uniqueResolvers.add(resolver);
         List<Capability<?>> supportedCapabilities = resolver.getSupportedCapabilities();
         for (Capability<?> supportedCapability : supportedCapabilities) {
-            //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
-            if (supportedCapability != null && capabilityResolvers.put(supportedCapability, resolver) != null) {
+            //Note: We add the capability regardless of if it is registered as we will just short circuit and always disable the capability
+            // if it isn't in use by the time the capability is queried. In theory we shouldn't ever be getting created before the capabilities
+            // have been registered, but just in case we ensure it works properly
+            if (capabilityResolvers.put(supportedCapability, resolver) != null) {
                 Mekanism.logger.warn("Multiple capability resolvers registered for {}. Overriding", supportedCapability.getName(), new Exception());
             }
         }
@@ -49,24 +52,14 @@ public class CapabilityCache {
      * Marks all the given capabilities as always being disabled.
      */
     public void addDisabledCapabilities(Capability<?>... capabilities) {
-        for (Capability<?> capability : capabilities) {
-            //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
-            if (capability != null) {
-                alwaysDisabled.add(capability);
-            }
-        }
+        Collections.addAll(alwaysDisabled, capabilities);
     }
 
     /**
      * Marks all the given capabilities as always being disabled.
      */
     public void addDisabledCapabilities(Collection<Capability<?>> capabilities) {
-        for (Capability<?> capability : capabilities) {
-            //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
-            if (capability != null) {
-                alwaysDisabled.add(capability);
-            }
-        }
+        alwaysDisabled.addAll(capabilities);
     }
 
     /**
@@ -76,10 +69,7 @@ public class CapabilityCache {
      * wants them to be disabled in.
      */
     public void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
-        //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
-        if (capability != null) {
-            semiDisabled.computeIfAbsent(capability, cap -> new ArrayList<>()).add(checker);
-        }
+        semiDisabled.computeIfAbsent(capability, cap -> new ArrayList<>()).add(checker);
     }
 
     /**
@@ -98,7 +88,8 @@ public class CapabilityCache {
      * @return {@code true} if the capability is disabled, {@code false} otherwise.
      */
     public boolean isCapabilityDisabled(Capability<?> capability, @Nullable Direction side) {
-        if (alwaysDisabled.contains(capability)) {
+        //Treat unregistered capabilities as being disabled to skip and further logic relating to them
+        if (!capability.isRegistered() || alwaysDisabled.contains(capability)) {
             return true;
         }
         if (semiDisabled.containsKey(capability)) {

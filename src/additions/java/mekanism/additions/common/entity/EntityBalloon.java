@@ -10,8 +10,10 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +24,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -287,7 +290,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
-        nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
         if (latched != null) {
             nbtTags.put(NBTConstants.LATCHED, NbtUtils.writeBlockPos(latched));
         }
@@ -299,6 +302,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public boolean skipAttackInteraction(@Nonnull Entity entity) {
         pop();
+        if (entity instanceof ServerPlayer player) {
+            CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, DamageSource.playerAttack(player));
+        }
         return true;
     }
 
@@ -310,10 +316,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void writeSpawnData(FriendlyByteBuf data) {
-        data.writeDouble(getX());
-        data.writeDouble(getY());
-        data.writeDouble(getZ());
-
+        BasePacketHandler.writeVector3d(data, position());
         data.writeEnum(color);
         if (latched != null) {
             data.writeByte((byte) 1);
@@ -328,7 +331,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void readSpawnData(FriendlyByteBuf data) {
-        setPos(data.readDouble(), data.readDouble(), data.readDouble());
+        setPos(BasePacketHandler.readVector3d(data));
         color = data.readEnum(EnumColor.class);
         byte type = data.readByte();
         if (type == 1) {
@@ -366,6 +369,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         markHurt();
         if (dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL) {
             pop();
+            if (dmgSource.getEntity() instanceof ServerPlayer player) {
+                CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, dmgSource);
+            }
             return true;
         }
         return false;

@@ -9,10 +9,11 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -30,7 +31,7 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -57,6 +58,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -68,6 +70,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -80,6 +83,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
@@ -87,9 +91,9 @@ import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RenderTickHandler {
@@ -103,6 +107,8 @@ public class RenderTickHandler {
     public static double prevRadiation = 0;
 
     private static final BoltRenderer boltRenderer = new BoltRenderer();
+
+    private boolean outliningArea = false;
 
     public static void resetCached() {
         cachedOverlays.clear();
@@ -122,14 +128,6 @@ public class RenderTickHandler {
                 //If it is mark on our current screen that we are switching to JEI
                 screen.switchingToJEI = true;
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void filterTooltips(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
-        if (stack.getItem() instanceof IModuleContainerItem item) {
-            item.filterTooltips(stack, event.getToolTip());
         }
     }
 
@@ -270,8 +268,8 @@ public class RenderTickHandler {
                     }
                 }
 
-                if (MekanismUtils.isPlayingMode(player)) {
-                    player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                if (MekanismAPI.getRadiationManager().isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
+                    player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                         double radiation = c.getRadiation();
                         double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
                         if (prevRadiation < severity) {
@@ -298,7 +296,7 @@ public class RenderTickHandler {
             return;
         }
         BlockHitResult rayTraceResult = event.getTarget();
-        if (!rayTraceResult.getType().equals(Type.MISS)) {
+        if (rayTraceResult.getType() != Type.MISS) {
             Level world = player.getCommandSenderWorld();
             BlockPos pos = rayTraceResult.getBlockPos();
             MultiBufferSource renderer = event.getMultiBufferSource();
@@ -306,6 +304,30 @@ public class RenderTickHandler {
             PoseStack matrix = event.getPoseStack();
             ProfilerFiller profiler = world.getProfiler();
             BlockState blockState = world.getBlockState(pos);
+
+            profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
+            // Draw outlines for area mining blocks
+            if (!outliningArea) {
+                ItemStack stack = player.getMainHandItem();
+                if (!stack.isEmpty() && stack.getItem() instanceof IBlastingItem tool) {
+                    Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
+                    if (!blocks.isEmpty()) {
+                        outliningArea = true;
+                        Vec3 renderView = info.getPosition();
+                        LevelRenderer levelRenderer = event.getLevelRenderer();
+                        Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
+                        for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
+                            BlockPos blastingTarget = block.getKey();
+                            if (!pos.equals(blastingTarget) && !ForgeHooksClient.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getPartialTick(), matrix, renderer)) {
+                                levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
+                            }
+                        }
+                        outliningArea = false;
+                    }
+                }
+            }
+            profiler.pop();
+
             boolean shouldCancel = false;
             profiler.push(ProfilerConstants.MEKANISM_OUTLINE);
             if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {
@@ -331,7 +353,7 @@ public class RenderTickHandler {
                                     if (wireFrameRenderer.isCombined()) {
                                         renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
                                     }
-                                    wireFrameRenderer.renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                                    wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrixStack, buffer, red, green, blue, alpha);
                                 };
                             }
                         }
@@ -391,7 +413,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, Random rand, float red, float green, float blue, float alpha) {
+    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, float red, float green, float blue, float alpha) {
         List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
             //TODO: Eventually we may want to add support for Model data

@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:steel_ingot",
+  "criteria": {
+    "basic_mechanical_pipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_mechanical_pipe"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.fluid_transport.description"
+    },
+    "icon": {
+      "item": "mekanism:basic_mechanical_pipe"
+    },
+    "title": {
+      "translate": "advancements.mekanism.fluid_transport.title"
+    }
+  }
+}

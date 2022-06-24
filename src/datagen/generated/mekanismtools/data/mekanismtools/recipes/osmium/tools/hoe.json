@@ -1,13 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismtools:osmium_hoe"
-  },
-  "pattern": [
-    "II",
-    " R",
-    " R"
-  ],
   "key": {
     "I": {
       "tag": "forge:ingots/osmium"
@@ -15,5 +7,13 @@
     "R": {
       "tag": "forge:rods/wooden"
     }
+  },
+  "pattern": [
+    "II",
+    " R",
+    " R"
+  ],
+  "result": {
+    "item": "mekanismtools:osmium_hoe"
   }
 }

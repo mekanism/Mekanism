@@ -1,0 +1,40 @@
+{
+  "parent": "mekanism:root",
+  "criteria": {
+    "any_paxel": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:wood_paxel",
+              "mekanismtools:stone_paxel",
+              "mekanismtools:iron_paxel",
+              "mekanismtools:diamond_paxel",
+              "mekanismtools:gold_paxel",
+              "mekanismtools:netherite_paxel",
+              "mekanismtools:bronze_paxel",
+              "mekanismtools:lapis_lazuli_paxel",
+              "mekanismtools:osmium_paxel",
+              "mekanismtools:refined_glowstone_paxel",
+              "mekanismtools:refined_obsidian_paxel",
+              "mekanismtools:steel_paxel"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanismtools.paxel.description"
+    },
+    "icon": {
+      "item": "mekanismtools:diamond_paxel",
+      "nbt": "{Damage:0}"
+    },
+    "title": {
+      "translate": "advancements.mekanismtools.paxel.title"
+    }
+  }
+}

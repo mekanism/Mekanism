@@ -1,0 +1,45 @@
+{
+  "parent": "mekanism:modification_station",
+  "criteria": {
+    "maxed_gear": {
+      "conditions": {
+        "items": [
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_helmet"
+          },
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_bodyarmor"
+          },
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_pants"
+          },
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:mekasuit_boots"
+          },
+          {
+            "type": "mekanism:maxed_module_container",
+            "item": "mekanism:meka_tool"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.upgraded_mekasuit.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "item": "mekanism:mekasuit_bodyarmor"
+    },
+    "title": {
+      "translate": "advancements.mekanism.upgraded_mekasuit.title"
+    }
+  }
+}

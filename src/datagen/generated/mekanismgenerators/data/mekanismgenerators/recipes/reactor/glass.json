@@ -1,14 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:reactor_glass",
-    "count": 4
-  },
-  "pattern": [
-    "SIS",
-    "IGI",
-    "SIS"
-  ],
   "key": {
     "G": {
       "tag": "forge:glass"
@@ -19,5 +10,14 @@
     "S": {
       "item": "mekanism:enriched_iron"
     }
+  },
+  "pattern": [
+    "SIS",
+    "IGI",
+    "SIS"
+  ],
+  "result": {
+    "count": 4,
+    "item": "mekanismgenerators:reactor_glass"
   }
 }

@@ -1,14 +1,14 @@
 {
   "type": "mekanism:combining",
+  "extraInput": {
+    "ingredient": {
+      "item": "minecraft:netherrack"
+    }
+  },
   "mainInput": {
     "amount": 8,
     "ingredient": {
       "tag": "forge:raw_materials/gold"
-    }
-  },
-  "extraInput": {
-    "ingredient": {
-      "item": "minecraft:netherrack"
     }
   },
   "output": {

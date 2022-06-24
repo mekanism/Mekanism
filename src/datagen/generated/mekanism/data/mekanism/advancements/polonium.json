@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:waste_removal",
+  "criteria": {
+    "pellet_polonium": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:pellet_polonium"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.polonium.description"
+    },
+    "icon": {
+      "item": "mekanism:pellet_polonium"
+    },
+    "title": {
+      "translate": "advancements.mekanism.polonium.title"
+    }
+  }
+}

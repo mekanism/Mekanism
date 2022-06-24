@@ -40,8 +40,7 @@ public class PacketGuiItemDataRequest implements IMekanismPacket {
     }
 
     public static PacketGuiItemDataRequest decode(FriendlyByteBuf buffer) {
-        Type type = buffer.readEnum(Type.class);
-        return new PacketGuiItemDataRequest(type);
+        return new PacketGuiItemDataRequest(buffer.readEnum(Type.class));
     }
 
     private enum Type {

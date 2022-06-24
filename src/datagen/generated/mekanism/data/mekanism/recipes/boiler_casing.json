@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:boiler_casing",
-    "count": 4
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     " S ",
     "SIS",
     " S "
   ],
-  "key": {
-    "S": {
-      "tag": "forge:ingots/steel"
-    },
-    "I": {
-      "tag": "forge:ingots/iron"
-    }
+  "result": {
+    "count": 4,
+    "item": "mekanism:boiler_casing"
   }
 }

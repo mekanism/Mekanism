@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismadditions:lime_plastic_stairs",
-    "count": 4
+  "key": {
+    "#": {
+      "item": "mekanismadditions:lime_plastic"
+    }
   },
   "pattern": [
     "#  ",
     "## ",
     "###"
   ],
-  "key": {
-    "#": {
-      "item": "mekanismadditions:lime_plastic"
-    }
+  "result": {
+    "count": 4,
+    "item": "mekanismadditions:lime_plastic_stairs"
   }
 }

@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
@@ -23,11 +24,7 @@ public class RenderResizableCuboid {
      * just use one backing "temporary" array.
      */
     private static final int[] combinedARGB = new int[EnumUtils.DIRECTIONS.length];
-    private static final Vector3f NORMAL = new Vector3f(1, 1, 1);
-
-    static {
-        NORMAL.normalize();
-    }
+    private static final Vector3f NORMAL = Util.make(new Vector3f(1, 1, 1), Vector3f::normalize);
 
     private RenderResizableCuboid() {
     }

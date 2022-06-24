@@ -9,11 +9,11 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.tier.InductionCellTier;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityInductionCell extends TileEntityMekanism {
+public class TileEntityInductionCell extends TileEntityInternalMultiblock {
 
     private MachineEnergyContainer<TileEntityInductionCell> energyContainer;
     public InductionCellTier tier;

@@ -14,6 +14,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +28,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public TileEntityQIOComponent(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         frequencyComponent.track(FrequencyType.QIO, true, true, true);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     public EnumColor getColor() {
@@ -53,7 +54,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
         if (lastColor != null) {
-            updateTag.putInt(NBTConstants.COLOR, lastColor.ordinal());
+            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, lastColor);
         }
         return updateTag;
     }

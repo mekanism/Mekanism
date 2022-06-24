@@ -47,7 +47,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -66,8 +65,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
@@ -76,7 +75,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * How many ticks it takes to run an operation.
      */
     private static final int BASE_TICKS_REQUIRED = 19;
-    public static final int HEAVY_WATER_AMOUNT = FluidAttributes.BUCKET_VOLUME / 100;
+    public static final int HEAVY_WATER_AMOUNT = FluidType.BUCKET_VOLUME / 100;
     /**
      * This pump's tank
      */
@@ -107,8 +106,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     public TileEntityElectricPump(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ELECTRIC_PUMP, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull
@@ -142,7 +141,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
-        if (MekanismUtils.canFunction(this) && (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getNeeded())) {
+        if (MekanismUtils.canFunction(this) && (fluidTank.isEmpty() || FluidType.BUCKET_VOLUME <= fluidTank.getNeeded())) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 operatingTicks++;
@@ -247,7 +246,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         if (hasFilter && sourceFluid == Fluids.WATER) {
             return MekanismFluids.HEAVY_WATER.getFluidStack(HEAVY_WATER_AMOUNT);
         }
-        return new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
+        return new FluidStack(sourceFluid, FluidType.BUCKET_VOLUME);
     }
 
     private void suck(@Nonnull FluidStack fluidStack, BlockPos pos, boolean addRecurring) {
@@ -257,7 +256,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             recurringNodes.add(pos);
         }
         fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL);
-        level.gameEvent(GameEvent.FLUID_PICKUP, pos);
+        level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
     }
 
     private boolean validFluid(@Nonnull FluidStack fluidStack, boolean recheckSize) {
@@ -308,7 +307,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public InteractionResult onSneakRightClick(Player player) {
         reset();
-        player.sendMessage(MekanismUtils.logFormat(MekanismLang.PUMP_RESET), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.PUMP_RESET));
         return InteractionResult.SUCCESS;
     }
 

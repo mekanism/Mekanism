@@ -2,21 +2,21 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:embur_pedus"
+      "tag": "byg:wood/embur_logs"
     }
   },
   "mainOutput": {
-    "item": "byg:embur_planks",
-    "count": 6
+    "count": 6,
+    "item": "byg:embur_planks"
   },
+  "secondaryChance": 0.25,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.25
+  }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "byg"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:white_mangrove_pressure_plate"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "byg:white_mangrove_planks"
+  }
+}

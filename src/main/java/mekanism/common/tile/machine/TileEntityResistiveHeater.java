@@ -51,7 +51,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     public TileEntityResistiveHeater(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RESISTIVE_HEATER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull

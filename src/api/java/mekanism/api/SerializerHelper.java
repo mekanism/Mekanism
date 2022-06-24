@@ -298,6 +298,7 @@ public class SerializerHelper {
         if (chemical.isEmptyType()) {
             throw new JsonSyntaxException("Invalid " + serializationKey + " type '" + resourceLocation + "'");
         }
+        //noinspection unchecked
         return (STACK) chemical.getStack(amount);
     }
 
@@ -310,7 +311,7 @@ public class SerializerHelper {
      */
     public static JsonElement serializeItemStack(@Nonnull ItemStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.ITEM, stack.getItem().getRegistryName().toString());
+        json.addProperty(JsonConstants.ITEM, ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
         if (stack.getCount() > 1) {
             json.addProperty(JsonConstants.COUNT, stack.getCount());
         }
@@ -329,7 +330,7 @@ public class SerializerHelper {
      */
     public static JsonElement serializeFluidStack(@Nonnull FluidStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.FLUID, stack.getFluid().getRegistryName().toString());
+        json.addProperty(JsonConstants.FLUID, ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString());
         json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
         if (stack.hasTag()) {
             json.addProperty(JsonConstants.NBT, stack.getTag().toString());
@@ -345,9 +346,8 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonElement serializeBoxedChemicalStack(@Nonnull BoxedChemicalStack stack) {
-        JsonObject json;
         ChemicalType chemicalType = stack.getChemicalType();
-        json = switch (chemicalType) {
+        JsonObject json = switch (chemicalType) {
             case GAS -> serializeGasStack((GasStack) stack.getChemicalStack());
             case INFUSION -> serializeInfusionStack((InfusionStack) stack.getChemicalStack());
             case PIGMENT -> serializePigmentStack((PigmentStack) stack.getChemicalStack());
@@ -403,7 +403,7 @@ public class SerializerHelper {
 
     private static JsonObject serializeChemicalStack(@Nonnull String serializationKey, @Nonnull ChemicalStack<?> stack) {
         JsonObject json = new JsonObject();
-        json.addProperty(serializationKey, stack.getType().getRegistryName().toString());
+        json.addProperty(serializationKey, stack.getTypeRegistryName().toString());
         json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
         return json;
     }

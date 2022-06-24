@@ -4,7 +4,8 @@ import biomesoplenty.api.block.BOPBlocks;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.RegistryObject;
 import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
@@ -30,7 +31,8 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, BOPBlocks.WILLOW_PLANKS, BOPBlocks.WILLOW_LOG, BOPBlocks.WILLOW_FENCE, BiomesOPlentyWoodTypes.WILLOW);
     }
 
-    private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, ItemLike log, ItemLike fences, IWoodType woodType) {
-        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType);
+    private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Block> log, RegistryObject<Block> fences,
+          IWoodType woodType) {
+        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks.get(), log.get(), fences.get(), woodType);
     }
 }

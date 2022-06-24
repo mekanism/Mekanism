@@ -15,11 +15,12 @@ import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiTextFilter<FILTER, TILE> {
@@ -72,7 +73,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                 } else if (ingredient instanceof ChemicalStack<?> stack) {
                     return !stack.isEmpty();
                 }
-                return ingredient instanceof IForgeRegistryEntry;
+                return RegistryUtils.getName(ingredient) != null;
             }
 
             @Override
@@ -80,11 +81,14 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                 if (ingredient instanceof ItemStack stack) {
                     setFilterName(stack);
                 } else if (ingredient instanceof FluidStack stack) {
-                    setFilterName(stack.getFluid());
+                    setFilterName(RegistryUtils.getName(stack.getFluid()));
                 } else if (ingredient instanceof ChemicalStack<?> stack) {
-                    setFilterName(stack.getType());
-                } else if (ingredient instanceof IForgeRegistryEntry<?> registryEntry) {
-                    setFilterName(registryEntry);
+                    setFilterName(stack.getTypeRegistryName());
+                } else {
+                    ResourceLocation registryName = RegistryUtils.getName(ingredient);
+                    if (registryName != null) {
+                        setFilterName(registryName);
+                    }
                 }
             }
         };
@@ -100,8 +104,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         setFilterName(MekanismUtils.getModId(stack), true);
     }
 
-    private void setFilterName(IForgeRegistryEntry<?> registryEntry) {
-        setFilterName(registryEntry.getRegistryName().getNamespace(), true);
+    private void setFilterName(ResourceLocation registryName) {
+        setFilterName(registryName.getNamespace(), true);
     }
 
     private boolean setFilterName(String name, boolean click) {

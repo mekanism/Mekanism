@@ -1,7 +1,9 @@
 package mekanism.common;
 
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
@@ -37,8 +39,9 @@ public class CommonPlayerTracker {
         if (!player.level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
-            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
+            player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
             //player.sendMessage(ALPHA_WARNING, Util.NIL_UUID);
+            MekanismCriteriaTriggers.LOGGED_IN.trigger(serverPlayer);
         }
     }
 
@@ -51,11 +54,11 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
-        Player player = event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayer) player));
-
+        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(player));
+        RadiationManager.INSTANCE.updateClientRadiation(player);
     }
 
     @SubscribeEvent
@@ -77,18 +80,23 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void cloneEvent(PlayerEvent.Clone event) {
         event.getOriginal().reviveCaps();
-        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(cap ->
-              event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
+        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(cap ->
+              event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
         event.getOriginal().invalidateCaps();
     }
 
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
-        event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
-            c.set(0);
-            PacketRadiationData.sync((ServerPlayer) event.getPlayer());
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
+            if (!event.isEndConquered()) {
+                //If the player is returning from the end don't reset radiation
+                c.set(0);
+            }
+            PacketRadiationData.sync(player);
         });
-        Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(event.getPlayer().getUUID()));
+        RadiationManager.INSTANCE.updateClientRadiation(player);
+        Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));
     }
 
     /**

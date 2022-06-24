@@ -1,14 +1,14 @@
 {
   "type": "mekanism:combining",
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone/deepslate"
+    }
+  },
   "mainInput": {
     "amount": 5,
     "ingredient": {
       "tag": "forge:dusts/emerald"
-    }
-  },
-  "extraInput": {
-    "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
     }
   },
   "output": {

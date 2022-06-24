@@ -101,7 +101,7 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     @Override
     public void write(CompoundTag nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
     }
 
     @Override

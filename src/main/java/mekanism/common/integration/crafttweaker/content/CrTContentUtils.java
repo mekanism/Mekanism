@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
@@ -13,8 +14,8 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 /**
  * Helper class for registering chemicals via CraftTweaker. This is sort of akin to how ContentTweaker allows registering items/blocks via CraftTweaker
@@ -77,8 +78,7 @@ public class CrTContentUtils {
         queueForRegistration("Robit Skin", queuedRobitSkins, registryName, skin);
     }
 
-    private static <V extends IForgeRegistryEntry<V>> void queueForRegistration(String type, @Nullable Map<ResourceLocation, V> queued, ResourceLocation registryName,
-          V element) {
+    private static <V> void queueForRegistration(String type, @Nullable Map<ResourceLocation, V> queued, ResourceLocation registryName, V element) {
         //Only queue our chemicals for registration on the first run of our loader
         if (queued != null) {
             if (queued.put(registryName, element) == null) {
@@ -89,40 +89,29 @@ public class CrTContentUtils {
         }
     }
 
-    public static void registerCrTGases(RegistryEvent.Register<Gas> event) {
-        //We load our content scripts here in the first registry event of ours for our types of content
-        // to make sure that the new registry events have fired and that the registries exist and the bracket handler
-        // validators won't choke
-        try {
-            CraftTweakerAPI.getScriptRunManager().createScriptRun(new ScriptRunConfiguration(
-                  CrTConstants.CONTENT_LOADER,
-                  CrTConstants.CONTENT_LOADER_SOURCE_ID,
-                  ScriptRunConfiguration.RunKind.EXECUTE
-            )).execute();
-        } catch (Throwable e) {
-            CraftTweakerAPI.LOGGER.error("Unable to register chemicals due to an error.", e);
-        }
-        registerQueued(event, queuedGases, () -> queuedGases = null, "Gas", "gases");
+    public static void registerCrTContent(RegisterEvent event) {
+        event.register(MekanismAPI.gasRegistryName(), helper -> {
+            //We load our content scripts here in the first registry event of ours for our types of content
+            // to make sure that the new registry events have fired and that the registries exist and the bracket handler
+            // validators won't choke
+            try {
+                CraftTweakerAPI.getScriptRunManager().createScriptRun(new ScriptRunConfiguration(
+                      CrTConstants.CONTENT_LOADER,
+                      CrTConstants.CONTENT_LOADER_SOURCE_ID,
+                      ScriptRunConfiguration.RunKind.EXECUTE
+                )).execute();
+            } catch (Throwable e) {
+                CraftTweakerAPI.LOGGER.error("Unable to register chemicals due to an error.", e);
+            }
+            registerQueued(helper, queuedGases, () -> queuedGases = null, "Gas", "gases");
+        });
+        event.register(MekanismAPI.infuseTypeRegistryName(), helper -> registerQueued(helper, queuedInfuseTypes, () -> queuedInfuseTypes = null, "Infuse Type", "infuse types"));
+        event.register(MekanismAPI.pigmentRegistryName(), helper -> registerQueued(helper, queuedPigments, () -> queuedPigments = null, "Pigment", "pigments"));
+        event.register(MekanismAPI.slurryRegistryName(), helper -> registerQueued(helper, queuedSlurries, () -> queuedSlurries = null, "Slurry", "slurries"));
+        event.register(MekanismAPI.robitSkinRegistryName(), helper -> registerQueued(helper, queuedRobitSkins, () -> queuedRobitSkins = null, "Robit Skin", "robit skins"));
     }
 
-    public static void registerCrTInfuseTypes(RegistryEvent.Register<InfuseType> event) {
-        registerQueued(event, queuedInfuseTypes, () -> queuedInfuseTypes = null, "Infuse Type", "infuse types");
-    }
-
-    public static void registerCrTPigments(RegistryEvent.Register<Pigment> event) {
-        registerQueued(event, queuedPigments, () -> queuedPigments = null, "Pigment", "pigments");
-    }
-
-    public static void registerCrTSlurries(RegistryEvent.Register<Slurry> event) {
-        registerQueued(event, queuedSlurries, () -> queuedSlurries = null, "Slurry", "slurries");
-    }
-
-    public static void registerCrTRobitSkins(RegistryEvent.Register<RobitSkin> event) {
-        registerQueued(event, queuedRobitSkins, () -> queuedRobitSkins = null, "Robit Skin", "robit skins");
-    }
-
-    private static <V extends IForgeRegistryEntry<V>> void registerQueued(RegistryEvent.Register<V> event, Map<ResourceLocation, V> queued, Runnable setNull, String type,
-          String plural) {
+    private static <V> void registerQueued(RegisterHelper<V> helper, Map<ResourceLocation, V> queued, Runnable setNull, String type, String plural) {
         if (queued != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
             //The reference got copied as needed to our parameter, so we can invalidate the other reference to it safely, so that
             // we properly don't allow more registration to happen once we start registering a specific chemical type
@@ -131,7 +120,7 @@ public class CrTContentUtils {
             CraftTweakerAPI.LOGGER.info("Registering {} custom {}.", count, count == 1 ? type.toLowerCase(Locale.ROOT) : plural);
             for (Map.Entry<ResourceLocation, V> entry : queued.entrySet()) {
                 ResourceLocation registryName = entry.getKey();
-                event.getRegistry().register(entry.getValue().setRegistryName(registryName));
+                helper.register(registryName, entry.getValue());
                 CraftTweakerAPI.LOGGER.info("Registered {}: '{}'.", type, registryName);
             }
         }

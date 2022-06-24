@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:mud_bricks"
+    }
+  },
+  "output": {
+    "item": "minecraft:packed_mud"
+  }
+}

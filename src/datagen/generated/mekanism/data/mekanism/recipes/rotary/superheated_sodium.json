@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:superheated_sodium"
   },
-  "gasOutput": {
-    "gas": "mekanism:superheated_sodium",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:superheated_sodium"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:superheated_sodium"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:superheated_sodium",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:superheated_sodium"
   }
 }

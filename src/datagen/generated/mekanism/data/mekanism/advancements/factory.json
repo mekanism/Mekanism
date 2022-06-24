@@ -1,0 +1,64 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "factory": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:basic_smelting_factory",
+              "mekanism:basic_enriching_factory",
+              "mekanism:basic_crushing_factory",
+              "mekanism:basic_compressing_factory",
+              "mekanism:basic_combining_factory",
+              "mekanism:basic_purifying_factory",
+              "mekanism:basic_injecting_factory",
+              "mekanism:basic_infusing_factory",
+              "mekanism:basic_sawing_factory",
+              "mekanism:advanced_smelting_factory",
+              "mekanism:advanced_enriching_factory",
+              "mekanism:advanced_crushing_factory",
+              "mekanism:advanced_compressing_factory",
+              "mekanism:advanced_combining_factory",
+              "mekanism:advanced_purifying_factory",
+              "mekanism:advanced_injecting_factory",
+              "mekanism:advanced_infusing_factory",
+              "mekanism:advanced_sawing_factory",
+              "mekanism:elite_smelting_factory",
+              "mekanism:elite_enriching_factory",
+              "mekanism:elite_crushing_factory",
+              "mekanism:elite_compressing_factory",
+              "mekanism:elite_combining_factory",
+              "mekanism:elite_purifying_factory",
+              "mekanism:elite_injecting_factory",
+              "mekanism:elite_infusing_factory",
+              "mekanism:elite_sawing_factory",
+              "mekanism:ultimate_smelting_factory",
+              "mekanism:ultimate_enriching_factory",
+              "mekanism:ultimate_crushing_factory",
+              "mekanism:ultimate_compressing_factory",
+              "mekanism:ultimate_combining_factory",
+              "mekanism:ultimate_purifying_factory",
+              "mekanism:ultimate_injecting_factory",
+              "mekanism:ultimate_infusing_factory",
+              "mekanism:ultimate_sawing_factory"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.factory.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:basic_smelting_factory"
+    },
+    "title": {
+      "translate": "advancements.mekanism.factory.title"
+    }
+  }
+}

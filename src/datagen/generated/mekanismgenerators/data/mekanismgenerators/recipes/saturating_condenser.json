@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanismgenerators:saturating_condenser"
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "I": {
+      "tag": "forge:ingots/tin"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     "SIS",
     "IBI",
     "SIS"
   ],
-  "key": {
-    "S": {
-      "tag": "forge:ingots/steel"
-    },
-    "I": {
-      "tag": "forge:ingots/tin"
-    },
-    "B": {
-      "item": "minecraft:bucket"
-    }
+  "result": {
+    "item": "mekanismgenerators:saturating_condenser"
   }
 }

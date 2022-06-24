@@ -1,13 +1,13 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
   "itemInput": {
     "ingredient": {
       "item": "minecraft:cobblestone_slab"
     }
-  },
-  "chemicalInput": {
-    "amount": 10,
-    "tag": "mekanism:bio"
   },
   "output": {
     "item": "minecraft:mossy_cobblestone_slab"

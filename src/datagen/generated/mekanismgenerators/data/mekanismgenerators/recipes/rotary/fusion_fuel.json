@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:fusion_fuel"
   },
-  "gasOutput": {
-    "gas": "mekanismgenerators:fusion_fuel",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanismgenerators:fusion_fuel"
   },
   "gasInput": {
     "amount": 1,
     "tag": "mekanism:fusion_fuel"
   },
-  "fluidOutput": {
-    "fluid": "mekanismgenerators:fusion_fuel",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanismgenerators:fusion_fuel"
   }
 }

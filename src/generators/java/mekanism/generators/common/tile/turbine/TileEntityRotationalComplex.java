@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
@@ -15,16 +16,15 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void setMultiblock(UUID id) {
-        if (id == null && multiblockUUID != null) {
-            TurbineMultiblockData.clientRotationMap.removeFloat(multiblockUUID);
-        }
-        super.setMultiblock(id);
+    protected void multiblockChanged(@Nullable UUID old) {
+        super.multiblockChanged(old);
         if (!isRemote()) {
             TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getLevel(), getBlockPos().below());
             if (tile != null) {
                 tile.updateRotors();
             }
+        } else if (getMultiblockUUID() == null && old != null) {
+            TurbineMultiblockData.clientRotationMap.removeFloat(old);
         }
     }
 }

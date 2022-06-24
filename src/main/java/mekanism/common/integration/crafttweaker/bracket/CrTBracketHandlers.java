@@ -16,7 +16,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -106,7 +105,7 @@ public class CrTBracketHandlers {
         return getter.apply(getValue(bracket, tokens, registry));
     }
 
-    private static <V extends IForgeRegistryEntry<V>> V getValue(String bracket, String tokens, IForgeRegistry<V> registry) {
+    private static <V> V getValue(String bracket, String tokens, IForgeRegistry<V> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             String typeName = bracket.replace("_", " ");

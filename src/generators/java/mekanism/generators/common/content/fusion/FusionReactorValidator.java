@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class FusionReactorValidator extends CuboidStructureValidator<FusionReactorMultiblockData> {
 
     private static final VoxelCuboid BOUNDS = new VoxelCuboid(5, 5, 5);
-    private static final byte[][] ALLOWED_GRID = new byte[][]{
+    private static final byte[][] ALLOWED_GRID = {
           {0, 0, 1, 0, 0},
           {0, 1, 2, 1, 0},
           {1, 2, 2, 2, 1},

@@ -1,0 +1,28 @@
+{
+  "parent": "mekanism:materials",
+  "criteria": {
+    "metallurgic_infuser": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:metallurgic_infuser"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.metallurgic_infuser.description"
+    },
+    "icon": {
+      "item": "mekanism:metallurgic_infuser"
+    },
+    "title": {
+      "translate": "advancements.mekanism.metallurgic_infuser.title"
+    }
+  }
+}

@@ -37,6 +37,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return uuid;
     }
 
+    @SuppressWarnings("unchecked")
     protected NETWORK getNetwork() {
         return (NETWORK) this;
     }
@@ -98,8 +99,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void invalidate(@Nullable TRANSMITTER triggerTransmitter) {
-        if (transmitters.size() == 1 && triggerTransmitter != null) {
+        if (transmitters.size() == 1 && triggerTransmitter != null && !triggerTransmitter.isValid()) {
             //We're destroying the last transmitter in the network
+            //Note: We check it isn't valid to make sure we are destroying it and not just changing redstone sensitivity
             onLastTransmitterRemoved(triggerTransmitter);
         }
         removeInvalid(triggerTransmitter);

@@ -55,12 +55,12 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
     }
 
     @Override
-    public FormationResult postcheck(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
+    public FormationResult postcheck(FissionReactorMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
         Set<BlockPos> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
 
-        for (BlockPos coord : innerNodes) {
+        for (BlockPos coord : structure.internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, coord);
             AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
             FuelAssembly assembly = map.get(pos);
@@ -80,7 +80,6 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
                     }
                 }
                 fuelAssemblyCoords.add(coord);
-                structure.internalLocations.add(coord);
             } else if (tile instanceof TileEntityControlRodAssembly) {
                 if (assembly == null) {
                     map.put(pos, new FuelAssembly(coord, true));

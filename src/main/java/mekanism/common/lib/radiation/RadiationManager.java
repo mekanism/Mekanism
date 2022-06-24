@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,7 +51,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -108,6 +111,7 @@ public class RadiationManager implements IRadiationManager {
     private boolean loaded;
 
     private final Table<Chunk3D, Coord4D, RadiationSource> radiationTable = HashBasedTable.create();
+    private final Table<Chunk3D, Coord4D, IRadiationSource> radiationView = Tables.unmodifiableTable(radiationTable);
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
     private final Object2DoubleMap<UUID> playerExposureMap = new Object2DoubleOpenHashMap<>();
@@ -148,7 +152,7 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public Table<Chunk3D, Coord4D, IRadiationSource> getRadiationSources() {
-        return Tables.unmodifiableTable(radiationTable);
+        return radiationView;
     }
 
     @Override
@@ -157,6 +161,7 @@ public class RadiationManager implements IRadiationManager {
         if (!chunkSources.isEmpty()) {
             chunkSources.clear();
             markDirty();
+            updateClientRadiationForAll(chunk.dimension);
         }
     }
 
@@ -166,6 +171,7 @@ public class RadiationManager implements IRadiationManager {
         if (radiationTable.contains(chunk, coord)) {
             radiationTable.remove(chunk, coord);
             markDirty();
+            updateClientRadiationForAll(coord.dimension);
         }
     }
 
@@ -197,6 +203,8 @@ public class RadiationManager implements IRadiationManager {
             src.radiate(magnitude);
         }
         markDirty();
+        //Update radiation levels immediately
+        updateClientRadiationForAll(coord.dimension);
     }
 
     @Override
@@ -205,7 +213,7 @@ public class RadiationManager implements IRadiationManager {
             return;
         }
         if (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
-            entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity)))));
+            entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity)))));
         }
     }
 
@@ -246,6 +254,7 @@ public class RadiationManager implements IRadiationManager {
         if (!radiationTable.isEmpty()) {
             radiationTable.clear();
             markDirty();
+            updateClientRadiationForAll(player -> true);
         }
     }
 
@@ -257,12 +266,40 @@ public class RadiationManager implements IRadiationManager {
         double resistance = 0;
         for (EquipmentSlot type : EnumUtils.ARMOR_SLOTS) {
             ItemStack stack = entity.getItemBySlot(type);
-            Optional<IRadiationShielding> shielding = CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING_CAPABILITY, null).resolve();
+            Optional<IRadiationShielding> shielding = CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING, null).resolve();
             if (shielding.isPresent()) {
                 resistance += shielding.get().getRadiationShielding();
             }
         }
         return resistance;
+    }
+
+    private void updateClientRadiationForAll(ResourceKey<Level> dimension) {
+        updateClientRadiationForAll(player -> player.getLevel().dimension() == dimension);
+    }
+
+    private void updateClientRadiationForAll(Predicate<ServerPlayer> clearForPlayer) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null) {
+            //Validate it is not null in case we somehow are being called from the client or at some other unexpected time
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                if (clearForPlayer.test(player)) {
+                    updateClientRadiation(player);
+                }
+            }
+        }
+    }
+
+    public void updateClientRadiation(ServerPlayer player) {
+        double magnitude = getRadiationLevel(player);
+        double scaledMagnitude = Math.ceil(magnitude / BASELINE);
+        //If the last sync radiation value is different in magnitude by over the baseline, sync
+        // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
+        // to be zero as magnitude will always be at least BASELINE
+        if (scaledMagnitude != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
+            playerExposureMap.put(player.getUUID(), scaledMagnitude);
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude), player);
+        }
     }
 
     public void setClientEnvironmentalRadiation(double radiation) {
@@ -271,14 +308,18 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public double getClientEnvironmentalRadiation() {
-        return clientEnvironmentalRadiation;
+        return isRadiationEnabled() ? clientEnvironmentalRadiation : BASELINE;
     }
 
     public RadiationScale getClientScale() {
-        return clientRadiationScale;
+        return isRadiationEnabled() ? clientRadiationScale : RadiationScale.NONE;
     }
 
     public void tickClient(Player player) {
+        // terminate early if we're disabled
+        if (!isRadiationEnabled()) {
+            return;
+        }
         // perhaps also play Geiger counter sound effect, even when not using item (similar to fallout)
         if (clientRadiationScale != RadiationScale.NONE && player.level.getRandom().nextInt(2) == 0) {
             int count = player.level.getRandom().nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
@@ -301,24 +342,16 @@ public class RadiationManager implements IRadiationManager {
         if (!isRadiationEnabled()) {
             return;
         }
-        LazyOptional<IRadiationEntity> radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY);
+        LazyOptional<IRadiationEntity> radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY);
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (entity.level.getRandom().nextInt(20) == 0) {
-            double magnitude = getRadiationLevel(new Coord4D(entity));
+            double magnitude = getRadiationLevel(entity);
             if (magnitude > BASELINE && (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player))) {
                 // apply radiation to the player
                 radiate(entity, magnitude / 3_600D); // convert to Sv/s
             }
             radiationCap.ifPresent(IRadiationEntity::decay);
-            if (entity instanceof ServerPlayer player) {
-                double current = playerExposureMap.getOrDefault(entity.getUUID(), BASELINE);
-                //If the last sync radiation value is different in magnitude by over the baseline, sync
-                if (Math.abs(magnitude - current) >= BASELINE) {
-                    playerExposureMap.put(entity.getUUID(), magnitude);
-                    Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude), player);
-                }
-            }
         }
         // update the radiation capability (decay, sync, effects)
         radiationCap.ifPresent(c -> c.update(entity));
@@ -356,6 +389,8 @@ public class RadiationManager implements IRadiationManager {
                 sources.removeIf(RadiationSource::decay);
                 //Mark dirty regardless if we have any sources as magnitude changes or radiation sources change
                 markDirty();
+                //Update radiation levels for any players where it has changed
+                updateClientRadiationForAll(player -> true);
             }
         }
     }

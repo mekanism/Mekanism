@@ -1,13 +1,13 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
   "itemInput": {
     "ingredient": {
       "tag": "forge:sand"
     }
-  },
-  "chemicalInput": {
-    "amount": 10,
-    "tag": "mekanism:bio"
   },
   "output": {
     "item": "minecraft:dirt"

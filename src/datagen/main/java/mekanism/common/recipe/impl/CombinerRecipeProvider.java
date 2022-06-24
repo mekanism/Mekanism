@@ -42,6 +42,18 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Blocks.DIRT),
               new ItemStack(Blocks.ROOTED_DIRT)
         ).build(consumer, Mekanism.rl(basePath + "rooted_dirt"));
+        //Packed mud
+        CombinerRecipeBuilder.combining(
+              IngredientCreatorAccess.item().from(Tags.Items.CROPS_WHEAT),
+              IngredientCreatorAccess.item().from(Blocks.MUD),
+              new ItemStack(Blocks.PACKED_MUD)
+        ).build(consumer, Mekanism.rl(basePath + "packed_mud"));
+        //Muddy mangrove roots
+        CombinerRecipeBuilder.combining(
+              IngredientCreatorAccess.item().from(Blocks.MANGROVE_ROOTS),
+              IngredientCreatorAccess.item().from(Blocks.MUD),
+              new ItemStack(Blocks.MUDDY_MANGROVE_ROOTS)
+        ).build(consumer, Mekanism.rl(basePath + "muddy_mangrove_roots"));
     }
 
     private void addCombinerDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

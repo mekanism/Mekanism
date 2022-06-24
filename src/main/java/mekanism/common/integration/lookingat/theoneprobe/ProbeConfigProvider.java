@@ -25,7 +25,7 @@ public class ProbeConfigProvider implements IProbeConfigProvider {
     @Override
     public void getProbeConfig(IProbeConfig config, Player player, Level world, BlockState blockState, IProbeHitData data) {
         BlockEntity tile = WorldUtils.getTileEntity(world, data.getPos());
-        if (CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null).isPresent()) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY, null).isPresent()) {
             config.setRFMode(0);
         }
         if (tile instanceof TileEntityUpdateable) {

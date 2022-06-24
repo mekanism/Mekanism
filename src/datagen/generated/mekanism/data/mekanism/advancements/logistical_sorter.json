@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:item_transport",
+  "criteria": {
+    "logistical_sorter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanism:logistical_sorter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.logistical_sorter.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "mekanism:logistical_sorter"
+    },
+    "title": {
+      "translate": "advancements.mekanism.logistical_sorter.title"
+    }
+  }
+}

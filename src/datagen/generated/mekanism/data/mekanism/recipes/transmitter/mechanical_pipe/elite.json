@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:elite_mechanical_pipe",
-    "count": 8
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/reinforced"
+    },
+    "P": {
+      "item": "mekanism:advanced_mechanical_pipe"
+    }
   },
   "pattern": [
     "PPP",
     "PAP",
     "PPP"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:advanced_mechanical_pipe"
-    },
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    }
+  "result": {
+    "count": 8,
+    "item": "mekanism:elite_mechanical_pipe"
   }
 }

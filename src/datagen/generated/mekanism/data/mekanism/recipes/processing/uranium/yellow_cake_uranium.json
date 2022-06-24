@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:yellow_cake_uranium",
-    "count": 2
+    "count": 2,
+    "item": "mekanism:yellow_cake_uranium"
   }
 }

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "forge:storage_blocks/refined_glowstone"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "D": {
+      "tag": "forge:storage_blocks/diamond"
+    },
+    "H": {
+      "tag": "forge:pellets/polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "DPD",
+    "HHH"
+  ],
+  "result": {
+    "item": "mekanism:module_fortune_unit"
+  }
+}

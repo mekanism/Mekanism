@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:packed_mud"
+    }
+  },
+  "output": {
+    "item": "minecraft:mud_bricks"
+  }
+}

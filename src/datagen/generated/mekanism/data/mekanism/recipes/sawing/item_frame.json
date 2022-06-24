@@ -6,11 +6,11 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:stick",
-    "count": 8
+    "count": 8,
+    "item": "minecraft:stick"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:leather"
-  },
-  "secondaryChance": 1.0
+  }
 }

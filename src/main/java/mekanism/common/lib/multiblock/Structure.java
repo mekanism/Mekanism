@@ -103,6 +103,14 @@ public class Structure {
         }
     }
 
+    public <TILE extends BlockEntity & IMultiblockBase> void doImmediateUpdate(TILE tile, boolean tryValidate) {
+        //Pretend it got marked for update last tick so that when we call tick it will update
+        updateTimestamp = tile.getLevel().getGameTime() - 1;
+        didUpdate = false;
+        invalidate(tile.getLevel());
+        tick(tile, tryValidate);
+    }
+
     public <TILE extends BlockEntity & IMultiblockBase> void tick(TILE tile, boolean tryValidate) {
         if (!didUpdate && updateTimestamp == tile.getLevel().getGameTime() - 1) {
             didUpdate = true;

@@ -6,20 +6,16 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.resources.ResourceLocation;
 
 public class ModelArmoredJetpack extends ModelJetpack {
 
     public static final ModelLayerLocation ARMORED_JETPACK_LAYER = new ModelLayerLocation(Mekanism.rl("armored_jetpack"), "main");
-    private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
 
     private static final ModelPartData THRUSTER_LEFT = thrusterLeft(-1.9F);
     private static final ModelPartData THRUSTER_RIGHT = thrusterRight(-1.9F);
@@ -73,7 +69,7 @@ public class ModelArmoredJetpack extends ModelJetpack {
     }
 
     private ModelArmoredJetpack(ModelPart root) {
-        super(root, JETPACK_TEXTURE);
+        super(root);
         //Note: Parts are gotten by name and given our parts we override for super have the same name, we don't have to inject them elsewhere
         armoredParts = getRenderableParts(root, CHESTPLATE, LEFT_GUARD_TOP, RIGHT_GUARD_TOP, MIDDLE_PLATE, RIGHT_GUARD_BOT, LEFT_GUARD_BOT);
         armoredLights = getRenderableParts(root, RIGHT_LIGHT, LEFT_LIGHT);

@@ -22,7 +22,7 @@ public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends GuiEventList
     ELEMENT jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories);
 
     default ELEMENT jeiCategory(TileEntityMekanism tile) {
-        return jeiCategories(MekanismJEIRecipeType.findType(tile.getBlockType().getRegistryName()));
+        return jeiCategories(MekanismJEIRecipeType.findType(tile.getBlockTypeRegistryName()));
     }
 
     default ELEMENT jeiCrafting() {

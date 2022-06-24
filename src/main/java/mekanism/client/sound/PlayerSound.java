@@ -33,7 +33,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     }
 
     public PlayerSound(@Nonnull Player player, @Nonnull SoundEvent sound, int subtitleFrequency) {
-        super(sound, SoundSource.PLAYERS);
+        super(sound, SoundSource.PLAYERS, player.level.getRandom());
         this.playerReference = new WeakReference<>(player);
         this.subtitleFrequency = subtitleFrequency;
         this.lastX = (float) player.getX();

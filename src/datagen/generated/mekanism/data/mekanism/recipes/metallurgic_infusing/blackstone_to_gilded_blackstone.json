@@ -1,13 +1,13 @@
 {
   "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 100,
+    "tag": "mekanism:gold"
+  },
   "itemInput": {
     "ingredient": {
       "item": "minecraft:blackstone"
     }
-  },
-  "chemicalInput": {
-    "amount": 100,
-    "tag": "mekanism:gold"
   },
   "output": {
     "item": "minecraft:gilded_blackstone"

@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:module_hydraulic_propulsion_unit"
-  },
-  "pattern": [
-    "A#A",
-    "EPE",
-    "HHH"
-  ],
   "key": {
-    "A": {
-      "tag": "forge:alloys/elite"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
     "#": {
       "item": "mekanism:free_runners"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
     },
     "E": {
       "item": "mekanism:energy_tablet"
     },
     "H": {
       "item": "mekanism:pellet_polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
     }
+  },
+  "pattern": [
+    "A#A",
+    "EPE",
+    "HHH"
+  ],
+  "result": {
+    "item": "mekanism:module_hydraulic_propulsion_unit"
   }
 }

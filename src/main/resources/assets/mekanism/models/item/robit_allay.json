@@ -1,0 +1,164 @@
+{
+	"parent": "mekanism:item/robit",
+	"credit": "Model by CyanideX, Modified by agnor99",
+	"loader": "mekanism:robit",
+	"elements": [
+		{
+			"name": "trackLeft",
+			"from": [11, 0, 4],
+			"to": [13, 3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [12, 1.5, 8.5]},
+			"faces": {
+				"north": {"uv": [10.5, 1, 12, 2], "rotation": 90, "texture": "#robit"},
+				"east": {"uv": [7.5, 3, 12, 4.5], "texture": "#robit"},
+				"south": {"uv": [7.5, 1, 9, 2], "rotation": 90, "texture": "#robit"},
+				"west": {"uv": [12, 3, 7.5, 4.5], "texture": "#robit"},
+				"up": {"uv": [7.5, 0, 12, 1], "rotation": 270, "texture": "#robit"},
+				"down": {"uv": [7.5, 2, 12, 3], "rotation": 90, "texture": "#robit"}
+			}
+		},
+		{
+			"name": "trackRight",
+			"from": [3, 0, 4],
+			"to": [5, 3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4, 1.5, 8.5]},
+			"faces": {
+				"north": {"uv": [10.5, 1, 12, 2], "rotation": 90, "texture": "#robit"},
+				"east": {"uv": [7.5, 3, 12, 4.5], "texture": "#robit"},
+				"south": {"uv": [7.5, 1, 9, 2], "rotation": 90, "texture": "#robit"},
+				"west": {"uv": [12, 3, 7.5, 4.5], "texture": "#robit"},
+				"up": {"uv": [7.5, 0, 12, 1], "rotation": 270, "texture": "#robit"},
+				"down": {"uv": [7.5, 2, 12, 3], "rotation": 90, "texture": "#robit"}
+			}
+		},
+		{
+			"name": "eyeLeft",
+			"from": [8.5, 8, 9.51],
+			"to": [9.5, 10, 10.51],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 4.51, 4.499]},
+			"faces": {
+				"south": {"uv": [6.5, 12, 7.5, 12.5], "rotation": 270, "texture": "#robit", "lightLevel": 15}
+			}
+		},
+		{
+			"name": "eyeRight",
+			"from": [6.5, 8, 9.51],
+			"to": [7.5, 10, 10.51],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 4.51, 4.499]},
+			"faces": {
+				"south": {"uv": [6.5, 12, 7.5, 12.5], "rotation": 270, "texture": "#robit", "lightLevel": 15}
+			}
+		},
+		{
+			"name": "base",
+			"from": [5, 1, 5],
+			"to": [11, 2, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 1.5, 8.5]},
+			"faces": {
+				"north": {"uv": [13, 7, 16, 7.5], "texture": "#robit"},
+				"south": {"uv": [13, 7, 16, 7.5], "texture": "#robit"},
+				"up": {"uv": [13, 3.5, 16, 7], "texture": "#robit"},
+				"down": {"uv": [13, 0, 16, 3.5], "texture": "#robit"}
+			}
+		},
+		{
+			"name": "bodyNew",
+			"from": [6.5, 5, 7],
+			"to": [9.5, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8.5, 2, 8.5]},
+			"faces": {
+				"north": {"uv": [12, 9, 13.5, 10], "texture": "#robit", "lightLevel": 3},
+				"east": {"uv": [11, 9, 12, 10], "texture": "#robit", "lightLevel": 3},
+				"south": {"uv": [14.5, 9, 16, 10], "texture": "#robit", "lightLevel": 3},
+				"west": {"uv": [13.5, 9, 14.5, 10], "texture": "#robit", "lightLevel": 3},
+				"up": {"uv": [0, 0, 2.7, 1.8], "texture": "#robit", "lightLevel": 3},
+				"down": {"uv": [12, 8, 13.5, 9], "texture": "#robit", "lightLevel": 3}
+			}
+		},
+		{
+			"name": "headNew",
+			"from": [5.5, 7, 5.5],
+			"to": [10.5, 12, 10.5],
+			"faces": {
+				"north": {"uv": [0, 0, 2.5, 2.5], "texture": "#robit", "lightLevel": 3},
+				"east": {"uv": [5, 2.5, 7.5, 5], "texture": "#robit", "lightLevel": 3},
+				"south": {"uv": [2.5, 2.5, 5, 5], "texture": "#robit", "lightLevel": 3},
+				"west": {"uv": [0, 2.5, 2.5, 5], "texture": "#robit", "lightLevel": 3},
+				"up": {"uv": [2.5, 0, 5, 2.5], "texture": "#robit", "lightLevel": 3},
+				"down": {"uv": [5, 0, 7.5, 2.5], "texture": "#robit", "lightLevel": 3}
+			}
+		},
+		{
+			"name": "rightWing",
+			"from": [7.5, 1, -1],
+			"to": [7.5, 6, 7],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [7.5, 6, 7]},
+			"faces": {
+				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit", "lightLevel": 3},
+				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit", "lightLevel": 3}
+			}
+		},
+		{
+			"name": "leftWing",
+			"from": [8.5, 1, -1],
+			"to": [8.5, 6, 7],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8.5, 6, 7]},
+			"faces": {
+				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit", "lightLevel": 3},
+				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit", "lightLevel": 3}
+			}
+		},
+		{
+			"name": "rightArm",
+			"from": [5.5, 3, 7],
+			"to": [6.5, 7, 9],
+			"rotation": {"angle": -22.5, "axis": "z", "origin": [6.5, 7, 8]},
+			"faces": {
+				"north": {"uv": [9, 14, 9.5, 16], "texture": "#robit", "lightLevel": 3},
+				"east": {"uv": [8, 14, 9, 16], "texture": "#robit", "lightLevel": 3},
+				"south": {"uv": [9.5, 14, 10, 16], "texture": "#robit", "lightLevel": 3},
+				"west": {"uv": [10, 14, 11, 16], "texture": "#robit", "lightLevel": 3},
+				"up": {"uv": [9, 13, 10, 13.5], "texture": "#robit", "lightLevel": 3},
+				"down": {"uv": [9, 13.5, 10, 14], "texture": "#robit", "lightLevel": 3}
+			}
+		},
+		{
+			"name": "leftArm",
+			"from": [9.5, 3, 7],
+			"to": [10.5, 7, 9],
+			"rotation": {"angle": 22.5, "axis": "z", "origin": [9.5, 7, 8]},
+			"faces": {
+				"north": {"uv": [9, 11, 9.5, 13], "texture": "#robit"},
+				"east": {"uv": [8, 11, 9, 13], "texture": "#robit"},
+				"south": {"uv": [9.5, 11, 10, 13], "texture": "#robit"},
+				"west": {"uv": [10, 11, 11, 13], "texture": "#robit"},
+				"up": {"uv": [9, 10, 10, 10.5], "texture": "#robit"},
+				"down": {"uv": [9, 10.5, 10, 11], "texture": "#robit"}
+			}
+		},
+		{
+			"name": "rod",
+			"from": [7.5, 2, 7.5],
+			"to": [8.5, 4, 8.5],
+			"faces": {
+				"north": {"uv": [1.5, 13.5, 2, 14.5], "texture": "#robit"},
+				"east": {"uv": [1, 13.5, 1.5, 14.5], "texture": "#robit"},
+				"south": {"uv": [0.5, 13.5, 1, 14.5], "texture": "#robit"},
+				"west": {"uv": [0, 13.5, 0.5, 14.5], "texture": "#robit"}
+			}
+		},
+		{
+			"name": "lowerBody",
+			"from": [6.5, 4, 7],
+			"to": [8.5, 5, 9],
+			"faces": {
+				"north": {"uv": [12, 10, 13, 10.5], "texture": "#robit", "lightLevel": 3},
+				"east": {"uv": [11, 10, 12, 10.5], "texture": "#robit", "lightLevel": 3},
+				"south": {"uv": [12, 10, 13, 10.5], "texture": "#robit", "lightLevel": 3},
+				"west": {"uv": [15, 10, 16, 10.5], "texture": "#robit", "lightLevel": 3},
+				"up": {"uv": [13.5, 12.5, 14, 13], "texture": "#robit", "lightLevel": 3},
+				"down": {"uv": [12.5, 8, 13.5, 9], "texture": "#robit", "lightLevel": 3}
+			}
+		}
+	]
+}

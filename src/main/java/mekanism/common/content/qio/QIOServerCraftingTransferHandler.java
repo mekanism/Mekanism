@@ -169,9 +169,9 @@ public class QIOServerCraftingTransferHandler {
             if (frequency == null) {
                 return fail("Received transfer request from: {}, for: {}, with a QIO source but no selected frequency.", player, recipeID);
             }
-            HashedItem storedItem = frequency.getTypeByUUID(qioSource);
+            HashedItem storedItem = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(qioSource);
             if (storedItem == null) {
-                return fail("Received transfer request from: {}, for: {}, could not find stored item with UUID: {}.", player, recipeID, qioSource);
+                return fail("Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
             }
             long stored = frequency.getStored(storedItem);
             slotData = stored == 0 ? FrequencySlotData.EMPTY : new FrequencySlotData(storedItem, stored);
@@ -331,19 +331,9 @@ public class QIOServerCraftingTransferHandler {
                         //No room for all our items, fail
                         return false;
                     }
-                    UUID uuid = frequency.getUUIDForType(entry.getKey());
-                    if (frequency.getTypeByUUID(uuid) == null) {
-                        //It is not stored, we need to use an item type up
-                        // Note: We first get the uuid of the item as we need it for looking up in the slot data,
-                        // and then we also validate against getting the type by uuid to see if it is actually
-                        // there as uuids stay valid for a tick longer than they are stored
-                        availableItemTypes--;
-                        if (availableItemTypes <= 0) {
-                            //Not enough room for types
-                            return false;
-                        }
-                    } else {
+                    if (frequency.isStoring(entry.getKey())) {
                         //It is stored, check to make sure it isn't a type we are removing fully
+                        UUID uuid = QIOGlobalItemLookup.INSTANCE.getUUIDForType(entry.getKey());
                         FrequencySlotData slotData = frequencyAvailableItems.get(uuid);
                         if (slotData != null && slotData.getAvailable() == 0) {
                             // if it is, then we need to reclaim the item type as being available
@@ -352,6 +342,13 @@ public class QIOServerCraftingTransferHandler {
                                 //Not enough room for types
                                 return false;
                             }
+                        }
+                    } else {
+                        //It is not stored, we need to use an item type up
+                        availableItemTypes--;
+                        if (availableItemTypes <= 0) {
+                            //Not enough room for types
+                            return false;
                         }
                     }
                 }
@@ -417,8 +414,11 @@ public class QIOServerCraftingTransferHandler {
                 if (slot == -1) {
                     UUID qioSource = source.getQioSource();
                     //Neither the source nor the frequency can be null here as we validated that during simulation
-                    HashedItem storedItem = frequency.getTypeByUUID(qioSource);
+                    HashedItem storedItem = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(qioSource);
                     if (storedItem == null) {
+                        bail(targetContents, "Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
+                        return;
+                    } else if (!frequency.isStoring(storedItem)) {
                         bail(targetContents, "Received transfer request from: {}, for: {}, could not find stored item with UUID: {}. "
                                              + "This likely means that more of it was requested than is stored.", player, recipeID, qioSource);
                         return;
@@ -704,7 +704,7 @@ public class QIOServerCraftingTransferHandler {
         }
     }
 
-    private static abstract class ItemData {
+    private abstract static class ItemData {
 
         private int available;
 

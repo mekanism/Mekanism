@@ -78,7 +78,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
      * @param consumer Finished Recipe Consumer.
      */
     public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, output.getItem().getRegistryName());
+        build(consumer, output.getItem());
     }
 
     public class ItemStackToItemStackRecipeResult extends RecipeResult {

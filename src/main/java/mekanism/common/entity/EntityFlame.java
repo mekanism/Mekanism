@@ -283,7 +283,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     @Override
     public void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
-        nbtTags.putInt(NBTConstants.MODE, mode.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.MODE, mode);
     }
 
     @Nonnull

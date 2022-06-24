@@ -5,7 +5,7 @@
     "tag": "forge:brine"
   },
   "output": {
-    "fluid": "mekanism:lithium",
-    "amount": 1
+    "amount": 1,
+    "fluid": "mekanism:lithium"
   }
 }

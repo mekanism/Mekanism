@@ -4,20 +4,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
-import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
@@ -60,6 +56,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -68,7 +65,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -80,6 +76,8 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -87,8 +85,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -96,7 +92,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.UsernameCache;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
@@ -109,11 +108,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
  */
 public final class MekanismUtils {
 
-    public static final Codec<Direction> DIRECTION_CODEC = StringRepresentable.fromEnum(Direction::values, Direction::byName);
-
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
-
-    public static final Direction[] SIDE_DIRS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
@@ -157,7 +152,7 @@ public final class MekanismUtils {
         Item item = stack.getItem();
         String modid = item.getCreatorModId(stack);
         if (modid == null) {
-            ResourceLocation registryName = item.getRegistryName();
+            ResourceLocation registryName = RegistryUtils.getName(item);
             if (registryName == null) {
                 Mekanism.logger.error("Unexpected null registry name for item of class type: {}", item.getClass().getSimpleName());
                 return "";
@@ -353,9 +348,7 @@ public final class MekanismUtils {
         float numUpgrades = 0;
         if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-            if (upgrades.containsKey(Upgrade.ENERGY)) {
-                numUpgrades = upgrades.get(Upgrade.ENERGY);
-            }
+            numUpgrades = upgrades.getOrDefault(Upgrade.ENERGY, 0);
         }
         return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), numUpgrades / Upgrade.ENERGY.getMax()));
     }
@@ -389,6 +382,23 @@ public final class MekanismUtils {
             case LOW -> !tile.isPowered();
             case PULSE -> tile.isPowered() && !tile.wasPowered();
         };
+    }
+
+    public static boolean lighterThanAirGas(FluidStack stack) {
+        return stack.getFluid().is(Tags.Fluids.GASEOUS) && stack.getFluid().getFluidType().getDensity(stack) <= 0;
+    }
+
+    public static int getEnchantmentLevel(ListTag enchantments, Enchantment enchantment) {
+        //Copy of EnchantmentHelper#getTagEnchantmentLevel except modified to support being passed a tag
+        ResourceLocation enchantmentId = EnchantmentHelper.getEnchantmentId(enchantment);
+        for (int i = 0; i < enchantments.size(); ++i) {
+            CompoundTag compoundtag = enchantments.getCompound(i);
+            ResourceLocation id = EnchantmentHelper.getEnchantmentId(compoundtag);
+            if (id != null && id.equals(enchantmentId)) {
+                return EnchantmentHelper.getEnchantmentLevel(compoundtag);
+            }
+        }
+        return 0;
     }
 
     /**
@@ -436,10 +446,9 @@ public final class MekanismUtils {
      * @apiNote Only call on the client.
      */
     public static void addFrequencyToTileTooltip(ItemStack stack, FrequencyType<?> frequencyType, List<Component> tooltip) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-            CompoundTag frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
-            if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
-                Frequency frequency = frequencyType.create(frequencyComponent.getCompound(frequencyType.getName()));
+        ItemDataUtils.setCompoundIfPresent(stack, NBTConstants.COMPONENT_FREQUENCY, frequencyComponent -> {
+            NBTUtils.setCompoundIfPresent(frequencyComponent, frequencyType.getName(), frequencyCompound -> {
+                Frequency frequency = frequencyType.create(frequencyCompound);
                 frequency.setValid(false);
                 tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
                 if (frequency.getOwner() != null) {
@@ -449,8 +458,8 @@ public final class MekanismUtils {
                     }
                 }
                 tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? APILang.PUBLIC : APILang.PRIVATE));
-            }
-        }
+            });
+        });
     }
 
     /**
@@ -472,12 +481,8 @@ public final class MekanismUtils {
     }
 
     public static void addUpgradesToTooltip(ItemStack stack, List<Component> tooltip) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-            for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-                tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
-            }
-        }
+        ItemDataUtils.setCompoundIfPresent(stack, NBTConstants.COMPONENT_UPGRADE, upgradeComponent -> Upgrade.buildMap(upgradeComponent)
+              .forEach((upgrade, level) -> tooltip.add(UpgradeDisplay.of(upgrade, level).getTextComponent())));
     }
 
     public static Component getEnergyDisplayShort(FloatingLong energy) {
@@ -521,6 +526,12 @@ public final class MekanismUtils {
 
     public static CraftingContainer getDummyCraftingInv() {
         AbstractContainerMenu tempContainer = new AbstractContainerMenu(MenuType.CRAFTING, 1) {
+            @Nonnull
+            @Override
+            public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+                return ItemStack.EMPTY;
+            }
+
             @Override
             public boolean stillValid(@Nonnull Player player) {
                 return false;
@@ -557,7 +568,7 @@ public final class MekanismUtils {
             Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
             warnedFails.add(uuid);
         }
-        return ret != null ? ret : "<" + uuid + ">";
+        return ret == null ? "<" + uuid + ">" : ret;
     }
 
     /**
@@ -717,7 +728,7 @@ public final class MekanismUtils {
      * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing(net.minecraft.tags.TagKey, double)} except calculates if a given
      * portion of the player is in the fluids.
      */
-    public static Map<Fluid, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
+    public static Map<FluidType, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
         AABB bb = modifyBoundingBox.apply(player.getBoundingBox().deflate(0.001));
         int xMin = Mth.floor(bb.minX);
         int xMax = Mth.ceil(bb.maxX);
@@ -729,7 +740,7 @@ public final class MekanismUtils {
             //If the position isn't actually loaded, just return there isn't any fluids
             return Collections.emptyMap();
         }
-        Map<Fluid, FluidInDetails> fluidsIn = new HashMap<>();
+        Map<FluidType, FluidInDetails> fluidsIn = new HashMap<>();
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = xMin; x < xMax; ++x) {
             for (int y = yMin; y < yMax; ++y) {
@@ -740,14 +751,8 @@ public final class MekanismUtils {
                         double fluidY = y + fluidState.getHeight(player.level, mutablePos);
                         if (bb.minY <= fluidY) {
                             //The fluid intersects the bounding box
-                            Fluid fluid = fluidState.getType();
-                            if (fluid instanceof FlowingFluid flowingFluid) {
-                                //Almost always will be flowing fluid but check just in case
-                                // and if it is grab the source state to not have duplicates
-                                fluid = flowingFluid.getSource();
-                            }
-                            FluidInDetails details = fluidsIn.computeIfAbsent(fluid, f -> new FluidInDetails());
-                            details.positions.add(mutablePos.immutable());
+                            FluidInDetails details = fluidsIn.computeIfAbsent(fluidState.getFluidType(), f -> new FluidInDetails());
+                            details.positions.put(mutablePos.immutable(), fluidState);
                             double actualFluidHeight;
                             if (fluidY > bb.maxY) {
                                 //Fluid goes past the top of the bounding box, limit it to the top
@@ -768,19 +773,27 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
-          Collection<BlockPos> found, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier, BlockState sourceState) {
+    public static void veinMineArea(IEnergyContainer energyContainer, FloatingLong energyRequired, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
+          Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
-        energyAvailable = energyAvailable.subtract(destroyEnergyFunction.apply(sourceState.getDestroySpeed(world, pos)));
-        for (BlockPos foundPos : found) {
+        energyAvailable = energyAvailable.subtract(energyRequired);
+        for (Object2IntMap.Entry<BlockPos> foundEntry : found.object2IntEntrySet()) {
+            BlockPos foundPos = foundEntry.getKey();
             if (pos.equals(foundPos)) {
                 continue;
             }
             BlockState targetState = world.getBlockState(foundPos);
-            FloatingLong destroyEnergy = destroyEnergyFunction.apply(targetState.getDestroySpeed(world, foundPos))
-                  .multiply(distanceMultiplier.applyAsDouble(WorldUtils.distanceBetween(pos, foundPos)));
+            if (targetState.isAir()) {
+                continue;
+            }
+            float hardness = targetState.getDestroySpeed(world, foundPos);
+            if (hardness == -1) {
+                continue;
+            }
+            int distance = foundEntry.getIntValue();
+            FloatingLong destroyEnergy = distance == 0 ? blastEnergy.calc(hardness) : veinEnergy.calc(hardness, distance, targetState);
             if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
@@ -845,15 +858,27 @@ public final class MekanismUtils {
 
     public static class FluidInDetails {
 
-        private final List<BlockPos> positions = new ArrayList<>();
+        private final Map<BlockPos, FluidState> positions = new HashMap<>();
         private final Long2DoubleMap heights = new Long2DoubleArrayMap();
 
-        public List<BlockPos> getPositions() {
+        public Map<BlockPos, FluidState> getPositions() {
             return positions;
         }
 
         public double getMaxHeight() {
             return heights.values().doubleStream().max().orElse(0);
         }
+    }
+
+    @FunctionalInterface
+    public interface BlastEnergyFunction {
+
+        FloatingLong calc(float hardness);
+    }
+
+    @FunctionalInterface
+    public interface VeinEnergyFunction {
+
+        FloatingLong calc(float hardness, int distance, BlockState state);
     }
 }

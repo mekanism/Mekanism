@@ -2,7 +2,6 @@ package mekanism.common.content.evaporation;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.EnumSet;
-import java.util.Set;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -73,7 +72,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
     }
 
     @Override
-    public FormationResult postcheck(EvaporationMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
+    public FormationResult postcheck(EvaporationMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         if (!foundController) {
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER);
         }

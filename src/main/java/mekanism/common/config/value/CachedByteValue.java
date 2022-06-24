@@ -17,6 +17,13 @@ public class CachedByteValue extends CachedValue<Byte> implements ByteSupplier {
         return new CachedByteValue(config, internal);
     }
 
+    public byte getOrDefault() {
+        if (resolved || isLoaded()) {
+            return get();
+        }
+        return internal.getDefault();
+    }
+
     public byte get() {
         if (!resolved) {
             //If we don't have a cached value or need to resolve it again, get it from the actual ConfigValue

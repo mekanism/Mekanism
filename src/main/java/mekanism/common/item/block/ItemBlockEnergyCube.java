@@ -57,7 +57,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             EnergyCubeTier tier = Attribute.getTier(getBlock(), EnergyCubeTier.class);
             ItemStack stack = new ItemStack(this);
             if (tier == EnergyCubeTier.CREATIVE) {

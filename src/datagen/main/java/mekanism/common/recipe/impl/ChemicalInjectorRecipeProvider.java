@@ -10,6 +10,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -30,12 +31,12 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
-        //Dirt -> clay
+        //Dirt -> mud
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Blocks.DIRT),
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
-              new ItemStack(Blocks.CLAY)
-        ).build(consumer, Mekanism.rl(basePath + "dirt_to_clay"));
+              new ItemStack(Blocks.MUD)
+        ).build(consumer, Mekanism.rl(basePath + "dirt_to_mud"));
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(Tags.Items.GUNPOWDER),
@@ -103,7 +104,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(dead),
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, water),
               new ItemStack(living)
-        ).build(consumer, Mekanism.rl(basePath + living.asItem().getRegistryName().getPath()));
+        ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(living.asItem())));
     }
 
     private void addChemicalInjectorOxidizingRecipe(Consumer<FinishedRecipe> consumer, String basePath) {

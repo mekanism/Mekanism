@@ -4,12 +4,12 @@
     "amount": 5,
     "tag": "minecraft:water"
   },
+  "output": {
+    "amount": 1,
+    "slurry": "mekanism:clean_iron"
+  },
   "slurryInput": {
     "amount": 1,
     "slurry": "mekanism:dirty_iron"
-  },
-  "output": {
-    "slurry": "mekanism:clean_iron",
-    "amount": 1
   }
 }

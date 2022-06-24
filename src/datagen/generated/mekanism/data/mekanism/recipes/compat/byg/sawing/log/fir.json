@@ -2,21 +2,21 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:fir_logs"
+      "tag": "byg:wood/fir_logs"
     }
   },
   "mainOutput": {
-    "item": "byg:fir_planks",
-    "count": 6
+    "count": 6,
+    "item": "byg:fir_planks"
   },
+  "secondaryChance": 0.25,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.25
+  }
 }

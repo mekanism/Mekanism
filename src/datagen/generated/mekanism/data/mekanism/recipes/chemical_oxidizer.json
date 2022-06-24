@@ -1,28 +1,28 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:chemical_oxidizer"
+  "key": {
+    "#": {
+      "item": "mekanism:dynamic_tank"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "P": {
+      "tag": "mekanism:personal_storage"
+    },
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
+    }
   },
   "pattern": [
     "ACA",
     "P#T",
     "ACA"
   ],
-  "key": {
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    },
-    "C": {
-      "tag": "forge:circuits/basic"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "#": {
-      "item": "mekanism:dynamic_tank"
-    },
-    "P": {
-      "tag": "mekanism:personal_storage"
-    }
+  "result": {
+    "item": "mekanism:chemical_oxidizer"
   }
 }

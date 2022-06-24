@@ -89,7 +89,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         if (!isRemote()) {
             BoilerValveMode mode = getMode().getNext();
             setMode(mode);
-            player.sendMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)));
         }
         return InteractionResult.SUCCESS;
     }

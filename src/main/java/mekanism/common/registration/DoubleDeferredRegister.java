@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 
 public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
@@ -17,6 +18,10 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
     public DoubleDeferredRegister(DeferredRegister<PRIMARY> primaryRegistry, DeferredRegister<SECONDARY> secondaryRegistry) {
         this.primaryRegister = primaryRegistry;
         this.secondaryRegister = secondaryRegistry;
+    }
+
+    public DoubleDeferredRegister(String modid, IForgeRegistry<PRIMARY> primaryRegistry, IForgeRegistry<SECONDARY> secondaryRegistry) {
+        this(DeferredRegister.create(primaryRegistry, modid), DeferredRegister.create(secondaryRegistry, modid));
     }
 
     protected DoubleDeferredRegister(String modid, ResourceKey<? extends Registry<PRIMARY>> primaryRegistryName,

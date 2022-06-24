@@ -42,7 +42,11 @@ body:
       description: What version of Mekanism are you using?
       options:
         - Current Dev Branch (Manually Compiled)
-        - 10.2.0 (Latest)
+        - 10.2.4 (Latest)
+        - 10.2.3
+        - 10.2.2
+        - 10.2.1
+        - 10.2.0
         - Older
     validations:
       required: true

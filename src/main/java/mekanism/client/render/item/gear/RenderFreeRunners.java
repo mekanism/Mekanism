@@ -3,6 +3,7 @@ package mekanism.client.render.item.gear;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import javax.annotation.Nonnull;
+import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.render.item.MekanismISTER;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,12 +13,23 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderFreeRunners extends MekanismISTER {
 
-    public static final RenderFreeRunners RENDERER = new RenderFreeRunners();
+    public static final RenderFreeRunners RENDERER = new RenderFreeRunners(false);
+    public static final RenderFreeRunners ARMORED_RENDERER = new RenderFreeRunners(true);
+
+    private final boolean armored;
     private ModelFreeRunners freeRunners;
+
+    private RenderFreeRunners(boolean armored) {
+        this.armored = armored;
+    }
 
     @Override
     public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
-        freeRunners = new ModelFreeRunners(getEntityModels());
+        if (armored) {
+            freeRunners = new ModelArmoredFreeRunners(getEntityModels());
+        } else {
+            freeRunners = new ModelFreeRunners(getEntityModels());
+        }
     }
 
     @Override

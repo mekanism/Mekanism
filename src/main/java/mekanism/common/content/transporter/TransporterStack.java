@@ -96,7 +96,7 @@ public class TransporterStack {
         updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         updateTag.putInt(NBTConstants.PROGRESS, progress);
         updateTag.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
-        updateTag.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
+        NBTUtils.writeEnum(updateTag, NBTConstants.PATH_TYPE, pathType);
         if (pathToTarget.indexOf(transporter.getTilePos()) > 0) {
             updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(getNext(transporter)));
         }
@@ -121,12 +121,12 @@ public class TransporterStack {
         nbtTags.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
 
         if (idleDir != null) {
-            nbtTags.putInt(NBTConstants.IDLE_DIR, idleDir.ordinal());
+            NBTUtils.writeEnum(nbtTags, NBTConstants.IDLE_DIR, idleDir);
         }
         if (homeLocation != null) {
             nbtTags.put(NBTConstants.HOME_LOCATION, NbtUtils.writeBlockPos(homeLocation));
         }
-        nbtTags.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.PATH_TYPE, pathType);
         itemStack.save(nbtTags);
     }
 

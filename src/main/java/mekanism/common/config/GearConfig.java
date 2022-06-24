@@ -10,6 +10,8 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -21,8 +23,8 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String ENERGY_TABLET_CATEGORY = "energy_tablet";
     private static final String FLAMETHROWER_CATEGORY = "flamethrower";
     private static final String FREE_RUNNER_CATEGORY = "free_runner";
+    private static final String ARMORED_SUBCATEGORY = "armored";
     private static final String JETPACK_CATEGORY = "jetpack";
-    private static final String ARMORED_JETPACK_SUBCATEGORY = "armored";
     private static final String NETWORK_READER_CATEGORY = "network_reader";
     private static final String PORTABLE_TELEPORTER_CATEGORY = "portable_teleporter";
     private static final String SCUBA_TANK_CATEGORY = "scuba_tank";
@@ -67,12 +69,17 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatValue freeRunnerFallDamageRatio;
     public final CachedFloatingLongValue freeRunnerMaxEnergy;
     public final CachedFloatingLongValue freeRunnerChargeRate;
+    //Armored Free Runner
+    public final CachedIntValue armoredFreeRunnerArmor;
+    public final CachedFloatValue armoredFreeRunnerToughness;
+    public final CachedFloatValue armoredFreeRunnerKnockbackResistance;
     //Jetpack
     public final CachedLongValue jetpackMaxGas;
     public final CachedLongValue jetpackFillRate;
     //Armored Jetpack
     public final CachedIntValue armoredJetpackArmor;
     public final CachedFloatValue armoredJetpackToughness;
+    public final CachedFloatValue armoredJetpackKnockbackResistance;
     //Portable Teleporter
     public final CachedFloatingLongValue portableTeleporterMaxEnergy;
     public final CachedFloatingLongValue portableTeleporterChargeRate;
@@ -119,6 +126,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitInventoryChargeRate;
     public final CachedFloatingLongValue mekaSuitSolarRechargingRate;
     public final CachedFloatingLongValue mekaSuitEnergyUsageVisionEnhancement;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageHydrostaticRepulsion;
     public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
     public final CachedFloatingLongValue mekaSuitEnergyUsageDamage;
     public final CachedFloatingLongValue mekaSuitEnergyUsageItemAttraction;
@@ -126,6 +134,12 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaSuitNutritionalTransferRate;
     public final CachedLongValue mekaSuitJetpackMaxStorage;
     public final CachedLongValue mekaSuitJetpackTransferRate;
+    public final CachedIntValue mekaSuitHelmetArmor;
+    public final CachedIntValue mekaSuitBodyArmorArmor;
+    public final CachedIntValue mekaSuitPantsArmor;
+    public final CachedIntValue mekaSuitBootsArmor;
+    public final CachedFloatValue mekaSuitToughness;
+    public final CachedFloatValue mekaSuitKnockbackResistance;
     public final Map<DamageSource, CachedFloatValue> mekaSuitDamageRatios = new LinkedHashMap<>();
     public final CachedFloatValue mekaSuitFallDamageRatio;
     public final CachedFloatValue mekaSuitMagicDamageRatio;
@@ -205,18 +219,27 @@ public class GearConfig extends BaseMekanismConfig {
               "maxEnergy", FloatingLong.createConst(64_000));
         freeRunnerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Free Runners can accept per tick.",
               "chargeRate", FloatingLong.createConst(320));
-        builder.pop();
+        builder.comment("Armored Free Runner Settings").push(ARMORED_SUBCATEGORY);
+        armoredFreeRunnerArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Free Runners")
+              .defineInRange("armor", 3, 0, Integer.MAX_VALUE));
+        armoredFreeRunnerToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Free Runners.")
+              .defineInRange("toughness", 2.0, 0, Float.MAX_VALUE));
+        armoredFreeRunnerKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the Armored Free Runners.")
+              .defineInRange("knockbackResistance", 0.0, 0, Float.MAX_VALUE));
+        builder.pop(2);
 
         builder.comment("Jetpack Settings").push(JETPACK_CATEGORY);
         jetpackMaxGas = CachedLongValue.wrap(this, builder.comment("Jetpack Gas Tank capacity in mB.")
               .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
         jetpackFillRate = CachedLongValue.wrap(this, builder.comment("Amount of hydrogen the Jetpack can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
-        builder.comment("Armored Jetpack Settings").push(ARMORED_JETPACK_SUBCATEGORY);
+        builder.comment("Armored Jetpack Settings").push(ARMORED_SUBCATEGORY);
         armoredJetpackArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Jetpack.")
-              .define("armor", 8));
+              .defineInRange("armor", 8, 0, Integer.MAX_VALUE));
         armoredJetpackToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Jetpack.")
-              .define("toughness", 2.0));
+              .defineInRange("toughness", 2.0, 0, Float.MAX_VALUE));
+        armoredJetpackKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the Armored Jetpack.")
+              .defineInRange("knockbackResistance", 0.0, 0, Float.MAX_VALUE));
         builder.pop(2);
 
         builder.comment("Network Reader Settings").push(NETWORK_READER_CATEGORY);
@@ -316,6 +339,8 @@ public class GearConfig extends BaseMekanismConfig {
               "solarRechargingRate", FloatingLong.createConst(500));
         mekaSuitEnergyUsageVisionEnhancement = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using vision enhancement.",
               "energyUsageVisionEnhancement", FloatingLong.createConst(500));
+        mekaSuitEnergyUsageHydrostaticRepulsion = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using hydrostatic repulsion.",
+              "energyUsageHydrostaticRepulsion", FloatingLong.createConst(500));
         mekaSuitEnergyUsageNutritionalInjection = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per half-food of nutritional injection.",
               "energyUsageNutritionalInjection", FloatingLong.createConst(20_000));
         mekaSuitEnergyUsageDamage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",
@@ -330,6 +355,18 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("jetpackMaxStorage", 48_000, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
+        mekaSuitHelmetArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Helmets.")
+              .defineInRange("helmetArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.HEAD), 0, Integer.MAX_VALUE));
+        mekaSuitBodyArmorArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit BodyArmor.")
+              .defineInRange("bodyArmorArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.CHEST), 0, Integer.MAX_VALUE));
+        mekaSuitPantsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Pants.")
+              .defineInRange("pantsArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.LEGS), 0, Integer.MAX_VALUE));
+        mekaSuitBootsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Boots.")
+              .defineInRange("bootsArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.FEET), 0, Integer.MAX_VALUE));
+        mekaSuitToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the MekaSuit.")
+              .defineInRange("toughness", ArmorMaterials.NETHERITE.getToughness(), 0, Float.MAX_VALUE));
+        mekaSuitKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the MekaSuit.")
+              .defineInRange("knockbackResistance", ArmorMaterials.NETHERITE.getKnockbackResistance(), 0, Float.MAX_VALUE));
         builder.push(MEKASUIT_DAMAGE_CATEGORY);
         mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power.")
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));

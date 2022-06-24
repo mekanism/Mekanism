@@ -1,16 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:elite_tier_installer"
-  },
-  "pattern": [
-    "ACA",
-    "IPI",
-    "ACA"
-  ],
   "key": {
-    "P": {
-      "tag": "minecraft:planks"
+    "A": {
+      "tag": "mekanism:alloys/reinforced"
     },
     "C": {
       "tag": "forge:circuits/elite"
@@ -18,8 +10,16 @@
     "I": {
       "tag": "forge:ingots/gold"
     },
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
+    "P": {
+      "tag": "minecraft:planks"
     }
+  },
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "result": {
+    "item": "mekanism:elite_tier_installer"
   }
 }

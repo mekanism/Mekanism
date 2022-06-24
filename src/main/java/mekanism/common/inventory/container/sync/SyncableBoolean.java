@@ -42,6 +42,20 @@ public abstract class SyncableBoolean implements ISyncableData {
         };
     }
 
+    public static SyncableBoolean create(boolean[][] booleanArray, int idx1, int idx2) {
+        return new SyncableBoolean() {
+            @Override
+            public boolean get() {
+                return booleanArray[idx1][idx2];
+            }
+
+            @Override
+            public void set(boolean value) {
+                booleanArray[idx1][idx2] = value;
+            }
+        };
+    }
+
     public static SyncableBoolean create(BooleanSupplier getter, BooleanConsumer setter) {
         return new SyncableBoolean() {
 

@@ -40,6 +40,7 @@ import mekanism.common.integration.computer.ComputerArgumentHandler;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ByteArrayTag;
@@ -64,7 +65,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.VisibleForTesting;
 
 public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, MethodResult> {
@@ -140,6 +140,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     }
                 } else if (expectedType.isEnum()) {
                     if (d >= 0) {
+                        //noinspection unchecked
                         Enum<?>[] enumConstants = ((Class<? extends Enum<?>>) expectedType).getEnumConstants();
                         if (d < enumConstants.length) {
                             return enumConstants[(int) d];
@@ -168,6 +169,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 } catch (NumberFormatException ignored) {
                 }
             } else if (expectedType.isEnum()) {
+                //noinspection unchecked
                 Object sanitized = sanitizeStringToEnum((Class<? extends Enum<?>>) expectedType, (String) argument);
                 if (sanitized != null) {
                     return sanitized;
@@ -213,8 +215,6 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return result;
         } else if (result instanceof ResourceLocation || result instanceof UUID) {
             return result.toString();
-        } else if (result instanceof ForgeRegistryEntry<?> registryEntry) {
-            return getName(registryEntry);
         } else if (result instanceof ChemicalStack<?> stack) {
             Map<String, Object> wrapped = new HashMap<>(2);
             wrapped.put("name", getName(stack.getType()));
@@ -303,10 +303,15 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             //Note: This doesn't handle/deal with primitive arrays
             return Arrays.stream(res).map(CCArgumentWrapper::wrapReturnType).toArray();
         }
+        //If the object has a registry name, return the object's registry name
+        String name = getName(result);
+        if (name != null) {
+            return name;
+        }
         return result;
     }
 
-    private static Map<String, Object> wrapStack(ForgeRegistryEntry<?> entry, String sizeKey, int amount, @Nullable CompoundTag tag) {
+    private static Map<String, Object> wrapStack(Object entry, String sizeKey, int amount, @Nullable CompoundTag tag) {
         boolean hasTag = tag != null && !tag.isEmpty() && amount > 0;
         Map<String, Object> wrapped = new HashMap<>(hasTag ? 3 : 2);
         wrapped.put("name", getName(entry));
@@ -322,30 +327,20 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         if (nbt == null) {
             return null;
         }
-        switch (nbt.getId()) {
-            case Tag.TAG_BYTE:
-            case Tag.TAG_SHORT:
-            case Tag.TAG_INT:
-            case Tag.TAG_LONG:
-            case Tag.TAG_FLOAT:
-            case Tag.TAG_DOUBLE:
-            case Tag.TAG_ANY_NUMERIC:
-                return ((NumericTag) nbt).getAsNumber();
-            case Tag.TAG_STRING:
-            case Tag.TAG_END://Tag End is highly unlikely to ever be used outside of networking but handle it anyway
-                return nbt.getAsString();
-            case Tag.TAG_BYTE_ARRAY:
-            case Tag.TAG_INT_ARRAY:
-            case Tag.TAG_LONG_ARRAY:
-            case Tag.TAG_LIST:
+        return switch (nbt.getId()) {
+            case Tag.TAG_BYTE, Tag.TAG_SHORT, Tag.TAG_INT, Tag.TAG_LONG, Tag.TAG_FLOAT, Tag.TAG_DOUBLE, Tag.TAG_ANY_NUMERIC -> ((NumericTag) nbt).getAsNumber();
+            //Tag End is highly unlikely to ever be used outside of networking but handle it anyway
+            case Tag.TAG_STRING, Tag.TAG_END -> nbt.getAsString();
+            case Tag.TAG_BYTE_ARRAY, Tag.TAG_INT_ARRAY, Tag.TAG_LONG_ARRAY, Tag.TAG_LIST -> {
                 CollectionTag<?> collectionNBT = (CollectionTag<?>) nbt;
                 int size = collectionNBT.size();
                 Map<Integer, Object> wrappedCollection = new HashMap<>(size);
                 for (int i = 0; i < size; i++) {
                     wrappedCollection.put(i, wrapNBT(collectionNBT.get(i)));
                 }
-                return wrappedCollection;
-            case Tag.TAG_COMPOUND:
+                yield wrappedCollection;
+            }
+            case Tag.TAG_COMPOUND -> {
                 CompoundTag compound = (CompoundTag) nbt;
                 Map<String, Object> wrappedCompound = new HashMap<>(compound.size());
                 for (String key : compound.getAllKeys()) {
@@ -354,13 +349,14 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         wrappedCompound.put(key, value);
                     }
                 }
-                return wrappedCompound;
-        }
-        return null;
+                yield wrappedCompound;
+            }
+            default -> null;
+        };
     }
 
-    private static String getName(ForgeRegistryEntry<?> entry) {
-        ResourceLocation registryName = entry.getRegistryName();
+    private static String getName(Object entry) {
+        ResourceLocation registryName = RegistryUtils.getName(entry);
         return registryName == null ? null : registryName.toString();
     }
 

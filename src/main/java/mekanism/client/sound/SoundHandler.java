@@ -28,13 +28,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.client.event.sound.SoundEngineLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -180,13 +181,13 @@ public class SoundHandler {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
 
-    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, BlockPos pos) {
+    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos) {
         // First, check to see if there's already a sound playing at the desired location
         SoundInstance s = soundMap.get(pos.asLong());
         if (s == null || !Minecraft.getInstance().getSoundManager().isActive(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             // The TileTickableSound will then periodically poll to see if the volume should be adjusted
-            s = new TileTickableSound(soundEvent, category, pos, volume);
+            s = new TileTickableSound(soundEvent, category, random, pos, volume);
 
             if (!isClientPlayerInRange(s)) {
                 //If the player is not in range of the sound the tile would play,
@@ -239,7 +240,7 @@ public class SoundHandler {
     }
 
     @SubscribeEvent
-    public static void onSoundEngineSetup(SoundLoadEvent event) {
+    public static void onSoundEngineSetup(SoundEngineLoadEvent event) {
         //Grab the sound engine, so that we are able to play sounds. We use this event rather than requiring the use of an AT
         if (soundEngine == null) {
             //Note: We include a null check as the constructor for SoundEngine is public and calls this event
@@ -290,8 +291,8 @@ public class SoundHandler {
         // uneven spikes of CPU usage
         private final int checkInterval = 20 + ThreadLocalRandom.current().nextInt(20);
 
-        TileTickableSound(SoundEvent soundEvent, SoundSource category, BlockPos pos, float volume) {
-            super(soundEvent, category);
+        TileTickableSound(SoundEvent soundEvent, SoundSource category, RandomSource random, BlockPos pos, float volume) {
+            super(soundEvent, category, random);
             //Keep track of our original volume
             this.originalVolume = volume * MekanismConfig.client.baseSoundVolume.get();
             this.x = pos.getX() + 0.5F;

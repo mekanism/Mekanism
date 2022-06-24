@@ -129,7 +129,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
      * @param consumer Finished Recipe Consumer.
      */
     public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, output.getItem().getRegistryName());
+        build(consumer, output.getItem());
     }
 
     public class ItemStackChemicalToItemStackRecipeResult extends RecipeResult {

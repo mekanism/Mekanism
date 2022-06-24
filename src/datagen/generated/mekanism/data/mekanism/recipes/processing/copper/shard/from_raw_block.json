@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 2,
+    "gas": "mekanism:hydrogen_chloride"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/raw_copper"
+    }
+  },
+  "output": {
+    "count": 24,
+    "item": "mekanism:shard_copper"
+  }
+}

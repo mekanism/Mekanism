@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tags.TagUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +31,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
 
@@ -114,7 +115,7 @@ public final class TagCache {
         return getMatching(blockTagStacks, blocks, tagName);
     }
 
-    private static <TYPE extends IForgeRegistryEntry<TYPE> & ItemLike> Set<TYPE> collectTagStacks(ITagManager<TYPE> tagManager, String tagName, Predicate<TYPE> validElement) {
+    private static <TYPE extends ItemLike> Set<TYPE> collectTagStacks(ITagManager<TYPE> tagManager, String tagName, Predicate<TYPE> validElement) {
         return tagManager.stream().filter(tag -> WildcardMatcher.matches(tagName, tag.getKey()))
               .flatMap(ITag::stream)
               .filter(validElement)
@@ -156,9 +157,10 @@ public final class TagCache {
             return blockModIDStacks.get(modName);
         }
         Set<Block> blocks = new HashSet<>();
-        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+        for (Entry<ResourceKey<Block>, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
+            Block block = entry.getValue();
             //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
-            if (block != MekanismBlocks.BOUNDING_BLOCK.getBlock() && WildcardMatcher.matches(modName, block.getRegistryName().getNamespace())) {
+            if (block != MekanismBlocks.BOUNDING_BLOCK.getBlock() && WildcardMatcher.matches(modName, entry.getKey().location().getNamespace())) {
                 blocks.add(block);
             }
         }
@@ -208,8 +210,9 @@ public final class TagCache {
             return modIDBlacklistedElements.getBoolean(modName);
         }
         boolean hasBlacklisted = false;
-        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
-            if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.contains(block) && WildcardMatcher.matches(modName, block.getRegistryName().getNamespace())) {
+        for (Entry<ResourceKey<Block>, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
+            Block block = entry.getValue();
+            if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.contains(block) && WildcardMatcher.matches(modName, entry.getKey().location().getNamespace())) {
                 hasBlacklisted = true;
                 break;
             }

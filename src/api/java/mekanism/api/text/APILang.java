@@ -25,6 +25,9 @@ public enum APILang implements ILangEntry {
     UPGRADE_ANCHOR_DESCRIPTION("upgrade", "anchor.description"),
     UPGRADE_STONE_GENERATOR("upgrade", "stone_generator"),
     UPGRADE_STONE_GENERATOR_DESCRIPTION("upgrade", "stone_generator.description"),
+    //Boolean
+    TRUE_LOWER("gui", "true_lower"),
+    FALSE_LOWER("gui", "false_lower"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),

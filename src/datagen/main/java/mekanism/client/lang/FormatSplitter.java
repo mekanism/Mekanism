@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -217,7 +218,7 @@ public class FormatSplitter {
                 // then this is not a valid
                 return null;
             }
-            int firstComma = contents.indexOf(",");
+            int firstComma = contents.indexOf(',');
             int argumentIndex;
             try {
                 argumentIndex = Integer.parseInt(contents.substring(1, firstComma == -1 ? length - 1 : firstComma));
@@ -234,7 +235,7 @@ public class FormatSplitter {
                 return new MessageFormatComponent(contents, argumentIndex, null, null, false);
             }
             //Look for the next comma
-            int secondComma = contents.indexOf(",", firstComma + 1);
+            int secondComma = contents.indexOf(',', firstComma + 1);
             String formatType = contents.substring(firstComma + 1, secondComma == -1 ? length - 1 : secondComma);
             //Set the format style based on the format type or to null if we do not have one
             String formatStyle = secondComma == -1 ? null : contents.substring(secondComma + 1, length - 1);
@@ -242,7 +243,7 @@ public class FormatSplitter {
             boolean isChoice = false;
             switch (trimmedFormatType) {
                 //Built in Java Format Types
-                case "number":
+                case "number" -> {
                     if (formatStyle != null && !formatStyle.equals("integer") && !formatStyle.equals("currency") && !formatStyle.equals("percent")) {
                         //If it is not a valid format style for number check if it is a valid SubformatPattern
                         // number uses DecimalFormat as a SubformatPattern
@@ -253,21 +254,20 @@ public class FormatSplitter {
                             return null;
                         }
                     }
-                    break;
-                case "date":
-                case "time":
+                }
+                case "date", "time" -> {
                     if (formatStyle != null && !formatStyle.equals("short") && !formatStyle.equals("medium") && !formatStyle.equals("long") && !formatStyle.equals("full")) {
                         //If it is not a valid format style for date or time check if it is a valid SubformatPattern
                         // time and date both use SimpleDateFormat as a SubformatPattern
                         try {
-                            new SimpleDateFormat(formatStyle);
+                            new SimpleDateFormat(formatStyle, Locale.ENGLISH);
                         } catch (IllegalArgumentException e) {
                             //If it is not a valid SimpleDateFormat then it is not a valid format overall, so return null
                             return null;
                         }
                     }
-                    break;
-                case "choice":
+                }
+                case "choice" -> {
                     if (formatStyle == null) {
                         return null;
                     }
@@ -279,38 +279,36 @@ public class FormatSplitter {
                         return null;
                     }
                     isChoice = true;
-                    break;
+                }
                 //Forge added Format types
-                case "modinfo":
+                case "modinfo" -> {
                     if (formatStyle == null || (!formatStyle.equals("id") && !formatStyle.equals("name"))) {
                         //modinfo only supports id, and name, and is not valid if the type is missing
                         return null;
                     }
-                    break;
-                case "lower":
-                case "upper":
-                case "vr":
+                }
+                case "lower", "upper", "vr" -> {
                     if (formatStyle != null) {
                         //lower, upper, and vr do not support any format style
                         return null;
                     }
-                    break;
-                case "exc":
+                }
+                case "exc" -> {
                     if (formatStyle == null || (!formatStyle.equals("class") && !formatStyle.equals("msg"))) {
                         //exc only supports class, and msg, and is not valid if the type is missing
                         return null;
                     }
-                    break;
-                case "i18n":
-                case "ornull":
+                }
+                case "i18n", "ornull" -> {
                     if (formatStyle == null) {
                         //i18n, and ornull both require a format style
                         return null;
                     }
-                    break;
-                default:
+                }
+                default -> {
                     //Not a valid format type
                     return null;
+                }
             }
             return new MessageFormatComponent(contents, argumentIndex, formatType, formatStyle, isChoice);
         }

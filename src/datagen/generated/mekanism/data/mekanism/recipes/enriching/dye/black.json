@@ -11,7 +11,7 @@
     ]
   },
   "output": {
-    "item": "minecraft:black_dye",
-    "count": 2
+    "count": 2,
+    "item": "minecraft:black_dye"
   }
 }

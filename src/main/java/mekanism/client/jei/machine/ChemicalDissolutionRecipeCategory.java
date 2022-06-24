@@ -86,6 +86,7 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <STACK extends ChemicalStack<?>> void initChemicalOutput(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, List<ChemicalStack<?>> stacks) {
         initChemical(builder, type, RecipeIngredientRole.OUTPUT, outputGauge, (List<STACK>) stacks);
     }

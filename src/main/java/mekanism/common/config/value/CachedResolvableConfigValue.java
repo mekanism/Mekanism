@@ -24,6 +24,14 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValu
     protected abstract REAL encode(TYPE value);
 
     @Nonnull
+    public TYPE getOrDefault() {
+        if (cachedValue != null || isLoaded()) {
+            return get();
+        }
+        return resolve(internal.getDefault());
+    }
+
+    @Nonnull
     @Override
     public TYPE get() {
         if (cachedValue == null) {

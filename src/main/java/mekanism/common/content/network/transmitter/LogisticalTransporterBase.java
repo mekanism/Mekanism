@@ -244,7 +244,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     needsSync.clear();
 
                     // Finally, mark chunk for save
-                    WorldUtils.saveChunk(getTransmitterTile());
+                    getTransmitterTile().markForSave();
                 }
             }
         }
@@ -409,7 +409,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 int stackId = nextId++;
                 addStack(stackId, stack);
                 Mekanism.packetHandler().sendToAllTracking(new PacketTransporterUpdate(this, stackId, stack), getTransmitterTile());
-                WorldUtils.saveChunk(getTransmitterTile());
+                getTransmitterTile().markForSave();
             }
         }
         return response;

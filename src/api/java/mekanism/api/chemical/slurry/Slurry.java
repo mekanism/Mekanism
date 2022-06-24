@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Represents a slurry chemical subtype
@@ -52,6 +53,14 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     @Override
     public final boolean isEmptyType() {
         return this == MekanismAPI.EMPTY_SLURRY;
+    }
+
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public final ResourceLocation getRegistryName() {
+        //May be null if called before the object is registered
+        IForgeRegistry<Slurry> registry = MekanismAPI.slurryRegistry();
+        return registry == null ? null : registry.getKey(this);
     }
 
     @Override

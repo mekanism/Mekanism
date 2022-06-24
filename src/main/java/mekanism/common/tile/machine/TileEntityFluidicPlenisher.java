@@ -43,7 +43,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -58,8 +57,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
 
@@ -89,8 +88,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     public TileEntityFluidicPlenisher(BlockPos pos, BlockState state) {
         super(MekanismBlocks.FLUIDIC_PLENISHER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nonnull
@@ -120,7 +119,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     private boolean isValidFluid(@Nonnull FluidStack stack) {
-        return stack.getFluid().getAttributes().canBePlacedInWorld(getLevel(), worldPosition.below(), stack);
+        return stack.getFluid().getFluidType().canBePlacedInLevel(getLevel(), worldPosition.below(), stack);
     }
 
     @Override
@@ -141,9 +140,9 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                         BlockPos below = getBlockPos().below();
                         if (canReplace(below, false, false) && canExtractBucket() &&
                             WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidTank.getFluid(), null)) {
-                            level.gameEvent(GameEvent.FLUID_PLACE, below);
+                            level.gameEvent(null, GameEvent.FLUID_PLACE, below);
                             energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                            fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+                            fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                         }
                     } else {
                         doPlenish();
@@ -154,7 +153,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     private boolean canExtractBucket() {
-        return fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FluidAttributes.BUCKET_VOLUME;
+        return fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FluidType.BUCKET_VOLUME;
     }
 
     private void doPlenish() {
@@ -180,8 +179,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             if (WorldUtils.isBlockLoaded(level, nodePos)) {
                 if (canReplace(nodePos, true, false) && canExtractBucket() &&
                     WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidTank.getFluid(), null)) {
-                    level.gameEvent(GameEvent.FLUID_PLACE, nodePos);
-                    fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+                    level.gameEvent(null, GameEvent.FLUID_PLACE, nodePos);
+                    fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                 }
                 for (Direction dir : dirs) {
                     BlockPos sidePos = nodePos.relative(dir);
@@ -280,7 +279,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public InteractionResult onSneakRightClick(Player player) {
         reset();
-        player.sendMessage(MekanismUtils.logFormat(MekanismLang.PLENISHER_RESET), Util.NIL_UUID);
+        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.PLENISHER_RESET));
         return InteractionResult.SUCCESS;
     }
 

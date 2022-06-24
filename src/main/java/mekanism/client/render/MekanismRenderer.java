@@ -33,6 +33,7 @@ import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
+import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
@@ -45,6 +46,7 @@ import mekanism.common.lib.Color;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -55,6 +57,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -85,24 +89,24 @@ public class MekanismRenderer {
      *
      * @return the sprite, or missing sprite if not found
      */
-    public static TextureAtlasSprite getBaseFluidTexture(@Nonnull Fluid fluid, @Nonnull FluidType type) {
+    public static TextureAtlasSprite getBaseFluidTexture(@Nonnull Fluid fluid, @Nonnull FluidTextureType type) {
+        IFluidTypeRenderProperties properties = RenderProperties.get(fluid);
         ResourceLocation spriteLocation;
-        if (type == FluidType.STILL) {
-            spriteLocation = fluid.getAttributes().getStillTexture();
+        if (type == FluidTextureType.STILL) {
+            spriteLocation = properties.getStillTexture();
         } else {
-            spriteLocation = fluid.getAttributes().getFlowingTexture();
+            spriteLocation = properties.getFlowingTexture();
         }
-
         return getSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidType type) {
-        Fluid fluid = fluidStack.getFluid();
+    public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidTextureType type) {
+        IFluidTypeRenderProperties properties = RenderProperties.get(fluidStack.getFluid());
         ResourceLocation spriteLocation;
-        if (type == FluidType.STILL) {
-            spriteLocation = fluid.getAttributes().getStillTexture(fluidStack);
+        if (type == FluidTextureType.STILL) {
+            spriteLocation = properties.getStillTexture(fluidStack);
         } else {
-            spriteLocation = fluid.getAttributes().getFlowingTexture(fluidStack);
+            spriteLocation = properties.getFlowingTexture(fluidStack);
         }
         return getSprite(spriteLocation);
     }
@@ -116,8 +120,8 @@ public class MekanismRenderer {
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
-        SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidType.STILL), 16);
-        SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidType.FLOWING), 8);
+        SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.STILL), 16);
+        SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.FLOWING), 8);
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
@@ -244,7 +248,7 @@ public class MekanismRenderer {
 
     public static void color(@Nonnull FluidStack fluid) {
         if (!fluid.isEmpty()) {
-            color(fluid.getFluid().getAttributes().getColor(fluid));
+            color(RenderProperties.get(fluid.getFluid()).getColorTint(fluid));
         }
     }
 
@@ -280,7 +284,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(@Nonnull FluidStack fluidStack) {
-        return fluidStack.getFluid().getAttributes().getColor(fluidStack);
+        return RenderProperties.get(fluidStack.getFluid()).getColorTint(fluidStack);
     }
 
     public static int getColorARGB(@Nonnull FluidStack fluidStack, float fluidScale) {
@@ -288,7 +292,7 @@ public class MekanismRenderer {
             return -1;
         }
         int color = getColorARGB(fluidStack);
-        if (fluidStack.getFluid().getAttributes().isGaseous(fluidStack)) {
+        if (MekanismUtils.lighterThanAirGas(fluidStack)) {
             //TODO: We probably want to factor in the fluid's alpha value somehow
             return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
         }
@@ -321,7 +325,7 @@ public class MekanismRenderer {
     }
 
     public static int calculateGlowLight(int combinedLight, @Nonnull FluidStack fluid) {
-        return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluid().getAttributes().getLuminosity(fluid));
+        return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluid().getFluidType().getLightLevel(fluid));
     }
 
     public static int calculateGlowLight(int combinedLight, int glow) {
@@ -401,6 +405,7 @@ public class MekanismRenderer {
 
         ModelRenderer.resetCachedModels();
         RenderDigitalMiner.resetCachedVisuals();
+        RenderDimensionalStabilizer.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
         RenderNutritionalLiquifier.resetCachedModels();
@@ -456,7 +461,7 @@ public class MekanismRenderer {
         RenderTransmitterBase.onStitch();
     }
 
-    public enum FluidType {
+    public enum FluidTextureType {
         STILL,
         FLOWING
     }
@@ -467,7 +472,7 @@ public class MekanismRenderer {
         public float maxX, maxY, maxZ;
 
         private final SpriteInfo[] textures = new SpriteInfo[6];
-        private final boolean[] renderSides = new boolean[]{true, true, true, true, true, true};
+        private final boolean[] renderSides = {true, true, true, true, true, true};
 
         public void setSideRender(Direction side, boolean value) {
             renderSides[side.ordinal()] = value;

@@ -19,11 +19,12 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.util.StackUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -54,15 +55,10 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     @Override
     public ItemStackIngredient read(FriendlyByteBuf buffer) {
         Objects.requireNonNull(buffer, "ItemStackIngredients cannot be read from a null packet buffer.");
-        IngredientType type = buffer.readEnum(IngredientType.class);
-        if (type == IngredientType.SINGLE) {
-            return from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
-        }
-        ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readVarInt()];
-        for (int i = 0; i < ingredients.length; i++) {
-            ingredients[i] = read(buffer);
-        }
-        return createMulti(ingredients);
+        return switch (buffer.readEnum(IngredientType.class)) {
+            case SINGLE -> from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
+            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, ItemStackIngredient[]::new, this::read));
+        };
     }
 
     @Override
@@ -181,7 +177,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                 //Manually compare it as we want to make sure we don't initialize the capabilities on it
                 // to ensure we reduce any potential lag from this comparison
                 ItemStack item = items[0];
-                return item.getItem() == Items.BARRIER && item.getHoverName() instanceof TextComponent hoverName && hoverName.getText().startsWith("Empty Tag: ");
+                return item.getItem() == Items.BARRIER && item.getHoverName().getContents() instanceof LiteralContents contents && contents.text().startsWith("Empty Tag: ");
             }
             return false;
         }
@@ -296,10 +292,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
-            buffer.writeVarInt(ingredients.length);
-            for (ItemStackIngredient ingredient : ingredients) {
-                ingredient.write(buffer);
-            }
+            BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
         }
 
         @Override

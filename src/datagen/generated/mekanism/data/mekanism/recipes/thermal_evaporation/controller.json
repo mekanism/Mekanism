@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:thermal_evaporation_controller"
+  "key": {
+    "#": {
+      "item": "mekanism:thermal_evaporation_block"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    },
+    "G": {
+      "tag": "forge:glass_panes"
+    }
   },
   "pattern": [
     "CGC",
     "#B#",
     "###"
   ],
-  "key": {
-    "#": {
-      "item": "mekanism:thermal_evaporation_block"
-    },
-    "C": {
-      "tag": "forge:circuits/advanced"
-    },
-    "B": {
-      "item": "minecraft:bucket"
-    },
-    "G": {
-      "tag": "forge:glass_panes"
-    }
+  "result": {
+    "item": "mekanism:thermal_evaporation_controller"
   }
 }

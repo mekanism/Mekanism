@@ -33,6 +33,7 @@ public class BoxedChemicalOutputHandler {
         handleOutput(chemicalTank.getTankForType(toOutput.getChemicalType()), toOutput.getChemicalStack(), operations);
     }
 
+    @SuppressWarnings("unchecked")
     private <STACK extends ChemicalStack<?>> void handleOutput(IChemicalTank<?, ?> tank, STACK stack, int operations) {
         OutputHelper.handleOutput((IChemicalTank<?, STACK>) tank, stack, operations);
     }
@@ -48,6 +49,7 @@ public class BoxedChemicalOutputHandler {
         calculateOperationsRoomFor(tracker, chemicalTank.getTankForType(toOutput.getChemicalType()), toOutput.getChemicalStack());
     }
 
+    @SuppressWarnings("unchecked")
     private <STACK extends ChemicalStack<?>> void calculateOperationsRoomFor(OperationTracker tracker, IChemicalTank<?, ?> tank, STACK stack) {
         OutputHelper.calculateOperationsCanSupport(tracker, notEnoughSpaceError, (IChemicalTank<?, STACK>) tank, stack);
     }

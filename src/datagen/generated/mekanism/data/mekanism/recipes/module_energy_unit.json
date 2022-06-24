@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:module_energy_unit"
+  "key": {
+    "#": {
+      "item": "mekanism:basic_induction_cell"
+    },
+    "A": {
+      "tag": "forge:alloys/advanced"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
   },
   "pattern": [
     "A#A",
     "APA",
     "HHH"
   ],
-  "key": {
-    "A": {
-      "tag": "forge:alloys/advanced"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
-    "#": {
-      "item": "mekanism:basic_induction_cell"
-    },
-    "H": {
-      "item": "mekanism:hdpe_sheet"
-    }
+  "result": {
+    "item": "mekanism:module_energy_unit"
   }
 }

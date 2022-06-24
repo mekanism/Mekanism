@@ -1,27 +1,35 @@
 package mekanism.common.network.to_client.container.property.list;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryManager;
 
-public class RegistryEntryListPropertyData<V extends IForgeRegistryEntry<V>> extends ListPropertyData<V> {
+public class RegistryEntryListPropertyData<V> extends ListPropertyData<V> {
 
-    public RegistryEntryListPropertyData(short property, @Nonnull List<V> values) {
+    private final IForgeRegistry<V> registry;
+
+    public RegistryEntryListPropertyData(short property, IForgeRegistry<V> registry, @Nonnull List<V> values) {
         super(property, ListType.REGISTRY_ENTRY, values);
+        this.registry = registry;
     }
 
-    public static <V extends IForgeRegistryEntry<V>> RegistryEntryListPropertyData<V> read(short property, int elements, FriendlyByteBuf buffer) {
-        List<V> values = new ArrayList<>(elements);
-        for (int i = 0; i < elements; i++) {
-            values.add(buffer.readRegistryId());
-        }
-        return new RegistryEntryListPropertyData<>(property, values);
+    static <V> RegistryEntryListPropertyData<V> read(short property, FriendlyByteBuf buffer) {
+        //Based off of IForgeFriendlyByteBuf#readRegistryId but split into two parts so we only have to write it once for the entire list
+        //TODO: If forge ever actually changes the registry name to being an id update this
+        IForgeRegistry<V> registry = RegistryManager.ACTIVE.getRegistry(buffer.readResourceLocation());
+        return new RegistryEntryListPropertyData<>(property, registry, buffer.readList(r -> r.readRegistryIdUnsafe(registry)));
+    }
+
+    @Override
+    protected void writeList(FriendlyByteBuf buffer) {
+        buffer.writeResourceLocation(registry.getRegistryName());
+        super.writeList(buffer);
     }
 
     @Override
     protected void writeListElement(FriendlyByteBuf buffer, V value) {
-        buffer.writeRegistryId(value);
+        buffer.writeRegistryIdUnsafe(registry, value);
     }
 }

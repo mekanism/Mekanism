@@ -1,10 +1,10 @@
 package mekanism.common.lib.radiation.capability;
 
-import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,7 +46,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             return;
         }
 
-        Random rand = entity.level.getRandom();
+        RandomSource rand = entity.level.getRandom();
         double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
@@ -57,6 +58,9 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             //Hurt randomly
             if (rand.nextBoolean()) {
                 entity.hurt(MekanismDamageSource.RADIATION, strength);
+                if (entity instanceof ServerPlayer player) {
+                    MekanismCriteriaTriggers.RADIATION_DAMAGE.trigger(player);
+                }
             }
         }
 
@@ -101,7 +105,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         private final CapabilityCache capabilityCache = new CapabilityCache();
 
         public Provider() {
-            capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_ENTITY_CAPABILITY, defaultImpl));
+            capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_ENTITY, defaultImpl));
         }
 
         @Nonnull
@@ -111,7 +115,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         }
 
         public void invalidate() {
-            capabilityCache.invalidate(Capabilities.RADIATION_ENTITY_CAPABILITY, null);
+            capabilityCache.invalidate(Capabilities.RADIATION_ENTITY, null);
         }
 
         @Override

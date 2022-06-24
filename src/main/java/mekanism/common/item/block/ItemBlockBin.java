@@ -52,4 +52,9 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
             }
         }
     }
+
+    @Override
+    public boolean canContentsDrop(ItemStack stack) {
+        return getTier() != BinTier.CREATIVE;
+    }
 }

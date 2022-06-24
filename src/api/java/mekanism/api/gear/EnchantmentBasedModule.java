@@ -1,8 +1,13 @@
 package mekanism.api.gear;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.NBTConstants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
@@ -28,11 +33,11 @@ public abstract class EnchantmentBasedModule<MODULE extends EnchantmentBasedModu
     public void onAdded(IModule<MODULE> module, boolean first) {
         if (module.isEnabled()) {
             if (first) {
-                module.getContainer().enchant(getEnchantment(), 1);
+                enchant(module, getEnchantment());
             } else {
-                Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(module.getContainer());
+                Map<Enchantment, Integer> enchantments = getEnchantments(module);
                 enchantments.put(getEnchantment(), module.getInstalledCount());
-                EnchantmentHelper.setEnchantments(enchantments, module.getContainer());
+                setEnchantments(module, enchantments);
             }
         }
     }
@@ -40,13 +45,13 @@ public abstract class EnchantmentBasedModule<MODULE extends EnchantmentBasedModu
     @Override
     public void onRemoved(IModule<MODULE> module, boolean last) {
         if (module.isEnabled()) {
-            Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(module.getContainer());
+            Map<Enchantment, Integer> enchantments = getEnchantments(module);
             if (last) {
                 enchantments.remove(getEnchantment());
             } else {
                 enchantments.put(getEnchantment(), module.getInstalledCount());
             }
-            EnchantmentHelper.setEnchantments(enchantments, module.getContainer());
+            setEnchantments(module, enchantments);
         }
     }
 
@@ -54,12 +59,62 @@ public abstract class EnchantmentBasedModule<MODULE extends EnchantmentBasedModu
     public void onEnabledStateChange(IModule<MODULE> module) {
         if (module.isEnabled()) {
             //Was disabled and now is enabled, add enchantment
-            module.getContainer().enchant(getEnchantment(), module.getInstalledCount());
+            enchant(module, getEnchantment());
         } else {
             //Was enabled and is now disabled, remove the enchantment
-            Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(module.getContainer());
+            Map<Enchantment, Integer> enchantments = getEnchantments(module);
             enchantments.remove(getEnchantment());
-            EnchantmentHelper.setEnchantments(enchantments, module.getContainer());
+            setEnchantments(module, enchantments);
+        }
+    }
+
+    private void enchant(IModule<MODULE> module, Enchantment enchantment) {
+        CompoundTag dataMap = getOrCreateDataTag(module);
+        ListTag enchantments;
+        if (dataMap.contains(NBTConstants.ENCHANTMENTS, Tag.TAG_LIST)) {
+            enchantments = dataMap.getList(NBTConstants.ENCHANTMENTS, Tag.TAG_COMPOUND);
+        } else {
+            dataMap.put(NBTConstants.ENCHANTMENTS, enchantments = new ListTag());
+        }
+        enchantments.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), (byte) module.getInstalledCount()));
+    }
+
+    private Map<Enchantment, Integer> getEnchantments(IModule<MODULE> module) {
+        CompoundTag tag = module.getContainer().getTag();
+        if (tag != null && tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND)) {
+            CompoundTag mekData = tag.getCompound(NBTConstants.MEK_DATA);
+            ListTag enchantmentTag = mekData.getList(NBTConstants.ENCHANTMENTS, Tag.TAG_COMPOUND);
+            return EnchantmentHelper.deserializeEnchantments(enchantmentTag);
+        }
+        return new LinkedHashMap<>();
+    }
+
+    private CompoundTag getOrCreateDataTag(IModule<MODULE> module) {
+        CompoundTag tag = module.getContainer().getOrCreateTag();
+        if (tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND)) {
+            return tag.getCompound(NBTConstants.MEK_DATA);
+        }
+        CompoundTag dataMap = new CompoundTag();
+        tag.put(NBTConstants.MEK_DATA, dataMap);
+        return dataMap;
+    }
+
+    private void setEnchantments(IModule<MODULE> module, Map<Enchantment, Integer> enchantments) {
+        ListTag enchantmentTag = new ListTag();
+        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
+            Enchantment enchantment = entry.getKey();
+            if (enchantment != null) {
+                enchantmentTag.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), entry.getValue()));
+            }
+        }
+        CompoundTag dataMap = getOrCreateDataTag(module);
+        if (enchantments.isEmpty()) {
+            dataMap.remove(NBTConstants.ENCHANTMENTS);
+            if (dataMap.isEmpty()) {
+                module.getContainer().removeTagKey(NBTConstants.MEK_DATA);
+            }
+        } else {
+            dataMap.put(NBTConstants.ENCHANTMENTS, enchantmentTag);
         }
     }
 }

@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:ingot_tin"
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/tin"
+    }
   },
   "pattern": [
     "###",
     "###",
     "###"
   ],
-  "key": {
-    "#": {
-      "tag": "forge:nuggets/tin"
-    }
+  "result": {
+    "item": "mekanism:ingot_tin"
   }
 }

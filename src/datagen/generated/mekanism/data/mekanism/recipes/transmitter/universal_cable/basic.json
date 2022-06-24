@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:basic_universal_cable",
-    "count": 8
+  "key": {
+    "#": {
+      "tag": "forge:dusts/redstone"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     "S#S"
   ],
-  "key": {
-    "S": {
-      "tag": "forge:ingots/steel"
-    },
-    "#": {
-      "tag": "forge:dusts/redstone"
-    }
+  "result": {
+    "count": 8,
+    "item": "mekanism:basic_universal_cable"
   }
 }

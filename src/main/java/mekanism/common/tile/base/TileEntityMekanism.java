@@ -89,6 +89,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.lib.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
@@ -98,6 +99,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IComparatorSupport;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
@@ -115,6 +117,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
@@ -126,6 +129,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -233,7 +237,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling IMekanismStrictEnergyHandler
     private final EnergyHandlerManager energyHandlerManager;
-    private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
+    private final LastEnergyTracker lastEnergyTracker = new LastEnergyTracker();
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling IMekanismHeatHandler
@@ -323,6 +327,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public Block getBlockType() {
         return blockProvider.getBlock();
+    }
+
+    public ResourceLocation getBlockTypeRegistryName() {
+        return blockProvider.getRegistryName();
     }
 
     /**
@@ -451,7 +459,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @SuppressWarnings("ConstantConditions")
     public Component getDisplayName() {
         if (isNameable()) {
-            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockTypeRegistryName()));
         }
         return TextComponentUtil.build(getBlockType());
     }
@@ -522,7 +530,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
-            if (getCapability(Capabilities.CONFIG_CARD_CAPABILITY, null).isPresent()) {
+            if (getCapability(Capabilities.CONFIG_CARD, null).isPresent()) {
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
                     return InteractionResult.PASS;
                 }
@@ -574,7 +582,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             // we use persists, as only one reference should update
             tile.updateHeatCapacitors(null);
         }
-        tile.lastEnergyReceived = FloatingLong.ZERO;
+        //Set that we received zero energy so if it is a different tick than we last had,
+        // and we don't actually receive anything then we will properly update it to zero
+        tile.lastEnergyTracker.received(level.getGameTime(), FloatingLong.ZERO);
         //Only update the comparator state if we support comparators and need to update comparators
         if (tile.supportsComparator() && tile.updateComparators && !state.isAir()) {
             int newRedstoneLevel = tile.getRedstoneLevel();
@@ -606,6 +616,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (isRemote() && hasSound()) {
             updateSound();
+        }
+    }
+
+    @Override
+    public void blockRemoved() {
+        super.blockRemoved();
+        for (ITileComponent component : components) {
+            component.removed();
+        }
+        if (!isRemote() && MekanismAPI.getRadiationManager().isRadiationEnabled() && shouldDumpRadiation()) {
+            //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
+            // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
+            MekanismAPI.getRadiationManager().dumpRadiation(getTileCoord(), getGasTanks(null), false);
         }
     }
 
@@ -693,13 +716,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     protected void addGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
-            data.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
+            NBTUtils.writeEnum(data, NBTConstants.CONTROL_TYPE, controlType);
+        }
+        if (this instanceof ISustainedData sustainedData) {
+            sustainedData.writeSustainedData(data);
         }
     }
 
     protected void loadGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
+        }
+        if (this instanceof ISustainedData sustainedData) {
+            sustainedData.readSustainedData(data);
         }
     }
 
@@ -755,7 +784,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (canHandleEnergy() && handles(SubstanceType.ENERGY)) {
-            container.track(SyncableFloatingLong.create(this::getInputRate, this::setInputRate));
+            container.track(SyncableFloatingLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
                 container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
@@ -833,10 +862,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 // but double check just in case before logging
                 Mekanism.logger.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
                                      + "things will probably not work correctly. This is almost certainly due to another mod incorrectly "
-                                     + "trying to move this tile and not properly updating the position.", getType().getRegistryName(), worldPosition, level);
+                                     + "trying to move this tile and not properly updating the position.", RegistryUtils.getName(getType()), worldPosition, level);
             }
         }
         //TODO: Remove, give it some better default, or allow it to be null
+        // (this is used by some things like non directional blocks with energy configs)
         return Direction.NORTH;
     }
 
@@ -929,7 +959,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return Attribute.get(getBlockType(), AttributeUpgradeSupport.class).getSupportedUpgrades();
+            return Attribute.get(getBlockType(), AttributeUpgradeSupport.class).supportedUpgrades();
         }
         return Collections.emptySet();
     }
@@ -1083,17 +1113,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         FloatingLong remainder = energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
         if (action.execute()) {
-            lastEnergyReceived = lastEnergyReceived.plusEqual(amount.subtract(remainder));
+            //If for some reason we don't have a level fall back to zero
+            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), amount.subtract(remainder));
         }
         return remainder;
     }
 
-    public FloatingLong getInputRate() {
-        return lastEnergyReceived;
-    }
-
-    protected void setInputRate(FloatingLong inputRate) {
-        this.lastEnergyReceived = inputRate;
+    public final FloatingLong getInputRate() {
+        return lastEnergyTracker.getLastEnergyReceived();
     }
     //End methods IMekanismStrictEnergyHandler
 
@@ -1116,7 +1143,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
         }
         return null;
     }
@@ -1240,7 +1267,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             // If this machine isn't fully muffled, and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
-                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), getSoundPos());
+                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
@@ -1265,7 +1292,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public String getComputerName() {
         if (hasComputerSupport()) {
-            return Attribute.get(getBlockType(), AttributeComputerIntegration.class).name;
+            return Attribute.get(getBlockType(), AttributeComputerIntegration.class).name();
         }
         return "";
     }

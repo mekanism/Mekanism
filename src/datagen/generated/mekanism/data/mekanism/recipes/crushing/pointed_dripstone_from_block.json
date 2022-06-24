@@ -6,7 +6,7 @@
     }
   },
   "output": {
-    "item": "minecraft:pointed_dripstone",
-    "count": 4
+    "count": 4,
+    "item": "minecraft:pointed_dripstone"
   }
 }

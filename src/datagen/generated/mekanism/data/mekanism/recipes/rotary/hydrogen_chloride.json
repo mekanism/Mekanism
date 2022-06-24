@@ -4,16 +4,16 @@
     "amount": 1,
     "tag": "forge:hydrogen_chloride"
   },
-  "gasOutput": {
-    "gas": "mekanism:hydrogen_chloride",
-    "amount": 1
+  "fluidOutput": {
+    "amount": 1,
+    "fluid": "mekanism:hydrogen_chloride"
   },
   "gasInput": {
     "amount": 1,
     "gas": "mekanism:hydrogen_chloride"
   },
-  "fluidOutput": {
-    "fluid": "mekanism:hydrogen_chloride",
-    "amount": 1
+  "gasOutput": {
+    "amount": 1,
+    "gas": "mekanism:hydrogen_chloride"
   }
 }

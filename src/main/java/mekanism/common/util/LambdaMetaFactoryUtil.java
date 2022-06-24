@@ -20,6 +20,7 @@ public class LambdaMetaFactoryUtil {
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
+    @SuppressWarnings("unchecked")
     public static <O, V> Function<O, V> createGetter(Field field, Class<?> objType, String getterName) throws Throwable {
         if (getterName.isEmpty()) {
             MethodHandle getter = LOOKUP.unreflectGetter(field);
@@ -44,6 +45,7 @@ public class LambdaMetaFactoryUtil {
         return (Function<O, V>) site.getTarget().invokeExact();
     }
 
+    @SuppressWarnings("unchecked")
     public static <O, V> BiConsumer<O, V> createSetter(Field field, Class<?> objType, String setterName) throws Throwable {
         Class<?> fieldType = field.getType();
         if (setterName.isEmpty()) {
@@ -60,7 +62,6 @@ public class LambdaMetaFactoryUtil {
             );
             return (BiConsumer<O, V>) site.getTarget().invokeExact(setterMH);
         }
-        CallSiteInfo siteInfo;
         Class<?> setterInterface;
         Class<?> setterFieldType = fieldType;
         if (fieldType == Boolean.TYPE) {
@@ -89,7 +90,7 @@ public class LambdaMetaFactoryUtil {
               LOOKUP.findVirtual(objType, setterName, MethodType.methodType(Void.TYPE, fieldType)),
               MethodType.methodType(Void.TYPE, objType, fieldType)
         );
-        siteInfo = new CallSiteInfo(site, null);
+        CallSiteInfo siteInfo = new CallSiteInfo(site, null);
         if (fieldType == Boolean.TYPE) {
             BooleanSetter<O> setter = siteInfo.handle == null ? (BooleanSetter<O>) siteInfo.site.getTarget().invokeExact()
                                                               : (BooleanSetter<O>) siteInfo.site.getTarget().invokeExact(siteInfo.handle);

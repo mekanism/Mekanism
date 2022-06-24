@@ -21,6 +21,7 @@ import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -29,11 +30,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
-    private static final DecimalFormat COUNT_FORMAT = new DecimalFormat("#.#");
-
-    static {
-        COUNT_FORMAT.setRoundingMode(RoundingMode.FLOOR);
-    }
+    private static final DecimalFormat COUNT_FORMAT = Util.make(new DecimalFormat("#.#"), format -> format.setRoundingMode(RoundingMode.FLOOR));
 
     private final GuiScrollBar scrollBar;
 

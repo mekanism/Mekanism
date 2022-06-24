@@ -1,16 +1,16 @@
 {
   "type": "mekanism:purifying",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
   "itemInput": {
     "ingredient": {
       "tag": "forge:ores/iron"
     }
   },
-  "chemicalInput": {
-    "amount": 1,
-    "gas": "mekanism:oxygen"
-  },
   "output": {
-    "item": "mekanism:clump_iron",
-    "count": 3
+    "count": 3,
+    "item": "mekanism:clump_iron"
   }
 }

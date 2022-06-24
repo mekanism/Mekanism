@@ -2,19 +2,19 @@
   "type": "mekanism:combining",
   "conditions": [
     {
-      "modid": "byg",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "byg"
     }
   ],
+  "extraInput": {
+    "ingredient": {
+      "item": "byg:blue_netherrack"
+    }
+  },
   "mainInput": {
     "amount": 14,
     "ingredient": {
       "tag": "forge:dusts/quartz"
-    }
-  },
-  "extraInput": {
-    "ingredient": {
-      "item": "byg:blue_netherrack"
     }
   },
   "output": {

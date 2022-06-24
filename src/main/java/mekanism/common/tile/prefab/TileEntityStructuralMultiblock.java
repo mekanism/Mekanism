@@ -38,7 +38,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     public TileEntityStructuralMultiblock(IBlockProvider provider, BlockPos pos, BlockState state) {
         super(provider, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
     }
 
     @Override
@@ -150,20 +150,17 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public void onNeighborChange(Block block, BlockPos neighborPos) {
         super.onNeighborChange(block, neighborPos);
         if (!isRemote()) {
-            //TODO - V11: Make this properly support removing blocks from the "inside" and rechecking the structure
-            // For now we "ignore" this case as the structure can be rechecked manually with a configurator
-            // and checking on every neighbor changed when we don't have a multiblock (so don't know its bounds)
-            // would not be very performant
+            //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
             for (Structure s : structures.values()) {
                 //For each structure this structural multiblock is a part of
                 if (s.getController() != null) {
                     MultiblockData multiblockData = getMultiblockData(s);
                     if (multiblockData.isPositionInsideBounds(s, neighborPos)) {
-                        if (!multiblockData.innerNodes.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
+                        if (level.isEmptyBlock(neighborPos) || !multiblockData.internalLocations.contains(neighborPos)) {
                             //And we are not already an internal part of the structure, or we are changing an internal part to air
                             // then we mark the structure as needing to be re-validated
                             //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
-                            // it won't know to invalidate it but oh well. (See java docs on innerNode for more caveats)
+                            // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
                             s.markForUpdate(level, true);
                         }
                     }
@@ -179,7 +176,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (s.getController() != null && !getMultiblockData(s).isFormed()) {
                     FormationResult result = s.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
-                        player.sendMessage(result.getResultText(), Util.NIL_UUID);
+                        player.sendSystemMessage(result.getResultText());
                         return InteractionResult.sidedSuccess(isRemote());
                     }
                 }

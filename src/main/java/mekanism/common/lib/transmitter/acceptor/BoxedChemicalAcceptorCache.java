@@ -61,10 +61,10 @@ public class BoxedChemicalAcceptorCache extends AbstractAcceptorCache<BoxedChemi
     public boolean isChemicalAcceptorAndListen(@Nullable BlockEntity tile, Direction side) {
         //TODO: Improve this to make it easier to add more chemical types
         Direction opposite = side.getOpposite();
-        LazyOptional<IGasHandler> gasAcceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, opposite);
-        LazyOptional<IInfusionHandler> infusionAcceptor = CapabilityUtils.getCapability(tile, Capabilities.INFUSION_HANDLER_CAPABILITY, opposite);
-        LazyOptional<IPigmentHandler> pigmentAcceptor = CapabilityUtils.getCapability(tile, Capabilities.PIGMENT_HANDLER_CAPABILITY, opposite);
-        LazyOptional<ISlurryHandler> slurryAcceptor = CapabilityUtils.getCapability(tile, Capabilities.SLURRY_HANDLER_CAPABILITY, opposite);
+        LazyOptional<IGasHandler> gasAcceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER, opposite);
+        LazyOptional<IInfusionHandler> infusionAcceptor = CapabilityUtils.getCapability(tile, Capabilities.INFUSION_HANDLER, opposite);
+        LazyOptional<IPigmentHandler> pigmentAcceptor = CapabilityUtils.getCapability(tile, Capabilities.PIGMENT_HANDLER, opposite);
+        LazyOptional<ISlurryHandler> slurryAcceptor = CapabilityUtils.getCapability(tile, Capabilities.SLURRY_HANDLER, opposite);
         if (gasAcceptor.isPresent() || infusionAcceptor.isPresent() || pigmentAcceptor.isPresent() || slurryAcceptor.isPresent()) {
             BoxedChemicalHandler chemicalHandler = new BoxedChemicalHandler();
             if (gasAcceptor.isPresent()) {

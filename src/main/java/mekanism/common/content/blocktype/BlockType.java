@@ -11,8 +11,10 @@ import mekanism.api.tier.ITier;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeHasBounding;
+import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
 import mekanism.common.block.attribute.Attributes.AttributeLight;
+import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.interfaces.ITypeBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
@@ -135,6 +137,14 @@ public class BlockType {
 
         public T withComputerSupport(ITier tier, String name) {
             return withComputerSupport(tier.getBaseTier().getLowerName() + name);
+        }
+
+        public final T externalMultiblock() {
+            return with(AttributeMultiblock.EXTERNAL, AttributeMobSpawn.WHEN_NOT_FORMED);
+        }
+
+        public final T internalMultiblock() {
+            return with(AttributeMultiblock.INTERNAL, AttributeMobSpawn.WHEN_NOT_FORMED);
         }
 
         public BLOCK build() {

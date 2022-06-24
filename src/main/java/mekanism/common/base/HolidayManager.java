@@ -2,6 +2,7 @@ package mekanism.common.base;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
@@ -10,7 +11,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
@@ -102,12 +102,12 @@ public final class HolidayManager {
         private void notify(Player player) {
             HolidayMessage message = getMessage(player);
             if (message != null) {
-                player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE,
-                      MekanismLang.GENERIC_SQUARE_BRACKET.translate(MekanismLang.MEKANISM)), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE,
+                      MekanismLang.GENERIC_SQUARE_BRACKET.translate(MekanismLang.MEKANISM)));
                 for (Component line : message.lines) {
-                    player.sendMessage(line, Util.NIL_UUID);
+                    player.sendSystemMessage(line);
                 }
-                player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines, EnumColor.DARK_BLUE, "[=======]"));
             }
             hasNotified = true;
         }
@@ -202,6 +202,21 @@ public final class HolidayManager {
     }
 
     private record HolidayMessage(String themedLines, Component... lines) {
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            return o instanceof HolidayMessage other && themedLines.equals(other.themedLines) && Arrays.equals(lines, other.lines);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = themedLines.hashCode();
+            result = 31 * result + Arrays.hashCode(lines);
+            return result;
+        }
     }
 
     public record YearlyDate(Month month, @Range(from = 1, to = 31) int day) {

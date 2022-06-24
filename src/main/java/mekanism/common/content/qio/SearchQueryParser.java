@@ -108,27 +108,30 @@ public class SearchQueryParser {
 
         for (int i = start + 1; i < query.length(); i++) {
             char qc = query.charAt(i);
-            if (qc == ')') {
-                String key = sb.toString().trim();
-                if (!key.isEmpty()) {
-                    ret.add(key);
+            switch (qc) {
+                case ')' -> {
+                    String key = sb.toString().trim();
+                    if (!key.isEmpty()) {
+                        ret.add(key);
+                    }
+                    return new ListResult<>(ret, i);
                 }
-                return new ListResult<>(ret, i);
-            } else if (qc == '|') {
-                String key = sb.toString().trim();
-                if (!key.isEmpty()) {
-                    ret.add(key);
+                case '|' -> {
+                    String key = sb.toString().trim();
+                    if (!key.isEmpty()) {
+                        ret.add(key);
+                    }
+                    sb = new StringBuilder();
                 }
-                sb = new StringBuilder();
-            } else if (qc == '\"' || qc == '\'') {
-                Result quoteResult = readQuote(query, i);
-                if (quoteResult == null) {
-                    return null;
+                case '\"', '\'' -> {
+                    Result quoteResult = readQuote(query, i);
+                    if (quoteResult == null) {
+                        return null;
+                    }
+                    ret.add(quoteResult.result());
+                    i = quoteResult.index();
                 }
-                ret.add(quoteResult.result());
-                i = quoteResult.index();
-            } else {
-                sb.append(qc);
+                default -> sb.append(qc);
             }
         }
 

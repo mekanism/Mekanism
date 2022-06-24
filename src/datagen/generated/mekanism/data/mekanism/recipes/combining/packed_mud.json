@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:combining",
+  "extraInput": {
+    "ingredient": {
+      "item": "minecraft:mud"
+    }
+  },
+  "mainInput": {
+    "ingredient": {
+      "tag": "forge:crops/wheat"
+    }
+  },
+  "output": {
+    "item": "minecraft:packed_mud"
+  }
+}

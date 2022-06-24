@@ -17,8 +17,8 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer {
 
@@ -49,6 +49,15 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
             return fluid.defaultFluidState();
         }
         return Fluids.EMPTY.defaultFluidState();
+    }
+
+    default int getFluidLightLevel(@Nonnull BlockState state) {
+        FluidState fluid = getFluid(state);
+        //TODO: Ideally we wouldn't have to hardcode this but the fluid type isn't registered yet so we can't just do getFluidType().getLightLevel()
+        if (fluid.getType() == Fluids.LAVA) {
+            return 15;
+        }
+        return 0;
     }
 
     default void updateFluids(@Nonnull BlockState state, @Nonnull LevelAccessor world, @Nonnull BlockPos currentPos) {
@@ -99,7 +108,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
         IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
         if (!fluidLogged.isEmpty()) {
             Fluid fluid = fluidLogged.getFluid();
-            ItemStack bucket = fluid.getAttributes().getBucket(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
+            ItemStack bucket = fluid.getFluidType().getBucket(new FluidStack(fluid, FluidType.BUCKET_VOLUME));
             if (!bucket.isEmpty()) {
                 world.setBlock(pos, setState(state, Fluids.EMPTY), Block.UPDATE_ALL);
                 return bucket;

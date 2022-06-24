@@ -39,6 +39,6 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     @Override
     public void save(CompoundTag nbtTags) {
         super.save(nbtTags);
-        nbtTags.putInt(NBTConstants.DUMP_MODE, dumpMode.ordinal());
+        NBTUtils.writeEnum(nbtTags, NBTConstants.DUMP_MODE, dumpMode);
     }
 }

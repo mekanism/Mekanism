@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
@@ -11,6 +12,7 @@ import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -20,7 +22,14 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRobit implements IMekanismPacket {
 
-    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of("sara", List.of(MekanismRobitSkins.LESBIAN, MekanismRobitSkins.TRANS));
+    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of(
+            "sara", getPrideSkins(RobitPrideSkinData.TRANS, RobitPrideSkinData.LESBIAN),
+            "agnor", getPrideSkins(RobitPrideSkinData.GAY)
+    );
+
+    private static List<IRobitSkinProvider> getPrideSkins(RobitPrideSkinData... prideSkinData) {
+        return Stream.of(prideSkinData).<IRobitSkinProvider>map(MekanismRobitSkins.PRIDE_SKINS::get).toList();
+    }
 
     private final RobitPacketType activeType;
     private final int entityId;
@@ -91,7 +100,7 @@ public class PacketRobit implements IMekanismPacket {
         if (activeType == RobitPacketType.NAME) {
             buffer.writeUtf(name);
         } else if (activeType == RobitPacketType.SKIN) {
-            buffer.writeRegistryId(skin);
+            buffer.writeRegistryId(MekanismAPI.robitSkinRegistry(), skin);
         }
     }
 
@@ -103,7 +112,7 @@ public class PacketRobit implements IMekanismPacket {
         if (activeType == RobitPacketType.NAME) {
             name = BasePacketHandler.readString(buffer).trim();
         } else if (activeType == RobitPacketType.SKIN) {
-            skin = buffer.readRegistryId();
+            skin = buffer.readRegistryIdSafe(RobitSkin.class);
         }
         return new PacketRobit(activeType, entityId, name, skin);
     }

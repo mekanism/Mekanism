@@ -30,7 +30,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
@@ -138,7 +137,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         IForgeShearable target = (IForgeShearable) entity;
         if (target.isShearable(stack, world, pos)) {
             if (!world.isClientSide) {
-                List<ItemStack> drops = target.onSheared(player, stack, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
+                List<ItemStack> drops = target.onSheared(player, stack, world, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
                 //Note: Shear game event is handled by the target in onSheared
                 for (ItemStack drop : drops) {
                     ItemEntity ent = entity.spawnAtLocation(drop, 1.0F);

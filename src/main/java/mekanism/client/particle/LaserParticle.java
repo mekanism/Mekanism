@@ -80,7 +80,7 @@ public class LaserParticle extends TextureSheetParticle {
     }
 
     private Vector3f[] getResultVector(Quaternion quaternion, float newX, float newY, float newZ) {
-        Vector3f[] resultVector = new Vector3f[]{
+        Vector3f[] resultVector = {
               new Vector3f(-quadSize, -halfLength, 0),
               new Vector3f(-quadSize, halfLength, 0),
               new Vector3f(quadSize, halfLength, 0),
@@ -129,11 +129,11 @@ public class LaserParticle extends TextureSheetParticle {
 
     private void updateBoundingBox() {
         float halfDiameter = quadSize / 2;
-        switch (direction) {
-            case DOWN, UP -> setBoundingBox(new AABB(x - halfDiameter, y - halfLength, z - halfDiameter, x + halfDiameter, y + halfLength, z + halfDiameter));
-            case NORTH, SOUTH -> setBoundingBox(new AABB(x - halfDiameter, y - halfDiameter, z - halfLength, x + halfDiameter, y + halfDiameter, z + halfLength));
-            case WEST, EAST -> setBoundingBox(new AABB(x - halfLength, y - halfDiameter, z - halfDiameter, x + halfLength, y + halfDiameter, z + halfDiameter));
-        }
+        setBoundingBox(switch (direction) {
+            case DOWN, UP -> new AABB(x - halfDiameter, y - halfLength, z - halfDiameter, x + halfDiameter, y + halfLength, z + halfDiameter);
+            case NORTH, SOUTH -> new AABB(x - halfDiameter, y - halfDiameter, z - halfLength, x + halfDiameter, y + halfDiameter, z + halfLength);
+            case WEST, EAST -> new AABB(x - halfLength, y - halfDiameter, z - halfDiameter, x + halfLength, y + halfDiameter, z + halfDiameter);
+        });
     }
 
     public static class Factory implements ParticleProvider<LaserParticleData> {
@@ -147,8 +147,8 @@ public class LaserParticle extends TextureSheetParticle {
         @Override
         public LaserParticle createParticle(LaserParticleData data, @Nonnull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             Pos3D start = new Pos3D(x, y, z);
-            Pos3D end = start.translate(data.direction, data.distance);
-            LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction, data.energyScale);
+            Pos3D end = start.translate(data.direction(), data.distance());
+            LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction(), data.energyScale());
             particleLaser.pickSprite(this.spriteSet);
             return particleLaser;
         }

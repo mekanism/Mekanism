@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "result": {
-    "item": "mekanism:restrictive_transporter",
-    "count": 2
+  "key": {
+    "#": {
+      "item": "minecraft:iron_bars"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
   },
   "pattern": [
     "S#S"
   ],
-  "key": {
-    "S": {
-      "tag": "forge:ingots/steel"
-    },
-    "#": {
-      "item": "minecraft:iron_bars"
-    }
+  "result": {
+    "count": 2,
+    "item": "mekanism:restrictive_transporter"
   }
 }

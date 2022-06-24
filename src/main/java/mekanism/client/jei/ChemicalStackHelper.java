@@ -70,13 +70,6 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public String getModId(STACK ingredient) {
-        return getResourceLocation(ingredient).getNamespace();
-    }
-
-    @Override
     public ResourceLocation getResourceLocation(STACK ingredient) {
         return ingredient.getTypeRegistryName();
     }
@@ -88,13 +81,6 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
         CHEMICAL chemical = ingredient.getType();
         return colorHelper.getColors(MekanismRenderer.getChemicalTexture(chemical), chemical.getTint(), 1);
-    }
-
-    @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true)
-    public String getResourceId(STACK ingredient) {
-        return getResourceLocation(ingredient).getPath();
     }
 
     @Override

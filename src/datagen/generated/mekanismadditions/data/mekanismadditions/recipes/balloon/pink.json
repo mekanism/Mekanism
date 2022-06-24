@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "result": {
-    "item": "mekanismadditions:pink_balloon",
-    "count": 2
-  },
   "ingredients": [
     {
       "tag": "forge:leather"
@@ -14,5 +10,9 @@
     {
       "tag": "forge:dyes/pink"
     }
-  ]
+  ],
+  "result": {
+    "count": 2,
+    "item": "mekanismadditions:pink_balloon"
+  }
 }

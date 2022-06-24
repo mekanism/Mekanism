@@ -3,11 +3,10 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -24,23 +23,18 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
-import mekanism.common.network.to_client.PacketLightningRender;
-import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import mekanism.common.util.WorldUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -60,9 +54,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
@@ -181,46 +173,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             FloatingLong baseDestroyEnergy = getDestroyEnergy(stack);
             FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
-                //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
-                // only allow mining things that are considered an ore
-                if (!(state.getBlock() instanceof BlockBounding) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                    List<BlockPos> found = findPositions(state, pos, world);
-                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayer) player, stack, this, found,
-                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), distance -> 0.5 * Math.pow(distance, 1.5), state);
+                // Only allow mining things that are considered an ore
+                if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                    Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0, Object2BooleanMaps.singleton(state.getBlock(), true));
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, world, pos, (ServerPlayer) player, stack, this, found, hardness -> FloatingLong.ZERO,
+                          (hardness, distance, bs) -> getDestroyEnergy(baseDestroyEnergy, hardness).multiply(0.5 * Math.pow(distance, 1.5)));
                 }
             }
         }
         return super.onBlockStartBreak(stack, pos, player);
-    }
-
-    private static List<BlockPos> findPositions(BlockState state, BlockPos location, Level world) {
-        List<BlockPos> found = new ArrayList<>();
-        Set<BlockPos> checked = new ObjectOpenHashSet<>();
-        found.add(location);
-        Block startBlock = state.getBlock();
-        int maxCount = MekanismConfig.gear.disassemblerMiningCount.get() - 1;
-        for (int i = 0; i < found.size(); i++) {
-            BlockPos blockPos = found.get(i);
-            checked.add(blockPos);
-            for (BlockPos pos : BlockPos.betweenClosed(blockPos.offset(-1, -1, -1), blockPos.offset(1, 1, 1))) {
-                //We can check contains as mutable
-                if (!checked.contains(pos)) {
-                    Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
-                    if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
-                        //Make sure to add it as immutable
-                        found.add(pos.immutable());
-                        //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
-                        // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
-                        Mekanism.packetHandler().sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
-                              Vec3.atCenterOf(blockPos), Vec3.atCenterOf(pos), 10), world, blockPos);
-                        if (found.size() > maxCount) {
-                            return found;
-                        }
-                    }
-                }
-            }
-        }
-        return found;
     }
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness) {
@@ -275,8 +236,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         if (mode != newMode) {
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismUtils.logFormat(MekanismLang.DISASSEMBLER_MODE_CHANGE.translate(EnumColor.INDIGO, newMode, EnumColor.AQUA,
-                      newMode.getEfficiency())), Util.NIL_UUID);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DISASSEMBLER_MODE_CHANGE.translate(EnumColor.INDIGO, newMode, EnumColor.AQUA,
+                      newMode.getEfficiency())));
             }
         }
     }

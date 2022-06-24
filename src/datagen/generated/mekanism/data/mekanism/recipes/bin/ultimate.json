@@ -1,25 +1,25 @@
 {
   "type": "mekanism:mek_data",
-  "result": {
-    "item": "mekanism:ultimate_bin"
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "P": {
+      "item": "mekanism:elite_bin"
+    },
+    "_": {
+      "tag": "forge:cobblestone/normal"
+    }
   },
   "pattern": [
     "_C_",
     "APA",
     "___"
   ],
-  "key": {
-    "P": {
-      "item": "mekanism:elite_bin"
-    },
-    "_": {
-      "tag": "forge:cobblestone/normal"
-    },
-    "C": {
-      "tag": "forge:circuits/ultimate"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    }
+  "result": {
+    "item": "mekanism:ultimate_bin"
   }
 }

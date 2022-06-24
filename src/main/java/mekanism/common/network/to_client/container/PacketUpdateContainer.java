@@ -34,10 +34,7 @@ public class PacketUpdateContainer implements IMekanismPacket {
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeByte(windowId);
-        buffer.writeVarInt(data.size());
-        for (PropertyData data : data) {
-            data.writeToPacket(buffer);
-        }
+        buffer.writeCollection(data, (buf, data) -> data.writeToPacket(buf));
     }
 
     public static PacketUpdateContainer decode(FriendlyByteBuf buffer) {

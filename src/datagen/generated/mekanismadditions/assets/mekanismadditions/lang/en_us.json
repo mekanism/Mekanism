@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismadditions.balloon.description": "Craft any color Balloon",
+  "advancements.mekanismadditions.balloon.title": "Reach for the Skies",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "Craft any color Glow Panel",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "Glow in the Dark",
+  "advancements.mekanismadditions.not_the_babies.description": "Kill any baby Mekanism Addition's mob",
+  "advancements.mekanismadditions.not_the_babies.title": "Not the Babies",
+  "advancements.mekanismadditions.pop_pop.description": "Pop a balloon",
+  "advancements.mekanismadditions.pop_pop.title": "Pop Pop",
   "block.mekanismadditions.aqua_glow_panel": "Aqua Glow Panel",
   "block.mekanismadditions.aqua_plastic": "Aqua Plastic Block",
   "block.mekanismadditions.aqua_plastic_fence": "Aqua Plastic Barrier",

@@ -1,11 +1,11 @@
 package mekanism.common.world;
 
 import com.mojang.serialization.Codec;
-import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
 
@@ -18,7 +18,7 @@ public class ConfigurableUniformInt extends IntProvider {
     }
 
     @Override
-    public int sample(@Nonnull Random random) {
+    public int sample(@Nonnull RandomSource random) {
         return Mth.randomBetweenInclusive(random, getMinValue(), getMaxValue());
     }
 
