@@ -1,7 +1,6 @@
 package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener {
 
@@ -25,7 +25,7 @@ public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener
     }
 
     @Override
-    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         if (armored) {
             model = new ModelArmoredJetpack(Minecraft.getInstance().getEntityModels());
         } else {
@@ -34,7 +34,7 @@ public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener
     }
 
     @Override
-    public void render(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+    public void render(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
         if (!baseModel.body.visible) {
             //If the body model shouldn't show don't bother displaying it
@@ -52,7 +52,7 @@ public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener
         }
     }
 
-    private void renderJetpack(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light,
+    private void renderJetpack(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light,
           int overlayLight, boolean hasEffect) {
         matrix.pushPose();
         baseModel.body.translateAndRotate(matrix);

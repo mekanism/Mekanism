@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.GasStack;
@@ -52,6 +50,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITagManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
 
@@ -71,7 +71,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack stack) {
             gui().renderItem(matrix, stack, x, y);
         } else if (target instanceof FluidStack stack) {
@@ -86,7 +86,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
             gui().renderItemTooltip(matrix, stack, mouseX, mouseY);

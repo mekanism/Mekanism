@@ -1,6 +1,5 @@
 package mekanism.client.render.data;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -8,14 +7,15 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import org.jetbrains.annotations.NotNull;
 
 //TODO - 1.18: Make it possible for chemicals to define a "glow/light" value and then use that here
 public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends RenderData {
 
-    @Nonnull
+    @NotNull
     public final STACK chemicalType;
 
-    protected ChemicalRenderData(@Nonnull STACK chemicalType) {
+    protected ChemicalRenderData(@NotNull STACK chemicalType) {
         this.chemicalType = chemicalType;
     }
 
@@ -54,7 +54,7 @@ public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends
 
     public static class GasRenderData extends ChemicalRenderData<GasStack> {
 
-        public GasRenderData(@Nonnull GasStack chemicalType) {
+        public GasRenderData(@NotNull GasStack chemicalType) {
             super(chemicalType);
         }
 
@@ -66,21 +66,21 @@ public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends
 
     public static class InfusionRenderData extends ChemicalRenderData<InfusionStack> {
 
-        public InfusionRenderData(@Nonnull InfusionStack chemicalType) {
+        public InfusionRenderData(@NotNull InfusionStack chemicalType) {
             super(chemicalType);
         }
     }
 
     public static class PigmentRenderData extends ChemicalRenderData<PigmentStack> {
 
-        public PigmentRenderData(@Nonnull PigmentStack chemicalType) {
+        public PigmentRenderData(@NotNull PigmentStack chemicalType) {
             super(chemicalType);
         }
     }
 
     public static class SlurryRenderData extends ChemicalRenderData<SlurryStack> {
 
-        public SlurryRenderData(@Nonnull SlurryStack chemicalType) {
+        public SlurryRenderData(@NotNull SlurryStack chemicalType) {
             super(chemicalType);
         }
     }

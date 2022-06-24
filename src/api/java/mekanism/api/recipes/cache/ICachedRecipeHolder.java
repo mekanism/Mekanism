@@ -1,8 +1,8 @@
 package mekanism.api.recipes.cache;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for helping implement objects that can handle cached recipes.
@@ -55,7 +55,7 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
      * @param cached     The recipe to load to.
      * @param cacheIndex The "recipe index" for which cache to interact with.
      */
-    default void loadSavedData(@Nonnull CachedRecipe<RECIPE> cached, int cacheIndex) {
+    default void loadSavedData(@NotNull CachedRecipe<RECIPE> cached, int cacheIndex) {
         cached.loadSavedOperatingTicks(getSavedOperatingTicks(cacheIndex));
     }
 
@@ -101,7 +101,7 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
      * @return A new cached recipe representing the given recipe, or null if the holder does not handle the given cacheIndex.
      */
     @Nullable
-    CachedRecipe<RECIPE> createNewCachedRecipe(@Nonnull RECIPE recipe, int cacheIndex);
+    CachedRecipe<RECIPE> createNewCachedRecipe(@NotNull RECIPE recipe, int cacheIndex);
 
     /**
      * Checks if the cache should be invalidated because it is no longer valid.

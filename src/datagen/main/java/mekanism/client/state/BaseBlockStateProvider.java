@@ -3,7 +3,6 @@ package mekanism.client.state;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.common.DataGenJsonConstants;
@@ -21,6 +20,7 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProvider> extends BlockStateProvider {
 
@@ -34,7 +34,7 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
         modelProvider = providerCreator.apply(generator, existingFileHelper);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Block state provider: " + modid;

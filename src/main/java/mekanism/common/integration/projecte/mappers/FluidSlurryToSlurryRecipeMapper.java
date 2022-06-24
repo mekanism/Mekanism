@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
@@ -15,6 +14,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
@@ -41,8 +41,8 @@ public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
             return false;
         }
         boolean handled = false;
-        List<@NonNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
-        List<@NonNull SlurryStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
+        List<@NotNull SlurryStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
         for (FluidStack fluidRepresentation : fluidRepresentations) {
             NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
             for (SlurryStack slurryRepresentation : slurryRepresentations) {

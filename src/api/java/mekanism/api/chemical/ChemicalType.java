@@ -3,8 +3,6 @@ package mekanism.api.chemical;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -18,6 +16,8 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngre
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO: Make the chemicals know their own chemical type
 public enum ChemicalType implements StringRepresentable {
@@ -44,7 +44,7 @@ public enum ChemicalType implements StringRepresentable {
         this.instanceCheck = instanceCheck;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getSerializedName() {
         return name;
@@ -66,7 +66,7 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @param nbt Tag to write to.
      */
-    public void write(@Nonnull CompoundTag nbt) {
+    public void write(@NotNull CompoundTag nbt) {
         nbt.putString(NBTConstants.CHEMICAL_TYPE, getSerializedName());
     }
 

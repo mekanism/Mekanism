@@ -4,8 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import java.util.function.ObjIntConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -17,6 +15,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiUpgradeScrollList extends GuiScrollList {
 
@@ -82,7 +82,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (mouseX >= x + 1 && mouseX < x + barXShift - 1) {
             forEachUpgrade((upgrade, multipliedElement) -> {

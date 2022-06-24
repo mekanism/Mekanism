@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.IntBinaryOperator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
@@ -18,6 +16,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> extends BaseFilter<FILTER> {
 
@@ -25,7 +25,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     private TagKey<TYPE> filterLocation;
     @Nullable
     private ITag<TYPE> filterTag;
-    @Nonnull
+    @NotNull
     private TYPE selectedOutput = getFallbackElement();
     @Nullable
     private STACK cachedSelectedStack;
@@ -88,7 +88,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     /**
      * Only publicly exposed for creating via ComputerCraft
      */
-    public final void setSelectedOutput(@Nonnull TYPE output) {
+    public final void setSelectedOutput(@NotNull TYPE output) {
         this.selectedOutput = output;
         //Invalidate cached stack
         cachedSelectedStack = null;
@@ -133,7 +133,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         isValid = buffer.readBoolean();
     }
 
-    private void setSelectedOrFallback(@Nonnull ResourceLocation resourceLocation) {
+    private void setSelectedOrFallback(@NotNull ResourceLocation resourceLocation) {
         TYPE output = getRegistry().getValue(resourceLocation);
         setSelectedOutput(output == null ? getFallbackElement() : output);
     }

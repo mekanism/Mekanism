@@ -2,15 +2,14 @@ package mekanism.common.content.gear;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
 
@@ -34,18 +33,18 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         return data;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public TYPE get() {
         return data.get();
     }
 
     @Override
-    public void set(@Nonnull TYPE val) {
+    public void set(@NotNull TYPE val) {
         set(val, null);
     }
 
-    public void set(@Nonnull TYPE val, @Nullable Runnable callback) {
+    public void set(@NotNull TYPE val, @Nullable Runnable callback) {
         Objects.requireNonNull(val, "Value cannot be null.");
         data.set(val);
         // validity checks
@@ -82,7 +81,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         data.write(name, tag);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return name;
@@ -97,7 +96,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
             this.isConfigEnabled = isConfigEnabled;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public Boolean get() {
             return isConfigEnabled() && super.get();

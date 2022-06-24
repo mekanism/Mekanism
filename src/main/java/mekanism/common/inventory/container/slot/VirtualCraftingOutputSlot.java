@@ -2,8 +2,6 @@ package mekanism.common.inventory.container.slot;
 
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -14,10 +12,12 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot implements IHasExtraData {
 
-    @Nonnull
+    @NotNull
     private final QIOCraftingWindow craftingWindow;
     /**
      * @apiNote For use on client side to store if we can craft or not. On the server side we check it directly
@@ -26,31 +26,31 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     private int amountCrafted;
 
     public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter,
-          @Nonnull QIOCraftingWindow craftingWindow) {
+          @NotNull QIOCraftingWindow craftingWindow) {
         super(slot, craftingWindow.getWindowData(), slotOverlay, uncheckedSetter);
         this.craftingWindow = craftingWindow;
     }
 
     @Override
-    public boolean canMergeWith(@Nonnull ItemStack stack) {
+    public boolean canMergeWith(@NotNull ItemStack stack) {
         //Don't allow double-clicking to pickup stacks from the output slot
         return false;
     }
 
     @Override
-    public boolean mayPlace(@Nonnull ItemStack stack) {
+    public boolean mayPlace(@NotNull ItemStack stack) {
         //Short circuit to avoid looking through the various predicates
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
+    public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
         //Short circuit don't allow inserting into the output slot
         return stack;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack remove(int amount) {
         if (amount == 0) {
@@ -76,7 +76,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
      * @implNote We override this similar to how {@link net.minecraft.world.inventory.ResultSlot} does, but this never actually ends up getting called for our slots.
      */
     @Override
-    protected void onQuickCraft(@Nonnull ItemStack stack, int amount) {
+    protected void onQuickCraft(@NotNull ItemStack stack, int amount) {
         amountCrafted += amount;
         checkTakeAchievements(stack);
     }
@@ -87,27 +87,27 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public void onTake(@Nonnull Player player, @Nonnull ItemStack stack) {
+    public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
         ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
         amountCrafted = 0;
     }
 
     @Override
-    public boolean mayPickup(@Nonnull Player player) {
+    public boolean mayPickup(@NotNull Player player) {
         if (player.level.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
             return canCraft && super.mayPickup(player);
         }
         return craftingWindow.canViewRecipe(serverPlayer) && super.mayPickup(player);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getStackToRender() {
         return canCraft ? super.getStackToRender() : ItemStack.EMPTY;
     }
 
-    @Nonnull
-    public ItemStack shiftClickSlot(@Nonnull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+    @NotNull
+    public ItemStack shiftClickSlot(@NotNull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
         craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
         // afterwards we want to "stop" crafting as our window determines how much a shift click should produce

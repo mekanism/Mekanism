@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
@@ -19,6 +17,8 @@ import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PacketRobit implements IMekanismPacket {
 
@@ -40,11 +40,11 @@ public class PacketRobit implements IMekanismPacket {
         this(type, robit.getId(), null, null);
     }
 
-    public PacketRobit(EntityRobit robit, @Nonnull String name) {
+    public PacketRobit(EntityRobit robit, @NotNull String name) {
         this(RobitPacketType.NAME, robit, name, null);
     }
 
-    public PacketRobit(EntityRobit robit, @Nonnull RobitSkin skin) {
+    public PacketRobit(EntityRobit robit, @NotNull RobitSkin skin) {
         this(RobitPacketType.SKIN, robit, null, skin);
     }
 

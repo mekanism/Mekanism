@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -29,6 +27,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QIOCraftingTransferHelper {
 
@@ -95,7 +95,7 @@ public class QIOCraftingTransferHelper {
     }
 
     @Nullable
-    public HashedItemSource getSource(@Nonnull HashedItem item) {
+    public HashedItemSource getSource(@NotNull HashedItem item) {
         return reverseLookup.get(item);
     }
 
@@ -232,7 +232,7 @@ public class QIOCraftingTransferHelper {
         private final byte slot;
         private int used;
 
-        public SingularHashedItemSource(@Nonnull UUID qioSource, int used) {
+        public SingularHashedItemSource(@NotNull UUID qioSource, int used) {
             this.qioSource = qioSource;
             this.slot = -1;
             this.used = used;

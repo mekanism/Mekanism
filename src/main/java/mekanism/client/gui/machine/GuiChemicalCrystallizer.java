@@ -5,8 +5,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
@@ -37,13 +35,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 
     private final List<ItemStack> iterStacks = new ArrayList<>();
     private final IOreInfo oreInfo = new OreInfo();
     private GuiSequencedSlotDisplay slotDisplay;
-    @Nonnull
+    @NotNull
     private Slurry prevSlurry = MekanismAPI.EMPTY_SLURRY;
 
     public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, Inventory inv, Component title) {
@@ -71,7 +71,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
@@ -128,13 +128,13 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
 
     public interface IOreInfo {
 
-        @Nonnull
+        @NotNull
         BoxedChemicalStack getInputChemical();
 
         @Nullable
         ChemicalCrystallizerRecipe getRecipe();
 
-        @Nonnull
+        @NotNull
         ItemStack getRenderStack();
     }
 
@@ -142,7 +142,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
 
         private WeakReference<ChemicalCrystallizerRecipe> cachedRecipe;
 
-        @Nonnull
+        @NotNull
         @Override
         public BoxedChemicalStack getInputChemical() {
             Current current = tile.inputTank.getCurrent();
@@ -168,7 +168,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
             return recipe;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack getRenderStack() {
             return slotDisplay == null ? ItemStack.EMPTY : slotDisplay.getRenderStack();

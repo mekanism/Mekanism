@@ -3,8 +3,6 @@ package mekanism.common.block.attribute;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
@@ -14,6 +12,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface Attribute {
 
@@ -76,7 +76,7 @@ public interface Attribute {
         return attr != null && attr.isActive(state);
     }
 
-    @Nonnull
+    @NotNull
     static BlockState setActive(BlockState state, boolean active) {
         AttributeStateActive attr = get(state, AttributeStateActive.class);
         return attr == null ? state : attr.setActive(state, active);

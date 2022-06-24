@@ -1,7 +1,6 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -11,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> {
 
@@ -19,7 +19,7 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> {
     }
 
     @Override
-    protected void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         MekanismUtils.addFrequencyToTileTooltip(stack, FrequencyType.QIO, tooltip);
     }
 

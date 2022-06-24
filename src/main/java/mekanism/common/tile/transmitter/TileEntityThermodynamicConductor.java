@@ -2,8 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.providers.IBlockProvider;
@@ -19,6 +17,8 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
 
@@ -34,7 +34,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             }
             return conductor.getHeatCapacitors(direction);
         }, new IMekanismHeatHandler() {
-            @Nonnull
+            @NotNull
             @Override
             public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
                 return heatHandlerManager.getContainers(side);
@@ -61,9 +61,9 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         return TransmitterType.THERMODYNAMIC_CONDUCTOR;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
         return switch (tier) {
             case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR);
             case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR);
@@ -74,7 +74,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
     }
 
     @Override
-    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             invalidateCapability(Capabilities.HEAT_HANDLER, side);

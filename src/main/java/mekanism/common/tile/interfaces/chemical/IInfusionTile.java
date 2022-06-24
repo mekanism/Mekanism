@@ -1,7 +1,6 @@
 package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -12,6 +11,7 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
 @MethodsReturnNonnullByDefault
 public interface IInfusionTile extends IInfusionTracker {

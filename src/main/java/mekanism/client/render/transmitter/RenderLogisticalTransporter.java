@@ -7,8 +7,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
@@ -42,13 +41,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
     private static final Map<Direction, Model3D> cachedOverlays = new EnumMap<>(Direction.class);
+    @Nullable
     private static SpriteInfo gunpowderIcon;
+    @Nullable
     private static SpriteInfo torchOffIcon;
+    @Nullable
     private static SpriteInfo torchOnIcon;
     private final ModelTransporterBox modelBox;
     private final LazyItemRenderer itemRenderer = new LazyItemRenderer();

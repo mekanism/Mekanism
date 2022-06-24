@@ -1,8 +1,8 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
@@ -16,7 +16,7 @@ import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "dosimeter.png");

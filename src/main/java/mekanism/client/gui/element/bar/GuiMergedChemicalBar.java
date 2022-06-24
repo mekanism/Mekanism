@@ -1,8 +1,6 @@
 package mekanism.client.gui.element.bar;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -24,6 +22,8 @@ import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> extends GuiBar<IBarInfoHandler> implements
       IJEIIngredientHelper {
@@ -72,7 +72,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar == null) {
             super.renderToolTip(matrix, mouseX, mouseY);
@@ -82,7 +82,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    void drawContentsChecked(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
+    void drawContentsChecked(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar != null) {
             currentBar.drawContentsChecked(matrix, mouseX, mouseY, partialTicks, handlerLevel, warning);

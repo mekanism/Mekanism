@@ -2,8 +2,6 @@ package mekanism.common.block.attribute;
 
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AttributeStateFacing implements AttributeState {
 
@@ -58,16 +58,16 @@ public class AttributeStateFacing implements AttributeState {
         return state.getValue(getFacingProperty());
     }
 
-    public BlockState setDirection(@Nonnull BlockState state, Direction newDirection) {
+    public BlockState setDirection(@NotNull BlockState state, Direction newDirection) {
         return supportsDirection(newDirection) ? state.setValue(getFacingProperty(), newDirection) : state;
     }
 
-    @Nonnull
+    @NotNull
     public DirectionProperty getFacingProperty() {
         return facingProperty;
     }
 
-    @Nonnull
+    @NotNull
     public FacePlacementType getPlacementType() {
         return placementType;
     }
@@ -96,8 +96,8 @@ public class AttributeStateFacing implements AttributeState {
 
     @Override
     @Contract("_, null, _, _, _, _ -> null")
-    public BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nullable Player player,
-          @Nonnull Direction face) {
+    public BlockState getStateForPlacement(Block block, @Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player,
+          @NotNull Direction face) {
         if (state == null) {
             return null;
         }

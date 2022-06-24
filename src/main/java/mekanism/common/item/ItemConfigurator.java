@@ -3,16 +3,13 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -42,8 +39,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -59,6 +54,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
@@ -67,18 +64,18 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(@NotNull ItemStack stack) {
         return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -194,7 +191,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
     }
 
     @Override
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         ConfiguratorMode mode = getMode(stack);
         ConfiguratorMode newMode = mode.adjust(shift);
         if (mode != newMode) {
@@ -205,9 +202,9 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getScrollTextComponent(@Nonnull ItemStack stack) {
+    public Component getScrollTextComponent(@NotNull ItemStack stack) {
         return getMode(stack).getTextComponent();
     }
 
@@ -231,9 +228,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
         return ConfiguratorMode.byIndexStatic(ordinal);
     }
 
-    @FieldsAreNonnullByDefault
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
+    @NothingNullByDefault
     public enum ConfiguratorMode implements IRadialSelectorEnum<ConfiguratorMode>, IHasTextComponent {
         CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
@@ -299,7 +294,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
             };
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ConfiguratorMode byIndex(int index) {
             return byIndexStatic(index);

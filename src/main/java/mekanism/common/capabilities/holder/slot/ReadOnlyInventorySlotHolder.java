@@ -3,10 +3,10 @@ package mekanism.common.capabilities.holder.slot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ReadOnlyInventorySlotHolder implements IInventorySlotHolder {
 
@@ -15,11 +15,11 @@ public class ReadOnlyInventorySlotHolder implements IInventorySlotHolder {
     ReadOnlyInventorySlotHolder() {
     }
 
-    void addSlot(@Nonnull IInventorySlot slot) {
+    void addSlot(@NotNull IInventorySlot slot) {
         inventorySlots.add(slot);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction direction) {
         //Only expose the slots if it is internal

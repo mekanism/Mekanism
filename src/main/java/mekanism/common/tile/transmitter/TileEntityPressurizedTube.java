@@ -3,8 +3,6 @@ package mekanism.common.tile.transmitter;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
@@ -44,6 +42,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
@@ -88,9 +88,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         return TransmitterType.PRESSURIZED_TUBE;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
         return switch (tier) {
             case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PRESSURIZED_TUBE);
             case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE);
@@ -100,7 +100,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
@@ -170,7 +170,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     }
 
     @Override
-    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             invalidateCapability(Capabilities.GAS_HANDLER, side);

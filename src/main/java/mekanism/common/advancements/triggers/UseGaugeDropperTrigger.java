@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.util.Arrays;
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
@@ -16,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropperTrigger.TriggerInstance> {
 
@@ -25,15 +25,15 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
         this.id = id;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ResourceLocation getId() {
         return id;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected TriggerInstance createInstance(@Nonnull JsonObject json, @Nonnull EntityPredicate.Composite playerPredicate, @Nonnull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
         String actionName = GsonHelper.getAsString(json, JsonConstants.ACTION);
         UseDropperAction action = Arrays.stream(UseDropperAction.ACTIONS)
               .filter(a -> a.getSerializedName().equals(actionName))
@@ -55,7 +55,7 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
         //Do not modify
         private static final UseDropperAction[] ACTIONS = values();
 
-        @Nonnull
+        @NotNull
         @Override
         public String getSerializedName() {
             return name().toLowerCase(Locale.ROOT);
@@ -71,9 +71,9 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
             this.action = action;
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public JsonObject serializeToJson(@Nonnull SerializationContext context) {
+        public JsonObject serializeToJson(@NotNull SerializationContext context) {
             JsonObject json = super.serializeToJson(context);
             json.addProperty(JsonConstants.ACTION, action.getSerializedName());
             return json;

@@ -3,12 +3,10 @@ package mekanism.common.content.gear;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
@@ -34,8 +32,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 @MethodsReturnNonnullByDefault
 public final class Module<MODULE extends ICustomModule<MODULE>> implements IModule<MODULE> {
 
@@ -68,7 +68,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public void init() {
         enabled = addConfigItem(new ModuleConfigItem<>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new ModuleBooleanData(!data.isDisabledByDefault())) {
             @Override
-            public void set(@Nonnull Boolean val, @Nullable Runnable callback) {
+            public void set(@NotNull Boolean val, @Nullable Runnable callback) {
                 //Custom override of set to see if it changed and if so notify the custom module of that fact
                 boolean wasEnabled = get();
                 super.set(val, callback);
@@ -249,7 +249,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         customModule.addHUDElements(this, player, list::add);
     }
 
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         customModule.changeMode(this, player, stack, shift, displayChangeMessage);
     }
 

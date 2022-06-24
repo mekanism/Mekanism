@@ -2,7 +2,6 @@ package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -16,6 +15,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelIndustrialAlarm extends MekanismJavaModel {
 
@@ -55,19 +55,19 @@ public class ModelIndustrialAlarm extends MekanismJavaModel {
         aura = AURA.getFromRoot(root);
     }
 
-    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean active, float rotation, boolean renderBase,
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean active, float rotation, boolean renderBase,
           boolean hasEffect) {
         render(matrix, getVertexConsumer(renderer, active ? RENDER_TYPE_ACTIVE : RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1,
               active, rotation, renderBase);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack matrix, @Nonnull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue,
+    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
         render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, false, 0, false);
     }
 
-    private void render(@Nonnull PoseStack matrix, @Nonnull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha,
+    private void render(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha,
           boolean active, float rotation, boolean renderBase) {
         if (renderBase) {
             base.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);

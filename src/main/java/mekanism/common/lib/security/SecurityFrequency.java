@@ -2,7 +2,6 @@ package mekanism.common.lib.security;
 
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.collection.HashList;
@@ -16,6 +15,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.Nullable;
 
 public class SecurityFrequency extends Frequency {
 

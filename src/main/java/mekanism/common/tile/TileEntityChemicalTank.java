@@ -2,13 +2,12 @@ package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -64,6 +63,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements ISustainedData, IHasGasMode {
 
@@ -99,7 +100,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         chemicalTank = ChemicalTankChemicalTank.create(tier, this);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -107,7 +108,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
@@ -115,7 +116,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
@@ -123,7 +124,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener) {
         ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
@@ -131,7 +132,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -222,7 +223,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof ChemicalTankUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
@@ -241,7 +242,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ChemicalTankUpgradeData getUpgradeData() {
         return new ChemicalTankUpgradeData(redstone, getControlType(), drainSlot, fillSlot, dumping, getGasTank().getStack(), getInfusionTank().getStack(),
@@ -295,6 +296,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
     //End methods IComputerTile
 
+    @NothingNullByDefault
     public enum GasMode implements IIncrementalEnum<GasMode>, IHasTextComponent {
         IDLE(MekanismLang.IDLE),
         DUMPING_EXCESS(MekanismLang.DUMPING_EXCESS),
@@ -312,7 +314,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
             return langEntry.translate();
         }
 
-        @Nonnull
         @Override
         public GasMode byIndex(int index) {
             return byIndexStatic(index);

@@ -1,7 +1,5 @@
 package mekanism.tools.common.material.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
@@ -11,6 +9,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
@@ -60,7 +60,7 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 234;
             case LEGS -> 270;
@@ -71,7 +71,7 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 2;
             case LEGS -> 6;
@@ -81,13 +81,13 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getConfigCommentName() {
         return "Bronze";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "bronze";
@@ -99,13 +99,13 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
         return ToolsTags.Blocks.NEEDS_BRONZE_TOOL;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public SoundEvent getEquipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.of(MekanismTags.Items.INGOTS_BRONZE);

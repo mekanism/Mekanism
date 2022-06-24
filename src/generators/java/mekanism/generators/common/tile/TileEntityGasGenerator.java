@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -34,6 +32,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
@@ -60,7 +60,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, MekanismConfig.general.FROM_H2.get().multiply(2));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
@@ -68,7 +68,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -181,20 +181,20 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         }
 
         @Override
-        public void setStack(@Nonnull GasStack stack) {
+        public void setStack(@NotNull GasStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStack(stack);
             recheckOutput(stack, wasEmpty);
         }
 
         @Override
-        public void setStackUnchecked(@Nonnull GasStack stack) {
+        public void setStackUnchecked(@NotNull GasStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStackUnchecked(stack);
             recheckOutput(stack, wasEmpty);
         }
 
-        private void recheckOutput(@Nonnull GasStack stack, boolean wasEmpty) {
+        private void recheckOutput(@NotNull GasStack stack, boolean wasEmpty) {
             if (wasEmpty && !stack.isEmpty()) {
                 if (getType().has(Fuel.class)) {
                     output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);

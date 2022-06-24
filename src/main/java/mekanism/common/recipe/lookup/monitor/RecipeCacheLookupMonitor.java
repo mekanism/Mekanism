@@ -1,7 +1,5 @@
 package mekanism.common.recipe.lookup.monitor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -11,6 +9,8 @@ import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedRecipe;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements ICachedRecipeHolder<RECIPE>, IContentsListener {
 
@@ -72,7 +72,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     }
 
     @Override
-    public void loadSavedData(@Nonnull CachedRecipe<RECIPE> cached, int cacheIndex) {
+    public void loadSavedData(@NotNull CachedRecipe<RECIPE> cached, int cacheIndex) {
         if (cachedIndexMatches(cacheIndex)) {
             ICachedRecipeHolder.super.loadSavedData(cached, cacheIndex);
             if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?> c &&
@@ -101,7 +101,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
 
     @Nullable
     @Override
-    public CachedRecipe<RECIPE> createNewCachedRecipe(@Nonnull RECIPE recipe, int cacheIndex) {
+    public CachedRecipe<RECIPE> createNewCachedRecipe(@NotNull RECIPE recipe, int cacheIndex) {
         return cachedIndexMatches(cacheIndex) ? handler.createNewCachedRecipe(recipe, cacheIndex) : null;
     }
 

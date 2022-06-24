@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
-import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiFilterSelect;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiSorterFilerSelect extends GuiFilterSelect<TileEntityLogisticalSorter> {
 
@@ -11,25 +11,25 @@ public class GuiSorterFilerSelect extends GuiFilterSelect<TileEntityLogisticalSo
         super(gui, tile, 4);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected GuiFilterCreator<TileEntityLogisticalSorter> getItemStackFilterCreator() {
         return GuiSorterItemStackFilter::create;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected GuiFilterCreator<TileEntityLogisticalSorter> getTagFilterCreator() {
         return GuiSorterTagFilter::create;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected GuiFilterCreator<TileEntityLogisticalSorter> getMaterialFilterCreator() {
         return GuiSorterMaterialFilter::create;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected GuiFilterCreator<TileEntityLogisticalSorter> getModIDFilterCreator() {
         return GuiSorterModIDFilter::create;

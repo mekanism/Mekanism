@@ -1,7 +1,8 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
@@ -14,7 +15,7 @@ import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttackAmplificationUnit> {
 
     private IModuleConfigItem<AttackDamage> attackDamage;
@@ -36,6 +37,7 @@ public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttack
         }
     }
 
+    @NothingNullByDefault
     public enum AttackDamage implements IHasTextComponent {
         OFF(0),
         LOW(4),

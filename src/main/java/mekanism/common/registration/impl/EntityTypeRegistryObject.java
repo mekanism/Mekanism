@@ -1,11 +1,11 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegistryObject<EntityType<ENTITY>> implements IEntityTypeProvider {
 
@@ -13,7 +13,7 @@ public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegi
         super(registryObject);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public EntityType<ENTITY> getEntityType() {
         return get();

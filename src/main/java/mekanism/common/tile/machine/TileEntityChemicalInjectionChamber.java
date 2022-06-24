@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -11,6 +10,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine {
 
@@ -18,7 +18,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
         super(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, pos, state, BASE_TICKS_REQUIRED);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.INJECTING;

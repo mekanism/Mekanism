@@ -1,10 +1,7 @@
 package mekanism.common.tile.factory;
 
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
@@ -31,6 +28,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
@@ -42,7 +41,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
     );
 
-    private final IInputHandler<@NonNull ItemStack> extraInputHandler;
+    private final IInputHandler<@NotNull ItemStack> extraInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput")
     private InputInventorySlot extraSlot;
@@ -66,7 +65,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public boolean isValidInputItem(@Nonnull ItemStack stack) {
+    public boolean isValidInputItem(@NotNull ItemStack stack) {
         return containsRecipeA(stack);
     }
 
@@ -76,7 +75,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<CombinerRecipe> cached, @Nonnull ItemStack stack) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<CombinerRecipe> cached, @NotNull ItemStack stack) {
         if (cached != null) {
             CombinerRecipe cachedRecipe = cached.getRecipe();
             return cachedRecipe.getMainInput().testType(stack) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.getStack()));
@@ -85,7 +84,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    protected CombinerRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected CombinerRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack extra = extraSlot.getStack();
         ItemStack output = outputSlot.getStack();
         //TODO: Give it something that is not empty when we don't have a stored secondary stack for getting the output?
@@ -93,7 +92,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               recipe -> InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, extra), output));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
         return MekanismRecipeType.COMBINING;
@@ -105,9 +104,9 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         return findFirstRecipe(inputHandlers[cacheIndex], extraInputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
+    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@NotNull CombinerRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.combiner(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
@@ -119,7 +118,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof CombinerUpgradeData data) {
             //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
@@ -130,7 +129,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CombinerUpgradeData getUpgradeData() {
         return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents());

@@ -1,9 +1,9 @@
 package mekanism.generators.common.advancements;
 
-import javax.annotation.Nullable;
 import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.advancements.MekanismAdvancements;
 import mekanism.generators.common.MekanismGenerators;
+import org.jetbrains.annotations.Nullable;
 
 public class GeneratorsAdvancements {
 

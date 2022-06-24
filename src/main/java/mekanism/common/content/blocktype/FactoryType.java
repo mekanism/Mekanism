@@ -2,6 +2,7 @@ package mekanism.common.content.blocktype;
 
 import java.util.Locale;
 import java.util.function.Supplier;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
@@ -9,6 +10,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.registries.MekanismBlocks;
 
+@NothingNullByDefault
 public enum FactoryType implements IHasTranslationKey {
     SMELTING("smelting", MekanismLang.SMELTING, () -> MekanismBlockTypes.ENERGIZED_SMELTER, () -> MekanismBlocks.ENERGIZED_SMELTER),
     ENRICHING("enriching", MekanismLang.ENRICHING, () -> MekanismBlockTypes.ENRICHMENT_CHAMBER, () -> MekanismBlocks.ENRICHMENT_CHAMBER),

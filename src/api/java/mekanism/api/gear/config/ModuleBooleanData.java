@@ -1,14 +1,13 @@
 package mekanism.api.gear.config;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.nbt.CompoundTag;
 
 /**
  * Boolean implementation of {@link ModuleConfigData}.
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public final class ModuleBooleanData implements ModuleConfigData<Boolean> {
 
     private boolean value;
@@ -29,7 +28,6 @@ public final class ModuleBooleanData implements ModuleConfigData<Boolean> {
         value = def;
     }
 
-    @Nonnull
     @Override
     public Boolean get() {
         return value;

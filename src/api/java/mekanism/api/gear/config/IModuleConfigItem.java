@@ -1,6 +1,6 @@
 package mekanism.api.gear.config;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface representing module config items.
@@ -14,7 +14,7 @@ public interface IModuleConfigItem<TYPE> {
      *
      * @return Name.
      */
-    @Nonnull
+    @NotNull
     String getName();
 
     /**
@@ -22,7 +22,7 @@ public interface IModuleConfigItem<TYPE> {
      *
      * @return Current value.
      */
-    @Nonnull
+    @NotNull
     TYPE get();
 
     /**
@@ -30,5 +30,5 @@ public interface IModuleConfigItem<TYPE> {
      *
      * @param val Desired value.
      */
-    void set(@Nonnull TYPE val);
+    void set(@NotNull TYPE val);
 }

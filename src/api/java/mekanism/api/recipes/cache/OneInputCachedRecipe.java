@@ -5,10 +5,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -25,16 +22,15 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of recipes with two inputs.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe & Predicate<INPUT>> extends CachedRecipe<RECIPE> {
 
     private final IInputHandler<INPUT> inputHandler;
@@ -104,8 +100,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler, handles both the left and right outputs.
      */
-    public static OneInputCachedRecipe<@NonNull FluidStack, @NonNull ElectrolysisRecipeOutput, ElectrolysisRecipe> separating(ElectrolysisRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NonNull FluidStack> inputHandler, IOutputHandler<@NonNull ElectrolysisRecipeOutput> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull ElectrolysisRecipeOutput, ElectrolysisRecipe> separating(ElectrolysisRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, FluidStack::isEmpty, output -> false);
     }
 
@@ -118,8 +114,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<@NonNull FluidStack, @NonNull FluidStack, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NonNull FluidStack> inputHandler, IOutputHandler<@NonNull FluidStack> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull FluidStack, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, FluidStack::isEmpty,
               FluidStack::isEmpty);
     }
@@ -133,8 +129,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<@NonNull ItemStack, @NonNull ItemStack, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NonNull ItemStack> inputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
               ItemStack::isEmpty);
     }
@@ -148,8 +144,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<@NonNull ItemStack, @NonNull FluidStack, ItemStackToFluidRecipe> itemToFluid(ItemStackToFluidRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NonNull ItemStack> inputHandler, IOutputHandler<@NonNull FluidStack> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull FluidStack, ItemStackToFluidRecipe> itemToFluid(ItemStackToFluidRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
               FluidStack::isEmpty);
     }
@@ -164,8 +160,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      * @param outputHandler    Output handler.
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
-    OneInputCachedRecipe<@NonNull ItemStack, @NonNull STACK, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NonNull ItemStack> inputHandler, IOutputHandler<@NonNull STACK> outputHandler) {
+    OneInputCachedRecipe<@NotNull ItemStack, @NotNull STACK, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
               ChemicalStack::isEmpty);
     }
@@ -180,8 +176,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      * @param outputHandler    Output handler.
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>,
-          RECIPE extends ChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> OneInputCachedRecipe<@NonNull STACK, @NonNull STACK, RECIPE> chemicalToChemical(
-          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NonNull STACK> inputHandler, IOutputHandler<@NonNull STACK> outputHandler) {
+          RECIPE extends ChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> OneInputCachedRecipe<@NotNull STACK, @NotNull STACK, RECIPE> chemicalToChemical(
+          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull STACK> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ChemicalStack::isEmpty,
               ChemicalStack::isEmpty);
     }
@@ -195,8 +191,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<@NonNull ItemStack, @NonNull ChanceOutput, SawmillRecipe> sawing(SawmillRecipe recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NonNull ItemStack> inputHandler, IOutputHandler<@NonNull ChanceOutput> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ChanceOutput, SawmillRecipe> sawing(SawmillRecipe recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ChanceOutput> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
               output -> false);
     }

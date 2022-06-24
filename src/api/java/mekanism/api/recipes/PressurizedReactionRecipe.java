@@ -3,22 +3,19 @@ package mekanism.api.recipes;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.TriPredicate;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Input: ItemStack
@@ -33,10 +30,8 @@ import org.jetbrains.annotations.Contract;
  *
  * @apiNote Pressurized Reaction Chambers can process this recipe type.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NonNull ItemStack, @NonNull FluidStack, @NonNull GasStack> {
+@NothingNullByDefault
+public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull GasStack> {
 
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
@@ -169,7 +164,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     /**
      * @apiNote Both item and gas may be present or one may be empty.
      */
-    public record PressurizedReactionRecipeOutput(@Nonnull ItemStack item, @Nonnull GasStack gas) {
+    public record PressurizedReactionRecipeOutput(@NotNull ItemStack item, @NotNull GasStack gas) {
 
         public PressurizedReactionRecipeOutput {
             Objects.requireNonNull(item, "Item output cannot be null.");

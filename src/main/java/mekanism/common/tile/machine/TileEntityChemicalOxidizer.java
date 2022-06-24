@@ -1,11 +1,8 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -48,6 +45,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToGasRecipe> implements ItemRecipeLookupHandler<ItemStackToGasRecipe> {
 
@@ -62,8 +61,8 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IGasTank gasTank;
 
-    private final IOutputHandler<@NonNull GasStack> outputHandler;
-    private final IInputHandler<@NonNull ItemStack> inputHandler;
+    private final IOutputHandler<@NotNull GasStack> outputHandler;
+    private final IInputHandler<@NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
@@ -87,7 +86,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         outputHandler = OutputHelper.getOutputHandler(gasTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -95,7 +94,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -103,7 +102,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -123,7 +122,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         recipeCacheLookupMonitor.updateAndProcess();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.OXIDIZING;
@@ -135,9 +134,9 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         return findFirstRecipe(inputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@NotNull ItemStackToGasRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.itemToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))

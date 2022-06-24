@@ -16,8 +16,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -100,6 +98,8 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -147,8 +147,8 @@ public final class MekanismUtils {
      *
      * @implNote While the default implementation of getCreatorModId falls back to the registry name, it is possible someone is overriding this and not falling back.
      */
-    @Nonnull
-    public static String getModId(@Nonnull ItemStack stack) {
+    @NotNull
+    public static String getModId(@NotNull ItemStack stack) {
         Item item = stack.getItem();
         String modid = item.getCreatorModId(stack);
         if (modid == null) {
@@ -526,14 +526,14 @@ public final class MekanismUtils {
 
     public static CraftingContainer getDummyCraftingInv() {
         AbstractContainerMenu tempContainer = new AbstractContainerMenu(MenuType.CRAFTING, 1) {
-            @Nonnull
+            @NotNull
             @Override
-            public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+            public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
                 return ItemStack.EMPTY;
             }
 
             @Override
-            public boolean stillValid(@Nonnull Player player) {
+            public boolean stillValid(@NotNull Player player) {
                 return false;
             }
         };
@@ -552,7 +552,7 @@ public final class MekanismUtils {
         return stack.is(MekanismTags.Items.CONFIGURATORS);
     }
 
-    @Nonnull
+    @NotNull
     public static String getLastKnownUsername(@Nullable UUID uuid) {
         if (uuid == null) {
             return "<???>";

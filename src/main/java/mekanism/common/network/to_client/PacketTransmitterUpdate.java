@@ -2,7 +2,6 @@ package mekanism.common.network.to_client;
 
 import java.util.UUID;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.EnergyNetwork;
@@ -15,27 +14,28 @@ import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.network.NetworkEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PacketTransmitterUpdate implements IMekanismPacket {
 
     private final PacketType packetType;
     private final UUID networkID;
     private final float scale;
-    @Nonnull
+    @NotNull
     private BoxedChemical chemical = BoxedChemical.EMPTY;
-    @Nonnull
+    @NotNull
     private FluidStack fluidStack = FluidStack.EMPTY;
 
     public PacketTransmitterUpdate(EnergyNetwork network) {
         this(network, PacketType.ENERGY);
     }
 
-    public PacketTransmitterUpdate(BoxedChemicalNetwork network, @Nonnull BoxedChemical chemical) {
+    public PacketTransmitterUpdate(BoxedChemicalNetwork network, @NotNull BoxedChemical chemical) {
         this(network, PacketType.CHEMICAL);
         this.chemical = chemical;
     }
 
-    public PacketTransmitterUpdate(FluidNetwork network, @Nonnull FluidStack fluidStack) {
+    public PacketTransmitterUpdate(FluidNetwork network, @NotNull FluidStack fluidStack) {
         this(network, PacketType.FLUID);
         this.fluidStack = fluidStack;
     }

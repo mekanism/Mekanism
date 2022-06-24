@@ -19,13 +19,11 @@ import java.util.UUID;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
@@ -46,7 +44,6 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -69,6 +66,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
@@ -93,8 +92,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
  *
  * @author aidancbrady
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class RadiationManager implements IRadiationManager {
 
     /**
@@ -513,6 +511,7 @@ public class RadiationManager implements IRadiationManager {
 
         private Map<ResourceLocation, List<Meltdown>> savedMeltdowns = Collections.emptyMap();
         public List<RadiationSource> loadedSources = Collections.emptyList();
+        @Nullable
         public RadiationManager manager;
 
         public void setManagerAndSync(RadiationManager m) {
@@ -536,7 +535,7 @@ public class RadiationManager implements IRadiationManager {
             savedMeltdowns = Collections.emptyMap();
         }
 
-        public void load(@Nonnull CompoundTag nbtTags) {
+        public void load(@NotNull CompoundTag nbtTags) {
             if (nbtTags.contains(NBTConstants.RADIATION_LIST, Tag.TAG_LIST)) {
                 ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
                 loadedSources = new HashList<>(list.size());
@@ -562,10 +561,10 @@ public class RadiationManager implements IRadiationManager {
             }
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public CompoundTag save(@Nonnull CompoundTag nbtTags) {
-            if (!manager.radiationTable.isEmpty()) {
+        public CompoundTag save(@NotNull CompoundTag nbtTags) {
+            if (manager != null && !manager.radiationTable.isEmpty()) {
                 ListTag list = new ListTag();
                 for (RadiationSource source : manager.radiationTable.values()) {
                     CompoundTag compound = new CompoundTag();
@@ -574,7 +573,7 @@ public class RadiationManager implements IRadiationManager {
                 }
                 nbtTags.put(NBTConstants.RADIATION_LIST, list);
             }
-            if (!manager.meltdowns.isEmpty()) {
+            if (manager != null && !manager.meltdowns.isEmpty()) {
                 CompoundTag meltdownNBT = new CompoundTag();
                 for (Map.Entry<ResourceLocation, List<Meltdown>> entry : manager.meltdowns.entrySet()) {
                     List<Meltdown> meltdowns = entry.getValue();

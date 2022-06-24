@@ -6,9 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
@@ -33,8 +31,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public final class SecurityUtils implements ISecurityUtils {
 
     public static final SecurityUtils INSTANCE = new SecurityUtils();
@@ -49,26 +49,26 @@ public final class SecurityUtils implements ISecurityUtils {
      *
      * @return if the player has operator privileges
      */
-    private boolean isOp(@Nonnull Player p) {
+    private boolean isOp(Player p) {
         Objects.requireNonNull(p, "Player may not be null.");
         return MekanismConfig.general.opsBypassRestrictions.get() && p instanceof ServerPlayer player && player.server.getPlayerList().isOp(player.getGameProfile());
     }
 
     @Nullable
     @Override
-    public UUID getOwnerUUID(@Nonnull ICapabilityProvider provider) {
+    public UUID getOwnerUUID(ICapabilityProvider provider) {
         Objects.requireNonNull(provider, "Capability provider may not be null.");
         return provider.getCapability(Capabilities.OWNER_OBJECT).resolve().map(IOwnerObject::getOwnerUUID).orElse(null);
     }
 
     @Override
-    public boolean canAccess(@Nonnull Player player, @Nullable ICapabilityProvider provider) {
+    public boolean canAccess(Player player, @Nullable ICapabilityProvider provider) {
         //If the player is an op allow bypassing any restrictions
         return isOp(player) || canAccess(player.getUUID(), provider, player.level.isClientSide);
     }
 
     @Override
-    public boolean canAccessObject(@Nonnull Player player, @Nonnull ISecurityObject security) {
+    public boolean canAccessObject(Player player, ISecurityObject security) {
         //If the player is an op allow bypassing any restrictions
         return isOp(player) || canAccessObject(player.getUUID(), security, player.level.isClientSide);
     }
@@ -96,7 +96,7 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     @Override
-    public boolean canAccessObject(@Nullable UUID player, @Nonnull ISecurityObject security, boolean isClient) {
+    public boolean canAccessObject(@Nullable UUID player, @NotNull ISecurityObject security, boolean isClient) {
         Objects.requireNonNull(security, "Security object may not be null.");
         if (!MekanismConfig.general.allowProtection.get()) {
             //If protection is disabled, access is always granted
@@ -174,7 +174,7 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     @Override
-    public SecurityMode getEffectiveSecurityMode(@Nonnull ISecurityObject securityObject, boolean isClient) {
+    public SecurityMode getEffectiveSecurityMode(ISecurityObject securityObject, boolean isClient) {
         Objects.requireNonNull(securityObject, "Security object may not be null.");
         return getFinalData(securityObject, isClient).mode();
     }
@@ -187,8 +187,8 @@ public final class SecurityUtils implements ISecurityUtils {
         });
     }
 
-    public InteractionResultHolder<ItemStack> claimOrOpenGui(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand,
-          @Nonnull TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
+    public InteractionResultHolder<ItemStack> claimOrOpenGui(Level level, Player player, InteractionHand hand,
+          TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
         ItemStack stack = player.getItemInHand(hand);
         if (!tryClaimItem(level, player, stack)) {
             if (!canAccessOrDisplayError(player, stack)) {
@@ -200,7 +200,7 @@ public final class SecurityUtils implements ISecurityUtils {
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
-    public boolean tryClaimItem(@Nonnull Level level, @Nonnull Player player, @Nonnull ItemStack stack) {
+    public boolean tryClaimItem(Level level, Player player, ItemStack stack) {
         Optional<IOwnerObject> capability = stack.getCapability(Capabilities.OWNER_OBJECT).resolve();
         if (capability.isPresent()) {
             IOwnerObject ownerObject = capability.get();
@@ -222,13 +222,13 @@ public final class SecurityUtils implements ISecurityUtils {
         player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS));
     }
 
-    public void addOwnerTooltip(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip) {
+    public void addOwnerTooltip(ItemStack stack, List<Component> tooltip) {
         stack.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject ->
               tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerObject.getOwnerUUID()).getTextComponent()));
     }
 
     @Override
-    public void addSecurityTooltip(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip) {
+    public void addSecurityTooltip(ItemStack stack, List<Component> tooltip) {
         Objects.requireNonNull(stack, "Stack to add tooltip for may not be null.");
         Objects.requireNonNull(tooltip, "List of tooltips to add to may not be null.");
         addOwnerTooltip(stack, tooltip);

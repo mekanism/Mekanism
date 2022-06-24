@@ -3,8 +3,6 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.Mekanism;
@@ -17,6 +15,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IGuiWrapper {
 
@@ -84,8 +84,8 @@ public interface IGuiWrapper {
         return null;
     }
 
-    @Nonnull
-    default BooleanSupplier trackWarning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+    @NotNull
+    default BooleanSupplier trackWarning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
         Mekanism.logger.error("Tried to call 'trackWarning' but unsupported in {}", getClass().getName());
         return warningSupplier;
     }
@@ -93,21 +93,21 @@ public interface IGuiWrapper {
     @Nullable
     Font getFont();
 
-    default void renderItem(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+    default void renderItem(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis) {
         renderItem(matrix, stack, xAxis, yAxis, 1);
     }
 
-    default void renderItem(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+    default void renderItem(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, float scale) {
         GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), null, false);
     }
 
     ItemRenderer getItemRenderer();
 
-    default void renderItemTooltip(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+    default void renderItemTooltip(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis) {
         Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
     }
 
-    default void renderItemTooltipWithExtra(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
+    default void renderItemTooltipWithExtra(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
             renderItemTooltip(matrix, stack, xAxis, yAxis);
         } else {
@@ -115,7 +115,7 @@ public interface IGuiWrapper {
         }
     }
 
-    default void renderItemWithOverlay(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
+    default void renderItemWithOverlay(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
         GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), text, true);
     }
 

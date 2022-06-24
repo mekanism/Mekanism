@@ -3,7 +3,6 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
@@ -11,6 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiElementHolder extends GuiScalableElement {
 
@@ -23,12 +23,12 @@ public class GuiElementHolder extends GuiScalableElement {
     }
 
     @Override
-    public void renderButton(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         renderBackgroundTexture(matrix, getResource(), sideWidth, sideHeight);
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     public static int getBackgroundColor() {

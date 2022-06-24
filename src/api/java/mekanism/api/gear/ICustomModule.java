@@ -2,9 +2,7 @@ package mekanism.api.gear;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLongSupplier;
@@ -19,11 +17,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.common.ToolAction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface used to describe and implement custom modules. Instances of this should be returned via the {@link ModuleData}.
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /**
@@ -151,7 +151,6 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Result type or {@link InteractionResult#PASS} to pass.
      */
-    @Nonnull
     default InteractionResult onItemUse(IModule<MODULE> module, UseOnContext context) {
         return InteractionResult.PASS;
     }
@@ -176,7 +175,6 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Result type or {@link InteractionResult#PASS} to pass.
      */
-    @Nonnull
     default InteractionResult onInteract(IModule<MODULE> module, Player player, LivingEntity entity, InteractionHand hand) {
         return InteractionResult.PASS;
     }
@@ -190,7 +188,6 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return The {@link ModuleDispenseResult} defining how this dispenser should behave.
      */
-    @Nonnull
     default ModuleDispenseResult onDispense(IModule<MODULE> module, BlockSource source) {
         return ModuleDispenseResult.DEFAULT;
     }
@@ -199,7 +196,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
      * @param energyCost      Energy cost per point of damage reduced.
      */
-    record ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
+    record ModuleDamageAbsorbInfo(@NotNull FloatSupplier absorptionRatio, @NotNull FloatingLongSupplier energyCost) {
 
         /**
          * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.

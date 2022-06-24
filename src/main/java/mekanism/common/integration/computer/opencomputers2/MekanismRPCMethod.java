@@ -1,19 +1,17 @@
 package mekanism.common.integration.computer.opencomputers2;
 
 import java.util.List;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import li.cil.oc2.api.bus.device.rpc.RPCInvocation;
 import li.cil.oc2.api.bus.device.rpc.RPCMethod;
 import li.cil.oc2.api.bus.device.rpc.RPCParameter;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.BoundComputerMethod.SelectedMethodInfo;
 import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMethodHandle;
 import mekanism.common.integration.computer.ComputerException;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class MekanismRPCMethod implements RPCMethod {
 
     private final ThreadAwareMethodHandle methodHandle;

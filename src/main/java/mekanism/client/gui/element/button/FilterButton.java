@@ -8,8 +8,6 @@ import java.util.function.IntSupplier;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
@@ -30,6 +28,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FilterButton extends MekanismButton {
 
@@ -61,7 +61,7 @@ public class FilterButton extends MekanismButton {
         setButtonBackground(ButtonBackground.NONE);
     }
 
-    public FilterButton warning(@Nonnull WarningType type, @Nonnull Predicate<IFilter<?>> hasWarning) {
+    public FilterButton warning(@NotNull WarningType type, @NotNull Predicate<IFilter<?>> hasWarning) {
         //Proxy applying the warning to the slot
         slot.warning(type, () -> hasWarning.test(getFilter(filters, filterIndex, index)));
         return this;
@@ -72,13 +72,13 @@ public class FilterButton extends MekanismButton {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         setVisibility(getFilter(filters, filterIndex, index) != null);
         super.render(matrix, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(matrix, x, y, width, height, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);

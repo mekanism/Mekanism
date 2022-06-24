@@ -2,8 +2,6 @@ package mekanism.common.content.transporter;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -25,6 +23,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TransporterStack {
 
@@ -251,13 +251,13 @@ public class TransporterStack {
         return transmitter != null && canInsertToTransporterNN(transmitter, from, transporterFrom);
     }
 
-    public boolean canInsertToTransporterNN(@Nonnull LogisticalTransporterBase transporter, Direction from, @Nullable BlockEntity tileFrom) {
+    public boolean canInsertToTransporterNN(@NotNull LogisticalTransporterBase transporter, Direction from, @Nullable BlockEntity tileFrom) {
         //If the color is valid, make sure that the connection is valid
         EnumColor color = transporter.getColor();
         return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);
     }
 
-    public boolean canInsertToTransporterNN(@Nonnull LogisticalTransporterBase transporter, Direction from, @Nullable LogisticalTransporterBase transporterFrom) {
+    public boolean canInsertToTransporterNN(@NotNull LogisticalTransporterBase transporter, Direction from, @Nullable LogisticalTransporterBase transporterFrom) {
         //If the color is valid, make sure that the connection is valid
         EnumColor color = transporter.getColor();
         return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), transporterFrom);

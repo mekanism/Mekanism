@@ -2,14 +2,13 @@ package mekanism.api.radiation;
 
 import com.google.common.collect.Table;
 import java.util.List;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,8 +37,7 @@ import net.minecraft.world.entity.LivingEntity;
  * <li>~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)</li>
  * </ul>
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public interface IRadiationManager {
 
     /**

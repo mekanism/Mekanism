@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.security.ISecurityUtils;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
@@ -42,7 +42,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Capabilities.SECURITY_OBJECT);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -145,7 +145,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, Direction side, @NotNull Vec3i offset) {
         //Don't allow proxying any capabilities by marking them all as disabled
         return true;
     }

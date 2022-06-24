@@ -1,7 +1,6 @@
 package mekanism.common.item.block;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
@@ -42,7 +42,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(getBlockData(stack) != null)));
         BlockData data = getBlockData(stack);
         if (data != null) {
@@ -70,7 +70,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
@@ -123,7 +123,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+    public boolean placeBlock(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
         Level world = context.getLevel();
         if (world.isClientSide) {
             return true;

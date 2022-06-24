@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
+import org.jetbrains.annotations.NotNull;
 
 public class Quad {
 
@@ -115,7 +115,7 @@ public class Quad {
         private Vertex vertex = new Vertex();
         private int vertexIndex = 0;
 
-        @Nonnull
+        @NotNull
         @Override
         public VertexFormat getVertexFormat() {
             return FORMAT;
@@ -127,7 +127,7 @@ public class Quad {
         }
 
         @Override
-        public void setQuadOrientation(@Nonnull Direction orientation) {
+        public void setQuadOrientation(@NotNull Direction orientation) {
             side = orientation;
         }
 
@@ -137,7 +137,7 @@ public class Quad {
         }
 
         @Override
-        public void setTexture(@Nonnull TextureAtlasSprite texture) {
+        public void setTexture(@NotNull TextureAtlasSprite texture) {
             sprite = texture;
         }
 

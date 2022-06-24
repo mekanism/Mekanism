@@ -3,13 +3,10 @@ package mekanism.common.recipe.upgrade;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -23,9 +20,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
 
     private final List<IExtendedFluidTank> fluidTanks;
@@ -85,7 +83,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         //TODO: Improve the logic used so that it tries to batch similar types of fluids together first
         // and maybe make it try multiple slot combinations
         IMekanismFluidHandler outputHandler = new IMekanismFluidHandler() {
-            @Nonnull
+            @NotNull
             @Override
             public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
                 return fluidTanks;

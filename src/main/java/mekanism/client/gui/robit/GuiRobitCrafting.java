@@ -1,11 +1,11 @@
 package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
@@ -22,7 +22,7 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);

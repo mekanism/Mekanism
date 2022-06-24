@@ -3,8 +3,6 @@ package mekanism.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.model.MekanismModelCache;
@@ -17,6 +15,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
 
@@ -24,9 +24,9 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
         super(context, new RobitModelWrapper(), 0.5F);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@Nonnull EntityRobit robit) {
+    public ResourceLocation getTextureLocation(@NotNull EntityRobit robit) {
         return RobitSpriteUploader.ATLAS_LOCATION;
     }
 
@@ -39,12 +39,12 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
         private EntityRobit robit;
 
         @Override
-        public void setupAnim(@Nonnull EntityRobit robit, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        public void setupAnim(@NotNull EntityRobit robit, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
             this.robit = robit;
         }
 
         @Override
-        public void renderToBuffer(@Nonnull PoseStack matrix, @Nonnull VertexConsumer builder, int light, int overlayLight, float red, float green, float blue,
+        public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer builder, int light, int overlayLight, float red, float green, float blue,
               float alpha) {
             if (robit == null) {
                 //Setup didn't happen right

@@ -1,16 +1,12 @@
 package mekanism.common.capabilities.heat;
 
 import java.util.function.DoubleSupplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class VariableHeatCapacitor extends BasicHeatCapacitor {
 
     private final DoubleSupplier conductionCoefficientSupplier;

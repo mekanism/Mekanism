@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -102,6 +103,7 @@ public class ThreadMinerSearch extends Thread {
         }
     }
 
+    @NothingNullByDefault
     public enum State implements IHasTextComponent {
         IDLE(MekanismLang.MINER_IDLE),
         SEARCHING(MekanismLang.MINER_SEARCHING),

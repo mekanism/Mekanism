@@ -11,8 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
@@ -73,6 +71,8 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
@@ -104,7 +104,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         cacheCoord();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
@@ -112,7 +112,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -412,7 +412,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                         (sameDimension || entity.canChangeDimensions()) && !didTeleport.contains(entity.getUUID()));
     }
 
-    @Nonnull
+    @NotNull
     public static FloatingLong calculateEnergyCost(Entity entity, Coord4D coords) {
         FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
         if (entity.level.dimension() == coords.dimension) {
@@ -525,7 +525,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frameRotated;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public AABB getRenderBoundingBox() {
         //Note: If the frame direction is "null" we instead just only mark the teleporter itself.
@@ -533,7 +533,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frameDirection == null ? new AABB(worldPosition, worldPosition.offset(1, 1, 1)) : getTeleporterBoundingBox(frameDirection);
     }
 
-    private AABB getTeleporterBoundingBox(@Nonnull Direction frameDirection) {
+    private AABB getTeleporterBoundingBox(@NotNull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
         return switch (frameDirection) {
             case UP -> new AABB(worldPosition.above(), worldPosition.offset(1, 3, 1));
@@ -585,7 +585,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         container.track(SyncableByte.create(() -> status, value -> status = value));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -597,7 +597,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
         if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {

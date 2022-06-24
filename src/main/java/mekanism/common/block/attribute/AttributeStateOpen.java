@@ -1,11 +1,11 @@
 package mekanism.common.block.attribute;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 public class AttributeStateOpen implements AttributeState {
 
@@ -20,7 +20,7 @@ public class AttributeStateOpen implements AttributeState {
     }
 
     @Override
-    public BlockState getDefaultState(@Nonnull BlockState state) {
+    public BlockState getDefaultState(@NotNull BlockState state) {
         return state.setValue(BlockStateProperties.OPEN, false);
     }
 

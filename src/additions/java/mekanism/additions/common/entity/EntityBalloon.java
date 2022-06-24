@@ -3,8 +3,6 @@ package mekanism.additions.common.entity;
 import com.mojang.math.Vector3f;
 import java.util.Optional;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
@@ -41,6 +39,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData {
 
@@ -268,7 +268,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return isAlive();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected MovementEmission getMovementEmission() {
         return MovementEmission.NONE;
@@ -279,7 +279,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void readAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
+    protected void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.LATCHED, pos -> latched = pos);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> {
@@ -289,7 +289,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
+    protected void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
         if (latched != null) {
             nbtTags.put(NBTConstants.LATCHED, NbtUtils.writeBlockPos(latched));
@@ -300,7 +300,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public boolean skipAttackInteraction(@Nonnull Entity entity) {
+    public boolean skipAttackInteraction(@NotNull Entity entity) {
         pop();
         if (entity instanceof ServerPlayer player) {
             CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, DamageSource.playerAttack(player));
@@ -308,7 +308,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return true;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
@@ -344,7 +344,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void remove(@Nonnull RemovalReason reason) {
+    public void remove(@NotNull RemovalReason reason) {
         super.remove(reason);
         if (latchedEntity != null) {
             latchedEntity.hasImpulse = false;
@@ -362,7 +362,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public boolean hurt(@Nonnull DamageSource dmgSource, float damage) {
+    public boolean hurt(@NotNull DamageSource dmgSource, float damage) {
         if (isInvulnerableTo(dmgSource)) {
             return false;
         }
@@ -390,13 +390,13 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     //Adjust various bounding boxes/eye height so that the balloon gets interacted with properly
     @Override
-    protected float getEyeHeight(@Nonnull Pose pose, @Nonnull EntityDimensions size) {
+    protected float getEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
         return (float) (size.height - OFFSET);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected AABB getBoundingBoxForPose(@Nonnull Pose pose) {
+    protected AABB getBoundingBoxForPose(@NotNull Pose pose) {
         EntityDimensions size = getDimensions(pose);
         double x = getX();
         double y = getY();
@@ -406,7 +406,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return new AABB(new Vec3(x - f, posY, z - f), new Vec3(x + f, posY + size.height, z + f));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected AABB makeBoundingBox() {
         return getBoundingBoxForPose(Pose.STANDING);

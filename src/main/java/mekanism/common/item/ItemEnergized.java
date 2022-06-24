@@ -2,9 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import mekanism.api.AutomationType;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
@@ -19,20 +17,21 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemEnergized extends CapabilityItem {
 
     private final FloatingLongSupplier chargeRateSupplier;
     private final FloatingLongSupplier maxEnergySupplier;
-    private final Predicate<@NonNull AutomationType> canExtract;
-    private final Predicate<@NonNull AutomationType> canInsert;
+    private final Predicate<@NotNull AutomationType> canExtract;
+    private final Predicate<@NotNull AutomationType> canInsert;
 
     public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Properties properties) {
         this(chargeRateSupplier, maxEnergySupplier, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, properties);
     }
 
-    public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Predicate<@NonNull AutomationType> canExtract,
-          Predicate<@NonNull AutomationType> canInsert, Properties properties) {
+    public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Predicate<@NotNull AutomationType> canExtract,
+          Predicate<@NotNull AutomationType> canInsert, Properties properties) {
         super(properties.stacksTo(1));
         this.chargeRateSupplier = chargeRateSupplier;
         this.maxEnergySupplier = maxEnergySupplier;
@@ -41,27 +40,27 @@ public class ItemEnergized extends CapabilityItem {
     }
 
     @Override
-    public boolean isBarVisible(@Nonnull ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getBarWidth(@Nonnull ItemStack stack) {
+    public int getBarWidth(@NotNull ItemStack stack) {
         return StorageUtils.getEnergyBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@Nonnull ItemStack stack) {
+    public int getBarColor(@NotNull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), maxEnergySupplier.get()));

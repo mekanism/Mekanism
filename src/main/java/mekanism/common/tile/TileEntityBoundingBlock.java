@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
@@ -24,6 +22,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
@@ -76,9 +76,9 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return (IBoundingBlock) tile;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side) {
         IBoundingBlock main = getMain();
         if (main == null) {
             return super.getCapability(capability, side);
@@ -138,7 +138,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         NBTUtils.setBlockPosIfPresent(nbt, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = nbt.getInt(NBTConstants.REDSTONE);
@@ -146,7 +146,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         if (receivedCoords) {
             nbtTags.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
@@ -155,7 +155,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         nbtTags.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -168,7 +168,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = tag.getInt(NBTConstants.REDSTONE);
@@ -180,7 +180,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return getMainTile() instanceof Nameable mainTile && mainTile.hasCustomName();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getName() {
@@ -188,7 +188,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return hasCustomName() ? getCustomName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getDisplayName() {
         return getMainTile() instanceof Nameable mainTile ? mainTile.getDisplayName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();

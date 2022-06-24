@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import javax.annotation.Nonnull;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
@@ -38,6 +37,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.client.IBlockRenderProperties;
 import net.minecraftforge.client.IItemRenderProperties;
+import org.jetbrains.annotations.NotNull;
 
 //This class is used to prevent class loading issues on the server without having to use OnlyIn hacks
 public class RenderPropertiesProvider {
@@ -110,7 +110,7 @@ public class RenderPropertiesProvider {
     }
 
     private static final IItemRenderProperties MEKA_SUIT = new ISpecialGear() {
-        @Nonnull
+        @NotNull
         @Override
         public ICustomArmor getGearModel(EquipmentSlot slot) {
             return switch (slot) {
@@ -176,7 +176,7 @@ public class RenderPropertiesProvider {
             return renderer;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ICustomArmor getGearModel(EquipmentSlot slot) {
             return gearModel;

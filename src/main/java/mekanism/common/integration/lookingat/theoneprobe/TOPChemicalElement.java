@@ -1,7 +1,5 @@
 package mekanism.common.integration.lookingat.theoneprobe;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mcjty.theoneprobe.api.IElement;
 import mcjty.theoneprobe.api.IElementFactory;
 import mekanism.api.chemical.ChemicalStack;
@@ -14,12 +12,14 @@ import mekanism.common.integration.lookingat.ChemicalElement;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TOPChemicalElement extends ChemicalElement implements IElement {
 
     private final ResourceLocation id;
 
-    protected TOPChemicalElement(ResourceLocation id, @Nonnull ChemicalStack<?> stored, long capacity) {
+    protected TOPChemicalElement(ResourceLocation id, @NotNull ChemicalStack<?> stored, long capacity) {
         super(stored, capacity);
         this.id = id;
     }

@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.filter.GuiMaterialFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiSorterMaterialFilter extends GuiMaterialFilter<SorterMaterialFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 

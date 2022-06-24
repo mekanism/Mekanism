@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PaintingRecipe;
@@ -24,6 +23,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import org.jetbrains.annotations.NotNull;
 
 public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
 
@@ -53,7 +53,7 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PaintingRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, PaintingRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_PIGMENT, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
               .setSlotName(PIGMENT_INPUT);

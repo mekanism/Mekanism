@@ -4,7 +4,6 @@ import biomesoplenty.api.entity.BOPEntities;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
@@ -51,6 +50,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 import potionstudios.byg.common.entity.BYGEntities;
 
 public class MekanismTagProvider extends BaseTagProvider {

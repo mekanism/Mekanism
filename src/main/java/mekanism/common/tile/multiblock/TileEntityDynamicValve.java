@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -23,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank {
 
@@ -30,31 +30,31 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
         super(MekanismBlocks.DYNAMIC_VALVE, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return side -> getMultiblock().getFluidTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         return side -> getMultiblock().getGasTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
         return side -> getMultiblock().getInfusionTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener) {
         return side -> getMultiblock().getPigmentTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener) {
         return side -> getMultiblock().getSlurryTanks(side);
@@ -69,9 +69,9 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
         return super.persists(type);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
+    public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (action.execute() && ret.getAmount() < stack.getAmount()) {
             getMultiblock().triggerValveTransfer(this);

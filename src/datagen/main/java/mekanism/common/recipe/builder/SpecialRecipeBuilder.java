@@ -2,18 +2,15 @@ package mekanism.common.recipe.builder;
 
 import com.google.gson.JsonObject;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registration.impl.RecipeSerializerRegistryObject;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class SpecialRecipeBuilder implements FinishedRecipe {
 
     private final RecipeSerializer<?> serializer;
@@ -30,7 +27,6 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         consumer.accept(new SpecialRecipeBuilder(serializer));
     }
 
-    @Nonnull
     @Override
     public RecipeSerializer<?> getType() {
         return serializer;
@@ -41,7 +37,6 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         //NO-OP
     }
 
-    @Nonnull
     @Override
     public ResourceLocation getId() {
         return RegistryUtils.getName(getType());

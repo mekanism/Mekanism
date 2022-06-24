@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.effect.BillboardingEffectRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.base.ProfilerConstants;
@@ -30,7 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     private static final CustomEffect CORE = new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));

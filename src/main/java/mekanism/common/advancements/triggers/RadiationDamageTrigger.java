@@ -1,7 +1,6 @@
 package mekanism.common.advancements.triggers;
 
 import com.google.gson.JsonObject;
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
@@ -12,6 +11,7 @@ import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class RadiationDamageTrigger extends SimpleCriterionTrigger<RadiationDamageTrigger.TriggerInstance> {
 
@@ -21,15 +21,15 @@ public class RadiationDamageTrigger extends SimpleCriterionTrigger<RadiationDama
         this.id = id;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ResourceLocation getId() {
         return id;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected TriggerInstance createInstance(@Nonnull JsonObject json, @Nonnull EntityPredicate.Composite playerPredicate, @Nonnull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
         return new TriggerInstance(playerPredicate, GsonHelper.getAsBoolean(json, JsonConstants.KILLED));
     }
 
@@ -47,9 +47,9 @@ public class RadiationDamageTrigger extends SimpleCriterionTrigger<RadiationDama
             this.killed = killed;
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public JsonObject serializeToJson(@Nonnull SerializationContext context) {
+        public JsonObject serializeToJson(@NotNull SerializationContext context) {
             JsonObject json = super.serializeToJson(context);
             json.addProperty(JsonConstants.KILLED, killed);
             return json;

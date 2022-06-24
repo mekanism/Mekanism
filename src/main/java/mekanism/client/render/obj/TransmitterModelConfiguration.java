@@ -2,8 +2,6 @@ package mekanism.client.render.obj;
 
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.config.MekanismConfig;
@@ -13,19 +11,21 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.IModelData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TransmitterModelConfiguration extends VisibleModelConfiguration {
 
-    @Nonnull
+    @NotNull
     private final TransmitterModelData modelData;
 
-    public TransmitterModelConfiguration(IModelConfiguration internal, List<String> visibleGroups, @Nonnull IModelData modelData) {
+    public TransmitterModelConfiguration(IModelConfiguration internal, List<String> visibleGroups, @NotNull IModelData modelData) {
         super(internal, visibleGroups);
         this.modelData = modelData.getData(TileEntityTransmitter.TRANSMITTER_PROPERTY);
     }
 
     @Nullable
-    private static Direction directionForPiece(@Nonnull String piece) {
+    private static Direction directionForPiece(@NotNull String piece) {
         if (piece.endsWith("down")) {
             return Direction.DOWN;
         } else if (piece.endsWith("up")) {
@@ -109,13 +109,13 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     }
 
     @Override
-    public boolean isTexturePresent(@Nonnull String name) {
+    public boolean isTexturePresent(@NotNull String name) {
         return internal.isTexturePresent(adjustTextureName(name));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Material resolveTexture(@Nonnull String name) {
+    public Material resolveTexture(@NotNull String name) {
         return internal.resolveTexture(adjustTextureName(name));
     }
 

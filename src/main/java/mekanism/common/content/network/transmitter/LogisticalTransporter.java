@@ -1,7 +1,5 @@
 package mekanism.common.content.network.transmitter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -19,6 +17,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LogisticalTransporter extends LogisticalTransporterBase implements IUpgradeableTransmitter<LogisticalTransporterUpgradeData> {
 
@@ -66,12 +66,12 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
         return data instanceof LogisticalTransporterUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull LogisticalTransporterUpgradeData data) {
+    public void parseUpgradeData(@NotNull LogisticalTransporterUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         setColor(data.color);
@@ -94,7 +94,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(updateTag);
@@ -103,7 +103,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setEnumIfPresent(tag, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
     }

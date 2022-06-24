@@ -2,28 +2,23 @@ package mekanism.api.chemical;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK>,
       IChemicalHandler<CHEMICAL, STACK> {
 
-    private final Predicate<@NonNull CHEMICAL> validator;
-    protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract;
-    protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert;
+    private final Predicate<@NotNull CHEMICAL> validator;
+    protected final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract;
+    protected final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert;
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
     private final long capacity;
@@ -34,8 +29,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     @Nullable
     private final IContentsListener listener;
 
-    protected BasicChemicalTank(long capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert, Predicate<@NonNull CHEMICAL> validator,
+    protected BasicChemicalTank(long capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         this.capacity = capacity;
         this.canExtract = canExtract;
@@ -94,7 +89,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
-    public STACK insert(@Nonnull STACK stack, Action action, AutomationType automationType) {
+    public STACK insert(@NotNull STACK stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getType(), automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the chemical or currently are unable to insert it
             return stack;

@@ -2,11 +2,8 @@ package mekanism.common.block;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -75,6 +72,8 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.IBlockRenderProperties;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BlockMekanism extends Block {
 
@@ -88,10 +87,10 @@ public abstract class BlockMekanism extends Block {
         consumer.accept(RenderPropertiesProvider.particles());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public PushReaction getPistonPushReaction(@Nonnull BlockState state) {
+    public PushReaction getPistonPushReaction(@NotNull BlockState state) {
         if (state.hasBlockEntity()) {
             //Protect against mods like Quark that allow blocks with TEs to be moved
             //TODO: Eventually it would be nice to go through this and maybe even allow some TEs to be moved if they don't strongly
@@ -101,9 +100,9 @@ public abstract class BlockMekanism extends Block {
         return super.getPistonPushReaction(state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull BlockState state, HitResult target, @Nonnull BlockGetter world, @Nonnull BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull BlockGetter world, @NotNull BlockPos pos, Player player) {
         ItemStack itemStack = new ItemStack(this);
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
@@ -147,10 +146,10 @@ public abstract class BlockMekanism extends Block {
         return itemStack;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public List<ItemStack> getDrops(@Nonnull BlockState state, @Nonnull LootContext.Builder builder) {
+    public List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootContext.Builder builder) {
         List<ItemStack> drops = super.getDrops(state, builder);
         //Check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
         if (state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
@@ -193,7 +192,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+    public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
         boolean triggered = super.triggerEvent(state, level, pos, id, param);
         if (this instanceof IHasTileEntity<?> hasTileEntity) {
             return hasTileEntity.triggerBlockEntityEvent(state, level, pos, id, param);
@@ -202,18 +201,18 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
     public FluidState getFluidState(BlockState state) {
@@ -223,11 +222,11 @@ public abstract class BlockMekanism extends Block {
         return super.getFluidState(state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world, @Nonnull BlockPos currentPos,
-          @Nonnull BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos currentPos,
+          @NotNull BlockPos facingPos) {
         if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
             fluidLoggable.updateFluids(state, world, currentPos);
         }
@@ -236,7 +235,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+    public void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
             if (hasBounding != null) {
@@ -253,7 +252,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void setPlacedBy(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
+    public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
         AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
         if (hasBounding != null) {
@@ -349,23 +348,23 @@ public abstract class BlockMekanism extends Block {
         return AttributeStateFacing.rotate(state, world, pos, rotation);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public BlockState rotate(@Nonnull BlockState state, @Nonnull Rotation rotation) {
+    public BlockState rotate(@NotNull BlockState state, @NotNull Rotation rotation) {
         return AttributeStateFacing.rotate(state, rotation);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public BlockState mirror(@Nonnull BlockState state, @Nonnull Mirror mirror) {
+    public BlockState mirror(@NotNull BlockState state, @NotNull Mirror mirror) {
         return AttributeStateFacing.mirror(state, mirror);
     }
 
     @Override
     @Deprecated
-    public void onPlace(BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean isMoving) {
         if (state.hasBlockEntity() && oldState.getBlock() != state.getBlock()) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
@@ -377,13 +376,13 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public boolean hasAnalogOutputSignal(@Nonnull BlockState blockState) {
+    public boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
         return Attribute.has(this, AttributeComparator.class);
     }
 
     @Override
     @Deprecated
-    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull Level world, @Nonnull BlockPos pos) {
+    public int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
         if (hasAnalogOutputSignal(blockState)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support
@@ -396,14 +395,14 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public float getDestroyProgress(@Nonnull BlockState state, @Nonnull Player player, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
+    public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return getDestroyProgress(state, player, world, pos, state.hasBlockEntity() ? WorldUtils.getTileEntity(world, pos) : null);
     }
 
     /**
      * Like {@link BlockBehaviour#getDestroyProgress(BlockState, Player, BlockGetter, BlockPos)} except also passes the tile to only have to get it once.
      */
-    protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull Player player, @Nonnull BlockGetter world, @Nonnull BlockPos pos,
+    protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos,
           @Nullable BlockEntity tile) {
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, world, pos);
@@ -415,7 +414,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void animateTick(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull RandomSource random) {
+    public void animateTick(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, world, pos, random);
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         if (tile instanceof ITileRadioactive radioactiveTile) {
@@ -433,7 +432,7 @@ public abstract class BlockMekanism extends Block {
         }
     }
 
-    protected InteractionResult genericClientActivated(@Nonnull Player player, @Nonnull InteractionHand hand) {
+    protected InteractionResult genericClientActivated(@NotNull Player player, @NotNull InteractionHand hand) {
         if (Attribute.has(this, AttributeGui.class) || MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
             return InteractionResult.SUCCESS;
         }

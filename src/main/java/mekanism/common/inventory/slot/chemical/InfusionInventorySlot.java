@@ -4,11 +4,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -17,13 +14,12 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, InfusionStack> {
 
     @Nullable
@@ -57,8 +53,8 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
         }, listener, x, y);
     }
 
-    private InfusionInventorySlot(IInfusionTank infusionTank, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
-          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    private InfusionInventorySlot(IInfusionTank infusionTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
+          Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(infusionTank, worldSupplier, canExtract, canInsert, validator, listener, x, y);
     }
 

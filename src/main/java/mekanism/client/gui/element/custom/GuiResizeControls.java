@@ -2,7 +2,6 @@ package mekanism.client.gui.element.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -14,6 +13,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiResizeControls extends GuiSideHolder {
 
@@ -43,7 +43,7 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (tooltipTicks > 0 && !expandButton.active) {
             displayTooltips(matrix, mouseX, mouseY, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate());

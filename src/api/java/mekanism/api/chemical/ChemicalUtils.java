@@ -5,23 +5,24 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class ChemicalUtils {
+
+    private ChemicalUtils() {
+    }
 
     /**
      * Writes a Chemical Stack to a Packet Buffer.
@@ -138,7 +139,7 @@ public class ChemicalUtils {
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK insert(STACK stack, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, InsertChemical<STACK> insertChemical) {
+          IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, InsertChemical<STACK> insertChemical) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return insertChemical.insert(0, stack, action);
@@ -180,7 +181,7 @@ public class ChemicalUtils {
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(long amount, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
+          IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return extractChemical.extract(0, amount, action);
@@ -215,7 +216,7 @@ public class ChemicalUtils {
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(STACK stack, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
+          IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             STACK inTank = inTankGetter.get(0);

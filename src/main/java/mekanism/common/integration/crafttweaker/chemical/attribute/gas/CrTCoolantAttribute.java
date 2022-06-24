@@ -3,12 +3,12 @@ package mekanism.common.integration.crafttweaker.chemical.attribute.gas;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import org.jetbrains.annotations.NotNull;
 import org.openzen.zencode.java.ZenCodeType;
 
 /**
@@ -135,7 +135,7 @@ public class CrTCoolantAttribute {
             this.gasSupplier = gasSupplier;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public Gas getChemical() {
             if (gas.isEmptyType()) {

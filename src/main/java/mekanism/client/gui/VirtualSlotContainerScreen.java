@@ -2,8 +2,6 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -15,6 +13,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO - 1.20: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
@@ -23,7 +23,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         super(container, inv, titleIn);
     }
 
-    protected abstract boolean isMouseOverSlot(@Nonnull Slot slot, double mouseX, double mouseY);
+    protected abstract boolean isMouseOverSlot(@NotNull Slot slot, double mouseX, double mouseY);
 
     @Nullable
     @Override
@@ -41,7 +41,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final boolean isHovering(@Nonnull Slot slot, double mouseX, double mouseY) {
+    protected final boolean isHovering(@NotNull Slot slot, double mouseX, double mouseY) {
         boolean mouseOver = isMouseOverSlot(slot, mouseX, mouseY);
         if (mouseOver && slot instanceof IVirtualSlot) {
             //Fake that the slot is "not" selected so that when this is called by render
@@ -57,7 +57,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderFloatingItem(@Nonnull ItemStack stack, int x, int y, @Nullable String altText) {
+    protected final void renderFloatingItem(@NotNull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
             //Note: We ignore if the virtual slot is not actually available as we still want to transition back to the spot
             // it was in visually
@@ -85,7 +85,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderSlot(@Nonnull PoseStack matrixStack, @Nonnull Slot slot) {
+    protected final void renderSlot(@NotNull PoseStack matrixStack, @NotNull Slot slot) {
         if (!(slot instanceof IVirtualSlot virtualSlot)) {
             //If we are not a virtual slot, the super method is good enough
             super.renderSlot(matrixStack, slot);
@@ -123,7 +123,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         virtualSlot.updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
     }
 
-    public boolean slotClicked(@Nonnull Slot slot, int button) {
+    public boolean slotClicked(@NotNull Slot slot, int button) {
         //Copy of super.mouseClicked, minus the call to all the sub elements as we know how we are interacting with it
         InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
         boolean pickBlockButton = minecraft.options.keyPickItem.isActiveAndMatches(mouseKey);

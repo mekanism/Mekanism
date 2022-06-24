@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
@@ -25,6 +24,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class PrideRobitTextureProvider implements DataProvider {
 
@@ -40,7 +40,7 @@ public class PrideRobitTextureProvider implements DataProvider {
 
     @Override
     @SuppressWarnings("UnstableApiUsage")
-    public void run(@Nonnull CachedOutput cache) throws IOException {
+    public void run(@NotNull CachedOutput cache) throws IOException {
         PathProvider pathProvider = generator.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
         Resource resource = helper.getResource(MekanismRobitSkins.BASE.getRegistryName(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
         try (InputStream inputStream = resource.open()) {
@@ -129,7 +129,7 @@ public class PrideRobitTextureProvider implements DataProvider {
         robit.setRGB(x, y + 1, colorRGB);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Texture Provider";

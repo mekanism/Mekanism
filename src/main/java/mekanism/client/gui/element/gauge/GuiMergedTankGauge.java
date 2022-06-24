@@ -2,7 +2,6 @@ package mekanism.client.gui.element.gauge;
 
 import java.util.List;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
@@ -14,6 +13,7 @@ import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> extends GuiGauge<Void>
       implements IJEIIngredientHelper {

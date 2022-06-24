@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -40,7 +40,7 @@ import yamahari.ilikewood.registry.objecttype.WoodenBlockType;
 import yamahari.ilikewood.registry.objecttype.WoodenItemType;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
 
     private static final FieldReflectionHelper<AndCondition, ICondition[]> EXPLODER = new FieldReflectionHelper<>(AndCondition.class, "children",

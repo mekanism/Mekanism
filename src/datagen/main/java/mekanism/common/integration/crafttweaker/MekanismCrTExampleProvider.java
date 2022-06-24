@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import java.util.Locale;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.slurry.Slurry;
@@ -73,6 +72,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
@@ -516,7 +516,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
           CrTImportsComponent imports, IChemicalProvider<CHEMICAL> chemicalProvider,
           Function<STACK, CommandStringDisplayable> describer) implements ICrTExampleComponent {
 
-        @Nonnull
+        @NotNull
         @Override
         public String asString() {
             return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(" +
@@ -542,7 +542,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
             this.color = color;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String asString() {
             return type + '.' + constructor + "().color(0x" + Integer.toHexString(color).toUpperCase(Locale.ROOT) + ").build(\"" + name + "\");";

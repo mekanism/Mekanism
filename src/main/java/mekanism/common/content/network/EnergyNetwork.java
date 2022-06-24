@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
@@ -26,6 +24,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong, UniversalCable> implements IMekanismStrictEnergyHandler {
 
@@ -70,7 +70,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         return transmittersToUpdate;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FloatingLong getBuffer() {
         return energyContainer.getEnergy();
@@ -112,7 +112,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         }
     }
 
-    @Nonnull
+    @NotNull
     public FloatingLong getCapacityAsFloatingLong() {
         return floatingLongCapacity;
     }
@@ -194,12 +194,13 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         return getCapacityAsFloatingLong();
     }
 
+    @NotNull
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;

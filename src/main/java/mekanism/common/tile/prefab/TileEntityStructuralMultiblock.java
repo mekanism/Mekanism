@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -17,7 +16,6 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -27,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
@@ -71,7 +70,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         return hasFormedMultiblock() && structuralGuiAccessAllowed(clientActiveMultiblock);
     }
 
-    protected boolean structuralGuiAccessAllowed(@Nonnull String multiblock) {
+    protected boolean structuralGuiAccessAllowed(@NotNull String multiblock) {
         return !multiblock.contains("fusion") && !multiblock.contains("evaporation");
     }
 
@@ -190,7 +189,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         return InteractionResult.PASS;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -201,7 +200,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         clientActiveMultiblock = tag.contains(NBTConstants.ACTIVE_STATE, Tag.TAG_STRING) ? tag.getString(NBTConstants.ACTIVE_STATE) : null;
     }

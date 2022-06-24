@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import javax.annotation.Nonnull;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.prefab.BlockTile;
@@ -21,6 +20,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, BlockTypeTile<TileEntityIndustrialAlarm>> {
 
@@ -34,11 +34,11 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
         super(MekanismBlockTypes.INDUSTRIAL_ALARM, BlockBehaviour.Properties.of(Material.GLASS).strength(2, 2.4F));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
-          @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+          @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         if (facing.getOpposite() == Attribute.get(state, AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
@@ -47,7 +47,7 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
 
     @Override
     @Deprecated
-    public boolean canSurvive(@Nonnull BlockState state, @Nonnull LevelReader world, @Nonnull BlockPos pos) {
+    public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
         Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);

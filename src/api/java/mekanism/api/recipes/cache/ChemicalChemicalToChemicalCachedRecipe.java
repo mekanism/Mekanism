@@ -3,29 +3,27 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of chemical chemical to chemical recipes.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends CachedRecipe<RECIPE> {
 
-    private final IOutputHandler<@NonNull STACK> outputHandler;
-    private final IInputHandler<@NonNull STACK> leftInputHandler;
-    private final IInputHandler<@NonNull STACK> rightInputHandler;
+    private final IOutputHandler<@NotNull STACK> outputHandler;
+    private final IInputHandler<@NotNull STACK> leftInputHandler;
+    private final IInputHandler<@NotNull STACK> rightInputHandler;
 
     //Note: These shouldn't be null in places they are actually used, but we mark them as nullable, so we don't have to initialize them
     @Nullable
@@ -43,8 +41,8 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
      * @param rightInputHandler Right input handler.
      * @param outputHandler     Output handler.
      */
-    public ChemicalChemicalToChemicalCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NonNull STACK> leftInputHandler,
-          IInputHandler<@NonNull STACK> rightInputHandler, IOutputHandler<@NonNull STACK> outputHandler) {
+    public ChemicalChemicalToChemicalCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull STACK> leftInputHandler,
+          IInputHandler<@NotNull STACK> rightInputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
         super(recipe, recheckAllErrors);
         this.leftInputHandler = Objects.requireNonNull(leftInputHandler, "Left input handler cannot be null.");
         this.rightInputHandler = Objects.requireNonNull(rightInputHandler, "Right input handler cannot be null.");

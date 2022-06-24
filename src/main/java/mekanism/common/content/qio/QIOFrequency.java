@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.qio.IQIOFrequency;
@@ -45,6 +44,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
 

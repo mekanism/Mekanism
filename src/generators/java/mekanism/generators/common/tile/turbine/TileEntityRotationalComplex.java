@@ -1,13 +1,13 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
 

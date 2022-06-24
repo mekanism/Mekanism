@@ -4,22 +4,20 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.security.SecurityFrequency;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {
 
-    private static final Predicate<@NonNull ItemStack> validator = stack -> stack.getCapability(Capabilities.OWNER_OBJECT).isPresent();
+    private static final Predicate<@NotNull ItemStack> validator = stack -> stack.getCapability(Capabilities.OWNER_OBJECT).isPresent();
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
@@ -30,11 +28,11 @@ public class SecurityInventorySlot extends BasicInventorySlot {
     }
 
     public static SecurityInventorySlot lock(@Nullable IContentsListener listener, int x, int y) {
-        Predicate<@NonNull ItemStack> insertPredicate = stack -> MekanismAPI.getSecurityUtils().getOwnerUUID(stack) == null;
+        Predicate<@NotNull ItemStack> insertPredicate = stack -> MekanismAPI.getSecurityUtils().getOwnerUUID(stack) == null;
         return new SecurityInventorySlot(insertPredicate.negate(), insertPredicate, listener, x, y);
     }
 
-    private SecurityInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    private SecurityInventorySlot(Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
     }
 

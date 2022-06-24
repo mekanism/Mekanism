@@ -1,7 +1,7 @@
 package mekanism.common.advancements;
 
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismAdvancements {
 

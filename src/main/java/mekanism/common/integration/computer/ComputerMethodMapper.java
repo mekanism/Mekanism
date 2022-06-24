@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMethodHandle;
@@ -44,6 +42,8 @@ import net.minecraftforge.forgespi.language.IModFileInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import net.minecraftforge.forgespi.locating.IModFile;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 
 public class ComputerMethodMapper extends BaseAnnotationScanner {
@@ -304,7 +304,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
      * @param handler      Handler to bind to.
      * @param boundMethods Map of method name to actual method to add our methods to.
      */
-    public void getAndBindToHandler(@Nonnull Object handler, Map<String, BoundComputerMethod> boundMethods) {
+    public void getAndBindToHandler(@NotNull Object handler, Map<String, BoundComputerMethod> boundMethods) {
         getAndBindToHandler(handler.getClass(), handler, boundMethods);
     }
 

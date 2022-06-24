@@ -1,7 +1,6 @@
 package mekanism.common.item.interfaces;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.GasStack;
@@ -10,10 +9,11 @@ import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public interface IGasItem {
 
-    @Nonnull
+    @NotNull
     default GasStack useGas(ItemStack stack, long amount) {
         Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {

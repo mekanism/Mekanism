@@ -1,8 +1,8 @@
 package mekanism.common.content.qio;
 
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public interface IQIOCraftingWindowHolder extends IContentsListener {
 

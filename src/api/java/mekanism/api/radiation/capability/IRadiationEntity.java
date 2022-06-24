@@ -1,9 +1,9 @@
 package mekanism.api.radiation.capability;
 
-import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base capability definition for handling radiation for entities.
@@ -32,7 +32,7 @@ public interface IRadiationEntity extends INBTSerializable<CompoundTag> {
     /**
      * Applies radiation effects to the entity, and syncs the capability if needed.
      */
-    void update(@Nonnull LivingEntity entity);
+    void update(@NotNull LivingEntity entity);
 
     /**
      * Sets the radiation level of the entity to a new value.

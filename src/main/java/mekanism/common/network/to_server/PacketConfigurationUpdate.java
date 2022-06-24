@@ -1,6 +1,5 @@
 package mekanism.common.network.to_server;
 
-import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.IMekanismPacket;
@@ -17,6 +16,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class PacketConfigurationUpdate implements IMekanismPacket {
 
@@ -26,7 +26,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
     private RelativeSide inputSide;
     private int clickType;
 
-    public PacketConfigurationUpdate(@Nonnull ConfigurationPacket type, BlockPos pos, TransmissionType trans) {
+    public PacketConfigurationUpdate(@NotNull ConfigurationPacket type, BlockPos pos, TransmissionType trans) {
         packetType = type;
         this.pos = pos;
         transmission = trans;
@@ -43,7 +43,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
         this.pos = pos;
     }
 
-    public PacketConfigurationUpdate(@Nonnull ConfigurationPacket type, BlockPos pos, int click, RelativeSide inputSide, TransmissionType trans) {
+    public PacketConfigurationUpdate(@NotNull ConfigurationPacket type, BlockPos pos, int click, RelativeSide inputSide, TransmissionType trans) {
         packetType = type;
         this.pos = pos;
         switch (packetType) {

@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -26,6 +25,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
 
 public final class FluidUtils {
 
@@ -84,7 +84,7 @@ public final class FluidUtils {
      *
      * @return the amount of fluid emitted
      */
-    public static int emit(Set<Direction> sides, @Nonnull FluidStack stack, BlockEntity from) {
+    public static int emit(Set<Direction> sides, @NotNull FluidStack stack, BlockEntity from) {
         if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }
@@ -104,7 +104,7 @@ public final class FluidUtils {
         return 0;
     }
 
-    public static boolean canFill(IFluidHandler handler, @Nonnull FluidStack stack) {
+    public static boolean canFill(IFluidHandler handler, @NotNull FluidStack stack) {
         return handler.fill(stack, FluidAction.SIMULATE) > 0;
     }
 

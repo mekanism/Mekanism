@@ -1,12 +1,12 @@
 package mekanism.common.capabilities.proxy;
 
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nullable;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNotNullByDefault;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
+@FieldsAreNotNullByDefault
 public class ProxyHandler {
 
     private static final BooleanSupplier alwaysFalse = () -> false;

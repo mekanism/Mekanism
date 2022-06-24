@@ -1,14 +1,14 @@
 package mekanism.common.lib;
 
-import javax.annotation.Nonnull;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A wrapper of an FluidStack which tests equality and hashes based on fluid type and NBT data, ignoring stack size.
  */
 public class HashedFluid {
 
-    public static HashedFluid create(@Nonnull FluidStack stack) {
+    public static HashedFluid create(@NotNull FluidStack stack) {
         return new HashedFluid(new FluidStack(stack, 1));
     }
 
@@ -18,25 +18,25 @@ public class HashedFluid {
      * @apiNote When using this, you should be very careful to not accidentally modify the backing stack, this is mainly for use where we want to use a {@link FluidStack}
      * as a key in a map that is local to a single method, and don't want the overhead of copying the stack when it is not needed.
      */
-    public static HashedFluid raw(@Nonnull FluidStack stack) {
+    public static HashedFluid raw(@NotNull FluidStack stack) {
         return new HashedFluid(stack);
     }
 
-    @Nonnull
+    @NotNull
     private final FluidStack fluidStack;
     private final int hashCode;
 
-    private HashedFluid(@Nonnull FluidStack stack) {
+    private HashedFluid(@NotNull FluidStack stack) {
         this.fluidStack = stack;
         this.hashCode = initHashCode();
     }
 
-    @Nonnull
+    @NotNull
     public FluidStack getStack() {
         return fluidStack;
     }
 
-    @Nonnull
+    @NotNull
     public FluidStack createStack(int size) {
         if (size <= 0 || fluidStack.isEmpty()) {
             return FluidStack.EMPTY;

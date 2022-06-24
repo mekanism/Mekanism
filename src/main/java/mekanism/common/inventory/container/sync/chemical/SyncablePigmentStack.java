@@ -2,8 +2,6 @@ package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.pigment.IEmptyPigmentProvider;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
@@ -11,6 +9,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.network.to_client.container.property.LongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.chemical.PigmentStackPropertyData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling pigment stacks
@@ -30,15 +29,15 @@ public class SyncablePigmentStack extends SyncableChemicalStack<Pigment, Pigment
         return create(handler::getStack, isClient ? handler::setStackUnchecked : handler::setStack);
     }
 
-    public static SyncablePigmentStack create(Supplier<@NonNull PigmentStack> getter, Consumer<@NonNull PigmentStack> setter) {
+    public static SyncablePigmentStack create(Supplier<@NotNull PigmentStack> getter, Consumer<@NotNull PigmentStack> setter) {
         return new SyncablePigmentStack(getter, setter);
     }
 
-    private SyncablePigmentStack(Supplier<@NonNull PigmentStack> getter, Consumer<@NonNull PigmentStack> setter) {
+    private SyncablePigmentStack(Supplier<@NotNull PigmentStack> getter, Consumer<@NotNull PigmentStack> setter) {
         super(getter, setter);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected PigmentStack createStack(PigmentStack stored, long size) {
         return new PigmentStack(stored, size);

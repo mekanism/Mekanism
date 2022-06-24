@@ -11,7 +11,6 @@ import com.mojang.math.Matrix4f;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.IDisableableEnum;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -19,6 +18,7 @@ import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> extends Screen {
 
@@ -45,7 +45,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTick) {
         // center of screen
         float centerX = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F;
         float centerY = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F;

@@ -1,11 +1,9 @@
 package mekanism.common.tile;
 
 import java.util.function.BiPredicate;
-import javax.annotation.Nonnull;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -23,27 +21,28 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
 
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         @Override
-        protected void onOpen(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+        protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             TileEntityPersonalStorage.this.onOpen(level, pos, state);
         }
 
         @Override
-        protected void onClose(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+        protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             TileEntityPersonalStorage.this.onClose(level, pos, state);
         }
 
         @Override
-        protected void openerCountChanged(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state, int oldCount, int openCount) {
+        protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int oldCount, int openCount) {
             level.blockEvent(pos, state.getBlock(), 1, openCount);
         }
 
         @Override
-        protected boolean isOwnContainer(@Nonnull Player player) {
+        protected boolean isOwnContainer(@NotNull Player player) {
             return player.containerMenu instanceof MekanismTileContainer<?> container && container.getTileEntity() == TileEntityPersonalStorage.this;
         }
     };
@@ -52,14 +51,14 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         super(blockProvider, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //Note: We always allow manual interaction (even for insertion), as if a player has the GUI open we treat that as they are allowed to interact with it
         // and if the security mode changes we then boot any players who can't interact with it anymore out of the GUI
         //Note: We can just directly pass ourselves as a security object as we know we are present and that we aren't just an owner item
-        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInteract = (stack, automationType) ->
+        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract = (stack, automationType) ->
               automationType == AutomationType.MANUAL || MekanismAPI.getSecurityUtils().getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
@@ -93,9 +92,9 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         }
     }
 
-    protected abstract void onOpen(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state);
+    protected abstract void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state);
 
-    protected abstract void onClose(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state);
+    protected abstract void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state);
 
     protected abstract ResourceLocation getStat();
 

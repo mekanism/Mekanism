@@ -4,16 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Input: ItemStack
@@ -27,10 +24,8 @@ import org.jetbrains.annotations.Contract;
  *     <li>Smelting: Can be processed in Energized Smelters, Smelting Factories, and Robits.</li>
  * </ul>
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
+@NothingNullByDefault
+public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
     private final ItemStackIngredient input;
     private final ItemStack output;
@@ -78,7 +73,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
         return output.copy();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getResultItem() {
         return output.copy();

@@ -2,7 +2,6 @@ package mekanism.generators.common.tile;
 
 import java.util.EnumSet;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
@@ -20,6 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism {
 
@@ -32,7 +32,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
      */
-    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @Nonnull FloatingLong out) {
+    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLong out) {
         super(blockProvider, pos, state);
         output = out;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
@@ -42,7 +42,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
         return new RelativeSide[]{RelativeSide.FRONT};
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);

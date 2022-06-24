@@ -1,7 +1,6 @@
 package mekanism.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -9,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class MekanismISTER extends BlockEntityWithoutLevelRenderer {
 
@@ -23,9 +23,9 @@ public abstract class MekanismISTER extends BlockEntityWithoutLevelRenderer {
     }
 
     @Override
-    public abstract void onResourceManagerReload(@Nonnull ResourceManager resourceManager);
+    public abstract void onResourceManagerReload(@NotNull ResourceManager resourceManager);
 
     @Override
-    public abstract void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+    public abstract void renderByItem(@NotNull ItemStack stack, @NotNull TransformType transformType, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight);
 }

@@ -1,7 +1,7 @@
 package mekanism.common.lib.transmitter;
 
-import javax.annotation.Nullable;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 public interface INetworkDataHandler {
 

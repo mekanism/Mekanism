@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -28,12 +26,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
 
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
-    @Nonnull
+    @NotNull
     public FluidStack lastFluid = FluidStack.EMPTY;
     private int prevTransferAmount;
 
@@ -93,7 +93,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         return transmittersToUpdate;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidStack getBuffer() {
         return fluidTank.getFluid().copy();
@@ -149,7 +149,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         }
     }
 
-    private int tickEmit(@Nonnull FluidStack fluidToSend) {
+    private int tickEmit(@NotNull FluidStack fluidToSend) {
         Collection<Map<Direction, LazyOptional<IFluidHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
         FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, acceptorValues.size() * 2);
         for (Map<Direction, LazyOptional<IFluidHandler>> acceptors : acceptorValues) {
@@ -223,12 +223,13 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         return super.isCompatibleWith(other) && (this.fluidTank.isEmpty() || other.fluidTank.isEmpty() || this.fluidTank.isFluidEqual(other.fluidTank.getFluid()));
     }
 
+    @NotNull
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
@@ -247,7 +248,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         }
     }
 
-    public void setLastFluid(@Nonnull FluidStack fluid) {
+    public void setLastFluid(@NotNull FluidStack fluid) {
         if (fluid.isEmpty()) {
             fluidTank.setEmpty();
         } else {
@@ -260,7 +261,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
         public final FluidStack fluidType;
 
-        public FluidTransferEvent(FluidNetwork network, @Nonnull FluidStack type) {
+        public FluidTransferEvent(FluidNetwork network, @NotNull FluidStack type) {
             super(network);
             fluidType = type;
         }

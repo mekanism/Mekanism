@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.common.Mekanism;
@@ -26,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
+import org.jetbrains.annotations.NotNull;
 
 public class RenderMekanismShieldItem extends MekanismISTER {
 
@@ -34,12 +34,12 @@ public class RenderMekanismShieldItem extends MekanismISTER {
     private ShieldModel shieldModel;
 
     @Override
-    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         shieldModel = new ShieldModel(getEntityModels().bakeLayer(ModelLayers.SHIELD));
     }
 
     @Override
-    public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
+    public void renderByItem(@NotNull ItemStack stack, @NotNull TransformType transformType, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight) {
         Item item = stack.getItem();
         ShieldTextures textures;
         if (item == ToolsItems.BRONZE_SHIELD.asItem()) {

@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -37,6 +36,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
+import org.jetbrains.annotations.NotNull;
 
 public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
 
@@ -54,16 +54,16 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         }
 
         @Override
-        public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+        public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public MekanismModel read(@Nonnull JsonDeserializationContext ctx, @Nonnull JsonObject modelContents) {
+        public MekanismModel read(@NotNull JsonDeserializationContext ctx, @NotNull JsonObject modelContents) {
             return new MekanismModel(readElements(ctx, modelContents));
         }
 
-        protected static Multimap<String, BlockPartWrapper> readElements(@Nonnull JsonDeserializationContext ctx, @Nonnull JsonObject modelContents) {
+        protected static Multimap<String, BlockPartWrapper> readElements(@NotNull JsonDeserializationContext ctx, @NotNull JsonObject modelContents) {
             Multimap<String, BlockPartWrapper> multimap = HashMultimap.create();
             if (modelContents.has("elements")) {
                 for (JsonElement element : GsonHelper.getAsJsonArray(modelContents, "elements")) {

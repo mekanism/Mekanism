@@ -3,8 +3,6 @@ package mekanism.common.capabilities.holder.chemical;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -13,6 +11,8 @@ import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuantumEntangloporterChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       TANK extends IChemicalTank<CHEMICAL, STACK>> extends QuantumEntangloporterConfigHolder<TANK> implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {
@@ -32,7 +32,7 @@ public class QuantumEntangloporterChemicalTankHolder<CHEMICAL extends Chemical<C
         return transmissionType;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<TANK> getTanks(@Nullable Direction side) {
         return entangloporter.hasFrequency() ? tankResolver.apply(entangloporter.getFreq(), side) : Collections.emptyList();

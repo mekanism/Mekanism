@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
@@ -15,6 +14,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
@@ -41,8 +41,8 @@ public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
             return false;
         }
         boolean handled = false;
-        List<@NonNull InfusionStack> infuseTypeRepresentations = recipe.getChemicalInput().getRepresentations();
-        List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
+        List<@NotNull InfusionStack> infuseTypeRepresentations = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         for (InfusionStack infuseTypeRepresentation : infuseTypeRepresentations) {
             NormalizedSimpleStack nssInfuseType = NSSInfuseType.createInfuseType(infuseTypeRepresentation);
             for (ItemStack itemRepresentation : itemRepresentations) {

@@ -1,16 +1,13 @@
 package mekanism.tools.common.material;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
 
     private final VanillaPaxelMaterial fallback;
@@ -58,12 +55,10 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         builder.pop();
     }
 
-    @Nonnull
     public Tiers getVanillaTier() {
         return fallback.getVanillaTier();
     }
 
-    @Nonnull
     public String getRegistryPrefix() {
         return fallback.getRegistryPrefix();
     }

@@ -1,7 +1,6 @@
 package mekanism.additions.common;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -17,6 +16,7 @@ import net.minecraft.advancements.critereon.KilledTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
 
@@ -25,7 +25,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
         advancement(AdditionsAdvancements.BALLOON)
               .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), FrameType.TASK)
               .addCriterion("balloon", hasItems(AdditionsTags.Items.BALLOONS))

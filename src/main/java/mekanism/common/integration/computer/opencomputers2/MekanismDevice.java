@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import li.cil.oc2.api.bus.device.rpc.RPCDevice;
 import li.cil.oc2.api.bus.device.rpc.RPCMethodGroup;
 import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class MekanismDevice<TILE extends BlockEntity & IComputerTile> implements RPCDevice {
 
@@ -31,13 +31,13 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> implements
         this.methodGroups = boundMethods.entrySet().stream().<RPCMethodGroup>map(entry -> new MekanismRPCMethodGroup(entry.getKey(), entry.getValue())).toList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<String> getTypeNames() {
         return name;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<RPCMethodGroup> getMethodGroups() {
         return methodGroups;

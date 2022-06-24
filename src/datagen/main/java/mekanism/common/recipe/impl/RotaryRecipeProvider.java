@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
@@ -16,6 +15,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.NotNull;
 
 class RotaryRecipeProvider implements ISubRecipeProvider {
 
@@ -39,7 +39,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE, MekanismTags.Fluids.URANIUM_OXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE, MekanismTags.Fluids.URANIUM_HEXAFLUORIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.WATER_VAPOR, new IFluidProvider() {
-            @Nonnull
+            @NotNull
             @Override
             public Fluid getFluid() {
                 return Fluids.WATER;

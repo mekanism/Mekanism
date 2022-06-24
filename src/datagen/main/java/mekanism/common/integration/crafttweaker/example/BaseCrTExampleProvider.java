@@ -28,11 +28,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -84,6 +81,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseCrTExampleProvider implements DataProvider {
 
@@ -273,7 +272,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) {
+    public void run(@NotNull CachedOutput cache) {
         examples.clear();
         addExamples();
         PathProvider pathProvider = gen.createPathProvider(Target.DATA_PACK, "scripts");
@@ -290,7 +289,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "CraftTweaker Examples: " + modid;
@@ -410,13 +409,13 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     @Nullable
-    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String getMultiIngredientRepresentation(CrTImportsComponent imports, String crtClass,
+    private <TYPE, INGREDIENT extends InputIngredient<@NotNull TYPE>> String getMultiIngredientRepresentation(CrTImportsComponent imports, String crtClass,
           IMultiIngredient<TYPE, INGREDIENT> multiIngredient, BiFunction<CrTImportsComponent, INGREDIENT, String> basicRepresentation) {
         return getMultiIngredientRepresentation(imports.addImport(crtClass), multiIngredient, ingredient -> basicRepresentation.apply(imports, ingredient));
     }
 
     @Nullable
-    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String getMultiIngredientRepresentation(String type,
+    private <TYPE, INGREDIENT extends InputIngredient<@NotNull TYPE>> String getMultiIngredientRepresentation(String type,
           IMultiIngredient<TYPE, INGREDIENT> multiIngredient, Function<INGREDIENT, String> basicRepresentation) {
         StringBuilder builder = new StringBuilder(type + ".createMulti(");
         if (!multiIngredient.forEachIngredient(i -> {

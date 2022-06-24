@@ -1,14 +1,12 @@
 package mekanism.api.chemical.gas;
 
 import java.util.Objects;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalBuilder;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {
 
     protected GasBuilder(ResourceLocation texture) {

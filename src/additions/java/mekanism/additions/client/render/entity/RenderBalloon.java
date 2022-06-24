@@ -3,7 +3,6 @@ package mekanism.additions.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
@@ -17,6 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
@@ -26,14 +26,14 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         super(context);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@Nonnull EntityBalloon entity) {
+    public ResourceLocation getTextureLocation(@NotNull EntityBalloon entity) {
         return BALLOON_TEXTURE;
     }
 
     @Override
-    public void render(@Nonnull EntityBalloon balloon, float entityYaw, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light) {
+    public void render(@NotNull EntityBalloon balloon, float entityYaw, float partialTick, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light) {
         matrix.pushPose();
         matrix.translate(-0.5, -1, -0.5);
 

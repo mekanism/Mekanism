@@ -1,16 +1,16 @@
 package mekanism.common.network.to_client.container.property;
 
-import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public class FloatingLongPropertyData extends PropertyData {
 
-    @Nonnull
+    @NotNull
     private final FloatingLong value;
 
-    public FloatingLongPropertyData(short property, @Nonnull FloatingLong value) {
+    public FloatingLongPropertyData(short property, @NotNull FloatingLong value) {
         super(PropertyType.FLOATING_LONG, property);
         this.value = value;
     }

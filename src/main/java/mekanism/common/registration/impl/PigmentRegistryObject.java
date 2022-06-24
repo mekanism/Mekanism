@@ -1,10 +1,10 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public class PigmentRegistryObject<PIGMENT extends Pigment> extends WrappedRegistryObject<PIGMENT> implements IPigmentProvider {
 
@@ -12,7 +12,7 @@ public class PigmentRegistryObject<PIGMENT extends Pigment> extends WrappedRegis
         super(registryObject);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public PIGMENT getChemical() {
         return get();

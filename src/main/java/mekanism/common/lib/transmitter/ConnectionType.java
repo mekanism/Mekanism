@@ -1,14 +1,15 @@
 package mekanism.common.lib.transmitter;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.StringRepresentable;
 
+@NothingNullByDefault
 public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRepresentable, IHasTranslationKey {
     NORMAL(MekanismLang.CONNECTION_NORMAL),
     PUSH(MekanismLang.CONNECTION_PUSH),
@@ -22,7 +23,6 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
         this.langEntry = langEntry;
     }
 
-    @Nonnull
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
@@ -33,7 +33,6 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
         return langEntry.getTranslationKey();
     }
 
-    @Nonnull
     @Override
     public ConnectionType byIndex(int index) {
         return byIndexStatic(index);

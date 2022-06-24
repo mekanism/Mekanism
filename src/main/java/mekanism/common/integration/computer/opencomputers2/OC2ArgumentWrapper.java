@@ -2,11 +2,11 @@ package mekanism.common.integration.computer.opencomputers2;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import javax.annotation.Nullable;
 import li.cil.oc2.api.bus.device.rpc.RPCInvocation;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.computer.ComputerArgumentHandler;
 import mekanism.common.integration.computer.ComputerException;
+import org.jetbrains.annotations.Nullable;
 
 public class OC2ArgumentWrapper extends ComputerArgumentHandler<ComputerException, Object> {
 

@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base input cache that implements the backend handling and lookup of a single basic key based input.

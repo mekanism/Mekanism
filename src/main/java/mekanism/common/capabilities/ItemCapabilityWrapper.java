@@ -3,14 +3,14 @@ package mekanism.common.capabilities;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemCapabilityWrapper implements ICapabilityProvider {
 
@@ -37,9 +37,9 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side) {
         if (!itemStack.isEmpty() && capability.isRegistered()) {
             //Only provide capabilities if we are not empty and the capability is registered
             // as if it isn't registered we can just short circuit and not look up the capability

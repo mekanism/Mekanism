@@ -1,7 +1,5 @@
 package mekanism.common.inventory.container.type;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.inventory.container.type.MekanismContainerType.IMekanismContainerFactory;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.IContainerFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<T, CONTAINER, IMekanismContainerFactory<T, CONTAINER>> {
 
@@ -61,7 +61,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         return null;
     }
 
-    @Nonnull
+    @NotNull
     private static <TILE extends BlockEntity> TILE getTileFromBuf(FriendlyByteBuf buf, Class<TILE> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");
@@ -77,7 +77,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
         });
     }
 
-    @Nonnull
+    @NotNull
     private static <ENTITY extends Entity> ENTITY getEntityFromBuf(FriendlyByteBuf buf, Class<ENTITY> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");

@@ -3,8 +3,6 @@ package mekanism.client.jei.machine;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.slurry.Slurry;
@@ -46,6 +44,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<ChemicalCrystallizerRecipe> {
 
@@ -84,7 +84,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ChemicalCrystallizerRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, ChemicalCrystallizerRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
         if (input instanceof GasStackIngredient ingredient) {
@@ -126,7 +126,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         private ChemicalStack<?> ingredient;
         private ItemStack itemIngredient = ItemStack.EMPTY;
 
-        @Nonnull
+        @NotNull
         @Override
         public BoxedChemicalStack getInputChemical() {
             if (ingredient == null || ingredient.isEmpty()) {
@@ -141,7 +141,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
             return currentRecipe;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack getRenderStack() {
             return itemIngredient;

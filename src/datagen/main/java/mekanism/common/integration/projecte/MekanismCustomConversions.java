@@ -1,12 +1,12 @@
 package mekanism.common.integration.projecte;
 
 import java.io.IOException;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
 import moze_intel.projecte.api.data.CustomConversionProvider;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
+import org.jetbrains.annotations.NotNull;
 
 public class MekanismCustomConversions extends CustomConversionProvider {
 
@@ -26,11 +26,11 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) throws IOException {
+    public void run(@NotNull CachedOutput cache) throws IOException {
         //TODO - 1.19: Remove this after ProjectE updates and accounts for the change in the path
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return super.getName() + ": " + Mekanism.MODID;

@@ -2,20 +2,19 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.network.to_client.container.property.FluidStackPropertyData;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling fluid stacks
  */
 public class SyncableFluidStack implements ISyncableData {
 
-    public static SyncableFluidStack create(@Nonnull IExtendedFluidTank handler) {
+    public static SyncableFluidStack create(@NotNull IExtendedFluidTank handler) {
         return create(handler, false);
     }
 
@@ -28,26 +27,26 @@ public class SyncableFluidStack implements ISyncableData {
         return create(handler::getFluid, isClient ? handler::setStackUnchecked : handler::setStack);
     }
 
-    public static SyncableFluidStack create(Supplier<@NonNull FluidStack> getter, Consumer<@NonNull FluidStack> setter) {
+    public static SyncableFluidStack create(Supplier<@NotNull FluidStack> getter, Consumer<@NotNull FluidStack> setter) {
         return new SyncableFluidStack(getter, setter);
     }
 
-    @Nonnull
+    @NotNull
     private FluidStack lastKnownValue = FluidStack.EMPTY;
-    private final Supplier<@NonNull FluidStack> getter;
-    private final Consumer<@NonNull FluidStack> setter;
+    private final Supplier<@NotNull FluidStack> getter;
+    private final Consumer<@NotNull FluidStack> setter;
 
-    private SyncableFluidStack(Supplier<@NonNull FluidStack> getter, Consumer<@NonNull FluidStack> setter) {
+    private SyncableFluidStack(Supplier<@NotNull FluidStack> getter, Consumer<@NotNull FluidStack> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
-    @Nonnull
+    @NotNull
     public FluidStack get() {
         return getter.get();
     }
 
-    public void set(@Nonnull FluidStack value) {
+    public void set(@NotNull FluidStack value) {
         setter.accept(value);
     }
 

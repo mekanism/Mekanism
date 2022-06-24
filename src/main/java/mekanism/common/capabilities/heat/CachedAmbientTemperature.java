@@ -3,12 +3,12 @@ package mekanism.common.capabilities.heat;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class CachedAmbientTemperature implements DoubleSupplier {
 

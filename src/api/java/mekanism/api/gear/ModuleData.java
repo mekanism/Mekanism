@@ -3,14 +3,11 @@ package mekanism.api.gear;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -18,9 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModuleDataProvider<MODULE> {
 
     private final NonNullSupplier<MODULE> supplier;
@@ -52,7 +50,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         this.disabledByDefault = builder.disabledByDefault;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public final ModuleData<MODULE> getModuleData() {
         return this;
@@ -61,7 +59,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     /**
      * Gets the provider for the item that this module type corresponds to and is used in the Modification Station to install this module type.
      */
-    @Nonnull
+    @NotNull
     public final IItemProvider getItemProvider() {
         return itemProvider;
     }
@@ -69,7 +67,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     /**
      * Gets a new instance of the custom module this data is for.
      */
-    @Nonnull
+    @NotNull
     public final MODULE get() {
         return supplier.get();
     }
@@ -188,7 +186,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
          */
         @SuppressWarnings({"rawtypes", "unchecked"})
-        public static ModuleDataBuilder<?> marker(@Nonnull IItemProvider itemProvider) {
+        public static ModuleDataBuilder<?> marker(IItemProvider itemProvider) {
             return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, itemProvider);
         }
 
@@ -203,8 +201,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          * creates no config items so there is no unique data, but it is easier to just return a new instance each time unless you are using
          * {@link #marker(IItemProvider)}.
          */
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(@Nonnull NonNullSupplier<MODULE> customModule,
-              @Nonnull IItemProvider itemProvider) {
+        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(NonNullSupplier<MODULE> customModule, IItemProvider itemProvider) {
             return new ModuleDataBuilder<>(customModule, itemProvider);
         }
 
@@ -218,7 +215,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         private boolean noDisable;
         private boolean disabledByDefault;
 
-        private ModuleDataBuilder(@Nonnull NonNullSupplier<MODULE> supplier, @Nonnull IItemProvider itemProvider) {
+        private ModuleDataBuilder(NonNullSupplier<MODULE> supplier, IItemProvider itemProvider) {
             this.supplier = Objects.requireNonNull(supplier, "Supplier cannot be null.");
             this.itemProvider = Objects.requireNonNull(itemProvider, "Item provider cannot be null.");
         }
@@ -228,7 +225,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          *
          * @param rarity Rarity of the module type.
          */
-        public ModuleDataBuilder<MODULE> rarity(@Nonnull Rarity rarity) {
+        public ModuleDataBuilder<MODULE> rarity(Rarity rarity) {
             this.rarity = Objects.requireNonNull(rarity, "Rarity cannot be null.");
             return this;
         }
@@ -350,7 +347,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          *
          * @param flags {@link ExclusiveFlag Flags} to combine into a mask.
          *
-         * @returns Mask representing all the given {@link ExclusiveFlag flags}.
+         * @return Mask representing all the given {@link ExclusiveFlag flags}.
          */
         public static int getCompoundMask(ExclusiveFlag... flags) {
             return Arrays.stream(flags).mapToInt(ExclusiveFlag::getMask).reduce(NONE, (result, mask) -> result | mask);

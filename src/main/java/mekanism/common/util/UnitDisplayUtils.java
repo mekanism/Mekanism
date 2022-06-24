@@ -1,9 +1,9 @@
 package mekanism.common.util;
 
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
@@ -14,6 +14,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Code taken from UE and modified to fit Mekanism.
@@ -141,11 +142,13 @@ public class UnitDisplayUtils {
     public record EnergyConversionRate(CachedFloatingLongValue from, CachedFloatingLongValue to) {
     }
 
+    @NothingNullByDefault
     public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IHasTranslationKey {
         JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", () -> true) {
             @Override
             protected EnergyConversionRate getConversionRate() {
                 //Return null and then override usages of it as there is no conversion needed
+                //noinspection ConstantConditions
                 return null;
             }
 
@@ -215,7 +218,7 @@ public class UnitDisplayUtils {
             return shortLangEntry.getTranslationKey();
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public EnergyUnit byIndex(int index) {
             return MathUtils.getByIndexMod(TYPES, index);
@@ -236,6 +239,7 @@ public class UnitDisplayUtils {
         }
     }
 
+    @NothingNullByDefault
     public enum TemperatureUnit implements IIncrementalEnum<TemperatureUnit>, IHasTranslationKey, Unit {
         KELVIN(MekanismLang.TEMPERATURE_KELVIN, MekanismLang.TEMPERATURE_KELVIN_SHORT, "K", "k", 0, 1),
         CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, MekanismLang.TEMPERATURE_CELSIUS_SHORT, "\u00B0C", "c", 273.15, 1),
@@ -288,7 +292,6 @@ public class UnitDisplayUtils {
             return tabName;
         }
 
-        @Nonnull
         @Override
         public TemperatureUnit byIndex(int index) {
             return MathUtils.getByIndexMod(TYPES, index);

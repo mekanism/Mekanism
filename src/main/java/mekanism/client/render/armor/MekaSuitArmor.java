@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
@@ -72,6 +70,8 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MekaSuitArmor implements ICustomArmor {
 
@@ -94,10 +94,10 @@ public class MekaSuitArmor implements ICustomArmor {
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3(-1, 0.5, 0)));
 
     private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
-        @Nonnull
+        @NotNull
         @Override
         @SuppressWarnings("unchecked")
-        public ArmorQuads load(@Nonnull QuickHash key) {
+        public ArmorQuads load(@NotNull QuickHash key) {
             return createQuads((Object2BooleanMap<ModuleModelSpec>) key.objs()[0], (Set<EquipmentSlot>) key.objs()[1], (boolean) key.objs()[2], (boolean) key.objs()[3]);
         }
     });
@@ -111,7 +111,7 @@ public class MekaSuitArmor implements ICustomArmor {
         MekanismModelCache.INSTANCE.reloadCallback(cache::invalidateAll);
     }
 
-    public void renderArm(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight,
+    public void renderArm(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight,
           boolean hasEffect, LivingEntity entity, boolean rightHand) {
         ModelPos armPos = rightHand ? ModelPos.RIGHT_ARM : ModelPos.LEFT_ARM;
         ArmorQuads armorQuads = cache.getUnchecked(key(entity));
@@ -138,7 +138,7 @@ public class MekaSuitArmor implements ICustomArmor {
     }
 
     @Override
-    public void render(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+    public void render(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
         if (baseModel.young) {
             matrix.pushPose();
@@ -152,7 +152,7 @@ public class MekaSuitArmor implements ICustomArmor {
         }
     }
 
-    private void renderMekaSuit(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+    private void renderMekaSuit(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity) {
         ArmorQuads armorQuads = cache.getUnchecked(key(entity));
         render(baseModel, renderer, matrix, light, overlayLight, hasEffect, entity, armorQuads.opaqueQuads(), false);
@@ -622,20 +622,20 @@ public class MekaSuitArmor implements ICustomArmor {
             return null;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String getModelName() {
             return "mekasuit";
         }
 
         @Override
-        public boolean isTexturePresent(@Nonnull String name) {
+        public boolean isTexturePresent(@NotNull String name) {
             return false;
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public Material resolveTexture(@Nonnull String name) {
+        public Material resolveTexture(@NotNull String name) {
             return ModelLoaderRegistry.blockMaterial(name);
         }
 
@@ -654,27 +654,27 @@ public class MekaSuitArmor implements ICustomArmor {
             return true;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         @Deprecated
         public ItemTransforms getCameraTransforms() {
             return ItemTransforms.NO_TRANSFORMS;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ModelState getCombinedTransform() {
             return BlockModelRotation.X0_Y0;
         }
 
         @Override
-        public boolean getPartVisibility(@Nonnull IModelGeometryPart part, boolean fallback) {
+        public boolean getPartVisibility(@NotNull IModelGeometryPart part, boolean fallback) {
             //Ignore fallback as we always have a true or false answer
             return getPartVisibility(part);
         }
 
         @Override
-        public boolean getPartVisibility(@Nonnull IModelGeometryPart part) {
+        public boolean getPartVisibility(@NotNull IModelGeometryPart part) {
             return parts.contains(part.name());
         }
     }

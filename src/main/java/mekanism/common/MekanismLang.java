@@ -1,9 +1,11 @@
 package mekanism.common;
 
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 
+@NothingNullByDefault
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy-pasted all over the place
     REPAIR_COST("container.repair.cost"),

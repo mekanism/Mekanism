@@ -1,12 +1,12 @@
 package mekanism.common.resource;
 
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
+import org.jetbrains.annotations.Nullable;
 
 public enum PrimaryResource implements IResource {
     IRON("iron", 0xFFAF8E77, Tags.Items.ORES_IRON),

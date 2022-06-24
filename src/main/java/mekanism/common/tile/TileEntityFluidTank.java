@@ -3,8 +3,6 @@ package mekanism.common.tile;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -50,6 +48,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ISustainedData {
 
@@ -61,7 +61,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public FluidTankTier tier;
 
     public int valve;
-    @Nonnull
+    @NotNull
     public FluidStack valveFluid = FluidStack.EMPTY;
 
     public float prevScale;
@@ -87,7 +87,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         tier = Attribute.getTier(getBlockType(), FluidTankTier.class);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
@@ -95,7 +95,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -173,9 +173,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         return type == SubstanceType.FLUID;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public FluidStack insertFluid(int tank, @Nonnull FluidStack stack, @Nullable Direction side, @Nonnull Action action) {
+    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action) {
         FluidStack remainder = super.insertFluid(tank, stack, side, action);
         if (side == Direction.UP && action.execute() && remainder.getAmount() < stack.getAmount() && !isRemote()) {
             if (valve == 0) {
@@ -217,7 +217,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
             inputSlot.setStack(data.inputSlot.getStack());
@@ -232,7 +232,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidTankUpgradeData getUpgradeData() {
         return new FluidTankUpgradeData(redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents());
@@ -244,7 +244,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, () -> editMode, value -> editMode = value));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -255,7 +255,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);

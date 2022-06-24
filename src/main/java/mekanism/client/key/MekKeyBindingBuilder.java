@@ -5,26 +5,30 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class MekKeyBindingBuilder {
 
+    @Nullable
     private String description;
     private IKeyConflictContext keyConflictContext = KeyConflictContext.UNIVERSAL;
     private KeyModifier keyModifier = KeyModifier.NONE;
+    @Nullable
     private InputConstants.Key key;
     private String category = MekanismLang.MEKANISM.getTranslationKey();
+    @Nullable
     private BiConsumer<KeyMapping, Boolean> onKeyDown;
+    @Nullable
     private Consumer<KeyMapping> onKeyUp;
+    @Nullable
     private BooleanSupplier toggleable;
     private boolean repeating;
 

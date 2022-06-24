@@ -12,8 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -87,6 +85,8 @@ import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem, IJetpackItem, IAttributeRefresher {
 
@@ -147,7 +147,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
         consumer.accept(RenderPropertiesProvider.mekaSuit());
     }
 
@@ -158,7 +158,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltip);
         } else {
@@ -174,33 +174,33 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean makesPiglinsNeutral(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+    public boolean makesPiglinsNeutral(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
         return true;
     }
 
     @Override
-    public boolean isEnderMask(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull EnderMan enderman) {
+    public boolean isEnderMask(@NotNull ItemStack stack, @NotNull Player player, @NotNull EnderMan enderman) {
         return getSlot() == EquipmentSlot.HEAD;
     }
 
     @Override
-    public boolean canWalkOnPowderedSnow(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+    public boolean canWalkOnPowderedSnow(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
         return getSlot() == EquipmentSlot.FEET;
     }
 
     @Override
-    public boolean isBarVisible(@Nonnull ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getBarWidth(@Nonnull ItemStack stack) {
+    public int getBarWidth(@NotNull ItemStack stack) {
         //TODO: Eventually look into making it so that we can have a "secondary durability" bar for rendering things like stored gas
         return StorageUtils.getEnergyBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@Nonnull ItemStack stack) {
+    public int getBarColor(@NotNull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
     }
 
@@ -222,7 +222,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             ItemStack stack = new ItemStack(this);
@@ -239,7 +239,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+    public int getDefaultTooltipHideFlags(@NotNull ItemStack stack) {
         return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
@@ -262,7 +262,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
     }
 
-    @Nonnull
+    @NotNull
     public GasStack useGas(ItemStack stack, Gas type, long amount) {
         Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {
@@ -301,7 +301,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         for (Module<?> module : getModules(stack)) {
             if (module.handlesModeChange()) {
                 module.changeMode(player, stack, shift, displayChangeMessage);
@@ -311,7 +311,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlot slotType) {
+    public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
         return slotType == getSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
     }
 
@@ -380,9 +380,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return module == null ? MekanismConfig.gear.mekaSuitBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, @Nonnull ItemStack stack) {
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
         return slot == getSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
     }
 
@@ -554,7 +554,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
 
         @Override
-        public int getDefenseForSlot(@Nonnull EquipmentSlot slot) {
+        public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
             return switch (slot) {
                 case FEET -> MekanismConfig.gear.mekaSuitBootsArmor.getOrDefault();
                 case LEGS -> MekanismConfig.gear.mekaSuitPantsArmor.getOrDefault();
@@ -574,7 +574,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             return MekanismConfig.gear.mekaSuitKnockbackResistance.getOrDefault();
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String getName() {
             return Mekanism.MODID + ":mekasuit";

@@ -1,10 +1,10 @@
 package mekanism.client.gui.element.window.filter.qio;
 
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiQIOModIDFilter extends GuiModIDFilter<QIOModIDFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 

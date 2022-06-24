@@ -1,6 +1,5 @@
 package mekanism.client.model;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.FluidDeferredRegister;
@@ -15,6 +14,7 @@ import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseItemModelProvider extends ItemModelProvider {
 
@@ -22,7 +22,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         super(generator, modid, existingFileHelper);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Item model provider: " + modid;

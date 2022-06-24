@@ -2,7 +2,6 @@ package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -17,6 +16,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelTransporterBox extends MekanismJavaModel {
 
@@ -40,7 +40,7 @@ public class ModelTransporterBox extends MekanismJavaModel {
         box = BOX.getFromRoot(root);
     }
 
-    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, float x, float y, float z, EnumColor color) {
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, float x, float y, float z, EnumColor color) {
         matrix.pushPose();
         matrix.translate(x, y, z);
         renderToBuffer(matrix, renderer.getBuffer(RENDER_TYPE), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
@@ -48,7 +48,7 @@ public class ModelTransporterBox extends MekanismJavaModel {
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack matrix, @Nonnull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         box.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 }

@@ -1,18 +1,18 @@
 package mekanism.api.providers;
 
-import javax.annotation.Nonnull;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@MethodsReturnNonnullByDefault
 public interface IFluidProvider extends IBaseProvider {
 
     /**
      * Gets the fluid this provider represents.
      */
-    @Nonnull
     Fluid getFluid();
 
     /**
@@ -20,7 +20,6 @@ public interface IFluidProvider extends IBaseProvider {
      *
      * @param size Size of the stack.
      */
-    @Nonnull
     default FluidStack getFluidStack(int size) {
         return new FluidStack(getFluid(), size);
     }

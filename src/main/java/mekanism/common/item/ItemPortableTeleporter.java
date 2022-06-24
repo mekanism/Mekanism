@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem {
 
@@ -30,7 +30,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         MekanismAPI.getSecurityUtils().addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         super.appendHoverText(stack, world, tooltip, flag);
@@ -41,9 +41,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
         return FrequencyType.TELEPORTER;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return SecurityUtils.INSTANCE.claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 

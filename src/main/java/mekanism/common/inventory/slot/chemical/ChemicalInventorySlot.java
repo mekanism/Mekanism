@@ -3,13 +3,10 @@ package mekanism.common.inventory.slot.chemical;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -21,14 +18,13 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends BasicInventorySlot {
 
     @Nullable
@@ -46,8 +42,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
         return foundRecipe == null ? empty : foundRecipe.getOutput(itemStack);
     }
 
-    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NonNull ItemStack> getFillOrConvertExtractPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NonNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction,
+    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getFillOrConvertExtractPredicate(
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction,
           Function<ItemStack, STACK> potentialConversionSupplier) {
         return stack -> {
             IChemicalHandler<CHEMICAL, STACK> handler = handlerFunction.apply(stack);
@@ -67,8 +63,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
         };
     }
 
-    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NonNull ItemStack> getFillOrConvertInsertPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NonNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction,
+    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getFillOrConvertInsertPredicate(
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction,
           Function<ItemStack, STACK> potentialConversionSupplier) {
         return stack -> {
             if (fillInsertCheck(chemicalTank, handlerFunction.apply(stack))) {
@@ -89,8 +85,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
         };
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NonNull ItemStack> getFillExtractPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NonNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getFillExtractPredicate(
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction) {
         return stack -> {
             IChemicalHandler<CHEMICAL, STACK> handler = handlerFunction.apply(stack);
             if (handler != null) {
@@ -123,8 +119,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
         return false;
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NonNull ItemStack> getDrainInsertPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NonNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getDrainInsertPredicate(
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction) {
         return stack -> {
             IChemicalHandler<CHEMICAL, STACK> handler = handlerFunction.apply(stack);
             if (handler != null) {
@@ -148,8 +144,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     protected final Supplier<Level> worldSupplier;
     protected final IChemicalTank<CHEMICAL, STACK> chemicalTank;
 
-    protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
-          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
+          Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.chemicalTank = chemicalTank;

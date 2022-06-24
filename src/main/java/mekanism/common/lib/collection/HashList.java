@@ -4,8 +4,8 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HashList<T> extends AbstractList<T> {
 
@@ -123,7 +123,7 @@ public class HashList<T> extends AbstractList<T> {
         return obj == this || obj instanceof List && list.equals(obj);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Iterator<T> iterator() {
         return list.iterator();

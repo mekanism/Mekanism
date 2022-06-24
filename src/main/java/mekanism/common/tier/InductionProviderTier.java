@@ -1,14 +1,13 @@
 package mekanism.common.tier;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public enum InductionProviderTier implements ITier {
     BASIC(BaseTier.BASIC, FloatingLong.createConst(256_000)),
     ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(2_048_000)),
@@ -17,6 +16,7 @@ public enum InductionProviderTier implements ITier {
 
     private final FloatingLong baseOutput;
     private final BaseTier baseTier;
+    @Nullable
     private CachedFloatingLongValue outputReference;
 
     InductionProviderTier(BaseTier tier, FloatingLong out) {

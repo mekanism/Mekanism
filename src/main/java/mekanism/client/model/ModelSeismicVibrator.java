@@ -3,7 +3,6 @@ package mekanism.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,6 +15,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelSeismicVibrator extends MekanismJavaModel {
 
@@ -218,7 +218,7 @@ public class ModelSeismicVibrator extends MekanismJavaModel {
         plate3 = PLATE_3.getFromRoot(root);
     }
 
-    public void render(@Nonnull PoseStack poseStack, @Nonnull MultiBufferSource renderer, int light, int overlayLight, float piston, boolean hasEffect) {
+    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource renderer, int light, int overlayLight, float piston, boolean hasEffect) {
         shaft1.y = 6 - (piston * 12);
         plate2.y = 21 - (piston * 12);
         plate3.y = 22 - (piston * 12);
@@ -226,7 +226,7 @@ public class ModelSeismicVibrator extends MekanismJavaModel {
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 

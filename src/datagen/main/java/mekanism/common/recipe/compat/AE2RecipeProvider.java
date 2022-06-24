@@ -3,7 +3,7 @@ package mekanism.common.recipe.compat;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
 
     public AE2RecipeProvider() {

@@ -3,7 +3,6 @@ package mekanism.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -12,6 +11,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelArmoredFreeRunners extends ModelFreeRunners {
 
@@ -89,7 +89,7 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
     }
 
     @Override
-    protected void renderLeg(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
+    protected void renderLeg(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
           float alpha, boolean left) {
         super.renderLeg(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha, left);
         if (left) {

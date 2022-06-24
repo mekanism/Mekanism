@@ -2,38 +2,37 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.network.to_client.container.property.FloatingLongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.ShortPropertyData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling floating long
  */
 public class SyncableFloatingLong implements ISyncableData {
 
-    public static SyncableFloatingLong create(Supplier<@NonNull FloatingLong> getter, Consumer<@NonNull FloatingLong> setter) {
+    public static SyncableFloatingLong create(Supplier<@NotNull FloatingLong> getter, Consumer<@NotNull FloatingLong> setter) {
         return new SyncableFloatingLong(getter, setter);
     }
 
-    private final Supplier<@NonNull FloatingLong> getter;
-    private final Consumer<@NonNull FloatingLong> setter;
+    private final Supplier<@NotNull FloatingLong> getter;
+    private final Consumer<@NotNull FloatingLong> setter;
     private long lastKnownValue;
     private short lastKnownDecimal;
 
-    private SyncableFloatingLong(Supplier<@NonNull FloatingLong> getter, Consumer<@NonNull FloatingLong> setter) {
+    private SyncableFloatingLong(Supplier<@NotNull FloatingLong> getter, Consumer<@NotNull FloatingLong> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
-    @Nonnull
+    @NotNull
     public FloatingLong get() {
         return getter.get();
     }
 
-    public void set(@Nonnull FloatingLong value) {
+    public void set(@NotNull FloatingLong value) {
         setter.accept(value);
     }
 

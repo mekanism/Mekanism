@@ -3,11 +3,11 @@ package mekanism.common.capabilities.holder.fluid;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.holder.ProxiedHolder;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ProxiedFluidTankHolder extends ProxiedHolder implements IFluidTankHolder {
 
@@ -24,7 +24,7 @@ public class ProxiedFluidTankHolder extends ProxiedHolder implements IFluidTankH
         this.tankFunction = tankFunction;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getTanks(@Nullable Direction side) {
         return tankFunction.apply(side);

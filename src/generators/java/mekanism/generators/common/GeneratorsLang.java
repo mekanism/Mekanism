@@ -1,8 +1,10 @@
 package mekanism.generators.common;
 
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.Util;
 
+@NothingNullByDefault
 public enum GeneratorsLang implements ILangEntry {
     PRODUCING_AMOUNT("gui", "producing.amount"),
     STORED_BIO_FUEL("gui", "bio_generator.bio_fuel"),

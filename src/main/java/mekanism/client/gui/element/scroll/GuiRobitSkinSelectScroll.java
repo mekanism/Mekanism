@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import java.util.List;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
@@ -34,6 +33,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
 
@@ -67,7 +67,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         List<RobitSkin> skins = getUnlockedSkins();
         if (skins != null) {
@@ -95,7 +95,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
-    private static void renderSlotBackground(@Nonnull PoseStack matrix, int slotX, int slotY, ResourceLocation resource, int size) {
+    private static void renderSlotBackground(@NotNull PoseStack matrix, int slotX, int slotY, ResourceLocation resource, int size) {
         GuiUtils.renderBackgroundTexture(matrix, resource, size, size, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS, 256, 256);
     }
 
@@ -127,7 +127,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         RobitSkin skin = getSkin(mouseX, mouseY);
         if (skin != null) {

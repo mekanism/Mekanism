@@ -2,8 +2,6 @@ package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -11,6 +9,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.network.to_client.container.property.LongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.chemical.InfusionStackPropertyData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling infusion stacks
@@ -30,15 +29,15 @@ public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, Inf
         return create(handler::getStack, isClient ? handler::setStackUnchecked : handler::setStack);
     }
 
-    public static SyncableInfusionStack create(Supplier<@NonNull InfusionStack> getter, Consumer<@NonNull InfusionStack> setter) {
+    public static SyncableInfusionStack create(Supplier<@NotNull InfusionStack> getter, Consumer<@NotNull InfusionStack> setter) {
         return new SyncableInfusionStack(getter, setter);
     }
 
-    private SyncableInfusionStack(Supplier<@NonNull InfusionStack> getter, Consumer<@NonNull InfusionStack> setter) {
+    private SyncableInfusionStack(Supplier<@NotNull InfusionStack> getter, Consumer<@NotNull InfusionStack> setter) {
         super(getter, setter);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected InfusionStack createStack(InfusionStack stored, long size) {
         return new InfusionStack(stored, size);

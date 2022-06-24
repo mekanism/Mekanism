@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.ComputerMethodMapper;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -25,6 +24,7 @@ import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.forgespi.language.IModFileInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 
 public class MekAnnotationScanner {

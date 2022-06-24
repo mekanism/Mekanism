@@ -6,13 +6,13 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import java.util.Arrays;
-import javax.annotation.Nullable;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer

@@ -1,17 +1,15 @@
 package mekanism.generators.common.content.turbine;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder.MultiblockGasTank;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class TurbineGasTank extends MultiblockGasTank<TurbineMultiblockData> {
 
     public TurbineGasTank(TurbineMultiblockData multiblock, TileEntityTurbineCasing tile) {
@@ -21,7 +19,7 @@ public class TurbineGasTank extends MultiblockGasTank<TurbineMultiblockData> {
     }
 
     @Override
-    public GasStack insert(@Nonnull GasStack stack, Action action, AutomationType automationType) {
+    public GasStack insert(@NotNull GasStack stack, Action action, AutomationType automationType) {
         GasStack returned = super.insert(stack, action, automationType);
         if (action == Action.EXECUTE && multiblock.isFormed()) {
             multiblock.newSteamInput += stack.getAmount() - returned.getAmount();

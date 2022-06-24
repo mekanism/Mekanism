@@ -1,9 +1,9 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcavationEscalationUnit> {
 
     private IModuleConfigItem<ExcavationMode> excavationMode;
@@ -53,6 +53,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         return excavationMode.get().getEfficiency();
     }
 
+    @NothingNullByDefault
     public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent {
         OFF(0),
         SLOW(4),
@@ -71,7 +72,6 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
             this.label = TextComponentUtil.getString(Integer.toString(efficiency));
         }
 
-        @Nonnull
         @Override
         public ExcavationMode byIndex(int index) {
             return MathUtils.getByIndexMod(MODES, index);

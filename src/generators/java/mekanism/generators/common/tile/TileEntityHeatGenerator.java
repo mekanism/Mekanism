@@ -2,8 +2,6 @@ package mekanism.generators.common.tile;
 
 import java.util.Arrays;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -48,6 +46,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator {
 
@@ -75,7 +75,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.heatGeneration.get().multiply(2));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
@@ -84,7 +84,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -96,7 +96,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
@@ -162,7 +162,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return side == Direction.DOWN ? 0 : super.getInverseInsulation(capacitor, side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public HeatTransfer simulate() {
         double ambientTemp = ambientTemperature.getAsDouble();
@@ -177,7 +177,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+    public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (side == Direction.DOWN) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), worldPosition.below());
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);

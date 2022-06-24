@@ -1,14 +1,12 @@
 package mekanism.common.recipe.upgrade;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class SortingRecipeData implements RecipeUpgradeData<SortingRecipeData> {
 
     static final SortingRecipeData SORTING = new SortingRecipeData();

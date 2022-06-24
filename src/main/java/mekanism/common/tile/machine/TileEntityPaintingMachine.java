@@ -1,10 +1,7 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
@@ -48,6 +45,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityPaintingMachine extends TileEntityProgressMachine<PaintingRecipe> implements ItemChemicalRecipeLookupHandler<Pigment, PigmentStack, PaintingRecipe> {
 
@@ -63,9 +62,9 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
                                                                                         "getPigmentInputFilledPercentage"})
     public IPigmentTank pigmentTank;
 
-    private final IOutputHandler<@NonNull ItemStack> outputHandler;
-    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    private final IInputHandler<@NonNull PigmentStack> pigmentInputHandler;
+    private final IOutputHandler<@NotNull ItemStack> outputHandler;
+    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    private final IInputHandler<@NotNull PigmentStack> pigmentInputHandler;
 
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem")
@@ -92,7 +91,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
@@ -101,7 +100,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -109,7 +108,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -131,7 +130,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
         recipeCacheLookupMonitor.updateAndProcess();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<PaintingRecipe, ItemChemical<Pigment, PigmentStack, PaintingRecipe>> getRecipeType() {
         return MekanismRecipeType.PAINTING;
@@ -143,9 +142,9 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
         return findFirstRecipe(itemInputHandler, pigmentInputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<PaintingRecipe> createNewCachedRecipe(@Nonnull PaintingRecipe recipe, int cacheIndex) {
+    public CachedRecipe<PaintingRecipe> createNewCachedRecipe(@NotNull PaintingRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, pigmentInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))

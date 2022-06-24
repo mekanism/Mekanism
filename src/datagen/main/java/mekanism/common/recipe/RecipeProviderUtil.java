@@ -1,8 +1,7 @@
 package mekanism.common.recipe;
 
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -22,11 +21,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class for helpers that are also used by some of our recipe compat providers for convenience
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RecipeProviderUtil {
 
     private RecipeProviderUtil() {

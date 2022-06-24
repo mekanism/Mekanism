@@ -1,6 +1,5 @@
 package mekanism.tools.common.recipe;
 
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
@@ -12,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class MekBannerShieldRecipe extends CustomRecipe {
 
@@ -20,7 +20,7 @@ public class MekBannerShieldRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, @Nonnull Level world) {
+    public boolean matches(CraftingContainer inv, @NotNull Level world) {
         ItemStack shieldStack = ItemStack.EMPTY;
         ItemStack bannerStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -42,7 +42,7 @@ public class MekBannerShieldRecipe extends CustomRecipe {
         return !shieldStack.isEmpty() && !bannerStack.isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack assemble(CraftingContainer inv) {
         ItemStack bannerStack = ItemStack.EMPTY;
@@ -72,7 +72,7 @@ public class MekBannerShieldRecipe extends CustomRecipe {
         return width * height >= 2;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public RecipeSerializer<?> getSerializer() {
         return ToolsRecipeSerializers.BANNER_SHIELD.get();

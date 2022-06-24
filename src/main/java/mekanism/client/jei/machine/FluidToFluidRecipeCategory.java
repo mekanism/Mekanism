@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
@@ -22,6 +21,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import org.jetbrains.annotations.NotNull;
 
 public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidRecipe> {
 
@@ -47,7 +47,7 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidToFluidRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, FluidToFluidRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

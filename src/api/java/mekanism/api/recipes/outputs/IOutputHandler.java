@@ -1,6 +1,6 @@
 package mekanism.api.recipes.outputs;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 
 /**
@@ -8,7 +8,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
  *
  * @param <OUTPUT> Type of output handled by this handler.
  */
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public interface IOutputHandler<OUTPUT> {
 
     /**

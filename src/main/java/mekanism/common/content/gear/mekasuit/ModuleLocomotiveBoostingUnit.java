@@ -1,8 +1,8 @@
 package mekanism.common.content.gear.mekasuit;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomotiveBoostingUnit> {
 
     private IModuleConfigItem<SprintBoost> sprintBoost;
@@ -80,6 +80,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
         return sprintBoost.get().getBoost();
     }
 
+    @NothingNullByDefault
     public enum SprintBoost implements IHasTextComponent, IIncrementalEnum<SprintBoost> {
         OFF(0),
         LOW(0.05F),
@@ -97,7 +98,6 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
             this.label = TextComponentUtil.getString(Float.toString(boost));
         }
 
-        @Nonnull
         @Override
         public SprintBoost byIndex(int index) {
             return MathUtils.getByIndexMod(MODES, index);

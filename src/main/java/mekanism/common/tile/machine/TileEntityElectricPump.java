@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
@@ -68,6 +66,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
 
@@ -84,7 +84,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     /**
      * The type of fluid this pump is pumping
      */
-    @Nonnull
+    @NotNull
     private FluidStack activeType = FluidStack.EMPTY;
     public int ticksRequired = BASE_TICKS_REQUIRED;
     /**
@@ -110,7 +110,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
@@ -118,7 +118,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
@@ -126,7 +126,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -249,7 +249,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return new FluidStack(sourceFluid, FluidType.BUCKET_VOLUME);
     }
 
-    private void suck(@Nonnull FluidStack fluidStack, BlockPos pos, boolean addRecurring) {
+    private void suck(@NotNull FluidStack fluidStack, BlockPos pos, boolean addRecurring) {
         //Size doesn't matter, but we do want to take the NBT into account
         activeType = new FluidStack(fluidStack, 1);
         if (addRecurring) {
@@ -259,7 +259,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
     }
 
-    private boolean validFluid(@Nonnull FluidStack fluidStack, boolean recheckSize) {
+    private boolean validFluid(@NotNull FluidStack fluidStack, boolean recheckSize) {
         if (!fluidStack.isEmpty() && (activeType.isEmpty() || activeType.isFluidEqual(fluidStack))) {
             if (fluidTank.isEmpty()) {
                 return true;
@@ -276,7 +276,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
@@ -292,7 +292,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
         NBTUtils.setFluidStackIfPresent(nbt, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
@@ -339,8 +339,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return type == SubstanceType.FLUID;
     }
 
+    @NotNull
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(@NotNull Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

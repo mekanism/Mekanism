@@ -1,6 +1,5 @@
 package mekanism.additions.client.render.entity.layer;
 
-import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyCreeper;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
 import net.minecraft.client.model.EntityModel;
@@ -8,6 +7,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class BabyCreeperChargeLayer extends EnergySwirlLayer<EntityBabyCreeper, ModelBabyCreeper> {
 
@@ -24,13 +24,13 @@ public class BabyCreeperChargeLayer extends EnergySwirlLayer<EntityBabyCreeper, 
         return modifier * 0.01F;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected ResourceLocation getTextureLocation() {
         return POWER_LOCATION;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected EntityModel<EntityBabyCreeper> model() {
         return this.creeperModel;

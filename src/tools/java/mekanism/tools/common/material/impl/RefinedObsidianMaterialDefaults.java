@@ -1,7 +1,5 @@
 package mekanism.tools.common.material.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
@@ -11,6 +9,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
@@ -65,7 +65,7 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 975;
             case LEGS -> 1_125;
@@ -76,7 +76,7 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 5;
             case LEGS -> 8;
@@ -86,13 +86,13 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getConfigCommentName() {
         return "Refined Obsidian";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "refined_obsidian";
@@ -104,13 +104,13 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
         return ToolsTags.Blocks.NEEDS_REFINED_OBSIDIAN_TOOL;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public SoundEvent getEquipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.of(MekanismTags.Items.INGOTS_REFINED_OBSIDIAN);

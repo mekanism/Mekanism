@@ -4,14 +4,11 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -75,6 +72,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe>,
       ISustainedData {
@@ -121,8 +120,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private FloatingLong recipeEnergyMultiplier = FloatingLong.ONE;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NonNull ElectrolysisRecipeOutput> outputHandler;
-    private final IInputHandler<@NonNull FluidStack> inputHandler;
+    private final IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler;
+    private final IInputHandler<@NotNull FluidStack> inputHandler;
 
     private FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
@@ -179,7 +178,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         outputHandler = OutputHelper.getOutputHandler(leftTank, NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR, rightTank, NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -187,7 +186,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -196,7 +195,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -204,7 +203,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -276,13 +275,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return recipeEnergyMultiplier;
     }
 
-    @Nonnull
+    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage")
     public FloatingLong getEnergyUsed() {
         return clientEnergyUsed;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<ElectrolysisRecipe, SingleFluid<ElectrolysisRecipe>> getRecipeType() {
         return MekanismRecipeType.SEPARATING;
@@ -294,9 +293,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return findFirstRecipe(inputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@NotNull ElectrolysisRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.separating(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)

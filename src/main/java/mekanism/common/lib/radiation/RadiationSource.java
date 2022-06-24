@@ -1,12 +1,12 @@
 package mekanism.common.lib.radiation;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.NotNull;
 
 public class RadiationSource implements IRadiationSource {
 
@@ -19,7 +19,7 @@ public class RadiationSource implements IRadiationSource {
         this.magnitude = magnitude;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Coord4D getPos() {
         return pos;

@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
@@ -26,6 +24,8 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupportsWarning<GuiGauge<T>> {
 
@@ -45,7 +45,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     }
 
     @Override
-    public GuiGauge<T> warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+    public GuiGauge<T> warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
         this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
@@ -70,7 +70,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         GaugeInfo color = getGaugeColor();
         renderExtendedTexture(matrix, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
@@ -112,7 +112,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         ItemStack stack = minecraft.player.containerMenu.getCarried();
         EnumColor color = getGaugeColor().getColor();

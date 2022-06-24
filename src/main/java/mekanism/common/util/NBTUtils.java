@@ -10,8 +10,8 @@ import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -33,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class NBTUtils {
 
     private NBTUtils() {

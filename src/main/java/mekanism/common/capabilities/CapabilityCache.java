@@ -9,18 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class CapabilityCache {
 
     private final Map<Capability<?>, ICapabilityResolver> capabilityResolvers = new HashMap<>();
@@ -30,6 +28,7 @@ public class CapabilityCache {
     private final List<ICapabilityResolver> uniqueResolvers = new ArrayList<>();
     private final Set<Capability<?>> alwaysDisabled = new HashSet<>();
     private final Map<Capability<?>, List<BooleanSupplier>> semiDisabled = new HashMap<>();
+    @Nullable
     private TileComponentConfig config;
 
     /**

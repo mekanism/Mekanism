@@ -1,7 +1,5 @@
 package mekanism.additions.common.entity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -15,6 +13,8 @@ import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EntityObsidianTNT extends PrimedTnt {
 
@@ -60,13 +60,13 @@ public class EntityObsidianTNT extends PrimedTnt {
         level.explode(this, getX(), getY() + (double) (getBbHeight() / 16.0F), getZ(), MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get(), BlockInteraction.BREAK);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public EntityType<?> getType() {
         return AdditionsEntityTypes.OBSIDIAN_TNT.getEntityType();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);

@@ -1,7 +1,6 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.EnchantmentBasedModule;
 import mekanism.api.gear.ICustomModule;
@@ -11,6 +10,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.util.NonNullSupplier;
+import org.jetbrains.annotations.NotNull;
 
 public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?>> {
 
@@ -30,7 +30,7 @@ public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?
     public ModuleRegistryObject<?> registerEnchantBased(String name, NonNullSupplier<Enchantment> enchantment, IItemProvider itemProvider,
           UnaryOperator<ModuleDataBuilder<?>> builderModifier) {
         return register(name, builderModifier.apply(ModuleDataBuilder.custom(() -> new EnchantmentBasedModule() {
-            @Nonnull
+            @NotNull
             @Override
             public Enchantment getEnchantment() {
                 return enchantment.get();

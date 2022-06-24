@@ -3,12 +3,12 @@ package mekanism.common.capabilities.holder.slot;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.holder.BasicHolder;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InventorySlotHolder extends BasicHolder<IInventorySlot> implements IInventorySlotHolder {
 
@@ -23,11 +23,11 @@ public class InventorySlotHolder extends BasicHolder<IInventorySlot> implements 
         this.extractPredicate = extractPredicate;
     }
 
-    void addSlot(@Nonnull IInventorySlot slot, RelativeSide... sides) {
+    void addSlot(@NotNull IInventorySlot slot, RelativeSide... sides) {
         addSlotInternal(slot, sides);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction direction) {
         return getSlots(direction);

@@ -2,9 +2,8 @@ package mekanism.api.gear;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -18,7 +17,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
  *
  * Instances of this should be returned via the {@link ModuleData}.
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public abstract class EnchantmentBasedModule<MODULE extends EnchantmentBasedModule<MODULE>> implements ICustomModule<MODULE> {
 
     /**
@@ -26,7 +25,6 @@ public abstract class EnchantmentBasedModule<MODULE extends EnchantmentBasedModu
      *
      * @return The enchantment that this module provides.
      */
-    @Nonnull
     public abstract Enchantment getEnchantment();
 
     @Override

@@ -9,12 +9,13 @@ import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extends CCMethodCaller implements IDynamicPeripheral {
 
     /**
@@ -41,7 +42,6 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
         return "peripheral";
     }
 
-    @Nonnull
     @Override
     public String getType() {
         return name;
@@ -60,9 +60,8 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
         return other == this;
     }
 
-    @Nonnull
     @Override
-    public MethodResult callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int methodIndex, @Nonnull IArguments arguments) throws LuaException {
+    public MethodResult callMethod(IComputerAccess computer, ILuaContext context, int methodIndex, IArguments arguments) throws LuaException {
         return callMethod(context, methodIndex, arguments);
     }
 }

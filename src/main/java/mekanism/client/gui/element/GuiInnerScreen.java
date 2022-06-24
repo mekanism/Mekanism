@@ -3,8 +3,6 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
@@ -12,6 +10,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea<GuiInnerScreen> {
 
@@ -91,7 +91,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (tooltipStrings != null) {
             List<Component> list = tooltipStrings.get();
@@ -105,9 +105,9 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
         drawScaledTextScaledBound(matrix, text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public GuiInnerScreen jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories) {
+    public GuiInnerScreen jeiCategories(@NotNull MekanismJEIRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }

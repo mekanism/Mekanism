@@ -3,10 +3,10 @@ package mekanism.client.render.obj;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
-import javax.annotation.Nonnull;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class TransmitterModelTransform implements ModelState {
 
@@ -25,7 +25,7 @@ public class TransmitterModelTransform implements ModelState {
         return vec;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Transformation getRotation() {
         return matrix;

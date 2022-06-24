@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -39,6 +37,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseTagProvider implements DataProvider {
 
@@ -64,7 +64,7 @@ public abstract class BaseTagProvider implements DataProvider {
         addTagType(TagType.SLURRY);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Tags: " + modid;
@@ -86,7 +86,7 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) {
+    public void run(@NotNull CachedOutput cache) {
         supportedTagTypes.values().forEach(Map::clear);
         registerTags();
         for (IBlockProvider blockProvider : getAllBlocks()) {
@@ -98,7 +98,7 @@ public abstract class BaseTagProvider implements DataProvider {
         supportedTagTypes.forEach((tagType, tagTypeMap) -> act(cache, tagType, tagTypeMap));
     }
 
-    private <TYPE> void act(@Nonnull CachedOutput cache, TagType<TYPE> tagType, Map<TagKey<?>, TagBuilder> tagTypeMap) {
+    private <TYPE> void act(@NotNull CachedOutput cache, TagType<TYPE> tagType, Map<TagKey<?>, TagBuilder> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
             //Create a dummy provider and pass all our collected data through to it
             tagType.getRegistry().map(forgeRegistry -> new ForgeRegistryTagsProvider<>(gen, forgeRegistry, modid, existingFileHelper) {
@@ -108,7 +108,7 @@ public abstract class BaseTagProvider implements DataProvider {
                     tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.location(), tagBuilder));
                 }
 
-                @Nonnull
+                @NotNull
                 @Override
                 public String getName() {
                     return tagType.name() + " Tags: " + modid;
@@ -120,7 +120,7 @@ public abstract class BaseTagProvider implements DataProvider {
                     tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.location(), tagBuilder));
                 }
 
-                @Nonnull
+                @NotNull
                 @Override
                 public String getName() {
                     return tagType.name() + " Tags: " + modid;

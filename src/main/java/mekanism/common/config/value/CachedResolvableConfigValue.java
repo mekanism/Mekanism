@@ -1,10 +1,10 @@
 package mekanism.common.config.value;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @param <TYPE> The type this {@link CachedResolvableConfigValue} resolves to
@@ -23,7 +23,7 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValu
 
     protected abstract REAL encode(TYPE value);
 
-    @Nonnull
+    @NotNull
     public TYPE getOrDefault() {
         if (cachedValue != null || isLoaded()) {
             return get();
@@ -31,7 +31,7 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValu
         return resolve(internal.getDefault());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public TYPE get() {
         if (cachedValue == null) {

@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -35,6 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
@@ -58,7 +58,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         tier = Attribute.getTier(getBlockType(), BinTier.class);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -122,7 +122,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof BinUpgradeData data) {
             redstone = data.redstone();
             binSlot.setStack(data.binSlot().getStack());
@@ -131,7 +131,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BinUpgradeData getUpgradeData() {
         return new BinUpgradeData(redstone, getBinSlot());
@@ -145,7 +145,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -154,7 +154,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
     }

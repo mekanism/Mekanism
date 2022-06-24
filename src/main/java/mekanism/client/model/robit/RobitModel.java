@@ -7,7 +7,6 @@ import com.mojang.datafixers.util.Pair;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.client.model.baked.MekanismModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,6 +18,7 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 public class RobitModel extends MekanismModel {
 
@@ -52,12 +52,12 @@ public class RobitModel extends MekanismModel {
         }
 
         @Override
-        public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+        public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public RobitModel read(@Nonnull JsonDeserializationContext ctx, @Nonnull JsonObject modelContents) {
+        public RobitModel read(@NotNull JsonDeserializationContext ctx, @NotNull JsonObject modelContents) {
             return new RobitModel(readElements(ctx, modelContents));
         }
     }

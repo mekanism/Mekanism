@@ -1,12 +1,9 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -53,6 +50,8 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> implements EitherSideChemicalRecipeLookupHandler<Gas, GasStack, ChemicalInfuserRecipe> {
 
@@ -78,9 +77,9 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NonNull GasStack> outputHandler;
-    private final IInputHandler<@NonNull GasStack> leftInputHandler;
-    private final IInputHandler<@NonNull GasStack> rightInputHandler;
+    private final IOutputHandler<@NotNull GasStack> outputHandler;
+    private final IInputHandler<@NotNull GasStack> leftInputHandler;
+    private final IInputHandler<@NotNull GasStack> rightInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem")
@@ -133,7 +132,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         outputHandler = OutputHelper.getOutputHandler(centerTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -143,7 +142,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -151,7 +150,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -178,13 +177,13 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
-    @Nonnull
+    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage")
     public FloatingLong getEnergyUsed() {
         return clientEnergyUsed;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<ChemicalInfuserRecipe, EitherSideChemical<Gas, GasStack, ChemicalInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.CHEMICAL_INFUSING;
@@ -196,9 +195,9 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         return findFirstRecipe(leftInputHandler, rightInputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@NotNull ChemicalInfuserRecipe recipe, int cacheIndex) {
         return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))

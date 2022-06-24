@@ -1,10 +1,10 @@
 package mekanism.common.block.interfaces;
 
-import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
+import org.jetbrains.annotations.NotNull;
 
 public interface IHasDescription {
 
-    @Nonnull
+    @NotNull
     ILangEntry getDescription();
 }

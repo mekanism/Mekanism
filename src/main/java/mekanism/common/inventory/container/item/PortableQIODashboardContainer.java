@@ -1,7 +1,5 @@
 package mekanism.common.inventory.container.item;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.PortableQIODashboardInventory;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -13,6 +11,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
@@ -46,12 +46,12 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
         // special handling to prevent removing the dashboard from the player's inventory slot
         if (index == inv.selected && hand == InteractionHand.MAIN_HAND) {
             return new HotBarSlot(inv, index, x, y) {
                 @Override
-                public boolean mayPickup(@Nonnull Player player) {
+                public boolean mayPickup(@NotNull Player player) {
                     return false;
                 }
             };
@@ -60,7 +60,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
+    public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
         if (clickType == ClickType.SWAP) {
             if (hand == InteractionHand.OFF_HAND && dragType == 40) {
                 //Block pressing f to swap it when it is in the offhand

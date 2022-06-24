@@ -1,8 +1,6 @@
 package mekanism.common.inventory.container.slot;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -13,6 +11,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //Like net.minecraftforge.items.SlotItemHandler, except directly interacts with the IInventorySlot instead
 public class InventoryContainerSlot extends Slot implements IInsertableSlot {
@@ -46,9 +46,9 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
+    public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
         ItemStack remainder = slot.insertItem(stack, action, AutomationType.MANUAL);
         if (action.execute() && stack.getCount() != remainder.getCount()) {
             setChanged();
@@ -57,7 +57,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public boolean mayPlace(@Nonnull ItemStack stack) {
+    public boolean mayPlace(@NotNull ItemStack stack) {
         if (stack.isEmpty()) {
             return false;
         }
@@ -74,7 +74,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         return slot.isItemValidForInsertion(stack, AutomationType.MANUAL);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getItem() {
         return slot.getStack();
@@ -86,7 +86,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public void set(@Nonnull ItemStack stack) {
+    public void set(@NotNull ItemStack stack) {
         //Note: We have to set the stack in an unchecked manner here, so that if we sync a stack from the server to the client that
         // the client does not think is valid for the stack, it doesn't cause major issues. Additionally, we do this directly in
         // our putStack method rather than having a separate unchecked method, as if some modder is modifying inventories directly
@@ -98,7 +98,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public void initialize(@Nonnull ItemStack stack) {
+    public void initialize(@NotNull ItemStack stack) {
         //Note: We don't just call set as if we override set anywhere, which we don't currently, then we would not necessarily want it
         // firing for this if we were say firing equip sounds
         //Note: We have to set the stack in an unchecked manner here, so that if we sync a stack from the server to the client that
@@ -118,7 +118,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public void onQuickCraft(@Nonnull ItemStack current, @Nonnull ItemStack newStack) {
+    public void onQuickCraft(@NotNull ItemStack current, @NotNull ItemStack newStack) {
         int change = newStack.getCount() - current.getCount();
         if (change > 0) {
             slot.onContentsChanged();
@@ -132,16 +132,16 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public int getMaxStackSize(@Nonnull ItemStack stack) {
+    public int getMaxStackSize(@NotNull ItemStack stack) {
         return slot.getLimit(stack);
     }
 
     @Override
-    public boolean mayPickup(@Nonnull Player player) {
+    public boolean mayPickup(@NotNull Player player) {
         return !slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack remove(int amount) {
         return slot.extractItem(amount, Action.EXECUTE, AutomationType.MANUAL);

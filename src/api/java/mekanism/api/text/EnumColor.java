@@ -1,7 +1,5 @@
 package mekanism.api.text;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
 import net.minecraft.network.chat.Component;
@@ -9,6 +7,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MaterialColor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
@@ -151,7 +151,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         return MathUtils.getByIndexMod(COLORS, index);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public EnumColor byIndex(int index) {
         return byIndexStatic(index);

@@ -3,7 +3,6 @@ package mekanism.common.integration.projecte;
 import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -14,21 +13,22 @@ import net.minecraft.core.HolderSet.Named;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Slurry}.
  */
 public final class NSSSlurry extends AbstractNSSTag<Slurry> {
 
-    private NSSSlurry(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
+    private NSSSlurry(@NotNull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
     }
 
     /**
      * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link SlurryStack}
      */
-    @Nonnull
-    public static NSSSlurry createSlurry(@Nonnull SlurryStack stack) {
+    @NotNull
+    public static NSSSlurry createSlurry(@NotNull SlurryStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
         return createSlurry(stack.getType());
     }
@@ -36,16 +36,16 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
     /**
      * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link ISlurryProvider}
      */
-    @Nonnull
-    public static NSSSlurry createSlurry(@Nonnull ISlurryProvider slurryProvider) {
+    @NotNull
+    public static NSSSlurry createSlurry(@NotNull ISlurryProvider slurryProvider) {
         return createSlurry(slurryProvider.getChemical());
     }
 
     /**
      * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link Slurry}
      */
-    @Nonnull
-    public static NSSSlurry createSlurry(@Nonnull Slurry slurry) {
+    @NotNull
+    public static NSSSlurry createSlurry(@NotNull Slurry slurry) {
         if (slurry.isEmptyType()) {
             throw new IllegalArgumentException("Can't make NSSSlurry with an empty slurry");
         }
@@ -56,24 +56,24 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
     /**
      * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link ResourceLocation}
      */
-    @Nonnull
-    public static NSSSlurry createSlurry(@Nonnull ResourceLocation slurryID) {
+    @NotNull
+    public static NSSSlurry createSlurry(@NotNull ResourceLocation slurryID) {
         return new NSSSlurry(slurryID, false);
     }
 
     /**
      * Helper method to create an {@link NSSSlurry} representing a tag from a {@link ResourceLocation}
      */
-    @Nonnull
-    public static NSSSlurry createTag(@Nonnull ResourceLocation tagId) {
+    @NotNull
+    public static NSSSlurry createTag(@NotNull ResourceLocation tagId) {
         return new NSSSlurry(tagId, true);
     }
 
     /**
      * Helper method to create an {@link NSSSlurry} representing a tag from a {@link TagKey<Slurry>}
      */
-    @Nonnull
-    public static NSSSlurry createTag(@Nonnull TagKey<Slurry> tag) {
+    @NotNull
+    public static NSSSlurry createTag(@NotNull TagKey<Slurry> tag) {
         return createTag(tag.location());
     }
 
@@ -82,19 +82,19 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
         return o instanceof NSSSlurry;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getJsonPrefix() {
         return "SLURRY|";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getType() {
         return "Slurry";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Optional<Either<Named<Slurry>, ITag<Slurry>>> getTag() {
         return getTag(MekanismAPI.slurryRegistry());

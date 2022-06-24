@@ -1,7 +1,5 @@
 package mekanism.common.item;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
@@ -23,15 +21,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemTierInstaller extends Item {
 
     @Nullable
     private final BaseTier fromTier;
-    @Nonnull
+    @NotNull
     private final BaseTier toTier;
 
-    public ItemTierInstaller(@Nullable BaseTier fromTier, @Nonnull BaseTier toTier, Properties properties) {
+    public ItemTierInstaller(@Nullable BaseTier fromTier, @NotNull BaseTier toTier, Properties properties) {
         super(properties);
         this.fromTier = fromTier;
         this.toTier = toTier;
@@ -42,18 +42,18 @@ public class ItemTierInstaller extends Item {
         return fromTier;
     }
 
-    @Nonnull
+    @NotNull
     public BaseTier getToTier() {
         return toTier;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(@NotNull ItemStack stack) {
         return TextComponentUtil.build(toTier.getTextColor(), super.getName(stack));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();

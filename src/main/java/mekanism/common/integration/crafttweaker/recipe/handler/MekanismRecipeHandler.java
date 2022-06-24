@@ -11,10 +11,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -60,6 +58,8 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO: Eventually we might want to try and support replacing but for now it isn't worth it
 public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> implements IRecipeHandler<RECIPE> {
@@ -244,7 +244,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         return "Unimplemented chemical stack ingredient: " + ingredient;
     }
 
-    private <TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> String convertMultiIngredient(String crtClass, IMultiIngredient<TYPE, INGREDIENT> multiIngredient,
+    private <TYPE, INGREDIENT extends InputIngredient<@NotNull TYPE>> String convertMultiIngredient(String crtClass, IMultiIngredient<TYPE, INGREDIENT> multiIngredient,
           Function<INGREDIENT, String> converter) {
         StringBuilder builder = new StringBuilder(crtClass + ".createMulti(");
         multiIngredient.forEachIngredient(i -> {

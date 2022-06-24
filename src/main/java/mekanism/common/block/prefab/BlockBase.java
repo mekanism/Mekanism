@@ -1,7 +1,6 @@
 package mekanism.common.block.prefab;
 
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.attribute.AttributeCustomShape;
@@ -21,6 +20,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements IHasDescription, ITypeBlock {
 
@@ -49,7 +49,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
         return type == null ? cacheType : type;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ILangEntry getDescription() {
         return type.getDescription();
@@ -63,16 +63,16 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType pathType) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType pathType) {
         //If we have a custom shape which means we are not a full block then mark that movement is not
         // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
         return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, world, pos, pathType);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         if (type.has(AttributeCustomShape.class)) {
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
             int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateProperties.FACING ? 0 : 2));

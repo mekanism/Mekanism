@@ -1,7 +1,9 @@
 package mekanism.api.text;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 
+@MethodsReturnNonnullByDefault
 public interface IHasTextComponent {
 
     //TODO - 1.18: Debate replacing this with returning IFormattableTextComponent so that we know it can be "modified" instead of having to copy it

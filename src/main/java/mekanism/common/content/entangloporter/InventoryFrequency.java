@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
@@ -66,6 +64,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker,
       IInfusionTracker, IPigmentTracker, ISlurryTracker {
@@ -169,49 +169,49 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedHeat.setHeat(dataStream.readDouble());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return infusionTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return pigmentTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return slurryTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatCapacitors;

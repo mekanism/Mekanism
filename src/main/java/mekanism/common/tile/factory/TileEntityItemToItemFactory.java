@@ -2,7 +2,6 @@ package mekanism.common.tile.factory;
 
 import java.util.Map;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -18,11 +17,12 @@ import mekanism.common.tier.FactoryTier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe> extends TileEntityFactory<RECIPE> {
 
-    protected IInputHandler<@NonNull ItemStack>[] inputHandlers;
-    protected IOutputHandler<@NonNull ItemStack>[] outputHandlers;
+    protected IInputHandler<@NotNull ItemStack>[] inputHandlers;
+    protected IOutputHandler<@NotNull ItemStack>[] outputHandlers;
 
     protected TileEntityItemToItemFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, Map<RecipeError, Boolean> errorTypes) {
         super(blockProvider, pos, state, errorTypes);

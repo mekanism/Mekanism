@@ -1,18 +1,18 @@
 package mekanism.client.render.data;
 
-import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class FluidRenderData extends RenderData {
 
-    @Nonnull
+    @NotNull
     public final FluidStack fluidType;
 
-    public FluidRenderData(@Nonnull FluidStack fluidType) {
+    public FluidRenderData(@NotNull FluidStack fluidType) {
         this.fluidType = fluidType;
     }
 

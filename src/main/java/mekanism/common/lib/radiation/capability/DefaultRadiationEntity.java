@@ -1,6 +1,5 @@
 package mekanism.common.lib.radiation.capability;
 
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
@@ -24,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 public class DefaultRadiationEntity implements IRadiationEntity {
 
@@ -41,7 +41,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
     }
 
     @Override
-    public void update(@Nonnull LivingEntity entity) {
+    public void update(@NotNull LivingEntity entity) {
         if (entity instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             return;
         }
@@ -108,9 +108,9 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_ENTITY, defaultImpl));
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side) {
+        public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side) {
             return capabilityCache.getCapability(capability, side);
         }
 

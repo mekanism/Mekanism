@@ -1,16 +1,15 @@
 package mekanism.common.integration.computer.opencomputers2;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import li.cil.oc2.api.bus.device.rpc.RPCInvocation;
 import li.cil.oc2.api.bus.device.rpc.RPCMethod;
 import li.cil.oc2.api.bus.device.rpc.RPCParameter;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.integration.computer.BoundComputerMethod.SelectedMethodInfo;
 import mekanism.common.integration.computer.ComputerException;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class SelectedRPCMethod implements RPCMethod {
 
     private final RPCInvocation originalInvocation;
@@ -40,7 +39,7 @@ public class SelectedRPCMethod implements RPCMethod {
 
     @Nullable
     @Override
-    public Object invoke(@Nonnull RPCInvocation invocation) throws ComputerException {
+    public Object invoke(RPCInvocation invocation) throws ComputerException {
         OC2ArgumentWrapper argumentWrapper = new OC2ArgumentWrapper(invocation);
         if (originalInvocation.equals(invocation)) {
             //If the invocation matches (most likely this will be the case), just run our selected method

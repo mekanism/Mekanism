@@ -1,11 +1,11 @@
 package mekanism.common.capabilities.holder.energy;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
 
 public class EnergyContainerHelper {
 
@@ -24,7 +24,7 @@ public class EnergyContainerHelper {
         return new EnergyContainerHelper(new ConfigEnergyContainerHolder(facingSupplier, configSupplier));
     }
 
-    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@Nonnull CONTAINER container) {
+    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@NotNull CONTAINER container) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -38,7 +38,7 @@ public class EnergyContainerHelper {
         return container;
     }
 
-    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@Nonnull CONTAINER container, RelativeSide... sides) {
+    public <CONTAINER extends IEnergyContainer> CONTAINER addContainer(@NotNull CONTAINER container, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }

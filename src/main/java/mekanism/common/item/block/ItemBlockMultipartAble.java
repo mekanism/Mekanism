@@ -1,6 +1,5 @@
 package mekanism.common.item.block;
 
-import javax.annotation.Nonnull;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -14,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Thiakil on 19/11/2017.
@@ -28,7 +28,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
     /**
      * Reimplementation of onItemUse that will divert to MCMultipart placement functions if applicable
      */
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -62,7 +62,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+    public boolean placeBlock(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
         if (WorldUtils.isValidReplaceableBlock(context.getLevel(), context.getClickedPos())) {
             return super.placeBlock(context, state);
         }
