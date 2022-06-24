@@ -2,7 +2,6 @@ package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.render.MekanismRenderer;
@@ -17,6 +16,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements ContainerListener {
 
@@ -68,7 +68,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
@@ -104,7 +104,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
         MekanismRenderer.resetColor();
         RenderSystem.setShaderTexture(0, ANVIL_RESOURCE);
         blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
@@ -115,7 +115,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    public void slotChanged(@Nonnull AbstractContainerMenu container, int slotID, @Nonnull ItemStack stack) {
+    public void slotChanged(@NotNull AbstractContainerMenu container, int slotID, @NotNull ItemStack stack) {
         if (slotID == 0) {
             itemNameField.setText(stack.isEmpty() ? "" : stack.getHoverName().getString());
             itemNameField.setEditable(!stack.isEmpty());
@@ -124,6 +124,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    public void dataChanged(@Nonnull AbstractContainerMenu container, int slotID, int value) {
+    public void dataChanged(@NotNull AbstractContainerMenu container, int slotID, int value) {
     }
 }

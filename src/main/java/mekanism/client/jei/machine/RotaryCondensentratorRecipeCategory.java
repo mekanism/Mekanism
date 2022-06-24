@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import javax.annotation.Nonnull;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -19,6 +18,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import org.jetbrains.annotations.NotNull;
 
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<RotaryRecipe> {
 
@@ -43,7 +43,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, RotaryRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RotaryRecipe recipe, @NotNull IFocusGroup focusGroup) {
         if (condensentrating) {
             if (recipe.hasGasToFluid()) {
                 initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasGauge, recipe.getGasInput().getRepresentations());

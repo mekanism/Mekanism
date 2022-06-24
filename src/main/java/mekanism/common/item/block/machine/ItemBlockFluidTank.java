@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
@@ -75,6 +73,8 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
 
@@ -83,18 +83,18 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
         consumer.accept(RenderPropertiesProvider.fluidTank());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidTankTier getTier() {
         return Attribute.getTier(getBlock(), FluidTankTier.class);
     }
 
     @Override
-    protected void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         FluidTankTier tier = getTier();
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (fluidStack.isEmpty()) {
@@ -112,13 +112,13 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     @Override
-    protected void addTypeDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getBucketMode(stack))));
         super.addTypeDetails(stack, world, tooltip, flag);
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             FluidTankTier tier = Attribute.getTier(getBlock(), FluidTankTier.class);
@@ -139,15 +139,15 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         return context.getPlayer() == null || getBucketMode(context.getItemInHand()) ? InteractionResult.PASS : super.useOn(context);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getBucketMode(stack)) {
             if (SecurityUtils.INSTANCE.tryClaimItem(world, player, stack)) {
@@ -253,11 +253,11 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
         }
     }
 
-    private static boolean validFluid(@Nonnull IExtendedFluidTank fluidTank, @Nonnull FluidStack fluidStack) {
+    private static boolean validFluid(@NotNull IExtendedFluidTank fluidTank, @NotNull FluidStack fluidStack) {
         return !fluidStack.isEmpty() && fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL).isEmpty();
     }
 
-    private static IExtendedFluidTank getExtendedFluidTank(@Nonnull ItemStack stack) {
+    private static IExtendedFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
         Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = capability.get();
@@ -283,7 +283,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     @Override
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getBucketMode(stack);
@@ -294,9 +294,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getScrollTextComponent(@Nonnull ItemStack stack) {
+    public Component getScrollTextComponent(@NotNull ItemStack stack) {
         return MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(getBucketMode(stack), true));
     }
 
@@ -307,9 +307,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
         private FluidTankItemDispenseBehavior() {
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
+        public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
             if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getBucketMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 //Note: We don't use DispenseFluidContainer as we have more specific logic for determining if we want it to
@@ -401,10 +401,10 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                 return null;
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            protected InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
-                  @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank) {
+            protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
                 FluidStack fluidStack = fluidTank.getFluid();
                 BlockState endState = getState(fluidStack);
                 if (endState != null && fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() >= FluidType.BUCKET_VOLUME) {
@@ -428,10 +428,10 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
             }
         };
 
-        @Nonnull
+        @NotNull
         @Override
-        public final InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
-              @Nonnull InteractionHand hand, @Nonnull ItemStack stack) {
+        public final InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+              @NotNull InteractionHand hand, @NotNull ItemStack stack) {
             if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getBucketMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
@@ -446,18 +446,18 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
             return InteractionResult.PASS;
         }
 
-        @Nonnull
-        protected abstract InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
-              @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank);
+        @NotNull
+        protected abstract InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank);
     }
 
     public static class BasicDrainCauldronInteraction extends BasicCauldronInteraction {
 
         public static final BasicDrainCauldronInteraction WATER = new BasicDrainCauldronInteraction(Fluids.WATER) {
-            @Nonnull
+            @NotNull
             @Override
-            protected InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
-                  @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank) {
+            protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
                 if (state.getValue(LayeredCauldronBlock.LEVEL) == 3) {
                     //When emptying a water cauldron make sure it is full and just ignore handling of partial transfers
                     // as while we can handle them, they come with the added complication of deciding what value to give bottles
@@ -474,10 +474,10 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
             this.type = type;
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        protected InteractionResult interact(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player,
-              @Nonnull InteractionHand hand, @Nonnull ItemStack stack, @Nonnull IExtendedFluidTank fluidTank) {
+        protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
             FluidStack fluidStack = new FluidStack(type, FluidType.BUCKET_VOLUME);
             FluidStack remainder = fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL);
             if (remainder.isEmpty()) {

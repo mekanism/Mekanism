@@ -1,13 +1,13 @@
 package mekanism.common.network.to_client.container.property.list;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends ListPropertyData<FREQUENCY> {
 
-    public FrequencyListPropertyData(short property, @Nonnull List<FREQUENCY> values) {
+    public FrequencyListPropertyData(short property, @NotNull List<FREQUENCY> values) {
         super(property, ListType.FREQUENCY, values);
     }
 

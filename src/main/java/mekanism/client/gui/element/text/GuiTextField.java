@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
-import javax.annotation.Nonnull;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.SpecialColors;
@@ -17,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -188,7 +188,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         backgroundType.render(this, matrix);
         if (textScale == 1F) {
@@ -210,7 +210,7 @@ public class GuiTextField extends GuiElement {
         }
     }
 
-    private void renderTextField(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    private void renderTextField(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Apply matrix via render system so that it applies to the highlight
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();

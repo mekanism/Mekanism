@@ -1,7 +1,5 @@
 package mekanism.api.datagen.tag;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
@@ -12,6 +10,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper classes for implementing tag providers for various chemical types.
@@ -25,7 +25,7 @@ public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> 
         this.baseName = baseName;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return baseName + " Tags: " + modId;

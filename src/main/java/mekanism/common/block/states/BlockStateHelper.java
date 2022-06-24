@@ -3,8 +3,6 @@ package mekanism.common.block.states;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.ToIntFunction;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
@@ -23,6 +21,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockStateHelper {
 
@@ -36,7 +36,7 @@ public class BlockStateHelper {
 
     public static final BlockBehaviour.StatePredicate NEVER_PREDICATE = (state, world, pos) -> false;
 
-    public static BlockState getDefaultState(@Nonnull BlockState state) {
+    public static BlockState getDefaultState(@NotNull BlockState state) {
         Block block = state.getBlock();
         for (Attribute attr : Attribute.getAll(block)) {
             if (attr instanceof AttributeState atr) {
@@ -93,7 +93,7 @@ public class BlockStateHelper {
     }
 
     @Contract("_, null, _, _, _, _ -> null")
-    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nullable Player player, @Nonnull Direction face) {
+    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @Nullable Player player, @NotNull Direction face) {
         if (state == null) {
             return null;
         }

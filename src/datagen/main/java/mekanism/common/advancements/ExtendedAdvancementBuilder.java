@@ -1,7 +1,6 @@
 package mekanism.common.advancements;
 
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
@@ -17,6 +16,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class ExtendedAdvancementBuilder {
 

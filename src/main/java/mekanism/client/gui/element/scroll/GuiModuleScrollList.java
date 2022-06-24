@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
@@ -27,6 +25,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiModuleScrollList extends GuiScrollList {
 
@@ -114,7 +114,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (mouseX >= x + 1 && mouseX < x + barXShift - 1) {
             forEachModule((module, multipliedElement) -> {

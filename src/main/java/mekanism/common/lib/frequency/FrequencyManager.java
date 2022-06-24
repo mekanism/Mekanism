@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -20,6 +18,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FrequencyManager<FREQ extends Frequency> {
 
@@ -194,7 +194,7 @@ public class FrequencyManager<FREQ extends Frequency> {
             }
         }
 
-        public void load(@Nonnull CompoundTag nbtTags) {
+        public void load(@NotNull CompoundTag nbtTags) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
             ListTag list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
@@ -203,9 +203,9 @@ public class FrequencyManager<FREQ extends Frequency> {
             }
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public CompoundTag save(@Nonnull CompoundTag nbtTags) {
+        public CompoundTag save(@NotNull CompoundTag nbtTags) {
             if (ownerUUID != null) {
                 nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             }

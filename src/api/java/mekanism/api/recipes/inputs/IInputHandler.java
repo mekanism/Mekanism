@@ -1,17 +1,15 @@
 package mekanism.api.recipes.inputs;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Interface describing handling of an input.
  *
  * @param <INPUT> Type of input handled by this handler.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public interface IInputHandler<INPUT> {
 
     /**

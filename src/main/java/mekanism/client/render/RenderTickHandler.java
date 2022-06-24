@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
@@ -95,6 +94,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class RenderTickHandler {
 
@@ -458,7 +458,7 @@ public class RenderTickHandler {
         return vector4f;
     }
 
-    private void renderStatusBar(PoseStack matrix, @Nonnull Player player) {
+    private void renderStatusBar(PoseStack matrix, @NotNull Player player) {
         //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
         // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
         // to be more faded in color, and blinks to full color just before disappearing

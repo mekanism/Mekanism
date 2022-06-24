@@ -2,17 +2,13 @@ package mekanism.common.capabilities.heat;
 
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class MultiblockHeatCapacitor<MULTIBLOCK extends MultiblockData> extends VariableHeatCapacitor {
 
     protected final MULTIBLOCK multiblock;

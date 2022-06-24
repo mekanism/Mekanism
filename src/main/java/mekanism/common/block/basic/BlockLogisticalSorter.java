@@ -1,7 +1,5 @@
 package mekanism.common.block.basic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
@@ -24,6 +22,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSorter, Machine<TileEntityLogisticalSorter>> {
 
@@ -32,7 +32,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     }
 
     @Override
-    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @NotNull TileEntityMekanism tile) {
         if (tile instanceof TileEntityLogisticalSorter sorter && !sorter.hasConnectedInventory()) {
             BlockPos tilePos = tile.getBlockPos();
             for (Direction dir : EnumUtils.DIRECTIONS) {
@@ -45,11 +45,11 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public InteractionResult use(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-          @Nonnull BlockHitResult hit) {
+    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+          @NotNull BlockHitResult hit) {
         TileEntityLogisticalSorter tile = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
         if (tile == null) {
             return InteractionResult.PASS;
@@ -83,11 +83,11 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         return tile.openGui(player);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public BlockState updateShape(BlockState state, @Nonnull Direction dir, @Nonnull BlockState facingState, @Nonnull LevelAccessor world, @Nonnull BlockPos pos,
-          @Nonnull BlockPos neighborPos) {
+    public BlockState updateShape(BlockState state, @NotNull Direction dir, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos pos,
+          @NotNull BlockPos neighborPos) {
         if (!world.isClientSide()) {
             TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
             if (sorter != null && !sorter.hasConnectedInventory()) {

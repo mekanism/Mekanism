@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
 import mekanism.generators.common.MekanismGenerators;
@@ -17,6 +16,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelTurbine extends MekanismJavaModel {
 
@@ -77,11 +77,11 @@ public class ModelTurbine extends MekanismJavaModel {
         bladeSouth = BLADE_SOUTH.getFromRoot(root);
     }
 
-    public VertexConsumer getBuffer(@Nonnull MultiBufferSource renderer) {
+    public VertexConsumer getBuffer(@NotNull MultiBufferSource renderer) {
         return renderer.getBuffer(RENDER_TYPE);
     }
 
-    public void render(@Nonnull PoseStack matrix, VertexConsumer buffer, int light, int overlayLight, int index) {
+    public void render(@NotNull PoseStack matrix, VertexConsumer buffer, int light, int overlayLight, int index) {
         matrix.pushPose();
         matrix.mulPose(Vector3f.YP.rotationDegrees(index * 5));
         renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
@@ -95,12 +95,12 @@ public class ModelTurbine extends MekanismJavaModel {
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderBlade(@Nonnull PoseStack matrix, @Nonnull VertexConsumer vertexBuilder, int light, int overlayLight, ModelPart blade, float scaleX,
+    private void renderBlade(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, ModelPart blade, float scaleX,
           float scaleZ, double transX, double transZ) {
         matrix.pushPose();
         matrix.translate(transX, 0, transZ);

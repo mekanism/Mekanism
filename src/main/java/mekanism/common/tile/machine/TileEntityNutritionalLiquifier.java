@@ -2,12 +2,9 @@ package mekanism.common.tile.machine;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
@@ -60,6 +57,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToFluidRecipe> {
 
@@ -74,8 +73,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IExtendedFluidTank fluidTank;
 
-    private final IOutputHandler<@NonNull FluidStack> outputHandler;
-    private final IInputHandler<@NonNull ItemStack> inputHandler;
+    private final IOutputHandler<@NotNull FluidStack> outputHandler;
+    private final IInputHandler<@NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
@@ -105,7 +104,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         outputHandler = OutputHelper.getOutputHandler(fluidTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -113,7 +112,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -121,7 +120,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -170,7 +169,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public MekanismRecipeType<ItemStackToFluidRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
@@ -193,9 +192,9 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
               MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ItemStackToFluidRecipe> createNewCachedRecipe(@Nonnull ItemStackToFluidRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToFluidRecipe> createNewCachedRecipe(@NotNull ItemStackToFluidRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.itemToFluid(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
@@ -220,7 +219,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         return lastPasteItem.getStack();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -238,7 +237,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> fluidTank.deserializeNBT(nbt));
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> {

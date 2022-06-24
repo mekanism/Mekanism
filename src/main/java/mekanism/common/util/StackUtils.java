@@ -2,8 +2,6 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class StackUtils {
 
@@ -30,7 +30,7 @@ public final class StackUtils {
         return ItemHandlerHelper.copyStackWithSize(stack, size);
     }
 
-    public static List<ItemStack> getMergeRejects(@Nonnull List<IInventorySlot> orig, @Nonnull List<IInventorySlot> toAdd) {
+    public static List<ItemStack> getMergeRejects(@NotNull List<IInventorySlot> orig, @NotNull List<IInventorySlot> toAdd) {
         List<ItemStack> ret = new ArrayList<>();
         for (int i = 0; i < toAdd.size(); i++) {
             IInventorySlot toAddSlot = toAdd.get(i);
@@ -44,7 +44,7 @@ public final class StackUtils {
         return ret;
     }
 
-    public static void merge(@Nonnull List<IInventorySlot> orig, @Nonnull List<IInventorySlot> toAdd) {
+    public static void merge(@NotNull List<IInventorySlot> orig, @NotNull List<IInventorySlot> toAdd) {
         for (int i = 0; i < toAdd.size(); i++) {
             IInventorySlot toAddSlot = toAdd.get(i);
             if (!toAddSlot.isEmpty()) {

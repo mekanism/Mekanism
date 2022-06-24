@@ -3,24 +3,20 @@ package mekanism.common.inventory.slot.chemical;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.Capabilities;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class SlurryInventorySlot extends ChemicalInventorySlot<Slurry, SlurryStack> {
 
     @Nullable
@@ -35,19 +31,19 @@ public class SlurryInventorySlot extends ChemicalInventorySlot<Slurry, SlurrySta
      */
     public static SlurryInventorySlot drain(ISlurryTank slurryTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(slurryTank, "Slurry tank cannot be null");
-        Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(slurryTank, SlurryInventorySlot::getCapability);
+        Predicate<@NotNull ItemStack> insertPredicate = getDrainInsertPredicate(slurryTank, SlurryInventorySlot::getCapability);
         return new SlurryInventorySlot(slurryTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.SLURRY_HANDLER).isPresent(),
               listener, x, y);
     }
 
     //TODO: Implement creators as needed
-    private SlurryInventorySlot(ISlurryTank slurryTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    private SlurryInventorySlot(ISlurryTank slurryTank, Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert,
+          Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         this(slurryTank, () -> null, canExtract, canInsert, validator, listener, x, y);
     }
 
-    private SlurryInventorySlot(ISlurryTank slurryTank, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
-          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    private SlurryInventorySlot(ISlurryTank slurryTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
+          Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(slurryTank, worldSupplier, canExtract, canInsert, validator, listener, x, y);
     }
 

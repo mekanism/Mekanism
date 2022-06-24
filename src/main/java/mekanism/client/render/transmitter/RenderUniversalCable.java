@@ -1,7 +1,7 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.EnergyNetwork;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable> {
 
     public RenderUniversalCable(BlockEntityRendererProvider.Context context) {

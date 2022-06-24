@@ -1,12 +1,12 @@
 package mekanism.common.content.transporter;
 
-import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.lib.inventory.Finder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> implements IMaterialFilter<SorterMaterialFilter> {
 
@@ -72,14 +72,14 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
         return FilterType.SORTER_MATERIAL_FILTER;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getMaterialItem() {
         return materialItem;
     }
 
     @Override
-    public void setMaterialItem(@Nonnull ItemStack stack) {
+    public void setMaterialItem(@NotNull ItemStack stack) {
         materialItem = stack;
     }
 }

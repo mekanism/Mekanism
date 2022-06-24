@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.loot.table.BaseBlockLootTables;
 import mekanism.common.loot.table.BaseChestLootTables;
 import mekanism.common.loot.table.BaseEntityLootTables;
@@ -22,6 +20,8 @@ import net.minecraft.world.level.storage.loot.LootTable.Builder;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseLootProvider extends LootTableProvider {
 
@@ -32,7 +32,7 @@ public abstract class BaseLootProvider extends LootTableProvider {
         this.modid = modid;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return super.getName() + ": " + modid;
@@ -63,7 +63,7 @@ public abstract class BaseLootProvider extends LootTableProvider {
         return null;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootContextParamSet>> getTables() {
         ImmutableList.Builder<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootContextParamSet>> builder = new ImmutableList.Builder<>();
@@ -91,7 +91,7 @@ public abstract class BaseLootProvider extends LootTableProvider {
     }
 
     @Override
-    protected void validate(@Nonnull Map<ResourceLocation, LootTable> map, @Nonnull ValidationContext validationtracker) {
+    protected void validate(@NotNull Map<ResourceLocation, LootTable> map, @NotNull ValidationContext validationtracker) {
         //NO-OP, as we don't
     }
 }

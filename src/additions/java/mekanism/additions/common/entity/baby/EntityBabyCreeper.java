@@ -1,6 +1,5 @@
 package mekanism.additions.common.entity.baby;
 
-import javax.annotation.Nonnull;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -13,6 +12,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityBabyCreeper extends Creeper implements IBabyEntity {
 
@@ -40,7 +40,7 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
     }
 
     @Override
-    public void onSyncedDataUpdated(@Nonnull EntityDataAccessor<?> key) {
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
         if (IS_CHILD.equals(key)) {
             refreshDimensions();
         }
@@ -65,7 +65,7 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
     }
 
     @Override
-    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntityDimensions size) {
+    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
         return isBaby() ? 0.88F : super.getStandingEyeHeight(pose, size);
     }
 
@@ -84,7 +84,7 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);

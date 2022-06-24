@@ -1,6 +1,5 @@
 package mekanism.common.lib.math;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import net.minecraft.core.Direction;
@@ -13,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Pos3D - a way of performing operations on objects in a three-dimensional environment.
@@ -229,7 +229,7 @@ public class Pos3D extends Vec3 {
      *
      * @return rotated Pos3D
      */
-    @Nonnull
+    @NotNull
     @Override
     public Pos3D yRot(float yaw) {
         double yawRadians = Math.toRadians(yaw);
@@ -244,7 +244,7 @@ public class Pos3D extends Vec3 {
         return new Pos3D(xPos, y, zPos);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Pos3D xRot(float pitch) {
         double pitchRadians = Math.toRadians(pitch);
@@ -278,7 +278,7 @@ public class Pos3D extends Vec3 {
         return new Pos3D(xPos, yPos, zPos);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Pos3D multiply(Vec3 pos) {
         return multiply(pos.x, pos.y, pos.z);
@@ -293,13 +293,13 @@ public class Pos3D extends Vec3 {
      *
      * @return scaled Pos3D
      */
-    @Nonnull
+    @NotNull
     @Override
     public Pos3D multiply(double x, double y, double z) {
         return new Pos3D(this.x * x, this.y * y, this.z * z);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Pos3D scale(double scale) {
         return multiply(scale, scale, scale);
@@ -347,7 +347,7 @@ public class Pos3D extends Vec3 {
         return Math.acos(dot(pos2));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Pos3D normalize() {
         return new Pos3D(super.normalize());
@@ -375,7 +375,7 @@ public class Pos3D extends Vec3 {
         return new Pos3D(x, y, z);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String toString() {
         return "[Pos3D: " + x + ", " + y + ", " + z + "]";

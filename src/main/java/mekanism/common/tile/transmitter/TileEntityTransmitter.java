@@ -2,8 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
@@ -50,6 +48,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
 
@@ -90,20 +90,20 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         transmitter.onUpdateServer();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         return getTransmitter().getReducedUpdateTag(super.getReducedUpdateTag());
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         getTransmitter().handleUpdateTag(tag);
     }
 
     @Override
-    public void handleUpdatePacket(@Nonnull CompoundTag tag) {
+    public void handleUpdatePacket(@NotNull CompoundTag tag) {
         super.handleUpdatePacket(tag);
         //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
         requestModelDataUpdate();
@@ -111,13 +111,13 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         getTransmitter().read(nbt);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         getTransmitter().write(nbtTags);
     }
@@ -201,9 +201,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return null;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResult onSneakRightClick(@Nonnull Player player, @Nonnull Direction side) {
+    public InteractionResult onSneakRightClick(@NotNull Player player, @NotNull Direction side) {
         if (!isRemote()) {
             Direction hitSide = getSideLookingAt(player);
             if (hitSide == null) {
@@ -235,9 +235,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return getTransmitter().onConfigure(player, side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResult onRightClick(@Nonnull Player player, @Nonnull Direction side) {
+    public InteractionResult onRightClick(@NotNull Player player, @NotNull Direction side) {
         return getTransmitter().onRightClick(player, side);
     }
 
@@ -259,14 +259,14 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return list;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public AABB getRenderBoundingBox() {
         //If any of the block is in view, then allow rendering the contents
         return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IModelData getModelData() {
         TransmitterModelData data = initModelData();
@@ -281,13 +281,13 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         }
     }
 
-    @Nonnull
+    @NotNull
     protected TransmitterModelData initModelData() {
         return new TransmitterModelData();
     }
 
     @Override
-    public void onAlloyInteraction(Player player, ItemStack stack, @Nonnull AlloyTier tier) {
+    public void onAlloyInteraction(Player player, ItemStack stack, @NotNull AlloyTier tier) {
         if (getLevel() != null && getTransmitter().hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = getTransmitter().getTransmitterNetwork();
             List<Transmitter<?, ?, ?>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
@@ -363,12 +363,12 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         }
     }
 
-    @Nonnull
-    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+    @NotNull
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
         return current;
     }
 
-    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
     }
 
     protected InteractPredicate getExtractPredicate() {

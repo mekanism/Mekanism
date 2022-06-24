@@ -2,7 +2,6 @@ package mekanism.tools.common;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import mekanism.tools.common.advancements.ToolsAdvancements;
 import mekanism.tools.common.item.ItemMekanismArmor;
@@ -20,6 +19,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class ToolsAdvancementProvider extends BaseAdvancementProvider {
 
@@ -28,7 +28,7 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
         advancement(ToolsAdvancements.PAXEL)
               .display(ToolsItems.DIAMOND_PAXEL, FrameType.TASK)
               .orCriteria("any_paxel", getItems(item -> item instanceof ItemMekanismPaxel))

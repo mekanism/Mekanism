@@ -6,10 +6,10 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BasicHolder<TYPE> implements IHolder {
 
@@ -22,14 +22,14 @@ public class BasicHolder<TYPE> implements IHolder {
         this.facingSupplier = facingSupplier;
     }
 
-    protected void addSlotInternal(@Nonnull TYPE slot, RelativeSide... sides) {
+    protected void addSlotInternal(@NotNull TYPE slot, RelativeSide... sides) {
         inventorySlots.add(slot);
         for (RelativeSide side : sides) {
             directionalSlots.computeIfAbsent(side, k -> new ArrayList<>()).add(slot);
         }
     }
 
-    @Nonnull
+    @NotNull
     public List<TYPE> getSlots(@Nullable Direction side) {
         if (side == null || directionalSlots.isEmpty()) {
             //If we want the internal OR we have no side specification, give all of our slots

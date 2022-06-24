@@ -2,19 +2,19 @@ package mekanism.common.network.to_client.container.property.list;
 
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ListPropertyData<TYPE> extends PropertyData {
 
-    @Nonnull
+    @NotNull
     protected final List<TYPE> values;
     private final ListType listType;
 
-    public ListPropertyData(short property, ListType listType, @Nonnull List<TYPE> values) {
+    public ListPropertyData(short property, ListType listType, @NotNull List<TYPE> values) {
         super(PropertyType.LIST, property);
         this.listType = listType;
         this.values = values;

@@ -3,13 +3,10 @@ package mekanism.common.inventory.slot;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
@@ -19,13 +16,12 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
 
     /**
@@ -76,7 +72,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        Predicate<@NonNull ItemStack> insertPredicate = stack -> {
+        Predicate<@NotNull ItemStack> insertPredicate = stack -> {
             IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (itemEnergyHandler == null) {
                 return false;
@@ -108,13 +104,13 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     private final Supplier<Level> worldSupplier;
     private final IEnergyContainer energyContainer;
 
-    private EnergyInventorySlot(IEnergyContainer energyContainer, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    private EnergyInventorySlot(IEnergyContainer energyContainer, Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert,
+          Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         this(energyContainer, () -> null, canExtract, canInsert, validator, listener, x, y);
     }
 
-    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
-          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
+          Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         this.energyContainer = energyContainer;
         this.worldSupplier = worldSupplier;

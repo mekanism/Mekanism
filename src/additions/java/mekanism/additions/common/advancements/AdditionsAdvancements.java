@@ -1,9 +1,9 @@
 package mekanism.additions.common.advancements;
 
-import javax.annotation.Nullable;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.common.advancements.MekanismAdvancement;
 import mekanism.common.advancements.MekanismAdvancements;
+import org.jetbrains.annotations.Nullable;
 
 public class AdditionsAdvancements {
 

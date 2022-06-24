@@ -3,18 +3,18 @@ package mekanism.client.gui.element.slot;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.NonNullSupplier;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiSequencedSlotDisplay extends GuiElement {
 
     private List<ItemStack> iterStacks = Collections.emptyList();
     private int stackIndex;
     private int stackSwitchTicker;
-    @Nonnull
+    @NotNull
     private ItemStack renderStack = ItemStack.EMPTY;
     private final NonNullSupplier<List<ItemStack>> stackListSupplier;
 
@@ -49,7 +49,7 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         gui().renderItem(matrix, renderStack, x, y);
     }
@@ -61,7 +61,7 @@ public class GuiSequencedSlotDisplay extends GuiElement {
         stackIndex = -1;
     }
 
-    @Nonnull
+    @NotNull
     public ItemStack getRenderStack() {
         return renderStack;
     }

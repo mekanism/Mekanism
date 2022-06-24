@@ -1,7 +1,6 @@
 package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyCreeper;
 import mekanism.additions.client.render.entity.layer.BabyCreeperChargeLayer;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
@@ -9,6 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Copy of vanilla's creeper render, modified to use our own model/layer that is properly scaled
@@ -40,9 +40,9 @@ public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, ModelBabyC
         return (int) (f * 10.0F) % 2 == 0 ? 0.0F : Mth.clamp(f, 0.5F, 1.0F);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@Nonnull EntityBabyCreeper entity) {
+    public ResourceLocation getTextureLocation(@NotNull EntityBabyCreeper entity) {
         return CREEPER_TEXTURES;
     }
 }

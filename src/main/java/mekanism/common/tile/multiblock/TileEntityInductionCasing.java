@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixMultiblockData;
@@ -12,6 +11,7 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultiblockData> {
 
@@ -25,7 +25,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
         super(blockProvider, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public MatrixMultiblockData createMultiblock() {
         return new MatrixMultiblockData(this);

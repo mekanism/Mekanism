@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -64,6 +62,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -89,7 +89,7 @@ public class MekanismRenderer {
      *
      * @return the sprite, or missing sprite if not found
      */
-    public static TextureAtlasSprite getBaseFluidTexture(@Nonnull Fluid fluid, @Nonnull FluidTextureType type) {
+    public static TextureAtlasSprite getBaseFluidTexture(@NotNull Fluid fluid, @NotNull FluidTextureType type) {
         IFluidTypeRenderProperties properties = RenderProperties.get(fluid);
         ResourceLocation spriteLocation;
         if (type == FluidTextureType.STILL) {
@@ -100,7 +100,7 @@ public class MekanismRenderer {
         return getSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidTextureType type) {
+    public static TextureAtlasSprite getFluidTexture(@NotNull FluidStack fluidStack, @NotNull FluidTextureType type) {
         IFluidTypeRenderProperties properties = RenderProperties.get(fluidStack.getFluid());
         ResourceLocation spriteLocation;
         if (type == FluidTextureType.STILL) {
@@ -111,7 +111,7 @@ public class MekanismRenderer {
         return getSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getChemicalTexture(@Nonnull Chemical<?> chemical) {
+    public static TextureAtlasSprite getChemicalTexture(@NotNull Chemical<?> chemical) {
         return getSprite(chemical.getIcon());
     }
 
@@ -119,7 +119,7 @@ public class MekanismRenderer {
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(spriteLocation);
     }
 
-    public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
+    public static void prepFlowing(Model3D model, @NotNull FluidStack fluid) {
         SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.STILL), 16);
         SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.FLOWING), 8);
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
@@ -178,19 +178,19 @@ public class MekanismRenderer {
         }
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
           FaceDisplay faceDisplay) {
         renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, true);
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
           FaceDisplay faceDisplay, boolean fakeDisableDiffuse) {
         if (object != null) {
             RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, fakeDisableDiffuse);
         }
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
           FaceDisplay faceDisplay) {
         if (object != null) {
             RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, true);
@@ -246,26 +246,26 @@ public class MekanismRenderer {
         RenderSystem.setShaderColor(color.rf(), color.gf(), color.bf(), color.af());
     }
 
-    public static void color(@Nonnull FluidStack fluid) {
+    public static void color(@NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
             color(RenderProperties.get(fluid.getFluid()).getColorTint(fluid));
         }
     }
 
-    public static void color(@Nonnull ChemicalStack<?> chemicalStack) {
+    public static void color(@NotNull ChemicalStack<?> chemicalStack) {
         if (!chemicalStack.isEmpty()) {
             color(chemicalStack.getType());
         }
     }
 
-    public static void color(@Nonnull Chemical<?> chemical) {
+    public static void color(@NotNull Chemical<?> chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
             RenderSystem.setShaderColor(getRed(color), getGreen(color), getBlue(color), 1);
         }
     }
 
-    public static void color(@Nonnull BaseTier tier) {
+    public static void color(@NotNull BaseTier tier) {
         color(tier.getColor());
     }
 
@@ -283,11 +283,11 @@ public class MekanismRenderer {
         return getColorARGB(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2], alpha);
     }
 
-    public static int getColorARGB(@Nonnull FluidStack fluidStack) {
+    public static int getColorARGB(@NotNull FluidStack fluidStack) {
         return RenderProperties.get(fluidStack.getFluid()).getColorTint(fluidStack);
     }
 
-    public static int getColorARGB(@Nonnull FluidStack fluidStack, float fluidScale) {
+    public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {
         if (fluidStack.isEmpty()) {
             return -1;
         }
@@ -299,7 +299,7 @@ public class MekanismRenderer {
         return color;
     }
 
-    public static int getColorARGB(@Nonnull ChemicalStack<?> stack, float scale, boolean gaseous) {
+    public static int getColorARGB(@NotNull ChemicalStack<?> stack, float scale, boolean gaseous) {
         if (stack.isEmpty()) {
             return -1;
         }
@@ -324,7 +324,7 @@ public class MekanismRenderer {
         return argb;
     }
 
-    public static int calculateGlowLight(int combinedLight, @Nonnull FluidStack fluid) {
+    public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {
         return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluid().getFluidType().getLightLevel(fluid));
     }
 

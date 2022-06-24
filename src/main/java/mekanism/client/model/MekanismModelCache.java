@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IRobitSkinProvider;
@@ -19,6 +17,8 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismModelCache extends BaseModelCache {
 
@@ -77,7 +77,7 @@ public class MekanismModelCache extends BaseModelCache {
     }
 
     @Nullable
-    public BakedModel getRobitSkin(@Nonnull IRobitSkinProvider skin) {
+    public BakedModel getRobitSkin(@NotNull IRobitSkinProvider skin) {
         JSONModelData data = ROBIT_SKINS.get(skin.getRegistryName());
         return data == null ? BASE_ROBIT : data.getBakedModel();
     }

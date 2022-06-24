@@ -1,11 +1,11 @@
 package mekanism.common.capabilities.holder.fluid;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
 
 public class FluidTankHelper {
 
@@ -24,7 +24,7 @@ public class FluidTankHelper {
         return new FluidTankHelper(new ConfigFluidTankHolder(facingSupplier, configSupplier));
     }
 
-    public <TANK extends IExtendedFluidTank> TANK addTank(@Nonnull TANK tank) {
+    public <TANK extends IExtendedFluidTank> TANK addTank(@NotNull TANK tank) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -38,7 +38,7 @@ public class FluidTankHelper {
         return tank;
     }
 
-    public <TANK extends IExtendedFluidTank> TANK addTank(@Nonnull TANK tank, RelativeSide... sides) {
+    public <TANK extends IExtendedFluidTank> TANK addTank(@NotNull TANK tank, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }

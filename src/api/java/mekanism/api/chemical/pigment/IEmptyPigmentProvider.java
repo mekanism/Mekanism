@@ -1,11 +1,11 @@
 package mekanism.api.chemical.pigment;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.IEmptyStackProvider;
+import org.jetbrains.annotations.NotNull;
 
 public interface IEmptyPigmentProvider extends IEmptyStackProvider<Pigment, PigmentStack> {
 
-    @Nonnull
+    @NotNull
     @Override
     default PigmentStack getEmptyStack() {
         return PigmentStack.EMPTY;

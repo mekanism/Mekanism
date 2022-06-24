@@ -1,6 +1,5 @@
 package mekanism.additions.common.block;
 
-import javax.annotation.Nonnull;
 import mekanism.common.block.states.IFluidLogType;
 import mekanism.common.block.states.IStateFluidLoggable;
 import net.minecraft.core.BlockPos;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Helper interface for implementation of smashing vanilla's water logging system with our own fluid logging system to allow easier implementation on blocks that extend
@@ -25,19 +25,19 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
     EnumProperty<ExtendedFluidLogType> FLUID_LOGGED = EnumProperty.create("fluid_logged_extension", ExtendedFluidLogType.class);
 
     @Override
-    default boolean isValidFluid(@Nonnull Fluid fluid) {
+    default boolean isValidFluid(@NotNull Fluid fluid) {
         return fluid == Fluids.WATER || IStateFluidLoggable.super.isValidFluid(fluid);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     default EnumProperty<? extends IFluidLogType> getFluidLoggedProperty() {
         return FLUID_LOGGED;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    default FluidState getFluid(@Nonnull BlockState state) {
+    default FluidState getFluid(@NotNull BlockState state) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             return Fluids.WATER.defaultFluidState();
         }
@@ -45,12 +45,12 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
     }
 
     @Override
-    default boolean canPlaceLiquid(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
+    default boolean canPlaceLiquid(@NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
         return !state.getValue(BlockStateProperties.WATERLOGGED) && IStateFluidLoggable.super.canPlaceLiquid(world, pos, state, fluid);
     }
 
     @Override
-    default boolean placeLiquid(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
+    default boolean placeLiquid(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull FluidState fluidState) {
         Fluid fluid = fluidState.getType();
         if (canPlaceLiquid(world, pos, state, fluid)) {
             if (!world.isClientSide()) {
@@ -66,9 +66,9 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    default ItemStack pickupBlock(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    default ItemStack pickupBlock(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, false), Block.UPDATE_ALL);
             return new ItemStack(Items.WATER_BUCKET);

@@ -1,8 +1,6 @@
 package mekanism.common.capabilities.resolver.manager;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -34,11 +32,13 @@ import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyInfusionHand
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyPigmentHandler;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxySlurryHandler;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class to make reading instead of having as messy generics
  */
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ChemicalHandlerManager<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
       HANDLER extends IChemicalHandler<CHEMICAL, STACK>, SIDED_HANDLER extends HANDLER> extends CapabilityHandlerManager<IChemicalTankHolder<CHEMICAL, STACK, TANK>,
       TANK, HANDLER, SIDED_HANDLER> {
@@ -50,28 +50,28 @@ public class ChemicalHandlerManager<CHEMICAL extends Chemical<CHEMICAL>, STACK e
 
     public static class GasHandlerManager extends ChemicalHandlerManager<Gas, GasStack, IGasTank, IGasHandler, ISidedGasHandler> {
 
-        public GasHandlerManager(@Nullable IChemicalTankHolder<Gas, GasStack, IGasTank> holder, @Nonnull ISidedGasHandler baseHandler) {
+        public GasHandlerManager(@Nullable IChemicalTankHolder<Gas, GasStack, IGasTank> holder, @NotNull ISidedGasHandler baseHandler) {
             super(holder, baseHandler, Capabilities.GAS_HANDLER, ProxyGasHandler::new);
         }
     }
 
     public static class InfusionHandlerManager extends ChemicalHandlerManager<InfuseType, InfusionStack, IInfusionTank, IInfusionHandler, ISidedInfusionHandler> {
 
-        public InfusionHandlerManager(@Nullable IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> holder, @Nonnull ISidedInfusionHandler baseHandler) {
+        public InfusionHandlerManager(@Nullable IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> holder, @NotNull ISidedInfusionHandler baseHandler) {
             super(holder, baseHandler, Capabilities.INFUSION_HANDLER, ProxyInfusionHandler::new);
         }
     }
 
     public static class PigmentHandlerManager extends ChemicalHandlerManager<Pigment, PigmentStack, IPigmentTank, IPigmentHandler, ISidedPigmentHandler> {
 
-        public PigmentHandlerManager(@Nullable IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> holder, @Nonnull ISidedPigmentHandler baseHandler) {
+        public PigmentHandlerManager(@Nullable IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> holder, @NotNull ISidedPigmentHandler baseHandler) {
             super(holder, baseHandler, Capabilities.PIGMENT_HANDLER, ProxyPigmentHandler::new);
         }
     }
 
     public static class SlurryHandlerManager extends ChemicalHandlerManager<Slurry, SlurryStack, ISlurryTank, ISlurryHandler, ISidedSlurryHandler> {
 
-        public SlurryHandlerManager(@Nullable IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> holder, @Nonnull ISidedSlurryHandler baseHandler) {
+        public SlurryHandlerManager(@Nullable IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> holder, @NotNull ISidedSlurryHandler baseHandler) {
             super(holder, baseHandler, Capabilities.SLURRY_HANDLER, ProxySlurryHandler::new);
         }
     }

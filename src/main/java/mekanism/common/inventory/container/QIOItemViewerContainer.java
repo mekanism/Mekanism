@@ -8,8 +8,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -45,6 +43,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -157,7 +157,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void openInventory(@Nonnull Inventory inv) {
+    protected void openInventory(@NotNull Inventory inv) {
         super.openInventory(inv);
         if (isRemote()) {
             Mekanism.packetHandler().sendToServer(PacketGuiItemDataRequest.qioItemViewer());
@@ -165,7 +165,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void closeInventory(@Nonnull Player player) {
+    protected void closeInventory(@NotNull Player player) {
         super.closeInventory(player);
         if (!player.level.isClientSide()) {
             QIOFrequency freq = getFrequency();
@@ -229,9 +229,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return craftingGridSlots;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+    public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
         if (currentSlot == null) {
             return ItemStack.EMPTY;

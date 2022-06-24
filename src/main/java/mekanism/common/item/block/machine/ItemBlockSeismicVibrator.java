@@ -1,10 +1,10 @@
 package mekanism.common.item.block.machine;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.prefab.BlockTile;
 import net.minecraftforge.client.IItemRenderProperties;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockSeismicVibrator extends ItemBlockMachine {
 
@@ -13,7 +13,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockMachine {
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
         consumer.accept(RenderPropertiesProvider.seismicVibrator());
     }
 }

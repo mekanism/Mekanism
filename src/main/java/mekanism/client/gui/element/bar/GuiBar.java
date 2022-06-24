@@ -3,8 +3,6 @@ package mekanism.client.gui.element.bar;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -16,6 +14,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement implements ISupportsWarning<GuiBar<INFO>> {
 
@@ -33,7 +33,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     }
 
     @Override
-    public GuiBar<INFO> warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+    public GuiBar<INFO> warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
         this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
@@ -43,7 +43,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         renderExtendedTexture(matrix, BAR, 2, 2);
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
@@ -57,7 +57,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         drawContentsChecked(matrix, mouseX, mouseY, partialTicks, handler.getLevel(), warning);
     }
 
-    void drawContentsChecked(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
+    void drawContentsChecked(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         //If there are any contents render them
         if (handlerLevel > 0) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -82,7 +82,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     protected abstract void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel);
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         Component tooltip = handler.getTooltip();
         if (tooltip != null) {

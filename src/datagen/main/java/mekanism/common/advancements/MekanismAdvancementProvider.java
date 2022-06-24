@@ -2,7 +2,6 @@ package mekanism.common.advancements;
 
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.triggers.AlloyUpgradeTrigger;
@@ -36,6 +35,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
@@ -45,7 +45,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
     //TODO - 1.19: xp rewards for any of these?
     @Override
-    protected void registerAdvancements(@Nonnull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
               .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), EntityPredicate.Composite.ANY))

@@ -8,10 +8,12 @@ import dan200.computercraft.api.lua.MethodResult;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.BoundComputerMethod.SelectedMethodInfo;
+import org.jetbrains.annotations.NotNull;
 
+@NothingNullByDefault
 public abstract class CCMethodCaller {
 
     private final BoundComputerMethod[] methods;
@@ -30,15 +32,13 @@ public abstract class CCMethodCaller {
 
     protected abstract String getCallerType();
 
-    @Nonnull
     public String[] getMethodNames() {
         return methodNames;
     }
 
     //Note: This method intentionally matches the signature for IDynamicLuaObject, but this class doesn't implement it to make sure
     // the peripheral doesn't have issues if something is doing an instance check. (There may not be any cases this is a problem)
-    @Nonnull
-    public MethodResult callMethod(@Nonnull ILuaContext context, int methodIndex, @Nonnull IArguments arguments) throws LuaException {
+    public MethodResult callMethod(ILuaContext context, int methodIndex, IArguments arguments) throws LuaException {
         if (methodIndex < 0 || methodIndex >= methods.length) {
             throw new LuaException(String.format(Locale.ROOT, "Method index '%d' is out of bounds. This %s only has '%d' methods.", methodIndex, getCallerType(),
                   methods.length));
@@ -71,7 +71,7 @@ public abstract class CCMethodCaller {
             this.task = task;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public MethodResult resume(Object[] response) throws LuaException {
             if (response.length >= 3 && response[1] instanceof Number number && response[2] instanceof Boolean bool) {

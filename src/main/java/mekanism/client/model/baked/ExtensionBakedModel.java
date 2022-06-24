@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import net.minecraft.client.renderer.RenderType;
@@ -26,15 +25,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class ExtensionBakedModel<T> implements BakedModel {
 
     protected final BakedModel original;
 
     private final LoadingCache<QuadsKey<T>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
-        @Nonnull
         @Override
-        public List<BakedQuad> load(@Nonnull QuadsKey<T> key) {
+        public List<BakedQuad> load(QuadsKey<T> key) {
             return createQuads(key);
         }
     });
@@ -44,10 +45,9 @@ public class ExtensionBakedModel<T> implements BakedModel {
         this.original = original;
     }
 
-    @Nonnull
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return original.getQuads(state, side, rand);
     }
 
@@ -71,14 +71,12 @@ public class ExtensionBakedModel<T> implements BakedModel {
         return original.isCustomRenderer();
     }
 
-    @Nonnull
     @Override
     @Deprecated
     public TextureAtlasSprite getParticleIcon() {
         return original.getParticleIcon();
     }
 
-    @Nonnull
     @Override
     public ItemOverrides getOverrides() {
         return original.getOverrides();
@@ -89,7 +87,6 @@ public class ExtensionBakedModel<T> implements BakedModel {
         return original.handlePerspective(cameraTransformType, mat);
     }
 
-    @Nonnull
     @Override
     @Deprecated
     public ItemTransforms getTransforms() {
@@ -114,9 +111,8 @@ public class ExtensionBakedModel<T> implements BakedModel {
         return ret;
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData data) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, IModelData data) {
         List<BakedQuad> quads = original.getQuads(state, side, rand, data);
         QuadsKey<T> key = createKey(new QuadsKey<>(state, side, rand, MinecraftForgeClient.getRenderType(), quads), data);
         if (key == null) {
@@ -130,7 +126,6 @@ public class ExtensionBakedModel<T> implements BakedModel {
         return original.isLayered();
     }
 
-    @Nonnull
     @Override
     public List<Pair<BakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
         //Cache the remappings so then the inner wrapped ones can cache their quads
@@ -163,10 +158,9 @@ public class ExtensionBakedModel<T> implements BakedModel {
             this.transform = transform;
         }
 
-        @Nonnull
         @Override
         @Deprecated
-        public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull RandomSource rand) {
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand) {
             return QuadUtils.transformBakedQuads(original.getQuads(state, side, rand), transform);
         }
 
@@ -199,10 +193,13 @@ public class ExtensionBakedModel<T> implements BakedModel {
         private final RandomSource random;
         private final RenderType layer;
         private final List<BakedQuad> quads;
+        @Nullable
         private QuadTransformation transformation;
 
+        @Nullable
         private T data;
         private int dataHash;
+        @Nullable
         private BiPredicate<T, T> equality;
 
         public QuadsKey(@Nullable BlockState state, @Nullable Direction side, RandomSource random, RenderType layer, List<BakedQuad> quads) {
@@ -247,10 +244,12 @@ public class ExtensionBakedModel<T> implements BakedModel {
             return quads;
         }
 
+        @Nullable
         public QuadTransformation getTransformation() {
             return transformation;
         }
 
+        @Nullable
         public T getData() {
             return data;
         }
@@ -272,7 +271,7 @@ public class ExtensionBakedModel<T> implements BakedModel {
             } else if (transformation != null && !transformation.equals(other.transformation)) {
                 return false;
             }
-            return data == null || equality.test(data, (T) other.getData());
+            return data == null || equality != null && equality.test(data, (T) other.getData());
         }
     }
 }

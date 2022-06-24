@@ -1,8 +1,8 @@
 package mekanism.generators.common.block.attribute;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 public class AttributeStateFissionPortMode implements AttributeState {
 
@@ -30,7 +31,7 @@ public class AttributeStateFissionPortMode implements AttributeState {
     }
 
     @Override
-    public BlockState getDefaultState(@Nonnull BlockState state) {
+    public BlockState getDefaultState(@NotNull BlockState state) {
         return state.setValue(modeProperty, FissionPortMode.INPUT);
     }
 
@@ -39,6 +40,7 @@ public class AttributeStateFissionPortMode implements AttributeState {
         properties.add(modeProperty);
     }
 
+    @NothingNullByDefault
     public enum FissionPortMode implements StringRepresentable, IHasTextComponent, IIncrementalEnum<FissionPortMode> {
         INPUT("input", GeneratorsLang.FISSION_PORT_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_WASTE("output_waste", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, EnumColor.BROWN),
@@ -56,7 +58,6 @@ public class AttributeStateFissionPortMode implements AttributeState {
             this.color = color;
         }
 
-        @Nonnull
         @Override
         public String getSerializedName() {
             return name;
@@ -71,7 +72,6 @@ public class AttributeStateFissionPortMode implements AttributeState {
             return MathUtils.getByIndexMod(MODES, index);
         }
 
-        @Nonnull
         @Override
         public FissionPortMode byIndex(int index) {
             return byIndexStatic(index);

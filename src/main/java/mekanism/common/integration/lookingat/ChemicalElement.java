@@ -1,6 +1,5 @@
 package mekanism.common.integration.lookingat;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
@@ -8,14 +7,15 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public class ChemicalElement extends LookingAtElement {
 
-    @Nonnull
+    @NotNull
     protected final ChemicalStack<?> stored;
     protected final long capacity;
 
-    public ChemicalElement(@Nonnull ChemicalStack<?> stored, long capacity) {
+    public ChemicalElement(@NotNull ChemicalStack<?> stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;
         this.capacity = capacity;

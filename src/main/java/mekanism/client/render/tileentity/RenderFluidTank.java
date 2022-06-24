@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -21,8 +20,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
 
     private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
@@ -64,7 +64,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return ProfilerConstants.FLUID_TANK;
     }
 
-    private Model3D getValveModel(@Nonnull FluidStack fluid, int stage) {
+    private Model3D getValveModel(@NotNull FluidStack fluid, int stage) {
         if (cachedValveFluids.containsKey(fluid) && cachedValveFluids.get(fluid).containsKey(stage)) {
             return cachedValveFluids.get(fluid).get(stage);
         }
@@ -83,7 +83,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return model;
     }
 
-    private Model3D getFluidModel(@Nonnull FluidStack fluid, int stage) {
+    private Model3D getFluidModel(@NotNull FluidStack fluid, int stage) {
         if (cachedCenterFluids.containsKey(fluid) && cachedCenterFluids.get(fluid).containsKey(stage)) {
             return cachedCenterFluids.get(fluid).get(stage);
         }

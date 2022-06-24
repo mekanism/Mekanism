@@ -2,14 +2,11 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -64,6 +61,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<RotaryRecipe> implements IHasMode {
 
@@ -93,10 +92,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
      */
     public boolean mode;
 
-    private final IOutputHandler<@NonNull GasStack> gasOutputHandler;
-    private final IOutputHandler<@NonNull FluidStack> fluidOutputHandler;
-    private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+    private final IOutputHandler<@NotNull GasStack> gasOutputHandler;
+    private final IOutputHandler<@NotNull FluidStack> fluidOutputHandler;
+    private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
+    private final IInputHandler<@NotNull GasStack> gasInputHandler;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
     private int baselineMaxOperations = 1;
@@ -138,7 +137,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         fluidOutputHandler = OutputHelper.getOutputHandler(fluidTank, NOT_ENOUGH_SPACE_FLUID_OUTPUT_ERROR);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -148,11 +147,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return builder.build();
     }
 
-    private boolean isValidGas(@Nonnull Gas gas) {
+    private boolean isValidGas(@NotNull Gas gas) {
         return getRecipeType().getInputCache().containsInput(level, gas.getStack(1));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -161,11 +160,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return builder.build();
     }
 
-    private boolean isValidFluid(@Nonnull FluidStack fluidStack) {
+    private boolean isValidFluid(@NotNull FluidStack fluidStack) {
         return getRecipeType().getInputCache().containsInput(level, fluidStack);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -173,7 +172,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -211,7 +210,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         setChanged();
     }
 
-    @Nonnull
+    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage")
     public FloatingLong getEnergyUsed() {
         return clientEnergyUsed;
@@ -242,7 +241,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return type == SubstanceType.FLUID || type == SubstanceType.GAS;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<RotaryRecipe, RotaryInputRecipeCache> getRecipeType() {
         return MekanismRecipeType.ROTARY;
@@ -259,9 +258,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return energyContainer;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<RotaryRecipe> createNewCachedRecipe(@Nonnull RotaryRecipe recipe, int cacheIndex) {
+    public CachedRecipe<RotaryRecipe> createNewCachedRecipe(@NotNull RotaryRecipe recipe, int cacheIndex) {
         return new RotaryCachedRecipe(recipe, recheckAllRecipeErrors, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, () -> mode)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))

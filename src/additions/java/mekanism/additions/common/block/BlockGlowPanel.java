@@ -1,6 +1,5 @@
 package mekanism.additions.common.block;
 
-import javax.annotation.Nonnull;
 import mekanism.additions.common.registries.AdditionsBlockTypes;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColoredBlock {
 
@@ -43,11 +43,11 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
         return color;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
-          @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+          @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         if (facing.getOpposite() == Attribute.get(state, AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
@@ -56,7 +56,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
 
     @Override
     @Deprecated
-    public boolean canSurvive(@Nonnull BlockState state, @Nonnull LevelReader world, @Nonnull BlockPos pos) {
+    public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
         Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);

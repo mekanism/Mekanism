@@ -5,30 +5,28 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Extension of FluidInventorySlot to make it be able to handle raw items as fuels
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
-    public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue,
-          Int2ObjectFunction<@NonNull FluidStack> fuelCreator, @Nullable IContentsListener listener, int x, int y) {
+    public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue,
+          Int2ObjectFunction<@NotNull FluidStack> fuelCreator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
@@ -65,11 +63,11 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         }, listener, x, y);
     }
 
-    private final Int2ObjectFunction<@NonNull FluidStack> fuelCreator;
-    private final ToIntFunction<@NonNull ItemStack> fuelValue;
+    private final Int2ObjectFunction<@NotNull FluidStack> fuelCreator;
+    private final ToIntFunction<@NotNull ItemStack> fuelValue;
 
-    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue, Int2ObjectFunction<@NonNull FluidStack> fuelCreator,
-          Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue, Int2ObjectFunction<@NotNull FluidStack> fuelCreator,
+          Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(fluidTank, canExtract, canInsert, alwaysTrue, listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a fluid handler on the filled item
         // then we don't have it all of a sudden being invalid after it is emptied

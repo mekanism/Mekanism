@@ -3,11 +3,11 @@ package mekanism.common.capabilities.holder.energy;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.capabilities.holder.ProxiedHolder;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ProxiedEnergyContainerHolder extends ProxiedHolder implements IEnergyContainerHolder {
 
@@ -24,7 +24,7 @@ public class ProxiedEnergyContainerHolder extends ProxiedHolder implements IEner
         this.containerFunction = containerFunction;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return containerFunction.apply(side);

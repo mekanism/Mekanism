@@ -1,9 +1,9 @@
 package mekanism.common.block.attribute;
 
-import javax.annotation.Nonnull;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.sounds.SoundEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class AttributeSound implements Attribute {
 
@@ -13,7 +13,7 @@ public class AttributeSound implements Attribute {
         this.soundRegistrar = soundRegistrar;
     }
 
-    @Nonnull
+    @NotNull
     public SoundEvent getSoundEvent() {
         return HolidayManager.filterSound(soundRegistrar).get();
     }

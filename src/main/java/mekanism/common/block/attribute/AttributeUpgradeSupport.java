@@ -1,8 +1,8 @@
 package mekanism.common.block.attribute;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
+import org.jetbrains.annotations.NotNull;
 
-public record AttributeUpgradeSupport(@Nonnull Set<Upgrade> supportedUpgrades) implements Attribute {
+public record AttributeUpgradeSupport(@NotNull Set<Upgrade> supportedUpgrades) implements Attribute {
 }

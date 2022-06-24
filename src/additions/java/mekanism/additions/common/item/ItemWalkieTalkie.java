@@ -1,7 +1,6 @@
 package mekanism.additions.common.item;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.api.NBTConstants;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemWalkieTalkie extends Item implements IModeItem {
 
@@ -26,7 +26,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(OnOff.of(getOn(stack), true).getTextComponent());
         tooltip.add(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, getChannel(stack)));
         if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
@@ -34,9 +34,9 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             setOn(itemStack, !getOn(itemStack));
@@ -46,7 +46,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged) {
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, @NotNull ItemStack newStack, boolean slotChanged) {
         return !ItemStack.isSame(oldStack, newStack);
     }
 
@@ -72,7 +72,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     }
 
     @Override
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         if (getOn(stack)) {
             int channel = getChannel(stack);
             int newChannel = Math.floorMod(channel + shift - 1, 8) + 1;
@@ -85,9 +85,9 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getScrollTextComponent(@Nonnull ItemStack stack) {
+    public Component getScrollTextComponent(@NotNull ItemStack stack) {
         return AdditionsLang.CHANNEL.translateColored(EnumColor.GRAY, getChannel(stack));
     }
 }

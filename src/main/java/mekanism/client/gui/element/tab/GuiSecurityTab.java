@@ -2,7 +2,6 @@ package mekanism.client.gui.element.tab;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
@@ -27,6 +26,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabilityProvider>> {
@@ -46,7 +46,7 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
         this(gui, () -> provider, y, null);
     }
 
-    public GuiSecurityTab(IGuiWrapper gui, @Nonnull InteractionHand hand) {
+    public GuiSecurityTab(IGuiWrapper gui, @NotNull InteractionHand hand) {
         this(gui, () -> minecraft.player.getItemInHand(hand), 34, hand);
     }
 
@@ -70,7 +70,7 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         ICapabilityProvider provider = dataSource.get();
         if (provider != null) {

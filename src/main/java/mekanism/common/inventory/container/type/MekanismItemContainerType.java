@@ -1,7 +1,5 @@
 package mekanism.common.inventory.container.type;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekanismItemContainerFactory;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,6 +10,8 @@ import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.IContainerFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismItemContainerType<ITEM extends Item, CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<ITEM, CONTAINER,
       IMekanismItemContainerFactory<ITEM, CONTAINER>> {
@@ -46,7 +46,7 @@ public class MekanismItemContainerType<ITEM extends Item, CONTAINER extends Abst
         return null;
     }
 
-    @Nonnull
+    @NotNull
     private static <ITEM extends Item> ItemStack getStackFromBuffer(FriendlyByteBuf buf, Class<ITEM> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");

@@ -1,7 +1,6 @@
 package mekanism.tools.common;
 
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.ForgeRegistryTagBuilder;
@@ -13,6 +12,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class ToolsTagProvider extends BaseTagProvider {
 

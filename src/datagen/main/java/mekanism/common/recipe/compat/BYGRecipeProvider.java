@@ -1,7 +1,7 @@
 package mekanism.common.recipe.compat;
 
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -26,7 +26,7 @@ import potionstudios.byg.common.block.BYGWoodTypes;
 import potionstudios.byg.common.item.BYGBoatItem;
 import potionstudios.byg.reg.RegistryObject;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class BYGRecipeProvider extends CompatRecipeProvider {
 
     public BYGRecipeProvider() {

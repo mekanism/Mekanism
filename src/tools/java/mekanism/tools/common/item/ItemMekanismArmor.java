@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.lib.attribute.AttributeCache;
@@ -28,6 +26,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAttributeRefresher {
 
@@ -48,12 +48,12 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getRepairMaterial() {
         return getMaterial().getRepairIngredient();
@@ -83,9 +83,9 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
         return material.getDurabilityForSlot(getSlot()) > 0;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, @Nonnull ItemStack stack) {
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
         return slot == getSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
     }
 

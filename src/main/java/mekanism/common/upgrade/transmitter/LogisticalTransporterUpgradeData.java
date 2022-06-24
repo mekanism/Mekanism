@@ -1,10 +1,10 @@
 package mekanism.common.upgrade.transmitter;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.transmitter.ConnectionType;
+import org.jetbrains.annotations.Nullable;
 
 public class LogisticalTransporterUpgradeData extends TransmitterUpgradeData {
 

@@ -1,11 +1,11 @@
 package mekanism.common.lib.security;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.tile.component.TileComponentSecurity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface ISecurityTile extends ISecurityObject {
 
@@ -29,7 +29,7 @@ public interface ISecurityTile extends ISecurityObject {
         return security == null ? null : security.getOwnerName();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     default SecurityMode getSecurityMode() {
         TileComponentSecurity security = getSecurity();
@@ -37,7 +37,7 @@ public interface ISecurityTile extends ISecurityObject {
     }
 
     @Override
-    default void setSecurityMode(@Nonnull SecurityMode mode) {
+    default void setSecurityMode(@NotNull SecurityMode mode) {
         TileComponentSecurity security = getSecurity();
         if (security != null) {
             security.setMode(mode);

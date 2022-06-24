@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -20,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
@@ -47,9 +47,9 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
     public ItemRegistryObject<Item> register(String name, EnumColor color) {
         return register(name, properties -> new Item(properties) {
-            @Nonnull
+            @NotNull
             @Override
-            public Component getName(@Nonnull ItemStack stack) {
+            public Component getName(@NotNull ItemStack stack) {
                 return TextComponentUtil.build(color, super.getName(stack));
             }
         });

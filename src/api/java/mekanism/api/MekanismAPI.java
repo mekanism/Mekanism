@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 public class MekanismAPI {
@@ -44,25 +45,25 @@ public class MekanismAPI {
 
     public static final Logger logger = LogUtils.getLogger();
 
-    @Nonnull
-    private static <T> Lazy<ResourceKey<? extends Registry<T>>> registryKey(@SuppressWarnings("unused") @Nonnull Class<T> compileTimeTypeValidator, @Nonnull String path) {
+    @NotNull
+    private static <T> Lazy<ResourceKey<? extends Registry<T>>> registryKey(@SuppressWarnings("unused") @NotNull Class<T> compileTimeTypeValidator, @NotNull String path) {
         return Lazy.of(() -> ResourceKey.createRegistryKey(new ResourceLocation(MEKANISM_MODID, path)));
     }
 
     //Note: These fields are not directly exposed and are instead exposed via getters as they need to be lazy so that they
     // don't end up causing a crash while running tests due to class loading
-    @Nonnull
+    @NotNull
     private static final Lazy<ResourceKey<? extends Registry<Gas>>> GAS_REGISTRY_NAME = registryKey(Gas.class, "gas");
-    @Nonnull
+    @NotNull
     private static final Lazy<ResourceKey<? extends Registry<InfuseType>>> INFUSE_TYPE_REGISTRY_NAME = registryKey(InfuseType.class, "infuse_type");
-    @Nonnull
+    @NotNull
     private static final Lazy<ResourceKey<? extends Registry<Pigment>>> PIGMENT_REGISTRY_NAME = registryKey(Pigment.class, "pigment");
-    @Nonnull
+    @NotNull
     private static final Lazy<ResourceKey<? extends Registry<Slurry>>> SLURRY_REGISTRY_NAME = registryKey(Slurry.class, "slurry");
-    @Nonnull
+    @NotNull
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static final Lazy<ResourceKey<? extends Registry<ModuleData<?>>>> MODULE_REGISTRY_NAME = registryKey((Class) ModuleData.class, "module");
-    @Nonnull
+    @NotNull
     private static final Lazy<ResourceKey<? extends Registry<RobitSkin>>> ROBIT_SKIN_REGISTRY_NAME = registryKey(RobitSkin.class, "robit_skin");
 
     private static IForgeRegistry<Gas> GAS_REGISTRY;
@@ -83,22 +84,22 @@ public class MekanismAPI {
     /**
      * Empty Gas instance.
      */
-    @Nonnull
+    @NotNull
     public static final Gas EMPTY_GAS = new EmptyGas();
     /**
      * Empty Infuse Type instance.
      */
-    @Nonnull
+    @NotNull
     public static final InfuseType EMPTY_INFUSE_TYPE = new EmptyInfuseType();
     /**
      * Empty Pigment instance.
      */
-    @Nonnull
+    @NotNull
     public static final Pigment EMPTY_PIGMENT = new EmptyPigment();
     /**
      * Empty Slurry instance.
      */
-    @Nonnull
+    @NotNull
     public static final Slurry EMPTY_SLURRY = new EmptySlurry();
 
     /**
@@ -109,7 +110,7 @@ public class MekanismAPI {
      * @apiNote When registering {@link Gas gases} using {@link net.minecraftforge.registries.DeferredRegister<Gas>}, use this method to get access to the
      * {@link ResourceKey}.
      */
-    @Nonnull
+    @NotNull
     public static ResourceKey<? extends Registry<Gas>> gasRegistryName() {
         return GAS_REGISTRY_NAME.get();
     }
@@ -122,7 +123,7 @@ public class MekanismAPI {
      * @apiNote When registering {@link InfuseType infuse types} using {@link net.minecraftforge.registries.DeferredRegister<InfuseType>}, use this method to get access
      * to the {@link ResourceKey}.
      */
-    @Nonnull
+    @NotNull
     public static ResourceKey<? extends Registry<InfuseType>> infuseTypeRegistryName() {
         return INFUSE_TYPE_REGISTRY_NAME.get();
     }
@@ -135,7 +136,7 @@ public class MekanismAPI {
      * @apiNote When registering {@link Pigment pigments} using {@link net.minecraftforge.registries.DeferredRegister<Pigment>}, use this method to get access to the
      * {@link ResourceKey}.
      */
-    @Nonnull
+    @NotNull
     public static ResourceKey<? extends Registry<Pigment>> pigmentRegistryName() {
         return PIGMENT_REGISTRY_NAME.get();
     }
@@ -148,7 +149,7 @@ public class MekanismAPI {
      * @apiNote When registering {@link Slurry sluries} using {@link net.minecraftforge.registries.DeferredRegister<Slurry>}, use this method to get access to the
      * {@link ResourceKey}.
      */
-    @Nonnull
+    @NotNull
     public static ResourceKey<? extends Registry<Slurry>> slurryRegistryName() {
         return SLURRY_REGISTRY_NAME.get();
     }
@@ -161,7 +162,7 @@ public class MekanismAPI {
      * @apiNote When registering {@link ModuleData modules} using {@link net.minecraftforge.registries.DeferredRegister<ModuleData>}, use this method to get access to the
      * {@link ResourceKey}.
      */
-    @Nonnull
+    @NotNull
     public static ResourceKey<? extends Registry<ModuleData<?>>> moduleRegistryName() {
         return MODULE_REGISTRY_NAME.get();
     }
@@ -174,7 +175,7 @@ public class MekanismAPI {
      * @apiNote When registering {@link RobitSkin robit skins} using {@link net.minecraftforge.registries.DeferredRegister<RobitSkin>}, use this method to get access to
      * the {@link ResourceKey}.
      */
-    @Nonnull
+    @NotNull
     public static ResourceKey<? extends Registry<RobitSkin>> robitSkinRegistryName() {
         return ROBIT_SKIN_REGISTRY_NAME.get();
     }
@@ -188,7 +189,7 @@ public class MekanismAPI {
      * have been fired. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      * @see #gasRegistryName()
      */
-    @Nonnull
+    @NotNull
     public static IForgeRegistry<Gas> gasRegistry() {
         if (GAS_REGISTRY == null) {
             GAS_REGISTRY = RegistryManager.ACTIVE.getRegistry(gasRegistryName());
@@ -206,7 +207,7 @@ public class MekanismAPI {
      * called super early it is never {@code null}.
      * @see #infuseTypeRegistryName()
      */
-    @Nonnull
+    @NotNull
     public static IForgeRegistry<InfuseType> infuseTypeRegistry() {
         if (INFUSE_TYPE_REGISTRY == null) {
             INFUSE_TYPE_REGISTRY = RegistryManager.ACTIVE.getRegistry(infuseTypeRegistryName());
@@ -223,7 +224,7 @@ public class MekanismAPI {
      * have been fired. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      * @see #pigmentRegistryName()
      */
-    @Nonnull
+    @NotNull
     public static IForgeRegistry<Pigment> pigmentRegistry() {
         if (PIGMENT_REGISTRY == null) {
             PIGMENT_REGISTRY = RegistryManager.ACTIVE.getRegistry(pigmentRegistryName());
@@ -240,7 +241,7 @@ public class MekanismAPI {
      * have been fired. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      * @see #slurryRegistryName()
      */
-    @Nonnull
+    @NotNull
     public static IForgeRegistry<Slurry> slurryRegistry() {
         if (SLURRY_REGISTRY == null) {
             SLURRY_REGISTRY = RegistryManager.ACTIVE.getRegistry(slurryRegistryName());
@@ -258,7 +259,7 @@ public class MekanismAPI {
      * called super early it is never {@code null}.
      * @see #moduleRegistryName()
      */
-    @Nonnull
+    @NotNull
     public static IForgeRegistry<ModuleData<?>> moduleRegistry() {
         if (MODULE_REGISTRY == null) {
             MODULE_REGISTRY = RegistryManager.ACTIVE.getRegistry(moduleRegistryName());
@@ -276,7 +277,7 @@ public class MekanismAPI {
      * called super early it is never {@code null}.
      * @see #robitSkinRegistryName()
      */
-    @Nonnull
+    @NotNull
     public static IForgeRegistry<RobitSkin> robitSkinRegistry() {
         if (ROBIT_SKIN_REGISTRY == null) {
             ROBIT_SKIN_REGISTRY = RegistryManager.ACTIVE.getRegistry(robitSkinRegistryName());

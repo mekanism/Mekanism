@@ -3,7 +3,7 @@ package mekanism.client.model.baked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
@@ -16,7 +16,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
 
     private static final float[][] DRIVE_PLACEMENTS = {

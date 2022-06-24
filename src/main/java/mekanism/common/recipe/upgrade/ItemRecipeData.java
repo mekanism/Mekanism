@@ -6,13 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
@@ -31,9 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
 
     private final List<IInventorySlot> slots;
@@ -121,7 +118,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         }
         //TODO: Improve the logic so that it maybe tries multiple different slot combinations
         IMekanismInventory outputHandler = new IMekanismInventory() {
-            @Nonnull
+            @NotNull
             @Override
             public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
                 return stackSlots;
@@ -167,7 +164,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             this(Integer.MAX_VALUE, alwaysTrue, true);
         }
 
-        private DummyInventorySlot(int capacity, Predicate<@NonNull ItemStack> validator, boolean isBin) {
+        private DummyInventorySlot(int capacity, Predicate<@NotNull ItemStack> validator, boolean isBin) {
             super(capacity, alwaysTrueBi, alwaysTrueBi, validator, null, 0, 0);
             if (isBin) {
                 obeyStackLimit = false;

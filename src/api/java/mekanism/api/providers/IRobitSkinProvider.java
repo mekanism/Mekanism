@@ -1,15 +1,15 @@
 package mekanism.api.providers;
 
-import javax.annotation.Nonnull;
 import mekanism.api.robit.RobitSkin;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
+@MethodsReturnNonnullByDefault
 public interface IRobitSkinProvider extends IBaseProvider {
 
     /**
      * Gets the robit skin this provider represents.
      */
-    @Nonnull
     RobitSkin getSkin();
 
     @Override

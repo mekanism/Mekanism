@@ -3,8 +3,7 @@ package mekanism.api.gear.config;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +13,7 @@ import net.minecraft.nbt.CompoundTag;
  *
  * @apiNote Does not currently support {@link mekanism.api.IDisableableEnum}.
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> implements ModuleConfigData<TYPE> {
 
     private final List<TYPE> enumConstants;
@@ -68,12 +67,10 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
      *
      * @implNote This list is immutable.
      */
-    @Nonnull
     public List<TYPE> getEnums() {
         return enumConstants;
     }
 
-    @Nonnull
     @Override
     public TYPE get() {
         return value;

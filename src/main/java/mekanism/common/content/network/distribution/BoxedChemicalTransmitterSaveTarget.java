@@ -1,8 +1,6 @@
 package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -11,11 +9,12 @@ import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import mekanism.common.util.ChemicalUtil;
+import org.jetbrains.annotations.NotNull;
 
 public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
-      extends Target<BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>.SaveHandler, Long, @NonNull STACK> {
+      extends Target<BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>.SaveHandler, Long, @NotNull STACK> {
 
-    public BoxedChemicalTransmitterSaveTarget(@Nonnull STACK empty, @Nonnull STACK type, Collection<BoxedPressurizedTube> transmitters) {
+    public BoxedChemicalTransmitterSaveTarget(@NotNull STACK empty, @NotNull STACK type, Collection<BoxedPressurizedTube> transmitters) {
         super(transmitters.size());
         this.extra = type;
         transmitters.forEach(transmitter -> addHandler(new SaveHandler(empty, transmitter)));
@@ -27,7 +26,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
     }
 
     @Override
-    protected Long simulate(BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>.SaveHandler handler, @Nonnull STACK chemicalStack) {
+    protected Long simulate(BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>.SaveHandler handler, @NotNull STACK chemicalStack) {
         return handler.simulate(chemicalStack);
     }
 
@@ -42,7 +41,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
         private STACK currentStored;
         private final BoxedPressurizedTube transmitter;
 
-        public SaveHandler(@Nonnull STACK empty, BoxedPressurizedTube transmitter) {
+        public SaveHandler(@NotNull STACK empty, BoxedPressurizedTube transmitter) {
             this.currentStored = empty;
             this.transmitter = transmitter;
         }
@@ -57,7 +56,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
             splitInfo.send(amount);
         }
 
-        protected Long simulate(@Nonnull STACK chemicalStack) {
+        protected Long simulate(@NotNull STACK chemicalStack) {
             if (!currentStored.isEmpty() && !currentStored.isTypeEqual(chemicalStack)) {
                 return 0L;
             }

@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.IChemicalTank;
@@ -49,6 +47,8 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileComponentEjector implements ITileComponent, ISpecificContainerTracker {
 
@@ -251,7 +251,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
-    public boolean isInputSideEnabled(@Nonnull RelativeSide side) {
+    public boolean isInputSideEnabled(@NotNull RelativeSide side) {
         ConfigInfo info = configInfo.get(TransmissionType.ITEM);
         return info == null || info.isSideEnabled(side);
     }

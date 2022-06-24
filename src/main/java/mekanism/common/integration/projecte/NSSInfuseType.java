@@ -3,7 +3,6 @@ package mekanism.common.integration.projecte;
 import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -14,21 +13,22 @@ import net.minecraft.core.HolderSet.Named;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link InfuseType}s.
  */
 public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
 
-    private NSSInfuseType(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
+    private NSSInfuseType(@NotNull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
     }
 
     /**
      * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link InfusionStack}
      */
-    @Nonnull
-    public static NSSInfuseType createInfuseType(@Nonnull InfusionStack stack) {
+    @NotNull
+    public static NSSInfuseType createInfuseType(@NotNull InfusionStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
         return createInfuseType(stack.getType());
     }
@@ -36,16 +36,16 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
     /**
      * Helper method to create an {@link NSSInfuseType} representing an infuse type from an {@link IInfuseTypeProvider}
      */
-    @Nonnull
-    public static NSSInfuseType createInfuseType(@Nonnull IInfuseTypeProvider infuseTypeProvider) {
+    @NotNull
+    public static NSSInfuseType createInfuseType(@NotNull IInfuseTypeProvider infuseTypeProvider) {
         return createInfuseType(infuseTypeProvider.getChemical());
     }
 
     /**
      * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link InfuseType}
      */
-    @Nonnull
-    public static NSSInfuseType createInfuseType(@Nonnull InfuseType infuseType) {
+    @NotNull
+    public static NSSInfuseType createInfuseType(@NotNull InfuseType infuseType) {
         if (infuseType.isEmptyType()) {
             throw new IllegalArgumentException("Can't make NSSInfuseType with an empty infuse type");
         }
@@ -56,24 +56,24 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
     /**
      * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link ResourceLocation}
      */
-    @Nonnull
-    public static NSSInfuseType createInfuseType(@Nonnull ResourceLocation infuseTypeID) {
+    @NotNull
+    public static NSSInfuseType createInfuseType(@NotNull ResourceLocation infuseTypeID) {
         return new NSSInfuseType(infuseTypeID, false);
     }
 
     /**
      * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link ResourceLocation}
      */
-    @Nonnull
-    public static NSSInfuseType createTag(@Nonnull ResourceLocation tagId) {
+    @NotNull
+    public static NSSInfuseType createTag(@NotNull ResourceLocation tagId) {
         return new NSSInfuseType(tagId, true);
     }
 
     /**
      * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link TagKey<InfuseType>}
      */
-    @Nonnull
-    public static NSSInfuseType createTag(@Nonnull TagKey<InfuseType> tag) {
+    @NotNull
+    public static NSSInfuseType createTag(@NotNull TagKey<InfuseType> tag) {
         return createTag(tag.location());
     }
 
@@ -82,19 +82,19 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
         return o instanceof NSSInfuseType;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getJsonPrefix() {
         return "INFUSE_TYPE|";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getType() {
         return "Infuse Type";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Optional<Either<Named<InfuseType>, ITag<InfuseType>>> getTag() {
         return getTag(MekanismAPI.infuseTypeRegistry());

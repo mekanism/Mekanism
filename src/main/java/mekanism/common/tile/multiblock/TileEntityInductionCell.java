@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import javax.annotation.Nonnull;
 import mekanism.api.IContentsListener;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
@@ -12,6 +11,7 @@ import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityInductionCell extends TileEntityInternalMultiblock {
 
@@ -24,7 +24,7 @@ public class TileEntityInductionCell extends TileEntityInternalMultiblock {
         addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);

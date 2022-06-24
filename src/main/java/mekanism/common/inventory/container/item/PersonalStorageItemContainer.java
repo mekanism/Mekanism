@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.item;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.InventoryPersonalStorage;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -12,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class PersonalStorageItemContainer extends MekanismItemContainer {
 
@@ -51,12 +51,12 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     }
 
     @Override
-    protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
         // special handling to prevent removing the personal chest from the player's inventory slot
         if (index == inv.selected && hand == InteractionHand.MAIN_HAND) {
             return new HotBarSlot(inv, index, x, y) {
                 @Override
-                public boolean mayPickup(@Nonnull Player player) {
+                public boolean mayPickup(@NotNull Player player) {
                     return false;
                 }
             };
@@ -65,7 +65,7 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
+    public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
         if (clickType == ClickType.SWAP) {
             if (hand == InteractionHand.OFF_HAND && dragType == 40) {
                 //Block pressing f to swap it when it is in the offhand

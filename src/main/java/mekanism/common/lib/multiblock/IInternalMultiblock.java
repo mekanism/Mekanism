@@ -1,7 +1,7 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.UUID;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 //TODO: Eventually debate making this extend IMultiblockBase but for now this is mostly just a marker interface
 public interface IInternalMultiblock {

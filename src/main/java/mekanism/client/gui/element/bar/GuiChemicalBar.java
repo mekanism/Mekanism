@@ -1,8 +1,6 @@
 package mekanism.client.gui.element.bar;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -19,6 +17,8 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends GuiTankBar<STACK> {
 
@@ -66,7 +66,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
 
     public static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>> TankInfoProvider<STACK> getProvider(TANK tank, List<TANK> tanks) {
         return new TankInfoProvider<>() {
-            @Nonnull
+            @NotNull
             @Override
             public STACK getStack() {
                 return tank.getStack();

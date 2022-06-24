@@ -1,13 +1,13 @@
 package mekanism.client.gui.element;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiRightArrow extends GuiTextureOnlyElement implements IJEIRecipeArea<GuiRightArrow> {
 
@@ -19,9 +19,9 @@ public class GuiRightArrow extends GuiTextureOnlyElement implements IJEIRecipeAr
         super(ARROW, gui, x, y, 22, 15);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public GuiRightArrow jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories) {
+    public GuiRightArrow jeiCategories(@NotNull MekanismJEIRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }

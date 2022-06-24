@@ -2,12 +2,12 @@ package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public class ColorButton extends MekanismButton {
 
@@ -26,7 +26,7 @@ public class ColorButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Ensure the color gets reset. The default GuiButtonImage doesn't so other GuiButton's can have the color leak out of them
         EnumColor color = colorSupplier.get();
         if (color != null) {

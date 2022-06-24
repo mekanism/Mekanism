@@ -1,11 +1,10 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -47,8 +46,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
 
     private IModuleConfigItem<FarmingRadius> farmingRadius;
@@ -59,7 +60,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
               new ModuleEnumData<>(FarmingRadius.class, module.getInstalledCount() + 1, FarmingRadius.LOW));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult onItemUse(IModule<ModuleFarmingUnit> module, UseOnContext context) {
         //Start with doing common logic to the module before we get onto specific logic for the different ways the module can be used
@@ -98,6 +99,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         return ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action) || ToolActions.DEFAULT_HOE_ACTIONS.contains(action);
     }
 
+    @NothingNullByDefault
     public enum FarmingRadius implements IHasTextComponent {
         OFF(0),
         LOW(1),

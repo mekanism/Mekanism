@@ -1,15 +1,14 @@
 package mekanism.tools.common.material;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Tiers;
 
+@MethodsReturnNonnullByDefault
 public abstract class VanillaPaxelMaterial implements IPaxelMaterial {
 
-    @Nonnull
     public abstract Tiers getVanillaTier();
 
-    @Nonnull
     public String getRegistryPrefix() {
         return getVanillaTier().name().toLowerCase(Locale.ROOT);
     }

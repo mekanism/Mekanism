@@ -1,13 +1,13 @@
 package mekanism.client.render.obj;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class WrapperModelConfiguration implements IModelConfiguration {
 
@@ -23,20 +23,20 @@ public class WrapperModelConfiguration implements IModelConfiguration {
         return internal.getOwnerModel();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getModelName() {
         return internal.getModelName();
     }
 
     @Override
-    public boolean isTexturePresent(@Nonnull String name) {
+    public boolean isTexturePresent(@NotNull String name) {
         return internal.isTexturePresent(name);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Material resolveTexture(@Nonnull String name) {
+    public Material resolveTexture(@NotNull String name) {
         return internal.resolveTexture(name);
     }
 
@@ -55,26 +55,26 @@ public class WrapperModelConfiguration implements IModelConfiguration {
         return internal.useSmoothLighting();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
     public ItemTransforms getCameraTransforms() {
         return internal.getCameraTransforms();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ModelState getCombinedTransform() {
         return internal.getCombinedTransform();
     }
 
     @Override
-    public boolean getPartVisibility(@Nonnull IModelGeometryPart part, boolean fallback) {
+    public boolean getPartVisibility(@NotNull IModelGeometryPart part, boolean fallback) {
         return internal.getPartVisibility(part, fallback);
     }
 
     @Override
-    public boolean getPartVisibility(@Nonnull IModelGeometryPart part) {
+    public boolean getPartVisibility(@NotNull IModelGeometryPart part) {
         return internal.getPartVisibility(part);
     }
 }

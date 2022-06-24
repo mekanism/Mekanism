@@ -1,13 +1,13 @@
 package mekanism.common.inventory.slot;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InternalInventorySlot extends BasicInventorySlot {
 
-    @Nonnull
+    @NotNull
     public static InternalInventorySlot create(@Nullable IContentsListener listener) {
         return new InternalInventorySlot(listener);
     }

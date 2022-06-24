@@ -2,7 +2,6 @@ package mekanism.client.lang;
 
 import java.io.IOException;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IModuleDataProvider;
@@ -18,6 +17,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.LanguageProvider;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
@@ -32,7 +32,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return super.getName() + ": " + modid;
@@ -75,7 +75,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void add(@Nonnull String key, @Nonnull String value) {
+    public void add(@NotNull String key, @NotNull String value) {
         if (value.contains("%s")) {
             throw new IllegalArgumentException("Values containing substitutions should use explicit numbered indices: "+key+" - "+value);
         }
@@ -89,7 +89,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) throws IOException {
+    public void run(@NotNull CachedOutput cache) throws IOException {
         super.run(cache);
         if (altProviders.length > 0) {
             for (ConvertibleLanguageProvider provider : altProviders) {

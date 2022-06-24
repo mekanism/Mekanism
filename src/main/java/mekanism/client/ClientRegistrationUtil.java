@@ -3,8 +3,6 @@ package mekanism.client;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
@@ -48,6 +46,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ClientRegistrationUtil {
 
@@ -86,9 +86,9 @@ public class ClientRegistrationUtil {
                 @Nullable
                 private WeakReference<BlockEntityRenderer<T>> cachedRenderer;
 
-                @Nonnull
+                @NotNull
                 @Override
-                public BlockEntityRenderer<T> create(@Nonnull Context context) {
+                public BlockEntityRenderer<T> create(@NotNull Context context) {
                     //If there is a cached context and renderer make use of it, otherwise create one and cache it
                     // this allows us to reduce the number of renderer classes we create
                     BlockEntityRenderer<T> renderer = cachedRenderer == null ? null : cachedRenderer.get();
@@ -123,9 +123,9 @@ public class ClientRegistrationUtil {
     //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
     public static <TILE extends TileEntityElectricMachine, C extends MekanismTileContainer<TILE>> void registerElectricScreen(ContainerTypeRegistryObject<C> type) {
         registerScreen(type, new ScreenConstructor<C, GuiElectricMachine<TILE, C>>() {
-            @Nonnull
+            @NotNull
             @Override
-            public GuiElectricMachine<TILE, C> create(@Nonnull C container, @Nonnull Inventory inv, @Nonnull Component title) {
+            public GuiElectricMachine<TILE, C> create(@NotNull C container, @NotNull Inventory inv, @NotNull Component title) {
                 return new GuiElectricMachine<>(container, inv, title);
             }
         });
@@ -134,9 +134,9 @@ public class ClientRegistrationUtil {
     //Helper method to register GuiAdvancedElectricMachine due to generics not being able to be resolved through registerScreen
     public static <TILE extends TileEntityAdvancedElectricMachine, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(ContainerTypeRegistryObject<C> type) {
         registerScreen(type, new ScreenConstructor<C, GuiAdvancedElectricMachine<TILE, C>>() {
-            @Nonnull
+            @NotNull
             @Override
-            public GuiAdvancedElectricMachine<TILE, C> create(@Nonnull C container, @Nonnull Inventory inv, @Nonnull Component title) {
+            public GuiAdvancedElectricMachine<TILE, C> create(@NotNull C container, @NotNull Inventory inv, @NotNull Component title) {
                 return new GuiAdvancedElectricMachine<>(container, inv, title);
             }
         });

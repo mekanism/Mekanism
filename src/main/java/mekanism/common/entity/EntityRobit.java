@@ -12,15 +12,12 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -126,6 +123,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
 public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, ISustainedInventory, ISecurityObject, IMekanismStrictEnergyHandler,
@@ -177,16 +176,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private final BooleanSupplier recheckAllRecipeErrors;
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
-    private final IInputHandler<@NonNull ItemStack> inputHandler;
-    private final IOutputHandler<@NonNull ItemStack> outputHandler;
+    private final IInputHandler<@NotNull ItemStack> inputHandler;
+    private final IOutputHandler<@NotNull ItemStack> outputHandler;
 
-    @Nonnull
+    @NotNull
     private final List<IInventorySlot> inventorySlots;
-    @Nonnull
+    @NotNull
     private final List<IInventorySlot> mainContainerSlots;
-    @Nonnull
+    @NotNull
     private final List<IInventorySlot> smeltingContainerSlots;
-    @Nonnull
+    @NotNull
     private final List<IInventorySlot> inventoryContainerSlots;
     private final EnergyInventorySlot energySlot;
     private final InputInventorySlot smeltingInputSlot;
@@ -398,9 +397,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return WorldUtils.getTileEntity(TileEntityChargepad.class, level, blockPosition()) != null;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResult interactAt(@Nonnull Player player, @Nonnull Vec3 vec, @Nonnull InteractionHand hand) {
+    public InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
         if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;
         } else if (player.isShiftKeyDown()) {
@@ -465,7 +464,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
+    public void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
         NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, getSecurityMode());
@@ -481,7 +480,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public void readAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
+    public void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.readAdditionalSaveData(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, this::setSecurityMode);
@@ -496,12 +495,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public boolean isInvulnerableTo(@Nonnull DamageSource source) {
+    public boolean isInvulnerableTo(@NotNull DamageSource source) {
         return source == MekanismDamageSource.RADIATION || super.isInvulnerableTo(source);
     }
 
     @Override
-    protected void actuallyHurt(@Nonnull DamageSource damageSource, float amount) {
+    protected void actuallyHurt(@NotNull DamageSource damageSource, float amount) {
         amount = ForgeHooks.onLivingHurt(this, damageSource, amount);
         if (amount <= 0) {
             return;
@@ -533,26 +532,26 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return level.getPlayerByUUID(getOwnerUUID());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getOwnerName() {
         return entityData.get(OWNER_NAME);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public UUID getOwnerUUID() {
         return entityData.get(OWNER_UUID);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public SecurityMode getSecurityMode() {
         return entityData.get(SECURITY);
     }
 
     @Override
-    public void setSecurityMode(@Nonnull SecurityMode mode) {
+    public void setSecurityMode(@NotNull SecurityMode mode) {
         SecurityMode current = getSecurityMode();
         if (current != mode) {
             entityData.set(SECURITY, mode);
@@ -561,7 +560,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public void onSecurityChanged(@Nonnull SecurityMode old, @Nonnull SecurityMode mode) {
+    public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
         if (!level.isClientSide) {
             SecurityUtils.INSTANCE.securityChanged(playersUsing, this, old, mode);
         }
@@ -609,13 +608,13 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return DataHandlerUtils.writeContainers(getInventorySlots(null));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return hasInventory() ? inventorySlots : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return canHandleEnergy() ? energyContainers : Collections.emptyList();
@@ -626,8 +625,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         //TODO: Do we need to save the things? Probably, if not remove the call to here from createNewCachedRecipe
     }
 
-    @Nonnull
-    public List<IInventorySlot> getContainerInventorySlots(@Nonnull MenuType<?> containerType) {
+    @NotNull
+    public List<IInventorySlot> getContainerInventorySlots(@NotNull MenuType<?> containerType) {
         if (!hasInventory()) {
             return Collections.emptyList();
         } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.get()) {
@@ -640,7 +639,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.SMELTING;
@@ -666,9 +665,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         Arrays.fill(trackedErrors, false);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config
         return OneInputCachedRecipe.itemToItem(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
@@ -703,9 +702,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     public ContainerLevelAccess getWorldPosCallable() {
         return new ContainerLevelAccess() {
-            @Nonnull
+            @NotNull
             @Override
-            public <T> Optional<T> evaluate(@Nonnull BiFunction<Level, BlockPos, T> worldBlockPosTBiFunction) {
+            public <T> Optional<T> evaluate(@NotNull BiFunction<Level, BlockPos, T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
                 return Optional.ofNullable(worldBlockPosTBiFunction.apply(getCommandSenderWorld(), blockPosition()));
@@ -713,14 +712,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public RobitSkin getSkin() {
         return entityData.get(SKIN);
     }
 
     @Override
-    public boolean setSkin(@Nonnull IRobitSkinProvider skinProvider, @Nullable Player player) {
+    public boolean setSkin(@NotNull IRobitSkinProvider skinProvider, @Nullable Player player) {
         Objects.requireNonNull(skinProvider, "Robit skin cannot be null.");
         RobitSkin skin = skinProvider.getSkin();
         if (getSkin() == skin) {
@@ -788,9 +787,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         capabilityCache.addCapabilityResolver(resolver);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side) {
         if (capabilityCache != null) {
             //Validate the cache is not null. In theory this should never happen unless some mod is trying to access capabilities
             // before our entity is done constructing, but there are cases such as the size event where based on when they are

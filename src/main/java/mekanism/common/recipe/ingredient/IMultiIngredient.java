@@ -1,10 +1,10 @@
 package mekanism.common.recipe.ingredient;
 
 import java.util.function.Predicate;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import org.jetbrains.annotations.NotNull;
 
-public interface IMultiIngredient<TYPE, INGREDIENT extends InputIngredient<@NonNull TYPE>> extends InputIngredient<@NonNull TYPE> {
+public interface IMultiIngredient<TYPE, INGREDIENT extends InputIngredient<@NotNull TYPE>> extends InputIngredient<@NotNull TYPE> {
 
     /**
      * For use in recipe input caching, checks all ingredients even if some match.

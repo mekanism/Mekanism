@@ -2,8 +2,7 @@ package mekanism.client.model.robit;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.model.MekanismModelCache;
@@ -22,7 +21,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
 
     private final RobitItemOverrideList overrideList;
@@ -32,7 +33,6 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
         this.overrideList = new RobitItemOverrideList(super.getOverrides());
     }
 
-    @Nonnull
     @Override
     public ItemOverrides getOverrides() {
         return overrideList;
@@ -78,7 +78,7 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
 
         @Nullable
         @Override
-        public BakedModel resolve(@Nonnull BakedModel model, @Nonnull ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemRobit robit) {
                 RobitSkin skin = robit.getRobitSkin(stack).getSkin();
                 if (skin.getCustomModel() != null) {
@@ -105,7 +105,6 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
             return original.resolve(model, stack, world, entity, seed);
         }
 
-        @Nonnull
         @Override
         public ImmutableList<BakedOverride> getOverrides() {
             return original.getOverrides();

@@ -1,11 +1,11 @@
 package mekanism.tools.common.util;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ToolsUtils {
 
@@ -14,7 +14,7 @@ public class ToolsUtils {
      *
      * @apiNote Only call on client
      */
-    public static void addDurability(@Nonnull List<Component> tooltip, @Nonnull ItemStack stack) {
+    public static void addDurability(@NotNull List<Component> tooltip, @NotNull ItemStack stack) {
         if (MekanismToolsConfig.toolsClient.displayDurabilityTooltips.get()) {
             tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamageValue()));
         }

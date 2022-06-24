@@ -1,13 +1,11 @@
 package mekanism.tools.common.recipe;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.ItemLike;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class PaxelShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
 
     private PaxelShapedRecipeBuilder(ItemLike result, int count) {

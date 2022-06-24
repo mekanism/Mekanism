@@ -5,7 +5,6 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
@@ -14,6 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Global, shared FakePlayer for Mekanism-specific uses
@@ -43,7 +43,7 @@ public class MekFakePlayer extends FakePlayer {
     }
 
     @Override
-    public boolean canBeAffected(@Nonnull MobEffectInstance effect) {
+    public boolean canBeAffected(@NotNull MobEffectInstance effect) {
         return false;
     }
 
@@ -51,7 +51,7 @@ public class MekFakePlayer extends FakePlayer {
         this.emulatingUUID = uuid;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public UUID getUUID() {
         return this.emulatingUUID == null ? super.getUUID() : this.emulatingUUID;

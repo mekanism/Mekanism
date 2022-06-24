@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
@@ -17,6 +16,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContainerItem> extends CustomItemPredicate {
 
@@ -36,7 +36,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     }
 
     @Override
-    public boolean matches(@Nonnull ItemStack stack) {
+    public boolean matches(@NotNull ItemStack stack) {
         if (stack.getItem() == item) {
             Object2IntMap<ModuleData<?>> installedCounts = ModuleHelper.INSTANCE.loadAllCounts(stack);
             if (installedCounts.keySet().containsAll(supportedModules)) {
@@ -51,7 +51,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonObject serializeToJson() {
         JsonObject object = super.serializeToJson();

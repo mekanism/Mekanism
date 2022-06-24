@@ -2,12 +2,12 @@ package mekanism.common.capabilities.holder.fluid;
 
 import java.util.List;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.holder.BasicHolder;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FluidTankHolder extends BasicHolder<IExtendedFluidTank> implements IFluidTankHolder {
 
@@ -15,11 +15,11 @@ public class FluidTankHolder extends BasicHolder<IExtendedFluidTank> implements 
         super(facingSupplier);
     }
 
-    void addTank(@Nonnull IExtendedFluidTank tank, RelativeSide... sides) {
+    void addTank(@NotNull IExtendedFluidTank tank, RelativeSide... sides) {
         addSlotInternal(tank, sides);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getTanks(@Nullable Direction direction) {
         return getSlots(direction);

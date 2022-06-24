@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.tank.TankMultiblockData;
@@ -16,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager {
 
@@ -44,7 +44,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         return InteractionResult.PASS;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public TankMultiblockData createMultiblock() {
         return new TankMultiblockData(this);

@@ -2,7 +2,6 @@ package mekanism.additions.common.block.plastic;
 
 import java.util.Optional;
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnull;
 import mekanism.additions.common.block.IStateExtendedFluidLoggable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPlasticStairs extends StairBlock implements IColoredBlock, IStateExtendedFluidLoggable {
 
@@ -41,57 +41,57 @@ public class BlockPlasticStairs extends StairBlock implements IColoredBlock, ISt
     }
 
     @Override
-    protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
     @Override
-    public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public FluidState getFluidState(@Nonnull BlockState state) {
+    public FluidState getFluidState(@NotNull BlockState state) {
         return getFluid(state);
     }
 
     @Override
-    public boolean placeLiquid(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
+    public boolean placeLiquid(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull FluidState fluidState) {
         return IStateExtendedFluidLoggable.super.placeLiquid(world, pos, state, fluidState);
     }
 
     @Override
-    public boolean canPlaceLiquid(@Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
+    public boolean canPlaceLiquid(@NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
         return IStateExtendedFluidLoggable.super.canPlaceLiquid(world, pos, state, fluid);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
-          @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
+    public BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+          @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack pickupBlock(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    public ItemStack pickupBlock(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
         //Manually declare which pickupBlock we want to be using
         return IStateExtendedFluidLoggable.super.pickupBlock(world, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Optional<SoundEvent> getPickupSound() {
         //Manually declare which getPickupSound we want to be using
         return IStateExtendedFluidLoggable.super.getPickupSound();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Optional<SoundEvent> getPickupSound(BlockState state) {
         //Manually declare which getPickupSound we want to be using

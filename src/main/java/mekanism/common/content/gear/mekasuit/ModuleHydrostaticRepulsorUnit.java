@@ -1,20 +1,18 @@
 package mekanism.common.content.gear.mekasuit;
 
-import javax.annotation.Nonnull;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.EnchantmentBasedModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
-import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
-import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit.ExcavationRange;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import org.jetbrains.annotations.NotNull;
 
+@ParametersAreNotNullByDefault
 public class ModuleHydrostaticRepulsorUnit extends EnchantmentBasedModule<ModuleHydrostaticRepulsorUnit> {
 
     public static final int BOOST_STACKS = 4;
@@ -26,7 +24,7 @@ public class ModuleHydrostaticRepulsorUnit extends EnchantmentBasedModule<Module
         swimBoost = configItemCreator.createDisableableConfigItem("swim_boost", MekanismLang.MODULE_SWIM_BOOST, true, () -> module.getInstalledCount() >= BOOST_STACKS);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Enchantment getEnchantment() {
         return Enchantments.DEPTH_STRIDER;

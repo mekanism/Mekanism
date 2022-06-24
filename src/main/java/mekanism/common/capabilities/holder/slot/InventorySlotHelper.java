@@ -2,12 +2,12 @@ package mekanism.common.capabilities.holder.slot;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InventorySlotHelper {
 
@@ -35,7 +35,7 @@ public class InventorySlotHelper {
         return new InventorySlotHelper(new ConfigInventorySlotHolder(facingSupplier, configSupplier));
     }
 
-    public <SLOT extends IInventorySlot> SLOT addSlot(@Nonnull SLOT slot) {
+    public <SLOT extends IInventorySlot> SLOT addSlot(@NotNull SLOT slot) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -51,7 +51,7 @@ public class InventorySlotHelper {
         return slot;
     }
 
-    public <SLOT extends IInventorySlot> SLOT addSlot(@Nonnull SLOT slot, RelativeSide... sides) {
+    public <SLOT extends IInventorySlot> SLOT addSlot(@NotNull SLOT slot, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }

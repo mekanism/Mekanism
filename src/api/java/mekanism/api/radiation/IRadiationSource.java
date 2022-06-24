@@ -1,7 +1,7 @@
 package mekanism.api.radiation;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface used for defining radiation sources.
@@ -11,7 +11,7 @@ public interface IRadiationSource {
     /**
      * Gets the location of this {@link IRadiationSource}.
      */
-    @Nonnull
+    @NotNull
     Coord4D getPos();
 
     /**

@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
@@ -14,6 +13,7 @@ import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class ChemicalInfuserRecipeMapper implements IRecipeTypeMapper {
@@ -40,8 +40,8 @@ public class ChemicalInfuserRecipeMapper implements IRecipeTypeMapper {
             return false;
         }
         boolean handled = false;
-        List<@NonNull GasStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
-        List<@NonNull GasStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
+        List<@NotNull GasStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
+        List<@NotNull GasStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
         for (GasStack leftRepresentation : leftInputRepresentations) {
             NormalizedSimpleStack nssLeft = NSSGas.createGas(leftRepresentation);
             for (GasStack rightRepresentation : rightInputRepresentations) {

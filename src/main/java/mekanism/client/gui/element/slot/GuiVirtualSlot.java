@@ -1,8 +1,6 @@
 package mekanism.client.gui.element.slot;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
@@ -11,6 +9,8 @@ import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
 
@@ -37,13 +37,13 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
         return this.virtualSlot == virtualSlot;
     }
 
-    public void updateVirtualSlot(@Nullable IGUIWindow window, @Nonnull IVirtualSlot virtualSlot) {
+    public void updateVirtualSlot(@Nullable IGUIWindow window, @NotNull IVirtualSlot virtualSlot) {
         this.virtualSlot = virtualSlot;
         this.virtualSlot.updatePosition(window, () -> relativeX + 1, () -> relativeY + 1);
     }
 
     @Override
-    protected void drawContents(@Nonnull PoseStack matrix) {
+    protected void drawContents(@NotNull PoseStack matrix) {
         if (virtualSlot != null) {
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {

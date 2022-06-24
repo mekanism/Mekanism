@@ -5,15 +5,15 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.function.IntSupplier;
 import mekanism.api.Action;
-import mekanism.api.annotations.NonNull;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ExtendedFluidHandlerUtils {
 
     /**
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
      */
-    public static FluidStack insert(FluidStack stack, Action action, IntSupplier tankCount, Int2ObjectFunction<@NonNull FluidStack> inTankGetter, InsertFluid insertFluid) {
+    public static FluidStack insert(FluidStack stack, Action action, IntSupplier tankCount, Int2ObjectFunction<@NotNull FluidStack> inTankGetter, InsertFluid insertFluid) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return insertFluid.insert(0, stack, action);
@@ -54,7 +54,7 @@ public class ExtendedFluidHandlerUtils {
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
-    public static FluidStack extract(int amount, Action action, IntSupplier tankCount, Int2ObjectFunction<@NonNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
+    public static FluidStack extract(int amount, Action action, IntSupplier tankCount, Int2ObjectFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return extractFluid.extract(0, amount, action);
@@ -88,7 +88,7 @@ public class ExtendedFluidHandlerUtils {
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
-    public static FluidStack extract(FluidStack stack, Action action, IntSupplier tankCount, Int2ObjectFunction<@NonNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
+    public static FluidStack extract(FluidStack stack, Action action, IntSupplier tankCount, Int2ObjectFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             FluidStack inTank = inTankGetter.get(0);

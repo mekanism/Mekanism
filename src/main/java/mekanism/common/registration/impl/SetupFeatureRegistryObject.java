@@ -1,6 +1,5 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -9,6 +8,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public class SetupFeatureRegistryObject<FEATURE_CONFIG extends FeatureConfiguration, FEATURE extends Feature<FEATURE_CONFIG>> extends
       DoubleWrappedRegistryObject<ConfiguredFeature<FEATURE_CONFIG, FEATURE>, PlacedFeature> {
@@ -17,17 +17,17 @@ public class SetupFeatureRegistryObject<FEATURE_CONFIG extends FeatureConfigurat
         super(blockRegistryObject, itemRegistryObject);
     }
 
-    @Nonnull
+    @NotNull
     public ConfiguredFeature<FEATURE_CONFIG, FEATURE> getConfiguredFeature() {
         return getPrimary();
     }
 
-    @Nonnull
+    @NotNull
     public PlacedFeature getPlacedFeature() {
         return getSecondary();
     }
 
-    @Nonnull
+    @NotNull
     public Holder<PlacedFeature> getPlacedFeatureHolder() {
         return secondaryRO.getHolder().orElseThrow();
     }

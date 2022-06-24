@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.IGasTank;
@@ -51,6 +49,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileComponentConfig implements ITileComponent, ISpecificContainerTracker {
 
@@ -117,7 +117,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
+    public boolean isCapabilityDisabled(@NotNull Capability<?> capability, Direction side) {
         TransmissionType type = null;
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             type = TransmissionType.ITEM;
@@ -155,7 +155,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return configInfo.get(type);
     }
 
-    public void addDisabledSides(@Nonnull RelativeSide... sides) {
+    public void addDisabledSides(@NotNull RelativeSide... sides) {
         for (ConfigInfo config : configInfo.values()) {
             config.addDisabledSides(sides);
         }

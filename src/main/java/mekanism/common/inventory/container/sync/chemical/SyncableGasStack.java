@@ -2,8 +2,6 @@ package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IEmptyGasProvider;
@@ -11,6 +9,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.network.to_client.container.property.LongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.chemical.GasStackPropertyData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling gas stacks
@@ -30,15 +29,15 @@ public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> imple
         return create(handler::getStack, isClient ? handler::setStackUnchecked : handler::setStack);
     }
 
-    public static SyncableGasStack create(Supplier<@NonNull GasStack> getter, Consumer<@NonNull GasStack> setter) {
+    public static SyncableGasStack create(Supplier<@NotNull GasStack> getter, Consumer<@NotNull GasStack> setter) {
         return new SyncableGasStack(getter, setter);
     }
 
-    private SyncableGasStack(Supplier<@NonNull GasStack> getter, Consumer<@NonNull GasStack> setter) {
+    private SyncableGasStack(Supplier<@NotNull GasStack> getter, Consumer<@NotNull GasStack> setter) {
         super(getter, setter);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected GasStack createStack(GasStack stored, long size) {
         return new GasStack(stored, size);

@@ -1,14 +1,12 @@
 package mekanism.common.recipe.pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
+import org.jetbrains.annotations.Nullable;
 
 //Note: We don't have a 1x1 pattern as that makes more sense to be done via a shapeless recipe
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RecipePattern {
 
-    @Nonnull
     public final String row1;
     @Nullable
     public final String row2;

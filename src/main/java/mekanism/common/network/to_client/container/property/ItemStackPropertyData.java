@@ -1,16 +1,16 @@
 package mekanism.common.network.to_client.container.property;
 
-import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemStackPropertyData extends PropertyData {
 
-    @Nonnull
+    @NotNull
     private final ItemStack value;
 
-    public ItemStackPropertyData(short property, @Nonnull ItemStack value) {
+    public ItemStackPropertyData(short property, @NotNull ItemStack value) {
         super(PropertyType.ITEM_STACK, property);
         this.value = value;
     }

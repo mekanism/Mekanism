@@ -2,8 +2,6 @@ package mekanism.common.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
@@ -13,6 +11,8 @@ import mekanism.common.lib.frequency.IFrequencyItem;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardInventory extends ItemStackMekanismInventory implements IQIOCraftingWindowHolder {
 
@@ -23,7 +23,7 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
      */
     private QIOCraftingWindow[] craftingWindows;
 
-    public PortableQIODashboardInventory(ItemStack stack, @Nonnull Inventory inv) {
+    public PortableQIODashboardInventory(ItemStack stack, @NotNull Inventory inv) {
         super(stack);
         this.world = inv.player.getCommandSenderWorld();
         for (QIOCraftingWindow craftingWindow : craftingWindows) {

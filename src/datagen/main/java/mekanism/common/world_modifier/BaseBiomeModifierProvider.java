@@ -1,9 +1,9 @@
 package mekanism.common.world_modifier;
 
-import javax.annotation.Nonnull;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseBiomeModifierProvider extends BaseModifierProvider<BiomeModifier> {
 
@@ -11,7 +11,7 @@ public abstract class BaseBiomeModifierProvider extends BaseModifierProvider<Bio
         super(gen, modid, ForgeRegistries.Keys.BIOME_MODIFIERS);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Biome modifiers: " + modid;

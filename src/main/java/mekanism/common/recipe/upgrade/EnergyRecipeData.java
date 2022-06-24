@@ -3,13 +3,10 @@ package mekanism.common.recipe.upgrade;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -24,9 +21,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
 
     private final List<IEnergyContainer> energyContainers;
@@ -82,7 +80,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             return true;
         }
         IMekanismStrictEnergyHandler outputHandler = new IMekanismStrictEnergyHandler() {
-            @Nonnull
+            @NotNull
             @Override
             public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
                 return energyContainers;

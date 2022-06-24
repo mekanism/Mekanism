@@ -1,10 +1,10 @@
 package mekanism.api.tier;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The default tiers used in Mekanism.
@@ -58,7 +58,7 @@ public enum BaseTier implements StringRepresentable {
         return textColor;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);

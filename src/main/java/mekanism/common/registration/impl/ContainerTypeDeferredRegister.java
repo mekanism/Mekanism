@@ -1,7 +1,6 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.inventory.container.entity.robit.RobitContainer;
@@ -21,6 +20,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuType<?>> {
 
@@ -149,7 +149,7 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuT
                 }
 
                 @Override
-                protected void addInventorySlots(@Nonnull Inventory inv) {
+                protected void addInventorySlots(@NotNull Inventory inv) {
                     super.addInventorySlots(inv);
                     if (armorSlotsX != -1 && armorSlotsY != -1) {
                         addArmorSlots(inv, armorSlotsX, armorSlotsY, offhandOffset);

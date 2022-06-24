@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for helping to persist specific integrations we have that aren't updated yet.
@@ -49,10 +49,10 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
           "Custom EMC Conversions: mekanism"
     ).<DataProvider>map(name -> new DataProvider() {
         @Override
-        public void run(@Nonnull CachedOutput cache) {
+        public void run(@NotNull CachedOutput cache) {
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String getName() {
             return name;
@@ -66,7 +66,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) throws IOException {
+    public void run(@NotNull CachedOutput cache) throws IOException {
         if (PATHS_TO_SKIP.isEmpty() && COMPAT_RECIPES_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
             //Skip if we don't have any things to override and persist
             return;
@@ -158,7 +158,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Persisting disabled provider";

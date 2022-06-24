@@ -1,10 +1,7 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -42,6 +39,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
@@ -52,9 +51,9 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private final IOutputHandler<@NonNull ItemStack> outputHandler;
-    private final IInputHandler<@NonNull ItemStack> inputHandler;
-    private final IInputHandler<@NonNull ItemStack> extraInputHandler;
+    private final IOutputHandler<@NotNull ItemStack> outputHandler;
+    private final IInputHandler<@NotNull ItemStack> inputHandler;
+    private final IInputHandler<@NotNull ItemStack> extraInputHandler;
 
     private MachineEnergyContainer<TileEntityCombiner> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getMainInput")
@@ -80,7 +79,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -88,7 +87,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -112,7 +111,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
         recipeCacheLookupMonitor.updateAndProcess();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
         return MekanismRecipeType.COMBINING;
@@ -124,9 +123,9 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
         return findFirstRecipe(inputHandler, extraInputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
+    public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@NotNull CombinerRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.combiner(recipe, recheckAllRecipeErrors, inputHandler, extraInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
@@ -137,7 +136,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CombinerUpgradeData getUpgradeData() {
         return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());

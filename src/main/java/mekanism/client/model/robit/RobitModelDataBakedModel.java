@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.RobitSpriteUploader;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -21,21 +20,22 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class RobitModelDataBakedModel implements BakedModel {
 
     private final BakedModel original;
     private final IModelData modelData;
 
-    public RobitModelDataBakedModel(@Nonnull BakedModel original, @Nonnull IModelData data) {
+    public RobitModelDataBakedModel(BakedModel original, IModelData data) {
         this.original = original;
         this.modelData = data;
     }
 
-    @Nonnull
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return getQuads(state, side, rand, modelData);
     }
 
@@ -59,29 +59,25 @@ public class RobitModelDataBakedModel implements BakedModel {
         return original.isCustomRenderer();
     }
 
-    @Nonnull
     @Override
     @Deprecated
     public TextureAtlasSprite getParticleIcon() {
         return getParticleIcon(modelData);
     }
 
-    @Nonnull
     @Override
     @Deprecated
     public ItemTransforms getTransforms() {
         return original.getTransforms();
     }
 
-    @Nonnull
     @Override
     public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, IModelData extraData) {
         return original.getQuads(state, side, rand, extraData);
     }
 
@@ -103,14 +99,13 @@ public class RobitModelDataBakedModel implements BakedModel {
         return this;
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+    public IModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, IModelData tileData) {
         return original.getModelData(world, pos, state, tileData);
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data) {
+    public TextureAtlasSprite getParticleIcon(IModelData data) {
         return original.getParticleIcon(data);
     }
 

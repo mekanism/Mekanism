@@ -5,8 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -17,6 +15,8 @@ import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISupportsWarning<GuiSlot> {
 
@@ -55,7 +55,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
     }
 
     @Override
-    public GuiSlot warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+    public GuiSlot warning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
         this.warningSupplier = ISupportsWarning.compound(this.warningSupplier, gui().trackWarning(type, warningSupplier));
         return this;
     }
@@ -109,20 +109,20 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
     }
 
     @Override
-    public void renderButton(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(matrix);
         }
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (renderAboveSlots) {
             draw(matrix);
         }
     }
 
-    private void draw(@Nonnull PoseStack matrix) {
+    private void draw(@NotNull PoseStack matrix) {
         if (warningSupplier != null && warningSupplier.getAsBoolean()) {
             RenderSystem.setShaderTexture(0, slotType.getWarningTexture());
         } else {
@@ -139,7 +139,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
         drawContents(matrix);
     }
 
-    protected void drawContents(@Nonnull PoseStack matrix) {
+    protected void drawContents(@NotNull PoseStack matrix) {
         if (validityCheck != null) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
@@ -181,7 +181,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);

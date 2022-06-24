@@ -1,6 +1,5 @@
 package mekanism.generators.client.jei;
 
-import javax.annotation.Nonnull;
 import mekanism.client.jei.CatalystRegistryHelper;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.RecipeRegistryHelper;
@@ -15,18 +14,19 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class GeneratorsJEI implements IModPlugin {
 
-    @Nonnull
+    @NotNull
     @Override
     public ResourceLocation getPluginUid() {
         return MekanismGenerators.rl("jei_plugin");
     }
 
     @Override
-    public void registerItemSubtypes(@Nonnull ISubtypeRegistration registry) {
+    public void registerItemSubtypes(@NotNull ISubtypeRegistration registry) {
         MekanismJEI.registerItemSubtypes(registry, GeneratorsItems.ITEMS.getAllItems());
         MekanismJEI.registerItemSubtypes(registry, GeneratorsBlocks.BLOCKS.getAllBlocks());
     }
@@ -38,13 +38,13 @@ public class GeneratorsJEI implements IModPlugin {
     }
 
     @Override
-    public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registry) {
+    public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registry) {
         CatalystRegistryHelper.register(registry, GeneratorsJEIRecipeType.FISSION, GeneratorsBlocks.FISSION_REACTOR_CASING, GeneratorsBlocks.FISSION_REACTOR_PORT,
               GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY);
     }
 
     @Override
-    public void registerRecipes(@Nonnull IRecipeRegistration registry) {
+    public void registerRecipes(@NotNull IRecipeRegistration registry) {
         RecipeRegistryHelper.register(registry, GeneratorsJEIRecipeType.FISSION, FissionReactorRecipeCategory.getFissionRecipes());
     }
 }

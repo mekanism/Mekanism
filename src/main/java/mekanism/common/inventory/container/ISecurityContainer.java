@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
-import javax.annotation.Nullable;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.Nullable;
 
 public interface ISecurityContainer {
 

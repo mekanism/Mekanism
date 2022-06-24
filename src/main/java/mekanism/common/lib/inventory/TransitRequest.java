@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -17,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TransitRequest {
 
@@ -60,7 +60,7 @@ public abstract class TransitRequest {
 
     public abstract Collection<? extends ItemData> getItemData();
 
-    @Nonnull
+    @NotNull
     public TransitResponse addToInventory(BlockEntity tile, Direction side, int min, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter sorter) {
             return sorter.sendHome(this);
@@ -110,7 +110,7 @@ public abstract class TransitRequest {
         return getItemData().isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     public TransitResponse createResponse(ItemStack inserted, ItemData data) {
         return new TransitResponse(inserted, data);
     }
@@ -120,7 +120,7 @@ public abstract class TransitRequest {
         return data == null ? getEmptyResponse() : createResponse(data.itemType.createStack(data.totalCount), data);
     }
 
-    @Nonnull
+    @NotNull
     public TransitResponse getEmptyResponse() {
         return EMPTY;
     }
@@ -130,7 +130,7 @@ public abstract class TransitRequest {
         private final ItemStack inserted;
         private final ItemData slotData;
 
-        public TransitResponse(@Nonnull ItemStack inserted, ItemData slotData) {
+        public TransitResponse(@NotNull ItemStack inserted, ItemData slotData) {
             this.inserted = inserted;
             this.slotData = slotData;
         }

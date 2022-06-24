@@ -10,8 +10,6 @@ import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Matrix4f;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.Font;
@@ -23,6 +21,8 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiUtils {
 
@@ -256,7 +256,7 @@ public class GuiUtils {
         return false;
     }
 
-    public static void renderItem(PoseStack matrix, ItemRenderer renderer, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, Font font,
+    public static void renderItem(PoseStack matrix, ItemRenderer renderer, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font,
           @Nullable String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {

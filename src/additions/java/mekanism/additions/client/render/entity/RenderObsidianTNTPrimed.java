@@ -2,7 +2,6 @@ package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import javax.annotation.Nonnull;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -13,6 +12,7 @@ import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
 
@@ -25,7 +25,7 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
     }
 
     @Override
-    public void render(@Nonnull EntityObsidianTNT tnt, float entityYaw, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light) {
+    public void render(@NotNull EntityObsidianTNT tnt, float entityYaw, float partialTick, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light) {
         matrix.pushPose();
         matrix.translate(0, 0.5, 0);
         if (tnt.getFuse() - partialTick + 1.0F < 10.0F) {
@@ -46,9 +46,9 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         super.render(tnt, entityYaw, partialTick, matrix, renderer, light);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@Nonnull EntityObsidianTNT entity) {
+    public ResourceLocation getTextureLocation(@NotNull EntityObsidianTNT entity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }
 }

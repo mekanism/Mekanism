@@ -5,8 +5,7 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -29,8 +28,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
     private static final Matrix3f FAKE_NORMALS;
@@ -106,7 +106,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void renderText(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, Component text, Direction side,
+    private void renderText(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, Component text, Direction side,
           float maxScale) {
         matrix.pushPose();
         matrix.translate(0, -0.3725, 0);

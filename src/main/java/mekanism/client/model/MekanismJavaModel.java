@@ -8,7 +8,6 @@ import com.mojang.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -18,6 +17,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class MekanismJavaModel extends Model {
 
@@ -25,7 +25,7 @@ public abstract class MekanismJavaModel extends Model {
         super(renderType);
     }
 
-    protected static VertexConsumer getVertexConsumer(@Nonnull MultiBufferSource renderer, @Nonnull RenderType renderType, boolean hasEffect) {
+    protected static VertexConsumer getVertexConsumer(@NotNull MultiBufferSource renderer, @NotNull RenderType renderType, boolean hasEffect) {
         return ItemRenderer.getFoilBufferDirect(renderer, renderType, false, hasEffect);
     }
 
@@ -35,7 +35,7 @@ public abstract class MekanismJavaModel extends Model {
         model.zRot = z;
     }
 
-    protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight,
+    protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight,
           float red, float green, float blue, float alpha) {
         for (ModelPart part : parts) {
             part.render(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
@@ -59,7 +59,7 @@ public abstract class MekanismJavaModel extends Model {
         return LayerDefinition.create(meshdefinition, textureWidth, textureHeight);
     }
 
-    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, float red, float green,
+    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, float red, float green,
           float blue, float alpha) {
         for (ModelPart part : parts) {
             renderWireFrame(part, poseStack, vertexConsumer, red, green, blue, alpha);

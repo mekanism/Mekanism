@@ -1,7 +1,7 @@
 package mekanism.common.tile.component.config;
 
-import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -10,6 +10,7 @@ import mekanism.common.MekanismLang;
 
 //TODO: Re-evaluate how we do colors, given for say energy as the transmission type it makes more sense to have input be green?
 // Maybe we should make some way to specify a color override?
+@NothingNullByDefault
 public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
     NONE(MekanismLang.SIDE_DATA_NONE, EnumColor.GRAY),
     INPUT(MekanismLang.SIDE_DATA_INPUT, EnumColor.DARK_RED),
@@ -40,7 +41,6 @@ public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
         return langEntry.getTranslationKey();
     }
 
-    @Nonnull
     @Override
     public DataType byIndex(int index) {
         return byIndexStatic(index);

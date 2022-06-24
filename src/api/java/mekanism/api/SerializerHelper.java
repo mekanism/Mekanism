@@ -7,8 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -22,7 +21,6 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
@@ -33,9 +31,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class SerializerHelper {
 
     private SerializerHelper() {
@@ -51,7 +49,7 @@ public class SerializerHelper {
      *
      * @return FloatingLong.
      */
-    public static FloatingLong getFloatingLong(@Nonnull JsonObject json, @Nonnull String key) {
+    public static FloatingLong getFloatingLong(@NotNull JsonObject json, @NotNull String key) {
         if (!json.has(key)) {
             throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
         }
@@ -66,7 +64,7 @@ public class SerializerHelper {
         }
     }
 
-    private static void validateKey(@Nonnull JsonObject json, @Nonnull String key) {
+    private static void validateKey(@NotNull JsonObject json, @NotNull String key) {
         if (!json.has(key)) {
             throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
         }
@@ -82,7 +80,7 @@ public class SerializerHelper {
      *
      * @return Chemical Type.
      */
-    public static ChemicalType getChemicalType(@Nonnull JsonObject json) {
+    public static ChemicalType getChemicalType(@NotNull JsonObject json) {
         if (!json.has(JsonConstants.CHEMICAL_TYPE)) {
             throw new JsonSyntaxException("Missing '" + JsonConstants.CHEMICAL_TYPE + "', expected to find a string");
         }
@@ -106,7 +104,7 @@ public class SerializerHelper {
      *
      * @return Item Stack.
      */
-    public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
+    public static ItemStack getItemStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
     }
@@ -119,7 +117,7 @@ public class SerializerHelper {
      *
      * @return Fluid Stack.
      */
-    public static FluidStack getFluidStack(@Nonnull JsonObject json, @Nonnull String key) {
+    public static FluidStack getFluidStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeFluid(GsonHelper.getAsJsonObject(json, key));
     }
@@ -132,7 +130,7 @@ public class SerializerHelper {
      *
      * @return Chemical Stack.
      */
-    public static ChemicalStack<?> getBoxedChemicalStack(@Nonnull JsonObject json, @Nonnull String key) {
+    public static ChemicalStack<?> getBoxedChemicalStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         JsonObject jsonObject = GsonHelper.getAsJsonObject(json, key);
         ChemicalType chemicalType = getChemicalType(jsonObject);
@@ -152,7 +150,7 @@ public class SerializerHelper {
      *
      * @return Gas Stack.
      */
-    public static GasStack getGasStack(@Nonnull JsonObject json, @Nonnull String key) {
+    public static GasStack getGasStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeGas(GsonHelper.getAsJsonObject(json, key));
     }
@@ -165,7 +163,7 @@ public class SerializerHelper {
      *
      * @return Infusion Stack.
      */
-    public static InfusionStack getInfusionStack(@Nonnull JsonObject json, @Nonnull String key) {
+    public static InfusionStack getInfusionStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeInfuseType(GsonHelper.getAsJsonObject(json, key));
     }
@@ -178,7 +176,7 @@ public class SerializerHelper {
      *
      * @return Pigment Stack.
      */
-    public static PigmentStack getPigmentStack(@Nonnull JsonObject json, @Nonnull String key) {
+    public static PigmentStack getPigmentStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializePigment(GsonHelper.getAsJsonObject(json, key));
     }
@@ -191,7 +189,7 @@ public class SerializerHelper {
      *
      * @return Slurry Stack.
      */
-    public static SlurryStack getSlurryStack(@Nonnull JsonObject json, @Nonnull String key) {
+    public static SlurryStack getSlurryStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeSlurry(GsonHelper.getAsJsonObject(json, key));
     }
@@ -203,7 +201,7 @@ public class SerializerHelper {
      *
      * @return Fluid Stack.
      */
-    public static FluidStack deserializeFluid(@Nonnull JsonObject json) {
+    public static FluidStack deserializeFluid(@NotNull JsonObject json) {
         if (!json.has(JsonConstants.AMOUNT)) {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
@@ -243,7 +241,7 @@ public class SerializerHelper {
      *
      * @return Gas Stack.
      */
-    public static GasStack deserializeGas(@Nonnull JsonObject json) {
+    public static GasStack deserializeGas(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.GAS, Gas::getFromRegistry);
     }
 
@@ -254,7 +252,7 @@ public class SerializerHelper {
      *
      * @return Infusion Stack.
      */
-    public static InfusionStack deserializeInfuseType(@Nonnull JsonObject json) {
+    public static InfusionStack deserializeInfuseType(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.INFUSE_TYPE, InfuseType::getFromRegistry);
     }
 
@@ -265,7 +263,7 @@ public class SerializerHelper {
      *
      * @return Pigment Stack.
      */
-    public static PigmentStack deserializePigment(@Nonnull JsonObject json) {
+    public static PigmentStack deserializePigment(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.PIGMENT, Pigment::getFromRegistry);
     }
 
@@ -276,12 +274,12 @@ public class SerializerHelper {
      *
      * @return Slurry Stack.
      */
-    public static SlurryStack deserializeSlurry(@Nonnull JsonObject json) {
+    public static SlurryStack deserializeSlurry(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.SLURRY, Slurry::getFromRegistry);
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK deserializeChemicalStack(@Nonnull JsonObject json,
-          @Nonnull String serializationKey, @Nonnull Function<ResourceLocation, CHEMICAL> fromRegistry) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK deserializeChemicalStack(@NotNull JsonObject json,
+          @NotNull String serializationKey, @NotNull Function<ResourceLocation, CHEMICAL> fromRegistry) {
         if (!json.has(JsonConstants.AMOUNT)) {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
@@ -309,7 +307,7 @@ public class SerializerHelper {
      *
      * @return Json representation.
      */
-    public static JsonElement serializeItemStack(@Nonnull ItemStack stack) {
+    public static JsonElement serializeItemStack(@NotNull ItemStack stack) {
         JsonObject json = new JsonObject();
         json.addProperty(JsonConstants.ITEM, ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
         if (stack.getCount() > 1) {
@@ -328,7 +326,7 @@ public class SerializerHelper {
      *
      * @return Json representation.
      */
-    public static JsonElement serializeFluidStack(@Nonnull FluidStack stack) {
+    public static JsonElement serializeFluidStack(@NotNull FluidStack stack) {
         JsonObject json = new JsonObject();
         json.addProperty(JsonConstants.FLUID, ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString());
         json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
@@ -345,7 +343,7 @@ public class SerializerHelper {
      *
      * @return Json representation.
      */
-    public static JsonElement serializeBoxedChemicalStack(@Nonnull BoxedChemicalStack stack) {
+    public static JsonElement serializeBoxedChemicalStack(@NotNull BoxedChemicalStack stack) {
         ChemicalType chemicalType = stack.getChemicalType();
         JsonObject json = switch (chemicalType) {
             case GAS -> serializeGasStack((GasStack) stack.getChemicalStack());
@@ -364,7 +362,7 @@ public class SerializerHelper {
      *
      * @return Json representation.
      */
-    public static JsonObject serializeGasStack(@Nonnull GasStack stack) {
+    public static JsonObject serializeGasStack(@NotNull GasStack stack) {
         return serializeChemicalStack(JsonConstants.GAS, stack);
     }
 
@@ -375,7 +373,7 @@ public class SerializerHelper {
      *
      * @return Json representation.
      */
-    public static JsonObject serializeInfusionStack(@Nonnull InfusionStack stack) {
+    public static JsonObject serializeInfusionStack(@NotNull InfusionStack stack) {
         return serializeChemicalStack(JsonConstants.INFUSE_TYPE, stack);
     }
 
@@ -386,7 +384,7 @@ public class SerializerHelper {
      *
      * @return Json representation.
      */
-    public static JsonObject serializePigmentStack(@Nonnull PigmentStack stack) {
+    public static JsonObject serializePigmentStack(@NotNull PigmentStack stack) {
         return serializeChemicalStack(JsonConstants.PIGMENT, stack);
     }
 
@@ -397,11 +395,11 @@ public class SerializerHelper {
      *
      * @return Json representation.
      */
-    public static JsonObject serializeSlurryStack(@Nonnull SlurryStack stack) {
+    public static JsonObject serializeSlurryStack(@NotNull SlurryStack stack) {
         return serializeChemicalStack(JsonConstants.SLURRY, stack);
     }
 
-    private static JsonObject serializeChemicalStack(@Nonnull String serializationKey, @Nonnull ChemicalStack<?> stack) {
+    private static JsonObject serializeChemicalStack(@NotNull String serializationKey, @NotNull ChemicalStack<?> stack) {
         JsonObject json = new JsonObject();
         json.addProperty(serializationKey, stack.getTypeRegistryName().toString());
         json.addProperty(JsonConstants.AMOUNT, stack.getAmount());

@@ -3,7 +3,6 @@ package mekanism.generators.client.jei;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
@@ -39,6 +38,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIRecipe> {
 
@@ -69,7 +69,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, @NotNull IFocusGroup focusGroup) {
         //Handle the coolant either special cased water or the proper coolant
         if (recipe.inputCoolant() == null) {
             initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, getWaterInput(recipe));

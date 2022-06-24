@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.BlockPos;
@@ -41,6 +39,8 @@ import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class WorldUtils {
 
@@ -53,7 +53,7 @@ public class WorldUtils {
      * @see #isBlockLoaded(BlockGetter, BlockPos)
      */
     @Contract("null, _ -> false")
-    public static boolean isChunkLoaded(@Nullable LevelReader world, @Nonnull BlockPos pos) {
+    public static boolean isChunkLoaded(@Nullable LevelReader world, @NotNull BlockPos pos) {
         return isChunkLoaded(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 
@@ -95,7 +95,7 @@ public class WorldUtils {
      * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
      */
     @Contract("null, _ -> false")
-    public static boolean isBlockLoaded(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+    public static boolean isBlockLoaded(@Nullable BlockGetter world, @NotNull BlockPos pos) {
         if (world == null) {
             return false;
         } else if (world instanceof LevelReader reader) {
@@ -118,7 +118,7 @@ public class WorldUtils {
      * @return True if the position is in bounds of the world or the given world is of a superclass of IWorldReader that does not have a concept of bounds.
      */
     @Contract("null, _ -> false")
-    public static boolean isBlockInBounds(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+    public static boolean isBlockInBounds(@Nullable BlockGetter world, @NotNull BlockPos pos) {
         if (world == null) {
             return false;
         } else if (world instanceof LevelReader reader) {
@@ -139,7 +139,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    private static ChunkAccess getChunkForPos(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
+    private static ChunkAccess getChunkForPos(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
         if (!isBlockInBounds(world, pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             // Also short circuit to check if the position is out of bounds before bothering to look up the chunk
@@ -171,8 +171,8 @@ public class WorldUtils {
      *
      * @return optional containing the blockstate if found, empty optional if not loaded
      */
-    @Nonnull
-    public static Optional<BlockState> getBlockState(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
+    @NotNull
+    public static Optional<BlockState> getBlockState(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
         //Get the blockstate using the chunk we found/had cached
         return getBlockState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -185,8 +185,8 @@ public class WorldUtils {
      *
      * @return optional containing the blockstate if found, empty optional if not loaded
      */
-    @Nonnull
-    public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+    @NotNull
+    public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, @NotNull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
@@ -204,8 +204,8 @@ public class WorldUtils {
      *
      * @return optional containing the fluidstate if found, empty optional if not loaded
      */
-    @Nonnull
-    public static Optional<FluidState> getFluidState(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
+    @NotNull
+    public static Optional<FluidState> getFluidState(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
         //Get the fluidstate using the chunk we found/had cached
         return getFluidState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -218,8 +218,8 @@ public class WorldUtils {
      *
      * @return optional containing the fluidstate if found, empty optional if not loaded
      */
-    @Nonnull
-    public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+    @NotNull
+    public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, @NotNull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
@@ -239,7 +239,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static BlockEntity getTileEntity(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
+    public static BlockEntity getTileEntity(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -257,7 +257,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
+    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
         return getTileEntity(clazz, world, chunkMap, pos, false);
     }
 
@@ -275,7 +275,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos,
+    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos,
           boolean logWrongType) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(clazz, getChunkForPos(world, chunkMap, pos), pos, logWrongType);
@@ -291,7 +291,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _ -> null")
-    public static BlockEntity getTileEntity(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+    public static BlockEntity getTileEntity(@Nullable BlockGetter world, @NotNull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return null
             return null;
@@ -310,7 +310,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable BlockGetter world, @Nonnull BlockPos pos) {
+    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable BlockGetter world, @NotNull BlockPos pos) {
         return getTileEntity(clazz, world, pos, false);
     }
 
@@ -326,7 +326,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _ -> null")
-    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable BlockGetter world, @Nonnull BlockPos pos, boolean logWrongType) {
+    public static <T extends BlockEntity> T getTileEntity(@NotNull Class<T> clazz, @Nullable BlockGetter world, @NotNull BlockPos pos, boolean logWrongType) {
         BlockEntity tile = getTileEntity(world, pos);
         if (tile == null) {
             return null;
@@ -409,7 +409,7 @@ public class WorldUtils {
         return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.dimension() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
     }
 
-    public static boolean tryPlaceContainedLiquid(@Nullable Player player, Level world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
+    public static boolean tryPlaceContainedLiquid(@Nullable Player player, Level world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable Direction side) {
         Fluid fluid = fluidStack.getFluid();
         FluidType fluidType = fluid.getFluidType();
         if (!fluidType.canBePlacedInLevel(world, pos, fluidStack)) {
@@ -440,7 +440,7 @@ public class WorldUtils {
         return side != null && tryPlaceContainedLiquid(player, world, pos.relative(side), fluidStack, null);
     }
 
-    private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, FluidType fluidType, @Nonnull FluidStack fluidStack) {
+    private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, FluidType fluidType, @NotNull FluidStack fluidStack) {
         SoundEvent soundevent = fluidType.getSound(player, world, pos, SoundActions.BUCKET_EMPTY);
         if (soundevent == null) {
             soundevent = MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
@@ -448,7 +448,7 @@ public class WorldUtils {
         world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
+    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
         if (soundEvent == null) {
             Fluid fluid = fluidStack.getFluid();
             soundEvent = fluid.getPickupSound().orElseGet(() -> fluid.getFluidType().getSound(player, world, pos, SoundActions.BUCKET_FILL));
@@ -507,7 +507,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@Nonnull BlockGetter world, @Nonnull BlockPos... positions) {
+    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @NotNull BlockPos... positions) {
         return areBlocksValidAndReplaceable(world, Arrays.stream(positions));
     }
 
@@ -516,7 +516,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@Nonnull BlockGetter world, @Nonnull Collection<BlockPos> positions) {
+    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @NotNull Collection<BlockPos> positions) {
         //TODO: Potentially move more block placement over to these methods
         return areBlocksValidAndReplaceable(world, positions.stream());
     }
@@ -526,7 +526,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@Nonnull BlockGetter world, @Nonnull Stream<BlockPos> positions) {
+    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @NotNull Stream<BlockPos> positions) {
         return positions.allMatch(pos -> isValidReplaceableBlock(world, pos));
     }
 
@@ -535,7 +535,7 @@ public class WorldUtils {
      *
      * @return True if the block can be replaced and is within the world's bounds.
      */
-    public static boolean isValidReplaceableBlock(@Nonnull BlockGetter world, @Nonnull BlockPos pos) {
+    public static boolean isValidReplaceableBlock(@NotNull BlockGetter world, @NotNull BlockPos pos) {
         return isBlockInBounds(world, pos) && world.getBlockState(pos).getMaterial().isReplaceable();
     }
 
@@ -618,7 +618,7 @@ public class WorldUtils {
      * @param pos   Position of the block
      * @param state The block state at the position
      */
-    public static void updateBlock(@Nullable Level world, @Nonnull BlockPos pos, BlockState state) {
+    public static void updateBlock(@Nullable Level world, @NotNull BlockPos pos, BlockState state) {
         if (isBlockLoaded(world, pos)) {
             world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }
@@ -630,7 +630,7 @@ public class WorldUtils {
      * @param world world the block is in
      * @param pos   coordinates
      */
-    public static void recheckLighting(@Nullable BlockAndTintGetter world, @Nonnull BlockPos pos) {
+    public static void recheckLighting(@Nullable BlockAndTintGetter world, @NotNull BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
             world.getLightEngine().checkBlock(pos);
         }

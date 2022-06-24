@@ -9,8 +9,6 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -50,6 +48,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
@@ -73,9 +73,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         super(container, inv, title);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public BooleanSupplier trackWarning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+    public BooleanSupplier trackWarning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
         if (warningTracker == null) {
             warningTracker = new WarningTracker();
         }
@@ -195,7 +195,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public void init(@Nonnull Minecraft minecraft, int width, int height) {
+    public void init(@NotNull Minecraft minecraft, int width, int height) {
         //Mark that we are not switching to JEI if we start being initialized again
         switchingToJEI = false;
         //Note: We are forced to do the logic that normally would be inside the "resize" method
@@ -235,7 +235,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderLabels(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         //Note: We intentionally don't push the modelViewStack, see notes further down in this method for more details
         matrix.translate(0, 0, 300);
@@ -311,10 +311,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         maxZOffsetNoWindows = -(maxZOffset - windowSeparation * windows.size());
     }
 
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
         GuiWindow window = getWindowHovering(mouseX, mouseY);
@@ -436,7 +436,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected boolean isMouseOverSlot(@Nonnull Slot slot, double mouseX, double mouseY) {
+    protected boolean isMouseOverSlot(@NotNull Slot slot, double mouseX, double mouseY) {
         if (slot instanceof IVirtualSlot virtualSlot) {
             //Virtual slots need special handling to allow for matching them to the window they may be attached to
             if (isVirtualSlotAvailable(virtualSlot)) {
@@ -525,7 +525,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
@@ -542,7 +542,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
 
@@ -561,29 +561,29 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public void renderTooltip(@Nonnull PoseStack poseStack, @Nonnull List<Component> tooltips, @Nonnull Optional<TooltipComponent> visualTooltipComponent, int mouseX,
+    public void renderTooltip(@NotNull PoseStack poseStack, @NotNull List<Component> tooltips, @NotNull Optional<TooltipComponent> visualTooltipComponent, int mouseX,
           int mouseY) {
         adjustTooltipZ(poseStack, pose -> super.renderTooltip(pose, tooltips, visualTooltipComponent, mouseX, mouseY));
     }
 
     @Override
-    public void renderComponentTooltip(@Nonnull PoseStack poseStack, @Nonnull List<Component> tooltips, int mouseX, int mouseY) {
+    public void renderComponentTooltip(@NotNull PoseStack poseStack, @NotNull List<Component> tooltips, int mouseX, int mouseY) {
         adjustTooltipZ(poseStack, pose -> super.renderComponentTooltip(pose, tooltips, mouseX, mouseY));
     }
 
     @Override
-    public void renderComponentTooltip(@Nonnull PoseStack poseStack, @Nonnull List<? extends FormattedText> tooltips, int mouseX, int mouseY, @Nullable Font font,
-          @Nonnull ItemStack stack) {
+    public void renderComponentTooltip(@NotNull PoseStack poseStack, @NotNull List<? extends FormattedText> tooltips, int mouseX, int mouseY, @Nullable Font font,
+          @NotNull ItemStack stack) {
         adjustTooltipZ(poseStack, pose -> super.renderComponentTooltip(pose, tooltips, mouseX, mouseY, font, stack));
     }
 
     @Override
-    public void renderTooltip(@Nonnull PoseStack poseStack, @Nonnull List<? extends FormattedCharSequence> tooltips, int mouseX, int mouseY) {
+    public void renderTooltip(@NotNull PoseStack poseStack, @NotNull List<? extends FormattedCharSequence> tooltips, int mouseX, int mouseY) {
         adjustTooltipZ(poseStack, pose -> super.renderTooltip(pose, tooltips, mouseX, mouseY));
     }
 
     //Used as a helper to wrap and fix the various calls to renderTooltipInternal so that tooltips for bundles appear in the proper location
-    private void adjustTooltipZ(@Nonnull PoseStack poseStack, @Nonnull Consumer<PoseStack> tooltipRender) {
+    private void adjustTooltipZ(@NotNull PoseStack poseStack, @NotNull Consumer<PoseStack> tooltipRender) {
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         //Apply the current matrix to the view so that we render items and tooltips at the proper level
@@ -598,12 +598,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public void renderItemTooltip(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+    public void renderItemTooltip(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis) {
         renderTooltip(matrix, stack, xAxis, yAxis);
     }
 
     @Override
-    public void renderItemTooltipWithExtra(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
+    public void renderItemTooltipWithExtra(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
             renderItemTooltip(matrix, stack, xAxis, yAxis);
         } else {

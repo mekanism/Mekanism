@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -24,6 +22,7 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK>, IMultiIngredient<STACK, INGREDIENT> {
@@ -31,7 +30,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     private final INGREDIENT[] ingredients;
 
     @SafeVarargs
-    protected MultiChemicalStackIngredient(@Nonnull INGREDIENT... ingredients) {
+    protected MultiChemicalStackIngredient(@NotNull INGREDIENT... ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -45,23 +44,23 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     @Override
-    public boolean test(@Nonnull STACK stack) {
+    public boolean test(@NotNull STACK stack) {
         return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
     }
 
     @Override
-    public boolean testType(@Nonnull STACK stack) {
+    public boolean testType(@NotNull STACK stack) {
         return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
     }
 
     @Override
-    public boolean testType(@Nonnull CHEMICAL chemical) {
+    public boolean testType(@NotNull CHEMICAL chemical) {
         return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(chemical));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public STACK getMatchingInstance(@Nonnull STACK stack) {
+    public STACK getMatchingInstance(@NotNull STACK stack) {
         for (INGREDIENT ingredient : ingredients) {
             STACK matchingInstance = ingredient.getMatchingInstance(stack);
             if (!matchingInstance.isEmpty()) {
@@ -72,7 +71,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     @Override
-    public long getNeededAmount(@Nonnull STACK stack) {
+    public long getNeededAmount(@NotNull STACK stack) {
         for (INGREDIENT ingredient : ingredients) {
             long amount = ingredient.getNeededAmount(stack);
             if (amount > 0) {
@@ -87,10 +86,10 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public List<@NonNull STACK> getRepresentations() {
-        List<@NonNull STACK> representations = new ArrayList<>();
+    public List<@NotNull STACK> getRepresentations() {
+        List<@NotNull STACK> representations = new ArrayList<>();
         for (INGREDIENT ingredient : ingredients) {
             representations.addAll(ingredient.getRepresentations());
         }
@@ -112,7 +111,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonElement serialize() {
         JsonArray json = new JsonArray();

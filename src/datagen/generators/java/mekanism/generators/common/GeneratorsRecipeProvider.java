@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
@@ -39,7 +39,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private static final char GLASS_CHAR = 'G';

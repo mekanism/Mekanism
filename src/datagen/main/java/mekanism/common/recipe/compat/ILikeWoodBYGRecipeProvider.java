@@ -1,13 +1,13 @@
 package mekanism.common.recipe.compat;
 
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import potionstudios.byg.common.block.BYGWoodTypes;
 import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
 
     public ILikeWoodBYGRecipeProvider() {

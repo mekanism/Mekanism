@@ -3,12 +3,12 @@ package mekanism.common.resource.ore;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.world.height.HeightShape;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 public enum OreType implements StringRepresentable {
     TIN(PrimaryResource.TIN,
@@ -79,7 +79,7 @@ public enum OreType implements StringRepresentable {
         return null;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getSerializedName() {
         return resource.getRegistrySuffix();

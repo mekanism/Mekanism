@@ -2,8 +2,6 @@ package mekanism.common.integration.energy;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -15,6 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EnergyCompatUtils {
 
@@ -36,7 +36,7 @@ public class EnergyCompatUtils {
     /**
      * Checks if it is a known and enabled energy capability
      */
-    public static boolean isEnergyCapability(@Nonnull Capability<?> capability) {
+    public static boolean isEnergyCapability(@NotNull Capability<?> capability) {
         //The capability may not be registered if the mod that adds it is not loaded. In which case we can just
         // short circuit and not check if
         if (capability.isRegistered()) {
@@ -60,7 +60,7 @@ public class EnergyCompatUtils {
         return tile != null && !tile.isRemoved() && tile.hasLevel();
     }
 
-    public static boolean hasStrictEnergyHandler(@Nonnull ItemStack stack) {
+    public static boolean hasStrictEnergyHandler(@NotNull ItemStack stack) {
         return !stack.isEmpty() && hasStrictEnergyHandler(stack, null);
     }
 
@@ -79,21 +79,21 @@ public class EnergyCompatUtils {
     }
 
     @Nullable//TODO: Transition usages of this to getLazyStrictEnergyHandler?
-    public static IStrictEnergyHandler getStrictEnergyHandler(@Nonnull ItemStack stack) {
+    public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemStack stack) {
         return getLazyStrictEnergyHandler(stack).resolve().orElse(null);
     }
 
-    @Nonnull
-    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nonnull ItemStack stack) {
+    @NotNull
+    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@NotNull ItemStack stack) {
         return stack.isEmpty() ? LazyOptional.empty() : getLazyStrictEnergyHandler(stack, null);
     }
 
-    @Nonnull
+    @NotNull
     public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable BlockEntity tile, Direction side) {
         return isTileValid(tile) ? getLazyStrictEnergyHandler((ICapabilityProvider) tile, side) : LazyOptional.empty();
     }
 
-    @Nonnull
+    @NotNull
     private static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
         //TODO: Eventually look into making it so that we cache the handler we get back. Maybe by passing a listener
         // to this that we can give to the capability as we wrap the result into
@@ -111,8 +111,8 @@ public class EnergyCompatUtils {
     /**
      * @apiNote It is expected that isEnergyCapability is called before calling this method
      */
-    @Nonnull
-    public static <T> LazyOptional<T> getEnergyCapability(@Nonnull Capability<T> capability, @Nonnull IStrictEnergyHandler handler) {
+    @NotNull
+    public static <T> LazyOptional<T> getEnergyCapability(@NotNull Capability<T> capability, @NotNull IStrictEnergyHandler handler) {
         //The capability may not be registered if the mod that adds it is not loaded. In which case we can just
         // short circuit and not check if
         if (capability.isRegistered()) {

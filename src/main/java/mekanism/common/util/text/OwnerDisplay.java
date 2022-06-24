@@ -1,8 +1,6 @@
 package mekanism.common.util.text;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
@@ -12,9 +10,12 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OwnerDisplay implements IHasTextComponent {
 
+    @Nullable
     private final Player player;
     @Nullable
     private final UUID ownerUUID;
@@ -49,6 +50,7 @@ public class OwnerDisplay implements IHasTextComponent {
         return new OwnerDisplay(player, ownerUUID, ownerName, colorBase);
     }
 
+    @NotNull
     @Override
     public Component getTextComponent() {
         if (ownerUUID == null) {
@@ -68,7 +70,7 @@ public class OwnerDisplay implements IHasTextComponent {
     }
 
     @Nullable
-    public static String getOwnerName(@Nullable Player player, @Nonnull UUID ownerUUID, @Nullable String ownerName) {
+    public static String getOwnerName(@Nullable Player player, @NotNull UUID ownerUUID, @Nullable String ownerName) {
         //Allows for the name to be overridden by a passed value
         if (ownerName != null) {
             return ownerName;

@@ -3,7 +3,6 @@ package mekanism.client.render.item.block;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
@@ -22,6 +21,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class RenderFluidTankItem extends MekanismISTER {
 
@@ -36,12 +36,12 @@ public class RenderFluidTankItem extends MekanismISTER {
     private ModelFluidTank modelFluidTank;
 
     @Override
-    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         modelFluidTank = new ModelFluidTank(getEntityModels());
     }
 
     @Override
-    public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+    public void renderByItem(@NotNull ItemStack stack, @NotNull TransformType transformType, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight) {
         FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
         FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
@@ -66,7 +66,7 @@ public class RenderFluidTankItem extends MekanismISTER {
         matrix.popPose();
     }
 
-    private Model3D getFluidModel(@Nonnull FluidStack fluid, int stage) {
+    private Model3D getFluidModel(@NotNull FluidStack fluid, int stage) {
         if (cachedCenterFluids.containsKey(fluid) && cachedCenterFluids.get(fluid).containsKey(stage)) {
             return cachedCenterFluids.get(fluid).get(stage);
         }

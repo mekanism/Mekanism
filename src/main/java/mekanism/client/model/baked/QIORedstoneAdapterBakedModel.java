@@ -1,7 +1,7 @@
 package mekanism.client.model.baked;
 
 import java.util.List;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
@@ -10,7 +10,9 @@ import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.client.model.data.IModelData;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class QIORedstoneAdapterBakedModel extends ExtensionBakedModel<Boolean> {
 
     private final QuadTransformation TORCH_TRANSFORM = QuadTransformation.list(QuadTransformation.fullbright, QuadTransformation.texture(MekanismRenderer.redstoneTorch));

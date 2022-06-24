@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -38,6 +37,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class TurbineMultiblockData extends MultiblockData {
 
@@ -196,7 +196,7 @@ public class TurbineMultiblockData extends MultiblockData {
         return lowerVolume * GAS_PER_TANK;
     }
 
-    @Nonnull
+    @NotNull
     public FloatingLong getEnergyCapacity() {
         return energyCapacity;
     }

@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter.miner;
 
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostItemConsumer;
@@ -9,6 +8,7 @@ import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.StackUtils;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 

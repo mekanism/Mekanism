@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
@@ -35,8 +33,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
     @Nullable
@@ -47,7 +47,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      */
     boolean applyToStack(ItemStack stack);
 
-    @Nonnull
+    @NotNull
     static Set<RecipeUpgradeType> getSupportedTypes(ItemStack stack) {
         //TODO: Add more types of data that can be transferred such as side configs, auto sort, bucket mode, dumping mode
         if (stack.isEmpty()) {
@@ -110,7 +110,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@Nonnull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
+    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
         ListTag containers = ItemDataUtils.getList(stack, key);
         return containers.isEmpty() ? null : creator.apply(containers);
     }
@@ -119,7 +119,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      * Make sure to validate with getSupportedTypes before calling this
      */
     @Nullable
-    static RecipeUpgradeData<?> getUpgradeData(@Nonnull RecipeUpgradeType type, @Nonnull ItemStack stack) {
+    static RecipeUpgradeData<?> getUpgradeData(@NotNull RecipeUpgradeType type, @NotNull ItemStack stack) {
         Item item = stack.getItem();
         return switch (type) {
             case ENERGY -> getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);

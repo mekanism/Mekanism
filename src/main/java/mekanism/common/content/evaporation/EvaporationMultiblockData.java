@@ -6,11 +6,8 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -56,6 +53,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
 
@@ -97,8 +96,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private final Int2ObjectMap<NonNullConsumer<LazyOptional<IEvaporationSolar>>> cachedSolarListeners = new Int2ObjectArrayMap<>(4);
     private final Int2ObjectMap<LazyOptional<IEvaporationSolar>> cachedSolar = new Int2ObjectArrayMap<>(4);
 
-    private final IOutputHandler<@NonNull FluidStack> outputHandler;
-    private final IInputHandler<@NonNull FluidStack> inputHandler;
+    private final IOutputHandler<@NotNull FluidStack> outputHandler;
+    private final IInputHandler<@NotNull FluidStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemInput")
     private final FluidInventorySlot inputInputSlot;
@@ -205,7 +204,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         return height() * 4 * FLUID_PER_TANK;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> getRecipeType() {
         return MekanismRecipeType.EVAPORATING;
@@ -222,9 +221,9 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         Arrays.fill(trackedErrors, false);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
+    public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@NotNull FluidToFluidRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.fluidToFluid(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(errors -> {
                   for (int i = 0; i < trackedErrors.length; i++) {
@@ -337,7 +336,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         }
 
         @Override
-        public void accept(@Nonnull LazyOptional<IEvaporationSolar> ignored) {
+        public void accept(@NotNull LazyOptional<IEvaporationSolar> ignored) {
             EvaporationMultiblockData multiblockData = multiblock.get();
             //Check to make sure the multiblock is still valid and that the position we are going to check is actually still loaded
             if (multiblockData != null && multiblockData.isFormed()) {

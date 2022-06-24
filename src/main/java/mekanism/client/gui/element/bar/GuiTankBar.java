@@ -3,8 +3,6 @@ package mekanism.client.gui.element.bar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
@@ -22,6 +20,8 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> implements IJEIIngredientHelper {
 
@@ -35,7 +35,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     protected abstract TankType getType(STACK stack);
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         STACK stored = getHandler().getStack();
         if (isEmpty(stored)) {
             super.renderToolTip(matrix, mouseX, mouseY);
@@ -109,7 +109,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     //Note the GuiBar.IBarInfoHandler is needed, as it cannot compile and resolve just IBarInfoHandler
     public interface TankInfoProvider<STACK> extends GuiBar.IBarInfoHandler {
 
-        @Nonnull
+        @NotNull
         STACK getStack();
 
         int getTankIndex();

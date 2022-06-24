@@ -1,13 +1,13 @@
 package mekanism.api.recipes;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import mekanism.api.inventory.IgnoredIInventory;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for helping wrap our recipes into IRecipes.
@@ -30,14 +30,14 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
      */
     public abstract void write(FriendlyByteBuf buffer);
 
-    @Nonnull
+    @NotNull
     @Override
     public ResourceLocation getId() {
         return id;
     }
 
     @Override
-    public boolean matches(@Nonnull IgnoredIInventory inv, @Nonnull Level world) {
+    public boolean matches(@NotNull IgnoredIInventory inv, @NotNull Level world) {
         //TODO: Decide if we ever want to make use of this method
         //Default to not being able to match incomplete recipes though
         return !isIncomplete();
@@ -54,9 +54,9 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
     @Override
     public abstract boolean isIncomplete();
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack assemble(@Nonnull IgnoredIInventory inv) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv) {
         return ItemStack.EMPTY;
     }
 
@@ -65,7 +65,7 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
         return true;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getResultItem() {
         return ItemStack.EMPTY;

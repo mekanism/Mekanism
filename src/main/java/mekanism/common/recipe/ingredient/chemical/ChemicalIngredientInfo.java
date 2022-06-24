@@ -1,6 +1,5 @@
 package mekanism.common.recipe.ingredient.chemical;
 
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -16,6 +15,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Helper class for providing information to the various chemical ingredients
@@ -51,7 +51,7 @@ public class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK e
         return serializationKey;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public STACK getEmptyStack() {
         return emptyStack;

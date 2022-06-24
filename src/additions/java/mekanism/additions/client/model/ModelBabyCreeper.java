@@ -1,7 +1,6 @@
 package mekanism.additions.client.model;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
 import net.minecraft.client.model.AgeableListModel;
@@ -14,6 +13,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelBabyCreeper extends AgeableListModel<EntityBabyCreeper> {
 
@@ -59,20 +59,20 @@ public class ModelBabyCreeper extends AgeableListModel<EntityBabyCreeper> {
         this.rightFrontLeg = root.getChild("left_front_leg");
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Iterable<ModelPart> headParts() {
         return List.of(this.head);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Iterable<ModelPart> bodyParts() {
         return List.of(this.body, this.leftHindLeg, this.rightHindLeg, this.leftFrontLeg, this.rightFrontLeg);
     }
 
     @Override
-    public void setupAnim(@Nonnull EntityBabyCreeper creeper, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(@NotNull EntityBabyCreeper creeper, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.head.yRot = netHeadYaw * ((float) Math.PI / 180F);
         this.head.xRot = headPitch * ((float) Math.PI / 180F);
         this.leftHindLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;

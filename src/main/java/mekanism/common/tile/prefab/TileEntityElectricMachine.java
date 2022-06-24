@@ -1,10 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -37,6 +34,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
@@ -47,8 +46,8 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
-    protected final IInputHandler<@NonNull ItemStack> inputHandler;
-    protected final IOutputHandler<@NonNull ItemStack> outputHandler;
+    protected final IInputHandler<@NotNull ItemStack> inputHandler;
+    protected final IOutputHandler<@NotNull ItemStack> outputHandler;
 
     private MachineEnergyContainer<TileEntityElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
@@ -71,7 +70,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
         outputHandler = OutputHelper.getOutputHandler(outputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -79,7 +78,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -104,9 +103,9 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
         return findFirstRecipe(inputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.itemToItem(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
@@ -117,7 +116,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public MachineUpgradeData getUpgradeData() {
         return new MachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents());

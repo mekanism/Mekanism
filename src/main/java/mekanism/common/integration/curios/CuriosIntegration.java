@@ -2,7 +2,6 @@ package mekanism.common.integration.curios;
 
 import java.util.Optional;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismCurioRenderer;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.Mekanism;
@@ -18,6 +17,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.SlotTypePreset;
@@ -47,17 +47,17 @@ public class CuriosIntegration {
         return CuriosApi.getCuriosHelper().getEquippedCurios(entity).resolve();
     }
 
-    public static Optional<SlotResult> findFirstCurioAsResult(@Nonnull LivingEntity entity, Predicate<ItemStack> filter) {
+    public static Optional<SlotResult> findFirstCurioAsResult(@NotNull LivingEntity entity, Predicate<ItemStack> filter) {
         return CuriosApi.getCuriosHelper().findFirstCurio(entity, filter);
     }
 
-    public static ItemStack findFirstCurio(@Nonnull LivingEntity entity, Predicate<ItemStack> filter) {
+    public static ItemStack findFirstCurio(@NotNull LivingEntity entity, Predicate<ItemStack> filter) {
         return findFirstCurioAsResult(entity, filter)
               .map(SlotResult::stack)
               .orElse(ItemStack.EMPTY);
     }
 
-    public static ItemStack getCurioStack(@Nonnull LivingEntity entity, String slotType, int slot) {
+    public static ItemStack getCurioStack(@NotNull LivingEntity entity, String slotType, int slot) {
         return CuriosApi.getCuriosHelper().getCuriosHandler(entity)
               .resolve()
               .flatMap(handler -> handler.getStacksHandler(slotType))

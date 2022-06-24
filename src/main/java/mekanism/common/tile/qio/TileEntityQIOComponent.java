@@ -1,7 +1,6 @@
 package mekanism.common.tile.qio;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -20,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
 
@@ -49,7 +49,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -60,7 +60,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {
             lastColor = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));

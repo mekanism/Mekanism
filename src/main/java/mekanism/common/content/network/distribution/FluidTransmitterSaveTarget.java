@@ -1,18 +1,17 @@
 package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.math.MathUtils;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 //TODO: Improve handling for fluid storage as longs
-public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarget.SaveHandler, Integer, @NonNull FluidStack> {
+public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarget.SaveHandler, Integer, @NotNull FluidStack> {
 
-    public FluidTransmitterSaveTarget(@Nonnull FluidStack type, Collection<MechanicalPipe> transmitters) {
+    public FluidTransmitterSaveTarget(@NotNull FluidStack type, Collection<MechanicalPipe> transmitters) {
         super(transmitters.size());
         this.extra = type;
         transmitters.forEach(transmitter -> addHandler(new SaveHandler(transmitter)));
@@ -24,7 +23,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
     }
 
     @Override
-    protected Integer simulate(FluidTransmitterSaveTarget.SaveHandler handler, @Nonnull FluidStack fluidStack) {
+    protected Integer simulate(FluidTransmitterSaveTarget.SaveHandler handler, @NotNull FluidStack fluidStack) {
         return handler.simulate(fluidStack);
     }
 
@@ -53,7 +52,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
             splitInfo.send(amount);
         }
 
-        protected Integer simulate(@Nonnull FluidStack fluidStack) {
+        protected Integer simulate(@NotNull FluidStack fluidStack) {
             if (!currentStored.isEmpty() && !currentStored.isFluidEqual(fluidStack)) {
                 return 0;
             }

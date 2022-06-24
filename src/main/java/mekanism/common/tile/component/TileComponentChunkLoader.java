@@ -9,8 +9,6 @@ import it.unimi.dsi.fastutil.longs.LongSets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
@@ -27,6 +25,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
 import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoader> implements ITileComponent {
@@ -58,7 +58,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getComponent().isUpgradeInstalled(Upgrade.ANCHOR);
     }
 
-    private void releaseChunkTickets(@Nonnull ServerLevel world, @Nonnull BlockPos pos) {
+    private void releaseChunkTickets(@NotNull ServerLevel world, @NotNull BlockPos pos) {
         int tickets = chunkSet.size();
         LOGGER.debug("Attempting to remove {} chunk tickets. Pos: {} World: {}", tickets, pos, world.dimension().location());
         if (tickets > 0) {
@@ -72,7 +72,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         prevWorld = null;
     }
 
-    private void registerChunkTickets(@Nonnull ServerLevel world) {
+    private void registerChunkTickets(@NotNull ServerLevel world) {
         prevPos = tile.getBlockPos();
         prevWorld = world;
         Set<ChunkPos> chunks = tile.getChunkSet();
@@ -102,7 +102,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
      *
      * @apiNote Only call server side
      */
-    private void refreshChunkTickets(@Nonnull ServerLevel world, @Nonnull BlockPos pos, boolean ticketsChanged) {
+    private void refreshChunkTickets(@NotNull ServerLevel world, @NotNull BlockPos pos, boolean ticketsChanged) {
         boolean canOperate = canOperate();
         if (hasRegistered && prevWorld != null && prevPos != null) {
             //Note: If we have already registered the previous world and previous position
@@ -236,7 +236,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
 
         @Override
-        public void validateTickets(@Nonnull ServerLevel world, @Nonnull TicketHelper ticketHelper) {
+        public void validateTickets(@NotNull ServerLevel world, @NotNull TicketHelper ticketHelper) {
             ResourceLocation worldName = world.dimension().location();
             LOGGER.debug("Validating tickets for: {}. Blocks: {}, Entities: {}", worldName, ticketHelper.getBlockTickets().size(),
                   ticketHelper.getEntityTickets().size());

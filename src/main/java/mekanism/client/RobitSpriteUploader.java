@@ -1,8 +1,6 @@
 package mekanism.client;
 
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.RenderType;
@@ -10,6 +8,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RobitSpriteUploader extends TextureAtlasHolder {
 
@@ -23,15 +23,15 @@ public class RobitSpriteUploader extends TextureAtlasHolder {
         UPLOADER = this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Stream<ResourceLocation> getResourcesToLoad() {
         return MekanismAPI.robitSkinRegistry().getValues().stream().flatMap(skin -> skin.getTextures().stream());
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public TextureAtlasSprite getSprite(@Nonnull ResourceLocation location) {
+    public TextureAtlasSprite getSprite(@NotNull ResourceLocation location) {
         return super.getSprite(location);
     }
 }

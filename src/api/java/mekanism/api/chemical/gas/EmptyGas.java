@@ -1,8 +1,8 @@
 package mekanism.api.chemical.gas;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import net.minecraftforge.registries.tags.IReverseTag;
+import org.jetbrains.annotations.NotNull;
 
 public final class EmptyGas extends Gas {
 
@@ -10,7 +10,7 @@ public final class EmptyGas extends Gas {
         super(GasBuilder.builder().hidden());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Optional<IReverseTag<Gas>> getReverseTag() {
         //Empty gas is in no tags

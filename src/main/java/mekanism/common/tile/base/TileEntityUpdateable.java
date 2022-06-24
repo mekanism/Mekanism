@@ -1,8 +1,6 @@
 package mekanism.common.tile.base;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -17,6 +15,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally, we
@@ -47,7 +47,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
      *
      * @return The world!
      */
-    @Nonnull
+    @NotNull
     protected Level getWorldNN() {
         return Objects.requireNonNull(getLevel(), "getWorldNN called before world set");
     }
@@ -104,13 +104,13 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         //We don't want to do a full read from NBT so simply call the super's read method to let Forge do whatever
         // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
         super.load(tag);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getUpdateTag() {
         return getReducedUpdateTag();
@@ -119,7 +119,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     /**
      * Similar to {@link #getUpdateTag()} but with reduced information for when we are doing our own syncing.
      */
-    @Nonnull
+    @NotNull
     public CompoundTag getReducedUpdateTag() {
         //Add the base update tag information
         return super.getUpdateTag();
@@ -133,7 +133,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         }
     }
 
-    public void handleUpdatePacket(@Nonnull CompoundTag tag) {
+    public void handleUpdatePacket(@NotNull CompoundTag tag) {
         handleUpdateTag(tag);
     }
 
@@ -165,13 +165,13 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         updateCoord();
     }
 
     @Override
-    public void setLevel(@Nonnull Level world) {
+    public void setLevel(@NotNull Level world) {
         super.setLevel(world);
         updateCoord();
     }

@@ -1,11 +1,13 @@
 package mekanism.common.util.text;
 
 import mekanism.api.Upgrade;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
 
+@NothingNullByDefault
 public class UpgradeDisplay implements IHasTextComponent {
 
     private final Upgrade upgrade;

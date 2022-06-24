@@ -4,18 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Input: FluidStack
@@ -26,10 +23,8 @@ import org.jetbrains.annotations.Contract;
  *
  * @apiNote Electrolytic Separators can process this recipe type.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NonNull FluidStack> {
+@NothingNullByDefault
+public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
 
     private final FluidStackIngredient input;
     private final GasStack leftGasOutput;
@@ -78,7 +73,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     }
 
     @Override
-    public boolean test(@Nonnull FluidStack fluidStack) {
+    public boolean test(FluidStack fluidStack) {
         return this.input.test(fluidStack);
     }
 
@@ -118,7 +113,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
         rightGasOutput.writeToPacket(buffer);
     }
 
-    public record ElectrolysisRecipeOutput(@Nonnull GasStack left, @Nonnull GasStack right) {
+    public record ElectrolysisRecipeOutput(@NotNull GasStack left, @NotNull GasStack right) {
 
         public ElectrolysisRecipeOutput {
             Objects.requireNonNull(left, "Left output cannot be null.");

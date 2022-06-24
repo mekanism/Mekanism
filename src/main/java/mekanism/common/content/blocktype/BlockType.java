@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream.Builder;
-import javax.annotation.Nonnull;
 import mekanism.api.functions.TriConsumer;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
@@ -20,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockType {
 
@@ -64,7 +64,7 @@ public class BlockType {
         return attributeMap.values();
     }
 
-    @Nonnull
+    @NotNull
     public ILangEntry getDescription() {
         return description;
     }

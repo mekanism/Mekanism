@@ -4,8 +4,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 
+@MethodsReturnNonnullByDefault
 public abstract class BooleanStateDisplay implements IHasTextComponent {
 
     protected final boolean value;

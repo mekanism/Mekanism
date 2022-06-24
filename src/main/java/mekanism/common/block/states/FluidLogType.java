@@ -1,9 +1,9 @@
 package mekanism.common.block.states;
 
-import javax.annotation.Nonnull;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.NotNull;
 
 public enum FluidLogType implements IFluidLogType, StringRepresentable {
     EMPTY("empty", Fluids.EMPTY),
@@ -23,7 +23,7 @@ public enum FluidLogType implements IFluidLogType, StringRepresentable {
         return fluid;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getSerializedName() {
         return name;

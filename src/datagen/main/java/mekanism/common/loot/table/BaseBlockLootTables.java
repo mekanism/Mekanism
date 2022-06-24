@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.BlockCardboardBox;
@@ -54,6 +52,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseBlockLootTables extends BlockLoot {
 
@@ -67,13 +67,13 @@ public abstract class BaseBlockLootTables extends BlockLoot {
     protected abstract void addTables();
 
     @Override
-    protected void add(@Nonnull Block block, @Nonnull LootTable.Builder table) {
+    protected void add(@NotNull Block block, @NotNull LootTable.Builder table) {
         //Overwrite the core register method to add to our list of known blocks
         super.add(block, table);
         knownBlocks.add(block);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Iterable<Block> getKnownBlocks() {
         return knownBlocks;
@@ -245,7 +245,7 @@ public abstract class BaseBlockLootTables extends BlockLoot {
     /**
      * Like vanilla's {@link BlockLoot#createSlabItemTable(Block)} except with a named pool
      */
-    @Nonnull
+    @NotNull
     protected static LootTable.Builder createSlabItemTable(Block slab) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
               .name("main")
@@ -264,14 +264,14 @@ public abstract class BaseBlockLootTables extends BlockLoot {
      * Like vanilla's {@link BlockLoot#dropOther(Block, ItemLike)} except with a named pool
      */
     @Override
-    public void dropOther(@Nonnull Block block, @Nonnull ItemLike drop) {
+    public void dropOther(@NotNull Block block, @NotNull ItemLike drop) {
         add(block, createSingleItemTable(drop));
     }
 
     /**
      * Like vanilla's {@link BlockLoot#createSingleItemTable(ItemLike)} except with a named pool
      */
-    @Nonnull
+    @NotNull
     protected static LootTable.Builder createSingleItemTable(ItemLike item) {
         return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool()
               .name("main")
@@ -283,25 +283,25 @@ public abstract class BaseBlockLootTables extends BlockLoot {
     /**
      * Like vanilla's {@link BlockLoot#createSingleItemTableWithSilkTouch(Block, ItemLike, NumberProvider)} except with a named pool
      */
-    @Nonnull
-    protected static LootTable.Builder createSingleItemTableWithSilkTouch(@Nonnull Block block, @Nonnull ItemLike item, @Nonnull NumberProvider range) {
+    @NotNull
+    protected static LootTable.Builder createSingleItemTableWithSilkTouch(@NotNull Block block, @NotNull ItemLike item, @NotNull NumberProvider range) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(range))));
     }
 
     /**
      * Like vanilla's {@link BlockLoot#createSilkTouchDispatchTable(Block, LootPoolEntryContainer.Builder)} except with a named pool
      */
-    @Nonnull
-    protected static LootTable.Builder createSilkTouchDispatchTable(@Nonnull Block block, @Nonnull LootPoolEntryContainer.Builder<?> builder) {
+    @NotNull
+    protected static LootTable.Builder createSilkTouchDispatchTable(@NotNull Block block, @NotNull LootPoolEntryContainer.Builder<?> builder) {
         return createSelfDropDispatchTable(block, HAS_SILK_TOUCH, builder);
     }
 
     /**
      * Like vanilla's {@link BlockLoot#createSelfDropDispatchTable(Block, LootItemCondition.Builder, LootPoolEntryContainer.Builder)} except with a named pool
      */
-    @Nonnull
-    protected static LootTable.Builder createSelfDropDispatchTable(@Nonnull Block block, @Nonnull LootItemCondition.Builder conditionBuilder,
-          @Nonnull LootPoolEntryContainer.Builder<?> entry) {
+    @NotNull
+    protected static LootTable.Builder createSelfDropDispatchTable(@NotNull Block block, @NotNull LootItemCondition.Builder conditionBuilder,
+          @NotNull LootPoolEntryContainer.Builder<?> entry) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
               .name("main")
               .setRolls(ConstantValue.exactly(1))

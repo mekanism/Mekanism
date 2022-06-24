@@ -1,6 +1,6 @@
 package mekanism.client.jei.interfaces;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public interface IJEIIngredientHelper {
 

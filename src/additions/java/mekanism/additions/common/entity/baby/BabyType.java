@@ -2,8 +2,8 @@ package mekanism.additions.common.entity.baby;
 
 import com.mojang.serialization.Codec;
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 public enum BabyType implements StringRepresentable {
     CREEPER,
@@ -20,7 +20,7 @@ public enum BabyType implements StringRepresentable {
         this.serializedName = name().toLowerCase(Locale.ROOT);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getSerializedName() {
         return serializedName;

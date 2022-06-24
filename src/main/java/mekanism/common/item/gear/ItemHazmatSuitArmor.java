@@ -1,12 +1,10 @@
 package mekanism.common.item.gear;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.integration.gender.GenderCapabilityHelper;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
@@ -15,6 +13,7 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemHazmatSuitArmor extends ArmorItem {
 
@@ -35,7 +34,7 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     }
 
     @Override
-    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+    public int getDefaultTooltipHideFlags(@NotNull ItemStack stack) {
         return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
@@ -47,7 +46,7 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     }
 
     @Override
-    public boolean isEnchantable(@Nonnull ItemStack stack) {
+    public boolean isEnchantable(@NotNull ItemStack stack) {
         return material.getEnchantmentValue() > 0 && super.isEnchantable(stack);
     }
 
@@ -61,8 +60,7 @@ public class ItemHazmatSuitArmor extends ArmorItem {
         return isEnchantable(stack) && super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
+    @NothingNullByDefault
     protected static class HazmatMaterial extends BaseSpecialArmorMaterial {
 
         @Override

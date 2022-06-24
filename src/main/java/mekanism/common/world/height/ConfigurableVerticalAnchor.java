@@ -2,7 +2,6 @@ package mekanism.common.world.height;
 
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -10,6 +9,7 @@ import mekanism.common.resource.ore.OreAnchor;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import org.jetbrains.annotations.Nullable;
 
 public record ConfigurableVerticalAnchor(Supplier<AnchorType> anchorType, IntSupplier value) {
 

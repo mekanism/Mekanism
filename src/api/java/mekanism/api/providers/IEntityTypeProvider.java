@@ -1,17 +1,17 @@
 package mekanism.api.providers;
 
-import javax.annotation.Nonnull;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@MethodsReturnNonnullByDefault
 public interface IEntityTypeProvider extends IBaseProvider {
 
     /**
      * Gets the entity type this provider represents.
      */
-    @Nonnull
     EntityType<?> getEntityType();
 
     @Override

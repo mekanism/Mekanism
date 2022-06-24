@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.tier.ITier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
@@ -166,6 +165,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import org.jetbrains.annotations.NotNull;
 
 public class MekanismBlocks {
 
@@ -445,7 +445,7 @@ public class MekanismBlocks {
      *
      * @return factory with defined tier and recipe type
      */
-    public static BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> getFactory(@Nonnull FactoryTier tier, @Nonnull FactoryType type) {
+    public static BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> getFactory(@NotNull FactoryTier tier, @NotNull FactoryType type) {
         return FACTORIES.get(tier, type);
     }
 

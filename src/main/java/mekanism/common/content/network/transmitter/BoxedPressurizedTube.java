@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -49,6 +47,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandler, BoxedChemicalNetwork, BoxedChemicalStack, BoxedPressurizedTube>
       implements IGasTracker, IInfusionTracker, IPigmentTracker, ISlurryTracker, IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
@@ -59,7 +59,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     private final List<IInfusionTank> infusionTanks;
     private final List<IPigmentTank> pigmentTanks;
     private final List<ISlurryTank> slurryTanks;
-    @Nonnull
+    @NotNull
     public BoxedChemicalStack saveShare = BoxedChemicalStack.EMPTY;
 
     public BoxedPressurizedTube(IBlockProvider blockProvider, TileEntityTransmitter tile) {
@@ -168,19 +168,19 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
         return data instanceof PressurizedTubeUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull PressurizedTubeUpgradeData data) {
+    public void parseUpgradeData(@NotNull PressurizedTubeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         takeChemical(data.contents, Action.EXECUTE);
     }
 
     @Override
-    public void read(@Nonnull CompoundTag nbtTags) {
+    public void read(@NotNull CompoundTag nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.BOXED_CHEMICAL, Tag.TAG_COMPOUND)) {
             saveShare = BoxedChemicalStack.read(nbtTags.getCompound(NBTConstants.BOXED_CHEMICAL));
@@ -200,9 +200,9 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
+    public CompoundTag write(@NotNull CompoundTag nbtTags) {
         super.write(nbtTags);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(getTransmitter());
@@ -261,7 +261,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return tier.getTubeCapacity();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BoxedChemicalStack releaseShare() {
         BoxedChemicalStack ret;
@@ -276,7 +276,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return ret;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BoxedChemicalStack getShare() {
         Current current = chemicalTank.getCurrent();
@@ -291,7 +291,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return getBufferWithFallback().isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BoxedChemicalStack getBufferWithFallback() {
         BoxedChemicalStack buffer = getShare();
@@ -323,7 +323,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     /**
      * @return remainder
      */
-    @Nonnull
+    @NotNull
     @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK takeChemical(ChemicalType type, STACK stack, Action action) {
         IChemicalTank<CHEMICAL, STACK> tank;
@@ -335,7 +335,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return tank.insert(stack, action, AutomationType.INTERNAL);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
@@ -344,7 +344,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return gasTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
@@ -353,7 +353,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return infusionTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
@@ -362,7 +362,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return pigmentTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
@@ -377,7 +377,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    protected void handleContentsUpdateTag(@Nonnull BoxedChemicalNetwork network, @Nonnull CompoundTag tag) {
+    protected void handleContentsUpdateTag(@NotNull BoxedChemicalNetwork network, @NotNull CompoundTag tag) {
         super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
         NBTUtils.setBoxedChemicalIfPresent(tag, NBTConstants.BOXED_CHEMICAL, network::setLastChemical);

@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
@@ -50,9 +50,9 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
             return false;
         }
         boolean handled = false;
-        List<@NonNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
-        List<@NonNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
-        List<@NonNull GasStack> gasRepresentations = recipe.getInputGas().getRepresentations();
+        List<@NotNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
+        List<@NotNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
+        List<@NotNull GasStack> gasRepresentations = recipe.getInputGas().getRepresentations();
         for (ItemStack itemRepresentation : itemRepresentations) {
             NormalizedSimpleStack nssItem = NSSItem.createItem(itemRepresentation);
             for (FluidStack fluidRepresentation : fluidRepresentations) {

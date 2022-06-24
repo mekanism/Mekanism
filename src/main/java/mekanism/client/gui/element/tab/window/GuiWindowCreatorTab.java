@@ -2,19 +2,19 @@ package mekanism.client.gui.element.tab.window;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.window.GuiWindow;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindowCreatorTab<DATA_SOURCE, ELEMENT>> extends GuiInsetElement<DATA_SOURCE> {
 
-    @Nonnull
+    @NotNull
     private final Supplier<ELEMENT> elementSupplier;
 
     public GuiWindowCreatorTab(ResourceLocation overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left,
-          @Nonnull Supplier<ELEMENT> elementSupplier) {
+          @NotNull Supplier<ELEMENT> elementSupplier) {
         super(overlay, gui, dataSource, x, y, height, innerSize, left);
         this.elementSupplier = elementSupplier;
     }
@@ -27,7 +27,7 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
         gui().addWindow(window);
     }
 
-    @Nonnull
+    @NotNull
     protected final Supplier<ELEMENT> getElementSupplier() {
         return elementSupplier;
     }

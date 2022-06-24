@@ -1,11 +1,11 @@
 package mekanism.common.item.gear;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemHDPEElytra extends ElytraItem {
 
@@ -20,7 +20,7 @@ public class ItemHDPEElytra extends ElytraItem {
     }
 
     @Override
-    public boolean isValidRepairItem(@Nonnull ItemStack toRepair, ItemStack repair) {
+    public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repair) {
         return repair.getItem() == MekanismItems.HDPE_SHEET.asItem();
     }
 }

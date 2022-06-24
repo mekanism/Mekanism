@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemModule extends Item implements IModuleItem {
 
@@ -39,14 +39,14 @@ public class ItemModule extends Item implements IModuleItem {
         return moduleData.getModuleData();
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Rarity getRarity(@Nonnull ItemStack stack) {
+    public Rarity getRarity(@NotNull ItemStack stack) {
         return getModuleData().getRarity();
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
             IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
@@ -68,7 +68,7 @@ public class ItemModule extends Item implements IModuleItem {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getDescriptionId() {
         return getModuleData().getTranslationKey();

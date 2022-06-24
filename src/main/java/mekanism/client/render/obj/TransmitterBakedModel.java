@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -39,7 +38,9 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import net.minecraftforge.client.model.obj.OBJModel;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class TransmitterBakedModel implements BakedModel {
 
     private final OBJModel internal;
@@ -72,15 +73,13 @@ public class TransmitterBakedModel implements BakedModel {
         bakedVariant = internal.bake(new VisibleModelConfiguration(owner, visible), bakery, spriteGetter, modelTransform, overrides, modelLocation);
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return getQuads(state, side, rand, EmptyModelData.INSTANCE);
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, IModelData extraData) {
         if (side != null) {
             return Collections.emptyList();
         }
@@ -137,7 +136,7 @@ public class TransmitterBakedModel implements BakedModel {
     }
 
     @Nullable
-    private static Direction directionForPiece(@Nonnull String piece) {
+    private static Direction directionForPiece(String piece) {
         return Arrays.stream(EnumUtils.DIRECTIONS).filter(dir -> piece.startsWith(dir.getName())).findFirst().orElse(null);
     }
 
@@ -166,7 +165,6 @@ public class TransmitterBakedModel implements BakedModel {
         return bakedVariant.isCustomRenderer();
     }
 
-    @Nonnull
     @Override
     @Deprecated
     public TextureAtlasSprite getParticleIcon() {
@@ -174,7 +172,7 @@ public class TransmitterBakedModel implements BakedModel {
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data) {
+    public TextureAtlasSprite getParticleIcon(IModelData data) {
         return bakedVariant.getParticleIcon(data);
     }
 
@@ -188,19 +186,16 @@ public class TransmitterBakedModel implements BakedModel {
         return bakedVariant.handlePerspective(cameraTransformType, mat);
     }
 
-    @Nonnull
     @Override
     public ItemOverrides getOverrides() {
         return bakedVariant.getOverrides();
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+    public IModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, IModelData tileData) {
         return bakedVariant.getModelData(world, pos, state, tileData);
     }
 
-    @Nonnull
     @Override
     @Deprecated
     public ItemTransforms getTransforms() {

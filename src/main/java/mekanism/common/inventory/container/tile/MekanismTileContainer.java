@@ -1,8 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -14,15 +12,17 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
     private VirtualInventoryContainerSlot upgradeSlot;
     private VirtualInventoryContainerSlot upgradeOutputSlot;
-    @Nonnull
+    @NotNull
     protected final TILE tile;
 
-    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, @Nonnull TILE tile) {
+    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, @NotNull TILE tile) {
         super(type, id, inv);
         this.tile = tile;
         addContainerTrackers();
@@ -44,19 +44,19 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     }
 
     @Override
-    protected void openInventory(@Nonnull Inventory inv) {
+    protected void openInventory(@NotNull Inventory inv) {
         super.openInventory(inv);
         tile.open(inv.player);
     }
 
     @Override
-    protected void closeInventory(@Nonnull Player player) {
+    protected void closeInventory(@NotNull Player player) {
         super.closeInventory(player);
         tile.close(player);
     }
 
     @Override
-    public boolean stillValid(@Nonnull Player player) {
+    public boolean stillValid(@NotNull Player player) {
         //prevent Containers from remaining valid after the chunk has unloaded;
         return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }

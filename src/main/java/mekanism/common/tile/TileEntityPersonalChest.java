@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityPersonalChest extends TileEntityPersonalStorage implements LidBlockEntity {
 
@@ -23,13 +23,13 @@ public class TileEntityPersonalChest extends TileEntityPersonalStorage implement
     }
 
     @Override
-    protected void onOpen(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
         level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F,
               level.random.nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
-    protected void onClose(@Nonnull Level level, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
         level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F,
               level.random.nextFloat() * 0.1F + 0.9F);
     }

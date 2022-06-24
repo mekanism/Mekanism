@@ -1,8 +1,8 @@
 package mekanism.client.render.obj;
 
-import javax.annotation.Nonnull;
 import net.minecraft.client.resources.model.Material;
 import net.minecraftforge.client.model.IModelConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 public class OpaqueModelConfiguration extends WrapperModelConfiguration {
 
@@ -21,13 +21,13 @@ public class OpaqueModelConfiguration extends WrapperModelConfiguration {
     }
 
     @Override
-    public boolean isTexturePresent(@Nonnull String name) {
+    public boolean isTexturePresent(@NotNull String name) {
         return internal.isTexturePresent(adjustTextureName(name));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Material resolveTexture(@Nonnull String name) {
+    public Material resolveTexture(@NotNull String name) {
         return internal.resolveTexture(adjustTextureName(name));
     }
 }

@@ -1,21 +1,19 @@
 package mekanism.common.capabilities.fluid;
 
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Like {@link mekanism.api.chemical.merged.ChemicalTankWrapper}
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FluidTankWrapper implements IExtendedFluidTank {
 
     private final IExtendedFluidTank internal;
@@ -104,7 +102,7 @@ public class FluidTankWrapper implements IExtendedFluidTank {
         internal.deserializeNBT(nbt);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidStack getFluid() {
         return internal.getFluid();

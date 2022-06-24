@@ -1,16 +1,14 @@
 package mekanism.api.robit;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IRobitSkinProvider;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Basic interface that Robit's implement to provide basic access to some methods by allowing mods to instance check the entity against this interface.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public interface IRobit {//TODO: When we expose the security system to the API make this extend/implement it
 
     /**

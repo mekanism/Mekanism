@@ -1,11 +1,11 @@
 package mekanism.common.content.qio;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.qio.IQIOComponent;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.tile.interfaces.ITileWrapper;
+import org.jetbrains.annotations.Nullable;
 
 public interface IQIOFrequencyHolder extends IFrequencyHandler, ITileWrapper, IQIOComponent {
 

@@ -1,11 +1,13 @@
 package mekanism.api.text;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 /**
  * Helper interface for creating formatted translations in our lang enums
  */
+@MethodsReturnNonnullByDefault
 public interface ILangEntry extends IHasTranslationKey {
 
     /**

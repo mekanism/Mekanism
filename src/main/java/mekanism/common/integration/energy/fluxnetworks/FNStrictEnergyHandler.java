@@ -1,16 +1,14 @@
 package mekanism.common.integration.energy.fluxnetworks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
+import org.jetbrains.annotations.NotNull;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     private final IFNEnergyStorage storage;
@@ -45,7 +43,7 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public FloatingLong insertEnergy(int container, FloatingLong amount, @Nonnull Action action) {
+    public FloatingLong insertEnergy(int container, FloatingLong amount, @NotNull Action action) {
         if (container == 0 && storage.canReceive()) {
             long inserted = storage.receiveEnergyL(EnergyUnit.FORGE_ENERGY.convertToAsLong(amount), action.simulate());
             if (inserted > 0) {
@@ -57,7 +55,7 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public FloatingLong extractEnergy(int container, FloatingLong amount, @Nonnull Action action) {
+    public FloatingLong extractEnergy(int container, FloatingLong amount, @NotNull Action action) {
         if (container == 0 && storage.canExtract()) {
             return EnergyUnit.FORGE_ENERGY.convertFrom(storage.extractEnergyL(EnergyUnit.FORGE_ENERGY.convertToAsLong(amount), action.simulate()));
         }

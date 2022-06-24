@@ -2,14 +2,14 @@ package mekanism.common.recipe.compat;
 
 import biomesoplenty.api.block.BOPBlocks;
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
 
     public ILikeWoodBOPRecipeProvider() {

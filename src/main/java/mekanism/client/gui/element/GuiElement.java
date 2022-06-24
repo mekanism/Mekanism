@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -26,6 +25,7 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer {
 
@@ -62,7 +62,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput output) {
+    public void updateNarration(@NotNull NarrationElementOutput output) {
         //TODO: See GuiMekanism#addRenderableWidget for more details, and also figure out how to make this properly support nested narratables
         // as some of our GuiElements have sub GuiElements and those are the ones we actually would want to narrate
     }
@@ -252,7 +252,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         children.stream().filter(child -> child.isMouseOver(mouseX, mouseY))
               .forEach(child -> child.renderToolTip(matrix, mouseX, mouseY));
     }
@@ -380,20 +380,20 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     //Based off how it is drawn in Widget, except that instead of drawing left half and right half, we draw all four corners individually
     // The benefit of drawing all four corners instead of just left and right halves, is that we ensure we include the bottom black bar of the texture
     // Math has also been added to fix rendering odd size buttons.
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (buttonBackground != ButtonBackground.NONE) {
             drawButton(matrix, mouseX, mouseY);
         }
     }
 
-    public final void onDrawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public final void onDrawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             drawBackground(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    public void renderButton(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     protected int getButtonTextColor(int mouseX, int mouseY) {
@@ -461,7 +461,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void playDownSound(@Nonnull SoundManager soundHandler) {
+    public void playDownSound(@NotNull SoundManager soundHandler) {
         if (playClickSound) {
             super.playDownSound(soundHandler);
         }

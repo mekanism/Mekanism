@@ -2,7 +2,6 @@ package mekanism.common.tile.qio;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -27,6 +26,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent implements ISustainedData {
 
@@ -79,7 +79,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IModelData getModelData() {
         return new ModelDataMap.Builder().withInitial(POWERING_PROPERTY, prevPowering).build();
@@ -107,7 +107,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
         return remap;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -116,7 +116,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();

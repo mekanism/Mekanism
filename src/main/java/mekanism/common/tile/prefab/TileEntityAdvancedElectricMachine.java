@@ -1,12 +1,9 @@
 package mekanism.common.tile.prefab;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -54,6 +51,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> implements
       ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
@@ -77,9 +76,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
                                                                                         "getChemicalFilledPercentage"})
     public IGasTank gasTank;
 
-    protected final IOutputHandler<@NonNull ItemStack> outputHandler;
-    protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<@NonNull GasStack> gasInputHandler;
+    protected final IOutputHandler<@NotNull ItemStack> outputHandler;
+    protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    protected final ILongInputHandler<@NotNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
@@ -125,7 +124,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -133,7 +132,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -141,7 +140,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -172,9 +171,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         return findFirstRecipe(itemInputHandler, gasInputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
         return new ItemStackConstantChemicalToItemStackCachedRecipe<>(recipe, recheckAllRecipeErrors, itemInputHandler, gasInputHandler, gasUsageMultiplier,
               used -> usedSoFar = used, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
@@ -198,7 +197,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
         return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, gasTank, secondarySlot, energySlot,
@@ -221,13 +220,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         usedSoFar = nbt.getLong(NBTConstants.USED_SO_FAR);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.putLong(NBTConstants.USED_SO_FAR, usedSoFar);
     }

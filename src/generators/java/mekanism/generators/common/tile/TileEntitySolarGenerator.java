@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -26,6 +24,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
@@ -41,11 +41,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         this(GeneratorsBlocks.SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.solarGeneration.get().multiply(2));
     }
 
-    protected TileEntitySolarGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @Nonnull FloatingLong output) {
+    protected TileEntitySolarGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLong output) {
         super(blockProvider, pos, state, output);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -104,7 +104,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return getConfiguredMax().multiply(brightness * solarCheck.getGenerationMultiplier());
     }
 
-    protected float getBrightnessMultiplier(@Nonnull Level world) {
+    protected float getBrightnessMultiplier(@NotNull Level world) {
         //Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
         //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch).

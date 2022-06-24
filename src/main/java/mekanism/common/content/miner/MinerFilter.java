@@ -1,6 +1,5 @@
 package mekanism.common.content.miner;
 
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.util.NBTUtils;
@@ -10,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -24,7 +24,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         requiresReplacement = filter.requiresReplacement;
     }
 
-    public boolean replaceTargetMatches(@Nonnull Item target) {
+    public boolean replaceTargetMatches(@NotNull Item target) {
         return replaceTarget != Items.AIR && replaceTarget == target;
     }
 

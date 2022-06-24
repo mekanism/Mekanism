@@ -1,17 +1,17 @@
 package mekanism.client.render.data;
 
-import javax.annotation.Nonnull;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ValveRenderData extends FluidRenderData {
 
     public Direction side;
     public BlockPos valveLocation;
 
-    private ValveRenderData(@Nonnull FluidStack fluidType) {
+    private ValveRenderData(@NotNull FluidStack fluidType) {
         super(fluidType);
     }
 

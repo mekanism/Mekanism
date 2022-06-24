@@ -2,8 +2,6 @@ package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.client.gui.element.bar.GuiBar;
@@ -22,6 +20,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
@@ -42,9 +41,9 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, MetallurgicInfuserRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, MetallurgicInfuserRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        List<@NonNull InfusionStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull InfusionStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
         initChemical(builder, MekanismJEI.TYPE_INFUSION, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         List<ItemStack> infuseItemProviders = new ArrayList<>();

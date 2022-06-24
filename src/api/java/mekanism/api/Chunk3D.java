@@ -3,10 +3,10 @@ package mekanism.api;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Chunk3D - an extension of ChunkPos that also takes in account the dimension the chunk is in.
@@ -68,7 +68,7 @@ public class Chunk3D extends ChunkPos {
         return ret;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String toString() {
         return "[Chunk3D: " + x + ", " + z + ", dim=" + dimension.location() + "]";

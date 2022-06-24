@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -35,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelEnergyCube extends MekanismJavaModel {
 
@@ -249,7 +249,7 @@ public class ModelEnergyCube extends MekanismJavaModel {
               CONNECTOR_TOP_TOGGLE, CONNECTOR_BOTTOM_TOGGLE);
     }
 
-    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain, boolean hasEffect) {
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain, boolean hasEffect) {
         if (renderMain) {
             renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         }
@@ -259,12 +259,12 @@ public class ModelEnergyCube extends MekanismJavaModel {
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
         renderPartsToBuffer(frame, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
         renderPartsToBuffer(corners, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderCorners(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
+    private void renderCorners(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
         poseStack.pushPose();
         poseStack.scale(1.001F, 1.005F, 1.001F);
@@ -273,7 +273,7 @@ public class ModelEnergyCube extends MekanismJavaModel {
         poseStack.popPose();
     }
 
-    public void renderSidesBatched(@Nonnull TileEntityEnergyCube tile, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
+    public void renderSidesBatched(@NotNull TileEntityEnergyCube tile, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight) {
         Set<RelativeSide> enabledSides = EnumSet.noneOf(RelativeSide.class);
         Set<RelativeSide> outputSides = EnumSet.noneOf(RelativeSide.class);
         ConfigInfo config = tile.getConfig().getConfig(TransmissionType.ENERGY);
@@ -293,7 +293,7 @@ public class ModelEnergyCube extends MekanismJavaModel {
         renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides, false);
     }
 
-    public void renderSidesBatched(@Nonnull ItemStack stack, EnergyCubeTier tier, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light,
+    public void renderSidesBatched(@NotNull ItemStack stack, EnergyCubeTier tier, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light,
           int overlayLight, boolean hasEffect) {
         Set<RelativeSide> enabledSides;
         Set<RelativeSide> outputSides;
@@ -327,7 +327,7 @@ public class ModelEnergyCube extends MekanismJavaModel {
      * Batched version of to render sides of the energy cube that render all sides per render type before switching to the next render type. This is because the way
      * Minecraft draws custom render types, is it flushes and instantly draws as soon as it gets a new type if it doesn't know how to handle the type.
      */
-    private void renderSidesBatched(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, Set<RelativeSide> enabledSides,
+    private void renderSidesBatched(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, Set<RelativeSide> enabledSides,
           Set<RelativeSide> outputSides, boolean hasEffect) {
         if (!enabledSides.isEmpty()) {
             VertexConsumer buffer = getVertexConsumer(renderer, RENDER_TYPE, hasEffect);
@@ -381,21 +381,21 @@ public class ModelEnergyCube extends MekanismJavaModel {
             cube = CUBE.getFromRoot(root);
         }
 
-        public VertexConsumer getBuffer(@Nonnull MultiBufferSource renderer) {
+        public VertexConsumer getBuffer(@NotNull MultiBufferSource renderer) {
             return renderer.getBuffer(RENDER_TYPE);
         }
 
-        public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, EnumColor color, float energyPercentage) {
+        public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, EnumColor color, float energyPercentage) {
             renderToBuffer(matrix, getBuffer(renderer), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2),
                   energyPercentage);
         }
 
-        public void render(@Nonnull PoseStack matrix, @Nonnull VertexConsumer buffer, int light, int overlayLight, EnumColor color, float energyPercentage) {
+        public void render(@NotNull PoseStack matrix, @NotNull VertexConsumer buffer, int light, int overlayLight, EnumColor color, float energyPercentage) {
             cube.render(matrix, buffer, light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), energyPercentage);
         }
 
         @Override
-        public void renderToBuffer(@Nonnull PoseStack matrix, @Nonnull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue,
+        public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue,
               float alpha) {
             cube.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         }

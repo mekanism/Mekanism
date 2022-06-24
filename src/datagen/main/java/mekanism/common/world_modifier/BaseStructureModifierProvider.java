@@ -1,9 +1,9 @@
 package mekanism.common.world_modifier;
 
-import javax.annotation.Nonnull;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.world.StructureModifier;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseStructureModifierProvider extends BaseModifierProvider<StructureModifier> {
 
@@ -11,7 +11,7 @@ public abstract class BaseStructureModifierProvider extends BaseModifierProvider
         super(gen, modid, ForgeRegistries.Keys.STRUCTURE_MODIFIERS);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Structure modifiers: " + modid;

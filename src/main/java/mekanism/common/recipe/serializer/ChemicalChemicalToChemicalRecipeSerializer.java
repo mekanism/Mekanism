@@ -3,7 +3,6 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -15,6 +14,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
@@ -28,13 +28,13 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
 
-    protected abstract STACK fromJson(@Nonnull JsonObject json, @Nonnull String key);
+    protected abstract STACK fromJson(@NotNull JsonObject json, @NotNull String key);
 
-    protected abstract STACK fromBuffer(@Nonnull FriendlyByteBuf buffer);
+    protected abstract STACK fromBuffer(@NotNull FriendlyByteBuf buffer);
 
-    @Nonnull
+    @NotNull
     @Override
-    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
         JsonElement leftIngredients = GsonHelper.isArrayNode(json, JsonConstants.LEFT_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.LEFT_INPUT) :
                                       GsonHelper.getAsJsonObject(json, JsonConstants.LEFT_INPUT);
         INGREDIENT leftInput = getDeserializer().deserialize(leftIngredients);
@@ -49,7 +49,7 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
     }
 
     @Override
-    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
             INGREDIENT leftInput = getDeserializer().read(buffer);
             INGREDIENT rightInput = getDeserializer().read(buffer);
@@ -62,7 +62,7 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
     }
 
     @Override
-    public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

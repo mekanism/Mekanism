@@ -1,6 +1,5 @@
 package mekanism.common.content.matrix;
 
-import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -15,10 +14,11 @@ import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class MatrixMultiblockData extends MultiblockData {
 
-    @Nonnull
+    @NotNull
     private final MatrixEnergyContainer energyContainer;
 
     @ContainerSync(getter = "getLastOutput")
@@ -40,10 +40,10 @@ public class MatrixMultiblockData extends MultiblockData {
     @ContainerSync(tags = "stats", getter = "getCellCount")
     private int clientCells;
 
-    @Nonnull
+    @NotNull
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private final EnergyInventorySlot energyInputSlot;
-    @Nonnull
+    @NotNull
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private final EnergyInventorySlot energyOutputSlot;
 
@@ -74,7 +74,7 @@ public class MatrixMultiblockData extends MultiblockData {
         energyContainer.addProvider(provider.getBlockPos(), provider);
     }
 
-    @Nonnull
+    @NotNull
     public MatrixEnergyContainer getEnergyContainer() {
         return energyContainer;
     }

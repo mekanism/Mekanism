@@ -1,11 +1,11 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 public enum ChemicalTankTier implements ITier, StringRepresentable {
     BASIC(BaseTier.BASIC, 64_000, 1_000),
@@ -31,7 +31,7 @@ public enum ChemicalTankTier implements ITier, StringRepresentable {
         return baseTier;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);

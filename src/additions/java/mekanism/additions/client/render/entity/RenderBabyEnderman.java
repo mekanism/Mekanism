@@ -2,7 +2,6 @@ package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Random;
-import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;
@@ -13,6 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Copy of vanilla's enderman render, modified to use our own model/layer that is properly scaled, so that the block is held in the correct spot and the head is in the
@@ -30,14 +30,14 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
     }
 
     @Override
-    public void render(EntityBabyEnderman enderman, float entityYaw, float partialTicks, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int packedLightIn) {
+    public void render(EntityBabyEnderman enderman, float entityYaw, float partialTicks, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int packedLightIn) {
         ModelBabyEnderman model = getModel();
         model.carrying = enderman.getCarriedBlock() != null;
         model.creepy = enderman.isCreepy();
         super.render(enderman, entityYaw, partialTicks, matrix, renderer, packedLightIn);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Vec3 getRenderOffset(EntityBabyEnderman enderman, float partialTicks) {
         if (enderman.isCreepy()) {
@@ -46,9 +46,9 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
         return super.getRenderOffset(enderman, partialTicks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@Nonnull EntityBabyEnderman enderman) {
+    public ResourceLocation getTextureLocation(@NotNull EntityBabyEnderman enderman) {
         return ENDERMAN_TEXTURES;
     }
 }

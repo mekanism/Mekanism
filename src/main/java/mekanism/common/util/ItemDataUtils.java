@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +11,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO - V11: Rewrite this into a helper object that gets made for a stack so that we can easier make sure it doesn't add any extra data when we don't want it
 // And then for some things we may want when they go back to a full empty state make the NBT go away
@@ -21,7 +21,7 @@ public final class ItemDataUtils {
     private ItemDataUtils() {
     }
 
-    @Nonnull
+    @NotNull
     public static CompoundTag getDataMap(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
         if (tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND)) {

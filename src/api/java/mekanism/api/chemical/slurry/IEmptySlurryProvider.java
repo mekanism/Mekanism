@@ -1,11 +1,11 @@
 package mekanism.api.chemical.slurry;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.IEmptyStackProvider;
+import org.jetbrains.annotations.NotNull;
 
 public interface IEmptySlurryProvider extends IEmptyStackProvider<Slurry, SlurryStack> {
 
-    @Nonnull
+    @NotNull
     @Override
     default SlurryStack getEmptyStack() {
         return SlurryStack.EMPTY;

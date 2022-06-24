@@ -1,9 +1,9 @@
 package mekanism.common.content.network.transmitter;
 
 import java.util.Arrays;
-import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class DiversionTransporter extends LogisticalTransporterBase {
 
@@ -45,15 +46,15 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         }
     }
 
-    private void readModes(@Nonnull CompoundTag tag) {
+    private void readModes(@NotNull CompoundTag tag) {
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             int index = i;
             NBTUtils.setEnumIfPresent(tag, NBTConstants.MODE + index, DiversionControl::byIndexStatic, mode -> modes[index] = mode);
         }
     }
 
-    @Nonnull
-    private CompoundTag writeModes(@Nonnull CompoundTag nbtTags) {
+    @NotNull
+    private CompoundTag writeModes(@NotNull CompoundTag nbtTags) {
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             NBTUtils.writeEnum(nbtTags, NBTConstants.MODE + i, modes[i]);
         }
@@ -61,25 +62,25 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void read(@Nonnull CompoundTag nbtTags) {
+    public void read(@NotNull CompoundTag nbtTags) {
         super.read(nbtTags);
         readModes(nbtTags);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
+    public CompoundTag write(@NotNull CompoundTag nbtTags) {
         return writeModes(super.write(nbtTags));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         return writeModes(super.getReducedUpdateTag(updateTag));
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         readModes(tag);
     }
@@ -121,6 +122,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         return WorldUtils.isGettingPowered(getTileWorld(), getTilePos());
     }
 
+    @NothingNullByDefault
     public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasTextComponent {
         DISABLED(MekanismLang.DIVERSION_CONTROL_DISABLED),
         HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),
@@ -138,7 +140,6 @@ public class DiversionTransporter extends LogisticalTransporterBase {
             return langEntry.translate();
         }
 
-        @Nonnull
         @Override
         public DiversionControl byIndex(int index) {
             return byIndexStatic(index);

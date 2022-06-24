@@ -1,13 +1,10 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
@@ -54,6 +51,8 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
@@ -74,8 +73,8 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
     private int baselineMaxOperations = 1;
 
-    private final IOutputHandler<@NonNull GasStack> outputHandler;
-    private final IInputHandler<@NonNull GasStack> inputHandler;
+    private final IOutputHandler<@NotNull GasStack> outputHandler;
+    private final IInputHandler<@NotNull GasStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityIsotopicCentrifuge> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
@@ -101,7 +100,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -113,7 +112,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener, IContentsListener recipeCacheListener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -121,7 +120,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -144,13 +143,13 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
-    @Nonnull
+    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage")
     public FloatingLong getEnergyUsed() {
         return clientEnergyUsed;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.CENTRIFUGING;
@@ -162,9 +161,9 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         return findFirstRecipe(inputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
+    public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@NotNull GasToGasRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.chemicalToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))

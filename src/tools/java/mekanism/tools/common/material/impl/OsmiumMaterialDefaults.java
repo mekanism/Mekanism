@@ -1,7 +1,5 @@
 package mekanism.tools.common.material.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -13,6 +11,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
@@ -62,7 +62,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 390;
             case LEGS -> 450;
@@ -73,7 +73,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 3;
             case LEGS -> 6;
@@ -83,13 +83,13 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getConfigCommentName() {
         return "Osmium";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "osmium";
@@ -101,13 +101,13 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
         return ToolsTags.Blocks.NEEDS_OSMIUM_TOOL;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public SoundEvent getEquipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.of(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));

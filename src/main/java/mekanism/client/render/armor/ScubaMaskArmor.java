@@ -1,7 +1,6 @@
 package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.client.model.ModelScubaMask;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -10,6 +9,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListener {
 
@@ -21,12 +21,12 @@ public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListen
     }
 
     @Override
-    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         model = new ModelScubaMask(Minecraft.getInstance().getEntityModels());
     }
 
     @Override
-    public void render(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+    public void render(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
         if (!baseModel.head.visible) {
             //If the head model shouldn't show don't bother displaying it
@@ -46,7 +46,7 @@ public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListen
         }
     }
 
-    private void renderMask(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light,
+    private void renderMask(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light,
           int overlayLight, boolean hasEffect) {
         matrix.pushPose();
         baseModel.head.translateAndRotate(matrix);

@@ -5,8 +5,6 @@ import com.google.common.collect.HashBiMap;
 import java.io.File;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.inventory.HashedItem;
@@ -15,6 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QIOGlobalItemLookup {
 
@@ -91,7 +91,7 @@ public class QIOGlobalItemLookup {
 
     private static class QIOGlobalItemLookupDataHandler extends SavedData {
 
-        private void load(@Nonnull CompoundTag nbt) {
+        private void load(@NotNull CompoundTag nbt) {
             //TODO - 1.19: Do we want to clear existing elements
             for (String key : nbt.getAllKeys()) {
                 UUID uuid;
@@ -115,9 +115,9 @@ public class QIOGlobalItemLookup {
             }
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public CompoundTag save(@Nonnull CompoundTag nbt) {
+        public CompoundTag save(@NotNull CompoundTag nbt) {
             //TODO - 1.19: See if we can further improve this
             for (Map.Entry<UUID, HashedItem> entry : QIOGlobalItemLookup.INSTANCE.itemCache.entrySet()) {
                 nbt.put(entry.getKey().toString(), ((SerializedHashedItem) entry.getValue()).getNbtRepresentation());
@@ -126,7 +126,7 @@ public class QIOGlobalItemLookup {
         }
 
         @Override
-        public void save(@Nonnull File file) {
+        public void save(@NotNull File file) {
             if (this.isDirty()) {
                 //This is loosely based on Refined Storage's RSSavedData's system of saving first to a temp file
                 // to reduce the odds of corruption if the user's computer crashes while the file is being written

@@ -2,7 +2,6 @@ package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
@@ -25,6 +24,7 @@ import mekanism.common.network.to_server.PacketRobit.RobitPacketType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
@@ -84,7 +84,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
         drawTextScaledBound(matrix, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())), 29, 36 - 4, screenTextColor(), 119);

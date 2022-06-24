@@ -1,16 +1,15 @@
 package mekanism.common.integration.energy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public interface IEnergyCompat {
 
     /**
@@ -25,7 +24,6 @@ public interface IEnergyCompat {
      *
      * @return The capability this compat is integrating with.
      */
-    @Nonnull
     Capability<?> getCapability();
 
     /**
@@ -60,7 +58,6 @@ public interface IEnergyCompat {
      *
      * @return A lazy optional for this capability
      */
-    @Nonnull
     LazyOptional<?> getHandlerAs(IStrictEnergyHandler handler);
 
     /**
@@ -72,6 +69,5 @@ public interface IEnergyCompat {
      *
      * @return The capability implemented in the provider into an {@link IStrictEnergyHandler}, or {@code null} if the capability is not implemented.
      */
-    @Nonnull
     LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side);
 }

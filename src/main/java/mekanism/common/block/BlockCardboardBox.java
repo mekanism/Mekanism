@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -31,6 +29,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
@@ -38,11 +38,11 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         super(BlockBehaviour.Properties.of(Material.WOOL).strength(0.5F, 0.6F));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public InteractionResult use(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-          @Nonnull BlockHitResult hit) {
+    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+          @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!canReplace(world, player, pos, state)) {
@@ -85,9 +85,9 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull BlockState state, HitResult target, @Nonnull BlockGetter world, @Nonnull BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull BlockGetter world, @NotNull BlockPos pos, Player player) {
         ItemStack itemStack = new ItemStack(this);
         TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
         if (tile == null) {
@@ -105,12 +105,12 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
 
     public static class BlockData {
 
-        @Nonnull
+        @NotNull
         public final BlockState blockState;
         @Nullable
         public CompoundTag tileTag;
 
-        public BlockData(@Nonnull BlockState blockState) {
+        public BlockData(@NotNull BlockState blockState) {
             this.blockState = blockState;
         }
 

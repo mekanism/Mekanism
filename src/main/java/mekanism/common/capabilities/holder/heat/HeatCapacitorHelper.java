@@ -1,11 +1,11 @@
 package mekanism.common.capabilities.holder.heat;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
 
 public class HeatCapacitorHelper {
 
@@ -24,7 +24,7 @@ public class HeatCapacitorHelper {
         return new HeatCapacitorHelper(new ConfigHeatCapacitorHolder(facingSupplier, configSupplier));
     }
 
-    public <CAPACITOR extends IHeatCapacitor> CAPACITOR addCapacitor(@Nonnull CAPACITOR capacitor) {
+    public <CAPACITOR extends IHeatCapacitor> CAPACITOR addCapacitor(@NotNull CAPACITOR capacitor) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -38,7 +38,7 @@ public class HeatCapacitorHelper {
         return capacitor;
     }
 
-    public <CAPACITOR extends IHeatCapacitor> CAPACITOR addCapacitor(@Nonnull CAPACITOR capacitor, RelativeSide... sides) {
+    public <CAPACITOR extends IHeatCapacitor> CAPACITOR addCapacitor(@NotNull CAPACITOR capacitor, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }

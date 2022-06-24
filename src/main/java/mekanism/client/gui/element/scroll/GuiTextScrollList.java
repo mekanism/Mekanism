@@ -3,11 +3,11 @@ package mekanism.client.gui.element.scroll;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiTextScrollList extends GuiScrollList {
 

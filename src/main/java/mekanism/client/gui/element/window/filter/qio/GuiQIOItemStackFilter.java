@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.window.filter.qio;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
@@ -9,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 

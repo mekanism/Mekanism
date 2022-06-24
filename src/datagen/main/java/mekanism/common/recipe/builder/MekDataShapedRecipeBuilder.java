@@ -1,12 +1,10 @@
 package mekanism.common.recipe.builder;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.ItemLike;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class MekDataShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
 
     private MekDataShapedRecipeBuilder(ItemLike result, int count) {

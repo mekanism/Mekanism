@@ -3,8 +3,7 @@ package mekanism.common.capabilities.chemical;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -16,8 +15,9 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class BoxedChemicalHandler {
 
     private final Map<ChemicalType, LazyOptional<? extends IChemicalHandler<?, ?>>> handlers = new EnumMap<>(ChemicalType.class);

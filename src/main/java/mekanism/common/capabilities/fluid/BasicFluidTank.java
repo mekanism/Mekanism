@@ -3,32 +3,27 @@ package mekanism.common.capabilities.fluid;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class BasicFluidTank implements IExtendedFluidTank {
 
-    public static final Predicate<@NonNull FluidStack> alwaysTrue = stack -> true;
-    public static final Predicate<@NonNull FluidStack> alwaysFalse = stack -> false;
-    public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
-    public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
-    public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
+    public static final Predicate<@NotNull FluidStack> alwaysTrue = stack -> true;
+    public static final Predicate<@NotNull FluidStack> alwaysFalse = stack -> false;
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 
     public static BasicFluidTank create(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -37,7 +32,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
     }
 
-    public static BasicFluidTank create(int capacity, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank create(int capacity, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -45,12 +40,12 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, validator, listener);
     }
 
-    public static BasicFluidTank create(int capacity, Predicate<@NonNull FluidStack> canExtract, Predicate<@NonNull FluidStack> canInsert,
+    public static BasicFluidTank create(int capacity, Predicate<@NotNull FluidStack> canExtract, Predicate<@NotNull FluidStack> canInsert,
           @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, alwaysTrue, listener);
     }
 
-    public static BasicFluidTank input(int capacity, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank input(int capacity, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -58,7 +53,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, notExternal, alwaysTrueBi, validator, listener);
     }
 
-    public static BasicFluidTank input(int capacity, Predicate<@NonNull FluidStack> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank input(int capacity, Predicate<@NotNull FluidStack> canInsert, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -74,8 +69,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, listener);
     }
 
-    public static BasicFluidTank create(int capacity, Predicate<@NonNull FluidStack> canExtract, Predicate<@NonNull FluidStack> canInsert,
-          Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank create(int capacity, Predicate<@NotNull FluidStack> canExtract, Predicate<@NotNull FluidStack> canInsert,
+          Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -85,8 +80,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, canExtract, canInsert, validator, listener);
     }
 
-    public static BasicFluidTank create(int capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank create(int capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -101,21 +96,21 @@ public class BasicFluidTank implements IExtendedFluidTank {
      * instead.
      */
     protected FluidStack stored = FluidStack.EMPTY;
-    private final Predicate<@NonNull FluidStack> validator;
-    protected final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract;
-    protected final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert;
+    private final Predicate<@NotNull FluidStack> validator;
+    protected final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract;
+    protected final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert;
     private final int capacity;
     @Nullable
     private final IContentsListener listener;
 
-    protected BasicFluidTank(int capacity, Predicate<@NonNull FluidStack> canExtract, Predicate<@NonNull FluidStack> canInsert, Predicate<@NonNull FluidStack> validator,
+    protected BasicFluidTank(int capacity, Predicate<@NotNull FluidStack> canExtract, Predicate<@NotNull FluidStack> canInsert, Predicate<@NotNull FluidStack> validator,
           @Nullable IContentsListener listener) {
         this(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
               validator, listener);
     }
 
-    protected BasicFluidTank(int capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+    protected BasicFluidTank(int capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert, Predicate<@NotNull FluidStack> validator, @Nullable IContentsListener listener) {
         this.capacity = capacity;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -130,7 +125,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidStack getFluid() {
         return stored;
@@ -179,7 +174,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     @Override
-    public FluidStack insert(@Nonnull FluidStack stack, Action action, AutomationType automationType) {
+    public FluidStack insert(@NotNull FluidStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(stack, automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
             return stack;

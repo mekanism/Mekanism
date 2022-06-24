@@ -1,6 +1,6 @@
 package mekanism.api.chemical;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public interface IEmptyStackProvider<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
 
@@ -9,6 +9,6 @@ public interface IEmptyStackProvider<CHEMICAL extends Chemical<CHEMICAL>, STACK 
      *
      * @return The empty stack.
      */
-    @Nonnull
+    @NotNull
     STACK getEmptyStack();
 }

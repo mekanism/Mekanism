@@ -1,6 +1,6 @@
 package mekanism.api.inventory.qio;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Implemented by Mekanism's QIO Component block entities.

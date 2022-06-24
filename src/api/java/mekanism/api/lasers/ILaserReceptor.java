@@ -1,7 +1,7 @@
 package mekanism.api.lasers;
 
-import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Expose this as a capability on your TileEntity to handle what happens when a laser hits it.
@@ -13,7 +13,7 @@ public interface ILaserReceptor {
      *
      * @param energy Energy received.
      */
-    void receiveLaserEnergy(@Nonnull FloatingLong energy);
+    void receiveLaserEnergy(@NotNull FloatingLong energy);
 
     /**
      * Checks if a laser can break this receptor.

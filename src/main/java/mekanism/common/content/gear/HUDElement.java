@@ -1,12 +1,12 @@
 package mekanism.common.content.gear;
 
 import java.util.function.IntSupplier;
-import javax.annotation.Nonnull;
 import mekanism.api.gear.IHUDElement;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class HUDElement implements IHUDElement {
 
@@ -20,13 +20,13 @@ public class HUDElement implements IHUDElement {
         this.color = color;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ResourceLocation getIcon() {
         return icon;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getText() {
         return text;

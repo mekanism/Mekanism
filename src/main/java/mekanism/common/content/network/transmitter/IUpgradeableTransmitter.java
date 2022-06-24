@@ -1,17 +1,17 @@
 package mekanism.common.content.network.transmitter;
 
-import javax.annotation.Nonnull;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
+import org.jetbrains.annotations.NotNull;
 
 public interface IUpgradeableTransmitter<DATA extends TransmitterUpgradeData> {
 
     DATA getUpgradeData();
 
-    boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data);
+    boolean dataTypeMatches(@NotNull TransmitterUpgradeData data);
 
-    void parseUpgradeData(@Nonnull DATA data);
+    void parseUpgradeData(@NotNull DATA data);
 
     ITier getTier();
 

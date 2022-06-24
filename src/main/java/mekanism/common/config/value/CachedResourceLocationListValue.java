@@ -7,11 +7,11 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.annotations.NonNull;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import org.jetbrains.annotations.NotNull;
 
 public class CachedResourceLocationListValue extends CachedResolvableConfigValue<List<ResourceLocation>, List<? extends String>> {
 
@@ -22,7 +22,7 @@ public class CachedResourceLocationListValue extends CachedResolvableConfigValue
     }
 
     public static CachedResourceLocationListValue define(IMekanismConfig config, ForgeConfigSpec.Builder builder, String path,
-          Predicate<@NonNull ResourceLocation> rlValidator) {
+          Predicate<@NotNull ResourceLocation> rlValidator) {
         return new CachedResourceLocationListValue(config, builder.defineListAllowEmpty(Collections.singletonList(path), EMPTY, o -> {
             if (o instanceof String string) {
                 ResourceLocation rl = ResourceLocation.tryParse(string.toLowerCase(Locale.ROOT));

@@ -1,6 +1,5 @@
 package mekanism.common.content.miner;
 
-import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.tags.MekanismTags;
@@ -9,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> implements IItemStackFilter<MinerItemStackFilter> {
 
@@ -87,14 +87,14 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
         return FilterType.MINER_ITEMSTACK_FILTER;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getItemStack() {
         return itemType;
     }
 
     @Override
-    public void setItemStack(@Nonnull ItemStack stack) {
+    public void setItemStack(@NotNull ItemStack stack) {
         itemType = stack;
     }
 }

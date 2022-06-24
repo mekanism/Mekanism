@@ -1,6 +1,5 @@
 package mekanism.common.content.miner;
 
-import javax.annotation.Nonnull;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -9,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implements IMaterialFilter<MinerMaterialFilter> {
 
@@ -83,14 +83,14 @@ public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implem
         return FilterType.MINER_MATERIAL_FILTER;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getMaterialItem() {
         return materialItem;
     }
 
     @Override
-    public void setMaterialItem(@Nonnull ItemStack stack) {
+    public void setMaterialItem(@NotNull ItemStack stack) {
         materialItem = stack;
     }
 }

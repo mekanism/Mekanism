@@ -1,8 +1,8 @@
 package mekanism.common.recipe.lookup.monitor;
 
-import javax.annotation.Nonnull;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> extends RecipeCacheLookupMonitor<RECIPE> {
 
@@ -20,7 +20,7 @@ public class FactoryRecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> exte
         setSortingNeeded.run();
     }
 
-    public void updateCachedRecipe(@Nonnull RECIPE recipe) {
+    public void updateCachedRecipe(@NotNull RECIPE recipe) {
         cachedRecipe = createNewCachedRecipe(recipe, cacheIndex);
         //Note: While this is probably not strictly needed we clear our cache of knowing we have no recipe
         // so that we can properly re-enter the lookup cycle if needed

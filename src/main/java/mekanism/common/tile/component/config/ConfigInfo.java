@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -22,6 +20,8 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ConfigInfo {
 
@@ -36,7 +36,7 @@ public class ConfigInfo {
     //Not final so that it can be lazily initialized
     private Set<RelativeSide> disabledSides;
 
-    public ConfigInfo(@Nonnull Supplier<Direction> facingSupplier) {
+    public ConfigInfo(@NotNull Supplier<Direction> facingSupplier) {
         this.facingSupplier = facingSupplier;
         canEject = true;
         ejecting = false;
@@ -64,7 +64,7 @@ public class ConfigInfo {
         this.ejecting = ejecting;
     }
 
-    public void addDisabledSides(@Nonnull RelativeSide... sides) {
+    public void addDisabledSides(@NotNull RelativeSide... sides) {
         if (disabledSides == null) {
             disabledSides = EnumSet.noneOf(RelativeSide.class);
         }
@@ -74,19 +74,19 @@ public class ConfigInfo {
         }
     }
 
-    public boolean isSideEnabled(@Nonnull RelativeSide side) {
+    public boolean isSideEnabled(@NotNull RelativeSide side) {
         if (disabledSides == null) {
             return true;
         }
         return !disabledSides.contains(side);
     }
 
-    @Nonnull
-    public DataType getDataType(@Nonnull RelativeSide side) {
+    @NotNull
+    public DataType getDataType(@NotNull RelativeSide side) {
         return sideConfig.get(side);
     }
 
-    public void setDataType(@Nonnull DataType dataType, @Nonnull RelativeSide... sides) {
+    public void setDataType(@NotNull DataType dataType, @NotNull RelativeSide... sides) {
         for (RelativeSide side : sides) {
             if (isSideEnabled(side)) {
                 sideConfig.put(side, dataType);
@@ -94,30 +94,30 @@ public class ConfigInfo {
         }
     }
 
-    @Nonnull
+    @NotNull
     public Set<DataType> getSupportedDataTypes() {
         Set<DataType> dataTypes = EnumSet.of(DataType.NONE);
         dataTypes.addAll(slotInfo.keySet());
         return dataTypes;
     }
 
-    public void fill(@Nonnull DataType dataType) {
+    public void fill(@NotNull DataType dataType) {
         for (RelativeSide side : EnumUtils.SIDES) {
             setDataType(dataType, side);
         }
     }
 
     @Nullable
-    public ISlotInfo getSlotInfo(@Nonnull RelativeSide side) {
+    public ISlotInfo getSlotInfo(@NotNull RelativeSide side) {
         return getSlotInfo(getDataType(side));
     }
 
     @Nullable
-    public ISlotInfo getSlotInfo(@Nonnull DataType dataType) {
+    public ISlotInfo getSlotInfo(@NotNull DataType dataType) {
         return slotInfo.get(dataType);
     }
 
-    public void addSlotInfo(@Nonnull DataType dataType, @Nonnull ISlotInfo info) {
+    public void addSlotInfo(@NotNull DataType dataType, @NotNull ISlotInfo info) {
         slotInfo.put(dataType, info);
         // set up mapping
         if (info instanceof ChemicalSlotInfo<?, ?, ?> slotInfo) {
@@ -154,7 +154,7 @@ public class ConfigInfo {
         }
     }
 
-    public Set<Direction> getSidesForData(@Nonnull DataType dataType) {
+    public Set<Direction> getSidesForData(@NotNull DataType dataType) {
         return getSides(type -> type == dataType);
     }
 
@@ -185,8 +185,8 @@ public class ConfigInfo {
     /**
      * @return The new data type
      */
-    @Nonnull
-    public DataType incrementDataType(@Nonnull RelativeSide relativeSide) {
+    @NotNull
+    public DataType incrementDataType(@NotNull RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
             Set<DataType> supportedDataTypes = getSupportedDataTypes();
@@ -200,8 +200,8 @@ public class ConfigInfo {
     /**
      * @return The new data type
      */
-    @Nonnull
-    public DataType decrementDataType(@Nonnull RelativeSide relativeSide) {
+    @NotNull
+    public DataType decrementDataType(@NotNull RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
             Set<DataType> supportedDataTypes = getSupportedDataTypes();

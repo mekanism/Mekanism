@@ -11,8 +11,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.network.InventoryNetwork.AcceptorData;
@@ -34,6 +32,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class TransporterPathfinder {
 
@@ -323,7 +323,7 @@ public final class TransporterPathfinder {
         }
 
         @Override
-        public int compareTo(@Nonnull Destination dest) {
+        public int compareTo(@NotNull Destination dest) {
             if (score < dest.score) {
                 return -1;
             } else if (score > dest.score) {

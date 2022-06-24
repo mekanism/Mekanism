@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.text.EnumColor;
@@ -28,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>> implements IItemSustainedInventory {
 
@@ -41,7 +41,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         ChemicalTankTier tier = getTier();
         StorageUtils.addStoredSubstance(stack, tooltip, tier == ChemicalTankTier.CREATIVE);
         if (tier == ChemicalTankTier.CREATIVE) {
@@ -53,7 +53,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             ChemicalTankTier tier = Attribute.getTier(getBlock(), ChemicalTankTier.class);
@@ -67,7 +67,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>> void fillItemGroup(BooleanSupplier shouldAdd, IForgeRegistry<CHEMICAL> registry, @Nonnull NonNullList<ItemStack> items,
+    private <CHEMICAL extends Chemical<CHEMICAL>> void fillItemGroup(BooleanSupplier shouldAdd, IForgeRegistry<CHEMICAL> registry, @NotNull NonNullList<ItemStack> items,
           long capacity) {
         if (shouldAdd.getAsBoolean()) {
             for (CHEMICAL type : registry.getValues()) {
@@ -79,19 +79,19 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    public boolean isBarVisible(@Nonnull ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         // No bar for empty containers as bars are drawn on top of stack count number
         return ChemicalUtil.hasGas(stack) || ChemicalUtil.hasChemical(stack, s -> true, Capabilities.INFUSION_HANDLER) ||
                ChemicalUtil.hasChemical(stack, s -> true, Capabilities.PIGMENT_HANDLER) || ChemicalUtil.hasChemical(stack, s -> true, Capabilities.SLURRY_HANDLER);
     }
 
     @Override
-    public int getBarWidth(@Nonnull ItemStack stack) {
+    public int getBarWidth(@NotNull ItemStack stack) {
         return StorageUtils.getBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@Nonnull ItemStack stack) {
+    public int getBarColor(@NotNull ItemStack stack) {
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 

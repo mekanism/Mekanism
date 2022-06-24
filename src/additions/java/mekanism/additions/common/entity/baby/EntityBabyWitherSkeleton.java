@@ -1,6 +1,5 @@
 package mekanism.additions.common.entity.baby;
 
-import javax.annotation.Nonnull;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -11,6 +10,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class EntityBabyWitherSkeleton extends WitherSkeleton implements IBabyEntity {
 
@@ -38,7 +38,7 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton implements IBabyEnt
     }
 
     @Override
-    public void onSyncedDataUpdated(@Nonnull EntityDataAccessor<?> key) {
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
         if (IS_CHILD.equals(key)) {
             refreshDimensions();
         }
@@ -63,11 +63,11 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton implements IBabyEnt
     }
 
     @Override
-    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntityDimensions size) {
+    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
         return this.isBaby() ? 1.12F : super.getStandingEyeHeight(pose, size);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);

@@ -2,7 +2,6 @@ package mekanism.common.block.attribute;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.common.lib.multiblock.IInternalMultiblock;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -12,6 +11,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 /** If this block is a part of a multiblock. */
 public class AttributeMultiblock implements Attribute {

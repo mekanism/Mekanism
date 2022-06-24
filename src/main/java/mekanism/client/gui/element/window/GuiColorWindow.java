@@ -9,7 +9,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Matrix4f;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -28,6 +27,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiColorWindow extends GuiWindow {
 
@@ -174,14 +174,14 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
             super.renderToolTip(matrix, mouseX, mouseY);
             Component hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, getColor().rgb()));
             displayTooltips(matrix, mouseX, mouseY, hex);
         }
 
         @Override
-        public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+        public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
             super.drawBackground(matrix, mouseX, mouseY, partialTicks);
 
             Color c = Color.hsv(hue, saturation, value);

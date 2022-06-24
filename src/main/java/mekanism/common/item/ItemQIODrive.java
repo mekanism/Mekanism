@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
@@ -13,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemQIODrive extends Item implements IQIODriveItem {
 
@@ -24,7 +24,7 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         DriveMetadata meta = DriveMetadata.load(stack);
         tooltip.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
               TextUtils.format(meta.count()), TextUtils.format(getCountCapacity(stack))));
@@ -32,9 +32,9 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
               TextUtils.format(meta.types()), TextUtils.format(getTypeCapacity(stack))));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(@NotNull ItemStack stack) {
         return TextComponentUtil.build(tier.getBaseTier().getTextColor(), super.getName(stack));
     }
 
