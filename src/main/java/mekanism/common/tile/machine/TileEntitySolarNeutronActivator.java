@@ -25,6 +25,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -170,6 +171,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         // since under the new rules, we can still function when it's raining, albeit at a significant penalty.
         return MekanismUtils.canFunction(this) && WorldUtils.canSeeSun(level, worldPosition.above());
     }
+    
+    @ComputerMethod(nameOverride = "canFunction")
+    public boolean getCanFunction() { return canFunction();}
 
     private float recalculateProductionRate() {
         Level world = getLevel();
