@@ -76,7 +76,7 @@ interface ICategory {
     }
 
     @PatchouliDSL
-    operator fun FluidRegistryObject<*, *, *, *>.invoke(init: Entry.() -> Unit) {
+    operator fun FluidRegistryObject<*, *, *, *, *>.invoke(init: Entry.() -> Unit) {
         entry(this.bookId) {
             name = translationKey
             iconItem = ItemStack(this@invoke.bucket, 1)

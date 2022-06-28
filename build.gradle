@@ -82,17 +82,17 @@ sourceSets.api.kotlin.srcDirs.removeAll()
 sourceSets.main.kotlin.srcDirs.removeAll()
 sourceSets.test.kotlin.srcDirs.removeAll()
 
-//Add all extra source sets that the main sourceSet should have
-setupExtraSourceSets(sourceSets.main)
-
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
     extendConfigurations(implementation, apiImplementation, testImplementation)
     extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly)
     extendConfigurations(runtimeOnly, apiRuntimeOnly)
-    def kotlinLibrary = maybeCreate("kotlinLibrary")
+    kotlinLibrary
 }
+
+//Add all extra source sets that the main sourceSet should have
+setupExtraSourceSets(sourceSets.main)
 
 //Create sourceSets and configurations for each of the additional modules in src/$name and adds a reference to
 // the corresponding data gen's resource directory excluding the cache. It also adds the api and main mekanism
@@ -134,7 +134,11 @@ def setupExtraSourceSets(SourceSet base) {
         //Setup a source set in extraType/$name
         def extraSourceSet = setupExtraSourceSet(base, extraType)
         //And then setup the configurations for it
-        project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "implementation")).extendsFrom(baseImplementation, kotlinLibrary)
+        def implExtends = [baseImplementation]
+        if (extraType == 'datagen'){
+            implExtends.add(project.configurations.getByName('kotlinLibrary'))
+        }
+        project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "implementation")).extendsFrom(*implExtends)
         project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "compileOnly")).extendsFrom(baseCompileOnly)
         project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "runtimeOnly")).extendsFrom(baseRuntimeOnly)
     }
@@ -144,6 +148,9 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     def name = baseSourceSet.getName()
     def extraSourceSet = sourceSets.create(baseSourceSet.getTaskName(extra, null))
     extraSourceSet.java.srcDirs = ["src/${extra}/${name}/java"]
+    if (extra == 'datagen') {
+        extraSourceSet.kotlin.srcDirs = ["src/${extra}/${name}/kotlin"]
+    }
     //Resources folder for if we have anything get created by our annotation processors or in the case of game tests, for any nbt presets
     extraSourceSet.resources.srcDirs = ["src/${extra}/${name}/resources"]
     extraSourceSet.compileClasspath += project.sourceSets.api.output

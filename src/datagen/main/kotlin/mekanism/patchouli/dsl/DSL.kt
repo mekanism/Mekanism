@@ -54,7 +54,7 @@ val IItemProvider.bookId: String get() {
 
 val IGasProvider.bookId: String get() = "gas/" + this.registryName.path
 
-val FluidRegistryObject<*,*,*,*>.bookId: String get() = "fluid/" + this.registryName.path
+val FluidRegistryObject<*,*,*,*,*>.bookId: String get() = "fluid/" + this.registryName.path
 
 val ModuleRegistryObject<*>.bookId: String get() = "item/modules/"+this.registryName
 
@@ -73,7 +73,7 @@ fun link(guideEntry: IGuideEntry, text: String): String = link(guideEntry.entryI
 fun link(module: ModuleRegistryObject<*>, text: String): String = link(module.bookId, text)
 
 @PatchouliDSL
-fun link(fluid: FluidRegistryObject<*,*,*,*>, text: String): String = link(fluid.bookId, text)
+fun link(fluid: FluidRegistryObject<*,*,*,*,*>, text: String): String = link(fluid.bookId, text)
 
 operator fun KeyMapping.invoke(): String {
     return "$(k:${name})"

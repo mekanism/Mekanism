@@ -3,8 +3,8 @@ package mekanism.patchouli
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import mekanism.patchouli.dsl.*
+import net.minecraft.data.CachedOutput
 import net.minecraft.data.DataGenerator
-import net.minecraft.data.HashCache
 import net.minecraft.data.DataProvider
 import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
@@ -24,10 +24,10 @@ abstract class BasePatchouliProvider(protected val generator: DataGenerator, pro
      *
      * @param output the cache
      */
-    abstract override fun run(output: HashCache)
+    abstract override fun run(output: CachedOutput)
 
     @PatchouliDSL
-    operator fun HashCache.invoke(bookId: String, receiver: PatchouliBook.()->Unit) {
+    operator fun CachedOutput.invoke(bookId: String, receiver: PatchouliBook.()->Unit) {
         val book = patchouliBook(modid, bookId, receiver)
         saveBook(this, book.toJson(), book.id)
         for (category in book.categories) {
@@ -38,34 +38,34 @@ abstract class BasePatchouliProvider(protected val generator: DataGenerator, pro
         }
     }
 
-    private fun saveEntry(cache: HashCache, entry: Entry, book: PatchouliBook) {
+    private fun saveEntry(cache: CachedOutput, entry: Entry, book: PatchouliBook) {
         val mainOutput = generator.outputFolder
         val pathSuffix = makeBookPath(book.id) + "/" + book.locale + "/entries/" + entry.id + ".json"
         val outputPath = mainOutput.resolve(pathSuffix)
         try {
-            DataProvider.save(GSON, cache, entry.toJson(), outputPath)
+            DataProvider.saveStable(cache, entry.toJson(), outputPath)
         } catch (e: IOException) {
             LOGGER.error("Couldn't save entry to {}", outputPath, e)
         }
     }
 
-    private fun saveCategory(cache: HashCache, category: Category, book: PatchouliBook) {
+    private fun saveCategory(cache: CachedOutput, category: Category, book: PatchouliBook) {
         val mainOutput = generator.outputFolder
         val pathSuffix = makeBookPath(book.id) + "/" + book.locale + "/categories/" + category.id + ".json"
         val outputPath = mainOutput.resolve(pathSuffix)
         try {
-            DataProvider.save(GSON, cache, category.toJson(), outputPath)
+            DataProvider.saveStable(cache, category.toJson(), outputPath)
         } catch (e: IOException) {
             LOGGER.error("Couldn't save category to {}", outputPath, e)
         }
     }
 
-    private fun saveBook(cache: HashCache, json: JsonObject, bookId: ResourceLocation) {
+    private fun saveBook(cache: CachedOutput, json: JsonObject, bookId: ResourceLocation) {
         val mainOutput = generator.outputFolder
         val pathSuffix = makeBookPath(bookId) + "/book.json"
         val outputPath = mainOutput.resolve(pathSuffix)
         try {
-            DataProvider.save(GSON, cache, json, outputPath)
+            DataProvider.saveStable(cache, json, outputPath)
         } catch (e: IOException) {
             LOGGER.error("Couldn't save book to {}", outputPath, e)
         }
@@ -84,6 +84,6 @@ abstract class BasePatchouliProvider(protected val generator: DataGenerator, pro
 
     companion object {
         private val LOGGER = LogManager.getLogger()
-        private val GSON = GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
+        //private val GSON = GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
     }
 }

@@ -2,6 +2,7 @@ package mekanism.patchouli
 
 import mekanism.common.Mekanism
 import mekanism.patchouli.content.*
+import net.minecraft.data.CachedOutput
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.HashCache
 
@@ -9,7 +10,7 @@ import net.minecraft.data.HashCache
  * Created by Thiakil on 16/09/2020.
  */
 class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(generator, Mekanism.MODID) {
-    override fun run(output: HashCache) {
+    override fun run(output: CachedOutput) {
         output(Companion.bookId) {
             name = "Mekanism HandyGuide"
             locale = "en_us"
