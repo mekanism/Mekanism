@@ -2,19 +2,16 @@ package mekanism.common.inventory.slot;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -32,7 +29,6 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     private final boolean isCreative;
-    private boolean isLocked;
     private ItemStack lockStack = ItemStack.EMPTY;
 
     private BinInventorySlot(@Nullable IContentsListener listener, BinTier tier) {
@@ -43,19 +39,20 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (isLocked && isEmpty() && !ItemHandlerHelper.canItemStacksStack(stack, lockStack)) {
-            // When locked, we need to make sure an item of other type is not inserted
-            return stack;
-        }
-        if (isCreative && isEmpty() && action.execute() && automationType != AutomationType.EXTERNAL) {
-            //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
-            // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
-            ItemStack simulatedRemainder = super.insertItem(stack, Action.SIMULATE, automationType);
-            if (simulatedRemainder.isEmpty()) {
-                //If we are able to insert it then set perform the action of setting it to full
-                setStackUnchecked(StackUtils.size(stack, getLimit(stack)));
+        if (isEmpty()) {
+            if (isLocked() && !ItemHandlerHelper.canItemStacksStack(lockStack, stack)) {
+                // When locked, we need to make sure the correct item type is being inserted
+                return stack;
+            } else if (isCreative && action.execute() && automationType != AutomationType.EXTERNAL) {
+                //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
+                // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
+                ItemStack simulatedRemainder = super.insertItem(stack, Action.SIMULATE, automationType);
+                if (simulatedRemainder.isEmpty()) {
+                    //If we are able to insert it then set perform the action of setting it to full
+                    setStackUnchecked(StackUtils.size(stack, getLimit(stack)));
+                }
+                return simulatedRemainder;
             }
-            return simulatedRemainder;
         }
         return super.insertItem(stack, action.combine(!isCreative), automationType);
     }
@@ -98,28 +95,25 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     /**
      * Modifies the lock state of the slot.
-     * @param locked if the slot should be locked
+     *
+     * @param lock if the slot should be locked
+     *
      * @return if the lock state was modified
      */
-    @CanIgnoreReturnValue
-    public boolean setLocked(boolean locked) {
+    public boolean setLocked(boolean lock) {
         // Don't lock if:
-        // - we already have the same state as the one we're supposed to switch to
-        // - we're asked to lock, but we're empty
-        if (this.isLocked == locked || (isEmpty() && locked)) {
+        // - We are a creative bin
+        // - We already have the same state as the one we're supposed to switch to
+        // - We were asked to lock, but we're empty
+        if (isCreative || isLocked() == lock || (lock && isEmpty())) {
             return false;
         }
-        this.isLocked = locked;
-        if (locked) {
-            lockStack =  StackUtils.size(current, 1);
-        } else {
-            lockStack = ItemStack.EMPTY;
-        }
+        lockStack = lock ? StackUtils.size(current, 1) : ItemStack.EMPTY;
         return true;
     }
 
     public boolean isLocked() {
-        return isLocked;
+        return !lockStack.isEmpty();
     }
 
     public ItemStack getRenderStack() {
@@ -132,22 +126,21 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public CompoundTag serializeNBT() {
-        final CompoundTag nbt = super.serializeNBT();
-        nbt.put(NBTConstants.LOCK_STACK, lockStack.serializeNBT());
-        nbt.putBoolean(NBTConstants.LOCKED, isLocked);
+        CompoundTag nbt = super.serializeNBT();
+        if (isLocked()) {
+            nbt.put(NBTConstants.LOCK_STACK, lockStack.serializeNBT());
+        }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        NBTUtils.setItemStackOrEmpty(nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserializeNBT(nbt);
-        NBTUtils.setItemStackIfPresent(nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
-        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.LOCKED, s -> isLocked = s);
     }
 
     public void copy(BinInventorySlot other) {
         setStack(other.getStack());
-        isLocked = other.isLocked;
         lockStack = other.lockStack;
     }
 }

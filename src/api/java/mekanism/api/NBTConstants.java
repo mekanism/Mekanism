@@ -131,6 +131,7 @@ public final class NBTConstants {
     public static final String LAST_PROCESSED = "lastProcessed";
     public static final String LATCHED = "latched";
     public static final String LEVEL = "level";
+    public static final String LOCK_STACK = "lockStack";
     public static final String LOGIC_TYPE = "logicType";
     public static final String MAGNITUDE = "magnitude";
     public static final String MAIN = "main";
@@ -206,6 +207,4 @@ public final class NBTConstants {
     public static final String USED_NODES = "usedNodes";
     public static final String USED_SO_FAR = "usedSoFar";
     public static final String WORLD_GEN_VERSION = "mekWorldGenVersion";
-    public static final String LOCKED = "locked";
-    public static final String LOCK_STACK = "lockStack";
 }

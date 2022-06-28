@@ -32,6 +32,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -127,9 +128,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     public boolean setLocked(boolean isLocked) {
-        if (getTier() == BinTier.CREATIVE) {
-            return false;
-        }
         if (binSlot.setLocked(isLocked)) {
             if (getLevel() != null && !isRemote()) {
                 sendUpdatePacket();
@@ -170,7 +168,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT());
-        updateTag.putBoolean(NBTConstants.LOCKED, binSlot.isLocked());
         return updateTag;
     }
 
@@ -178,7 +175,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LOCKED, binSlot::setLocked);
     }
 
     //Methods relating to IComputerTile
@@ -189,20 +185,32 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @ComputerMethod
     private boolean isLocked() {
-        return getBinSlot().isLocked();
+        return binSlot.isLocked();
+    }
+
+    @ComputerMethod
+    private ItemStack getLock() {
+        return binSlot.getLockStack();
     }
 
     @ComputerMethod
     private void lock() throws ComputerException {
-        if (getTier() == BinTier.CREATIVE) throw new ComputerException("Creative bins cannot be locked!");
-        if (getBinSlot().isEmpty()) throw new ComputerException("Empty bins cannot be locked!");
-        if (!setLocked(true)) throw new ComputerException("This bin is already locked!");
+        if (getTier() == BinTier.CREATIVE) {
+            throw new ComputerException("Creative bins cannot be locked!");
+        } else if (binSlot.isEmpty()) {
+            throw new ComputerException("Empty bins cannot be locked!");
+        } else if (!setLocked(true)) {
+            throw new ComputerException("This bin is already locked!");
+        }
     }
 
     @ComputerMethod
     private void unlock() throws ComputerException {
-        if (getTier() == BinTier.CREATIVE) throw new ComputerException("Creative bins cannot be unlocked!");
-        if (!setLocked(true)) throw new ComputerException("This bin is not locked!");
+        if (getTier() == BinTier.CREATIVE) {
+            throw new ComputerException("Creative bins cannot be unlocked!");
+        } else if (!setLocked(true)) {
+            throw new ComputerException("This bin is not locked!");
+        }
     }
     //End methods IComputerTile
 }

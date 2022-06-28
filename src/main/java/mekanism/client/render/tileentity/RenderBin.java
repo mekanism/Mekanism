@@ -24,7 +24,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -92,7 +91,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         }
     }
 
-    protected MutableComponent getCount(TileEntityBin bin) {
+    protected Component getCount(TileEntityBin bin) {
         if (bin.getTier() == BinTier.CREATIVE) {
             return MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
         }

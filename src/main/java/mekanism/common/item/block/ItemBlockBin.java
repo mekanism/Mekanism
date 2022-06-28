@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockBin;
@@ -16,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSustainedInventory {
@@ -39,15 +37,15 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
             if (slot.isEmpty()) {
                 tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
             } else {
-                tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, slot.getStack().getHoverName()));
+                tooltip.add(MekanismLang.STORING.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, slot.getStack()));
                 if (tier == BinTier.CREATIVE) {
                     tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, MekanismLang.INFINITE));
                 } else {
                     tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(slot.getCount())));
                 }
             }
-            if (!slot.getLockStack().isEmpty()) {
-                tooltip.add(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, ForgeRegistries.ITEMS.getKey(slot.getLockStack().getItem())));
+            if (slot.isLocked()) {
+                tooltip.add(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, slot.getLockStack()));
             }
             if (tier == BinTier.CREATIVE) {
                 tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
