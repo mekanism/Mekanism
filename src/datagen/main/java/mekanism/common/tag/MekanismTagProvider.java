@@ -199,6 +199,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
               MekanismBlocks.MODIFICATION_STATION,
               MekanismBlocks.ISOTOPIC_CENTRIFUGE,
+              MekanismBlocks.PIGMENT_MIXER,
               //Don't allow blocks that may have a radioactive substance in them to be picked up as it
               // will effectively dupe the radiation and also leak out into the atmosphere which is not
               // what people want, and means that it is likely someone miss-clicked.
@@ -220,6 +221,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR,
               MekanismTileEntityTypes.MODIFICATION_STATION,
               MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE,
+              MekanismTileEntityTypes.PIGMENT_MIXER,
               //Don't allow blocks that may have a radioactive substance in them to be picked up as it
               // will effectively dupe the radiation and also leak out into the atmosphere which is not
               // what people want, and means that it is likely someone miss-clicked.
