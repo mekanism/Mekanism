@@ -141,7 +141,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
-        if (MekanismUtils.canFunction(this) && (fluidTank.isEmpty() || FluidType.BUCKET_VOLUME <= fluidTank.getNeeded())) {
+        if (MekanismUtils.canFunction(this) && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeeded())) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 operatingTicks++;
@@ -158,6 +158,10 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         if (!fluidTank.isEmpty()) {
             FluidUtils.emit(Collections.singleton(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
+    }
+
+    public int estimateIncrementAmount() {
+        return fluidTank.getFluid().getFluid() == MekanismFluids.HEAVY_WATER.getFluid() ? HEAVY_WATER_AMOUNT : FluidType.BUCKET_VOLUME;
     }
 
     private boolean suck() {
@@ -202,7 +206,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 // only allow collecting from non-empty sources
                 Block block = blockState.getBlock();
                 if (block instanceof IFluidBlock fluidBlock) {
-                    if (validFluid(fluidBlock.drain(level, pos, FluidAction.SIMULATE), true)) {
+                    if (validFluid(fluidBlock.drain(level, pos, FluidAction.SIMULATE))) {
                         //Actually drain it
                         suck(fluidBlock.drain(level, pos, FluidAction.EXECUTE), pos, addRecurring);
                         return true;
@@ -210,7 +214,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 } else if (block instanceof BucketPickup bucketPickup) {
                     Fluid sourceFluid = fluidState.getType();
                     FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
-                    if (validFluid(fluidStack, false)) {
+                    if (validFluid(fluidStack)) {
                         //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                         if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
                             //Note we only attempt taking if it is not water, or we want to pump water sources
@@ -225,7 +229,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                                 //Update the fluid stack in case something somehow changed about the type
                                 // making sure that we replace to heavy water if we got heavy water
                                 fluidStack = getOutput(sourceFluid, hasFilter);
-                                if (!validFluid(fluidStack, false)) {
+                                if (!validFluid(fluidStack)) {
                                     Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
                                           fluidState.getType(), pos, level, sourceFluid);
                                     return false;
@@ -259,12 +263,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
     }
 
-    private boolean validFluid(@NotNull FluidStack fluidStack, boolean recheckSize) {
+    private boolean validFluid(@NotNull FluidStack fluidStack) {
         if (!fluidStack.isEmpty() && (activeType.isEmpty() || activeType.isFluidEqual(fluidStack))) {
             if (fluidTank.isEmpty()) {
                 return true;
             } else if (fluidTank.isFluidEqual(fluidStack)) {
-                return !recheckSize || fluidStack.getAmount() <= fluidTank.getNeeded();
+                return fluidStack.getAmount() <= fluidTank.getNeeded();
             }
         }
         return false;
