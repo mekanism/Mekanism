@@ -25,7 +25,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.ForgeConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -168,7 +167,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             ItemStack[] items = ingredient.getItems();
             if (items.length == 0) {
                 return true;
-            } else if (items.length == 1 && !ForgeConfig.SERVER.treatEmptyTagsAsAir.get()) {
+            } else if (items.length == 1) {
                 //Manually compare it as we want to make sure we don't initialize the capabilities on it
                 // to ensure we reduce any potential lag from this comparison
                 ItemStack item = items[0];
