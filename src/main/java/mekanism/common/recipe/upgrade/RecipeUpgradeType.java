@@ -8,6 +8,7 @@ public enum RecipeUpgradeType {
     PIGMENT,
     SLURRY,
     ITEM,
+    LOCK,//Note: Must be somewhere below item to ensure item gets ran first
     SECURITY,
     SORTING,
     UPGRADE,

@@ -112,6 +112,13 @@ public class BinInventorySlot extends BasicInventorySlot {
         return true;
     }
 
+    /**
+     * For use by upgrade recipes, do not use this in place of {@link #setLocked(boolean)}
+     */
+    public void setLockStack(@NotNull ItemStack stack) {
+        lockStack = StackUtils.size(stack, 1);
+    }
+
     public boolean isLocked() {
         return !lockStack.isEmpty();
     }
@@ -137,10 +144,5 @@ public class BinInventorySlot extends BasicInventorySlot {
     public void deserializeNBT(CompoundTag nbt) {
         NBTUtils.setItemStackOrEmpty(nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserializeNBT(nbt);
-    }
-
-    public void copy(BinInventorySlot other) {
-        setStack(other.getStack());
-        lockStack = other.lockStack;
     }
 }
