@@ -238,9 +238,9 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
         //Grab the booleans regardless if they are present as if they aren't that means they are false
         isDraining = nbt.getBoolean(NBTConstants.DRAINING);
         isFilling = nbt.getBoolean(NBTConstants.FILLING);
+        super.deserializeNBT(nbt);
     }
 }

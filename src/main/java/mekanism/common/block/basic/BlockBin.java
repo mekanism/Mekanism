@@ -82,11 +82,14 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             return InteractionResult.PASS;
         } else if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return InteractionResult.SUCCESS;
+        }
+        ItemStack stack = player.getItemInHand(hand);
+        if (stack.isEmpty() && player.isShiftKeyDown() && hit.getDirection() == bin.getDirection()) {
+            return bin.toggleLock() ? InteractionResult.sidedSuccess(world.isClientSide) : InteractionResult.FAIL;
         } else if (!world.isClientSide) {
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());
             if (binSlot.getCount() < binMaxSize) {
-                ItemStack stack = player.getItemInHand(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);

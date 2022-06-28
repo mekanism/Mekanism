@@ -231,6 +231,14 @@ public class NBTUtils {
         }
     }
 
+    public static void setItemStackOrEmpty(CompoundTag nbt, String key, Consumer<ItemStack> setter) {
+        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
+            setter.accept(ItemStack.of(nbt.getCompound(key)));
+        } else {
+            setter.accept(ItemStack.EMPTY);
+        }
+    }
+
     public static void setResourceLocationIfPresent(CompoundTag nbt, String key, Consumer<ResourceLocation> setter) {
         if (nbt.contains(key, Tag.TAG_STRING)) {
             ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));

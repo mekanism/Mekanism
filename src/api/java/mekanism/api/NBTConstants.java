@@ -131,6 +131,7 @@ public final class NBTConstants {
     public static final String LAST_PROCESSED = "lastProcessed";
     public static final String LATCHED = "latched";
     public static final String LEVEL = "level";
+    public static final String LOCK_STACK = "lockStack";
     public static final String LOGIC_TYPE = "logicType";
     public static final String MAGNITUDE = "magnitude";
     public static final String MAIN = "main";

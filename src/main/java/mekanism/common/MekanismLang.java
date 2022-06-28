@@ -169,6 +169,7 @@ public enum MekanismLang implements ILangEntry {
     STORED("tooltip", "stored"),
     STORED_MB_PERCENTAGE("tooltip", "stored_mb_percentage"),
     ITEM_AMOUNT("tooltip", "item_amount"),
+    LOCKED("tooltip", "locked"),
     FLOWING("tooltip", "flowing"),
     INVALID("tooltip", "invalid"),
     HAS_INVENTORY("tooltip", "inventory"),

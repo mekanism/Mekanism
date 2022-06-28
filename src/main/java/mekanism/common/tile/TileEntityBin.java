@@ -10,6 +10,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -31,6 +32,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -121,11 +123,29 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         return InteractionResult.PASS;
     }
 
+    public boolean toggleLock() {
+        return setLocked(!binSlot.isLocked());
+    }
+
+    public boolean setLocked(boolean isLocked) {
+        if (binSlot.setLocked(isLocked)) {
+            if (getLevel() != null && !isRemote()) {
+                sendUpdatePacket();
+                markForSave();
+                getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof BinUpgradeData data) {
             redstone = data.redstone();
-            binSlot.setStack(data.binSlot().getStack());
+            BinInventorySlot previous = data.binSlot();
+            binSlot.setStack(previous.getStack());
+            binSlot.setLockStack(previous.getLockStack());
         } else {
             super.parseUpgradeData(upgradeData);
         }
@@ -163,6 +183,36 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @ComputerMethod
     private int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());
+    }
+
+    @ComputerMethod
+    private boolean isLocked() {
+        return binSlot.isLocked();
+    }
+
+    @ComputerMethod
+    private ItemStack getLock() {
+        return binSlot.getLockStack();
+    }
+
+    @ComputerMethod
+    private void lock() throws ComputerException {
+        if (getTier() == BinTier.CREATIVE) {
+            throw new ComputerException("Creative bins cannot be locked!");
+        } else if (binSlot.isEmpty()) {
+            throw new ComputerException("Empty bins cannot be locked!");
+        } else if (!setLocked(true)) {
+            throw new ComputerException("This bin is already locked!");
+        }
+    }
+
+    @ComputerMethod
+    private void unlock() throws ComputerException {
+        if (getTier() == BinTier.CREATIVE) {
+            throw new ComputerException("Creative bins cannot be unlocked!");
+        } else if (!setLocked(true)) {
+            throw new ComputerException("This bin is not locked!");
+        }
     }
     //End methods IComputerTile
 }

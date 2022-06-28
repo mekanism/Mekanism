@@ -805,6 +805,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.STORED, "Stored %1$s: %2$s");
         add(MekanismLang.STORED_MB_PERCENTAGE, "Stored %1$s: %2$s mB (%3$s)");
         add(MekanismLang.ITEM_AMOUNT, "Item amount: %1$s");
+        add(MekanismLang.LOCKED, "Locked to item: %1$s");
         add(MekanismLang.FLOWING, "Flowing: %1$s");
         add(MekanismLang.INVALID, "(Invalid)");
         add(MekanismLang.HAS_INVENTORY, "Inventory: %1$s");
