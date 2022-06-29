@@ -1559,6 +1559,7 @@
   "tooltip.mekanism.inventory": "物品欄: %1$s",
   "tooltip.mekanism.item_amount": "物品數量: %1$s",
   "tooltip.mekanism.jei.amount.with.capacity": "%1$s / %2$s mB",
+  "tooltip.mekanism.locked": "鎖定物品: %1$s",
   "tooltip.mekanism.mode": "模式: %1$s",
   "tooltip.mekanism.mode.free_runners": "助跑器模式: %1$s",
   "tooltip.mekanism.mode.jetpack": "噴射背包模式: %1$s",
