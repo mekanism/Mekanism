@@ -1559,6 +1559,7 @@
   "tooltip.mekanism.inventory": "Inventário: %1$s",
   "tooltip.mekanism.item_amount": "Quantidade de Item: %1$s",
   "tooltip.mekanism.jei.amount.with.capacity": "%1$s / %2$s mB",
+  "tooltip.mekanism.locked": "Trancado ao item: %1$s",
   "tooltip.mekanism.mode": "Modo: %1$s",
   "tooltip.mekanism.mode.free_runners": "Modo dos corredores: %1$s",
   "tooltip.mekanism.mode.jetpack": "Modo da mochila a jato: %1$s",
