@@ -9,9 +9,12 @@ import mekanism.api.providers.IGasProvider
 import mekanism.api.providers.IItemProvider
 import mekanism.common.registration.impl.FluidRegistryObject
 import mekanism.common.registration.impl.ModuleRegistryObject
+import mekanism.common.util.RegistryUtils
 import net.minecraft.client.KeyMapping
 import net.minecraft.world.item.ItemStack
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.Block
 import org.apache.logging.log4j.LogManager
 
 fun JsonObject.addProperty(name: String, res: ResourceLocation) {
@@ -51,6 +54,9 @@ val IItemProvider.bookId: String get() {
     val type = if (this is IBlockProvider) "block" else "item"
     return type + "/" + this.registryName.path
 }
+
+val Item.registryName: ResourceLocation? get() = RegistryUtils.getName(this)
+val Block.registryName: ResourceLocation? get() = RegistryUtils.getName(this)
 
 val IGasProvider.bookId: String get() = "gas/" + this.registryName.path
 

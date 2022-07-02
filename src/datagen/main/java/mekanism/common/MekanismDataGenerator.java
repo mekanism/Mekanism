@@ -56,7 +56,7 @@ public class MekanismDataGenerator {
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         gen.addProvider(true, new PersistingDisabledProvidersProvider(gen));
          //Patchouli is used on both (but server only _needs_ the base book json)
-        gen.addProvider(new MekanismMainBookProvider(gen));
+        gen.addProvider(true, new MekanismMainBookProvider(gen));
     }
 
     /**
