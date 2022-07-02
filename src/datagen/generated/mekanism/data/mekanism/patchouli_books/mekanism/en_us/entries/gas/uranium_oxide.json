@@ -1,10 +1,10 @@
 {
-  "category": "chemicals",
+  "category": "mekanism:chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "name": "gas.mekanism.uranium_oxide",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Oxidized form of $(l:item/yellow_cake_uranium)Yellow Cake Uranium$(/l), used to make $(l:gas/uranium_hexafluoride)Uranium Hexafluoride$(/l)"
     }
   ],

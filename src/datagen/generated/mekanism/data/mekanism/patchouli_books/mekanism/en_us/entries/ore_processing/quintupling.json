@@ -1,18 +1,18 @@
 {
-  "category": "ore_processing",
+  "category": "mekanism:ore_processing",
   "icon": "mekanism:chemical_dissolution_chamber",
   "name": "5x - Ore Quintupling",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Quintupling ores is quite complicated, however it can lead to huge riches, especially with a $(l:block/digital_miner)Digital Miner$(/l)."
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "To quintuple ores, put them and $(l:gas/sulfuric_acid)Sulfuric Acid$(/l) into a $(l:block/chemical_dissolution_chamber)Chemical Dissolution Chamber$(/l), which will convert them into slurry.  Clean the slurry in a $(l:block/chemical_washer)Chemical Washer$(/l), then use a $(l:block/chemical_crystallizer)Chemical Crystallizer$(/l) to turn them into crystals."
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Put the crystals into your injection chamber."
     }
   ]

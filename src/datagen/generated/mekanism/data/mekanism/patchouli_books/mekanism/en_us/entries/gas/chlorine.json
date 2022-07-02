@@ -1,14 +1,14 @@
 {
-  "category": "chemicals",
+  "category": "mekanism:chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "name": "gas.mekanism.chlorine",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Chlorine is combined in a $(l:block/chemical_infuser)Chemical Infuser$(/l) along with $(l:gas/hydrogen)Hydrogen$(/l) to make $(l:gas/hydrogen_chloride)Hydrogen Chloride$(/l)."
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "It is produced by putting brine in an $(l:block/electrolytic_separator)Electrolytic Separator$(/l), which also produces $(l:gas/sodium)Sodium$(/l)"
     }
   ],

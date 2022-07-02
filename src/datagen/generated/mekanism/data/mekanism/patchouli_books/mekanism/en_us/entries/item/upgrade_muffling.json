@@ -1,10 +1,10 @@
 {
-  "category": "items_upgrades",
+  "category": "mekanism:items_upgrades",
   "icon": "mekanism:upgrade_muffling",
   "name": "item.mekanism.upgrade_muffling",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:upgrade_muffling",
       "link_recipe": true,
       "text": "Reduces the sound produced by a machine."

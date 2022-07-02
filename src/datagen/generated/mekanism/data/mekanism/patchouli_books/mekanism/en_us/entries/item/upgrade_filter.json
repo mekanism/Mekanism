@@ -1,10 +1,10 @@
 {
-  "category": "items_upgrades",
+  "category": "mekanism:items_upgrades",
   "icon": "mekanism:upgrade_filter",
   "name": "item.mekanism.upgrade_filter",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:upgrade_filter",
       "link_recipe": true,
       "text": "The Filter Upgrade is an upgrade that, when used in the $(l:block/electric_pump)Electric Pump$(/l), allows the Electric Pump to produce Heavy Water."

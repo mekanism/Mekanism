@@ -1,14 +1,14 @@
 {
-  "category": "chemicals",
+  "category": "mekanism:chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "name": "gas.mekanism.sulfur_dioxide",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Sulfur dioxide is a step in $(l:gas/sulfuric_acid)Sulfuric Acid$(/l) production."
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "It is created by putting sulfur in a $(l:block/chemical_oxidizer)Chemical Oxidizer$(/l) and used with $(l:gas/oxygen)Oxygen$(/l) in the $(l:block/chemical_infuser)Chemical Infuser$(/l) to create $(l:gas/sulfur_trioxide)Sulfur Trioxide$(/l)."
     }
   ],

@@ -1,10 +1,10 @@
 {
-  "category": "multiblocks",
+  "category": "mekanism:multiblocks",
   "icon": "mekanism:teleporter",
   "name": "Teleporter",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:teleporter_frame",
       "link_recipe": true
     }

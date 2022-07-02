@@ -1,10 +1,10 @@
 {
-  "category": "items_metal_and_ore",
+  "category": "mekanism:items_metal_and_ore",
   "icon": "mekanism:dust_lapis_lazuli",
   "name": "item.mekanism.dust_lapis_lazuli",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:dust_lapis_lazuli",
       "link_recipe": true,
       "text": "Crushed form of Lapis Lazuli"

@@ -1,10 +1,10 @@
 {
-  "category": "blocks",
+  "category": "mekanism:blocks",
   "icon": "mekanism:enrichment_chamber",
   "name": "block.mekanism.enrichment_chamber",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:enrichment_chamber",
       "link_recipe": true,
       "text": "Like a grinder, only better$(p)Enrich your resources, turn ores into dust, gem ores into more gems. Can also be used to create compressed resources for use in the Metallurgic Infuser."

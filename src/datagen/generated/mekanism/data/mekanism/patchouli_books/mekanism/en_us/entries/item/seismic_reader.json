@@ -1,10 +1,10 @@
 {
-  "category": "items_gear",
+  "category": "mekanism:items_gear",
   "icon": "mekanism:seismic_reader",
   "name": "item.mekanism.seismic_reader",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:seismic_reader",
       "link_recipe": true,
       "text": "The Seismic Reader is used in conjunction with the $(l:block/seismic_vibrator)Seismic Vibrator$(/l) to analyze the ground immediately around the vibrator, informing you of the blocks, by level, all the way to bedrock level."

@@ -1,10 +1,10 @@
 {
-  "category": "chemicals",
+  "category": "mekanism:chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "name": "gas.mekanism.hydrogen_chloride",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Hydrogen Chloride is needed for the $(l:block/chemical_injection_chamber)Injection Chamber$(/l), part of $(l:ore_processing/quadrupling)Ore Quadrupling$(/l). It is created by putting $(l:gas/chlorine)Chlorine$(/l) and $(l:gas/hydrogen)Hydrogen$(/l) in a $(l:block/chemical_infuser)Chemical Infuser$(/l)."
     }
   ],

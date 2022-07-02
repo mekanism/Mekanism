@@ -1,32 +1,32 @@
 {
-  "category": "items",
+  "category": "mekanism:items",
   "icon": "mekanism:basic_control_circuit",
   "name": "Circuits",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Crafting components used to make tiered items. Created in the $(l:block/metallurgic_infuser)Metallurgic Infuser$(/l)."
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:basic_control_circuit",
       "link_recipe": true,
       "text": "Osmium based."
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:advanced_control_circuit",
       "link_recipe": true,
       "text": "Infused Alloy based."
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:elite_control_circuit",
       "link_recipe": true,
       "text": "Reinforced Alloy based."
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:ultimate_control_circuit",
       "link_recipe": true,
       "text": "Atomic Alloy based."

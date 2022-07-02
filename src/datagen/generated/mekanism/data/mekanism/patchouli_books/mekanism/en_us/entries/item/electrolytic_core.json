@@ -1,10 +1,10 @@
 {
-  "category": "items",
+  "category": "mekanism:items",
   "icon": "mekanism:electrolytic_core",
   "name": "item.mekanism.electrolytic_core",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:electrolytic_core",
       "link_recipe": true,
       "text": "Crafting ingredient used for electrolysis."

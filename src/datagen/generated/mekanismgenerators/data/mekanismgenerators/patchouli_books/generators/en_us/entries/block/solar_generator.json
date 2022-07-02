@@ -1,10 +1,10 @@
 {
-  "category": "generators",
+  "category": "mekanismgenerators:generators",
   "icon": "mekanismgenerators:solar_generator",
   "name": "block.mekanismgenerators.solar_generator",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanismgenerators:solar_generator",
       "link_recipe": true
     }

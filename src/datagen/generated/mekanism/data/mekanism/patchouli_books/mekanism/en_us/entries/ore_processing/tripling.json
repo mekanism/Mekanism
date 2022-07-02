@@ -1,14 +1,14 @@
 {
-  "category": "ore_processing",
+  "category": "mekanism:ore_processing",
   "icon": "mekanism:purification_chamber",
   "name": "3x - Ore Tripling",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "To triple ores, convert them into clumps with a $(l:block/purification_chamber)Purification Chamber$(/l) (requires oxygen), then convert those into dirty dusts with a $(l:block/crusher)Crusher$(/l)"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "These dirty dusts can then be fed into your enrichment chamber"
     }
   ]

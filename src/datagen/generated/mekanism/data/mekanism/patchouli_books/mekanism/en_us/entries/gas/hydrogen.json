@@ -1,14 +1,14 @@
 {
-  "category": "chemicals",
+  "category": "mekanism:chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "name": "gas.mekanism.hydrogen",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Hydrogen is a carrier of energy.  It is produced by putting water in an $(l:block/electrolytic_separator)Electrolytic Separator$(/l), and can be used as fuel in a Gas-Burning Generator, as well as a $(l:item/jetpack)Jetpack$(/l) or $(l:item/jetpack_armored)Armored Jetpack$(/l) and $(l:item/flamethrower)Flamethrower$(/l)."
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "It is also used in a $(l:block/chemical_infuser)Chemical Infuser$(/l) to make $(l:gas/hydrogen_chloride)Hydrogen Chloride$(/l)."
     }
   ],

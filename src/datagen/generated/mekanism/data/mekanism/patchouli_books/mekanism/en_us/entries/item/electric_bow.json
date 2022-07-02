@@ -1,16 +1,16 @@
 {
-  "category": "items_gear",
+  "category": "mekanism:items_gear",
   "icon": "mekanism:electric_bow",
   "name": "item.mekanism.electric_bow",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:electric_bow",
       "link_recipe": true,
       "text": "Arrows not included."
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Much like a normal bow, but uses energy instead of durability. Can also set arrows on fire (toggle with $(k:key.mekanism.mode))."
     }
   ],

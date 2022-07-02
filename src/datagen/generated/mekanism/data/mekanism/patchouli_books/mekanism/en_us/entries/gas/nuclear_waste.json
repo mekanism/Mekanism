@@ -1,10 +1,10 @@
 {
-  "category": "chemicals",
+  "category": "mekanism:chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "name": "gas.mekanism.nuclear_waste",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Waste product of used $(l:gas/fissile_fuel)Fissile Fuel$(/l)."
     }
   ],

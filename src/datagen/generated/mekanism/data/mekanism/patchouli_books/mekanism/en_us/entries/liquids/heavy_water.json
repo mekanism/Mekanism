@@ -1,10 +1,10 @@
 {
-  "category": "liquids",
+  "category": "mekanism:liquids",
   "icon": "mekanism:heavy_water_bucket",
   "name": "Heavy Water",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Heavy Water is obtaind by having an $(l:block/electric_pump)Electric Pump$(/l) with a $(l:item/upgrade_filter)Filter Upgrade$(/l) pump a regular water source."
     }
   ]

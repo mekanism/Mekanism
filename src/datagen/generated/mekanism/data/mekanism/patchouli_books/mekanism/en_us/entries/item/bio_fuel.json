@@ -1,10 +1,10 @@
 {
-  "category": "items",
+  "category": "mekanism:items",
   "icon": "mekanism:bio_fuel",
   "name": "item.mekanism.bio_fuel",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:bio_fuel",
       "link_recipe": true,
       "text": "A fuel made from plant material in a Crusher.$(p)Used in a Biofuel Generator (Mekanism Generators required) for power or $(l:block/pressurized_reaction_chamber)Pressurized Reaction Chamber$(/l) to produce Ethylene."

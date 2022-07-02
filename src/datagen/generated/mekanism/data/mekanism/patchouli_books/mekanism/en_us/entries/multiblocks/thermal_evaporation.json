@@ -1,14 +1,14 @@
 {
-  "category": "multiblocks",
+  "category": "mekanism:multiblocks",
   "icon": "mekanism:thermal_evaporation_controller",
   "name": "Thermal Evaporation Plant",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "The Thermal Evaporation Plant is a 4x4 base multiblock for producing one liquid from another by way of heat energy. Minimum height is 3, maximum is 18.$(p)Heat can be supplied passively, actively by solar, or externally supplied."
     },
     {
-      "type": "multiblock",
+      "type": "patchouli:multiblock",
       "multiblock": {
         "mapping": {
           "0": "mekanism:thermal_evaporation_block",
@@ -39,17 +39,17 @@
       "name": "Minimal Plant"
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:thermal_evaporation_controller",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:thermal_evaporation_valve",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:thermal_evaporation_block",
       "link_recipe": true
     }

@@ -1,59 +1,59 @@
 {
-  "category": "items_metal_and_ore",
+  "category": "mekanism:items_metal_and_ore",
   "icon": "mekanism:ingot_lead",
   "name": "Lead",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Lead is a heavy metal that is denser than most common materials. Lead is soft and malleable, and also has a relatively low melting point."
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:uranium_ore",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:deepslate_uranium_ore",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:shard_uranium",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:crystal_uranium",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:dust_uranium",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:dirty_dust_uranium",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:clump_uranium",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:ingot_uranium",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:raw_uranium",
       "link_recipe": true
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:nugget_uranium",
       "link_recipe": true
     }

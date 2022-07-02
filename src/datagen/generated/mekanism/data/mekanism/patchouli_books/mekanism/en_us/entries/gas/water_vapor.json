@@ -1,14 +1,14 @@
 {
-  "category": "chemicals",
+  "category": "mekanism:chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "name": "gas.mekanism.water_vapor",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Water vapor is created from water in the $(l:block/rotary_condensentrator)Rotary Condenstrator$(/l). It is not as hot as Steam"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "It is combined with $(l:gas/sulfur_trioxide)Sulfur Trioxide$(/l) in the $(l:block/chemical_infuser)Chemical Infuser$(/l) to create $(l:gas/sulfuric_acid)Sulfuric Acid$(/l).  It can also be combined with dirt in the $(l:block/chemical_injection_chamber)Chemical Injection Chamber$(/l) to make clay."
     }
   ],

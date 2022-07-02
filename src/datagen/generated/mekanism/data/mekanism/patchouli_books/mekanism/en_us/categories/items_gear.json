@@ -1,5 +1,5 @@
 {
-  "parent": "items",
+  "parent": "mekanism:items",
   "description": "Suit up, attack, or configure with these items.",
   "icon": "mekanism:electric_bow",
   "name": "Gear"

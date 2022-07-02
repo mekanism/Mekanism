@@ -1,10 +1,10 @@
 {
-  "category": "blocks",
+  "category": "mekanism:blocks",
   "icon": "mekanism:steel_casing",
   "name": "block.mekanism.steel_casing",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:steel_casing",
       "link_recipe": true,
       "text": "Crafting ingredient or decoration."

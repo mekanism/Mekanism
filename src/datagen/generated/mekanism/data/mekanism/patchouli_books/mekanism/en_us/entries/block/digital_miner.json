@@ -1,10 +1,10 @@
 {
-  "category": "blocks",
+  "category": "mekanism:blocks",
   "icon": "mekanism:digital_miner",
   "name": "block.mekanism.digital_miner",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:digital_miner",
       "link_recipe": true,
       "text": "Now you're thinking with portals!$(p)Advanced mining equipment that can mine blocks via teleportation."

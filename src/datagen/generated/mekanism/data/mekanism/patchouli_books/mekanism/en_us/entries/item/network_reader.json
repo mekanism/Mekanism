@@ -1,10 +1,10 @@
 {
-  "category": "items_gear",
+  "category": "mekanism:items_gear",
   "icon": "mekanism:network_reader",
   "name": "item.mekanism.network_reader",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:network_reader",
       "link_recipe": true,
       "text": "Sends information about the targeted pipe network to chat."

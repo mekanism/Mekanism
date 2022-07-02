@@ -1,10 +1,10 @@
 {
-  "category": "items_metal_and_ore",
+  "category": "mekanism:items_metal_and_ore",
   "icon": "mekanism:dust_sulfur",
   "name": "item.mekanism.dust_sulfur",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:dust_sulfur",
       "link_recipe": true,
       "text": "Solidified sulfur, can be used to make $(l:gas/sulfuric_acid)Sulfuric Acid$(/l)."

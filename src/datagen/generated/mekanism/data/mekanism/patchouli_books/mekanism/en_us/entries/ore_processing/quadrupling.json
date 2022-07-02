@@ -1,14 +1,14 @@
 {
-  "category": "ore_processing",
+  "category": "mekanism:ore_processing",
   "icon": "mekanism:chemical_injection_chamber",
   "name": "4x - Ore Quadrupling",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Quadrupling your ores is significantly more complex than doubling or tripling, due to the need for $(l:gas/hydrogen_chloride)Hydrogen Chloride$(/l)."
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "Once you have that set up, use a $(l:block/chemical_injection_chamber)Chemical Injection Chamber$(/l) to convert ores into shards, and feed those into your crusher."
     }
   ]

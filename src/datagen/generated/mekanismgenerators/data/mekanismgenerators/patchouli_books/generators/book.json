@@ -1,3 +1,4 @@
 {
-  "extend": "mekanism:mekanism"
+  "extend": "mekanism:mekanism",
+  "name": "Mekanism Generators"
 }

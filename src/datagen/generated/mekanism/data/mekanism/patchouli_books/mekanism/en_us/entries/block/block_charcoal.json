@@ -1,10 +1,10 @@
 {
-  "category": "blocks",
+  "category": "mekanism:blocks",
   "icon": "mekanism:block_charcoal",
   "name": "block.mekanism.block_charcoal",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:block_charcoal",
       "link_recipe": true,
       "text": "Storage block for Charcoal."

@@ -1,10 +1,10 @@
 {
-  "category": "blocks",
+  "category": "mekanism:blocks",
   "icon": "mekanism:structural_glass",
   "name": "block.mekanism.structural_glass",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:structural_glass",
       "link_recipe": true,
       "text": "Glass that can be used in many Multiblocks."

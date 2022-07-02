@@ -1,10 +1,10 @@
 {
-  "category": "items_upgrades",
+  "category": "mekanism:items_upgrades",
   "icon": "mekanism:upgrade_gas",
   "name": "item.mekanism.upgrade_gas",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:upgrade_gas",
       "link_recipe": true,
       "text": "The gas upgrade allows you to increase the gas usage efficiency of a Mekanism machine which consumes gas."

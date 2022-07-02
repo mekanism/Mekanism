@@ -1,10 +1,10 @@
 {
-  "category": "blocks",
+  "category": "mekanism:blocks",
   "icon": "mekanism:security_desk",
   "name": "block.mekanism.security_desk",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:security_desk",
       "link_recipe": true,
       "text": "Used for adjusting the security of Mekanism blocks and items."

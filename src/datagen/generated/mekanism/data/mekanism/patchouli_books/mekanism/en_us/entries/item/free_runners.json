@@ -1,10 +1,10 @@
 {
-  "category": "items_gear",
+  "category": "mekanism:items_gear",
   "icon": "mekanism:free_runners",
   "name": "item.mekanism.free_runners",
   "pages": [
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "item": "mekanism:free_runners",
       "link_recipe": true,
       "text": "Free Runners are an item that allows players to ascend 1-block inclines automatically, as well as preventing fall damage as long as they are charged. A fall will reduce the item's charge, depending on how far the fall was.$(p)Can be toggled with $(k:key.mekanism.feet_mode)"
