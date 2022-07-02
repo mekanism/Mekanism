@@ -1,7 +1,7 @@
 {
-  "name": "Enriched Infusion",
   "category": "items",
   "icon": "mekanism:enriched_redstone",
+  "name": "Enriched Infusion",
   "pages": [
     {
       "type": "text",

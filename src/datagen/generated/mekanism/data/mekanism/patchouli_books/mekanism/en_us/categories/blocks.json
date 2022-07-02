@@ -1,6 +1,6 @@
 {
-  "name": "Blocks List",
   "description": "A list of the blocks in Mekanism.",
   "icon": "mekanism:ultimate_energy_cube",
+  "name": "Blocks List",
   "sortnum": 99
 }

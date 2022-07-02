@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.dust_sulfur",
   "category": "items_metal_and_ore",
   "icon": "mekanism:dust_sulfur",
+  "name": "item.mekanism.dust_sulfur",
   "pages": [
     {
       "type": "spotlight",

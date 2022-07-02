@@ -1,7 +1,7 @@
 {
-  "name": "Alloys",
   "category": "items",
   "icon": "mekanism:alloy_infused",
+  "name": "Alloys",
   "pages": [
     {
       "type": "text",

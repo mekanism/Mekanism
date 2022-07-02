@@ -1,7 +1,7 @@
 {
-  "name": "Mechanical Pipes",
   "category": "blocks",
   "icon": "mekanism:basic_mechanical_pipe",
+  "name": "Mechanical Pipes",
   "pages": [
     {
       "type": "text",

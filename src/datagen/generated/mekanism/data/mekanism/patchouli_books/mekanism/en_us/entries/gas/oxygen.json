@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.oxygen",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.oxygen",
   "pages": [
     {
       "type": "text",

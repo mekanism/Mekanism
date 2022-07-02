@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.electric_bow",
   "category": "items_gear",
   "icon": "mekanism:electric_bow",
+  "name": "item.mekanism.electric_bow",
   "pages": [
     {
       "type": "spotlight",

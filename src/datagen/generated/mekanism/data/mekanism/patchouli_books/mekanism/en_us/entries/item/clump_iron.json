@@ -1,7 +1,7 @@
 {
-  "name": "Clumps",
   "category": "items_metal_and_ore",
   "icon": "mekanism:clump_iron",
+  "name": "Clumps",
   "pages": [
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.osmium_compressor",
   "category": "blocks",
   "icon": "mekanism:osmium_compressor",
+  "name": "block.mekanism.osmium_compressor",
   "pages": [
     {
       "type": "spotlight",

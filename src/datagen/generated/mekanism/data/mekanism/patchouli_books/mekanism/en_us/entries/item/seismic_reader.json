@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.seismic_reader",
   "category": "items_gear",
   "icon": "mekanism:seismic_reader",
+  "name": "item.mekanism.seismic_reader",
   "pages": [
     {
       "type": "spotlight",

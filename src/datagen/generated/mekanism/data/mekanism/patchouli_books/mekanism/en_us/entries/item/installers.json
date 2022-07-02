@@ -1,7 +1,7 @@
 {
-  "name": "Installers",
   "category": "items",
   "icon": "mekanism:basic_tier_installer",
+  "name": "Installers",
   "pages": [
     {
       "type": "text",

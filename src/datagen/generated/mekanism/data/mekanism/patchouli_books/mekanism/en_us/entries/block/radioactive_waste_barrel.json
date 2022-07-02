@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.radioactive_waste_barrel",
   "category": "blocks",
   "icon": "mekanism:radioactive_waste_barrel",
+  "name": "block.mekanism.radioactive_waste_barrel",
   "pages": [
     {
       "type": "spotlight",

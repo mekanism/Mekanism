@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.electrolytic_core",
   "category": "items",
   "icon": "mekanism:electrolytic_core",
+  "name": "item.mekanism.electrolytic_core",
   "pages": [
     {
       "type": "spotlight",

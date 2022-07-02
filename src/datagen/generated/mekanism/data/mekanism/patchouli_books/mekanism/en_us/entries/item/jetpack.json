@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.jetpack",
   "category": "items_gear",
   "icon": "mekanism:jetpack",
+  "name": "item.mekanism.jetpack",
   "pages": [
     {
       "type": "spotlight",

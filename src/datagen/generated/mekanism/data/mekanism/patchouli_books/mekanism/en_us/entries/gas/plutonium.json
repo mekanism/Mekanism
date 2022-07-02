@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.plutonium",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.plutonium",
   "pages": [
     {
       "type": "text",

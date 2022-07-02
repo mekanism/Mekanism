@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.spent_nuclear_waste",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.spent_nuclear_waste",
   "pages": [
     {
       "type": "text",

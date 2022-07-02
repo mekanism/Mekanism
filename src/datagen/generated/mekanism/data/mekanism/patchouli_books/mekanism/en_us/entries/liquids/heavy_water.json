@@ -1,7 +1,7 @@
 {
-  "name": "Heavy Water",
   "category": "liquids",
   "icon": "mekanism:heavy_water_bucket",
+  "name": "Heavy Water",
   "pages": [
     {
       "type": "text",

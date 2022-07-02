@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.upgrade_energy",
   "category": "items_upgrades",
   "icon": "mekanism:upgrade_energy",
+  "name": "item.mekanism.upgrade_energy",
   "pages": [
     {
       "type": "spotlight",

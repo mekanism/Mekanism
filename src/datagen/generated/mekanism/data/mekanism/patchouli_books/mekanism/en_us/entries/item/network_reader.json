@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.network_reader",
   "category": "items_gear",
   "icon": "mekanism:network_reader",
+  "name": "item.mekanism.network_reader",
   "pages": [
     {
       "type": "spotlight",

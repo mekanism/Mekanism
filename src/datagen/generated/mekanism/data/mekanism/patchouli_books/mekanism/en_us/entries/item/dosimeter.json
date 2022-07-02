@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.dosimeter",
   "category": "items_gear",
   "icon": "mekanism:dosimeter",
+  "name": "item.mekanism.dosimeter",
   "pages": [
     {
       "type": "spotlight",

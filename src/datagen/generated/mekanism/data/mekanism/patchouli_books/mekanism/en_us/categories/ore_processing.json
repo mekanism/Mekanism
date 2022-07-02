@@ -1,5 +1,5 @@
 {
-  "name": "Ore Processing",
   "description": "Get more ingots from your ore with these machine combinations.",
-  "icon": "mekanism:osmium_ore"
+  "icon": "mekanism:osmium_ore",
+  "name": "Ore Processing"
 }

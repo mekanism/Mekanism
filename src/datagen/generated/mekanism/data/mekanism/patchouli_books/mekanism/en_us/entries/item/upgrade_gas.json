@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.upgrade_gas",
   "category": "items_upgrades",
   "icon": "mekanism:upgrade_gas",
+  "name": "item.mekanism.upgrade_gas",
   "pages": [
     {
       "type": "spotlight",

@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.upgrade_anchor",
   "category": "items_upgrades",
   "icon": "mekanism:upgrade_anchor",
+  "name": "item.mekanism.upgrade_anchor",
   "pages": [
     {
       "type": "spotlight",

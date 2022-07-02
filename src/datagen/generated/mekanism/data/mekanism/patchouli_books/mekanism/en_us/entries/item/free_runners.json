@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.free_runners",
   "category": "items_gear",
   "icon": "mekanism:free_runners",
+  "name": "item.mekanism.free_runners",
   "pages": [
     {
       "type": "spotlight",

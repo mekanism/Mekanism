@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.configuration_card",
   "category": "items",
   "icon": "mekanism:configuration_card",
+  "name": "item.mekanism.configuration_card",
   "pages": [
     {
       "type": "spotlight",

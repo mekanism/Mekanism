@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.dust_obsidian",
   "category": "items_metal_and_ore",
   "icon": "mekanism:dust_obsidian",
+  "name": "item.mekanism.dust_obsidian",
   "pages": [
     {
       "type": "spotlight",

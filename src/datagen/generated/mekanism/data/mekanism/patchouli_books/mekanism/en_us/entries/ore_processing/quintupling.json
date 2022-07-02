@@ -1,7 +1,7 @@
 {
-  "name": "5x - Ore Quintupling",
   "category": "ore_processing",
   "icon": "mekanism:chemical_dissolution_chamber",
+  "name": "5x - Ore Quintupling",
   "pages": [
     {
       "type": "text",

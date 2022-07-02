@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.fissile_fuel",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.fissile_fuel",
   "pages": [
     {
       "type": "text",

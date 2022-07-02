@@ -1,7 +1,7 @@
 {
-  "name": "Pressurized Tubes",
   "category": "blocks",
   "icon": "mekanism:basic_pressurized_tube",
+  "name": "Pressurized Tubes",
   "pages": [
     {
       "type": "text",

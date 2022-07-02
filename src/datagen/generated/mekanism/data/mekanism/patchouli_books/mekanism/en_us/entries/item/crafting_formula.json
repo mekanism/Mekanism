@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.crafting_formula",
   "category": "items",
   "icon": "mekanism:crafting_formula",
+  "name": "item.mekanism.crafting_formula",
   "pages": [
     {
       "type": "spotlight",

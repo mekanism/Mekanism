@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.flamethrower",
   "category": "items_gear",
   "icon": "mekanism:flamethrower",
+  "name": "item.mekanism.flamethrower",
   "pages": [
     {
       "type": "spotlight",

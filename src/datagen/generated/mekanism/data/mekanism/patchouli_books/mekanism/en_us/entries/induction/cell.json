@@ -1,7 +1,7 @@
 {
-  "name": "Induction Cells",
   "category": "blocks",
   "icon": "mekanism:basic_induction_cell",
+  "name": "Induction Cells",
   "pages": [
     {
       "type": "text",

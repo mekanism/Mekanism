@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.digital_miner",
   "category": "blocks",
   "icon": "mekanism:digital_miner",
+  "name": "block.mekanism.digital_miner",
   "pages": [
     {
       "type": "spotlight",

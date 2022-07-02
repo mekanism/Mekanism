@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.scuba_mask",
   "category": "items_gear",
   "icon": "mekanism:scuba_mask",
+  "name": "item.mekanism.scuba_mask",
   "pages": [
     {
       "type": "spotlight",

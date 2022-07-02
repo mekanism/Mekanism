@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.hydrogen_chloride",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.hydrogen_chloride",
   "pages": [
     {
       "type": "text",

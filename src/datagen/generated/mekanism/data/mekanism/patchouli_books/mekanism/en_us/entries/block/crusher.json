@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.crusher",
   "category": "blocks",
   "icon": "mekanism:crusher",
+  "name": "block.mekanism.crusher",
   "pages": [
     {
       "type": "spotlight",

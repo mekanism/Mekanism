@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.uranium_oxide",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.uranium_oxide",
   "pages": [
     {
       "type": "text",

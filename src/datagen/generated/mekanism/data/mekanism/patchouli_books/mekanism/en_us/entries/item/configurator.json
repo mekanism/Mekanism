@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.configurator",
   "category": "items_gear",
   "icon": "mekanism:configurator",
+  "name": "item.mekanism.configurator",
   "pages": [
     {
       "type": "spotlight",

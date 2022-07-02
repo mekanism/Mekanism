@@ -1,7 +1,7 @@
 {
-  "name": "Fluid Tanks",
   "category": "blocks",
   "icon": "mekanism:basic_fluid_tank",
+  "name": "Fluid Tanks",
   "pages": [
     {
       "type": "text",

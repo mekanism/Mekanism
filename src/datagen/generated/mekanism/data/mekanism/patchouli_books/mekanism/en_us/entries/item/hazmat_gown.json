@@ -1,7 +1,7 @@
 {
-  "name": "Hazmat Suit",
   "category": "items_gear",
   "icon": "mekanism:hazmat_gown",
+  "name": "Hazmat Suit",
   "pages": [
     {
       "type": "text",

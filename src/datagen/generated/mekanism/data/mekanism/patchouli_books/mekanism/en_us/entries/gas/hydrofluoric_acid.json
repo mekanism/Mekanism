@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.hydrofluoric_acid",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.hydrofluoric_acid",
   "pages": [
     {
       "type": "text",

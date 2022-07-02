@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.scuba_tank",
   "category": "items_gear",
   "icon": "mekanism:scuba_tank",
+  "name": "item.mekanism.scuba_tank",
   "pages": [
     {
       "type": "spotlight",

@@ -1,7 +1,7 @@
 {
-  "name": "Induction Providers",
   "category": "blocks",
   "icon": "mekanism:basic_induction_provider",
+  "name": "Induction Providers",
   "pages": [
     {
       "type": "text",

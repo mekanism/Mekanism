@@ -1,7 +1,7 @@
 {
-  "name": "Bronze",
   "category": "items_metal_and_ore",
   "icon": "mekanism:ingot_bronze",
+  "name": "Bronze",
   "pages": [
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.security_desk",
   "category": "blocks",
   "icon": "mekanism:security_desk",
+  "name": "block.mekanism.security_desk",
   "pages": [
     {
       "type": "spotlight",

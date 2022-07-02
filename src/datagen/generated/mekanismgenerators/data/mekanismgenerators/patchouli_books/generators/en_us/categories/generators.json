@@ -1,5 +1,5 @@
 {
-  "name": "Generators",
   "description": "Generate electricity with these single block generators.",
-  "icon": "mekanismgenerators:solar_panel"
+  "icon": "mekanismgenerators:solar_panel",
+  "name": "Generators"
 }

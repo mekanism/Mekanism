@@ -1,7 +1,7 @@
 {
-  "name": "Osmium",
   "category": "items_metal_and_ore",
   "icon": "mekanism:ingot_osmium",
+  "name": "Osmium",
   "pages": [
     {
       "type": "text",

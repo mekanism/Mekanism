@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.bio_fuel",
   "category": "items",
   "icon": "mekanism:bio_fuel",
+  "name": "item.mekanism.bio_fuel",
   "pages": [
     {
       "type": "spotlight",

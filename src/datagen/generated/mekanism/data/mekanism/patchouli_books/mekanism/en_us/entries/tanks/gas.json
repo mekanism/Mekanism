@@ -1,7 +1,7 @@
 {
-  "name": "Chemical Tanks",
   "category": "blocks",
   "icon": "mekanism:basic_chemical_tank",
+  "name": "Chemical Tanks",
   "pages": [
     {
       "type": "text",

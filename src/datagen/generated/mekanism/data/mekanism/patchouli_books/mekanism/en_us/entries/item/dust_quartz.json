@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.dust_quartz",
   "category": "items_metal_and_ore",
   "icon": "mekanism:dust_quartz",
+  "name": "item.mekanism.dust_quartz",
   "pages": [
     {
       "type": "spotlight",

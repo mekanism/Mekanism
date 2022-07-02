@@ -1,7 +1,7 @@
 {
-  "name": "Refined Obsidian",
   "category": "items_metal_and_ore",
   "icon": "mekanism:ingot_refined_obsidian",
+  "name": "Refined Obsidian",
   "pages": [
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.gauge_dropper",
   "category": "items_gear",
   "icon": "mekanism:gauge_dropper",
+  "name": "item.mekanism.gauge_dropper",
   "pages": [
     {
       "type": "spotlight",

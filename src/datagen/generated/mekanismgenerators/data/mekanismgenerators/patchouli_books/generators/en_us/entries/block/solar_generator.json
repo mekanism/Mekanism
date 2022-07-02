@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanismgenerators.solar_generator",
   "category": "generators",
   "icon": "mekanismgenerators:solar_generator",
+  "name": "block.mekanismgenerators.solar_generator",
   "pages": [
     {
       "type": "spotlight",

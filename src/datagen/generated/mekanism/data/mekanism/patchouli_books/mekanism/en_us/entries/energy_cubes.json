@@ -1,7 +1,7 @@
 {
-  "name": "Energy Cubes",
   "category": "blocks",
   "icon": "mekanism:basic_energy_cube",
+  "name": "Energy Cubes",
   "pages": [
     {
       "type": "text",

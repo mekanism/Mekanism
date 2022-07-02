@@ -1,7 +1,7 @@
 {
-  "name": "Thermodynamic Conductors",
   "category": "blocks",
   "icon": "mekanism:basic_thermodynamic_conductor",
+  "name": "Thermodynamic Conductors",
   "pages": [
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.ethene",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.ethene",
   "pages": [
     {
       "type": "text",

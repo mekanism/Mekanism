@@ -1,7 +1,7 @@
 {
-  "name": "Logistical Transporters",
   "category": "blocks",
   "icon": "mekanism:basic_logistical_transporter",
+  "name": "Logistical Transporters",
   "pages": [
     {
       "type": "text",

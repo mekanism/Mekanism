@@ -1,7 +1,7 @@
 {
-  "name": "Circuits",
   "category": "items",
   "icon": "mekanism:basic_control_circuit",
+  "name": "Circuits",
   "pages": [
     {
       "type": "text",

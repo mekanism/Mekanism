@@ -1,7 +1,7 @@
 {
-  "name": "3x - Ore Tripling",
   "category": "ore_processing",
   "icon": "mekanism:purification_chamber",
+  "name": "3x - Ore Tripling",
   "pages": [
     {
       "type": "text",

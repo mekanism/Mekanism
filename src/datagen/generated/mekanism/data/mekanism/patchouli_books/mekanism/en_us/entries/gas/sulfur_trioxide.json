@@ -1,7 +1,7 @@
 {
-  "name": "Sulfur Trioxide",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "Sulfur Trioxide",
   "pages": [
     {
       "type": "text",

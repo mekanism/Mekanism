@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.combiner",
   "category": "blocks",
   "icon": "mekanism:combiner",
+  "name": "block.mekanism.combiner",
   "pages": [
     {
       "type": "spotlight",

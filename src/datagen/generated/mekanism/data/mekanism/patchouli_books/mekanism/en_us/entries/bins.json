@@ -1,7 +1,7 @@
 {
-  "name": "Bins",
   "category": "blocks",
   "icon": "mekanism:basic_bin",
+  "name": "Bins",
   "pages": [
     {
       "type": "text",

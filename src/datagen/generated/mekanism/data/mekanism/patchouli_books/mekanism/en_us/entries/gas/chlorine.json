@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.chlorine",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.chlorine",
   "pages": [
     {
       "type": "text",

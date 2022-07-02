@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.portable_teleporter",
   "category": "items_gear",
   "icon": "mekanism:portable_teleporter",
+  "name": "item.mekanism.portable_teleporter",
   "pages": [
     {
       "type": "spotlight",

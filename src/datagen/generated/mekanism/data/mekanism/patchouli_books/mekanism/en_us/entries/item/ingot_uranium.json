@@ -1,7 +1,7 @@
 {
-  "name": "Uranium",
   "category": "items_metal_and_ore",
   "icon": "mekanism:ingot_uranium",
+  "name": "Uranium",
   "pages": [
     {
       "type": "text",

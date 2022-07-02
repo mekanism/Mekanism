@@ -1,7 +1,7 @@
 {
-  "name": "Tin",
   "category": "items_metal_and_ore",
   "icon": "mekanism:ingot_tin",
+  "name": "Tin",
   "pages": [
     {
       "type": "text",

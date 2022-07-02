@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.dictionary",
   "category": "items_gear",
   "icon": "mekanism:dictionary",
+  "name": "item.mekanism.dictionary",
   "pages": [
     {
       "type": "spotlight",

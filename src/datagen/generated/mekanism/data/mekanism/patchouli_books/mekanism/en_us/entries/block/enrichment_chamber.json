@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.enrichment_chamber",
   "category": "blocks",
   "icon": "mekanism:enrichment_chamber",
+  "name": "block.mekanism.enrichment_chamber",
   "pages": [
     {
       "type": "spotlight",

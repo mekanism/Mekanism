@@ -1,7 +1,7 @@
 {
-  "name": "Steel",
   "category": "items_metal_and_ore",
   "icon": "mekanism:ingot_steel",
+  "name": "Steel",
   "pages": [
     {
       "type": "text",

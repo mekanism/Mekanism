@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.upgrade_speed",
   "category": "items_upgrades",
   "icon": "mekanism:upgrade_speed",
+  "name": "item.mekanism.upgrade_speed",
   "pages": [
     {
       "type": "spotlight",

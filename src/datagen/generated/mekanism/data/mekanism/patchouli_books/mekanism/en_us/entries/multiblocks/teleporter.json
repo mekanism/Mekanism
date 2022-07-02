@@ -1,7 +1,7 @@
 {
-  "name": "Teleporter",
   "category": "multiblocks",
   "icon": "mekanism:teleporter",
+  "name": "Teleporter",
   "pages": [
     {
       "type": "spotlight",

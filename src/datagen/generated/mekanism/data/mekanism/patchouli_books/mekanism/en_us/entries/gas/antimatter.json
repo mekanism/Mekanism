@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.antimatter",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.antimatter",
   "pages": [
     {
       "type": "text",

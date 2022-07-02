@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.water_vapor",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.water_vapor",
   "pages": [
     {
       "type": "text",

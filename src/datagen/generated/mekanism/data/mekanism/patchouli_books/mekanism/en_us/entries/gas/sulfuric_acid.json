@@ -1,7 +1,7 @@
 {
-  "name": "gas.mekanism.sulfuric_acid",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "gas.mekanism.sulfuric_acid",
   "pages": [
     {
       "type": "text",

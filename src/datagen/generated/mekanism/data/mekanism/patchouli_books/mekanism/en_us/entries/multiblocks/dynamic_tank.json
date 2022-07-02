@@ -1,7 +1,7 @@
 {
-  "name": "Dynamic Tank",
   "category": "multiblocks",
   "icon": "mekanism:dynamic_valve",
+  "name": "Dynamic Tank",
   "pages": [
     {
       "type": "text",

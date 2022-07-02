@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.energy_tablet",
   "category": "items",
   "icon": "mekanism:energy_tablet",
+  "name": "item.mekanism.energy_tablet",
   "pages": [
     {
       "type": "spotlight",

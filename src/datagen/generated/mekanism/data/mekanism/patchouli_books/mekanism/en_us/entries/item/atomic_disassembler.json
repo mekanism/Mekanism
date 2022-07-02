@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.atomic_disassembler",
   "category": "items_gear",
   "icon": "mekanism:atomic_disassembler",
+  "name": "item.mekanism.atomic_disassembler",
   "pages": [
     {
       "type": "spotlight",

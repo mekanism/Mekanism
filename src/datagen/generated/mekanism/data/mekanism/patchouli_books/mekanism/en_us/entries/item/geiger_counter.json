@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.geiger_counter",
   "category": "items_gear",
   "icon": "mekanism:geiger_counter",
+  "name": "item.mekanism.geiger_counter",
   "pages": [
     {
       "type": "spotlight",

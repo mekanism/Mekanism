@@ -1,7 +1,7 @@
 {
-  "name": "Crystals",
   "category": "items_metal_and_ore",
   "icon": "mekanism:crystal_iron",
+  "name": "Crystals",
   "pages": [
     {
       "type": "text",

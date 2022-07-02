@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.industrial_alarm",
   "category": "blocks",
   "icon": "mekanism:industrial_alarm",
+  "name": "block.mekanism.industrial_alarm",
   "pages": [
     {
       "type": "spotlight",

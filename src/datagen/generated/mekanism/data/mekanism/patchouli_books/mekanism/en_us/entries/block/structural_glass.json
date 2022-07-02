@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.structural_glass",
   "category": "blocks",
   "icon": "mekanism:structural_glass",
+  "name": "block.mekanism.structural_glass",
   "pages": [
     {
       "type": "spotlight",

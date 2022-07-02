@@ -1,7 +1,7 @@
 {
-  "name": "Thermal Evaporation Plant",
   "category": "multiblocks",
   "icon": "mekanism:thermal_evaporation_controller",
+  "name": "Thermal Evaporation Plant",
   "pages": [
     {
       "type": "text",
@@ -9,8 +9,12 @@
     },
     {
       "type": "multiblock",
-      "name": "TEP Test",
       "multiblock": {
+        "mapping": {
+          "0": "mekanism:thermal_evaporation_block",
+          "A": "mekanism:thermal_evaporation_block",
+          "B": "mekanism:thermal_evaporation_controller[active=false,facing=east]"
+        },
         "pattern": [
           [
             " AA ",
@@ -30,13 +34,9 @@
             "AA0A",
             "AAAA"
           ]
-        ],
-        "mapping": {
-          "0": "mekanism:thermal_evaporation_block",
-          "A": "mekanism:thermal_evaporation_block",
-          "B": "mekanism:thermal_evaporation_controller[active=false,facing=east]"
-        }
-      }
+        ]
+      },
+      "name": "TEP Test"
     },
     {
       "type": "spotlight",

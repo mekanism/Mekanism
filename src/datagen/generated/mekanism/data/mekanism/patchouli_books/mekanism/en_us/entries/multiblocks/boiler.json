@@ -1,7 +1,7 @@
 {
-  "name": "boiler.mekanism.thermoelectric_boiler",
   "category": "multiblocks",
   "icon": "mekanism:boiler_valve",
+  "name": "boiler.mekanism.thermoelectric_boiler",
   "pages": [
     {
       "type": "spotlight",

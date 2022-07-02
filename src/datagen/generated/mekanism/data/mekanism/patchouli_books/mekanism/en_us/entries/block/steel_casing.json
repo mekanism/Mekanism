@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.steel_casing",
   "category": "blocks",
   "icon": "mekanism:steel_casing",
+  "name": "block.mekanism.steel_casing",
   "pages": [
     {
       "type": "spotlight",

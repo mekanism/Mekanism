@@ -1,7 +1,7 @@
 {
-  "name": "Deuterium",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "Deuterium",
   "pages": [
     {
       "type": "text",

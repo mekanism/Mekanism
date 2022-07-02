@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.upgrade_muffling",
   "category": "items_upgrades",
   "icon": "mekanism:upgrade_muffling",
+  "name": "item.mekanism.upgrade_muffling",
   "pages": [
     {
       "type": "spotlight",

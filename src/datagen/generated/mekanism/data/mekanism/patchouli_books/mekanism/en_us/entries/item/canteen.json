@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.canteen",
   "category": "items_gear",
   "icon": "mekanism:canteen",
+  "name": "item.mekanism.canteen",
   "pages": [
     {
       "type": "spotlight",

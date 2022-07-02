@@ -1,7 +1,7 @@
 {
-  "name": "D-T Fuel",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
+  "name": "D-T Fuel",
   "pages": [
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
-  "name": "block.mekanism.block_charcoal",
   "category": "blocks",
   "icon": "mekanism:block_charcoal",
+  "name": "block.mekanism.block_charcoal",
   "pages": [
     {
       "type": "spotlight",

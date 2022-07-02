@@ -1,7 +1,7 @@
 {
-  "name": "Fluorite",
   "category": "items_metal_and_ore",
   "icon": "mekanism:fluorite_gem",
+  "name": "Fluorite",
   "pages": [
     {
       "type": "text",

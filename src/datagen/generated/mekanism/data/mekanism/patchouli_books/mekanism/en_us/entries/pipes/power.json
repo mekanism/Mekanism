@@ -1,7 +1,7 @@
 {
-  "name": "Universal Cables",
   "category": "blocks",
   "icon": "mekanism:basic_universal_cable",
+  "name": "Universal Cables",
   "pages": [
     {
       "type": "text",

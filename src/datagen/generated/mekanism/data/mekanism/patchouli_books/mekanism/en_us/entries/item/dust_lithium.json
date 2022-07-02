@@ -1,7 +1,7 @@
 {
-  "name": "item.mekanism.dust_lithium",
   "category": "items_metal_and_ore",
   "icon": "mekanism:dust_lithium",
+  "name": "item.mekanism.dust_lithium",
   "pages": [
     {
       "type": "spotlight",

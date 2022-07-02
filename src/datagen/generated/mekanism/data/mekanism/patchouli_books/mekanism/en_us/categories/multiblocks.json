@@ -1,5 +1,5 @@
 {
-  "name": "Multiblocks",
   "description": "Structures formed using multiple blocks.",
-  "icon": "mekanism:thermal_evaporation_controller"
+  "icon": "mekanism:thermal_evaporation_controller",
+  "name": "Multiblocks"
 }
