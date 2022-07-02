@@ -2,6 +2,7 @@ package mekanism.patchouli
 
 import mekanism.common.Mekanism
 import mekanism.patchouli.content.*
+import mekanism.patchouli.dsl.PatchouliBook
 import net.minecraft.data.CachedOutput
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.HashCache
@@ -9,24 +10,22 @@ import net.minecraft.data.HashCache
 /**
  * Created by Thiakil on 16/09/2020.
  */
-class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(generator, Mekanism.MODID) {
-    override fun run(output: CachedOutput) {
-        output(Companion.bookId) {
-            name = "Mekanism HandyGuide"
-            locale = "en_us"
-            landingText = "Here at Mekanism, Inc. we pride ourselves on our user-friendly creations, but sometimes a little nudge in the right direction is needed. Enter: the Mekanism HandyGuide - your handy dandy guide to the world of Mekanism."
-            creativeTab = Mekanism.MODID
-            showProgress = false
-            i18n = true//some item names etc
-            subtitle = Mekanism.instance.versionNumber.toString()
+class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(generator, Mekanism.MODID, Companion.bookId) {
+    override fun PatchouliBook.buildBook() {
+        name = "Mekanism HandyGuide"
+        locale = "en_us"
+        landingText = "Here at Mekanism, Inc. we pride ourselves on our user-friendly creations, but sometimes a little nudge in the right direction is needed. Enter: the Mekanism HandyGuide - your handy dandy guide to the world of Mekanism."
+        creativeTab = Mekanism.MODID
+        showProgress = false
+        i18n = true//some item names etc
+        subtitle = Mekanism.instance.versionNumber.toString()
 
-            itemCategory()
-            blockCategory()
-            multiblocks()
-            oreProcessing()
-            liquids()
-            chemicals()
-        }
+        itemCategory()
+        blockCategory()
+        multiblocks()
+        oreProcessing()
+        liquids()
+        chemicals()
     }
 
     companion object {

@@ -10,31 +10,23 @@ import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
-abstract class BasePatchouliProvider(protected val generator: DataGenerator, protected val modid: String) : DataProvider {
+abstract class BasePatchouliProvider(protected val generator: DataGenerator, protected val modid: String, bookId: String) : DataProvider {
+
+    val book: PatchouliBook = PatchouliBook(ResourceLocation(modid, bookId))
 
     /**
-     * Adds books to the cache. Param is turned into an invokable to create books.
-     * e.g.
-     * <code>
-     *      output("testbook") {
-     *          locale = "en_us"
-     *          name = "my fancy book"
-     *      }
-     * </code>
-     *
-     * @param output the cache
+     * Build the book in this function
      */
-    abstract override fun run(output: CachedOutput)
+    abstract fun PatchouliBook.buildBook()
 
-    @PatchouliDSL
-    operator fun CachedOutput.invoke(bookId: String, receiver: PatchouliBook.()->Unit) {
-        val book = patchouliBook(modid, bookId, receiver)
-        saveBook(this, book.toJson(), book.id)
+    final override fun run(output: CachedOutput){
+        book.buildBook()
+        saveBook(output, book.toJson(), book.id)
         for (category in book.categories) {
-            saveCategory(this, category, book)
+            saveCategory(output, category, book)
         }
         for (entry in book.entries) {
-            saveEntry(this, entry, book)
+            saveEntry(output, entry, book)
         }
     }
 
