@@ -14,6 +14,7 @@ import mekanism.patchouli.MekanismMainBookProvider
 import net.minecraft.data.CachedOutput
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.HashCache
+import net.minecraft.resources.ResourceLocation
 
 /**
  * Created by Thiakil on 20/02/2021.
@@ -22,8 +23,9 @@ class GeneratorsBookProvider(generator: DataGenerator): BasePatchouliProvider(ge
     override fun run(output: CachedOutput) {
         output("generators") {
             extend(Mekanism.MODID, MekanismMainBookProvider.bookId)
+            name = "Mekanism Generators"
             locale = "en_us"
-            existingCategory(GuideCategory.MULTIBLOCKS) {
+            existingCategory(GuideCategory.MULTIBLOCKS, ResourceLocation(Mekanism.MODID, MekanismMainBookProvider.bookId)) {
                 FUSION {
                     name = "Fusion Reactor"
                     icon = GeneratorsBlocks.FUSION_REACTOR_CONTROLLER

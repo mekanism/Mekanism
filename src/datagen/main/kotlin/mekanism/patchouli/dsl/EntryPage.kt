@@ -1,9 +1,10 @@
 package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
+import net.minecraft.resources.ResourceLocation
 
 @PatchouliDSL
-abstract class EntryPage(val type: String) {
+abstract class EntryPage(val type: ResourceLocation) {
     /** A resource location to point at, to make a page appear when that advancement is completed. See Locking Content with Advancements for more info on locking content. Excluding this attribute or leaving it empty will leave the page unlocked from the start. Providing a nonexistent advancement will permanently lock this entry unless the advancement at the resource location starts existing. */
     var advancement: String? = null
 

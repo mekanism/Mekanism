@@ -6,11 +6,14 @@ import mekanism.api.providers.IGasProvider
 import mekanism.api.providers.IItemProvider
 import mekanism.common.registration.impl.FluidRegistryObject
 import mekanism.common.registries.MekanismBlocks
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 
 interface ICategory {
     val id: String
     val book: PatchouliBook
+
+    val qualifiedId: ResourceLocation get() = ResourceLocation(book.id.namespace, id)
 
     @PatchouliDSL
     fun category(id: String, init: Category.() -> Unit): Category {
@@ -86,7 +89,10 @@ interface ICategory {
 
 /** Category that doesn't make its own JSON file */
 @PatchouliDSL
-class DelegateCategory(override val book: PatchouliBook, override val id: String): ICategory
+class DelegateCategory(override val book: PatchouliBook, val parentBook: ResourceLocation, override val id: String): ICategory {
+    override val qualifiedId: ResourceLocation
+        get() = ResourceLocation(this.parentBook.namespace, id)
+}
 
 @PatchouliDSL
 class Category(override val book: PatchouliBook, override val id: String): ICategory {
@@ -144,7 +150,7 @@ class Category(override val book: PatchouliBook, override val id: String): ICate
         json.addProperty("name", name)
         json.addProperty("description", description)
         json.addProperty("icon", iconStr)
-        parent?.let {  json.addProperty("parent", it.id) }
+        parent?.let {  json.addProperty("parent", it.qualifiedId) }
         flag?.let {  json.addProperty("flag", it) }
         sortNum?.let {  json.addProperty("sortnum", it) }
         secret?.let {  json.addProperty("secret", it) }

@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation
 abstract class BaseCraftingPage(
         /** The ID of the first recipe you want to show. */
         val recipe: ResourceLocation,
-        type: String
+        type: ResourceLocation
 ) : EntryPage(type) {
 
     /** The ID of the second recipe you want to show. Displaying two recipes is optional. */
@@ -35,6 +35,6 @@ abstract class BaseCraftingPage(
     }
 }
 
-class CraftingPage(recipe: ResourceLocation): BaseCraftingPage(recipe, "crafting")
+class CraftingPage(recipe: ResourceLocation): BaseCraftingPage(recipe, ResourceLocation("patchouli", "crafting"))
 
-class SmeltingPage(recipe: ResourceLocation): BaseCraftingPage(recipe, "smelting")
+class SmeltingPage(recipe: ResourceLocation): BaseCraftingPage(recipe, ResourceLocation("patchouli", "smelting"))

@@ -2,14 +2,21 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
 
-class SpotlightPage: EntryPage("spotlight") {
+class SpotlightPage: EntryPage(ResourceLocation("patchouli", "spotlight")) {
+    /**
+     * An ItemStack String representing the item to be spotlighted.
+     */
     /**
      * An ItemStack String representing the item to be spotlighted.
      */
     lateinit var item: ItemStack
 
+    /**
+     * A custom title to show instead on top of the item. If this is empty or not defined, it'll use the item's name instead.
+     */
     /**
      * A custom title to show instead on top of the item. If this is empty or not defined, it'll use the item's name instead.
      */
@@ -20,9 +27,17 @@ class SpotlightPage: EntryPage("spotlight") {
      * If you do so, when looking at pages that display the item, you can shift-click the item to be taken to this page.
      * Highly recommended if the spotlight page has instructions on how to create an item by non-conventional means.
      */
+    /**
+     * Defaults to false. Set this to true to mark this spotlight page as the "recipe page" for the item being spotlighted.
+     * If you do so, when looking at pages that display the item, you can shift-click the item to be taken to this page.
+     * Highly recommended if the spotlight page has instructions on how to create an item by non-conventional means.
+     */
     @SerializedName("link_recipe")
     var linkRecipe: Boolean? = null
 
+    /**
+     * The text to display on this page, under the item. This text can be formatted.
+     */
     /**
      * The text to display on this page, under the item. This text can be formatted.
      */

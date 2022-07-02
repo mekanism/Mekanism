@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import net.minecraft.resources.ResourceLocation
 
-class MultiblockPage: EntryPage("multiblock"){
+class MultiblockPage: EntryPage(ResourceLocation("patchouli", "multiblock")){
     /** The name of the multiblock you're displaying. Shows as a header above the multiblock display. */
     lateinit var name: String
 

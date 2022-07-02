@@ -230,10 +230,10 @@ class PatchouliBook(val id: ResourceLocation) {
 
     fun toJson(): JsonObject {
         val json = JsonObject()
+        json.addProperty("name", name)
         if (extend != null) {
             json.addProperty("extend", extend!!)
         } else {
-            json.addProperty("name", name)
             json.addProperty("landing_text", landingText)
             bookTexture?.let { json.addProperty("book_texture", it) }
             fillerTexture?.let { json.addProperty("filler_texture", it) }
@@ -291,8 +291,8 @@ class PatchouliBook(val id: ResourceLocation) {
     }
 
     @PatchouliDSL
-    fun existingCategory(guideCat: IGuideCategory, init: DelegateCategory.() -> Unit): ICategory {
-        return DelegateCategory(this, guideCat.id).also {
+    fun existingCategory(guideCat: IGuideCategory, actualParent: ResourceLocation, init: DelegateCategory.() -> Unit): ICategory {
+        return DelegateCategory(this, actualParent, guideCat.id).also {
             it.init()
         }
     }

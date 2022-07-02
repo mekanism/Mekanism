@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 
-class EntityPage: EntryPage("entity") {
+class EntityPage: EntryPage(ResourceLocation("patchouli", "entity")) {
     /**
      * The ID of the entity you want to display. To display a chicken you'd use "minecraft:chicken". You can also add NBT data to the entity, in the same way you would in an ItemStack String.
      */

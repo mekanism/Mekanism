@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import net.minecraft.resources.ResourceLocation
 
-class ImagePage: EntryPage("image") {
+class ImagePage: EntryPage(ResourceLocation("patchouli", "image")) {
     /**
      * An array with images to display. Images should be in resource location format.
      * For example, the value botania:textures/gui/entries/banners.png will point to /assets/botania/textures/gui/entries/banners.png

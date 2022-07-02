@@ -3,7 +3,7 @@ package mekanism.patchouli.dsl
 import com.google.gson.JsonObject
 import net.minecraft.resources.ResourceLocation
 
-class QuestPage: EntryPage("quest") {
+class QuestPage: EntryPage(ResourceLocation("patchouli", "quest")) {
     /**
      * The advancement that should be completed to clear this quest. You may leave this empty should you want the quest to be completed manually. The image shows a quest with "trigger" set on the left and one with it unset on the right.
      */

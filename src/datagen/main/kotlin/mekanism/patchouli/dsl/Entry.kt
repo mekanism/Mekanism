@@ -202,7 +202,7 @@ class Entry(
     fun toJson(): JsonObject {
         val json = JsonObject()
         json.addProperty("name", name)
-        json.addProperty("category", category.id)
+        json.addProperty("category", category.qualifiedId)
         if (!this::iconStr.isInitialized){
             throw RuntimeException("$id doesnt have an icon set")
         }

@@ -2,8 +2,9 @@ package mekanism.patchouli.dsl
 
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
+import net.minecraft.resources.ResourceLocation
 
-class EmptyPage: EntryPage("empty") {
+class EmptyPage: EntryPage(ResourceLocation("patchouli", "empty")) {
     /**
      * Defaults to true. Set to false to draw a completely empty page, without the page filler... for whatever reason.
      */
