@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismadditions.balloon.description": "Stelle einen Farbballon her",
+  "advancements.mekanismadditions.balloon.title": "Erreiche den Himmel",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "Stelle eine farbige Leucht Tafel her",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "Leuchte im Dunkeln",
+  "advancements.mekanismadditions.not_the_babies.description": "Töte ein Baby Mekanism Addition's Monster",
+  "advancements.mekanismadditions.not_the_babies.title": "Nicht die Babys",
+  "advancements.mekanismadditions.pop_pop.description": "Lasse einen Ballon platzen",
+  "advancements.mekanismadditions.pop_pop.title": "Pop-Pop",
   "block.mekanismadditions.aqua_glow_panel": "Türkise Leuchtplatte",
   "block.mekanismadditions.aqua_plastic": "Türkiser Plastikblock",
   "block.mekanismadditions.aqua_plastic_fence": "Türkise Plastikbarriere",
