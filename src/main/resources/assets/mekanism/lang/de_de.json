@@ -1,4 +1,9 @@
 {
+  "advancements.mekanism.configuration_copying.title": "Strg+C, Strg+V",
+  "advancements.mekanism.configurator.title": "Konfiguriere alles",
+  "advancements.mekanism.dictionary.title": "Zeit zum Lernen",
+  "advancements.mekanism.energy_cube.title": "Speichere es für später",
+  "advancements.mekanism.energy_transport.description": "Stelle ein Universelles Basiskabel her",
   "assemblicator.mekanism.auto_mode_toggle": "Automatischer Modus: %1$s",
   "assemblicator.mekanism.craft_available": "Verfügbare Items herstellen",
   "assemblicator.mekanism.craft_single": "Stelle ein einziges Item her",
