@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Stelle einen Gas Verbrenner Generator her, um Ethylen zu verbrennen",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Verbrenne das Gas",
+  "advancements.mekanismgenerators.heat_generator.description": "Stelle einen Wärmegenerator her, um Energie zu erzeugen",
+  "advancements.mekanismgenerators.heat_generator.title": "Dein erster Generator",
+  "advancements.mekanismgenerators.solar_generator.description": "Erneuerbare Tagesenergie",
+  "advancements.mekanismgenerators.solar_generator.title": "Kraft der Sonne",
+  "advancements.mekanismgenerators.wind_generator.description": "Hoffentlich gibt es etwas Wind in der Nähe",
+  "advancements.mekanismgenerators.wind_generator.title": "Dreh Baby Dreh",
   "block.mekanismgenerators.advanced_solar_generator": "Erweiterter Solargenerator",
   "block.mekanismgenerators.bio_generator": "Biogenerator",
   "block.mekanismgenerators.bioethanol": "Bioethanol",
