@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Створіть генератор газового спалювання для спалення етилену",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Спали газ",
+  "advancements.mekanismgenerators.heat_generator.description": "Створіть теплогенератор, щоб почати виробляти електроенергію",
+  "advancements.mekanismgenerators.heat_generator.title": "Ваш перший генератор",
+  "advancements.mekanismgenerators.solar_generator.description": "Відновлювана денна енергія",
+  "advancements.mekanismgenerators.solar_generator.title": "Сила Сонця",
+  "advancements.mekanismgenerators.wind_generator.description": "Сподіваюся, поблизу є вітер",
+  "advancements.mekanismgenerators.wind_generator.title": "Крутись, крихітко, крутись",
   "block.mekanismgenerators.advanced_solar_generator": "Розширена сонячна панель",
   "block.mekanismgenerators.bio_generator": "Біо-генератор",
   "block.mekanismgenerators.bioethanol": "Біоетанол",
