@@ -18,6 +18,12 @@ public final class TextUtils {
         return MekanismLang.GENERIC_PERCENT.translate(Math.round(ratio * 100));
     }
 
+    public static Component getHoursMinutes(int seconds){
+        int minutes = (int) Math.ceil(seconds / 60.0);
+        int hours = minutes / 60;
+        return hours > 0 ? MekanismLang.GENERIC_HOURS_MINUTES.translate(hours, minutes % 60) : MekanismLang.GENERIC_MINUTES.translate(minutes);
+    }
+
     public static String format(long count) {
         return intFormatter.format(count);
     }

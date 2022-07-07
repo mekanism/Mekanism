@@ -750,6 +750,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_BLOCK_POS, "%1$s, %2$s, %3$s");
         add(MekanismLang.GENERIC_HEX, "#%1$s");
         add(MekanismLang.GENERIC_LIST, "- %1$s");
+        add(MekanismLang.GENERIC_MINUTES, "%1$sm");
+        add(MekanismLang.GENERIC_HOURS_MINUTES, "%1$sh %2$sm");
         //Directions
         add(APILang.DOWN, "Down");
         add(APILang.UP, "Up");
@@ -867,6 +869,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CLOSE, "Close");
         add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %1$s");
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %1$s");
+        add(MekanismLang.RADIATION_DECAY_TIME, "Time to Decay: %1$s");
         add(MekanismLang.RGB, "RGB:");
         add(MekanismLang.COLOR_PICKER, "Color Picker");
         add(MekanismLang.HELMET_OPTIONS, "Helmet Options");

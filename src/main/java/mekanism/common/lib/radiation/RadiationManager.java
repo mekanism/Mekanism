@@ -34,6 +34,7 @@ import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.collection.HashList;
@@ -117,6 +118,7 @@ public class RadiationManager implements IRadiationManager {
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;
     private double clientEnvironmentalRadiation = BASELINE;
+    private double clientMaxMagnitude = BASELINE;
 
     /**
      * Note: This can and will be null on the client side
@@ -146,6 +148,42 @@ public class RadiationManager implements IRadiationManager {
     @Override
     public double getRadiationLevel(Entity entity) {
         return getRadiationLevel(new Coord4D(entity));
+    }
+
+    //Calculate approximately how long in seconds radiation will take to decay
+    public int getDecayTime(double magnitude) {
+        double decayRate = MekanismConfig.general.radiationSourceDecayRate.get();
+        int seconds = 0;
+        double localMagnitude = magnitude;
+        while (localMagnitude > RadiationManager.MIN_MAGNITUDE) {
+            localMagnitude *= decayRate;
+            seconds++;
+        }
+        return seconds;
+    }
+
+    //Determine the approximate time in seconds to decay environmental radiation at the player's location
+    public int getDecayTime(Entity player) {
+        double magnitude = getRadiationMaxSource(new Coord4D(player));
+        return getDecayTime(magnitude);
+    }
+
+    //Return the magnitude of the strongest radiation source at the player's location.  Determines which source will take the longest to decay.
+    public double getRadiationMaxSource(Coord4D coord) {
+        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
+        double maxMagnitude = BASELINE;
+        for (Chunk3D chunk : checkChunks) {
+            for (Map.Entry<Coord4D, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
+                // we only compute exposure when within the MAX_RANGE bounds
+                if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
+                    double sourceMagnitude = entry.getValue().getMagnitude();
+                    if (sourceMagnitude > maxMagnitude) {
+                        maxMagnitude = sourceMagnitude;
+                    }
+                }
+            }
+        }
+        return maxMagnitude;
     }
 
     @Override
@@ -296,17 +334,22 @@ public class RadiationManager implements IRadiationManager {
         // to be zero as magnitude will always be at least BASELINE
         if (scaledMagnitude != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
             playerExposureMap.put(player.getUUID(), scaledMagnitude);
-            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude), player);
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude, getRadiationMaxSource(new Coord4D(player))), player);
         }
     }
 
-    public void setClientEnvironmentalRadiation(double radiation) {
+    public void setClientEnvironmentalRadiation(double radiation, double maxMagnitude) {
         clientEnvironmentalRadiation = radiation;
+        clientMaxMagnitude = maxMagnitude;
         clientRadiationScale = RadiationScale.get(clientEnvironmentalRadiation);
     }
 
     public double getClientEnvironmentalRadiation() {
         return isRadiationEnabled() ? clientEnvironmentalRadiation : BASELINE;
+    }
+
+    public double getClientMaxMagnitude(){
+        return isRadiationEnabled() ? clientMaxMagnitude : BASELINE;
     }
 
     public RadiationScale getClientScale() {
