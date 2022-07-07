@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -112,6 +111,7 @@ public class RadiationManager implements IRadiationManager {
     private final Table<Chunk3D, Coord4D, IRadiationSource> radiationView = Tables.unmodifiableTable(radiationTable);
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
+    private final Object2DoubleMap<UUID> playerEnvironmentalExposureMap = new Object2DoubleOpenHashMap<>();
     private final Object2DoubleMap<UUID> playerExposureMap = new Object2DoubleOpenHashMap<>();
 
     // client fields
@@ -203,8 +203,7 @@ public class RadiationManager implements IRadiationManager {
     public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Coord4D coord) {
         double level = BASELINE;
         double maxMagnitude = BASELINE;
-        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
-        for (Chunk3D chunk : checkChunks) {
+        for (Chunk3D chunk : new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get())) {
             for (Map.Entry<Coord4D, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
                 // we only compute exposure when within the MAX_RANGE bounds
                 if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
@@ -324,8 +323,8 @@ public class RadiationManager implements IRadiationManager {
         //If the last sync radiation value is different in magnitude by over the baseline, sync
         // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
         // to be zero as magnitude will always be at least BASELINE
-        if (scaledMagnitude != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
-            playerExposureMap.put(player.getUUID(), scaledMagnitude);
+        if (scaledMagnitude != playerEnvironmentalExposureMap.getOrDefault(player.getUUID(), 0)) {
+            playerEnvironmentalExposureMap.put(player.getUUID(), scaledMagnitude);
             Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(levelAndMaxMagnitude), player);
         }
     }
@@ -387,7 +386,20 @@ public class RadiationManager implements IRadiationManager {
             radiationCap.ifPresent(IRadiationEntity::decay);
         }
         // update the radiation capability (decay, sync, effects)
-        radiationCap.ifPresent(c -> c.update(entity));
+        radiationCap.ifPresent(c -> {
+            c.update(entity);
+            if (entity instanceof ServerPlayer player) {
+                double radiation = c.getRadiation();
+                double scaledRadiation = Math.ceil(radiation / BASELINE);
+                //If the last sync radiation value is different in magnitude by over the baseline, sync
+                // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
+                // to be zero as magnitude will always be at least BASELINE
+                if (scaledRadiation != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
+                    playerExposureMap.put(player.getUUID(), scaledRadiation);
+                    Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(radiation), player);
+                }
+            }
+        });
     }
 
     public void tickServerWorld(Level world) {
@@ -450,6 +462,7 @@ public class RadiationManager implements IRadiationManager {
     public void reset() {
         //Clear the table directly instead of via the method, so it doesn't mark it as dirty
         radiationTable.clear();
+        playerEnvironmentalExposureMap.clear();
         playerExposureMap.clear();
         meltdowns.clear();
         dataHandler = null;
@@ -461,6 +474,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void resetPlayer(UUID uuid) {
+        playerEnvironmentalExposureMap.removeDouble(uuid);
         playerExposureMap.removeDouble(uuid);
     }
 
