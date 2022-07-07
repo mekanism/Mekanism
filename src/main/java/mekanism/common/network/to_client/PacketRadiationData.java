@@ -3,6 +3,7 @@ package mekanism.common.network.to_client;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.RadiationManager.LevelAndMaxMagnitude;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -22,13 +23,13 @@ public class PacketRadiationData implements IMekanismPacket {
         this.maxMagnitude = maxMagnitude;
     }
 
-    public static PacketRadiationData createEnvironmental(double radiation, double maxMagnitude) {
-        return new PacketRadiationData(RadiationPacketType.ENVIRONMENTAL, radiation, maxMagnitude);
+    public static PacketRadiationData createEnvironmental(LevelAndMaxMagnitude levelAndMaxMagnitude) {
+        return new PacketRadiationData(RadiationPacketType.ENVIRONMENTAL, levelAndMaxMagnitude.level(), levelAndMaxMagnitude.maxMagnitude());
     }
 
     public static void sync(ServerPlayer player) {
         player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c ->
-              Mekanism.packetHandler().sendTo(new PacketRadiationData(RadiationPacketType.PLAYER, c.getRadiation(), 0D), player));
+              Mekanism.packetHandler().sendTo(new PacketRadiationData(RadiationPacketType.PLAYER, c.getRadiation(), 0), player));
     }
 
     @Override
@@ -47,15 +48,24 @@ public class PacketRadiationData implements IMekanismPacket {
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
         buffer.writeDouble(radiation);
-        buffer.writeDouble(maxMagnitude);
+        if (type.tracksMaxMagnitude) {
+            buffer.writeDouble(maxMagnitude);
+        }
     }
 
     public static PacketRadiationData decode(FriendlyByteBuf buffer) {
-        return new PacketRadiationData(buffer.readEnum(RadiationPacketType.class), buffer.readDouble(), buffer.readDouble());
+        RadiationPacketType type = buffer.readEnum(RadiationPacketType.class);
+        return new PacketRadiationData(type, buffer.readDouble(), type.tracksMaxMagnitude ? buffer.readDouble() : 0);
     }
 
     public enum RadiationPacketType {
-        ENVIRONMENTAL,
-        PLAYER
+        ENVIRONMENTAL(true),
+        PLAYER(false);
+
+        private final boolean tracksMaxMagnitude;
+
+        RadiationPacketType(boolean tracksMaxMagnitude) {
+            this.tracksMaxMagnitude = tracksMaxMagnitude;
+        }
     }
 }

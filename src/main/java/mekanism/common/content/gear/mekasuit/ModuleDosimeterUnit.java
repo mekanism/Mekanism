@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -29,9 +30,17 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
         if (module.isEnabled()) {
             player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(capability -> {
                 double radiation = MekanismAPI.getRadiationManager().isRadiationEnabled() ? capability.getRadiation() : 0;
-                double minMagnitude = RadiationManager.MIN_MAGNITUDE;
-                hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, MekanismConfig.common.enableDecayTimers.get() && radiation > minMagnitude ? MekanismLang.GENERIC_WITH_PARENTHESIS.translate(UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2),
-                        TextUtils.getHoursMinutes(RadiationManager.INSTANCE.getDecayTime(radiation))) : UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2), radiation < minMagnitude ? HUDColor.REGULAR : (radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER)));
+                Component text = UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2);
+                if (MekanismConfig.common.enableDecayTimers.get() && radiation > RadiationManager.MIN_MAGNITUDE) {
+                    text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(RadiationManager.INSTANCE.getDecayTime(radiation, false)));
+                }
+                HUDColor color;
+                if (radiation < RadiationManager.MIN_MAGNITUDE) {
+                    color = HUDColor.REGULAR;
+                } else {
+                    color = radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER;
+                }
+                hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, text, color));
             });
         }
     }

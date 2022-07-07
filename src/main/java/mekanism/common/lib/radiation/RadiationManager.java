@@ -34,7 +34,6 @@ import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.collection.HashList;
@@ -150,9 +149,14 @@ public class RadiationManager implements IRadiationManager {
         return getRadiationLevel(new Coord4D(entity));
     }
 
-    //Calculate approximately how long in seconds radiation will take to decay
-    public int getDecayTime(double magnitude) {
-        double decayRate = MekanismConfig.general.radiationSourceDecayRate.get();
+    /**
+     * Calculates approximately how long in seconds radiation will take to decay
+     *
+     * @param magnitude Magnitude
+     * @param source    {@code true} for if it is a {@link IRadiationSource} or an {@link IRadiationEntity} decaying
+     */
+    public int getDecayTime(double magnitude, boolean source) {
+        double decayRate = source ? MekanismConfig.general.radiationSourceDecayRate.get() : MekanismConfig.general.radiationTargetDecayRate.get();
         int seconds = 0;
         double localMagnitude = magnitude;
         while (localMagnitude > RadiationManager.MIN_MAGNITUDE) {
@@ -160,30 +164,6 @@ public class RadiationManager implements IRadiationManager {
             seconds++;
         }
         return seconds;
-    }
-
-    //Determine the approximate time in seconds to decay environmental radiation at the player's location
-    public int getDecayTime(Entity player) {
-        double magnitude = getRadiationMaxSource(new Coord4D(player));
-        return getDecayTime(magnitude);
-    }
-
-    //Return the magnitude of the strongest radiation source at the player's location.  Determines which source will take the longest to decay.
-    public double getRadiationMaxSource(Coord4D coord) {
-        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
-        double maxMagnitude = BASELINE;
-        for (Chunk3D chunk : checkChunks) {
-            for (Map.Entry<Coord4D, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
-                // we only compute exposure when within the MAX_RANGE bounds
-                if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
-                    double sourceMagnitude = entry.getValue().getMagnitude();
-                    if (sourceMagnitude > maxMagnitude) {
-                        maxMagnitude = sourceMagnitude;
-                    }
-                }
-            }
-        }
-        return maxMagnitude;
     }
 
     @Override
@@ -213,17 +193,28 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public double getRadiationLevel(Coord4D coord) {
-        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
+        return getRadiationLevelAndMaxMagnitude(coord).level();
+    }
+
+    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Entity player) {
+        return getRadiationLevelAndMaxMagnitude(new Coord4D(player));
+    }
+
+    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Coord4D coord) {
         double level = BASELINE;
+        double maxMagnitude = BASELINE;
+        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
         for (Chunk3D chunk : checkChunks) {
             for (Map.Entry<Coord4D, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
                 // we only compute exposure when within the MAX_RANGE bounds
                 if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
-                    level += computeExposure(coord, entry.getValue());
+                    RadiationSource source = entry.getValue();
+                    level += computeExposure(coord, source);
+                    maxMagnitude = Math.max(maxMagnitude, source.getMagnitude());
                 }
             }
         }
-        return level;
+        return new LevelAndMaxMagnitude(level, maxMagnitude);
     }
 
     @Override
@@ -327,14 +318,15 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void updateClientRadiation(ServerPlayer player) {
-        double magnitude = getRadiationLevel(player);
+        LevelAndMaxMagnitude levelAndMaxMagnitude = RadiationManager.INSTANCE.getRadiationLevelAndMaxMagnitude(player);
+        double magnitude = levelAndMaxMagnitude.level();
         double scaledMagnitude = Math.ceil(magnitude / BASELINE);
         //If the last sync radiation value is different in magnitude by over the baseline, sync
         // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
         // to be zero as magnitude will always be at least BASELINE
         if (scaledMagnitude != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
             playerExposureMap.put(player.getUUID(), scaledMagnitude);
-            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude, getRadiationMaxSource(new Coord4D(player))), player);
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(levelAndMaxMagnitude), player);
         }
     }
 
@@ -348,7 +340,7 @@ public class RadiationManager implements IRadiationManager {
         return isRadiationEnabled() ? clientEnvironmentalRadiation : BASELINE;
     }
 
-    public double getClientMaxMagnitude(){
+    public double getClientMaxMagnitude() {
         return isRadiationEnabled() ? clientMaxMagnitude : BASELINE;
     }
 
@@ -465,8 +457,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void resetClient() {
-        clientRadiationScale = RadiationScale.NONE;
-        clientEnvironmentalRadiation = BASELINE;
+        setClientEnvironmentalRadiation(BASELINE, BASELINE);
     }
 
     public void resetPlayer(UUID uuid) {
@@ -479,6 +470,9 @@ public class RadiationManager implements IRadiationManager {
         if (!world.isClientSide() && !(event.getEntityLiving() instanceof Player)) {
             updateEntityRadiation(event.getEntityLiving());
         }
+    }
+
+    public record LevelAndMaxMagnitude(double level, double maxMagnitude) {
     }
 
     public enum RadiationScale {
