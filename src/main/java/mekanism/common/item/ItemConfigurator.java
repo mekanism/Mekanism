@@ -157,10 +157,11 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                 }
             } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
                 if (tile instanceof TileEntityMekanism tileMekanism) {
-                    if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                    if (!tileMekanism.isDirectional()) {
+                        return InteractionResult.PASS;
+                    } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                         return InteractionResult.FAIL;
-                    }
-                    if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
+                    } else if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
                         if (!player.isShiftKeyDown()) {
                             tileMekanism.setFacing(side);
                         } else if (player.isShiftKeyDown()) {

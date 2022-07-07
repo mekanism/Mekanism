@@ -16,6 +16,9 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 1.19: Keep track of UUIDs synced to a given player, and clear when they disconnect. How quickly does the memory impact grow for the user to cache them??
+// Maybe have the client send a thing like: No I can't cache them for if it only has a certain amount of ram?
+// In theory that should drastically cut down the network packet sizes
 public class QIOGlobalItemLookup {
 
     public static final QIOGlobalItemLookup INSTANCE = new QIOGlobalItemLookup();
