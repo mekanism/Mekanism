@@ -418,6 +418,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.PERSONAL_BARREL, MekanismLang.DESCRIPTION_PERSONAL_BARREL)
           .withGui(() -> MekanismContainerTypes.PERSONAL_STORAGE_BLOCK)
           .with(Attributes.SECURITY, Attributes.INVENTORY, AttributeStateOpen.INSTANCE, new AttributeStateFacing(BlockStateProperties.FACING), new AttributeCustomResistance(-1))
+          .withComputerSupport("personalBarrel")
           .build();
     // Personal Chest
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
@@ -425,6 +426,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.PERSONAL_STORAGE_BLOCK)
           .with(Attributes.SECURITY, Attributes.INVENTORY, new AttributeStateFacing(), new AttributeCustomResistance(-1))
           .withCustomShape(BlockShapes.PERSONAL_CHEST)
+          .withComputerSupport("personalChest")
           .build();
     // Fuelwood Heater
     public static final BlockTypeTile<TileEntityFuelwoodHeater> FUELWOOD_HEATER = BlockTileBuilder
@@ -470,6 +472,7 @@ public class MekanismBlockTypes {
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding((pos, state, builder) -> builder.add(pos.above()))
+          .withComputerSupport("securityDesk")
           .build();
     // Modification Station
     public static final BlockTypeTile<TileEntityModificationStation> MODIFICATION_STATION = BlockTileBuilder
@@ -689,6 +692,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL, MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL)
           .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.COMPARATOR)
           .withCustomShape(BlockShapes.RADIOACTIVE_WASTE_BARREL)
+          .withComputerSupport("radioactiveWasteBarrel")
           .build();
     // Industrial Alarm
     public static final BlockTypeTile<TileEntityIndustrialAlarm> INDUSTRIAL_ALARM = BlockTileBuilder
@@ -696,6 +700,7 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.INDUSTRIAL_ALARM)
           .withCustomShape(BlockShapes.INDUSTRIAL_ALARM)
           .with(Attributes.ACTIVE_FULL_LIGHT, new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.REDSTONE)
+          .withComputerSupport("industrialAlarm")
           .build();
     // Structural Glass
     public static final BlockTypeTile<TileEntityStructuralGlass> STRUCTURAL_GLASS = BlockTileBuilder
