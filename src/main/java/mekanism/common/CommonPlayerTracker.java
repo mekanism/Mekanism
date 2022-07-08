@@ -39,7 +39,6 @@ public class CommonPlayerTracker {
         if (!player.level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
-            player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
             //player.sendMessage(ALPHA_WARNING, Util.NIL_UUID);
             MekanismCriteriaTriggers.LOGGED_IN.trigger(serverPlayer);
         }
@@ -57,7 +56,7 @@ public class CommonPlayerTracker {
         ServerPlayer player = (ServerPlayer) event.getPlayer();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(player));
+        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player));
         RadiationManager.INSTANCE.updateClientRadiation(player);
     }
 
@@ -93,7 +92,7 @@ public class CommonPlayerTracker {
                 //If the player is returning from the end don't reset radiation
                 c.set(0);
             }
-            PacketRadiationData.sync(player);
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player);
         });
         RadiationManager.INSTANCE.updateClientRadiation(player);
         Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));

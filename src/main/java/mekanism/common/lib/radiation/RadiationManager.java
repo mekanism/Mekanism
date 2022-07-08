@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -112,11 +111,13 @@ public class RadiationManager implements IRadiationManager {
     private final Table<Chunk3D, Coord4D, IRadiationSource> radiationView = Tables.unmodifiableTable(radiationTable);
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
+    private final Object2DoubleMap<UUID> playerEnvironmentalExposureMap = new Object2DoubleOpenHashMap<>();
     private final Object2DoubleMap<UUID> playerExposureMap = new Object2DoubleOpenHashMap<>();
 
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;
     private double clientEnvironmentalRadiation = BASELINE;
+    private double clientMaxMagnitude = BASELINE;
 
     /**
      * Note: This can and will be null on the client side
@@ -148,6 +149,23 @@ public class RadiationManager implements IRadiationManager {
         return getRadiationLevel(new Coord4D(entity));
     }
 
+    /**
+     * Calculates approximately how long in seconds radiation will take to decay
+     *
+     * @param magnitude Magnitude
+     * @param source    {@code true} for if it is a {@link IRadiationSource} or an {@link IRadiationEntity} decaying
+     */
+    public int getDecayTime(double magnitude, boolean source) {
+        double decayRate = source ? MekanismConfig.general.radiationSourceDecayRate.get() : MekanismConfig.general.radiationTargetDecayRate.get();
+        int seconds = 0;
+        double localMagnitude = magnitude;
+        while (localMagnitude > RadiationManager.MIN_MAGNITUDE) {
+            localMagnitude *= decayRate;
+            seconds++;
+        }
+        return seconds;
+    }
+
     @Override
     public Table<Chunk3D, Coord4D, IRadiationSource> getRadiationSources() {
         return radiationView;
@@ -175,17 +193,27 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public double getRadiationLevel(Coord4D coord) {
-        Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
+        return getRadiationLevelAndMaxMagnitude(coord).level();
+    }
+
+    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Entity player) {
+        return getRadiationLevelAndMaxMagnitude(new Coord4D(player));
+    }
+
+    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Coord4D coord) {
         double level = BASELINE;
-        for (Chunk3D chunk : checkChunks) {
+        double maxMagnitude = BASELINE;
+        for (Chunk3D chunk : new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get())) {
             for (Map.Entry<Coord4D, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
                 // we only compute exposure when within the MAX_RANGE bounds
                 if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
-                    level += computeExposure(coord, entry.getValue());
+                    RadiationSource source = entry.getValue();
+                    level += computeExposure(coord, source);
+                    maxMagnitude = Math.max(maxMagnitude, source.getMagnitude());
                 }
             }
         }
-        return level;
+        return new LevelAndMaxMagnitude(level, maxMagnitude);
     }
 
     @Override
@@ -289,24 +317,30 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void updateClientRadiation(ServerPlayer player) {
-        double magnitude = getRadiationLevel(player);
+        LevelAndMaxMagnitude levelAndMaxMagnitude = RadiationManager.INSTANCE.getRadiationLevelAndMaxMagnitude(player);
+        double magnitude = levelAndMaxMagnitude.level();
         double scaledMagnitude = Math.ceil(magnitude / BASELINE);
         //If the last sync radiation value is different in magnitude by over the baseline, sync
         // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
         // to be zero as magnitude will always be at least BASELINE
-        if (scaledMagnitude != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
-            playerExposureMap.put(player.getUUID(), scaledMagnitude);
-            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude), player);
+        if (scaledMagnitude != playerEnvironmentalExposureMap.getOrDefault(player.getUUID(), 0)) {
+            playerEnvironmentalExposureMap.put(player.getUUID(), scaledMagnitude);
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(levelAndMaxMagnitude), player);
         }
     }
 
-    public void setClientEnvironmentalRadiation(double radiation) {
+    public void setClientEnvironmentalRadiation(double radiation, double maxMagnitude) {
         clientEnvironmentalRadiation = radiation;
+        clientMaxMagnitude = maxMagnitude;
         clientRadiationScale = RadiationScale.get(clientEnvironmentalRadiation);
     }
 
     public double getClientEnvironmentalRadiation() {
         return isRadiationEnabled() ? clientEnvironmentalRadiation : BASELINE;
+    }
+
+    public double getClientMaxMagnitude() {
+        return isRadiationEnabled() ? clientMaxMagnitude : BASELINE;
     }
 
     public RadiationScale getClientScale() {
@@ -352,7 +386,20 @@ public class RadiationManager implements IRadiationManager {
             radiationCap.ifPresent(IRadiationEntity::decay);
         }
         // update the radiation capability (decay, sync, effects)
-        radiationCap.ifPresent(c -> c.update(entity));
+        radiationCap.ifPresent(c -> {
+            c.update(entity);
+            if (entity instanceof ServerPlayer player) {
+                double radiation = c.getRadiation();
+                double scaledRadiation = Math.ceil(radiation / BASELINE);
+                //If the last sync radiation value is different in magnitude by over the baseline, sync
+                // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
+                // to be zero as magnitude will always be at least BASELINE
+                if (scaledRadiation != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
+                    playerExposureMap.put(player.getUUID(), scaledRadiation);
+                    Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(radiation), player);
+                }
+            }
+        });
     }
 
     public void tickServerWorld(Level world) {
@@ -415,6 +462,7 @@ public class RadiationManager implements IRadiationManager {
     public void reset() {
         //Clear the table directly instead of via the method, so it doesn't mark it as dirty
         radiationTable.clear();
+        playerEnvironmentalExposureMap.clear();
         playerExposureMap.clear();
         meltdowns.clear();
         dataHandler = null;
@@ -422,11 +470,11 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void resetClient() {
-        clientRadiationScale = RadiationScale.NONE;
-        clientEnvironmentalRadiation = BASELINE;
+        setClientEnvironmentalRadiation(BASELINE, BASELINE);
     }
 
     public void resetPlayer(UUID uuid) {
+        playerEnvironmentalExposureMap.removeDouble(uuid);
         playerExposureMap.removeDouble(uuid);
     }
 
@@ -436,6 +484,9 @@ public class RadiationManager implements IRadiationManager {
         if (!world.isClientSide() && !(event.getEntityLiving() instanceof Player)) {
             updateEntityRadiation(event.getEntityLiving());
         }
+    }
+
+    public record LevelAndMaxMagnitude(double level, double maxMagnitude) {
     }
 
     public enum RadiationScale {

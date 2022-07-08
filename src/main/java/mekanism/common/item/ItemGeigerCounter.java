@@ -1,11 +1,14 @@
 package mekanism.common.item;
 
-import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.RadiationManager.LevelAndMaxMagnitude;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -29,9 +32,15 @@ public class ItemGeigerCounter extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(player);
-                player.sendSystemMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY,
-                      RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
+                LevelAndMaxMagnitude levelAndMaxMagnitude = RadiationManager.INSTANCE.getRadiationLevelAndMaxMagnitude(player);
+                double magnitude = levelAndMaxMagnitude.level();
+                EnumColor severityColor = RadiationScale.getSeverityColor(magnitude);
+                player.sendSystemMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY, severityColor,
+                      UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
+                if (MekanismConfig.common.enableDecayTimers.get() && magnitude > RadiationManager.BASELINE) {
+                    player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY,
+                          severityColor, TextUtils.getHoursMinutes(RadiationManager.INSTANCE.getDecayTime(levelAndMaxMagnitude.maxMagnitude(), true))));
+                }
                 CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);

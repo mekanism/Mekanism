@@ -4,9 +4,12 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -32,8 +35,13 @@ public class ItemDosimeter extends Item {
             if (!world.isClientSide()) {
                 player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                     double radiation = MekanismAPI.getRadiationManager().isRadiationEnabled() ? c.getRadiation() : 0;
-                    player.sendSystemMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(radiation),
+                    EnumColor severityColor = RadiationScale.getSeverityColor(radiation);
+                    player.sendSystemMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, severityColor,
                           UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
+                    if (MekanismConfig.common.enableDecayTimers.get() && radiation > RadiationManager.MIN_MAGNITUDE) {
+                        player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY, severityColor,
+                                TextUtils.getHoursMinutes(RadiationManager.INSTANCE.getDecayTime(radiation, false))));
+                    }
                     CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
                 });
             }

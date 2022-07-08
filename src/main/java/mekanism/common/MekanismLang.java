@@ -123,6 +123,8 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_BLOCK_POS("generic", "block_pos"),
     GENERIC_HEX("generic", "hex"),
     GENERIC_LIST("generic", "list"),
+    GENERIC_MINUTES("generic", "minutes"),
+    GENERIC_HOURS_MINUTES("generic", "hours_minutes"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
@@ -229,6 +231,7 @@ public enum MekanismLang implements ILangEntry {
     CLOSE("gui", "close"),
     RADIATION_DOSE("gui", "radiation_dose"),
     RADIATION_EXPOSURE("gui", "radiation_exposure"),
+    RADIATION_DECAY_TIME("gui", "radiation_decay_time"),
     COLOR_PICKER("gui", "color_picker"),
     RGB("gui", "rgb"),
     HELMET_OPTIONS("gui", "helmet_options"),

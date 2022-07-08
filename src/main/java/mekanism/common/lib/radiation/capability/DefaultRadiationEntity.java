@@ -10,7 +10,6 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
-import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
@@ -28,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 public class DefaultRadiationEntity implements IRadiationEntity {
 
     private double radiation;
-    private double clientSeverity = 0;
 
     @Override
     public double getRadiation() {
@@ -51,10 +49,9 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
 
-        float strength = 0;
         if (severityScale > chance) {
             //Calculate effect strength based on radiation severity
-            strength = Math.max(1, (float) Math.log1p(radiation));
+            float strength = Math.max(1, (float) Math.log1p(radiation));
             //Hurt randomly
             if (rand.nextBoolean()) {
                 entity.hurt(MekanismDamageSource.RADIATION, strength);
@@ -62,15 +59,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
                     MekanismCriteriaTriggers.RADIATION_DAMAGE.trigger(player);
                 }
             }
-        }
-
-        if (entity instanceof ServerPlayer player) {
-            if (clientSeverity != radiation) {
-                clientSeverity = radiation;
-                PacketRadiationData.sync(player);
-            }
-
-            if (strength > 0) {
+            if (entity instanceof ServerPlayer player && strength > 0) {
                 player.getFoodData().addExhaustion(strength);
             }
         }
