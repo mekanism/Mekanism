@@ -25,6 +25,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
@@ -236,7 +237,7 @@ public class ChemicalUtil {
     }
 
     public static boolean hasGas(ItemStack stack) {
-        return hasChemical(stack, s -> true, Capabilities.GAS_HANDLER);
+        return hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.GAS_HANDLER);
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean hasChemical(ItemStack stack, CHEMICAL type) {

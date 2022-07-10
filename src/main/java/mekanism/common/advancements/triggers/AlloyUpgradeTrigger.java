@@ -1,6 +1,7 @@
 package mekanism.common.advancements.triggers;
 
 import com.google.gson.JsonObject;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.DeserializationContext;
@@ -31,7 +32,7 @@ public class AlloyUpgradeTrigger extends SimpleCriterionTrigger<AlloyUpgradeTrig
     }
 
     public void trigger(ServerPlayer player) {
-        this.trigger(player, instance -> true);
+        this.trigger(player, ConstantPredicates.alwaysTrue());
     }
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {

@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMethodHandle;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -389,7 +390,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         /**
          * No restrictions
          */
-        NONE(handler -> true),
+        NONE(ConstantPredicates.alwaysTrue()),
         /**
          * Handler is a directional tile that is actually directional.
          */

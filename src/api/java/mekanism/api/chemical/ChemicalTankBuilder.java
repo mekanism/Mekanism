@@ -23,6 +23,7 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.functions.ConstantPredicates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,9 +38,9 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     public static final ChemicalTankBuilder<Pigment, PigmentStack, IPigmentTank> PIGMENT = new ChemicalTankBuilder<>(BasicPigmentTank::new);
     public static final ChemicalTankBuilder<Slurry, SlurryStack, ISlurryTank> SLURRY = new ChemicalTankBuilder<>(BasicSlurryTank::new);
 
-    public final Predicate<@NotNull CHEMICAL> alwaysTrue = stack -> true;
-    public final Predicate<@NotNull CHEMICAL> alwaysFalse = stack -> false;
-    public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    public final Predicate<@NotNull CHEMICAL> alwaysTrue = ConstantPredicates.alwaysTrue();
+    public final Predicate<@NotNull CHEMICAL> alwaysFalse = ConstantPredicates.alwaysFalse();
+    public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
     public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 

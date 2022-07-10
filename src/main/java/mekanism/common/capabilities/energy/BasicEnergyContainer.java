@@ -8,6 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -17,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class BasicEnergyContainer implements IEnergyContainer {
 
-    public static final Predicate<@NotNull AutomationType> alwaysTrue = automationType -> true;
-    public static final Predicate<@NotNull AutomationType> alwaysFalse = automationType -> false;
+    public static final Predicate<@NotNull AutomationType> alwaysTrue = ConstantPredicates.alwaysTrue();
+    public static final Predicate<@NotNull AutomationType> alwaysFalse = ConstantPredicates.alwaysFalse();
     public static final Predicate<@NotNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
     public static final Predicate<@NotNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
     public static final Predicate<@NotNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;

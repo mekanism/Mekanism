@@ -2,6 +2,7 @@ package mekanism.common.network.to_server;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
@@ -47,7 +48,7 @@ public class PacketOpenGui implements IMekanismPacket {
         private final Predicate<Player> shouldOpenForPlayer;
 
         GuiType(Supplier<MenuProvider> containerSupplier) {
-            this(containerSupplier, player -> true);
+            this(containerSupplier, ConstantPredicates.alwaysTrue());
         }
 
         GuiType(Supplier<MenuProvider> containerSupplier, Predicate<Player> shouldOpenForPlayer) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -81,8 +82,10 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
         // No bar for empty containers as bars are drawn on top of stack count number
-        return ChemicalUtil.hasGas(stack) || ChemicalUtil.hasChemical(stack, s -> true, Capabilities.INFUSION_HANDLER) ||
-               ChemicalUtil.hasChemical(stack, s -> true, Capabilities.PIGMENT_HANDLER) || ChemicalUtil.hasChemical(stack, s -> true, Capabilities.SLURRY_HANDLER);
+        return ChemicalUtil.hasGas(stack) ||
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.INFUSION_HANDLER) ||
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.PIGMENT_HANDLER) ||
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.SLURRY_HANDLER);
     }
 
     @Override

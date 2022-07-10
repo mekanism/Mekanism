@@ -152,7 +152,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         return ItemHandlerHelper.canItemStacksStack(stockItem.getStack(), stack);
                     }
                     return false;
-                }, item -> true, listener, 8 + slotX * 18, 98 + slotY * 18);
+                }, BasicInventorySlot.alwaysTrue, listener, 8 + slotX * 18, 98 + slotY * 18);
                 builder.addSlot(inputSlot);
                 inputSlots.add(inputSlot);
             }

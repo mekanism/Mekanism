@@ -12,6 +12,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitGasTank;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.TriPredicate;
@@ -42,8 +43,6 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
 
     public static class GasTankSpec {
 
-        private static final TriPredicate<@NotNull Gas, @NotNull AutomationType, @NotNull ItemStack> alwaysTrue = (gas, automationType, stack) -> true;
-
         final LongSupplier rate;
         final LongSupplier capacity;
         final Predicate<@NotNull Gas> isValid;
@@ -60,11 +59,11 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
         }
 
         public static GasTankSpec create(LongSupplier rate, LongSupplier capacity) {
-            return new GasTankSpec(rate, capacity, ChemicalTankBuilder.GAS.alwaysTrueBi, alwaysTrue, ChemicalTankBuilder.GAS.alwaysTrue);
+            return new GasTankSpec(rate, capacity, ChemicalTankBuilder.GAS.alwaysTrueBi, ConstantPredicates.alwaysTrueTri(), ChemicalTankBuilder.GAS.alwaysTrue);
         }
 
         public static GasTankSpec createFillOnly(LongSupplier rate, LongSupplier capacity, Predicate<@NotNull Gas> isValid) {
-            return createFillOnly(rate, capacity, alwaysTrue, isValid);
+            return createFillOnly(rate, capacity, ConstantPredicates.alwaysTrueTri(), isValid);
         }
 
         public static GasTankSpec createFillOnly(LongSupplier rate, LongSupplier capacity, TriPredicate<@NotNull Gas, @NotNull AutomationType, @NotNull ItemStack> canInsert,

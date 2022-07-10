@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
@@ -123,7 +124,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         }
         //Technically this is unused except in a logging message but log it anyway
         int totalAdditional = additional;
-        initialCount.transformValue(cache, c -> true, c -> c + totalAdditional);
+        initialCount.transformValue(cache, ConstantPredicates.alwaysTrue(), c -> c + totalAdditional);
 
         //Persist data from previous runs that is in the correct format into the current run
         for (Map.Entry<DataProvider, CACHE_UPDATER> entry : toWrite.entrySet()) {

@@ -1,5 +1,6 @@
 package mekanism.generators.common.config;
 
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -109,7 +110,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("maxY", DimensionType.MAX_Y, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating
         windGenerationDimBlacklist = CachedResourceLocationListValue.define(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in."),
-              "windGenerationDimBlacklist", rl -> true);
+              "windGenerationDimBlacklist", ConstantPredicates.alwaysTrue());
         builder.pop();
 
         builder.comment("Fusion Settings").push(FUSION_CATEGORY);

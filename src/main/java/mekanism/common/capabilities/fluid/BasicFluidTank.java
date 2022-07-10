@@ -9,6 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -19,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class BasicFluidTank implements IExtendedFluidTank {
 
-    public static final Predicate<@NotNull FluidStack> alwaysTrue = stack -> true;
-    public static final Predicate<@NotNull FluidStack> alwaysFalse = stack -> false;
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    public static final Predicate<@NotNull FluidStack> alwaysTrue = ConstantPredicates.alwaysTrue();
+    public static final Predicate<@NotNull FluidStack> alwaysFalse = ConstantPredicates.alwaysFalse();
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 

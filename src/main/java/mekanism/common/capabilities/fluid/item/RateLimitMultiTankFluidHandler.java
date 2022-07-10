@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
 import net.minecraft.world.item.ItemStack;
@@ -42,8 +43,6 @@ public class RateLimitMultiTankFluidHandler extends ItemStackMekanismFluidHandle
 
     public static class FluidTankSpec {
 
-        private static final TriPredicate<@NotNull FluidStack, @NotNull AutomationType, @NotNull ItemStack> alwaysTrue = (gas, automationType, stack) -> true;
-
         final IntSupplier rate;
         final IntSupplier capacity;
         final Predicate<@NotNull FluidStack> isValid;
@@ -60,11 +59,11 @@ public class RateLimitMultiTankFluidHandler extends ItemStackMekanismFluidHandle
         }
 
         public static FluidTankSpec create(IntSupplier rate, IntSupplier capacity) {
-            return new FluidTankSpec(rate, capacity, BasicFluidTank.alwaysTrueBi, alwaysTrue, BasicFluidTank.alwaysTrue);
+            return new FluidTankSpec(rate, capacity, BasicFluidTank.alwaysTrueBi, ConstantPredicates.alwaysTrueTri(), BasicFluidTank.alwaysTrue);
         }
 
         public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity, Predicate<@NotNull FluidStack> isValid) {
-            return createFillOnly(rate, capacity, alwaysTrue, isValid);
+            return createFillOnly(rate, capacity, ConstantPredicates.alwaysTrueTri(), isValid);
         }
 
         public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity,

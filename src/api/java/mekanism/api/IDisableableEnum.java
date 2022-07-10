@@ -2,6 +2,7 @@ package mekanism.api;
 
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 
 /**
  * Interface for enum's to make them easily incremental, while allowing for disabling various elements
@@ -30,6 +31,6 @@ public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYP
     default TYPE adjust(int shift) {
         //Note: We can just pass an always true predicate as we intercept getNext and getPrevious calls to
         // ensure that they test the element is enabled
-        return adjust(shift, value -> true);
+        return adjust(shift, ConstantPredicates.alwaysTrue());
     }
 }

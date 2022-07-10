@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.providers.IModuleDataProvider;
 import net.minecraft.network.chat.Component;
@@ -166,7 +167,7 @@ public interface IModuleHelper {
      * @see #addMekaSuitModuleModelSpec(String, IModuleDataProvider, EquipmentSlot, Predicate)
      */
     default void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType) {
-        addMekaSuitModuleModelSpec(name, moduleDataProvider, slotType, entity -> true);
+        addMekaSuitModuleModelSpec(name, moduleDataProvider, slotType, ConstantPredicates.alwaysTrue());
     }
 
     /**

@@ -27,6 +27,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
@@ -280,7 +281,7 @@ public class RadiationManager implements IRadiationManager {
         if (!radiationTable.isEmpty()) {
             radiationTable.clear();
             markDirty();
-            updateClientRadiationForAll(player -> true);
+            updateClientRadiationForAll(ConstantPredicates.alwaysTrue());
         }
     }
 
@@ -435,7 +436,7 @@ public class RadiationManager implements IRadiationManager {
                 //Mark dirty regardless if we have any sources as magnitude changes or radiation sources change
                 markDirty();
                 //Update radiation levels for any players where it has changed
-                updateClientRadiationForAll(player -> true);
+                updateClientRadiationForAll(ConstantPredicates.alwaysTrue());
             }
         }
     }
