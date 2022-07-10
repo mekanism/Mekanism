@@ -45,8 +45,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -268,10 +267,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @NotNull
     @Override
-    public IModelData getModelData() {
+    public ModelData getModelData() {
         TransmitterModelData data = initModelData();
         updateModelData(data);
-        return new ModelDataMap.Builder().withInitial(TRANSMITTER_PROPERTY, data).build();
+        return ModelData.builder().with(TRANSMITTER_PROPERTY, data).build();
     }
 
     protected void updateModelData(TransmitterModelData modelData) {

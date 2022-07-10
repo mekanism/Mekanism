@@ -1,6 +1,7 @@
 package mekanism.client.render.obj;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.model.data.TransmitterModelData.Diversion;
@@ -9,8 +10,8 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +20,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     @NotNull
     private final TransmitterModelData modelData;
 
-    public TransmitterModelConfiguration(IModelConfiguration internal, List<String> visibleGroups, @NotNull IModelData modelData) {
+    public TransmitterModelConfiguration(IGeometryBakingContext internal, List<String> visibleGroups, @NotNull ModelData modelData) {
         super(internal, visibleGroups);
-        this.modelData = modelData.getData(TileEntityTransmitter.TRANSMITTER_PROPERTY);
+        this.modelData = Objects.requireNonNull(modelData.get(TileEntityTransmitter.TRANSMITTER_PROPERTY), "Transmitter property must be present.");
     }
 
     @Nullable
@@ -109,14 +110,14 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     }
 
     @Override
-    public boolean isTexturePresent(@NotNull String name) {
-        return internal.isTexturePresent(adjustTextureName(name));
+    public boolean hasMaterial(@NotNull String name) {
+        return internal.hasMaterial(adjustTextureName(name));
     }
 
     @NotNull
     @Override
-    public Material resolveTexture(@NotNull String name) {
-        return internal.resolveTexture(adjustTextureName(name));
+    public Material getMaterial(@NotNull String name) {
+        return internal.getMaterial(adjustTextureName(name));
     }
 
     public enum IconStatus {

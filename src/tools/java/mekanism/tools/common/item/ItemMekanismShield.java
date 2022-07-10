@@ -13,7 +13,7 @@ import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     }
 
     @Override
-    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(ToolsRenderPropertiesProvider.shield());
     }
 

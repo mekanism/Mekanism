@@ -7,6 +7,7 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -29,7 +30,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
             if (network.currentScale > 0) {
                 matrix.pushPose();
                 matrix.translate(0.5, 0.5, 0.5);
-                renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, network.currentScale, MekanismRenderer.FULL_LIGHT,
+                renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, network.currentScale, LightTexture.FULL_BRIGHT,
                       overlayLight, MekanismRenderer.energyIcon);
                 matrix.popPose();
             }

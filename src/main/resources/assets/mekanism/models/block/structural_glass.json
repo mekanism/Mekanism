@@ -1,4 +1,5 @@
 {
+  "render_type": "minecraft:cutout",
   "parent": "mekanism:block/basic_cube",
   "textures": {
     "all": "mekanism:block/structural_glass"

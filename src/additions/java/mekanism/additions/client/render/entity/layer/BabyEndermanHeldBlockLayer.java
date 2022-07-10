@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
 public class BabyEndermanHeldBlockLayer extends RenderLayer<EntityBabyEnderman, ModelBabyEnderman> {
@@ -35,7 +35,7 @@ public class BabyEndermanHeldBlockLayer extends RenderLayer<EntityBabyEnderman, 
             matrix.mulPose(Vector3f.YP.rotationDegrees(90));
             //Adjust the position of the block to actually look more like it is in the enderman's hands
             matrix.translate(0, -1, 0.25);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, matrix, renderer, light, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, matrix, renderer, light, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
             matrix.popPose();
         }
     }

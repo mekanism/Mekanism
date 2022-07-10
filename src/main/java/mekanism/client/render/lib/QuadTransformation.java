@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -24,15 +25,19 @@ public interface QuadTransformation {
     QuadTransformation identity = q -> {
     };
 
-    QuadTransformation fullbright = light(1);
+    QuadTransformation fullbright = packedLight(LightTexture.FULL_BRIGHT);
     QuadTransformation filtered_fullbright = TextureFilteredTransformation.of(fullbright, rl -> rl.getPath().contains("led"));
 
     static QuadTransformation color(Color color) {
         return new ColorTransformation(color);
     }
 
-    static QuadTransformation light(float light) {
+    static QuadTransformation light(int light) {
         return new LightTransformation(light, light);
+    }
+
+    static QuadTransformation packedLight(int light) {
+        return new LightTransformation(LightTexture.block(light), LightTexture.sky(light));
     }
 
     static QuadTransformation translate(Vec3 translation) {
@@ -135,10 +140,10 @@ public interface QuadTransformation {
 
     class LightTransformation implements QuadTransformation {
 
-        private final float lightU;
-        private final float lightV;
+        private final int lightU;
+        private final int lightV;
 
-        public LightTransformation(float lightU, float lightV) {
+        public LightTransformation(int lightU, int lightV) {
             this.lightU = lightU;
             this.lightV = lightV;
         }

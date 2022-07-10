@@ -18,19 +18,17 @@ import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.StrayRenderer;
 import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,15 +41,15 @@ public class AdditionsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        AdditionsKeyHandler.registerKeybindings();
-
-        ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values());
-        ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS.values());
-        ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS.values());
         event.enqueueWork(() -> ClientRegistrationUtil.setPropertyOverride(AdditionsItems.WALKIE_TALKIE, MekanismAdditions.rl("channel"), (stack, world, entity, seed) -> {
             ItemWalkieTalkie item = (ItemWalkieTalkie) stack.getItem();
             return item.getOn(stack) ? item.getChannel(stack) : 0;
         }));
+    }
+
+    @SubscribeEvent
+    public static void registerKeybindings(RegisterKeyMappingsEvent event) {
+        AdditionsKeyHandler.registerKeybindings(event);
     }
 
     @SubscribeEvent
@@ -74,33 +72,42 @@ public class AdditionsClientRegistration {
     }
 
     @SubscribeEvent
-    public static void modelRegEvent(ModelRegistryEvent event) {
-        AdditionsModelCache.INSTANCE.setup();
+    public static void registerAdditionalModels(RegisterAdditional event) {
+        AdditionsModelCache.INSTANCE.setup(event);
     }
 
     @SubscribeEvent
-    public static void onModelBake(ModelBakeEvent event) {
+    public static void onModelBake(BakingCompleted event) {
         AdditionsModelCache.INSTANCE.onBake(event);
     }
 
     @SubscribeEvent
-    public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
-        registerBlockColorHandles(event.getBlockColors(), event.getItemColors(), AdditionsBlocks.GLOW_PANELS, AdditionsBlocks.PLASTIC_BLOCKS,
+    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
+        registerIColoredBlocks(event);
+    }
+
+    @SubscribeEvent
+    public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
+        registerIColoredBlocks(event);
+        ItemColor balloonColorHandler = (stack, tintIndex) -> stack.getItem() instanceof ItemBalloon balloon ? MekanismRenderer.getColorARGB(balloon.getColor(), 1) : -1;
+        for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
+            ClientRegistrationUtil.registerItemColorHandler(event, balloonColorHandler, balloon);
+        }
+    }
+
+    private static void registerIColoredBlocks(RegisterColorHandlersEvent event) {
+        registerBlockColorHandles(event, AdditionsBlocks.GLOW_PANELS, AdditionsBlocks.PLASTIC_BLOCKS,
               AdditionsBlocks.SLICK_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_ROADS,
               AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_FENCES,
               AdditionsBlocks.PLASTIC_FENCE_GATES, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS,
               AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS);
-        ItemColor balloonColorHandler = (stack, tintIndex) -> stack.getItem() instanceof ItemBalloon balloon ? MekanismRenderer.getColorARGB(balloon.getColor(), 1) : -1;
-        for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
-            ClientRegistrationUtil.registerItemColorHandler(event.getItemColors(), balloonColorHandler, balloon);
-        }
     }
 
     @SafeVarargs
-    private static void registerBlockColorHandles(BlockColors blockColors, ItemColors itemColors, Map<EnumColor, ? extends BlockRegistryObject<?, ?>>... blocks) {
+    private static void registerBlockColorHandles(RegisterColorHandlersEvent event, Map<EnumColor, ? extends BlockRegistryObject<?, ?>>... blocks) {
         for (Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blockMap : blocks) {
             for (BlockRegistryObject<?, ?> block : blockMap.values()) {
-                ClientRegistrationUtil.registerIColoredBlockHandler(blockColors, itemColors, block);
+                ClientRegistrationUtil.registerIColoredBlockHandler(event, block);
             }
         }
     }

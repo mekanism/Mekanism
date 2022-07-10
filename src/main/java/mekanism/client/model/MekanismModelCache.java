@@ -16,7 +16,8 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +53,7 @@ public class MekanismModelCache extends BaseModelCache {
     }
 
     @Override
-    public void setup() {
+    public void setup(RegisterAdditional event) {
         Map<ResourceLocation, JSONModelData> customModels = new HashMap<>();
         for (RobitSkin skin : MekanismAPI.robitSkinRegistry()) {
             ResourceLocation customModel = skin.getCustomModel();
@@ -62,11 +63,11 @@ public class MekanismModelCache extends BaseModelCache {
                 ROBIT_SKINS.put(skin.getRegistryName(), model);
             }
         }
-        super.setup();
+        super.setup(event);
     }
 
     @Override
-    public void onBake(ModelBakeEvent evt) {
+    public void onBake(BakingCompleted evt) {
         super.onBake(evt);
         callbacks.forEach(Runnable::run);
         BASE_ROBIT = getBakedModel(evt, new ModelResourceLocation(Mekanism.rl("robit"), "inventory"));

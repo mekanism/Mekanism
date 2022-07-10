@@ -60,8 +60,8 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
                 matrix.mulPose(Vector3f.XP.rotationDegrees(180));
                 matrix.translate(-0.5, -1.5, -0.5);
                 PoseStack.Pose last = matrix.last();
-                for (BakedQuad quad : model.getQuads(null, null, robit.level.random, robit.getModelData())) {
-                    builder.putBulkData(last, quad, red, green, blue, alpha, light, overlayLight);
+                for (BakedQuad quad : model.getQuads(null, null, robit.level.random, robit.getModelData(), null)) {
+                    builder.putBulkData(last, quad, red, green, blue, alpha, light, overlayLight, false);
                 }
                 matrix.popPose();
             }

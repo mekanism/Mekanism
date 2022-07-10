@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
   "fluid": "mekanismgenerators:deuterium",
-  "loader": "forge:bucket"
+  "loader": "forge:fluid_container"
 }

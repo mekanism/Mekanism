@@ -8,6 +8,7 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -31,7 +32,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
                 matrix.translate(0.5, 0.5, 0.5);
                 Chemical<?> chemical = network.lastChemical.getChemical();
                 renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), chemical.getTint(), Math.max(0.2F, network.currentScale),
-                      MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(chemical));
+                      LightTexture.FULL_BRIGHT, overlayLight, MekanismRenderer.getChemicalTexture(chemical));
                 matrix.popPose();
             }
         }

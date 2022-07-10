@@ -1,8 +1,6 @@
 package mekanism.client;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.function.Predicate;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
@@ -11,6 +9,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registration.impl.FluidDeferredRegister;
+import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ParticleTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -19,9 +19,7 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
@@ -43,9 +41,11 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.model.DynamicFluidContainerModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,6 +68,7 @@ public class ClientRegistrationUtil {
         }
         return -1;
     };
+    private static final ItemColor BUCKET_ITEM_COLOR = new DynamicFluidContainerModel.Colors();
 
     private ClientRegistrationUtil() {
     }
@@ -121,6 +122,7 @@ public class ClientRegistrationUtil {
     }
 
     //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
+    @SuppressWarnings("Convert2Lambda")
     public static <TILE extends TileEntityElectricMachine, C extends MekanismTileContainer<TILE>> void registerElectricScreen(ContainerTypeRegistryObject<C> type) {
         registerScreen(type, new ScreenConstructor<C, GuiElectricMachine<TILE, C>>() {
             @NotNull
@@ -132,6 +134,7 @@ public class ClientRegistrationUtil {
     }
 
     //Helper method to register GuiAdvancedElectricMachine due to generics not being able to be resolved through registerScreen
+    @SuppressWarnings("Convert2Lambda")
     public static <TILE extends TileEntityAdvancedElectricMachine, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(ContainerTypeRegistryObject<C> type) {
         registerScreen(type, new ScreenConstructor<C, GuiAdvancedElectricMachine<TILE, C>>() {
             @NotNull
@@ -142,9 +145,9 @@ public class ClientRegistrationUtil {
         });
     }
 
-    public static synchronized void registerKeyBindings(KeyMapping... keys) {
+    public static void registerKeyBindings(RegisterKeyMappingsEvent event, KeyMapping... keys) {
         for (KeyMapping key : keys) {
-            ClientRegistry.registerKeyBinding(key);
+            event.register(key);
         }
     }
 
@@ -152,44 +155,29 @@ public class ClientRegistrationUtil {
         ItemProperties.register(itemProvider.asItem(), override, propertyGetter);
     }
 
-    public static void registerItemColorHandler(ItemColors colors, ItemColor itemColor, IItemProvider... items) {
+    public static void registerItemColorHandler(RegisterColorHandlersEvent.Item event, ItemColor itemColor, IItemProvider... items) {
         for (IItemProvider itemProvider : items) {
-            colors.register(itemColor, itemProvider.asItem());
+            event.register(itemColor, itemProvider.asItem());
         }
     }
 
-    public static void registerBlockColorHandler(BlockColors blockColors, BlockColor blockColor, IBlockProvider... blocks) {
+    public static void registerBlockColorHandler(RegisterColorHandlersEvent.Block event, BlockColor blockColor, IBlockProvider... blocks) {
         for (IBlockProvider blockProvider : blocks) {
-            blockColors.register(blockColor, blockProvider.getBlock());
+            event.register(blockColor, blockProvider.getBlock());
         }
     }
 
-    public static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, BlockColor blockColor, ItemColor itemColor, IBlockProvider... blocks) {
-        for (IBlockProvider blockProvider : blocks) {
-            blockColors.register(blockColor, blockProvider.getBlock());
-            itemColors.register(itemColor, blockProvider.asItem());
+    public static void registerBucketColorHandler(RegisterColorHandlersEvent.Item event, FluidDeferredRegister register) {
+        for (FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?> fluidRO : register.getAllFluids()) {
+            event.register(BUCKET_ITEM_COLOR, fluidRO.getBucket());
         }
     }
 
-    public static void registerIColoredBlockHandler(BlockColors blockColors, ItemColors itemColors, IBlockProvider... blocks) {
-        ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, COLORED_BLOCK_COLOR, COLORED_BLOCK_ITEM_COLOR, blocks);
-    }
-
-    public static void setRenderLayer(RenderType type, Collection<? extends IBlockProvider> blockProviders) {
-        for (IBlockProvider blockProvider : blockProviders) {
-            ItemBlockRenderTypes.setRenderLayer(blockProvider.getBlock(), type);
-        }
-    }
-
-    public static void setRenderLayer(RenderType type, IBlockProvider... blockProviders) {
-        for (IBlockProvider blockProvider : blockProviders) {
-            ItemBlockRenderTypes.setRenderLayer(blockProvider.getBlock(), type);
-        }
-    }
-
-    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, IBlockProvider... blockProviders) {
-        for (IBlockProvider blockProvider : blockProviders) {
-            ItemBlockRenderTypes.setRenderLayer(blockProvider.getBlock(), predicate);
+    public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, IBlockProvider... blocks) {
+        if (event instanceof RegisterColorHandlersEvent.Block blockEvent) {
+            registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
+        } else if (event instanceof RegisterColorHandlersEvent.Item itemEvent) {
+            registerItemColorHandler(itemEvent, COLORED_BLOCK_ITEM_COLOR, blocks);
         }
     }
 
@@ -197,13 +185,6 @@ public class ClientRegistrationUtil {
         for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidROs) {
             ItemBlockRenderTypes.setRenderLayer(fluidRO.getStillFluid(), type);
             ItemBlockRenderTypes.setRenderLayer(fluidRO.getFlowingFluid(), type);
-        }
-    }
-
-    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, FluidRegistryObject<?, ?, ?, ?, ?>... fluidROs) {
-        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidROs) {
-            ItemBlockRenderTypes.setRenderLayer(fluidRO.getStillFluid(), predicate);
-            ItemBlockRenderTypes.setRenderLayer(fluidRO.getFlowingFluid(), predicate);
         }
     }
 }

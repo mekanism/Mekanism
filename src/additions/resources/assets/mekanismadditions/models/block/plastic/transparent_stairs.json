@@ -1,4 +1,5 @@
 {
+  "render_type": "minecraft:translucent",
   "parent": "mekanismadditions:block/colored/stairs_transparent",
   "textures": {
     "side": "mekanismadditions:block/transparent_plastic_block",

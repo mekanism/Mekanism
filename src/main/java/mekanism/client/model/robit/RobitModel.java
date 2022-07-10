@@ -16,26 +16,25 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 
 public class RobitModel extends MekanismModel {
 
-    private RobitModel(Multimap<String, BlockPartWrapper> list) {
+    private RobitModel(Multimap<String, MekanismModelPart> list) {
         super(list);
     }
 
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+    public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
           ItemOverrides overrides, ResourceLocation modelLocation) {
         return new RobitBakedModel(super.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation));
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter,
+    public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter,
           Set<Pair<String, String>> missingTextureErrors) {
-        Collection<Material> textures = super.getTextures(owner, modelGetter, missingTextureErrors);
+        Collection<Material> textures = super.getMaterials(owner, modelGetter, missingTextureErrors);
         //Remove any missing errors where the texture in the file was #robit
         missingTextureErrors.removeIf(p -> p.getFirst().equals("#robit"));
         return textures;
@@ -51,13 +50,9 @@ public class RobitModel extends MekanismModel {
         private Loader() {
         }
 
-        @Override
-        public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
-        }
-
         @NotNull
         @Override
-        public RobitModel read(@NotNull JsonDeserializationContext ctx, @NotNull JsonObject modelContents) {
+        public RobitModel read(@NotNull JsonObject modelContents, @NotNull JsonDeserializationContext ctx) {
             return new RobitModel(readElements(ctx, modelContents));
         }
     }

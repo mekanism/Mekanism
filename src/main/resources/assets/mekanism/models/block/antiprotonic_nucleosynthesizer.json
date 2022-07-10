@@ -1,6 +1,6 @@
 {
 	"parent": "block/cube_all",
-	"loader": "forge:multi-layer",
+	"loader": "forge:composite",
 	"textures": {
 		"0": "mekanism:block/models/glass",
 		"1": "mekanism:block/models/antiprotonic_nucleosynthesizer_front",
@@ -48,8 +48,9 @@
 			"scale": [0.5, 0.5, 0.5]
 		}
 	},
-	"layers": {
+	"children": {
 		"solid": {
+			"render_type": "minecraft:solid",
 			"parent": "block/cube_all",
 			"loader": "mekanism:mekanism",
 			"textures": {
@@ -363,6 +364,7 @@
 			]
 		},
 		"translucent": {
+			"render_type": "minecraft:translucent",
 			"parent": "block/cube_all",
 			"textures": {
 				"0": "mekanism:block/models/glass",

@@ -63,7 +63,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
                 color[1] = balloonColor.getColor(1);
                 color[2] = balloonColor.getColor(2);
             }
-            builder.putBulkData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY);
+            builder.putBulkData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY, false);
         }
         ((MultiBufferSource.BufferSource) renderer).endBatch(renderType);
         matrix.popPose();

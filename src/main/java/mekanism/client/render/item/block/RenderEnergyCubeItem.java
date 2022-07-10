@@ -5,12 +5,12 @@ import com.mojang.math.Vector3f;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -47,7 +47,7 @@ public class RenderEnergyCubeItem extends MekanismISTER {
             matrix.translate(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
             matrix.mulPose(Vector3f.YP.rotationDegrees(4 * MekanismClient.ticksPassed));
             matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + 4 * MekanismClient.ticksPassed));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
+            core.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.popPose();
     }

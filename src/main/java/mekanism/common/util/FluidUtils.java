@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -54,7 +54,7 @@ public final class FluidUtils {
                 //Try to get the color tint of the fluid. There is a chance this will fail on servers even though
                 // we only call this on the client side. But just in case try catch it in case something causes
                 // it to be called on the server
-                return OptionalInt.of(RenderProperties.get(fluidStack.getFluid()).getColorTint(fluidStack));
+                return OptionalInt.of(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack));
             } catch (Throwable ignored) {
             }
         }

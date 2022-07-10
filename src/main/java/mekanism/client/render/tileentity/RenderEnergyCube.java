@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -63,7 +64,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
             float scaledTicks = 4 * ticks;
             matrix.mulPose(Vector3f.YP.rotationDegrees(scaledTicks));
             matrix.mulPose(coreVec.rotationDegrees(36F + scaledTicks));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.getTier().getBaseTier().getColor(), energyScale);
+            core.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, tile.getTier().getBaseTier().getColor(), energyScale);
             matrix.popPose();
         }
         profiler.pop();

@@ -17,6 +17,7 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -66,7 +67,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                         matrix.pushPose();
                         matrix.translate(assembly.pos().getX() - pos.getX(), assembly.pos().getY() - pos.getY(), assembly.pos().getZ() - pos.getZ());
                         matrix.scale(1, assembly.height(), 1);
-                        MekanismRenderer.renderObject(glowModel, matrix, buffer, GLOW_ARGB, MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
+                        MekanismRenderer.renderObject(glowModel, matrix, buffer, GLOW_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
                         matrix.popPose();
                     }
                 }
@@ -118,7 +119,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
         data.height = height;
         data.length = multiblock.length();
         data.width = multiblock.width();
-        return data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
+        return data.calculateGlowLight(LightTexture.FULL_SKY);
     }
 
     @Override

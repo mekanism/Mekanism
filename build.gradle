@@ -105,6 +105,9 @@ for (def name : secondaryModules) {
     setupExtraSourceSets(sourceSet)
 }
 
+//Setup the UPDATE_SOURCESET property in case we are doing any remappings
+project.ext."UPDATE_SOURCESETS" = project.sourceSets.collect { it.name }.join(';')
+
 def setupExtraSourceSets(SourceSet base) {
     //Expose the base module to junit
     project.sourceSets.test.compileClasspath += base.output
@@ -252,7 +255,11 @@ java {
 }
 
 minecraft {
-    mappings channel: "${mappings_channel}", version: "${mappings_version}"
+    if (mappings_channel == "parchment_previous") {
+        mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}-${minecraft_version}"
+    } else {
+        mappings channel: "${mappings_channel}", version: "${mappings_version}"
+    }
 
     accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'),
             file('src/additions/resources/META-INF/accesstransformer.cfg'))
@@ -420,8 +427,9 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    //TODO - 1.19: Re-enable once it updates
+    //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
+    //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //TODO: Re-enable in dev once https://github.com/Chisel-Team/ConnectedTexturesMod/issues/174 is fixed
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
@@ -434,7 +442,8 @@ dependencies {
         transitive = false
     }
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
+    //TODO - 1.19: Re-enable once it updates
+    //runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
     compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
 
     //TODO - 1.19: Switch back to implementation once these update
@@ -465,32 +474,6 @@ dependencies {
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     //TODO - 1.19: Re-enable when these update
     //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
-}
-
-if (project.hasProperty('UPDATE_MAPPINGS')) {
-    //If the project has the update mappings property, configure it to be able to target all our extra sourceSets as well
-    // so that whenever we need to update mappings it is quick and easy to do so.
-    // Note: This needs to be below the dependencies and minecraft blocks so that it can properly read the mappings value
-    // and also read and find the minecraft dep
-    def extraSourceSets = [sourceSets.api, sourceSets.test, sourceSets.datagenMain, sourceSets.gameTestMain]
-    for (def name : secondaryModules) {
-        def base = sourceSets.getByName(name)
-        extraSourceSets.add(base)
-        for (def extraType : extraTypes) {
-            extraSourceSets.add(getExtraSourceSet(base, extraType))
-        }
-    }
-    Set<File> allExtraDirs = new HashSet<>()
-    for (def sourceSet : extraSourceSets) {
-        allExtraDirs.addAll(sourceSet.java.srcDirs)
-    }
-    extractRangeMap {
-        sources.from(allExtraDirs)
-    }
-    applyRangeMap {
-        sources.from(allExtraDirs)
-    }
-    allExtraDirs.each { extractMappedNew.addTarget it }
 }
 
 def getManifestAttributes(String title) {

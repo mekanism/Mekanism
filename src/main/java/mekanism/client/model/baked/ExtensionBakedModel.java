@@ -4,7 +4,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,23 +14,19 @@ import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.BakedModelWrapper;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ExtensionBakedModel<T> implements BakedModel {
-
-    protected final BakedModel original;
+public class ExtensionBakedModel<T> extends BakedModelWrapper<BakedModel> {
 
     private final LoadingCache<QuadsKey<T>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
         @Override
@@ -39,67 +34,19 @@ public class ExtensionBakedModel<T> implements BakedModel {
             return createQuads(key);
         }
     });
-    private final Map<List<Pair<BakedModel, RenderType>>, List<Pair<BakedModel, RenderType>>> cachedLayerRedirects = new Object2ObjectOpenHashMap<>();
+    //Note: While we may have a bit better memory usage if we cache individual models and their transformations,
+    // for now we are not as the input lists are immutable, and we don't want to add the overhead of looping and
+    // creating a new list each time it is rendered and getRenderPasses is called. If at some point this gets
+    // profiled in detail, and we find out that doesn't cause any major performance impact we should consider
+    // switching this to a Map<BakedModel, BakedModel>
+    private final Map<List<BakedModel>, List<BakedModel>> cachedRenderPasses = new Object2ObjectOpenHashMap<>();
 
     public ExtensionBakedModel(BakedModel original) {
-        this.original = original;
-    }
-
-    @Override
-    @Deprecated
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        return original.getQuads(state, side, rand);
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return original.useAmbientOcclusion();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return original.isGui3d();
-    }
-
-    @Override
-    public boolean usesBlockLight() {
-        return original.usesBlockLight();
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return original.isCustomRenderer();
-    }
-
-    @Override
-    @Deprecated
-    public TextureAtlasSprite getParticleIcon() {
-        return original.getParticleIcon();
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return original.getOverrides();
-    }
-
-    @Override
-    public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
-        return original.handlePerspective(cameraTransformType, mat);
-    }
-
-    @Override
-    @Deprecated
-    public ItemTransforms getTransforms() {
-        return original.getTransforms();
-    }
-
-    @Override
-    public boolean doesHandlePerspectives() {
-        return original.doesHandlePerspectives();
+        super(original);
     }
 
     @Nullable
-    protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
+    protected QuadsKey<T> createKey(QuadsKey<T> key, ModelData data) {
         return key;
     }
 
@@ -111,10 +58,11 @@ public class ExtensionBakedModel<T> implements BakedModel {
         return ret;
     }
 
+    @NotNull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, IModelData data) {
-        List<BakedQuad> quads = original.getQuads(state, side, rand, data);
-        QuadsKey<T> key = createKey(new QuadsKey<>(state, side, rand, MinecraftForgeClient.getRenderType(), quads), data);
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
+        List<BakedQuad> quads = super.getQuads(state, side, rand, data, renderType);
+        QuadsKey<T> key = createKey(new QuadsKey<>(state, side, rand, renderType, quads), data);
         if (key == null) {
             return quads;
         }
@@ -122,15 +70,9 @@ public class ExtensionBakedModel<T> implements BakedModel {
     }
 
     @Override
-    public boolean isLayered() {
-        return original.isLayered();
-    }
-
-    @Override
-    public List<Pair<BakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
+    public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
         //Cache the remappings so then the inner wrapped ones can cache their quads
-        return cachedLayerRedirects.computeIfAbsent(original.getLayerModels(stack, fabulous), originalLayerModels ->
-              originalLayerModels.stream().map(layerModel -> layerModel.<BakedModel>mapFirst(this::wrapModel)).toList());
+        return cachedRenderPasses.computeIfAbsent(super.getRenderPasses(stack, fabulous), original -> original.stream().<BakedModel>map(this::wrapModel).toList());
     }
 
     protected ExtensionBakedModel<T> wrapModel(BakedModel model) {
@@ -161,20 +103,20 @@ public class ExtensionBakedModel<T> implements BakedModel {
         @Override
         @Deprecated
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand) {
-            return QuadUtils.transformBakedQuads(original.getQuads(state, side, rand), transform);
+            return QuadUtils.transformBakedQuads(super.getQuads(state, side, rand), transform);
         }
 
         @Override
-        public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
+        public BakedModel applyTransform(ItemTransforms.TransformType cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
             // have the original model apply any perspective transforms onto the MatrixStack
-            original.handlePerspective(cameraTransformType, mat);
+            super.applyTransform(cameraTransformType, mat, applyLeftHandTransform);
             // return this model, as we want to draw the item variant quads ourselves
             return this;
         }
 
         @Nullable
         @Override
-        protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
+        protected QuadsKey<T> createKey(QuadsKey<T> key, ModelData data) {
             return key.transform(transform);
         }
 
@@ -191,6 +133,7 @@ public class ExtensionBakedModel<T> implements BakedModel {
         @Nullable
         private final Direction side;
         private final RandomSource random;
+        @Nullable
         private final RenderType layer;
         private final List<BakedQuad> quads;
         @Nullable
@@ -202,7 +145,7 @@ public class ExtensionBakedModel<T> implements BakedModel {
         @Nullable
         private BiPredicate<T, T> equality;
 
-        public QuadsKey(@Nullable BlockState state, @Nullable Direction side, RandomSource random, RenderType layer, List<BakedQuad> quads) {
+        public QuadsKey(@Nullable BlockState state, @Nullable Direction side, RandomSource random, @Nullable RenderType layer, List<BakedQuad> quads) {
             this.state = state;
             this.side = side;
             this.random = random;
@@ -236,6 +179,7 @@ public class ExtensionBakedModel<T> implements BakedModel {
             return random;
         }
 
+        @Nullable
         public RenderType getLayer() {
             return layer;
         }

@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
   "fluid": "mekanism:uranium_oxide",
-  "loader": "forge:bucket"
+  "loader": "forge:fluid_container"
 }

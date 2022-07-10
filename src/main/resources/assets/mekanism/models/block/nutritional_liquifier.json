@@ -1,13 +1,14 @@
 {
   "parent": "block/cube_all",
-  "loader": "forge:multi-layer",
+  "loader": "forge:composite",
   "texture_size": [32, 32],
   "textures": {
     "0": "mekanism:block/nutritional_liquifier",
     "particle": "mekanism:block/nutritional_liquifier"
   },
-  "layers": {
+  "children": {
     "solid": {
+      "render_type": "minecraft:solid",
       "parent": "block/cube_all",
       "textures": {
         "0": "mekanism:block/nutritional_liquifier",
@@ -187,6 +188,7 @@
       ]
     },
     "translucent": {
+      "render_type": "minecraft:translucent",
       "parent": "block/cube_all",
       "textures": {
         "0": "mekanism:block/nutritional_liquifier",

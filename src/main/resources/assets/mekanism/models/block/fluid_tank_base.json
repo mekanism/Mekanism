@@ -1,4 +1,5 @@
 {
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"particle": "#glass",
 		"frame": "mekanism:block/models/fluid_tank"

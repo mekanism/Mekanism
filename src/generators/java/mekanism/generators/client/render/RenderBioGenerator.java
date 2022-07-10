@@ -15,6 +15,7 @@ import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -44,7 +45,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
             int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
             MekanismRenderer.renderObject(getModel(tile.getDirection(), modelNumber), matrix,
-                  renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight,
+                  renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), LightTexture.FULL_BRIGHT, overlayLight,
                   FaceDisplay.FRONT);
             matrix.popPose();
         }

@@ -47,7 +47,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -55,9 +54,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
-import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
@@ -68,11 +66,8 @@ import org.jetbrains.annotations.Nullable;
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
 
-    //TODO: Replace various usages of this with the getter for calculating glow light, at least if we end up making it only
+    //TODO: Replace various usages of LightTexture.FULL_BRIGHT with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
-    public static final int FULL_LIGHT = 0xF000F0;
-    public static final int FULL_SKY_LIGHT = LightTexture.pack(0, 15);
-
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
@@ -90,7 +85,7 @@ public class MekanismRenderer {
      * @return the sprite, or missing sprite if not found
      */
     public static TextureAtlasSprite getBaseFluidTexture(@NotNull Fluid fluid, @NotNull FluidTextureType type) {
-        IFluidTypeRenderProperties properties = RenderProperties.get(fluid);
+        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
         ResourceLocation spriteLocation;
         if (type == FluidTextureType.STILL) {
             spriteLocation = properties.getStillTexture();
@@ -101,7 +96,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getFluidTexture(@NotNull FluidStack fluidStack, @NotNull FluidTextureType type) {
-        IFluidTypeRenderProperties properties = RenderProperties.get(fluidStack.getFluid());
+        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
         ResourceLocation spriteLocation;
         if (type == FluidTextureType.STILL) {
             spriteLocation = properties.getStillTexture(fluidStack);
@@ -248,7 +243,7 @@ public class MekanismRenderer {
 
     public static void color(@NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
-            color(RenderProperties.get(fluid.getFluid()).getColorTint(fluid));
+            color(IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid));
         }
     }
 
@@ -284,7 +279,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack) {
-        return RenderProperties.get(fluidStack.getFluid()).getColorTint(fluidStack);
+        return IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {

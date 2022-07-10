@@ -6,9 +6,9 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +44,7 @@ public class GuiArrowSelection extends GuiTexturedElement {
             //Make sure the text is above other renders like JEI
             matrix.translate(0.0D, 0.0D, 300);
             getFont().drawInBatch(component, tooltipX, tooltipY, screenTextColor(), false, matrix.last().pose(),
-                  renderType, false, 0, MekanismRenderer.FULL_LIGHT);
+                  renderType, false, 0, LightTexture.FULL_BRIGHT);
             matrix.popPose();
             renderType.endBatch();
         }

@@ -14,6 +14,7 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -142,7 +143,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             // we want to be able to see all faces easily
             FaceDisplay faceDisplay = isInsideBounds(startChunk.getMinBlockX(), Double.NEGATIVE_INFINITY, startChunk.getMinBlockZ(),
                   endChunk.getMaxBlockX() + 1, Double.POSITIVE_INFINITY, endChunk.getMaxBlockZ() + 1) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-            MekanismRenderer.renderObject(model, matrix, buffer, colors, MekanismRenderer.FULL_LIGHT, overlayLight, faceDisplay);
+            MekanismRenderer.renderObject(model, matrix, buffer, colors, LightTexture.FULL_BRIGHT, overlayLight, faceDisplay);
             matrix.popPose();
         }
     }

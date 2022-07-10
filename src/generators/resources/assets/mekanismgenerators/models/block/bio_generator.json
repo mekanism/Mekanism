@@ -1,6 +1,6 @@
 {
 	"parent": "block/cube_all",
-	"loader": "forge:multi-layer",
+	"loader": "forge:composite",
 	"texture_size": [32, 32],
 	"display": {
 		"thirdperson_righthand": {
@@ -39,8 +39,9 @@
 		"3": "mekanism:block/models/ports_led",
 		"particle": "mekanismgenerators:block/model/bio_generator2"
 	},
-	"layers": {
+	"children": {
 		"solid": {
+			"render_type": "minecraft:solid",
 			"loader": "mekanism:mekanism",
 			"parent": "block/cube_all",
 			"textures": {
@@ -150,6 +151,7 @@
 			]
 		},
 		"translucent": {
+			"render_type": "minecraft:translucent",
 			"parent": "block/cube_all",
 			"textures": {
 				"1": "mekanismgenerators:block/model/bio_generator1",

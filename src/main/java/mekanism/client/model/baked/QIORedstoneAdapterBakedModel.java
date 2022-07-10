@@ -9,7 +9,7 @@ import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -32,8 +32,8 @@ public class QIORedstoneAdapterBakedModel extends ExtensionBakedModel<Boolean> {
 
     @Nullable
     @Override
-    public QuadsKey<Boolean> createKey(QuadsKey<Boolean> key, IModelData data) {
-        Boolean powering = data.getData(TileEntityQIORedstoneAdapter.POWERING_PROPERTY);
+    public QuadsKey<Boolean> createKey(QuadsKey<Boolean> key, ModelData data) {
+        Boolean powering = data.get(TileEntityQIORedstoneAdapter.POWERING_PROPERTY);
         if (powering == null) {
             return null;
         }

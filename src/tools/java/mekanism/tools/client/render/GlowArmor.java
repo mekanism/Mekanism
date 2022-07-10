@@ -2,9 +2,9 @@ package mekanism.tools.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +26,7 @@ public class GlowArmor extends Model {
     public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         if (base != null) {
             //Make it render at full brightness
-            base.renderToBuffer(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+            base.renderToBuffer(matrix, vertexBuilder, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
         }
     }
 }

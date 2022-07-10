@@ -22,8 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -81,8 +80,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     @NotNull
     @Override
-    public IModelData getModelData() {
-        return new ModelDataMap.Builder().withInitial(POWERING_PROPERTY, prevPowering).build();
+    public ModelData getModelData() {
+        return ModelData.builder().with(POWERING_PROPERTY, prevPowering).build();
     }
 
     @Override

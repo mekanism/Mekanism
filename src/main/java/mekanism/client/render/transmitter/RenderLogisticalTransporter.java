@@ -25,6 +25,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -88,7 +89,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 itemRenderer.renderAsStack(matrix, renderer, stack.itemStack);
                 matrix.popPose();
                 if (stack.color != null) {
-                    modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
+                    modelBox.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
                 }
             }
             matrix.popPose();
@@ -104,7 +105,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
                     MekanismRenderer.renderObject(getOverlayModel(diversionTransporter, side), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
+                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
                     matrix.popPose();
                 }
             }
@@ -210,7 +211,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
                 }
                 entityItem.setItem(stack);
-                renderer.render(entityItem, 0, 0, matrix, buffer, MekanismRenderer.FULL_LIGHT);
+                renderer.render(entityItem, 0, 0, matrix, buffer, LightTexture.FULL_BRIGHT);
             }
         }
     }

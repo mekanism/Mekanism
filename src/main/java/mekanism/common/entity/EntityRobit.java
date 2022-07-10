@@ -113,8 +113,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
@@ -741,9 +740,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     /**
      * @apiNote Only call on the client.
      */
-    public IModelData getModelData() {
+    public ModelData getModelData() {
         //TODO: Eventually we might want to evaluate caching this model data object
-        return new ModelDataMap.Builder().withInitial(SKIN_TEXTURE_PROPERTY, getModelTexture()).build();
+        return ModelData.builder().with(SKIN_TEXTURE_PROPERTY, getModelTexture()).build();
     }
 
     /**

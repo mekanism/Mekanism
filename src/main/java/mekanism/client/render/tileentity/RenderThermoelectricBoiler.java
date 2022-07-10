@@ -11,6 +11,7 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -39,7 +40,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         data.height = height;
                         data.length = multiblock.length();
                         data.width = multiblock.width();
-                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
+                        int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
                         matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
@@ -60,7 +61,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         if (buffer == null) {
                             buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
                         }
-                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
+                        int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
                         matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D gasModel = ModelRenderer.getModel(data, 1);

@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
@@ -231,8 +231,8 @@ public class FluidDeferredRegister {
         }
 
         @Override
-        public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer) {
-            consumer.accept(new IFluidTypeRenderProperties() {
+        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+            consumer.accept(new IClientFluidTypeExtensions() {
                 @Override
                 public ResourceLocation getStillTexture() {
                     return stillTexture;
@@ -255,7 +255,7 @@ public class FluidDeferredRegister {
                 }
 
                 @Override
-                public int getColorTint() {
+                public int getTintColor() {
                     return color;
                 }
             });

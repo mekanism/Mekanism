@@ -5,7 +5,7 @@ import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockChemicalDissolutionChamber extends ItemBlockMachine {
@@ -15,7 +15,7 @@ public class ItemBlockChemicalDissolutionChamber extends ItemBlockMachine {
     }
 
     @Override
-    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(RenderPropertiesProvider.dissolution());
     }
 }

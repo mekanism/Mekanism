@@ -15,7 +15,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -58,8 +58,8 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
 
     @Nullable
     @Override
-    public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, IModelData data) {
-        byte[] driveStatus = data.getData(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
+    public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, ModelData data) {
+        byte[] driveStatus = data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
         if (driveStatus == null) {
             return null;
         }

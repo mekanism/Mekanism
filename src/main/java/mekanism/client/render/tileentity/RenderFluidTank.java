@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +70,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         }
         Model3D model = new Model3D();
         MekanismRenderer.prepFlowing(model, fluid);
-        if (RenderProperties.get(fluid.getFluid()).getStillTexture(fluid) != null) {
+        if (IClientFluidTypeExtensions.of(fluid.getFluid()).getStillTexture(fluid) != null) {
             model.minX = 0.3225F;//0.3125 + .01;
             model.minY = 0.0625F + 0.875F * (stage / (float) stages);//0.0625 + 0.875 * (stage / (float) stages);
             model.minZ = 0.3225F;//0.3125 + .01;
@@ -89,7 +89,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         }
         Model3D model = new Model3D();
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
-        if (RenderProperties.get(fluid.getFluid()).getStillTexture(fluid) != null) {
+        if (IClientFluidTypeExtensions.of(fluid.getFluid()).getStillTexture(fluid) != null) {
             model.minX = 0.135F;//0.125 + .01;
             model.minY = 0.0725F;//0.0625 + .01;
             model.minZ = 0.135F;//0.125 + .01;

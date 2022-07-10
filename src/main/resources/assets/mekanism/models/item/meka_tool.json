@@ -1,10 +1,10 @@
 {
     "parent": "minecraft:item/generated",
-    "loader": "forge:separate-perspective",
+    "loader": "forge:separate_transforms",
     "base": {
         "loader": "forge:obj",
         "model": "mekanism:models/entity/mekatool_right.obj",
-        "flip-v": "true",
+        "flip_v": true,
         "display": {
             "firstperson_righthand": {
                 "rotation": [ 90, 0, -10 ],

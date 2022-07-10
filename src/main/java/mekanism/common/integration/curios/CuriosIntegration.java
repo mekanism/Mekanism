@@ -12,7 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -35,7 +35,7 @@ public class CuriosIntegration {
 
     private static void registerRenderers(ItemLike... items) {
         for (ItemLike item : items) {
-            if (item.asItem() instanceof ArmorItem armor && RenderProperties.get(armor) instanceof ISpecialGear gear) {
+            if (item.asItem() instanceof ArmorItem armor && IClientItemExtensions.of(armor) instanceof ISpecialGear gear) {
                 CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(gear.getGearModel(armor.getSlot())));
             } else {
                 Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", RegistryUtils.getName(item.asItem()));

@@ -6,7 +6,7 @@ import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
@@ -16,7 +16,7 @@ public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
     }
 
     @Override
-    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(ToolsRenderPropertiesProvider.glowArmor());
     }
 

@@ -3,7 +3,6 @@ package mekanism.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -12,6 +11,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -80,10 +80,10 @@ public class ModelIndustrialAlarm extends MekanismJavaModel {
             setRotation(bulb, 0, 0, 0);
         }
         float bulbAlpha = 0.3F + (Math.abs(((rotation * 2) % 360) - 180F) / 180F) * 0.7F;
-        bulb.render(matrix, vertexBuilder, active ? MekanismRenderer.FULL_LIGHT : light, overlayLight, red, green, blue, bulbAlpha);
-        lightBox.render(matrix, vertexBuilder, active ? MekanismRenderer.FULL_LIGHT : light, overlayLight, red, green, blue, alpha);
+        bulb.render(matrix, vertexBuilder, active ? LightTexture.FULL_BRIGHT : light, overlayLight, red, green, blue, bulbAlpha);
+        lightBox.render(matrix, vertexBuilder, active ? LightTexture.FULL_BRIGHT : light, overlayLight, red, green, blue, alpha);
         if (!renderBase) {
-            aura.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, bulbAlpha);
+            aura.render(matrix, vertexBuilder, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, bulbAlpha);
         }
     }
 }

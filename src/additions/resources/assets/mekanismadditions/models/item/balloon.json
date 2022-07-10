@@ -4,7 +4,7 @@
 		"all": "mekanismadditions:entity/balloon",
 		"particle": "mekanismadditions:entity/balloon_string"
 	},
-	"loader": "forge:separate-perspective",
+	"loader": "forge:separate_transforms",
 	"base": {
 		"parent": "mekanismadditions:item/balloon_latched"
 	},

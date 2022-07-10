@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -14,6 +13,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -122,13 +122,13 @@ public class ModelJetpack extends MekanismJavaModel {
 
     public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
         renderToBuffer(poseStack, getVertexConsumer(renderer, frameRenderType, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderPartsToBuffer(wingParts, poseStack, getVertexConsumer(renderer, wingRenderType, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
+        renderPartsToBuffer(wingParts, poseStack, getVertexConsumer(renderer, wingRenderType, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 0.2F);
     }
 
     @Override
     public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
-        renderPartsToBuffer(litParts, poseStack, vertexConsumer, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        renderPartsToBuffer(litParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
     }
 
     protected static ModelPartData thrusterLeft(float fuelZ) {

@@ -1,5 +1,6 @@
 {
 	"credit": "Model by CyanideX",
+	"render_type": "minecraft:cutout",
 	"parent": "block/cube_all",
 	"loader": "mekanism:mekanism",
 	"textures": {

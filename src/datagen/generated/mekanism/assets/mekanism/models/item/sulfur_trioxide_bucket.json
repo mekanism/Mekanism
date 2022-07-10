@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
   "fluid": "mekanism:sulfur_trioxide",
-  "loader": "forge:bucket"
+  "loader": "forge:fluid_container"
 }

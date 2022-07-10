@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,7 +72,7 @@ public class RenderFluidTankItem extends MekanismISTER {
         }
         Model3D model = new Model3D();
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
-        if (RenderProperties.get(fluid.getFluid()).getStillTexture(fluid) != null) {
+        if (IClientFluidTypeExtensions.of(fluid.getFluid()).getStillTexture(fluid) != null) {
             model.minX = 0.135F;//0.125 + .01;
             model.minY = 0.0725F;//0.0625 + .01;
             model.minZ = 0.135F;//0.125 + .01;

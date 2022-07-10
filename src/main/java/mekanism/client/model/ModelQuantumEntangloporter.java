@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -14,6 +13,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -213,7 +213,7 @@ public class ModelQuantumEntangloporter extends MekanismJavaModel {
         matrix.pushPose();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(0, -0.0011, 0);
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE_OVERLAY, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE_OVERLAY, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 1);
         matrix.popPose();
     }
 

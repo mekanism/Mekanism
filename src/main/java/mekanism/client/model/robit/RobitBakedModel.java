@@ -19,8 +19,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -55,8 +54,8 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
 
     @Nullable
     @Override
-    public QuadsKey<ResourceLocation> createKey(QuadsKey<ResourceLocation> key, IModelData data) {
-        ResourceLocation skinTexture = data.getData(EntityRobit.SKIN_TEXTURE_PROPERTY);
+    public QuadsKey<ResourceLocation> createKey(QuadsKey<ResourceLocation> key, ModelData data) {
+        ResourceLocation skinTexture = data.get(EntityRobit.SKIN_TEXTURE_PROPERTY);
         if (skinTexture == null) {
             return null;
         }
@@ -92,7 +91,7 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
                 List<ResourceLocation> textures = skin.getTextures();
                 if (!textures.isEmpty()) {
                     //Assuming the skin actually has textures (it should), grab the first texture as the model data
-                    ModelDataMap modelData = new ModelDataMap.Builder().withInitial(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.get(0)).build();
+                    ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.get(0)).build();
                     // perform any overrides the original may have (most likely it doesn't have any)
                     // and then wrap the baked model so that it makes use of the model data
                     BakedModel resolved = original.resolve(model, stack, world, entity, seed);

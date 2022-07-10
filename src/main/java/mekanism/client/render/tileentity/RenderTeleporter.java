@@ -9,6 +9,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityTeleporter;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -35,7 +36,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     protected void render(TileEntityTeleporter tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         if (tile.shouldRender && tile.getLevel() != null) {
             MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                  MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
+                  MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
         }
     }
 

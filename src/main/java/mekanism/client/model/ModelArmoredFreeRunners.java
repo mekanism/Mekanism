@@ -3,7 +3,6 @@ package mekanism.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -11,6 +10,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.LightTexture;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelArmoredFreeRunners extends ModelFreeRunners {
@@ -93,9 +93,9 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
           float alpha, boolean left) {
         super.renderLeg(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha, left);
         if (left) {
-            renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
         } else {
-            renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, red, green, blue, alpha);
         }
     }
 }

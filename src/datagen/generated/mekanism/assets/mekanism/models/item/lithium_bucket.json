@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
   "fluid": "mekanism:lithium",
-  "loader": "forge:bucket"
+  "loader": "forge:fluid_container"
 }

@@ -24,6 +24,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.math.Quaternion;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -31,8 +32,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
@@ -182,13 +182,13 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         matrix.scale(SLOT_DIMENSIONS, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
         matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
         PoseStack.Pose matrixEntry = matrix.last();
-        IModelData modelData = new ModelDataMap.Builder().withInitial(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index)).build();
-        List<BakedQuad> quads = model.getQuads(null, null, robit.level.random, modelData);
+        ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index)).build();
+        List<BakedQuad> quads = model.getQuads(null, null, robit.level.random, modelData, null);
         //TODO: Ideally at some point we will want to be able to have the rotations happen via the matrix stack
         // so that we aren't having to transform the quads directly
         quads = QuadUtils.transformBakedQuads(quads, new BasicRotationTransformation(rotation));
         for (BakedQuad quad : quads) {
-            builder.putBulkData(matrixEntry, quad, 1, 1, 1, 1, MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+            builder.putBulkData(matrixEntry, quad, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
         buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);
 

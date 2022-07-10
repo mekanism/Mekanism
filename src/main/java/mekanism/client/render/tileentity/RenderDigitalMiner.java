@@ -8,6 +8,7 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -62,7 +63,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             FaceDisplay faceDisplay = isInsideBounds(miner.getBlockPos().getX() - miner.getRadius(), miner.getMinY(), miner.getBlockPos().getZ() - miner.getRadius(),
                   miner.getBlockPos().getX() + miner.getRadius() + 1, miner.getMaxY(), miner.getBlockPos().getZ() + miner.getRadius() + 1)
                                       ? FaceDisplay.BACK : FaceDisplay.BOTH;
-            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), colors, MekanismRenderer.FULL_LIGHT, overlayLight,
+            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), colors, LightTexture.FULL_BRIGHT, overlayLight,
                   faceDisplay);
             matrix.popPose();
         }

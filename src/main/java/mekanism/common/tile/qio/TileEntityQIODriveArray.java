@@ -23,8 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -105,8 +104,8 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @NotNull
     @Override
-    public IModelData getModelData() {
-        return new ModelDataMap.Builder().withInitial(DRIVE_STATUS_PROPERTY, driveStatus).build();
+    public ModelData getModelData() {
+        return ModelData.builder().with(DRIVE_STATUS_PROPERTY, driveStatus).build();
     }
 
     @NotNull

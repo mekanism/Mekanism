@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.BlockIndustrialAlarm;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockIndustrialAlarm extends ItemBlockTooltip<BlockIndustrialAlarm> {
@@ -14,7 +14,7 @@ public class ItemBlockIndustrialAlarm extends ItemBlockTooltip<BlockIndustrialAl
     }
 
     @Override
-    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(RenderPropertiesProvider.industrialAlarm());
     }
 }

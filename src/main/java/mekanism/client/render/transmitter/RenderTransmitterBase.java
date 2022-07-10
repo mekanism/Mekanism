@@ -14,14 +14,15 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
-import mekanism.client.render.obj.ContentsModelConfiguration;
 import mekanism.client.render.obj.VisibleModelConfiguration;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -31,15 +32,19 @@ import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.StandaloneGeometryBakingContext;
 
 @NothingNullByDefault
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter> extends MekanismTileEntityRenderer<TRANSMITTER> {
 
     public static final ResourceLocation MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
-    private static final IModelConfiguration contentsConfiguration = new ContentsModelConfiguration();
+    private static final IGeometryBakingContext contentsConfiguration = StandaloneGeometryBakingContext.builder()
+          .withGui3d(false)
+          .withUseBlockLight(false)
+          .withUseAmbientOcclusion(false)
+          .build(Mekanism.rl("transmitter_contents"));
     private static final Map<ContentsModelData, List<BakedQuad>> contentModelCache = new Object2ObjectOpenHashMap<>();
     private static final Vec3 NORMAL = new Vec3(1, 1, 1).normalize();
 
@@ -51,9 +56,9 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         return contentModelCache.computeIfAbsent(new ContentsModelData(visible, icon), modelData -> {
             //Note: We get model and then bake as we use different parameters and are caching after modifying
             List<BakedQuad> bakedQuads = MekanismModelCache.INSTANCE.TRANSMITTER_CONTENTS.getModel()
-                  .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), ForgeModelBakery.instance(), material -> modelData.icon,
-                        BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION)
-                  .getQuads(null, null, world.getRandom(), EmptyModelData.INSTANCE);
+                  .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), Minecraft.getInstance().getModelManager().getModelBakery(),
+                        material -> modelData.icon, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION)
+                  .getQuads(null, null, world.getRandom(), ModelData.EMPTY, null);
             List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);
             for (Quad unpackedQuad : unpackedQuads) {
                 for (Vertex vertex : unpackedQuad.getVertices()) {
@@ -83,7 +88,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
             Pose entry = matrix.last();
             //Get all the sides
             for (BakedQuad quad : getBakedQuads(visible, icon, transmitter.getLevel())) {
-                builder.putBulkData(entry, quad, red, green, blue, alpha, light, overlayLight);
+                builder.putBulkData(entry, quad, red, green, blue, alpha, light, overlayLight, false);
             }
         }
     }

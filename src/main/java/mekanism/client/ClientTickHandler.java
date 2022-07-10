@@ -52,11 +52,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
+import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.Event;
@@ -276,14 +276,14 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onMouseEvent(MouseScrollEvent event) {
+    public void onMouseEvent(MouseScrollingEvent event) {
         if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
             handleModeScroll(event, event.getScrollDelta());
         }
     }
 
     @SubscribeEvent
-    public void onGuiMouseEvent(ScreenEvent.MouseScrollEvent.Pre event) {
+    public void onGuiMouseEvent(ScreenEvent.MouseScrolled.Pre event) {
         if (event.getScreen() instanceof GuiRadialSelector) {
             handleModeScroll(event, event.getScrollDelta());
         }
@@ -304,7 +304,7 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onFogLighting(EntityViewRenderEvent.FogColors event) {
+    public void onFogLighting(ViewportEvent.ComputeFogColor event) {
         if (visionEnhancement) {
             event.setBlue(0.4F);
             event.setRed(0.4F);
@@ -313,7 +313,7 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onFog(EntityViewRenderEvent.RenderFogEvent event) {
+    public void onFog(ViewportEvent.RenderFog event) {
         if (visionEnhancement) {
             float fog = 384;
             IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(minecraft.player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);

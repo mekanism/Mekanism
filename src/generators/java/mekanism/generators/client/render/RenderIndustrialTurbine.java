@@ -13,6 +13,7 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -43,7 +44,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                     }
                     matrix.pushPose();
                     matrix.translate(complexPos.getX() - pos.getX(), complexPos.getY() - pos.getY(), complexPos.getZ() - pos.getZ());
-                    RenderTurbineRotor.INSTANCE.render(rotor, matrix, buffer, MekanismRenderer.FULL_SKY_LIGHT, overlayLight);
+                    RenderTurbineRotor.INSTANCE.render(rotor, matrix, buffer, LightTexture.FULL_SKY, overlayLight);
                     matrix.popPose();
                 }
                 profiler.pop();
@@ -55,7 +56,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                         data.height = height;
                         data.length = multiblock.length();
                         data.width = multiblock.width();
-                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
+                        int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
                         matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D gasModel = ModelRenderer.getModel(data, 1);

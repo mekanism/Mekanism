@@ -58,6 +58,7 @@ import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -83,13 +84,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.RenderProperties;
-import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
-import net.minecraftforge.client.event.ScreenOpenEvent;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
@@ -120,11 +120,11 @@ public class RenderTickHandler {
     }
 
     //Note: This listener is only registered if JEI is loaded
-    public static void guiOpening(ScreenOpenEvent event) {
-        if (Minecraft.getInstance().screen instanceof GuiMekanism screen) {
+    public static void guiOpening(ScreenEvent.Opening event) {
+        if (event.getCurrentScreen() instanceof GuiMekanism screen) {
             //If JEI is loaded and our current screen is a mekanism gui,
             // check if the new screen is a JEI recipe screen
-            if (event.getScreen() instanceof IRecipesGui) {
+            if (event.getNewScreen() instanceof IRecipesGui) {
                 //If it is mark on our current screen that we are switching to JEI
                 screen.switchingToJEI = true;
             }
@@ -132,16 +132,14 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void renderWorld(RenderLevelLastEvent event) {
-        if (boltRenderer.hasBoltsToRender()) {
+    public void renderWorld(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
             //Only do matrix transforms and mess with buffers if we actually have any bolts to render
             PoseStack matrix = event.getPoseStack();
             matrix.pushPose();
             // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-            Vec3 camVec = minecraft.gameRenderer.getMainCamera().getPosition();
+            Vec3 camVec = event.getCamera().getPosition();
             matrix.translate(-camVec.x, -camVec.y, -camVec.z);
-            //TODO: FIXME, this doesn't work on fabulous, I think it needs something like
-            // https://github.com/MinecraftForge/MinecraftForge/pull/7225
             MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
             boltRenderer.render(event.getPartialTick(), matrix, renderer);
             renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
@@ -154,7 +152,7 @@ public class RenderTickHandler {
         AbstractClientPlayer player = event.getPlayer();
         ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
-            MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) RenderProperties.get(armorItem)).getGearModel(EquipmentSlot.CHEST);
+            MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).getGearModel(EquipmentSlot.CHEST);
             PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
             PlayerModel<AbstractClientPlayer> model = renderer.getModel();
             model.setAllVisible(true);
@@ -290,7 +288,7 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void onBlockHover(DrawSelectionEvent.HighlightBlock event) {
+    public void onBlockHover(RenderHighlightEvent.Block event) {
         Player player = minecraft.player;
         if (player == null) {
             return;
@@ -400,7 +398,7 @@ public class RenderTickHandler {
                             matrix.pushPose();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
                             MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT);
+                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT);
                             matrix.popPose();
                         }
                     }
@@ -416,13 +414,13 @@ public class RenderTickHandler {
     private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, float red, float green, float blue, float alpha) {
         List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
-            //TODO: Eventually we may want to add support for Model data
-            IModelData modelData = EmptyModelData.INSTANCE;
+            //TODO: Eventually we may want to add support for Model data and maybe render type
+            ModelData modelData = ModelData.EMPTY;
             List<Vertex[]> vertices = new ArrayList<>();
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                QuadUtils.unpack(bakedModel.getQuads(s, direction, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
+                QuadUtils.unpack(bakedModel.getQuads(s, direction, rand, modelData, null)).stream().map(Quad::getVertices).forEach(vertices::add);
             }
-            QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
+            QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData, null)).stream().map(Quad::getVertices).forEach(vertices::add);
             return vertices;
         });
         renderVertexWireFrame(allVertices, buffer, matrix, red, green, blue, alpha);

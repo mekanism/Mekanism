@@ -10,7 +10,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.EnergyCubeTier;
@@ -28,6 +27,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
@@ -254,7 +254,7 @@ public class ModelEnergyCube extends MekanismJavaModel {
             renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         }
         EnumColor color = tier.getBaseTier().getColor();
-        renderCorners(matrix, getVertexConsumer(renderer, RENDER_TYPE_BASE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0),
+        renderCorners(matrix, getVertexConsumer(renderer, RENDER_TYPE_BASE, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, color.getColor(0),
               color.getColor(1), color.getColor(2), 1);
     }
 
@@ -339,9 +339,9 @@ public class ModelEnergyCube extends MekanismJavaModel {
             if (!outputSides.isEmpty()) {
                 buffer = getVertexConsumer(renderer, RENDER_TYPE_BASE, hasEffect);
                 for (RelativeSide outputSide : outputSides) {
-                    ports.get(outputSide.ordinal()).render(matrix, buffer, MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
+                    ports.get(outputSide.ordinal()).render(matrix, buffer, LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 1);
                 }
-                renderLEDS(outputSides, getVertexConsumer(renderer, RENDER_TYPE_ON, hasEffect), matrix, MekanismRenderer.FULL_LIGHT, overlayLight);
+                renderLEDS(outputSides, getVertexConsumer(renderer, RENDER_TYPE_ON, hasEffect), matrix, LightTexture.FULL_BRIGHT, overlayLight);
             }
         }
         if (outputSides.size() < EnumUtils.SIDES.length) {
