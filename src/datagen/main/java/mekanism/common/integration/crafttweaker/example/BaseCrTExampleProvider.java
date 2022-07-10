@@ -259,7 +259,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
      */
     protected CrTExampleBuilder<?> exampleBuilder(String fileName) {
         Objects.requireNonNull(fileName, "Example Builder ID cannot be null.");
-        if (!isValidNamespace(fileName)) {
+        if (!ResourceLocation.isValidPath(fileName)) {
             throw new IllegalArgumentException("'" + fileName + "' is not a valid path, must be [a-z0-9/._-]");
         }
         if (examples.containsKey(fileName)) {
@@ -444,15 +444,6 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             hashingOutputStream.write(contents.getBytes(StandardCharsets.UTF_8));
             cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
         }
-    }
-
-    private static boolean isValidNamespace(String namespaceIn) {
-        for (int i = 0; i < namespaceIn.length(); i++) {
-            if (!ResourceLocation.isAllowedInResourceLocation(namespaceIn.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
     }
 
     protected static class WeightedItemStack {

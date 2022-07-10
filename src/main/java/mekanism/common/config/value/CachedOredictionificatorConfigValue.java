@@ -21,12 +21,8 @@ public class CachedOredictionificatorConfigValue extends CachedResolvableConfigV
 
     public static CachedOredictionificatorConfigValue define(IMekanismConfig config, ForgeConfigSpec.Builder builder, String path,
           Supplier<Map<String, List<String>>> defaults) {
-        return new CachedOredictionificatorConfigValue(config, builder.defineListAllowEmpty(Collections.singletonList(path), () -> encodeStatic(defaults.get()), o -> {
-            if (o instanceof String string) {
-                return ResourceLocation.tryParse(string.toLowerCase(Locale.ROOT)) != null;
-            }
-            return false;
-        }));
+        return new CachedOredictionificatorConfigValue(config, builder.defineListAllowEmpty(Collections.singletonList(path), () -> encodeStatic(defaults.get()),
+              o -> o instanceof String string && ResourceLocation.isValidResourceLocation(string.toLowerCase(Locale.ROOT))));
     }
 
     @Override
