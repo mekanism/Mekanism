@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -25,6 +26,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
 
 public final class FluidUtils {
@@ -49,13 +51,10 @@ public final class FluidUtils {
             // chemicals
             if (fluidStack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
                 return OptionalInt.of(0xFFDB6B19);
-            }
-            try {
-                //Try to get the color tint of the fluid. There is a chance this will fail on servers even though
-                // we only call this on the client side. But just in case try catch it in case something causes
-                // it to be called on the server
+            } else if (FMLEnvironment.dist == Dist.CLIENT) {
+                //Note: We can only return an accurate result on the client side. This method should never be called from the server
+                // but in case it is make sure we only run on the client side
                 return OptionalInt.of(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack));
-            } catch (Throwable ignored) {
             }
         }
         return OptionalInt.empty();
