@@ -37,6 +37,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 @NothingNullByDefault
@@ -192,7 +193,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             this.yd = (this.yd / f1) * f * 0.4 + 0.1;
             this.zd = (this.zd / f1) * f * 0.4;
 
-            sprite = Minecraft.getInstance().getItemRenderer().getModel(stack, world, null, 0).getParticleIcon();
+            sprite = Minecraft.getInstance().getItemRenderer().getModel(stack, world, null, 0).getParticleIcon(ModelData.EMPTY);
             this.gravity = 1.0F;
             this.quadSize = 0.1F * (world.random.nextFloat() * 0.5F + 0.5F);
             this.uo = world.random.nextFloat() * 3.0F;

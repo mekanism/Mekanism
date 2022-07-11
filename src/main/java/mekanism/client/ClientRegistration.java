@@ -489,11 +489,11 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.LASER, LaserParticle.Factory::new);
-        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.JETPACK_FLAME, JetpackFlameParticle.Factory::new);
-        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.JETPACK_SMOKE, JetpackSmokeParticle.Factory::new);
-        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.SCUBA_BUBBLE, ScubaBubbleParticle.Factory::new);
-        ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.RADIATION, RadiationParticle.Factory::new);
+        event.register(MekanismParticleTypes.LASER.get(), LaserParticle.Factory::new);
+        event.register(MekanismParticleTypes.JETPACK_FLAME.get(), JetpackFlameParticle.Factory::new);
+        event.register(MekanismParticleTypes.JETPACK_SMOKE.get(), JetpackSmokeParticle.Factory::new);
+        event.register(MekanismParticleTypes.SCUBA_BUBBLE.get(), ScubaBubbleParticle.Factory::new);
+        event.register(MekanismParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
     }
 
     private static void registerIColoredBlocks(RegisterColorHandlersEvent event) {

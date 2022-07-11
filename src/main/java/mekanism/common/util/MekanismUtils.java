@@ -670,8 +670,9 @@ public final class MekanismUtils {
     }
 
     /**
-     * Calculates the redstone level based on the percentage of amount stored. Like {@link net.minecraftforge.items.ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)}
-     * except without limiting slots to the max stack size of the item to allow for better support for bins
+     * Calculates the redstone level based on the percentage of amount stored. Like
+     * {@link net.minecraftforge.items.ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)} except without limiting slots to the max stack size of the item to allow
+     * for better support for bins
      *
      * @return A redstone level based on the percentage of the amount stored.
      */
@@ -725,8 +726,8 @@ public final class MekanismUtils {
     }
 
     /**
-     * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing(net.minecraft.tags.TagKey, double)} except calculates if a given
-     * portion of the player is in the fluids.
+     * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing()} except calculates if a given portion of the player is in the
+     * fluids.
      */
     public static Map<FluidType, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
         AABB bb = modifyBoundingBox.apply(player.getBoundingBox().deflate(0.001));

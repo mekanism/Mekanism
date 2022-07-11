@@ -12,26 +12,22 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.FluidRegistryObject;
-import mekanism.common.registration.impl.ParticleTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -111,10 +107,6 @@ public class ClientRegistrationUtil {
         for (PreparableReloadListener listener : listeners) {
             event.registerReloadListener(listener);
         }
-    }
-
-    public static <T extends ParticleOptions> void registerParticleFactory(ParticleTypeRegistryObject<T, ?> particleTypeRO, ParticleEngine.SpriteParticleRegistration<T> factory) {
-        Minecraft.getInstance().particleEngine.register(particleTypeRO.get(), factory);
     }
 
     public static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
