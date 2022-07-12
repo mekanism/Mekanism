@@ -127,6 +127,8 @@
   "advancements.mekanism.qio_exporter.title": "Автоматизированный экспорт",
   "advancements.mekanism.qio_importer.description": "Автоматизируйте добавление элементов в ваш QIO",
   "advancements.mekanism.qio_importer.title": "Автоматизированный импорт",
+  "advancements.mekanism.qio_redstone_adapter.description": "Создайте адаптер QIO Redstone",
+  "advancements.mekanism.qio_redstone_adapter.title": "Автоматизация на основе чисел",
   "advancements.mekanism.quantum_entangloporter.title": "Квантовая Путаница",
   "advancements.mekanism.radiation_poisoning.description": "Получить урон от отравления радиации",
   "advancements.mekanism.radiation_poisoning.title": "У Радиации Есть Вкус",
