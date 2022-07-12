@@ -10,6 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -38,9 +39,11 @@ import org.jetbrains.annotations.NotNull;
 public class MekanismModel extends SimpleUnbakedGeometry<MekanismModel> {
 
     private final Multimap<String, MekanismModelPart> elements;
+    private final Set<String> configurableComponents;
 
     public MekanismModel(Multimap<String, MekanismModelPart> list) {
         this.elements = list;
+        this.configurableComponents = Collections.unmodifiableSet(elements.keySet());
     }
 
     @Override
@@ -57,6 +60,11 @@ public class MekanismModel extends SimpleUnbakedGeometry<MekanismModel> {
             combined.addAll(part.getMaterials(owner, modelGetter, missingTextureErrors));
         }
         return combined;
+    }
+
+    @Override
+    public Set<String> getConfigurableComponentNames() {
+        return configurableComponents;
     }
 
     public static class Loader implements IGeometryLoader<MekanismModel> {

@@ -437,10 +437,9 @@ dependencies {
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    //TODO - 1.19: Re-enable once it updates
-    /*runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
-    }*/
+    }
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     //TODO - 1.19: Re-enable once it updates
     //runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")

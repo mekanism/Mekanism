@@ -36,7 +36,6 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.effect.BoltRenderer;
-import mekanism.client.render.obj.TransmitterBakedModel;
 import mekanism.client.render.obj.TransmitterBakedModel.QuickHash;
 import mekanism.common.Mekanism;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -323,7 +322,7 @@ public class MekaSuitArmor implements ICustomArmor {
     }
 
     private static void processMekaTool(OBJModelData mekaToolModel, Set<String> ignored) {
-        for (String name : TransmitterBakedModel.getComponents(mekaToolModel.getModel())) {
+        for (String name : mekaToolModel.getModel().getRootComponentNames()) {
             if (name.contains(OVERRIDDEN_TAG)) {
                 //Note: We just ignore the pieces here as the override will be rendered as part of the item's model
                 ignored.add(processOverrideName(name, "mekatool"));
@@ -394,7 +393,7 @@ public class MekaSuitArmor implements ICustomArmor {
 
         Map<ModelPos, Set<String>> armorQuadsToRender = new EnumMap<>(ModelPos.class);
         Map<ModelPos, Set<String>> armorLEDQuadsToRender = new EnumMap<>(ModelPos.class);
-        for (String name : TransmitterBakedModel.getComponents(MekanismModelCache.INSTANCE.MEKASUIT.getModel())) {
+        for (String name : MekanismModelCache.INSTANCE.MEKASUIT.getModel().getRootComponentNames()) {
             if (!checkEquipment(type, name)) {
                 // skip if it's the wrong equipment type
                 continue;
@@ -571,7 +570,7 @@ public class MekaSuitArmor implements ICustomArmor {
         protected void reload(BakingCompleted evt) {
             super.reload(evt);
             Collection<ModuleModelSpec> modules = moduleModelSpec.values();
-            for (String name : TransmitterBakedModel.getComponents(getModel())) {
+            for (String name : getModel().getRootComponentNames()) {
                 //Find the "best" spec by checking all the specs and finding out which one is listed first
                 // this way if we are overriding another module, then we just put the module that is overriding
                 // the other one first in the name so that it gets the spec matched to it

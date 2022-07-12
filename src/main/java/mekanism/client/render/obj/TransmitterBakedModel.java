@@ -14,7 +14,6 @@ import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
-import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.RenderType;
@@ -39,7 +38,6 @@ import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.obj.ObjModel;
-import net.minecraftforge.client.model.obj.ObjModel.ModelGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -127,12 +125,12 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
         return builder.build();
     }
 
-    private void addPartQuads(RandomSource rand, TransmitterModelConfiguration configuration, IModelBuilder<?> builder, ObjModel glass, @NotNull ModelData extraData,
+    private void addPartQuads(RandomSource rand, TransmitterModelConfiguration configuration, IModelBuilder<?> builder, ObjModel objModel, @NotNull ModelData extraData,
           @Nullable RenderType renderType) {
         record TransformKey(@Nullable Direction dir, float angle) {}
         TransformKey fallback = new TransformKey(null, 0);
         Map<TransformKey, Set<String>> sortedPieces = new HashMap<>();
-        for (String component : getComponents(glass)) {
+        for (String component : objModel.getRootComponentNames()) {
             if (configuration.isComponentVisible(component, true)) {
                 if (component.endsWith("NONE")) {
                     Direction dir = directionForPiece(component);
@@ -154,20 +152,12 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
                 //If the part should be rotated, then we need to use a custom IModelTransform
                 transform = new TransmitterModelTransform(transform, key.dir, key.angle);
             }
-            BakedModel model = glass.bake(new VisibleModelConfiguration(configuration, entry.getValue()), bakery, spriteGetter, transform, ItemOverrides.EMPTY, modelLocation);
+            BakedModel model = objModel.bake(new VisibleModelConfiguration(configuration, entry.getValue()), bakery, spriteGetter, transform, ItemOverrides.EMPTY, modelLocation);
             model.getQuads(null, null, rand, extraData, renderType).forEach(builder::addUnculledFace);
             for (Direction side : EnumUtils.DIRECTIONS) {
                 model.getQuads(null, side, rand, extraData, renderType).forEach(face -> builder.addCulledFace(side, face));
             }
         }
-    }
-
-    @Deprecated(forRemoval = true)//TODO - RENDERING: Remove this
-    private static final FieldReflectionHelper<ObjModel, Map<String, ModelGroup>> COMPONENTS = new FieldReflectionHelper<>(ObjModel.class, "parts", Collections::emptyMap);
-
-    @Deprecated(forRemoval = true)//TODO - RENDERING: Remove this
-    public static Set<String> getComponents(ObjModel model) {
-        return COMPONENTS.getValue(model).keySet();
     }
 
     @Nullable
