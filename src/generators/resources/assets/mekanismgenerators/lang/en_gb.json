@@ -14,8 +14,6 @@
   "description.mekanismgenerators.turbine_rotor": "The steel rod that is used to hold Turbine Blades within an Industrial Turbine.",
   "description.mekanismgenerators.wind_generator": "A generator that uses the strength of the wind to produce energy, with greater efficiency at higher altitudes.",
   "fission.mekanismgenerators.invalid_missing_fuel_assembly": "Could not form, no fuel assembly structures present.",
-  "fluid.mekanismgenerators.bioethanol": "Bio-Ethanol",
-  "fluid.mekanismgenerators.flowing_bioethanol": "Flowing Bio-Ethanol",
   "item.mekanismgenerators.bioethanol_bucket": "Bio-Ethanol Bucket",
   "sound_event.mekanismgenerators.tile.generator.wind": "Wind generator whooshes",
   "turbine.mekanismgenerators.invalid_bad_rotors": "Could not form, invalid Turbine Rotor arrangement.",

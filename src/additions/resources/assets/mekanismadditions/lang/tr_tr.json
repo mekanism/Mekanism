@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismadditions.balloon.description": "Herhangi bir renkte Balon üret",
+  "advancements.mekanismadditions.balloon.title": "Gökyüzüne Ulaş",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "Herhangi bir renkte Parlayan Panel üret",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "Karanlıkta Parla",
+  "advancements.mekanismadditions.not_the_babies.description": "Herhangi bir Mekanism Addition'nın bebek canlısını öldür",
+  "advancements.mekanismadditions.not_the_babies.title": "Bebekler olmasın",
+  "advancements.mekanismadditions.pop_pop.description": "Bir Balonu patlat",
+  "advancements.mekanismadditions.pop_pop.title": "Pat Pat",
   "block.mekanismadditions.aqua_glow_panel": "Okyanus Mavisi Parlayan Panel",
   "block.mekanismadditions.aqua_plastic": "Okyanus Mavisi Plastik Bloğu",
   "block.mekanismadditions.aqua_plastic_fence": "Okyanus Mavisi Plastik Bariyer",

@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismadditions.balloon.description": "Зробіть кулю будь-якого кольору",
+  "advancements.mekanismadditions.balloon.title": "Досягніть небес",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "Створіть будь-яку кольорову сяючу панель",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "Світяться в темряві",
+  "advancements.mekanismadditions.not_the_babies.description": "Убийте будь-якого маленького моба з Mekanism Addition",
+  "advancements.mekanismadditions.not_the_babies.title": "Тільки не дітей",
+  "advancements.mekanismadditions.pop_pop.description": "Лопніть кулю",
+  "advancements.mekanismadditions.pop_pop.title": "Поп Поп",
   "block.mekanismadditions.aqua_glow_panel": "Аква сяюча панель",
   "block.mekanismadditions.aqua_plastic": "Аква пластиковий блок",
   "block.mekanismadditions.aqua_plastic_fence": "Аква пластиковий бар'єр",
