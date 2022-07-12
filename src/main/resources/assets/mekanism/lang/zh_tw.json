@@ -1,7 +1,7 @@
 {
   "advancements.mekanism.advanced_control_circuit.description": "製作一塊高級控制電路",
   "advancements.mekanism.advanced_control_circuit.title": "高科技",
-  "advancements.mekanism.advanced_qio_drive.description": "提高你的QIO 驅動器的存儲帶寬",
+  "advancements.mekanism.advanced_qio_drive.description": "提高你的 QIO 驅動器的儲存頻寬",
   "advancements.mekanism.advanced_qio_drive.title": "高密度儲存",
   "advancements.mekanism.alarm.description": "警報器本來就很大聲, 更別提是工業用的",
   "advancements.mekanism.alarm.title": "製造噪音",
@@ -154,7 +154,7 @@
   "advancements.mekanism.seismic_vibrations.description": "製作一臺地震震動器和地震讀取器, 然後查看你底下的世界",
   "advancements.mekanism.seismic_vibrations.title": "只是震動",
   "advancements.mekanism.simple_mass_storage.description": "製作一個箱櫃來儲存大量的單件物品",
-  "advancements.mekanism.simple_mass_storage.title": "基礎大容量存儲",
+  "advancements.mekanism.simple_mass_storage.title": "基礎大容量儲存",
   "advancements.mekanism.sna.description": "製作一臺太陽能中子活化器",
   "advancements.mekanism.sna.title": "不要使用中微子",
   "advancements.mekanism.sps.description": "這東西看起來好像不是很安全",
