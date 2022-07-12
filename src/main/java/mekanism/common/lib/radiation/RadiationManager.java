@@ -63,7 +63,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -480,10 +480,10 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @SubscribeEvent
-    public void onLivingUpdate(LivingUpdateEvent event) {
-        Level world = event.getEntityLiving().getCommandSenderWorld();
-        if (!world.isClientSide() && !(event.getEntityLiving() instanceof Player)) {
-            updateEntityRadiation(event.getEntityLiving());
+    public void onLivingTick(LivingTickEvent event) {
+        Level world = event.getEntity().getCommandSenderWorld();
+        if (!world.isClientSide() && !(event.getEntity() instanceof Player)) {
+            updateEntityRadiation(event.getEntity());
         }
     }
 

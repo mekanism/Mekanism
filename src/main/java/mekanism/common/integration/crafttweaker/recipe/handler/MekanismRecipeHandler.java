@@ -55,7 +55,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -173,7 +173,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
                     KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
                     return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
                 }
-            } else if (vanillaIngredient instanceof NBTIngredient) {
+            } else if (vanillaIngredient instanceof StrictNBTIngredient) {
                 ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
                 stack.setCount(amount);
                 return ItemStackUtil.getCommandString(stack);

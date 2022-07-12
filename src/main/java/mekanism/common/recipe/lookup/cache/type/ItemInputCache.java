@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CompoundIngredient;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveInputCache<Item, HashedItem, ItemStack, ItemStackIngredient, RECIPE> {
 
@@ -39,7 +39,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
                 result |= mapIngredient(recipe, child);
             }
             return result;
-        } else if (input instanceof NBTIngredient) {
+        } else if (input instanceof StrictNBTIngredient) {
             //Special handling for forge's NBT Ingredient as it requires an exact NBT match
             addNbtInputCache(HashedItem.create(input.getItems()[0]), recipe);
         } else {

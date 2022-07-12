@@ -18,7 +18,7 @@ public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityTy
     private Map<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<Builder>> livingEntityAttributes = new HashMap<>();
 
     public EntityTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.ENTITIES);
+        super(modid, ForgeRegistries.ENTITY_TYPES);
     }
 
     public <ENTITY extends LivingEntity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder, Supplier<Builder> attributes) {

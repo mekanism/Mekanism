@@ -69,7 +69,7 @@ public class ItemCraftingFormula extends Item {
     }
 
     @Override
-    public int getItemStackLimit(ItemStack stack) {
+    public int getMaxStackSize(ItemStack stack) {
         return getInventory(stack) == null ? 64 : 1;
     }
 

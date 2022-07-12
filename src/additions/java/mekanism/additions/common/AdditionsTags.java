@@ -110,7 +110,7 @@ public class AdditionsTags {
         public static final TagKey<EntityType<?>> ENDERMEN = forgeTag("endermen");
 
         private static TagKey<EntityType<?>> forgeTag(String name) {
-            return TagUtils.createKey(ForgeRegistries.ENTITIES, new ResourceLocation("forge", name));
+            return TagUtils.createKey(ForgeRegistries.ENTITY_TYPES, new ResourceLocation("forge", name));
         }
     }
 }

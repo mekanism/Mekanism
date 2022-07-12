@@ -30,7 +30,7 @@ public class ItemModule extends Item implements IModuleItem {
     }
 
     @Override
-    public int getItemStackLimit(ItemStack stack) {
+    public int getMaxStackSize(ItemStack stack) {
         return getModuleData().getMaxStackSize();
     }
 

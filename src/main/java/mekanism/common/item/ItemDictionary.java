@@ -70,7 +70,7 @@ public class ItemDictionary extends Item {
                     FluidState fluidState = blockState.getFluidState();
                     Set<ResourceLocation> blockTags = TagUtils.tagNames(blockState.getTags());
                     Set<ResourceLocation> fluidTags = fluidState.isEmpty() ? Collections.emptySet() : TagUtils.tagNames(fluidState.getTags());
-                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : TagUtils.tagNames(ForgeRegistries.BLOCK_ENTITIES, tile.getType());
+                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : TagUtils.tagNames(ForgeRegistries.BLOCK_ENTITY_TYPES, tile.getType());
                     if (blockTags.isEmpty() && fluidTags.isEmpty() && tileTags.isEmpty()) {
                         player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
                     } else {

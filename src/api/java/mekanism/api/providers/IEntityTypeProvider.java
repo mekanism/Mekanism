@@ -16,7 +16,7 @@ public interface IEntityTypeProvider extends IBaseProvider {
 
     @Override
     default ResourceLocation getRegistryName() {
-        return ForgeRegistries.ENTITIES.getKey(getEntityType());
+        return ForgeRegistries.ENTITY_TYPES.getKey(getEntityType());
     }
 
     @Override

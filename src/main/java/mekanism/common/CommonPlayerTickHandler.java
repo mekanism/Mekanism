@@ -170,7 +170,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onEntityAttacked(LivingAttackEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (event.getAmount() <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
@@ -210,7 +210,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (event.getAmount() <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
@@ -290,7 +290,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
-        if (event.getEntityLiving() instanceof Player player) {
+        if (event.getEntity() instanceof Player player) {
             IModule<ModuleHydraulicPropulsionUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.FEET), MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = module.getCustomInstance().getBoost();
@@ -334,7 +334,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void getBreakSpeed(BreakSpeed event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         float speed = event.getNewSpeed();
 
         // Blasting item speed check

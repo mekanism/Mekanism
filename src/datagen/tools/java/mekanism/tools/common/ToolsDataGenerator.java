@@ -6,10 +6,10 @@ import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @EventBusSubscriber(modid = MekanismTools.MODID, bus = Bus.MOD)
 public class ToolsDataGenerator {

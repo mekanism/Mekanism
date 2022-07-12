@@ -428,7 +428,6 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     //TODO - 1.19: Re-enable once it updates
-    //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
     //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //TODO: Re-enable in dev once https://github.com/Chisel-Team/ConnectedTexturesMod/issues/174 is fixed
@@ -438,9 +437,10 @@ dependencies {
     compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    //TODO - 1.19: Re-enable once it updates
+    /*runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
-    }
+    }*/
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     //TODO - 1.19: Re-enable once it updates
     //runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")

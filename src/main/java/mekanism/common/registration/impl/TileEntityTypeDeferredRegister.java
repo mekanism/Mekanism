@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityTypeDeferredRegister extends WrappedDeferredRegister<BlockEntityType<?>> {
 
     public TileEntityTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.BLOCK_ENTITIES);
+        super(modid, ForgeRegistries.BLOCK_ENTITY_TYPES);
     }
 
     public <BE extends TileEntityMekanism> TileEntityTypeRegistryObject<BE> register(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {

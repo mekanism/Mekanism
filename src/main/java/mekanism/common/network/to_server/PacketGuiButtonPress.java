@@ -85,7 +85,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
                 MenuProvider provider = entityButton.getProvider(entity);
                 if (provider != null) {
                     //Ensure valid data
-                    NetworkHooks.openGui(player, provider, buf -> buf.writeVarInt(entityID));
+                    NetworkHooks.openScreen(player, provider, buf -> buf.writeVarInt(entityID));
                 }
             }
         } else if (type == Type.TILE) {
@@ -94,7 +94,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
                 MenuProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {
                     //Ensure valid data
-                    NetworkHooks.openGui(player, provider, buf -> {
+                    NetworkHooks.openScreen(player, provider, buf -> {
                         buf.writeBlockPos(tilePosition);
                         buf.writeVarInt(extra);
                     });
@@ -105,7 +105,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
             if (stack.getItem() instanceof IGuiItem) {
                 MenuProvider provider = itemButton.getProvider(stack, hand);
                 if (provider != null) {
-                    NetworkHooks.openGui(player, provider, buf -> {
+                    NetworkHooks.openScreen(player, provider, buf -> {
                         buf.writeEnum(hand);
                         buf.writeItem(stack);
                     });

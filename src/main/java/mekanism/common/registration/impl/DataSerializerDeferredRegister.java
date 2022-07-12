@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class DataSerializerDeferredRegister extends WrappedDeferredRegister<EntityDataSerializer<?>> {
 
     public DataSerializerDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.Keys.DATA_SERIALIZERS);
+        super(modid, ForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS);
     }
 
     public <T extends Enum<T>> DataSerializerRegistryObject<T> registerEnum(String name, Class<T> enumClass) {

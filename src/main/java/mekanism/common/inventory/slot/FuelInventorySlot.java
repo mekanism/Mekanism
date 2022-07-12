@@ -33,13 +33,13 @@ public class FuelInventorySlot extends BasicInventorySlot {
         }
         int burnTime = ForgeHooks.getBurnTime(current, null) / 2;
         if (burnTime > 0) {
-            if (current.hasContainerItem()) {
+            if (current.hasCraftingRemainingItem()) {
                 if (current.getCount() > 1) {
                     //If we have a container but have more than a single stack of it somehow just exit
                     return 0;
                 }
                 //If the item has a container, then replace it with the container
-                setStack(current.getContainerItem());
+                setStack(current.getCraftingRemainingItem());
             } else {
                 //Otherwise, shrink the size of the stack by one
                 MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);

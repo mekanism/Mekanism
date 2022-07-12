@@ -254,7 +254,7 @@ public class MekanismTags {
         public static final TagKey<EntityType<?>> HURTABLE_VEHICLES = tag("hurtable_vehicles");
 
         private static TagKey<EntityType<?>> tag(String name) {
-            return TagUtils.createKey(ForgeRegistries.ENTITIES, Mekanism.rl(name));
+            return TagUtils.createKey(ForgeRegistries.ENTITY_TYPES, Mekanism.rl(name));
         }
     }
 
@@ -357,16 +357,16 @@ public class MekanismTags {
         }
 
         public static final TagKey<BlockEntityType<?>> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
-        public static final LazyTagLookup<BlockEntityType<?>> CARDBOARD_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITIES, CARDBOARD_BLACKLIST);
+        public static final LazyTagLookup<BlockEntityType<?>> CARDBOARD_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITY_TYPES, CARDBOARD_BLACKLIST);
         public static final TagKey<BlockEntityType<?>> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
         public static final TagKey<BlockEntityType<?>> IMMOVABLE = forgeTag("immovable");
 
         private static TagKey<BlockEntityType<?>> tag(String name) {
-            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITIES, Mekanism.rl(name));
+            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITY_TYPES, Mekanism.rl(name));
         }
 
         private static TagKey<BlockEntityType<?>> forgeTag(String name) {
-            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITIES, new ResourceLocation("forge", name));
+            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITY_TYPES, new ResourceLocation("forge", name));
         }
     }
 }

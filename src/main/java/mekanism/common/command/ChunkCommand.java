@@ -15,7 +15,7 @@ import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ChunkCommand {
@@ -118,13 +118,13 @@ public class ChunkCommand {
     }
 
     private static void handleChunkEvent(ChunkEvent event, ILangEntry direction) {
-        if (event.getWorld() == null || event.getWorld().isClientSide()) {
+        if (event.getLevel() == null || event.getLevel().isClientSide()) {
             return;
         }
         ChunkPos pos = event.getChunk().getPos();
         if (chunkWatchers.contains(pos.toLong())) {
             Component message = direction.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(pos));
-            event.getWorld().players().forEach(player -> player.sendSystemMessage(message));
+            event.getLevel().players().forEach(player -> player.sendSystemMessage(message));
         }
     }
 

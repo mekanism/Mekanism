@@ -71,7 +71,7 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
         MenuProvider provider = getProvider(stack.getHoverName(), hand, stack);
         if (provider != null) {
             //Validate the provider isn't null, it shouldn't be but just in case
-            NetworkHooks.openGui(player, provider, buf -> {
+            NetworkHooks.openScreen(player, provider, buf -> {
                 buf.writeEnum(hand);
                 buf.writeItem(stack);
             });

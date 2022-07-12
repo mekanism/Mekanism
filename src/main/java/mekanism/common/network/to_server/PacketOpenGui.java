@@ -27,7 +27,7 @@ public class PacketOpenGui implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ServerPlayer player = context.getSender();
         if (player != null && type.shouldOpenForPlayer.test(player)) {
-            NetworkHooks.openGui(player, type.containerSupplier.get());
+            NetworkHooks.openScreen(player, type.containerSupplier.get());
         }
     }
 

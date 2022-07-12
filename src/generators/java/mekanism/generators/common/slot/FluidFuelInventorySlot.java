@@ -86,7 +86,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 //If filling from item failed, try doing it by conversion
                 int fuel = fuelValue.applyAsInt(current);
                 if (fuel > 0 && fuel <= needed) {
-                    boolean hasContainer = current.hasContainerItem();
+                    boolean hasContainer = current.hasCraftingRemainingItem();
                     if (hasContainer && current.getCount() > 1) {
                         //If we have a container but have more than a single stack of it somehow just exit
                         return;
@@ -94,7 +94,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                     fluidTank.insert(fuelCreator.apply(fuel), Action.EXECUTE, AutomationType.INTERNAL);
                     if (hasContainer) {
                         //If the item has a container, then replace it with the container
-                        setStack(current.getContainerItem());
+                        setStack(current.getCraftingRemainingItem());
                     } else {
                         //Otherwise, shrink the size of the stack by one
                         MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);

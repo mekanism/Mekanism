@@ -27,14 +27,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.TickEvent.WorldTickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ChunkDataEvent;
-import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ChunkDataEvent;
+import net.minecraftforge.event.level.ChunkEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -72,7 +72,7 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onEntitySpawn(EntityJoinWorldEvent event) {
+    public void onEntitySpawn(EntityJoinLevelEvent event) {
         //If we are in the middle of breaking a block using a cardboard box, cancel any items
         // that are dropped, we do this at highest priority to ensure we cancel it the same tick
         // before forge replaces items with custom item entities with a tick delay
@@ -89,7 +89,7 @@ public class CommonWorldTickHandler {
         // so we need to skip handling it that way, AND skip and blocks that can never have a block entity
         if (state != null && !state.isAir() && state.hasBlockEntity()) {
             //If the block might have a block entity, look it up from the world and see if the player has access to destroy it
-            BlockEntity blockEntity = WorldUtils.getTileEntity(event.getWorld(), event.getPos());
+            BlockEntity blockEntity = WorldUtils.getTileEntity(event.getLevel(), event.getPos());
             if (!MekanismAPI.getSecurityUtils().canAccess(event.getPlayer(), blockEntity)) {
                 //If they don't because it is something that is locked, then cancel the event
                 event.setCanceled(true);
@@ -99,7 +99,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void chunkSave(ChunkDataEvent.Save event) {
-        LevelAccessor world = event.getWorld();
+        LevelAccessor world = event.getLevel();
         if (!world.isClientSide() && world instanceof Level level) {
             int chunkVersion = MekanismConfig.world.userGenVersion.get();
             if (chunkVersions != null) {
@@ -112,7 +112,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
-        if (event.getWorld() instanceof Level level && !level.isClientSide()) {
+        if (event.getLevel() instanceof Level level && !level.isClientSide()) {
             int version = event.getData().getInt(NBTConstants.WORLD_GEN_VERSION);
             //When a chunk is loaded, if it has an older version than the latest one
             if (version < MekanismConfig.world.userGenVersion.get()) {
@@ -135,7 +135,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent
     public void chunkUnloadEvent(ChunkEvent.Unload event) {
-        if (event.getWorld() instanceof Level level && !level.isClientSide() && chunkVersions != null) {
+        if (event.getLevel() instanceof Level level && !level.isClientSide() && chunkVersions != null) {
             //When a chunk unloads, free up the memory tracking what version it has
             chunkVersions.getOrDefault(level.dimension().location(), Object2IntMaps.emptyMap())
                   .removeInt(event.getChunk().getPos());
@@ -143,8 +143,8 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent
-    public void worldUnloadEvent(WorldEvent.Unload event) {
-        LevelAccessor world = event.getWorld();
+    public void worldUnloadEvent(LevelEvent.Unload event) {
+        LevelAccessor world = event.getLevel();
         if (!world.isClientSide() && world instanceof Level level && chunkVersions != null) {
             //When a world unloads, free up memory tracking the versions of the chunks in it
             chunkVersions.remove(level.dimension().location());
@@ -152,8 +152,8 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent
-    public void worldLoadEvent(WorldEvent.Load event) {
-        if (!event.getWorld().isClientSide()) {
+    public void worldLoadEvent(LevelEvent.Load event) {
+        if (!event.getLevel().isClientSide()) {
             FrequencyManager.load();
             QIOGlobalItemLookup.INSTANCE.createOrLoad();
             RadiationManager.INSTANCE.createOrLoad();
@@ -168,9 +168,9 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent
-    public void onTick(WorldTickEvent event) {
+    public void onTick(LevelTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            tickEnd((ServerLevel) event.world);
+            tickEnd((ServerLevel) event.level);
         }
     }
 

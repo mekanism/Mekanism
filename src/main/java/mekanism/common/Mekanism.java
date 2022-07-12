@@ -126,8 +126,8 @@ import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
@@ -469,17 +469,17 @@ public class Mekanism {
         }
     }
 
-    private void onWorldLoad(WorldEvent.Load event) {
-        playerState.init(event.getWorld());
+    private void onWorldLoad(LevelEvent.Load event) {
+        playerState.init(event.getLevel());
     }
 
-    private void onWorldUnload(WorldEvent.Unload event) {
+    private void onWorldUnload(LevelEvent.Unload event) {
         // Make sure the global fake player drops its reference to the World
         // when the server shuts down
-        if (event.getWorld() instanceof ServerLevel) {
-            MekFakePlayer.releaseInstance(event.getWorld());
+        if (event.getLevel() instanceof ServerLevel) {
+            MekFakePlayer.releaseInstance(event.getLevel());
         }
-        if (event.getWorld() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
+        if (event.getLevel() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
             //Remove any invalidation listeners that loaded oredictionificators might have added if the OD was in the given level
             MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListenersMatching(listener ->
                   listener instanceof ODConfigValueInvalidationListener odListener && odListener.isIn(level));

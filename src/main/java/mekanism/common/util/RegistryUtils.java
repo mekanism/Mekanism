@@ -21,7 +21,7 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(MenuType<?> element) {
-        return getName(ForgeRegistries.CONTAINERS, element);
+        return getName(ForgeRegistries.MENU_TYPES, element);
     }
 
     public static ResourceLocation getName(ParticleType<?> element) {
@@ -53,11 +53,11 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(BlockEntityType<?> element) {
-        return getName(ForgeRegistries.BLOCK_ENTITIES, element);
+        return getName(ForgeRegistries.BLOCK_ENTITY_TYPES, element);
     }
 
     public static ResourceLocation getName(EntityType<?> element) {
-        return getName(ForgeRegistries.ENTITIES, element);
+        return getName(ForgeRegistries.ENTITY_TYPES, element);
     }
 
     public static ResourceLocation getName(RecipeSerializer<?> element) {

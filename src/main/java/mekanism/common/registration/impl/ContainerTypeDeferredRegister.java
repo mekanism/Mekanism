@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuType<?>> {
 
     public ContainerTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.CONTAINERS);
+        super(modid, ForgeRegistries.MENU_TYPES);
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<MekanismTileContainer<TILE>> register(INamedEntry nameProvider, Class<TILE> tileClass) {

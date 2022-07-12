@@ -416,7 +416,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
             if (provider != null) {
                 //Validate the provider isn't null, it shouldn't be but just in case
-                NetworkHooks.openGui((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
+                NetworkHooks.openScreen((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
