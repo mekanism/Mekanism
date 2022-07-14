@@ -231,7 +231,7 @@ public class StorageUtils {
     public static FloatingLong getStoredEnergyFromNBT(ItemStack stack) {
         BasicEnergyContainer container = BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null);
         ItemDataUtils.readContainers(stack, NBTConstants.ENERGY_CONTAINERS, Collections.singletonList(container));
-        return container.getEnergy();
+        return container.getEnergy().multiply(stack.getCount());
     }
 
     public static ItemStack getFilledEnergyVariant(ItemStack toFill, FloatingLong capacity) {

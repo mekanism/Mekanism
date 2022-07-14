@@ -2,6 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -32,8 +33,9 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntit
     @Override
     protected void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         InductionCellTier tier = getTier();
-        tooltip.add(MekanismLang.CAPACITY.translateColored(tier.getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getMaxEnergy())));
+        FloatingLong capacity = tier.getMaxEnergy().multiply(stack.getCount());
+        tooltip.add(MekanismLang.CAPACITY.translateColored(tier.getBaseTier().getTextColor(), EnumColor.GRAY, EnergyDisplay.of(capacity)));
         tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(StorageUtils.getStoredEnergyFromNBT(stack),
-              tier.getMaxEnergy())));
+                capacity)));
     }
 }
