@@ -8,7 +8,6 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
@@ -100,7 +99,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     protected void addTypeDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
-        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+        if (exposesEnergyCap(stack)) {
             StorageUtils.addStoredEnergy(stack, tooltip, false);
         }
     }

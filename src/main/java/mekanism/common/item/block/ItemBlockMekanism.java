@@ -68,7 +68,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+        if (exposesEnergyCap(oldStack) && exposesEnergyCap(newStack)) {
             //Ignore NBT for energized items causing re-equip animations
             return oldStack.getItem() != newStack.getItem();
         }
@@ -77,7 +77,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+        if (exposesEnergyCap(oldStack) && exposesEnergyCap(newStack)) {
             //Ignore NBT for energized items causing block break reset
             return oldStack.getItem() != newStack.getItem();
         }
@@ -88,7 +88,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         if (Attribute.has(block, AttributeSecurity.class)) {
             capabilities.add(new ItemStackSecurityObject());
         }
-        if (Attribute.has(block, AttributeEnergy.class)) {
+        if (exposesEnergyCap(stack)) {
             AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
             FloatingLongSupplier maxEnergy;
             AttributeUpgradeSupport upgradeSupport = Attribute.get(block, AttributeUpgradeSupport.class);
@@ -101,6 +101,11 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
             }
             capabilities.add(RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
         }
+    }
+
+    protected boolean exposesEnergyCap(ItemStack stack) {
+        //Only expose it if the block can't stack
+        return Attribute.has(block, AttributeEnergy.class) && stack.getMaxStackSize() == 1;
     }
 
     @Override
