@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Fabriquez un générateur de combustion de gaz pour brûler de l'Éthylène",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Brûler le gaz",
+  "advancements.mekanismgenerators.heat_generator.description": "Fabriquez un générateur de chaleur pour commencer à faire de l'energie",
+  "advancements.mekanismgenerators.heat_generator.title": "Votre premier générateur",
+  "advancements.mekanismgenerators.solar_generator.description": "Énergie de jour renouvelable",
+  "advancements.mekanismgenerators.solar_generator.title": "Le pouvoir du soleil",
+  "advancements.mekanismgenerators.wind_generator.description": "Espérons qu'il y ait du vent à proximité",
+  "advancements.mekanismgenerators.wind_generator.title": "Tourne bébé tourne !",
   "block.mekanismgenerators.advanced_solar_generator": "Panneau solaire avancé",
   "block.mekanismgenerators.bio_generator": "Bio-Générateur",
   "block.mekanismgenerators.bioethanol": "Bioéthanol",
