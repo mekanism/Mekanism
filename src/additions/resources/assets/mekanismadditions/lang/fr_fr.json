@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismadditions.balloon.description": "Fabriquez n'importe quel ballon coloré",
+  "advancements.mekanismadditions.balloon.title": "Atteindre les cieux",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "Fabriquer n'importe quel panneau lumineux coloré",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "Lumière dans le noir",
+  "advancements.mekanismadditions.not_the_babies.description": "Tuer n'importe quel bébé monstre de Mekanism Addition",
+  "advancements.mekanismadditions.not_the_babies.title": "Pas les bébé",
+  "advancements.mekanismadditions.pop_pop.description": "Crevez un ballon",
+  "advancements.mekanismadditions.pop_pop.title": "Pop Pop",
   "block.mekanismadditions.aqua_glow_panel": "Panneau lumineux aqua",
   "block.mekanismadditions.aqua_plastic": "Bloc de Plastique Aqua",
   "block.mekanismadditions.aqua_plastic_fence": "Barrière en Plastique Aqua",
