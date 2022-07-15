@@ -166,11 +166,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     private boolean suck() {
         boolean hasFilter = upgradeComponent.isUpgradeInstalled(Upgrade.FILTER);
-        //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
-        for (Direction orientation : EnumUtils.DIRECTIONS) {
-            if (suck(worldPosition.relative(orientation), hasFilter, true)) {
-                return true;
-            }
+        //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
+        if (suck(worldPosition.relative(Direction.DOWN), hasFilter, true)) {
+            return true;
         }
         //Even though we can add to recurring in the above for loop, we always then exit and don't get to here if we did so
         List<BlockPos> tempPumpList = new ArrayList<>(recurringNodes);
