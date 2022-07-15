@@ -983,7 +983,7 @@
   "gui.mekanism.process_rate": "处理速率：%1$s",
   "gui.mekanism.process_rate_mb": "处理速率：%1$s mB/t",
   "gui.mekanism.progress": "进度：%1$s",
-  "gui.mekanism.radial_screen": "径向选择器屏",
+  "gui.mekanism.radial_screen": "选择圆盘",
   "gui.mekanism.radiation_decay_time": "衰变时间：%1$s",
   "gui.mekanism.radiation_dose": "辐射剂量：%1$s",
   "gui.mekanism.radiation_exposure": "辐射暴露：%1$s",
