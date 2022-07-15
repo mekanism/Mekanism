@@ -24,15 +24,15 @@ body:
       label: Minecraft version
       description: What version of Minecraft are you using?
       options:
-        - 1.18.2 (Latest)
-        - 1.16.x or earlier (No longer being developed)
+        - 1.19 (Latest)
+        - 1.18.x or earlier (No longer being developed)
     validations:
       required: true
   - type: input
     attributes:
       label: Forge version
       description: What version of Forge are you using?
-      placeholder: e.g. 40.0.44
+      placeholder: e.g. 41.0.98
     validations:
       required: true
   - type: dropdown
@@ -42,12 +42,7 @@ body:
       description: What version of Mekanism are you using?
       options:
         - Current Dev Branch (Manually Compiled)
-        - 10.2.5 (Latest)
-        - 10.2.4
-        - 10.2.3
-        - 10.2.2
-        - 10.2.1
-        - 10.2.0
+        - 10.3.0 (Latest)
         - Older
     validations:
       required: true
