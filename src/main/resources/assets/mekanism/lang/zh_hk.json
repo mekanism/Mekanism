@@ -1,3 +1,10 @@
 {
-  "assemblicator.mekanism.auto_mode_toggle": "自動模式：%1$s"
+  "assemblicator.mekanism.auto_mode_toggle": "自動模式：%1$s",
+  "assemblicator.mekanism.craft_available": "可合成物品",
+  "assemblicator.mekanism.craft_single": "合成單個物品",
+  "auto.mekanism.eject": "自動放射",
+  "auto.mekanism.pull": "自動牽拉",
+  "auto.mekanism.sort": "自動整理",
+  "block.mekanism.advanced_bin": "高級儲物箱",
+  "block.mekanism.advanced_chemical_tank": "高級化學品罐"
 }
