@@ -1,7 +1,8 @@
 package mekanism.common.tile.factory;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -56,12 +57,16 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
-    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
-          RecipeError.NOT_ENOUGH_ENERGY, true,
-          RecipeError.NOT_ENOUGH_INPUT, false,
-          RecipeError.NOT_ENOUGH_SECONDARY_INPUT, true,
-          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
-          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
+    private static final Set<RecipeError> GLOBAL_ERROR_TYPES = Set.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
     private final ILongInputHandler<@NotNull GasStack> gasInputHandler;
@@ -76,7 +81,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     private long baseTotalUsage;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);

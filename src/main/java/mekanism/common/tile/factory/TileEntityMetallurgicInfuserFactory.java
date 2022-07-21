@@ -1,6 +1,7 @@
 package mekanism.common.tile.factory;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -46,12 +47,16 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
 
-    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
-          RecipeError.NOT_ENOUGH_ENERGY, true,
-          RecipeError.NOT_ENOUGH_INPUT, false,
-          RecipeError.NOT_ENOUGH_SECONDARY_INPUT, true,
-          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
-          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
+    private static final Set<RecipeError> GLOBAL_ERROR_TYPES = Set.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
     private final IInputHandler<@NotNull InfusionStack> infusionInputHandler;
@@ -63,7 +68,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     private IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         configComponent.addSupported(TransmissionType.INFUSION);
         configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);

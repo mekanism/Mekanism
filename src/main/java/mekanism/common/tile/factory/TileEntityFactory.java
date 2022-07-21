@@ -1,7 +1,7 @@
 package mekanism.common.tile.factory;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,7 +114,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     protected EnergyInventorySlot energySlot;
 
-    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, Map<RecipeError, Boolean> errorTypes) {
+    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
         super(blockProvider, pos, state);
         type = Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -149,7 +149,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             //Note: We store one per slot so that we can recheck the different slots at different times to reduce the load on the server
             recheckAllRecipeErrors[i] = TileEntityRecipeMachine.shouldRecheckAllErrors(this);
         }
-        errorTracker = new ErrorTracker(errorTypes, tier.processes);
+        errorTracker = new ErrorTracker(errorTypes, globalErrorTypes, tier.processes);
     }
 
     /**
@@ -744,18 +744,19 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected static class ErrorTracker {
 
         private final List<RecipeError> errorTypes;
-        private final IntList globalTypes;
+        private final IntSet globalTypes;
 
         //TODO: See if we can get it so we only have to sync a single version of global types?
         private final boolean[][] trackedErrors;
         private final int processes;
 
-        public ErrorTracker(Map<RecipeError, Boolean> errorTypes, int processes) {
-            this.errorTypes = List.copyOf(errorTypes.keySet());
-            globalTypes = new IntArrayList();
+        public ErrorTracker(List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes, int processes) {
+            //Copy the list if it is mutable to ensure it doesn't get changed, otherwise just use the list
+            this.errorTypes = List.copyOf(errorTypes);
+            globalTypes = new IntArraySet(globalErrorTypes.size());
             for (int i = 0; i < this.errorTypes.size(); i++) {
                 RecipeError error = this.errorTypes.get(i);
-                if (errorTypes.get(error)) {
+                if (globalErrorTypes.contains(error)) {
                     globalTypes.add(i);
                 }
             }

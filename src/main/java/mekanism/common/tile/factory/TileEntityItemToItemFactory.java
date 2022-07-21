@@ -1,6 +1,7 @@
 package mekanism.common.tile.factory;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
@@ -24,8 +25,8 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
     protected IInputHandler<@NotNull ItemStack>[] inputHandlers;
     protected IOutputHandler<@NotNull ItemStack>[] outputHandlers;
 
-    protected TileEntityItemToItemFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, Map<RecipeError, Boolean> errorTypes) {
-        super(blockProvider, pos, state, errorTypes);
+    protected TileEntityItemToItemFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
+        super(blockProvider, pos, state, errorTypes, globalErrorTypes);
     }
 
     @Override
