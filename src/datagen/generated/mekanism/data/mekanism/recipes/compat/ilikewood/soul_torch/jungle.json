@@ -2,17 +2,17 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewood",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
         },
         {
-          "modid": "ilikewood_torches",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_torches"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
@@ -22,11 +22,11 @@
     }
   },
   "mainOutput": {
-    "item": "ilikewood:jungle_torch",
-    "count": 4
+    "count": 4,
+    "item": "ilikewood:jungle_torch"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:soul_soil"
-  },
-  "secondaryChance": 1.0
+  }
 }

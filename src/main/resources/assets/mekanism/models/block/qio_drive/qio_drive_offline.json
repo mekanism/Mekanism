@@ -1,5 +1,4 @@
 {
-	"loader": "mekanism:mekanism",
 	"textures": {
 		"7": "mekanism:block/qio_drive_array/side"
 	},

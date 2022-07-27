@@ -52,7 +52,6 @@
 		"solid": {
 			"render_type": "minecraft:solid",
 			"parent": "block/cube_all",
-			"loader": "mekanism:mekanism",
 			"textures": {
 				"0": "mekanism:block/models/glass",
 				"1": "mekanism:block/models/antiprotonic_nucleosynthesizer_front",
@@ -262,9 +261,9 @@
 					"to": [3, 13, 14],
 					"rotation": {"angle": 0, "axis": "y", "origin": [2.5, 9.5, 13.5]},
 					"faces": {
-						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15}
+						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15}
 					}
 				},
 				{
@@ -273,9 +272,9 @@
 					"to": [5, 13, 14],
 					"rotation": {"angle": 0, "axis": "y", "origin": [4.5, 9.5, 13.5]},
 					"faces": {
-						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15}
+						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15}
 					}
 				},
 				{
@@ -284,9 +283,9 @@
 					"to": [12, 13, 14],
 					"rotation": {"angle": 0, "axis": "y", "origin": [11.5, 9.5, 13.5]},
 					"faces": {
-						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15}
+						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15}
 					}
 				},
 				{
@@ -295,9 +294,9 @@
 					"to": [14, 13, 14],
 					"rotation": {"angle": 0, "axis": "y", "origin": [13.5, 9.5, 13.5]},
 					"faces": {
-						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15},
-						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "lightLevel": 15}
+						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
+						"west": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15}
 					}
 				},
 				{
@@ -320,7 +319,7 @@
 					"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 15]},
 					"faces": {
 						"east": {"uv": [8, 8, 9, 16], "texture": "#5"},
-						"south": {"uv": [9, 9, 15, 10], "texture": "#6", "lightLevel": 15},
+						"south": {"uv": [9, 9, 15, 10], "texture": "#6", "emissivity": 15},
 						"west": {"uv": [15, 8, 16, 16], "texture": "#5"},
 						"up": {"uv": [8, 8, 16, 9], "texture": "#5"},
 						"down": {"uv": [8, 15, 16, 16], "texture": "#5"}
@@ -333,7 +332,7 @@
 					"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 15]},
 					"faces": {
 						"east": {"uv": [8, 8, 9, 16], "texture": "#5"},
-						"south": {"uv": [9, 14, 15, 15], "texture": "#6", "lightLevel": 15},
+						"south": {"uv": [9, 14, 15, 15], "texture": "#6", "emissivity": 15},
 						"west": {"uv": [15, 8, 16, 16], "texture": "#5"},
 						"up": {"uv": [8, 8, 16, 9], "texture": "#5"},
 						"down": {"uv": [8, 15, 16, 16], "texture": "#5"}
@@ -346,7 +345,7 @@
 					"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 15]},
 					"faces": {
 						"east": {"uv": [8, 8, 9, 16], "texture": "#5"},
-						"south": {"uv": [9, 10, 10, 14], "texture": "#6", "lightLevel": 15},
+						"south": {"uv": [9, 10, 10, 14], "texture": "#6", "emissivity": 15},
 						"west": {"uv": [15, 8, 16, 16], "texture": "#5"}
 					}
 				},
@@ -357,7 +356,7 @@
 					"rotation": {"angle": 0, "axis": "y", "origin": [13, 7, 15]},
 					"faces": {
 						"east": {"uv": [8, 8, 9, 16], "texture": "#5"},
-						"south": {"uv": [14, 10, 15, 14], "texture": "#6", "lightLevel": 15},
+						"south": {"uv": [14, 10, 15, 14], "texture": "#6", "emissivity": 15},
 						"west": {"uv": [15, 8, 16, 16], "texture": "#5"}
 					}
 				}

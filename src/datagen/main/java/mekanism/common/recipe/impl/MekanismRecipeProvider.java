@@ -16,6 +16,7 @@ import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.compat.BYGRecipeProvider;
 import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
+import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -110,8 +111,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               //TODO - 1.19: Re-enable as these update and then disable them from the persisting data providers
               //new AE2RecipeProvider(),
               new BiomesOPlentyRecipeProvider(),
-              new BYGRecipeProvider()/*,
-              new ILikeWoodRecipeProvider(),
+              new BYGRecipeProvider(),
+              new ILikeWoodRecipeProvider()/*,
               new ILikeWoodBOPRecipeProvider(),
               new ILikeWoodBYGRecipeProvider()*/
         );

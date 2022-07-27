@@ -1,5 +1,4 @@
 {
-	"loader": "mekanism:mekanism",
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
 	"textures": {

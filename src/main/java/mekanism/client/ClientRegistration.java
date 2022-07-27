@@ -98,7 +98,6 @@ import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
-import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.model.baked.QIORedstoneAdapterBakedModel;
 import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
@@ -468,7 +467,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModelLoaders(RegisterGeometryLoaders event) {
-        event.register("mekanism", MekanismModel.Loader.INSTANCE);
         event.register("robit", RobitModel.Loader.INSTANCE);
         event.register("transmitter", TransmitterLoader.INSTANCE);
     }

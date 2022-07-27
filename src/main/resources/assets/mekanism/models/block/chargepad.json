@@ -2,7 +2,6 @@
 	"credit": "Model by CyanideX",
 	"render_type": "minecraft:cutout",
 	"parent": "block/cube_all",
-	"loader": "mekanism:mekanism",
 	"textures": {
 		"2": "mekanism:block/models/ports",
 		"3": "mekanism:block/models/ports_led",
@@ -104,7 +103,7 @@
 			"from": [5, 10, 15.001],
 			"to": [11, 11, 16.001],
 			"faces": {
-				"south": {"uv": [9, 9, 15, 10], "texture": "#3", "lightLevel": 15}
+				"south": {"uv": [9, 9, 15, 10], "texture": "#3", "emissivity": 15}
 			}
 		},
 		{
@@ -113,7 +112,7 @@
 			"to": [11, 6, 16.001],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
 			"faces": {
-				"south": {"uv": [9, 14, 15, 15], "texture": "#3", "lightLevel": 15}
+				"south": {"uv": [9, 14, 15, 15], "texture": "#3", "emissivity": 15}
 			}
 		},
 		{
@@ -122,7 +121,7 @@
 			"to": [6, 10, 16.001],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
 			"faces": {
-				"south": {"uv": [9, 10, 10, 14], "texture": "#3", "lightLevel": 15}
+				"south": {"uv": [9, 10, 10, 14], "texture": "#3", "emissivity": 15}
 			}
 		},
 		{
@@ -131,7 +130,7 @@
 			"to": [11, 10, 16.001],
 			"rotation": {"angle": 0, "axis": "y", "origin": [13, 7, 8]},
 			"faces": {
-				"south": {"uv": [14, 10, 15, 14], "texture": "#3", "lightLevel": 15}
+				"south": {"uv": [14, 10, 15, 14], "texture": "#3", "emissivity": 15}
 			}
 		}
 	],

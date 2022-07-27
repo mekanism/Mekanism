@@ -42,7 +42,6 @@
 	"children": {
 		"solid": {
 			"render_type": "minecraft:solid",
-			"loader": "mekanism:mekanism",
 			"parent": "block/cube_all",
 			"textures": {
 				"1": "mekanismgenerators:block/model/bio_generator1",
@@ -118,7 +117,7 @@
 					"to": [11, 10, 16.005],
 					"rotation": {"angle": 0, "axis": "y", "origin": [13, 6.66667, 6.58333]},
 					"faces": {
-						"south": {"uv": [14, 10, 15, 14], "texture": "#3", "lightLevel": 15}
+						"south": {"uv": [14, 10, 15, 14], "texture": "#3", "emissivity": 15}
 					}
 				},
 				{
@@ -127,7 +126,7 @@
 					"to": [6, 10, 16.005],
 					"rotation": {"angle": 0, "axis": "y", "origin": [8, 6.66667, 6.58333]},
 					"faces": {
-						"south": {"uv": [9, 10, 10, 14], "texture": "#3", "lightLevel": 15}
+						"south": {"uv": [9, 10, 10, 14], "texture": "#3", "emissivity": 15}
 					}
 				},
 				{
@@ -136,7 +135,7 @@
 					"to": [11, 6, 16.005],
 					"rotation": {"angle": 0, "axis": "y", "origin": [8, 5.66667, 6.58333]},
 					"faces": {
-						"south": {"uv": [9, 14, 15, 15], "texture": "#3", "lightLevel": 15}
+						"south": {"uv": [9, 14, 15, 15], "texture": "#3", "emissivity": 15}
 					}
 				},
 				{
@@ -145,7 +144,7 @@
 					"to": [11, 11, 16.005],
 					"rotation": {"angle": 0, "axis": "y", "origin": [8, 10.66667, 6.58333]},
 					"faces": {
-						"south": {"uv": [9, 9, 15, 10], "texture": "#3", "lightLevel": 15}
+						"south": {"uv": [9, 9, 15, 10], "texture": "#3", "emissivity": 15}
 					}
 				}
 			]

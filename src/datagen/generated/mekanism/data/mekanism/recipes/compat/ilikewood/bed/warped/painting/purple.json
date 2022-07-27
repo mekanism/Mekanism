@@ -1,18 +1,22 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:purple"
+  },
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewood",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
         },
         {
-          "modid": "ilikewood_beds",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "itemInput": {
@@ -63,10 +67,6 @@
         "item": "ilikewood:black_warped_bed"
       }
     ]
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:purple"
   },
   "output": {
     "item": "ilikewood:purple_warped_bed"

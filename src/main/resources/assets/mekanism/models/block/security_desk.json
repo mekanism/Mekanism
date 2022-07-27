@@ -1,6 +1,5 @@
 {
 	"credit": "Model by CyanideX",
-	"loader": "mekanism:mekanism",
 	"texture_size": [32, 32],
 	"textures": {
 		"2": "mekanism:block/models/security_desk_base",
@@ -69,7 +68,7 @@
 			"to": [14, 23, 10.99],
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
-				"north": {"uv": [0, 0, 12, 8], "texture": "#4", "lightLevel": 15}
+				"north": {"uv": [0, 0, 12, 8], "texture": "#4", "emissivity": 15}
 			}
 		},
 		{
@@ -78,11 +77,11 @@
 			"to": [3, 14.5, 12.5],
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"east": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"south": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"west": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"down": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15}
+				"north": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
+				"east": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
+				"south": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
+				"west": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
+				"down": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15}
 			}
 		},
 		{

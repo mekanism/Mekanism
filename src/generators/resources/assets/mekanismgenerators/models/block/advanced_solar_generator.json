@@ -1,5 +1,4 @@
 {
-	"loader": "mekanism:mekanism",
 	"credit": "Model by CyanideX",
 	"texture_size": [64, 64],
 	"textures": {
@@ -161,7 +160,7 @@
 			"to": [11, -5, -0.005],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
 			"faces": {
-				"north": {"uv": [9, 9, 15, 10], "texture": "#2", "lightLevel": 15}
+				"north": {"uv": [9, 9, 15, 10], "texture": "#2", "emissivity": 15}
 			}
 		},
 		{
@@ -170,7 +169,7 @@
 			"to": [11, -10, -0.005],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, -21, 8]},
 			"faces": {
-				"north": {"uv": [9, 14, 15, 15], "texture": "#2", "lightLevel": 15}
+				"north": {"uv": [9, 14, 15, 15], "texture": "#2", "emissivity": 15}
 			}
 		},
 		{
@@ -179,7 +178,7 @@
 			"to": [11, -6, -0.005],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, -17, 8]},
 			"faces": {
-				"north": {"uv": [9, 10, 10, 14], "texture": "#2", "lightLevel": 15}
+				"north": {"uv": [9, 10, 10, 14], "texture": "#2", "emissivity": 15}
 			}
 		},
 		{
@@ -188,7 +187,7 @@
 			"to": [6, -6, -0.005],
 			"rotation": {"angle": 0, "axis": "y", "origin": [3, -17, 8]},
 			"faces": {
-				"north": {"uv": [14, 10, 15, 14], "texture": "#2", "lightLevel": 15}
+				"north": {"uv": [14, 10, 15, 14], "texture": "#2", "emissivity": 15}
 			}
 		},
 		{

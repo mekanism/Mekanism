@@ -54,7 +54,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
             BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skin);
             if (model == null) {
                 //No model means we can't render (this shouldn't happen as we try to fall back to the default skin)
-                Mekanism.logger.warn("Robit with skin: {} does not have a model.", skin.getRegistryName());
+                Mekanism.logger.warn("Robit with skin: {} does not have a model. If this happened during a resource reload this can be ignored.", skin.getRegistryName());
             } else {
                 matrix.pushPose();
                 matrix.mulPose(Vector3f.XP.rotationDegrees(180));

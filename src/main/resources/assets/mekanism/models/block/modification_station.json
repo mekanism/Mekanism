@@ -1,6 +1,5 @@
 {
 	"parent": "block/cube_all",
-	"loader": "mekanism:mekanism",
 	"textures": {
 		"0": "mekanism:block/models/ports",
 		"2": "mekanism:block/models/modification_station",
@@ -170,11 +169,11 @@
 			"to": [3, 18, 12],
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 11.5]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "lightLevel": 15},
-				"east": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "lightLevel": 15},
-				"south": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "lightLevel": 15},
-				"west": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "lightLevel": 15},
-				"down": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "lightLevel": 15}
+				"north": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "emissivity": 15},
+				"east": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "emissivity": 15},
+				"south": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "emissivity": 15},
+				"west": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "emissivity": 15},
+				"down": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "emissivity": 15}
 			}
 		},
 		{
@@ -298,11 +297,11 @@
 			"to": [-10, 23, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [-14, 16, 12]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15}
+				"north": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"east": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"south": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"west": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15}
 			}
 		},
 		{
@@ -323,11 +322,11 @@
 			"to": [-4, 23, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 16, 12]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#3", "lightLevel": 15}
+				"north": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"east": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"south": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"west": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15}
 			}
 		},
 		{

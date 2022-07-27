@@ -41,7 +41,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
           "ae2/",
           //"biomesoplenty/",
           //"byg/",//Biomes You'll Go
-          "ilikewood/",
+          //"ilikewood/",
           "ilikewoodxbiomesoplenty/",//I Like Wood Biomes O' Plenty
           "ilikewoodxbyg/"//I Like Wood Biomes You'll Go
     );

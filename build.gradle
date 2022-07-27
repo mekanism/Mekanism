@@ -21,7 +21,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.4.2'
+    gradleVersion = '7.5'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -465,8 +465,8 @@ dependencies {
     datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
     datagenMainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
-    //TODO - 1.19: datagenmainImplementation once these update
-    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    //TODO - 1.19: datagenMainImplementation once these update
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     //TODO - 1.19: Re-enable when these update

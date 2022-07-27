@@ -1,6 +1,5 @@
 {
 	"credit": "Model by CyanideX",
-	"loader": "mekanism:mekanism",
 	"textures": {
 		"0": "mekanism:block/models/qio_dashboard",
 		"2": "mekanism:block/models/qio_dashboard_screen_led",
@@ -27,7 +26,7 @@
 			"to": [14, 1.005, 14],
 			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 8]},
 			"faces": {
-				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 0, "lightLevel": 15}
+				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 0, "emissivity": 15}
 			}
 		}
 	],
