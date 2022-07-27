@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DefaultRadiationEntity implements IRadiationEntity {
 
-    private double radiation;
+    private double radiation = RadiationManager.BASELINE;
 
     @Override
     public double getRadiation() {
