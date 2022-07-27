@@ -250,12 +250,11 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
 
-        //Fluids (translucent)
-        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
-            ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), fluidRO);
-        }
-
         event.enqueueWork(() -> {
+            //Set fluids to a translucent render layer
+            for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
+                ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), fluidRO);
+            }
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
                   (stack, world, entity, seed) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(stack) == null ? 0 : 1);
 
