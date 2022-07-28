@@ -1387,6 +1387,7 @@
   "pigment.mekanism.yellow": "Жовтий барвник",
   "qio.mekanism.compensate_tooltip": "Що ви намагаєтеся компенсувати?",
   "qio.mekanism.export_without_filter": "Експортувати без фільтра:",
+  "qio.mekanism.fuzzy_mode": "Ігнорування NBT: %1$s",
   "qio.mekanism.import_without_filter": "Імпортувати без фільтра:",
   "qio.mekanism.item_type_undefined": "Тип предмета не визначений",
   "qio.mekanism.items": "Предмети",
