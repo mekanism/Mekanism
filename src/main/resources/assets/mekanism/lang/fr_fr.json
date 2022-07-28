@@ -1387,6 +1387,7 @@
   "pigment.mekanism.yellow": "Pigment Jaune",
   "qio.mekanism.compensate_tooltip": "Qu'essayez-vous de compenser ?",
   "qio.mekanism.export_without_filter": "Exporter sans filtre:",
+  "qio.mekanism.fuzzy_mode": "NBT ignoré : %1$s",
   "qio.mekanism.import_without_filter": "Importer sans filtre:",
   "qio.mekanism.item_type_undefined": "Type d'objet indéfini",
   "qio.mekanism.items": "Objets",
