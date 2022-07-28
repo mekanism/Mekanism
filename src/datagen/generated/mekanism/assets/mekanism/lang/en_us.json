@@ -940,6 +940,7 @@
   "gui.mekanism.compass": "Compass",
   "gui.mekanism.crafting.tab": "Crafting (%1$s/%2$s)",
   "gui.mekanism.crafting.window": "Crafting Window %1$s",
+  "gui.mekanism.crafting.window.clear": "Empty Crafting Window contents into storage, hold shift to empty into player inventory instead.",
   "gui.mekanism.danger": "Danger",
   "gui.mekanism.default": "Default",
   "gui.mekanism.delay": "Delay: %1$st",

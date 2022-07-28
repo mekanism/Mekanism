@@ -31,6 +31,7 @@ import mekanism.common.network.to_server.PacketModeChangeCurios;
 import mekanism.common.network.to_server.PacketNewFilter;
 import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
+import mekanism.common.network.to_server.PacketQIOClearCraftingWindow;
 import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mekanism.common.network.to_server.PacketQIOItemViewerSlotInteract;
 import mekanism.common.network.to_server.PacketRadialModeChange;
@@ -70,6 +71,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketNewFilter.class, PacketNewFilter::decode);
         registerClientToServer(PacketOpenGui.class, PacketOpenGui::decode);
         registerClientToServer(PacketPortableTeleporterTeleport.class, PacketPortableTeleporterTeleport::decode);
+        registerClientToServer(PacketQIOClearCraftingWindow.class, PacketQIOClearCraftingWindow::decode);
         registerClientToServer(PacketQIOFillCraftingWindow.class, PacketQIOFillCraftingWindow::decode);
         registerClientToServer(PacketQIOItemViewerSlotInteract.class, PacketQIOItemViewerSlotInteract::decode);
         registerClientToServer(PacketRadialModeChange.class, PacketRadialModeChange::decode);

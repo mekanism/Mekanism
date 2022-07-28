@@ -830,6 +830,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.HEIGHT, "Height");
         add(MekanismLang.CRAFTING_TAB, "Crafting (%1$s/%2$s)");
         add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %1$s");
+        add(MekanismLang.CRAFTING_WINDOW_CLEAR, "Empty Crafting Window contents into storage, hold shift to empty into player inventory instead.");
         add(MekanismLang.MIN, "Min: %1$s");
         add(MekanismLang.MAX, "Max: %1$s");
         add(MekanismLang.INFINITE, "Infinite");

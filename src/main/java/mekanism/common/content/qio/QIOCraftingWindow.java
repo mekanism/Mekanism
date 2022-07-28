@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.IntFunction;
+import java.util.function.UnaryOperator;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -261,6 +262,41 @@ public class QIOCraftingWindow implements IContentsListener {
 
     private void useInput(IInventorySlot inputSlot) {
         MekanismUtils.logMismatchedStackSize(inputSlot.shrinkStack(1, Action.EXECUTE), 1);
+    }
+
+    /**
+     * @apiNote Only call from the server
+     */
+    public void emptyTo(boolean toPlayerInv, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+        if (toPlayerInv) {
+            emptyTo(toTransfer -> {
+                ItemStack remainder = MekanismContainer.insertItem(hotBarSlots, toTransfer, true, windowData);
+                remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, true, windowData);
+                remainder = MekanismContainer.insertItem(hotBarSlots, remainder, false, windowData);
+                return MekanismContainer.insertItem(mainInventorySlots, remainder, false, windowData);
+            });
+        } else {
+            QIOFrequency frequency = holder.getFrequency();
+            //NO-OP if the frequency is null and that is the target
+            if (frequency != null) {
+                emptyTo(frequency::addItem);
+            }
+        }
+    }
+
+    /**
+     * @param inserter Unary operator that takes the stack to transfer and returns remainder
+     */
+    private void emptyTo(UnaryOperator<ItemStack> inserter) {
+        for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+            if (!inputSlot.isEmpty()) {
+                ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
+                if (!toTransfer.isEmpty()) {
+                    ItemStack remainder = inserter.apply(toTransfer);
+                    inputSlot.extractItem(toTransfer.getCount() - remainder.getCount(), Action.EXECUTE, AutomationType.INTERNAL);
+                }
+            }
+        }
     }
 
     /**
