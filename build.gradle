@@ -425,9 +425,10 @@ dependencies {
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
     testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    //TODO - 1.19.1: Update when this updates to 1.19.1
+    compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge:${jei_version}")
 
     //TODO: Re-enable in dev once https://github.com/Chisel-Team/ConnectedTexturesMod/issues/174 is fixed
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
@@ -792,6 +793,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             }
             addArtifact apiJar.get()
             addGameVersion "Java ${java_version}"
+            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
+            addGameVersion "1.19"
             addGameVersion "${minecraft_version}"
         }
 
@@ -807,6 +810,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
+            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
+            addGameVersion "1.19"
             addGameVersion "${minecraft_version}"
         }
 
@@ -837,6 +842,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
+            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
+            addGameVersion "1.19"
             addGameVersion "${minecraft_version}"
         }
 
@@ -852,6 +859,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
+            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
+            addGameVersion "1.19"
             addGameVersion "${minecraft_version}"
         }
     }
@@ -879,7 +888,8 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         changelog = changeLogResolver.call()
         uploadFile = jar
         additionalFiles = [apiJar.get()]
-        gameVersions = ["${minecraft_version}"]
+        //TODO - 1.19.1: Stop specifying 1.19 once we require features specific to forge 1.19.1
+        gameVersions = ["1.19", "${minecraft_version}"]
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
         dependencies = [
                 new ModDependency("XxWD5pD3", "optional"),//AE2
