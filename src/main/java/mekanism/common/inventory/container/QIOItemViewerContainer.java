@@ -57,8 +57,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return Math.max(Math.min(maxY, SLOTS_Y_MAX), SLOTS_Y_MIN);
     }
 
-    private ListSortType sortType = MekanismConfig.client.qioItemViewerSortType.get();
-    private SortDirection sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
+    private ListSortType sortType;
+    private SortDirection sortDirection;
 
     private Object2LongMap<UUIDAwareHashedItem> cachedInventory = new Object2LongOpenHashMap<>();
     private long cachedCountCapacity;
@@ -88,6 +88,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return;
         }
         if (remote) {
+            this.sortType = MekanismConfig.client.qioItemViewerSortType.get();
+            this.sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
             //Validate the max size when we are on the client, and fix it if it is incorrect
             int maxY = getSlotsYMax();
             if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {
@@ -95,8 +97,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 // save the updated config info
                 MekanismConfig.client.save();
             }
-        }
-        if (!remote) {
+        } else {
+            this.sortType = ListSortType.NAME;
+            this.sortDirection = SortDirection.ASCENDING;
             craftingGridInputSlots = new List[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
         }
     }
@@ -126,12 +129,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     @Override
     protected int getInventoryYOffset() {
-        return SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 15;
+        //Use get or default as server side these configs don't exist but the config should be just fine
+        return SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.getOrDefault() * 18 + 15;
     }
 
     @Override
     protected int getInventoryXOffset() {
-        return super.getInventoryXOffset() + (MekanismConfig.client.qioItemViewerSlotsX.get() - 8) * 18 / 2;
+        //Use get or default as server side these configs don't exist but the config should be just fine
+        return super.getInventoryXOffset() + (MekanismConfig.client.qioItemViewerSlotsX.getOrDefault() - 8) * 18 / 2;
     }
 
     @Override
@@ -349,6 +354,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
+    /**
+     * @apiNote Only call this client side
+     */
     public void setSortDirection(SortDirection sortDirection) {
         this.sortDirection = sortDirection;
         MekanismConfig.client.qioItemViewerSortDirection.set(sortDirection);
@@ -360,6 +368,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return sortDirection;
     }
 
+    /**
+     * @apiNote Only call this client side
+     */
     public void setSortType(ListSortType sortType) {
         this.sortType = sortType;
         MekanismConfig.client.qioItemViewerSortType.set(sortType);
