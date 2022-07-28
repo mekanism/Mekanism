@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Создайте газогенератор для сжигания этилена",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Сожгите газ",
+  "advancements.mekanismgenerators.heat_generator.description": "Создайте теплогенератор, чтобы начать вырабатывать энергию",
+  "advancements.mekanismgenerators.heat_generator.title": "Ваш первый генератор",
+  "advancements.mekanismgenerators.solar_generator.description": "Возобновляемая дневная энергия",
+  "advancements.mekanismgenerators.solar_generator.title": "Энергия солнца",
+  "advancements.mekanismgenerators.wind_generator.description": "Надеюсь, поблизости есть какой-нибудь ветер",
+  "advancements.mekanismgenerators.wind_generator.title": "Крутись, детка, крутись",
   "block.mekanismgenerators.advanced_solar_generator": "Продвинутая солнечная панель",
   "block.mekanismgenerators.bio_generator": "Биогенератор",
   "block.mekanismgenerators.bioethanol": "Биоэтанол",
