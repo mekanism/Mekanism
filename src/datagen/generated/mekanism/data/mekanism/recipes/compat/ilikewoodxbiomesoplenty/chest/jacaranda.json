@@ -2,30 +2,30 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbiomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "modid": "biomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "biomesoplenty"
         },
         {
-          "modid": "ilikewood_chests",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_chests"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:jacaranda_chest"
+      "item": "ilikewood:biomesoplenty_jacaranda_chest"
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:jacaranda_planks",
-    "count": 8
+    "count": 8,
+    "item": "biomesoplenty:jacaranda_planks"
   }
 }

@@ -2,39 +2,39 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbiomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "modid": "biomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "biomesoplenty"
         },
         {
-          "modid": "ilikewood_posts",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_posts"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": [
       {
-        "item": "ilikewood:jacaranda_post"
+        "item": "ilikewood:biomesoplenty_jacaranda_post"
       },
       {
-        "item": "ilikewood:stripped_jacaranda_post"
+        "item": "ilikewood:biomesoplenty_stripped_jacaranda_post"
       }
     ]
   },
   "mainOutput": {
-    "item": "biomesoplenty:jacaranda_planks",
-    "count": 3
+    "count": 3,
+    "item": "biomesoplenty:jacaranda_planks"
   },
+  "secondaryChance": 0.125,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.125
+  }
 }

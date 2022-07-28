@@ -1,0 +1,40 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_posts"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "ilikewood:byg_willow_post"
+      },
+      {
+        "item": "ilikewood:byg_stripped_willow_post"
+      }
+    ]
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "byg:willow_planks"
+  },
+  "secondaryChance": 0.125,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

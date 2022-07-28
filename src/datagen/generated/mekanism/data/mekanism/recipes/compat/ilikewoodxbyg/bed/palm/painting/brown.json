@@ -1,0 +1,78 @@
+{
+  "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:brown"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:byg_white_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_orange_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_magenta_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_blue_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_yellow_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_lime_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_pink_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_gray_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_gray_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_cyan_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_purple_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_blue_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_green_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_red_palm_bed"
+      },
+      {
+        "item": "ilikewood:byg_black_palm_bed"
+      }
+    ]
+  },
+  "output": {
+    "item": "ilikewood:byg_brown_palm_bed"
+  }
+}

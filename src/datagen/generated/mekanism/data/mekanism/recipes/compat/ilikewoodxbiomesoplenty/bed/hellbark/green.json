@@ -2,35 +2,35 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbiomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "modid": "biomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "biomesoplenty"
         },
         {
-          "modid": "ilikewood_beds",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:green_hellbark_bed"
+      "item": "ilikewood:biomesoplenty_green_hellbark_bed"
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:hellbark_planks",
-    "count": 3
+    "count": 3,
+    "item": "biomesoplenty:hellbark_planks"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:green_wool",
-    "count": 3
-  },
-  "secondaryChance": 1.0
+    "count": 3,
+    "item": "minecraft:green_wool"
+  }
 }

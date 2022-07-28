@@ -1,0 +1,78 @@
+{
+  "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:red"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:byg_white_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_orange_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_magenta_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_blue_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_yellow_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_lime_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_pink_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_gray_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_gray_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_cyan_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_purple_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_blue_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_brown_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_green_jacaranda_bed"
+      },
+      {
+        "item": "ilikewood:byg_black_jacaranda_bed"
+      }
+    ]
+  },
+  "output": {
+    "item": "ilikewood:byg_red_jacaranda_bed"
+  }
+}

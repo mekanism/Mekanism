@@ -2,30 +2,30 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbiomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "modid": "biomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "biomesoplenty"
         },
         {
-          "modid": "ilikewood_barrels",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_barrels"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:umbran_barrel"
+      "item": "ilikewood:biomesoplenty_umbran_barrel"
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:umbran_planks",
-    "count": 7
+    "count": 7,
+    "item": "biomesoplenty:umbran_planks"
   }
 }

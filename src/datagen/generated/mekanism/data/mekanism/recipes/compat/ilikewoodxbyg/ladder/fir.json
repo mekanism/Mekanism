@@ -1,0 +1,36 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_ladders"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "amount": 3,
+    "ingredient": {
+      "item": "ilikewood:byg_fir_ladder"
+    }
+  },
+  "mainOutput": {
+    "count": 7,
+    "item": "ilikewood:byg_fir_stick"
+  }
+}

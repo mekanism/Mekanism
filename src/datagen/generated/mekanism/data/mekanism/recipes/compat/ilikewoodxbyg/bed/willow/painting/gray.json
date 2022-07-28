@@ -1,0 +1,78 @@
+{
+  "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:gray"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:byg_white_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_orange_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_magenta_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_blue_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_yellow_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_lime_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_pink_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_gray_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_cyan_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_purple_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_blue_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_brown_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_green_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_red_willow_bed"
+      },
+      {
+        "item": "ilikewood:byg_black_willow_bed"
+      }
+    ]
+  },
+  "output": {
+    "item": "ilikewood:byg_gray_willow_bed"
+  }
+}

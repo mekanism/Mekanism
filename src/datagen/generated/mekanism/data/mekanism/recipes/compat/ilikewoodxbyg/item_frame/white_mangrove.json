@@ -1,0 +1,39 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_item_frames"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:byg_white_mangrove_item_frame"
+    }
+  },
+  "mainOutput": {
+    "count": 8,
+    "item": "ilikewood:byg_white_mangrove_stick"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:leather"
+  }
+}

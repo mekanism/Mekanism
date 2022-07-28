@@ -2,34 +2,34 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_posts",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_posts"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:imparius_post"
+      "item": "ilikewood:byg_imparius_post"
     }
   },
   "mainOutput": {
-    "item": "byg:imparius_planks",
-    "count": 3
+    "count": 3,
+    "item": "byg:imparius_planks"
   },
+  "secondaryChance": 0.125,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.125
+  }
 }

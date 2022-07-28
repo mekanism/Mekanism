@@ -1,78 +1,78 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:pink"
+  },
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbiomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "modid": "biomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "biomesoplenty"
         },
         {
-          "modid": "ilikewood_beds",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "itemInput": {
     "ingredient": [
       {
-        "item": "ilikewood:white_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_white_hellbark_bed"
       },
       {
-        "item": "ilikewood:orange_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_orange_hellbark_bed"
       },
       {
-        "item": "ilikewood:magenta_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_magenta_hellbark_bed"
       },
       {
-        "item": "ilikewood:light_blue_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_light_blue_hellbark_bed"
       },
       {
-        "item": "ilikewood:yellow_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_yellow_hellbark_bed"
       },
       {
-        "item": "ilikewood:lime_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_lime_hellbark_bed"
       },
       {
-        "item": "ilikewood:gray_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_gray_hellbark_bed"
       },
       {
-        "item": "ilikewood:light_gray_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_light_gray_hellbark_bed"
       },
       {
-        "item": "ilikewood:cyan_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_cyan_hellbark_bed"
       },
       {
-        "item": "ilikewood:purple_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_purple_hellbark_bed"
       },
       {
-        "item": "ilikewood:blue_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_blue_hellbark_bed"
       },
       {
-        "item": "ilikewood:brown_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_brown_hellbark_bed"
       },
       {
-        "item": "ilikewood:green_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_green_hellbark_bed"
       },
       {
-        "item": "ilikewood:red_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_red_hellbark_bed"
       },
       {
-        "item": "ilikewood:black_hellbark_bed"
+        "item": "ilikewood:biomesoplenty_black_hellbark_bed"
       }
     ]
   },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:pink"
-  },
   "output": {
-    "item": "ilikewood:pink_hellbark_bed"
+    "item": "ilikewood:biomesoplenty_pink_hellbark_bed"
   }
 }

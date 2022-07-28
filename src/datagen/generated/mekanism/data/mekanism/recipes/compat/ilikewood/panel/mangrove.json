@@ -1,0 +1,36 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "mekanism:mod_version_loaded",
+          "minVersion": "1.19-9.0.1.0",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_panels"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:mangrove_panels"
+    }
+  },
+  "mainOutput": {
+    "count": 6,
+    "item": "ilikewood:mangrove_stick"
+  },
+  "secondaryChance": 0.25,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

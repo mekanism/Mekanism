@@ -2,38 +2,38 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_sticks",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
         },
         {
-          "modid": "ilikewood_torches",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_torches"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "amount": 4,
     "ingredient": {
-      "item": "ilikewood:aspen_torch"
+      "item": "ilikewood:byg_aspen_torch"
     }
   },
   "mainOutput": {
-    "item": "ilikewood:aspen_stick"
+    "item": "ilikewood:byg_aspen_stick"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:coal"
-  },
-  "secondaryChance": 1.0
+  }
 }

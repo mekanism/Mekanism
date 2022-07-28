@@ -2,39 +2,39 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_posts",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_posts"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": [
       {
-        "item": "ilikewood:witch_hazel_post"
+        "item": "ilikewood:byg_witch_hazel_post"
       },
       {
-        "item": "ilikewood:stripped_witch_hazel_post"
+        "item": "ilikewood:byg_stripped_witch_hazel_post"
       }
     ]
   },
   "mainOutput": {
-    "item": "byg:witch_hazel_planks",
-    "count": 3
+    "count": 3,
+    "item": "byg:witch_hazel_planks"
   },
+  "secondaryChance": 0.125,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.125
+  }
 }

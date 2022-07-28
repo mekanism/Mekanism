@@ -1,78 +1,78 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:light_gray"
+  },
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_beds",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "itemInput": {
     "ingredient": [
       {
-        "item": "ilikewood:white_aspen_bed"
+        "item": "ilikewood:byg_white_aspen_bed"
       },
       {
-        "item": "ilikewood:orange_aspen_bed"
+        "item": "ilikewood:byg_orange_aspen_bed"
       },
       {
-        "item": "ilikewood:magenta_aspen_bed"
+        "item": "ilikewood:byg_magenta_aspen_bed"
       },
       {
-        "item": "ilikewood:light_blue_aspen_bed"
+        "item": "ilikewood:byg_light_blue_aspen_bed"
       },
       {
-        "item": "ilikewood:yellow_aspen_bed"
+        "item": "ilikewood:byg_yellow_aspen_bed"
       },
       {
-        "item": "ilikewood:lime_aspen_bed"
+        "item": "ilikewood:byg_lime_aspen_bed"
       },
       {
-        "item": "ilikewood:pink_aspen_bed"
+        "item": "ilikewood:byg_pink_aspen_bed"
       },
       {
-        "item": "ilikewood:gray_aspen_bed"
+        "item": "ilikewood:byg_gray_aspen_bed"
       },
       {
-        "item": "ilikewood:cyan_aspen_bed"
+        "item": "ilikewood:byg_cyan_aspen_bed"
       },
       {
-        "item": "ilikewood:purple_aspen_bed"
+        "item": "ilikewood:byg_purple_aspen_bed"
       },
       {
-        "item": "ilikewood:blue_aspen_bed"
+        "item": "ilikewood:byg_blue_aspen_bed"
       },
       {
-        "item": "ilikewood:brown_aspen_bed"
+        "item": "ilikewood:byg_brown_aspen_bed"
       },
       {
-        "item": "ilikewood:green_aspen_bed"
+        "item": "ilikewood:byg_green_aspen_bed"
       },
       {
-        "item": "ilikewood:red_aspen_bed"
+        "item": "ilikewood:byg_red_aspen_bed"
       },
       {
-        "item": "ilikewood:black_aspen_bed"
+        "item": "ilikewood:byg_black_aspen_bed"
       }
     ]
   },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:light_gray"
-  },
   "output": {
-    "item": "ilikewood:light_gray_aspen_bed"
+    "item": "ilikewood:byg_light_gray_aspen_bed"
   }
 }

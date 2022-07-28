@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_chests"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:byg_mahogany_chest"
+    }
+  },
+  "mainOutput": {
+    "count": 8,
+    "item": "byg:mahogany_planks"
+  }
+}

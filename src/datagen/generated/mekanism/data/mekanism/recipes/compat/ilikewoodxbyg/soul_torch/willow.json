@@ -1,0 +1,36 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_torches"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "ilikewood:byg_willow_soul_torch"
+    }
+  },
+  "mainOutput": {
+    "count": 4,
+    "item": "ilikewood:byg_willow_torch"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:soul_soil"
+  }
+}

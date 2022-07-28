@@ -38,12 +38,12 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
           "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final Set<String> COMPAT_RECIPES_TO_SKIP = Set.of(
-          "ae2/",
+          "ae2/"//,
           //"biomesoplenty/",
           //"byg/",//Biomes You'll Go
           //"ilikewood/",
-          "ilikewoodxbiomesoplenty/",//I Like Wood Biomes O' Plenty
-          "ilikewoodxbyg/"//I Like Wood Biomes You'll Go
+          //"ilikewoodxbiomesoplenty/",//I Like Wood Biomes O' Plenty
+          //"ilikewoodxbyg/"//I Like Wood Biomes You'll Go
     );
     private static final List<DataProvider> FAKE_PROVIDERS = Stream.of(
           "CraftTweaker Examples: mekanism",

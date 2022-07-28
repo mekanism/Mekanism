@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_crafting_tables"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:cherry_crafting_table"
+    }
+  },
+  "mainOutput": {
+    "count": 4,
+    "item": "byg:cherry_planks"
+  }
+}

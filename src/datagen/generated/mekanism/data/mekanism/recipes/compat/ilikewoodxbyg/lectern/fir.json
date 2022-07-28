@@ -1,0 +1,36 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_lecterns"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:byg_fir_lectern"
+    }
+  },
+  "mainOutput": {
+    "count": 8,
+    "item": "byg:fir_planks"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "count": 3,
+    "item": "minecraft:book"
+  }
+}
