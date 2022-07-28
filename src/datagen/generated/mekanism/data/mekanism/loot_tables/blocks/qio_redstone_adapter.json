@@ -43,6 +43,11 @@
                   "op": "replace",
                   "source": "singleItem",
                   "target": "mekData.singleItem"
+                },
+                {
+                  "op": "replace",
+                  "source": "fuzzyMode",
+                  "target": "mekData.fuzzyMode"
                 }
               ],
               "source": "block_entity"

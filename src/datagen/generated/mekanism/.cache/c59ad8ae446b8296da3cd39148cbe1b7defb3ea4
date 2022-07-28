@@ -1,4 +1,4 @@
-// 1.19	2022-06-08T16:04:17.1732973	LootTables: mekanism
+// 1.19	2022-07-28T13:43:31.8879742	LootTables: mekanism
 a587e31a0d1bc81ccedfa330e48e114ffbccbe24 data/mekanism/loot_tables/blocks/advanced_bin.json
 20960dd0b8d8e463b270ee157f354df9081656f7 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 2db5d1f3ea049b9e987b32e01aadbf2bfb075f44 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -137,7 +137,7 @@ cc7b4208d2d9da8543908fc3bb845703b1ddf85b data/mekanism/loot_tables/blocks/qio_da
 50250492fa778f7227f66c414aa3a51f93007720 data/mekanism/loot_tables/blocks/qio_drive_array.json
 7b6ec63ac1660fc9e0feb7f43b8689c45b261177 data/mekanism/loot_tables/blocks/qio_exporter.json
 395ee1f6478cf4675b41e0dc966723cd8bc466bf data/mekanism/loot_tables/blocks/qio_importer.json
-448baafcd5da9f8275bcf8f4eaadf590c721ef1d data/mekanism/loot_tables/blocks/qio_redstone_adapter.json
+15082b9a64b24bbff765bbbc30dccff3107b7ff3 data/mekanism/loot_tables/blocks/qio_redstone_adapter.json
 88af94a9aaad20fcecb5283dbd7b6fdd33ecd7e7 data/mekanism/loot_tables/blocks/quantum_entangloporter.json
 06c9c5fe915f97a189462fcae74a9694f4086ba0 data/mekanism/loot_tables/blocks/radioactive_waste_barrel.json
 789825d42fed114ca6a558d1ee22ac312d412e7b data/mekanism/loot_tables/blocks/resistive_heater.json

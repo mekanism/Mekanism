@@ -197,6 +197,11 @@ public class PacketGuiInteract implements IMekanismPacket {
                 redstoneAdapter.handleCountChange(extra);
             }
         }),
+        QIO_REDSTONE_ADAPTER_FUZZY((tile, player, extra) -> {
+            if (tile instanceof TileEntityQIORedstoneAdapter redstoneAdapter) {
+                redstoneAdapter.toggleFuzzyMode();
+            }
+        }),
         QIO_TOGGLE_IMPORT_WITHOUT_FILTER((tile, player, extra) -> {
             if (tile instanceof TileEntityQIOImporter importer) {
                 importer.toggleImportWithoutFilter();

@@ -2,7 +2,6 @@ package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -61,23 +60,20 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
         addRenderableWidget(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
-            List<Component> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq == null) {
-                list.add(MekanismLang.NO_FREQUENCY.translate());
-            } else {
-                list.add(MekanismLang.FREQUENCY.translate(freq.key()));
+                return List.of(MekanismLang.NO_FREQUENCY.translate());
             }
-            return list;
+            return List.of(MekanismLang.FREQUENCY.translate(freq.key()));
         }).tooltip(() -> {
-            List<Component> list = new ArrayList<>();
-            if (getFrequency() != null) {
-                list.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(menu.getTotalItems()), TextUtils.format(menu.getCountCapacity())));
-                list.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(menu.getTotalTypes()), TextUtils.format(menu.getTypeCapacity())));
+            if (getFrequency() == null) {
+                return List.of();
             }
-            return list;
+            return List.of(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(menu.getTotalItems()),
+                        TextUtils.format(menu.getCountCapacity())),
+                  MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(menu.getTotalTypes()),
+                        TextUtils.format(menu.getTypeCapacity()))
+            );
         }));
         searchField = addRenderableWidget(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
         searchField.setOffset(0, -1);

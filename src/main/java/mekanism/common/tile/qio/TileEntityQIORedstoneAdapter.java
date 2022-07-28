@@ -7,6 +7,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
@@ -33,6 +34,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     private boolean prevPowering;
     private HashedItem itemType = null;
+    private boolean fuzzy;
     private long count = 0;
     private long clientStoredCount = 0;
 
@@ -44,12 +46,18 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
         if (isRemote()) {
             return prevPowering;
         }
+        long stored = getFreqStored();
+        return stored > 0 && stored >= count;
+    }
+
+    private long getFreqStored() {
         QIOFrequency freq = getQIOFrequency();
-        if (freq != null && itemType != null) {
-            long stored = freq.getStored(itemType);
-            return stored > 0 && stored >= count;
+        if (freq == null || itemType == null) {
+            return 0;
+        } else if (fuzzy) {
+            return freq.getTypesForItem(itemType.getStack().getItem()).stream().mapToLong(freq::getStored).sum();
         }
-        return false;
+        return freq.getStored(itemType);
     }
 
     public void handleStackChange(ItemStack stack) {
@@ -60,6 +68,17 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     public void handleCountChange(long count) {
         if (this.count != count) {
             this.count = count;
+            markForSave();
+        }
+    }
+
+    public void toggleFuzzyMode() {
+        setFuzzyMode(!fuzzy);
+    }
+
+    private void setFuzzyMode(boolean fuzzy) {
+        if (this.fuzzy != fuzzy) {
+            this.fuzzy = fuzzy;
             markForSave();
         }
     }
@@ -90,12 +109,14 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
             dataMap.put(NBTConstants.SINGLE_ITEM, itemType.getStack().serializeNBT());
         }
         dataMap.putLong(NBTConstants.AMOUNT, count);
+        dataMap.putBoolean(NBTConstants.FUZZY_MODE, fuzzy);
     }
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
         NBTUtils.setItemStackIfPresent(dataMap, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(dataMap, NBTConstants.AMOUNT, value -> count = value);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.FUZZY_MODE, value -> fuzzy = value);
     }
 
     @Override
@@ -103,6 +124,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put(NBTConstants.SINGLE_ITEM, NBTConstants.SINGLE_ITEM);
         remap.put(NBTConstants.AMOUNT, NBTConstants.AMOUNT);
+        remap.put(NBTConstants.FUZZY_MODE, NBTConstants.FUZZY_MODE);
         return remap;
     }
 
@@ -132,6 +154,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
         return count;
     }
 
+    @ComputerMethod
+    public boolean getFuzzyMode() {
+        return fuzzy;
+    }
+
     public long getStoredCount() {
         return clientStoredCount;
     }
@@ -147,10 +174,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
             }
         }));
         container.track(SyncableLong.create(this::getCount, value -> count = value));
-        container.track(SyncableLong.create(() -> {
-            QIOFrequency freq = getQIOFrequency();
-            return freq != null && itemType != null ? freq.getStored(itemType) : 0;
-        }, value -> clientStoredCount = value));
+        container.track(SyncableBoolean.create(this::getFuzzyMode, value -> fuzzy = value));
+        container.track(SyncableLong.create(this::getFreqStored, value -> clientStoredCount = value));
     }
 
     //Methods relating to IComputerTile
@@ -177,6 +202,18 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
             throw new ComputerException("Trigger amount cannot be negative. Received: %d", amount);
         }
         handleCountChange(amount);
+    }
+
+    @ComputerMethod(nameOverride = "toggleFuzzyMode")
+    private void computerToggleFuzzyMode() throws ComputerException {
+        validateSecurityIsPublic();
+        toggleFuzzyMode();
+    }
+
+    @ComputerMethod(nameOverride = "setFuzzyMode")
+    private void computerSetFuzzyMode(boolean fuzzy) throws ComputerException {
+        validateSecurityIsPublic();
+        setFuzzyMode(fuzzy);
     }
     //End methods IComputerTile
 }

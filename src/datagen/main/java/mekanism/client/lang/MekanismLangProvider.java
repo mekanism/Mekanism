@@ -690,6 +690,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_TYPES, "Types");
         add(MekanismLang.QIO_TRIGGER_COUNT, "Trigger count: %1$s");
         add(MekanismLang.QIO_STORED_COUNT, "Stored count: %1$s");
+        add(MekanismLang.QIO_FUZZY_MODE, "Ignoring NBT: %1$s");
         add(MekanismLang.QIO_ITEM_TYPE_UNDEFINED, "Item type undefined");
         add(MekanismLang.QIO_IMPORT_WITHOUT_FILTER, "Import Without Filter:");
         add(MekanismLang.QIO_EXPORT_WITHOUT_FILTER, "Export Without Filter:");

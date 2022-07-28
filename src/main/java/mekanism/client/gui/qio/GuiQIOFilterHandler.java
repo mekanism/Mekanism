@@ -3,6 +3,7 @@ package mekanism.client.gui.qio;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -21,6 +22,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
+import mekanism.common.content.qio.IQIOFrequencyHolder;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
@@ -39,6 +41,30 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
 
     private static final int FILTER_COUNT = 3;
 
+    static Supplier<List<Component>> getFrequencyText(IQIOFrequencyHolder holder) {
+        return () -> {
+            QIOFrequency freq = holder.getQIOFrequency();
+            if (freq == null) {
+                return List.of(MekanismLang.NO_FREQUENCY.translate());
+            }
+            return List.of(MekanismLang.FREQUENCY.translate(freq.getKey()));
+        };
+    }
+
+    static Supplier<List<Component>> getFrequencyTooltip(IQIOFrequencyHolder holder) {
+        return () -> {
+            QIOFrequency freq = holder.getQIOFrequency();
+            if (freq == null) {
+                return List.of();
+            }
+            return List.of(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(freq.getTotalItemCount()),
+                        TextUtils.format(freq.getTotalItemCountCapacity())),
+                  MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(freq.getTotalItemTypes(true)),
+                        TextUtils.format(freq.getTotalItemTypeCapacity()))
+            );
+        };
+    }
+
     private GuiScrollBar scrollBar;
 
     public GuiQIOFilterHandler(MekanismTileContainer<TILE> container, Inventory inv, Component title) {
@@ -52,26 +78,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
-        addRenderableWidget(new GuiInnerScreen(this, 9, 16, imageWidth - 18, 12, () -> {
-            List<Component> list = new ArrayList<>();
-            QIOFrequency freq = tile.getQIOFrequency();
-            if (freq == null) {
-                list.add(MekanismLang.NO_FREQUENCY.translate());
-            } else {
-                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
-            }
-            return list;
-        }).tooltip(() -> {
-            List<Component> list = new ArrayList<>();
-            QIOFrequency freq = tile.getQIOFrequency();
-            if (freq != null) {
-                list.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(freq.getTotalItemCount()), TextUtils.format(freq.getTotalItemCountCapacity())));
-                list.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(freq.getTotalItemTypes(true)), TextUtils.format(freq.getTotalItemTypeCapacity())));
-            }
-            return list;
-        }));
+        addRenderableWidget(new GuiInnerScreen(this, 9, 16, imageWidth - 18, 12, getFrequencyText(tile)).tooltip(getFrequencyTooltip(tile)));
         //Filter holder
         addRenderableWidget(new GuiElementHolder(this, 9, 30, 144, 68));
         //new filter button border

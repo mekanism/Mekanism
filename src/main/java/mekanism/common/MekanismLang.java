@@ -60,6 +60,7 @@ public enum MekanismLang implements ILangEntry {
     QIO_TYPES("qio", "types"),
     QIO_TRIGGER_COUNT("qio", "trigger_count"),
     QIO_STORED_COUNT("qio", "stored_count"),
+    QIO_FUZZY_MODE("qio", "fuzzy_mode"),
     QIO_ITEM_TYPE_UNDEFINED("qio", "item_type_undefined"),
     QIO_IMPORT_WITHOUT_FILTER("qio", "import_without_filter"),
     QIO_EXPORT_WITHOUT_FILTER("qio", "export_without_filter"),
