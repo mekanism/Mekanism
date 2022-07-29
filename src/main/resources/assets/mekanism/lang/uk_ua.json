@@ -940,6 +940,7 @@
   "gui.mekanism.compass": "Компас",
   "gui.mekanism.crafting.tab": "Створення (%1$s/%2$s)",
   "gui.mekanism.crafting.window": "Вікно створення %1$s",
+  "gui.mekanism.crafting.window.clear": "Очистіть вміст вікна крафта в сховище, утримуйте Shift, щоб очистити його в інвентар гравця.",
   "gui.mekanism.danger": "Небезпека",
   "gui.mekanism.default": "За замовчуванням",
   "gui.mekanism.delay": "Затримка %1$st",
