@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
@@ -337,18 +338,22 @@ public class CommonPlayerTickHandler {
         Player player = event.getEntity();
         float speed = event.getNewSpeed();
 
-        // Blasting item speed check
-        ItemStack mainHand = player.getMainHandItem();
-        if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
-            Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, event.getPos(), event.getState());
-            if (!blocks.isEmpty()) {
-                // Scales mining speed based on hardest block
-                // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
-                float targetHardness = event.getState().getDestroySpeed(player.level, event.getPos());
-                float maxHardness = blocks.entrySet().stream()
-                      .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))
-                      .reduce(targetHardness, Float::max);
-                speed *= (targetHardness / maxHardness);
+        Optional<BlockPos> position = event.getPosition();
+        if (position.isPresent()) {
+            BlockPos pos = position.get();
+            // Blasting item speed check
+            ItemStack mainHand = player.getMainHandItem();
+            if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
+                Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, pos, event.getState());
+                if (!blocks.isEmpty()) {
+                    // Scales mining speed based on hardest block
+                    // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
+                    float targetHardness = event.getState().getDestroySpeed(player.level, pos);
+                    float maxHardness = blocks.entrySet().stream()
+                          .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))
+                          .reduce(targetHardness, Float::max);
+                    speed *= (targetHardness / maxHardness);
+                }
             }
         }
 
