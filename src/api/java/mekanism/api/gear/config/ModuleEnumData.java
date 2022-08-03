@@ -1,10 +1,8 @@
 package mekanism.api.gear.config;
 
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundTag;
 
@@ -17,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> implements ModuleConfigData<TYPE> {
 
     private final List<TYPE> enumConstants;
+    private final TYPE defaultValue;
     private TYPE value;
 
     /**
@@ -28,7 +27,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
     public ModuleEnumData(Class<TYPE> enumClass, TYPE def) {
         TYPE[] constants = Objects.requireNonNull(enumClass, "Enum Class cannot be null.").getEnumConstants();
         this.enumConstants = List.of(constants);
-        this.value = Objects.requireNonNull(def, "Default value cannot be null.");
+        this.value = this.defaultValue = Objects.requireNonNull(def, "Default value cannot be null.");
     }
 
     /**
@@ -47,19 +46,14 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
         if (constants.length < selectableCount) {
             throw new IllegalArgumentException("Selectable count is larger than the number of elements in " + enumClass.getSimpleName());
         } else if (constants.length == selectableCount) {
-            this.enumConstants = ImmutableList.<TYPE>builder()
-                  .add(constants)
-                  .build();
-            this.value = def;
+            this.enumConstants = List.of(constants);
         } else {
             if (def.ordinal() >= selectableCount) {
                 throw new IllegalArgumentException("Invalid default, it is out of range of the selectable values.");
             }
-            this.enumConstants = ImmutableList.<TYPE>builder()
-                  .addAll(List.of(constants).subList(0, selectableCount))
-                  .build();
-            this.value = def;
+            this.enumConstants = List.of(constants).subList(0, selectableCount);
         }
+        this.value = this.defaultValue = def;
     }
 
     /**
@@ -89,7 +83,12 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
     public void read(String name, CompoundTag tag) {
         Objects.requireNonNull(tag, "Tag cannot be null.");
         Objects.requireNonNull(name, "Name cannot be null.");
-        value = MathUtils.getByIndexMod(enumConstants, tag.getInt(name));
+        int ordinal = tag.getInt(name);
+        if (ordinal >= 0 && ordinal < enumConstants.size()) {
+            value = enumConstants.get(ordinal);
+        } else {
+            value = defaultValue;
+        }
     }
 
     @Override
