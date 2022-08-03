@@ -7,6 +7,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -216,10 +217,7 @@ public class Pos3D extends Vec3 {
      * @return the distance between this and the defined Pos3D
      */
     public double distance(Vec3 pos) {
-        double subX = x - pos.x;
-        double subY = y - pos.y;
-        double subZ = z - pos.z;
-        return Math.sqrt(subX * subX + subY * subY + subZ * subZ);
+        return Mth.length(x - pos.x, y - pos.y, z - pos.z);
     }
 
     /**

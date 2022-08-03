@@ -100,7 +100,7 @@ public class Meltdown {
                         double d0 = j / 7.5 - 1.0;
                         double d1 = k / 7.5 - 1.0;
                         double d2 = l / 7.5 - 1.0;
-                        double d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+                        double d3 = Mth.length(d0, d1, d2);
                         d0 = d0 / d3;
                         d1 = d1 / d3;
                         d2 = d2 / d3;

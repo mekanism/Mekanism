@@ -188,7 +188,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             this.yd = (Math.random() * 2.0D - 1.0D) * 0.4;
             this.zd = (Math.random() * 2.0D - 1.0D) * 0.4;
             float f = (float) (Math.random() + Math.random() + 1.0D) * 0.15F;
-            float f1 = (float) Math.sqrt(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
+            float f1 = (float) Mth.length(xd, yd, zd);
             this.xd = (this.xd / f1) * f * 0.4;
             this.yd = (this.yd / f1) * f * 0.4 + 0.1;
             this.zd = (this.zd / f1) * f * 0.4;
