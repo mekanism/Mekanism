@@ -828,6 +828,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");
+        add(MekanismLang.BACK, "Back");
         add(MekanismLang.CRAFTING_TAB, "Crafting (%1$s/%2$s)");
         add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %1$s");
         add(MekanismLang.CRAFTING_WINDOW_CLEAR, "Empty Crafting Window contents into storage, hold shift to empty into player inventory instead.");

@@ -188,6 +188,7 @@ public enum MekanismLang implements ILangEntry {
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),
+    BACK("gui", "back"),
     CRAFTING_TAB("gui", "crafting.tab"),
     CRAFTING_WINDOW("gui", "crafting.window"),
     CRAFTING_WINDOW_CLEAR("gui", "crafting.window.clear"),

@@ -934,6 +934,7 @@
   "generic.mekanism.with_comma": "%1$s, %2$s",
   "generic.mekanism.with_parenthesis": "%1$s (%2$s)",
   "generic.mekanism.with_two_parenthesis": "%1$s (%2$s) (%3$s)",
+  "gui.mekanism.back": "Back",
   "gui.mekanism.chemical": "Chemical: %1$s",
   "gui.mekanism.close": "Close",
   "gui.mekanism.color_picker": "Color Picker",
