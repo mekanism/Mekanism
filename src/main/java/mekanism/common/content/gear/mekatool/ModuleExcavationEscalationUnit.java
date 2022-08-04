@@ -26,14 +26,15 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
     @Override
     public void init(IModule<ModuleExcavationEscalationUnit> module, ModuleConfigItemCreator configItemCreator) {
         excavationMode = configItemCreator.createConfigItem("excavation_mode", MekanismLang.MODULE_EFFICIENCY,
-              new ModuleEnumData<>(ExcavationMode.class, module.getInstalledCount() + 2, ExcavationMode.NORMAL));
+              new ModuleEnumData<>(ExcavationMode.NORMAL, module.getInstalledCount() + 2));
     }
 
     @Override
     public void changeMode(IModule<ModuleExcavationEscalationUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
         if (module.isEnabled()) {
-            ExcavationMode newMode = excavationMode.get().adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 2);
-            if (excavationMode.get() != newMode) {
+            ExcavationMode currentMode = excavationMode.get();
+            ExcavationMode newMode = currentMode.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 2);
+            if (currentMode != newMode) {
                 excavationMode.set(newMode);
                 if (displayChangeMessage) {
                     module.displayModeChange(player, MekanismLang.MODULE_EFFICIENCY.translate(), newMode);

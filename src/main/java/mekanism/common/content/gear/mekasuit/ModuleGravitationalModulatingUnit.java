@@ -30,7 +30,7 @@ public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGr
 
     @Override
     public void init(IModule<ModuleGravitationalModulatingUnit> module, ModuleConfigItemCreator configItemCreator) {
-        speedBoost = configItemCreator.createConfigItem("speed_boost", MekanismLang.MODULE_SPEED_BOOST, new ModuleEnumData<>(SprintBoost.class, SprintBoost.LOW));
+        speedBoost = configItemCreator.createConfigItem("speed_boost", MekanismLang.MODULE_SPEED_BOOST, new ModuleEnumData<>(SprintBoost.LOW));
     }
 
     @Override

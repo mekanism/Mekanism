@@ -26,7 +26,7 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
 
     @Override
     public void init(IModule<ModuleJetpackUnit> module, ModuleConfigItemCreator configItemCreator) {
-        jetpackMode = configItemCreator.createConfigItem("jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new ModuleEnumData<>(JetpackMode.class, JetpackMode.NORMAL));
+        jetpackMode = configItemCreator.createConfigItem("jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new ModuleEnumData<>(JetpackMode.NORMAL));
     }
 
     @Override

@@ -23,7 +23,7 @@ public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttack
     @Override
     public void init(IModule<ModuleAttackAmplificationUnit> module, ModuleConfigItemCreator configItemCreator) {
         attackDamage = configItemCreator.createConfigItem("attack_damage", MekanismLang.MODULE_BONUS_ATTACK_DAMAGE,
-              new ModuleEnumData<>(AttackDamage.class, module.getInstalledCount() + 2, AttackDamage.MED));
+              new ModuleEnumData<>(AttackDamage.MED, module.getInstalledCount() + 2));
     }
 
     public int getDamage() {

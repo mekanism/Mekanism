@@ -57,7 +57,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
     @Override
     public void init(IModule<ModuleFarmingUnit> module, ModuleConfigItemCreator configItemCreator) {
         farmingRadius = configItemCreator.createConfigItem("farming_radius", MekanismLang.MODULE_FARMING_RADIUS,
-              new ModuleEnumData<>(FarmingRadius.class, module.getInstalledCount() + 1, FarmingRadius.LOW));
+              new ModuleEnumData<>(FarmingRadius.LOW, module.getInstalledCount() + 1));
     }
 
     @NotNull

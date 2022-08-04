@@ -31,8 +31,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
 
     @Override
     public void init(IModule<ModuleMagneticAttractionUnit> module, ModuleConfigItemCreator configItemCreator) {
-        range = configItemCreator.createConfigItem("range", MekanismLang.MODULE_RANGE,
-              new ModuleEnumData<>(Range.class, module.getInstalledCount() + 1, Range.LOW));
+        range = configItemCreator.createConfigItem("range", MekanismLang.MODULE_RANGE, new ModuleEnumData<>(Range.LOW, module.getInstalledCount() + 1));
     }
 
     @Override

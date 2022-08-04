@@ -21,9 +21,9 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
     @Override
     public void init(IModule<ModuleHydraulicPropulsionUnit> module, ModuleConfigItemCreator configItemCreator) {
         jumpBoost = configItemCreator.createConfigItem("jump_boost", MekanismLang.MODULE_JUMP_BOOST,
-              new ModuleEnumData<>(JumpBoost.class, module.getInstalledCount() + 1, JumpBoost.LOW));
+              new ModuleEnumData<>(JumpBoost.LOW, module.getInstalledCount() + 1));
         stepAssist = configItemCreator.createConfigItem("step_assist", MekanismLang.MODULE_STEP_ASSIST,
-              new ModuleEnumData<>(StepAssist.class, module.getInstalledCount() + 1, StepAssist.LOW));
+              new ModuleEnumData<>(StepAssist.LOW, module.getInstalledCount() + 1));
     }
 
     public float getBoost() {
