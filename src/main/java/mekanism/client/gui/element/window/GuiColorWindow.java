@@ -216,8 +216,8 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-            super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
+        public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+            super.onDrag(mouseX, mouseY, deltaX, deltaY);
             if (isDragging) {
                 set(mouseX, mouseY);
             }
@@ -259,8 +259,8 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-            super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
+        public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+            super.onDrag(mouseX, mouseY, deltaX, deltaY);
             if (isDragging) {
                 set(mouseX, mouseY);
             }

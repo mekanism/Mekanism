@@ -12,8 +12,9 @@ import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.scroll.GuiScrollList;
+import mekanism.client.gui.element.scroll.GuiScrollableElement;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
@@ -24,24 +25,30 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class GuiModuleScreen extends GuiElement {
+//TODO: Eventually we might want to try and improve the "scroll sensitivity"
+public class GuiModuleScreen extends GuiScrollableElement {
 
     private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
     private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "slider.png");
-
-    private final int TEXT_COLOR = screenTextColor();
+    private static final int ELEMENT_SPACER = 4;
 
     private final IntSupplier slotIdSupplier;
 
     private IModule<?> currentModule;
     private List<MiniElement> miniElements = new ArrayList<>();
+    private int maxElements;
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, IntSupplier slotIdSupplier) {
-        super(gui, x, y, 102, 134);
+        this(gui, x, y, 102, 134, slotIdSupplier);
+    }
+
+    private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, IntSupplier slotIdSupplier) {
+        super(GuiScrollList.SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.slotIdSupplier = slotIdSupplier;
     }
 
@@ -58,16 +65,11 @@ public class GuiModuleScreen extends GuiElement {
         List<MiniElement> newElements = new ArrayList<>();
 
         if (module != null) {
-            int startY = 3;
-            if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
-                startY += 13;
-            }
-            if (module.getData().getMaxStackSize() > 1) {
-                startY += 13;
-            }
+            int startY = getStartY(module);
             List<ModuleConfigItem<?>> configItems = module.getConfigItems();
             for (int i = 0, configItemsCount = configItems.size(); i < configItemsCount; i++) {
                 ModuleConfigItem<?> configItem = configItems.get(i);
+                MiniElement element = null;
                 // Don't show the enabled option if this is enabled by default
                 if (configItem.getData() instanceof ModuleBooleanData && (!configItem.getName().equals(Module.ENABLED_KEY) || !module.getData().isNoDisable())) {
                     if (configItem instanceof DisableableModuleConfigItem item && !item.isConfigEnabled()) {
@@ -76,36 +78,97 @@ public class GuiModuleScreen extends GuiElement {
                         // not adding them back when switching to another module and then back again
                         continue;
                     }
-                    newElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY, i));
-                    startY += 24;
+                    element = new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY, i);
                 } else if (configItem.getData() instanceof ModuleEnumData) {
-                    EnumToggle toggle = new EnumToggle((ModuleConfigItem<Enum<? extends IHasTextComponent>>) configItem, 2, startY, i);
-                    newElements.add(toggle);
-                    startY += 34;
+                    EnumToggle<?> toggle = createEnumToggle(configItem, 2, startY, i);
+                    element = toggle;
                     // allow the dragger to continue sliding, even when we reset the config element
-                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle enumToggle) {
+                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle<?> enumToggle) {
                         toggle.dragging = enumToggle.dragging;
                     }
                 }
+                if (element != null) {
+                    newElements.add(element);
+                    startY += element.getNeededHeight() + ELEMENT_SPACER;
+                }
             }
+            maxElements = newElements.isEmpty() ? startY : startY - ELEMENT_SPACER;
+        } else {
+            maxElements = 0;
         }
 
         currentModule = module;
         miniElements = newElements;
     }
 
+    @SuppressWarnings("unchecked")
+    private <TYPE extends Enum<TYPE> & IHasTextComponent> EnumToggle<TYPE> createEnumToggle(ModuleConfigItem<?> data, int xPos, int yPos, int dataIndex) {
+        return new EnumToggle<>((ModuleConfigItem<TYPE>) data, xPos, yPos, dataIndex);
+    }
+
+    private int getStartY(@Nullable IModule<?> module) {
+        int startY = 5;
+        if (module != null) {
+            if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
+                startY += 13;
+            }
+            if (module.getData().getMaxStackSize() > 1) {
+                startY += 13;
+            }
+        }
+        return startY;
+    }
+
+    @Override
+    protected int getMaxElements() {
+        return maxElements;
+    }
+
+    @Override
+    protected int getFocusedElements() {
+        return height - 2;
+    }
+
     @Override
     public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        drawScrollBar(matrix, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);
+
+        //Draw contents
+        //Note: Scissor width at edge of monitor to make it, so we effectively only are scissoring height
+        enableScissor(0, this.y + 1, minecraft.getWindow().getGuiScaledWidth(), this.y + this.height - 1);
+        matrix.pushPose();
+        int shift = getCurrentSelection();
+        matrix.translate(0, -shift, 0);
+        mouseY += shift;
+
+        int startY = getStartY(currentModule);
         for (MiniElement element : miniElements) {
-            element.renderBackground(matrix, mouseX, mouseY);
+            if (startY >= shift + height) {
+                //If we are past the max draw spot, stop attempting to draw
+                break;
+            } else if (startY + element.getNeededHeight() > shift) {
+                //Only draw it if it would be in our view
+                element.renderBackground(matrix, mouseX, mouseY);
+            }
+            startY += element.getNeededHeight() + ELEMENT_SPACER;
         }
+
+        matrix.popPose();
+        disableScissor();
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return isMouseOver(mouseX, mouseY) && adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
+        //Shift the mouse y by the proper amount so that we click the correct spots
+        mouseY += getCurrentSelection();
         for (MiniElement element : miniElements) {
             element.click(mouseX, mouseY);
         }
@@ -114,36 +177,66 @@ public class GuiModuleScreen extends GuiElement {
     @Override
     public void onRelease(double mouseX, double mouseY) {
         super.onRelease(mouseX, mouseY);
+        //Shift the mouse y by the proper amount so that we click the correct spots
+        mouseY += getCurrentSelection();
         for (MiniElement element : miniElements) {
             element.release(mouseX, mouseY);
         }
     }
 
     @Override
+    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+        super.onDrag(mouseX, mouseY, deltaX, deltaY);
+        //Shift the mouse y by the proper amount so that we click the correct spots
+        mouseY += getCurrentSelection();
+        for (MiniElement element : miniElements) {
+            element.onDrag(mouseX, mouseY, deltaX, deltaY);
+        }
+    }
+
+    @Override
     public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-
+        //Note: Scissor width at edge of monitor to make it, so we effectively only are scissoring height
+        enableScissor(0, this.y + 1, minecraft.getWindow().getGuiScaledWidth(), this.y + this.height - 1);
+        matrix.pushPose();
+        int shift = getCurrentSelection();
+        matrix.translate(0, -shift, 0);
+        mouseY += shift;
+        int startY = 5;
         if (currentModule != null) {
-            int startY = relativeY + 5;
             if (currentModule.getData().isExclusive(ExclusiveFlag.ANY)) {
-                Component comp = MekanismLang.MODULE_EXCLUSIVE.translate();
-                drawTextWithScale(matrix, comp, relativeX + 5, startY, 0x635BD4, 0.8F);
+                if (startY + 13 > shift) {
+                    drawTextWithScale(matrix, MekanismLang.MODULE_EXCLUSIVE.translate(), relativeX + 5, relativeY + startY, 0x635BD4, 0.8F);
+                }
                 startY += 13;
             }
             if (currentModule.getData().getMaxStackSize() > 1) {
-                drawTextWithScale(matrix, MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 5, startY, TEXT_COLOR, 0.8F);
+                if (startY + 13 > shift) {
+                    drawTextWithScale(matrix, MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 5, relativeY + startY,
+                          screenTextColor(), 0.8F);
+                }
                 startY += 13;
             }
         }
-
+        //Draw elements
         for (MiniElement element : miniElements) {
-            element.renderForeground(matrix, mouseX, mouseY);
+            if (startY >= shift + height) {
+                //If we are past the max draw spot, stop attempting to draw
+                break;
+            } else if (startY + element.getNeededHeight() > shift) {
+                //Only draw it if it would be in our view
+                element.renderForeground(matrix, mouseX, mouseY);
+            }
+            startY += element.getNeededHeight() + ELEMENT_SPACER;
         }
+        matrix.popPose();
+        disableScissor();
     }
 
     abstract class MiniElement {
 
-        final int xPos, yPos, dataIndex;
+        protected final int xPos, yPos, dataIndex;
 
         public MiniElement(int xPos, int yPos, int dataIndex) {
             this.xPos = xPos;
@@ -151,35 +244,48 @@ public class GuiModuleScreen extends GuiElement {
             this.dataIndex = dataIndex;
         }
 
-        abstract void renderBackground(PoseStack matrix, int mouseX, int mouseY);
+        protected abstract void renderBackground(PoseStack matrix, int mouseX, int mouseY);
 
-        abstract void renderForeground(PoseStack matrix, int mouseX, int mouseY);
+        protected abstract void renderForeground(PoseStack matrix, int mouseX, int mouseY);
 
-        abstract void click(double mouseX, double mouseY);
+        protected abstract void click(double mouseX, double mouseY);
 
-        void release(double mouseX, double mouseY) {
+        protected void release(double mouseX, double mouseY) {
         }
 
-        int getRelativeX() {
+        protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+        }
+
+        protected abstract int getNeededHeight();
+
+        protected int getRelativeX() {
             return relativeX + xPos;
         }
 
-        int getRelativeY() {
+        protected int getRelativeY() {
             return relativeY + yPos;
         }
 
-        int getX() {
+        protected int getX() {
             return x + xPos;
         }
 
-        int getY() {
+        protected int getY() {
             return y + yPos;
+        }
+
+        protected boolean mouseOver(double mouseX, double mouseY, int relativeX, int relativeY, int width, int height) {
+            int x = getX();
+            int y = getY();
+            return mouseX >= x + relativeX && mouseX < x + relativeX + width && mouseY >= y + relativeY && mouseY < y + relativeY + height;
         }
     }
 
     class BooleanToggle extends MiniElement {
 
-        final ModuleConfigItem<Boolean> data;
+        private static final int RADIO_SIZE = 8;
+
+        private final ModuleConfigItem<Boolean> data;
 
         BooleanToggle(ModuleConfigItem<Boolean> data, int xPos, int yPos, int dataIndex) {
             super(xPos, yPos, dataIndex);
@@ -187,111 +293,125 @@ public class GuiModuleScreen extends GuiElement {
         }
 
         @Override
-        public void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
+        protected int getNeededHeight() {
+            return 20;
+        }
+
+        @Override
+        protected void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
             RenderSystem.setShaderTexture(0, RADIO);
+            drawRadio(matrix, mouseX, mouseY, data.get(), 4, 11, 0);
+            drawRadio(matrix, mouseX, mouseY, !data.get(), 50, 11, RADIO_SIZE);
+        }
 
-            boolean hover = mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19;
+        private void drawRadio(PoseStack matrix, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, int selectedU) {
+            if (selected) {
+                blit(matrix, getX() + relativeX, getY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 16, 16);
+            } else {
+                boolean hovered = mouseOver(mouseX, mouseY, relativeX, relativeY, RADIO_SIZE, RADIO_SIZE);
+                blit(matrix, getX() + relativeX, getY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 16, 16);
+            }
+        }
+
+        @Override
+        protected void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
+            int textColor = screenTextColor();
+            drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
+            drawTextWithScale(matrix, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, textColor, 0.8F);
+            drawTextWithScale(matrix, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, textColor, 0.8F);
+        }
+
+        @Override
+        protected void click(double mouseX, double mouseY) {
             if (data.get()) {
-                blit(matrix, getX() + 4, getY() + 11, 0, 8, 8, 8, 16, 16);
-            } else {
-                blit(matrix, getX() + 4, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
-            }
-            hover = mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19;
-            if (!data.get()) {
-                blit(matrix, getX() + 50, getY() + 11, 8, 8, 8, 8, 16, 16);
-            } else {
-                blit(matrix, getX() + 50, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
+                if (mouseOver(mouseX, mouseY, 50, 11, RADIO_SIZE, RADIO_SIZE)) {
+                    setDataFromClick(false);
+                }
+            } else if (mouseOver(mouseX, mouseY, 4, 11, RADIO_SIZE, RADIO_SIZE)) {
+                setDataFromClick(true);
             }
         }
 
-        @Override
-        public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-            drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
-            drawTextWithScale(matrix, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, TEXT_COLOR, 0.8F);
-            drawTextWithScale(matrix, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, TEXT_COLOR, 0.8F);
-        }
-
-        @Override
-        public void click(double mouseX, double mouseY) {
-            if (!data.get() && mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
-                data.set(true, getCallback(data.getData(), dataIndex));
-                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
-            }
-
-            if (data.get() && mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
-                data.set(false, getCallback(data.getData(), dataIndex));
-                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
-            }
+        private void setDataFromClick(boolean value) {
+            data.set(value, getCallback(data.getData(), dataIndex));
+            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
         }
     }
 
-    class EnumToggle extends MiniElement {
+    class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElement {
 
-        final int BAR_LENGTH = getWidth() - 24;
-        final int BAR_START = 10;
-        final float TEXT_SCALE = 0.7F;
-        final ModuleConfigItem<Enum<? extends IHasTextComponent>> data;
-        boolean dragging = false;
+        private static final float TEXT_SCALE = 0.7F;
+        private static final int BAR_START = 10;
 
-        EnumToggle(ModuleConfigItem<Enum<? extends IHasTextComponent>> data, int xPos, int yPos, int dataIndex) {
+        private final int BAR_LENGTH = GuiModuleScreen.this.barXShift - 24;
+        private final ModuleConfigItem<TYPE> data;
+        private final int optionDistance;
+        private boolean dragging = false;
+
+        EnumToggle(ModuleConfigItem<TYPE> data, int xPos, int yPos, int dataIndex) {
             super(xPos, yPos, dataIndex);
             this.data = data;
+            this.optionDistance = (BAR_LENGTH / (getData().getEnums().size() - 1));
         }
 
         @Override
-        public void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
+        protected int getNeededHeight() {
+            return 28;
+        }
+
+        private ModuleEnumData<TYPE> getData() {
+            return (ModuleEnumData<TYPE>) data.getData();
+        }
+
+        @Override
+        protected void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
             RenderSystem.setShaderTexture(0, SLIDER);
-            int count = ((ModuleEnumData<?>) data.getData()).getEnums().size();
-            int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();
+            int center = optionDistance * data.get().ordinal();
             blit(matrix, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
             blit(matrix, getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
         }
 
         @Override
-        public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-            ModuleEnumData<?> enumData = (ModuleEnumData<?>) data.getData();
-            drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
-            List<? extends Enum<? extends IHasTextComponent>> options = enumData.getEnums();
-            int count = options.size();
-            for (int i = 0; i < count; i++) {
-                int diffFromCenter = ((BAR_LENGTH / (count - 1)) * i) - (BAR_LENGTH / 2);
-                float diffScale = 1 - (1 - TEXT_SCALE) / 2F;
-                int textCenter = getRelativeX() + BAR_START + (BAR_LENGTH / 2) + (int) (diffFromCenter * diffScale);
-                drawScaledCenteredText(matrix, ((IHasTextComponent) options.get(i)).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, TEXT_SCALE);
-            }
-
-            if (dragging) {
-                int cur = (int) Math.round(((double) (mouseX - getX() - BAR_START) / (double) BAR_LENGTH) * (count - 1));
-                cur = Math.min(count - 1, Math.max(0, cur));
-                if (cur != data.get().ordinal()) {
-                    data.set(options.get(cur), getCallback(data.getData(), dataIndex));
-                }
+        protected void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
+            int textColor = screenTextColor();
+            drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
+            List<TYPE> options = getData().getEnums();
+            for (int i = 0, count = options.size(); i < count; i++) {
+                int center = optionDistance * i;
+                drawScaledCenteredText(matrix, options.get(i).getTextComponent(), getRelativeX() + BAR_START + center, getRelativeY() + 20, textColor, TEXT_SCALE);
             }
         }
 
         @Override
-        public void click(double mouseX, double mouseY) {
-            List<? extends Enum<? extends IHasTextComponent>> options = ((ModuleEnumData<?>) data.getData()).getEnums();
+        protected void click(double mouseX, double mouseY) {
             if (!dragging) {
-                int center = (BAR_LENGTH / (options.size() - 1)) * data.get().ordinal();
-                if (mouseX >= getX() + BAR_START + center - 2 && mouseX < getX() + BAR_START + center + 3 && mouseY >= getY() + 11 && mouseY < getY() + 17) {
+                int center = optionDistance * data.get().ordinal();
+                if (mouseOver(mouseX, mouseY, BAR_START + center - 2, 11, 5, 6)) {
                     dragging = true;
-                }
-            }
-            if (!dragging) {
-                if (mouseX >= getX() + BAR_START && mouseX < getX() + BAR_START + BAR_LENGTH && mouseY >= getY() + 10 && mouseY < getY() + 22) {
-                    int count = options.size();
-                    int cur = (int) Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * (count - 1));
-                    cur = Math.min(count - 1, Math.max(0, cur));
-                    if (cur != data.get().ordinal()) {
-                        data.set(options.get(cur), getCallback(data.getData(), dataIndex));
-                    }
+                } else if (mouseOver(mouseX, mouseY, BAR_START, 10, BAR_LENGTH, 12)) {
+                    setData(getData().getEnums(), mouseX);
                 }
             }
         }
 
         @Override
-        public void release(double mouseX, double mouseY) {
+        protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+            if (dragging) {
+                setData(getData().getEnums(), mouseX);
+            }
+        }
+
+        private void setData(List<TYPE> options, double mouseX) {
+            int size = options.size() - 1;
+            int cur = (int) Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * size);
+            cur = Mth.clamp(cur, 0, size);
+            if (cur != data.get().ordinal()) {
+                data.set(options.get(cur), getCallback(data.getData(), dataIndex));
+            }
+        }
+
+        @Override
+        protected void release(double mouseX, double mouseY) {
             dragging = false;
         }
     }

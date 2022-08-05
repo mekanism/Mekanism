@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
@@ -10,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
 
-    protected static final ResourceLocation SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI, "scroll_list.png");
-    protected static final int TEXTURE_WIDTH = 6;
-    protected static final int TEXTURE_HEIGHT = 6;
+    public static final ResourceLocation SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI, "scroll_list.png");
+    public static final int TEXTURE_WIDTH = 6;
+    public static final int TEXTURE_HEIGHT = 6;
 
     private final ResourceLocation background;
     private final int backgroundSideSize;
@@ -43,16 +42,8 @@ public abstract class GuiScrollList extends GuiScrollableElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
         renderBackgroundTexture(matrix, background, backgroundSideSize, backgroundSideSize);
-        RenderSystem.setShaderTexture(0, getResource());
         //Draw Scroll
-        //Top border
-        blit(matrix, barX - 1, barY - 1, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        //Middle border
-        blit(matrix, barX - 1, barY, 6, maxBarHeight, 0, 1, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        //Bottom border
-        blit(matrix, barX - 1, y + maxBarHeight + 2, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        //Scroll bar
-        blit(matrix, barX, barY + getScroll(), 0, 2, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        drawScrollBar(matrix, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Draw the elements
         renderElements(matrix, mouseX, mouseY, partialTicks);
     }

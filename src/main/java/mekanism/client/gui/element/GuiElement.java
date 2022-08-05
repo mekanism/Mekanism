@@ -281,9 +281,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-        children.forEach(element -> element.onDrag(mouseX, mouseY, mouseXOld, mouseYOld));
-        super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
+    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+        children.forEach(element -> element.onDrag(mouseX, mouseY, deltaX, deltaY));
+        super.onDrag(mouseX, mouseY, deltaX, deltaY);
     }
 
     @Override
