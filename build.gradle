@@ -8,7 +8,7 @@ import net.minecraftforge.gradle.common.util.RunConfig
 import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
 plugins {
-    id 'org.ajoberstar.grgit' version '4.1.1'//'5.0.0'//Can't use 5.0.0 yet as our jenkins uses java 8 to run gradle
+    id 'org.ajoberstar.grgit' version '5.0.0'
     id "com.matthewprenger.cursegradle" version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
@@ -21,7 +21,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.5'
+    gradleVersion = '7.5.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 

@@ -1,10 +1,10 @@
 # Development
 
-Mekanism is developed for Minecraft 1.19.1 using Minecraft Forge.
+Mekanism is developed for Minecraft 1.19.2 using Minecraft Forge.
 
 ## Prerequisites
 
-* Gradle - Version 7.5 is known to work, your mileage with other versions may vary
+* Gradle - Version 7.5.1 is known to work, your mileage with other versions may vary
 
 ## Directory Structure
 
