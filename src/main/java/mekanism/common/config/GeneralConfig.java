@@ -16,6 +16,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyConversionRate;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -43,7 +44,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue allowChunkloading;
     public final CachedBooleanValue easyMinerFilters;
     public final CachedIntValue blockDeactivationDelay;
-    public final CachedConfigValue<List<String>> cardboardModBlacklist;
+    public final CachedConfigValue<List<? extends String>> cardboardModBlacklist;
     public final CachedBooleanValue transmitterAlloyUpgrade;
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedDoubleValue boilerWaterConductivity;
@@ -130,7 +131,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client, if it has been rapidly changing.")
               .define("blockDeactivationDelay", 60));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]")
-              .define("cardboardModBlacklist", new ArrayList<>()));
+              .defineListAllowEmpty(Collections.singletonList("cardboardModBlacklist"), ArrayList::new, e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid)));
         transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("transmitterAlloyUpgrade", true));
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
