@@ -145,9 +145,9 @@ public class WorldUtils {
             // Also short circuit to check if the position is out of bounds before bothering to look up the chunk
             return null;
         }
-        int chunkX = pos.getX() >> 4;
-        int chunkZ = pos.getZ() >> 4;
-        long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);
+        int chunkX = SectionPos.blockToSectionCoord(pos.getX());
+        int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
+        long combinedChunk = ChunkPos.asLong(chunkX, chunkZ);
         //We get the chunk rather than the world, so we can cache the chunk improving the overall
         // performance for retrieving a bunch of chunks in the general vicinity
         ChunkAccess chunk = chunkMap.get(combinedChunk);
@@ -406,7 +406,8 @@ public class WorldUtils {
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(ChunkPos chunk, Level world) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.dimension() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.dimension() && SectionPos.blockToSectionCoord(coord.getX()) == chunk.x &&
+                                                                   SectionPos.blockToSectionCoord(coord.getZ()) == chunk.z);
     }
 
     public static boolean tryPlaceContainedLiquid(@Nullable Player player, Level world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable Direction side) {
@@ -663,15 +664,6 @@ public class WorldUtils {
         // as vanilla returns false if the world's time is set to a fixed value even if that time
         // would effectively be daytime
         return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSky(pos);
-    }
-
-    /**
-     * Converts a {@link BlockPos} to a long representing the {@link ChunkPos} it is in without creating a temporary {@link ChunkPos} object.
-     *
-     * @param pos Pos to convert.
-     */
-    public static long getChunkPosAsLong(BlockPos pos) {
-        return ChunkPos.asLong(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 
     /**

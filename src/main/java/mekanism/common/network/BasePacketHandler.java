@@ -12,6 +12,7 @@ import mekanism.common.lib.Version;
 import mekanism.common.lib.math.Range3D;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -206,7 +207,7 @@ public abstract class BasePacketHandler {
             level.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
         } else {
             //Otherwise, fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
-            getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)), message);
+            getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()))), message);
         }
     }
 

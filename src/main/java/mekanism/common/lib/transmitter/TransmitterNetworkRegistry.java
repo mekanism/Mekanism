@@ -1,14 +1,20 @@
 package mekanism.common.lib.transmitter;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
@@ -19,11 +25,13 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.level.ChunkTicketLevelUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +39,8 @@ public class TransmitterNetworkRegistry {
 
     private static final TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
+    private final Multimap<Chunk3D, Transmitter<?, ?, ?>> transmitters = HashMultimap.create();
+    private Object2BooleanMap<Chunk3D> changedTicketChunks = new Object2BooleanOpenHashMap<>();
     private final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
     private final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
     private Map<Coord4D, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
@@ -70,6 +80,14 @@ public class TransmitterNetworkRegistry {
         getInstance().newOrphanTransmitters.clear();
     }
 
+    public static void trackTransmitter(Transmitter<?, ?, ?> transmitter) {
+        getInstance().transmitters.put(transmitter.getTileChunk(), transmitter);
+    }
+
+    public static void untrackTransmitter(Transmitter<?, ?, ?> transmitter) {
+        getInstance().transmitters.remove(transmitter.getTileChunk(), transmitter);
+    }
+
     public static void invalidateTransmitter(Transmitter<?, ?, ?> transmitter) {
         getInstance().invalidTransmitters.add(transmitter);
     }
@@ -107,11 +125,64 @@ public class TransmitterNetworkRegistry {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.phase == Phase.END && event.side.isServer()) {
+            handleChangedChunks();
             removeInvalidTransmitters();
             assignOrphans();
             commitChanges();
             for (DynamicNetwork<?, ?, ?> net : networks) {
                 net.onUpdate();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onTicketLevelChange(ChunkTicketLevelUpdatedEvent event) {
+        int newTicketLevel = event.getNewTicketLevel();
+        int oldTicketLevel = event.getOldTicketLevel();
+        boolean loaded;
+        if (oldTicketLevel > ChunkMap.MAX_VIEW_DISTANCE && newTicketLevel <= ChunkMap.MAX_VIEW_DISTANCE) {
+            //Went from "unloaded" to loaded
+            loaded = true;
+        } else if (newTicketLevel > ChunkMap.MAX_VIEW_DISTANCE && oldTicketLevel <= ChunkMap.MAX_VIEW_DISTANCE) {
+            //Went from loaded to "unloaded"
+            loaded = false;
+        } else {
+            //Load type stayed the same, just exit
+            return;
+        }
+        Chunk3D chunk = new Chunk3D(event.getLevel().dimension(), event.getChunkPos());
+        if (transmitters.containsKey(chunk)) {
+            //Only track it if we have any transmitters in that chunk
+            if (changedTicketChunks.getOrDefault(chunk, loaded) != loaded) {
+                //If we are watching the chunk and the loaded state isn't what we already had it as,
+                // then remove it as it didn't actually change. In theory in all cases this is equivalent
+                // to just checking if changeTicketChunks contains chunk, but is slightly more accurate
+                // in case for some reason we get two load or unload notifications in a row
+                changedTicketChunks.removeBoolean(chunk);
+            } else {
+                // Otherwise, make sure the map is aware of the change
+                changedTicketChunks.put(chunk, loaded);
+            }
+        }
+    }
+
+    private void handleChangedChunks() {
+        if (!changedTicketChunks.isEmpty()) {
+            Object2BooleanMap<Chunk3D> changed = changedTicketChunks;
+            changedTicketChunks = new Object2BooleanOpenHashMap<>();
+            if (MekanismAPI.debug) {
+                Mekanism.logger.info("Dealing with {} changed chunks", changed.size());
+            }
+            for (Object2BooleanMap.Entry<Chunk3D> entry : changed.object2BooleanEntrySet()) {
+                Chunk3D chunk = entry.getKey();
+                boolean loaded = entry.getBooleanValue();
+                Collection<Transmitter<?, ?, ?>> chunkTransmitters = transmitters.get(chunk);
+                for (Transmitter<?, ?, ?> transmitter : chunkTransmitters) {
+                    transmitter.getTransmitterTile().chunkAccessibilityChange(loaded);
+                }
+                if (MekanismAPI.debug) {
+                    Mekanism.logger.info("{} {} transmitters in chunk: {}, {}", loaded ? "Loaded" : "Unloaded", chunkTransmitters.size(), chunk.x, chunk.z);
+                }
             }
         }
     }
@@ -242,8 +313,8 @@ public class TransmitterNetworkRegistry {
         private void iterate(Map<Coord4D, Transmitter<?, ?, ?>> orphanTransmitters, BlockPos from) {
             if (iterated.add(from)) {
                 Coord4D fromCoord = new Coord4D(from, world);
-                if (orphanTransmitters.containsKey(fromCoord)) {
-                    Transmitter<?, ?, ?> transmitter = orphanTransmitters.get(fromCoord);
+                Transmitter<?, ?, ?> transmitter = orphanTransmitters.get(fromCoord);
+                if (transmitter != null) {
                     if (transmitter.isValid() && transmitter.isOrphan() && startPoint.supportsTransmissionType(transmitter) &&
                         transmitterValidator.isTransmitterCompatible(transmitter)) {
                         connectedTransmitters.add((TRANSMITTER) transmitter);

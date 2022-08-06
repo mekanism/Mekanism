@@ -80,6 +80,7 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -1028,8 +1029,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         ChunkPos minerChunk = new ChunkPos(worldPosition);
         if (targetChunk != null) {
             //If we have a target check to make sure it is in the radius (most likely it is)
-            if ((worldPosition.getX() - radius) >> 4 <= targetChunk.x && targetChunk.x <= (worldPosition.getX() + radius) >> 4 &&
-                (worldPosition.getZ() - radius) >> 4 <= targetChunk.z && targetChunk.z <= (worldPosition.getZ() + radius) >> 4) {
+            if (SectionPos.blockToSectionCoord(worldPosition.getX() - radius) <= targetChunk.x &&
+                targetChunk.x <= SectionPos.blockToSectionCoord(worldPosition.getX() + radius) &&
+                SectionPos.blockToSectionCoord(worldPosition.getZ() - radius) <= targetChunk.z &&
+                targetChunk.z <= SectionPos.blockToSectionCoord(worldPosition.getZ() + radius)) {
                 // if it is, return the chunks we should be loading, provide the chunk the miner is in
                 // and the chunk that the miner is currently mining
                 Set<ChunkPos> chunks = new ObjectArraySet<>(2);

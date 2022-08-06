@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -137,6 +138,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     @Override
     public Coord4D getTileCoord() {
         return transmitterTile.getTileCoord();
+    }
+
+    @Override
+    public Chunk3D getTileChunk() {
+        return transmitterTile.getTileChunk();
     }
 
     public boolean isRemote() {

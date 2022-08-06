@@ -129,7 +129,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     private void removePositionedTransmitter(LogisticalTransporterBase transmitter) {
         BlockPos pos = transmitter.getTilePos();
-        LogisticalTransporterBase currentTransmitter = positionedTransmitters.get(pos);
+        LogisticalTransporterBase currentTransmitter = getTransmitter(pos);
         if (currentTransmitter != null) {
             //This shouldn't be null but if it is, don't bother attempting to remove
             if (currentTransmitter != transmitter) {
