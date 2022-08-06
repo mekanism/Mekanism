@@ -105,7 +105,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     protected boolean exposesEnergyCap(ItemStack stack) {
         //Only expose it if the block can't stack
-        return Attribute.has(block, AttributeEnergy.class) && stack.getMaxStackSize() == 1;
+        return Attribute.has(block, AttributeEnergy.class) && !stack.isStackable();
     }
 
     @Override

@@ -86,7 +86,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     @NotNull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == getSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
+        return slot == getSlot() ? attributeCache.get() : ImmutableMultimap.of();
     }
 
     @Override

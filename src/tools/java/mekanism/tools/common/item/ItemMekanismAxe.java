@@ -70,7 +70,7 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
     @NotNull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == EquipmentSlot.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
+        return slot == EquipmentSlot.MAINHAND ? attributeCache.get() : ImmutableMultimap.of();
     }
 
     @Override
