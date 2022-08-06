@@ -3,6 +3,7 @@ package mekanism.api;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -31,6 +32,18 @@ public class Chunk3D extends ChunkPos {
      * Creates a Chunk3D from the defined chunk position, and dimension values.
      *
      * @param dimension Dimension ID
+     * @param chunkPos  Long representation of the chunk position
+     *
+     * @since 10.3.2
+     */
+    public Chunk3D(ResourceKey<Level> dimension, long chunkPos) {
+        this(dimension, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos));
+    }
+
+    /**
+     * Creates a Chunk3D from the defined chunk position, and dimension values.
+     *
+     * @param dimension Dimension ID
      * @param chunkPos  Chunk position
      */
     public Chunk3D(ResourceKey<Level> dimension, ChunkPos chunkPos) {
@@ -43,7 +56,7 @@ public class Chunk3D extends ChunkPos {
      * @param coord Coordinate
      */
     public Chunk3D(Coord4D coord) {
-        this(coord.dimension, coord.getX() >> 4, coord.getZ() >> 4);
+        this(coord.dimension, SectionPos.blockToSectionCoord(coord.getX()), SectionPos.blockToSectionCoord(coord.getZ()));
     }
 
     /**

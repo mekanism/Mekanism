@@ -132,7 +132,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        onWorldJoin();
+        onWorldJoin(false);
     }
 
     @Override
@@ -147,28 +147,53 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public void setRemoved() {
         super.setRemoved();
-        onWorldSeparate();
+        onWorldSeparate(false);
         getTransmitter().remove();
     }
 
     public void onAdded() {
-        onWorldJoin();
+        onWorldJoin(false);
         getTransmitter().refreshConnections();
     }
 
-    private void onWorldJoin() {
-        loaded = true;
-        if (!isRemote()) {
-            TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
+    private void onWorldJoin(boolean wasPresent) {
+        if (!isRemote() && !wasPresent) {
+            //If we weren't already present, and we are on the server, track this transmitter
+            TransmitterNetworkRegistry.trackTransmitter(getTransmitter());
+        }
+        if (!loaded) {
+            //Only load it if it wasn't already loaded
+            loaded = true;
+            if (!isRemote()) {
+                TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
+            }
         }
     }
 
-    private void onWorldSeparate() {
-        loaded = false;
-        if (isRemote()) {
-            getTransmitter().setTransmitterNetwork(null);
+    private void onWorldSeparate(boolean stillPresent) {
+        if (!isRemote() && !stillPresent) {
+            //If we aren't still present, and we are on the server, stop tracking this transmitter
+            TransmitterNetworkRegistry.untrackTransmitter(getTransmitter());
+        }
+        if (loaded) {
+            //Only unload it if it was actually loaded
+            loaded = false;
+            if (isRemote()) {
+                getTransmitter().setTransmitterNetwork(null);
+            } else {
+                TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
+            }
+        }
+    }
+
+    public void chunkAccessibilityChange(boolean loaded) {
+        if (loaded) {
+            //Chunk went from "unloaded" to loaded
+            onWorldJoin(true);
         } else {
-            TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
+            //Chunk went from loaded to "unloaded", need to take the share first like normally happens when it unloads
+            getTransmitter().takeShare();
+            onWorldSeparate(true);
         }
     }
 

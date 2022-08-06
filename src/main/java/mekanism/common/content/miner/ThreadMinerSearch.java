@@ -17,6 +17,7 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -89,7 +90,7 @@ public class ThreadMinerSearch extends Thread {
                 acceptedItems.put(info, filterFound);
             }
             if (tile.getInverse() == (filterFound == null)) {
-                long chunk = WorldUtils.getChunkPosAsLong(testPos);
+                long chunk = ChunkPos.asLong(testPos);
                 oresToMine.computeIfAbsent(chunk, k -> new BitSet()).set(i);
                 found++;
             }

@@ -425,7 +425,7 @@ dependencies {
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
     testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
-    //TODO - 1.19.1: Update when this updates to 1.19.1
+    //TODO - 1.19.2: Update when this updates to 1.19.2
     compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge:${jei_version}")
@@ -451,7 +451,8 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
+    //TODO - 1.19.2: Update when this when it updates to 1.19.2
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${previous_minor_minecraft_version}-${curios_version}:api")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
     def cc = fg.deobf("curse.maven:cc-tweaked-282001:${cc_tweaked_id}")
     compileOnly cc
@@ -793,8 +794,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             }
             addArtifact apiJar.get()
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
-            addGameVersion "1.19"
+            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
+            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
 
@@ -810,8 +811,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
-            addGameVersion "1.19"
+            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
+            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
 
@@ -842,8 +843,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
-            addGameVersion "1.19"
+            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
+            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
 
@@ -859,8 +860,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.1: Remove this once we require features specific to forge 1.19.1
-            addGameVersion "1.19"
+            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
+            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
     }
@@ -888,8 +889,8 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         changelog = changeLogResolver.call()
         uploadFile = jar
         additionalFiles = [apiJar.get()]
-        //TODO - 1.19.1: Stop specifying 1.19 once we require features specific to forge 1.19.1
-        gameVersions = ["1.19", "${minecraft_version}"]
+        //TODO - 1.19.2: Stop specifying 1.19 once we require features specific to forge 1.19.2
+        gameVersions = ["1.19.1", "${minecraft_version}"]
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
         dependencies = [
                 new ModDependency("XxWD5pD3", "optional"),//AE2
