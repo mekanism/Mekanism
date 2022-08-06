@@ -897,6 +897,7 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
                 new ModDependency("gu7yAYhd", "optional"),//CC: Tweaked
                 new ModDependency("uE1WpIAk", "optional"),//Oh the Biomes You'll Go
                 new ModDependency("bcOsQHnC", "optional"),//Wildfire's Female Gender Mod
+                new ModDependency("6AQIaxuO", "optional"),//WTHIT
         ]
     }
 }

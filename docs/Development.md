@@ -5,6 +5,7 @@ Mekanism is developed for Minecraft 1.19.2 using Minecraft Forge.
 ## Prerequisites
 
 * Gradle - Version 7.5.1 is known to work, your mileage with other versions may vary
+* JDK - Version 17 is the target as that is what Mojang ships, but to run gradle you must use a minimum of JDK 11.
 
 ## Directory Structure
 
@@ -27,6 +28,8 @@ Mekanism is developed for Minecraft 1.19.2 using Minecraft Forge.
     - /defense (Planned for V11, currently placeholder)
         - /java/mekanism/defense - Code for Mekanism: Defense
         - /resources - Resources for Mekanism: Defense
+    - /gameTest
+      - /main/java/mekanism - Game Tests for Mekanism
     - /generators
         - /java/mekanism/generators - Code for Mekanism: Generators
         - /resources - Resources for Mekanism: Generators

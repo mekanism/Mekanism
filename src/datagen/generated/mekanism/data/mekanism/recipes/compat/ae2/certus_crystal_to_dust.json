@@ -2,8 +2,8 @@
   "type": "mekanism:crushing",
   "conditions": [
     {
-      "modid": "ae2",
-      "type": "forge:mod_loaded"
+      "type": "forge:mod_loaded",
+      "modid": "ae2"
     }
   ],
   "input": {
