@@ -125,7 +125,7 @@
   "item.mekanismgenerators.turbine_blade": "涡轮叶片",
   "module.mekanismgenerators.geothermal_generator_unit": "地热能生成单元",
   "module.mekanismgenerators.solar_recharging_unit": "太阳能充电单元",
-  "reactor.mekanismgenerators.configurator.port_eject": "切换反应器端口喷射模式：%1$s.",
+  "reactor.mekanismgenerators.configurator.port_eject": "切换反应器端口喷射模式：%1$s。",
   "reactor.mekanismgenerators.fuel": "燃料",
   "reactor.mekanismgenerators.fuel.edit_rate": "编辑速率",
   "reactor.mekanismgenerators.fuel.injection_rate": "输入速率：%1$s",
