@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#forge:tools/shovels/bronze",
+    "#forge:tools/shovels/lapis_lazuli",
+    "#forge:tools/shovels/osmium",
+    "#forge:tools/shovels/refined_glowstone",
+    "#forge:tools/shovels/refined_obsidian",
+    "#forge:tools/shovels/steel"
+  ]
+}

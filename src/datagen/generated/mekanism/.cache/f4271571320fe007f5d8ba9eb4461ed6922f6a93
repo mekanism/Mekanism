@@ -1,4 +1,4 @@
-// 1.19.1	2022-08-02T13:32:39.3450948	Tags: mekanism
+// 1.19.2	2022-08-05T21:57:17.790221	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -56,6 +56,14 @@ f0537f1936148e32495131ccb13289c7c2bd9d82 data/forge/tags/fluids/uranium_hexafluo
 cdac7eca7cb7c07e861fc05c673143b1222eef80 data/forge/tags/items/alloys/advanced.json
 a8642dda8d9bdd8df8ad4b81c8e4e61c46c0b80d data/forge/tags/items/alloys/elite.json
 7a1dd799ddfe4fe9175f1c879443b0035e0341fe data/forge/tags/items/alloys/ultimate.json
+aba1afa9533f4988f739be3a61b86b1da0034984 data/forge/tags/items/armors/armors/hazmat.json
+816f00146cda08da61ce8eb511e7bba1360e7a2c data/forge/tags/items/armors/boots.json
+9262339b3cb1ebb7ea1a533763e27705259699ac data/forge/tags/items/armors/boots/hazmat.json
+50ae8f822dd279e70ddf97cc0dcba65fb98d4117 data/forge/tags/items/armors/chestplates.json
+7a509189cfba132e0fc7c95cd738ac0f41ab5486 data/forge/tags/items/armors/chestplates/hazmat.json
+2e0046c9160e09e1ced8cb23e70d2b295373c996 data/forge/tags/items/armors/helmets.json
+4e7957e891fede3029f9fdb66e7773d0223bb2e1 data/forge/tags/items/armors/leggings.json
+fea456a28f6aa80c0e17c1efa71a2835390669e6 data/forge/tags/items/armors/leggings/hazmat.json
 32044e00ba3bebe9f195bc943e1104e2142516ed data/forge/tags/items/batteries.json
 79e300c1f0f904984117247a9ba06f59a61464c6 data/forge/tags/items/circuits.json
 d90f13ff142511cbdadaac5813ae8cd3f02dc23e data/forge/tags/items/circuits/advanced.json
@@ -147,6 +155,7 @@ f5cef9314ee390feebf4b2036219d1c3df23e351 data/forge/tags/items/storage_blocks/st
 65a28a53b7a60e660859cecfa32ce0c8f7771b30 data/forge/tags/items/storage_blocks/tin.json
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/forge/tags/items/storage_blocks/uranium.json
 3e65a1f943cae7927da2f45388efe248474e5397 data/forge/tags/items/tools.json
+98c2bd0ffddf16fb66fd75e274145f45ca022846 data/forge/tags/items/tools/bows.json
 a0e1d0be802d6dafd3d9be7540058fffce14f805 data/forge/tags/items/tools/wrench.json
 a0e1d0be802d6dafd3d9be7540058fffce14f805 data/forge/tags/items/wrenches.json
 fc2b2dd5fbf2bde4bc6c245bae31790b24f54f7f data/forge/tags/items/yellow_cake_uranium.json

@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#forge:tools/swords/bronze",
+    "#forge:tools/swords/lapis_lazuli",
+    "#forge:tools/swords/osmium",
+    "#forge:tools/swords/refined_glowstone",
+    "#forge:tools/swords/refined_obsidian",
+    "#forge:tools/swords/steel"
+  ]
+}

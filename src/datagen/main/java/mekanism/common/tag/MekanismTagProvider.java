@@ -72,7 +72,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         addProcessedResources();
         addBeaconTags();
         addBoxBlacklist();
-        addWrenches();
+        addTools();
+        addArmor();
         addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
         addToTag(MekanismTags.Items.YELLOW_CAKE_URANIUM, MekanismItems.YELLOW_CAKE_URANIUM);
         addRods();
@@ -238,11 +239,28 @@ public class MekanismTagProvider extends BaseTagProvider {
               .add(MekanismTags.TileEntityTypes.IMMOVABLE, MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED);
     }
 
+    private void addTools() {
+        addWrenches();
+        addToTag(Tags.Items.TOOLS_BOWS, MekanismItems.ELECTRIC_BOW);
+    }
+
     private void addWrenches() {
         addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
-        getItemBuilder(MekanismTags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
+        getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
         addToTag(MekanismTags.Items.TOOLS_WRENCH, MekanismItems.CONFIGURATOR);
         getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.WRENCHES, MekanismTags.Items.TOOLS_WRENCH);
+    }
+
+    private void addArmor() {
+        getItemBuilder(Tags.Items.ARMORS_HELMETS).add(MekanismTags.Items.ARMORS_HELMETS_HAZMAT);
+        getItemBuilder(Tags.Items.ARMORS_CHESTPLATES).add(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT);
+        getItemBuilder(Tags.Items.ARMORS_LEGGINGS).add(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT);
+        getItemBuilder(Tags.Items.ARMORS_BOOTS).add(MekanismTags.Items.ARMORS_BOOTS_HAZMAT);
+
+        addToTag(MekanismTags.Items.ARMORS_HELMETS_HAZMAT, MekanismItems.HAZMAT_MASK);
+        addToTag(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT, MekanismItems.HAZMAT_GOWN);
+        addToTag(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT, MekanismItems.HAZMAT_PANTS);
+        addToTag(MekanismTags.Items.ARMORS_BOOTS_HAZMAT, MekanismItems.HAZMAT_BOOTS);
     }
 
     private void addRods() {

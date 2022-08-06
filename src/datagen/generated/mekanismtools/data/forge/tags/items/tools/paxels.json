@@ -1,0 +1,16 @@
+{
+  "values": [
+    "#forge:tools/paxels/wood",
+    "#forge:tools/paxels/stone",
+    "#forge:tools/paxels/gold",
+    "#forge:tools/paxels/iron",
+    "#forge:tools/paxels/diamond",
+    "#forge:tools/paxels/netherite",
+    "#forge:tools/paxels/bronze",
+    "#forge:tools/paxels/lapis_lazuli",
+    "#forge:tools/paxels/osmium",
+    "#forge:tools/paxels/refined_glowstone",
+    "#forge:tools/paxels/refined_obsidian",
+    "#forge:tools/paxels/steel"
+  ]
+}
