@@ -129,7 +129,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         easyMinerFilters = CachedBooleanValue.wrap(this, builder.comment("Enable this to allow dragging items from JEI into the target slot of Digital Miner filters.")
               .define("easyMinerFilters", false));
         blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client, if it has been rapidly changing.")
-              .define("blockDeactivationDelay", 60));
+              .defineInRange("blockDeactivationDelay", 60, 0, 1_200));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]")
               .defineListAllowEmpty(Collections.singletonList("cardboardModBlacklist"), ArrayList::new, e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid)));
         transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
@@ -138,17 +138,17 @@ public class GeneralConfig extends BaseMekanismConfig {
         maxUpgradeMultiplier = CachedIntValue.wrap(this, builder.comment("Base factor for working out machine performance with upgrades - UpgradeModifier * (UpgradesInstalled/UpgradesPossible).")
               .defineInRange("maxUpgradeMultiplier", 10, 1, Integer.MAX_VALUE));
         boilerWaterConductivity = CachedDoubleValue.wrap(this, builder.comment("How much Boiler heat is immediately usable to convert water to steam.")
-              .define("boilerWaterConductivity", 0.7));
+              .defineInRange("boilerWaterConductivity", 0.7, 0.01, 1));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
-              .define("heatPerFuelTick", 400D));
+              .defineInRange("heatPerFuelTick", 400, 0.1, 4_000_000));
         fuelwoodTickMultiplier = CachedIntValue.wrap(this, builder.comment("Number of ticks to burn an item at in a Fuelwood Heater. Use this config option to effectively make Fuelwood Heater's burn faster but produce the same amount of heat per item.")
               .defineInRange("fuelwoodTickMultiplier", 1, 1, 1_000));
         resistiveHeaterEfficiency = CachedDoubleValue.wrap(this, builder.comment("How much heat energy is created from one Joule of regular energy in the Resistive Heater.")
               .defineInRange("resistiveHeaterEfficiency", 0.6, 0, 1));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")
-              .define("superheatingHeatTransfer", 16_000_000D));
+              .defineInRange("superheatingHeatTransfer", 16_000_000, 0.1, 1_024_000_000));
         maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, builder.comment("Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments.")
-              .define("maxSolarNeutronActivatorRate", 64));
+              .defineInRange("maxSolarNeutronActivatorRate", 64, 1, 1_024));
 
         builder.comment("Dynamic Tank Settings").push(DYNAMIC_TANK);
         int maxVolume = 18 * 18 * 18;
@@ -160,7 +160,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
         fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
-              .define("fluid", 1_024));
+              .defineInRange("fluid", 1_024, 1, Integer.MAX_VALUE));
         chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
               .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
         dumpExcessKeepRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of a tank's capacity to leave contents in when set to dumping excess.")
@@ -216,9 +216,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         radiationChunkCheckRadius = CachedIntValue.wrap(this, builder.comment("The radius of chunks checked when running radiation calculations. The algorithm is efficient, but don't abuse it by making this crazy high.")
               .defineInRange("chunkCheckRadius", 5, 1, 100));
         radiationSourceDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiation sources are multiplied by this constant roughly once per second to represent their emission decay. At the default rate, it takes roughly 10 hours to remove a 1,000 Sv/h (crazy high) source.")
-              .define("sourceDecayRate", 0.9995D));
+              .defineInRange("sourceDecayRate", 0.9995D, 0, 1));
         radiationTargetDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiated objects and entities are multiplied by this constant roughly once per second to represent their dosage decay.")
-              .define("targetDecayRate", 0.9995D));
+              .defineInRange("targetDecayRate", 0.9995D, 0, 1));
         radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, builder.comment("Defines the minimum severity radiation dosage severity (scale of 0 to 1) for which negative effects can take place. Set to 1 to disable negative effects completely.")
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
@@ -231,7 +231,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Digital Miner Settings").push(MINER_CATEGORY);
         minerSilkMultiplier = CachedIntValue.wrap(this, builder.comment("Energy multiplier for using silk touch mode with the Digital Miner.")
-              .define("silkMultiplier", 12));
+              .defineInRange("silkMultiplier", 12, 1, Integer.MAX_VALUE));
         minerMaxRadius = CachedIntValue.wrap(this, builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability and/or performance. We strongly recommend you leave it at the default value).")
               .defineInRange("maxRadius", 32, 1, Integer.MAX_VALUE));
         minerTicksPerMine = CachedIntValue.wrap(this, builder.comment("Number of ticks required to mine a single block with a Digital Miner (without any upgrades).")
@@ -242,7 +242,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         aestheticWorldDamage = CachedBooleanValue.wrap(this, builder.comment("If enabled, lasers can break blocks and the flamethrower starts fires.")
               .define("aestheticWorldDamage", true));
         laserRange = CachedIntValue.wrap(this, builder.comment("How far (in blocks) a laser can travel.")
-              .define("range", 64));
+              .defineInRange("range", 64, 1, 1_024));
         laserEnergyNeededPerHardness = CachedFloatingLongValue.define(this, builder, "Energy needed to destroy or attract blocks with a Laser (per block hardness level).",
               "energyNeededPerHardness", FloatingLong.createConst(100_000));
         laserEnergyPerDamage = CachedFloatingLongValue.define(this, builder, "Energy used per half heart of damage being transferred to entities.",
@@ -256,11 +256,11 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Pump Settings").push(PUMP_CATEGORY);
         maxPumpRange = CachedIntValue.wrap(this, builder.comment("Maximum block distance to pull fluid from for the Electric Pump.")
-              .define("maxPumpRange", 80));
+              .defineInRange("maxPumpRange", 80, 1, 512));
         pumpWaterSources = CachedBooleanValue.wrap(this, builder.comment("If enabled makes Water and Heavy Water blocks be removed from the world on pump.")
               .define("pumpWaterSources", false));
         maxPlenisherNodes = CachedIntValue.wrap(this, builder.comment("Fluidic Plenisher stops after this many blocks.")
-              .define("maxPlenisherNodes", 4_000));
+              .defineInRange("maxPlenisherNodes", 4_000, 1, 1_000_000));
         builder.pop();
 
         builder.comment("Quantum Entangloporter Settings").push(ENTANGLOPORTER_CATEGORY);
@@ -283,20 +283,20 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Nutritional Paste Settings").push(NUTRITIONAL_PASTE_CATEGORY);
         nutritionalPasteSaturation = CachedFloatValue.wrap(this, builder.comment("Saturation level of Nutritional Paste when eaten.")
-              .define("saturation", 0.8));
+              .defineInRange("saturation", 0.8, 0, 100));
         nutritionalPasteMBPerFood = CachedIntValue.wrap(this, builder.comment("How much mB of Nutritional Paste equates to one 'half-food.'")
-              .define("mbPerFood", 50));
+              .defineInRange("mbPerFood", 50, 1, Integer.MAX_VALUE));
         builder.pop();
 
         builder.comment("Thermal Evaporation Plant Settings").push(EVAPORATION_CATEGORY);
         evaporationHeatDissipation = CachedDoubleValue.wrap(this, builder.comment("Thermal Evaporation Tower heat loss per tick.")
-              .define("heatDissipation", 0.02));
+              .defineInRange("heatDissipation", 0.02, 0.001, 1_000));
         evaporationTempMultiplier = CachedDoubleValue.wrap(this, builder.comment("Temperature to amount produced ratio for Thermal Evaporation Tower.")
-              .define("tempMultiplier", 0.4));
+              .defineInRange("tempMultiplier", 0.4, 0.001, 1_000_000));
         evaporationSolarMultiplier = CachedDoubleValue.wrap(this, builder.comment("Heat to absorb per Solar Panel array of Thermal Evaporation Tower.")
-              .define("solarMultiplier", 0.2));
+              .defineInRange("solarMultiplier", 0.2, 0.001, 1_000_000));
         evaporationHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).")
-              .define("heatCapacity", 100D));
+              .defineInRange("heatCapacity", 100D, 1, 1_000_000));
         builder.pop();
 
         builder.comment("SPS Settings").push(SPS_CATEGORY);

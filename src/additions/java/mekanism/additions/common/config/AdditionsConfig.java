@@ -10,6 +10,7 @@ import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.data.BuiltinRegistries;
@@ -24,7 +25,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
     private final ForgeConfigSpec configSpec;
 
     public final CachedIntValue obsidianTNTDelay;
-    public final CachedIntValue obsidianTNTBlastRadius;
+    public final CachedFloatValue obsidianTNTBlastRadius;
     public final CachedBooleanValue voiceServerEnabled;
     public final CachedIntValue voicePort;
     private final Map<BabyType, SpawnConfig> spawnConfigs = new EnumMap<>(BabyType.class);
@@ -35,8 +36,8 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
         obsidianTNTDelay = CachedIntValue.wrap(this, builder.comment("Fuse time for Obsidian TNT.")
               .defineInRange("obsidianTNTDelay", 100, 0, Integer.MAX_VALUE));
-        obsidianTNTBlastRadius = CachedIntValue.wrap(this, builder.comment("Radius of the explosion of Obsidian TNT.")
-              .define("obsidianTNTBlastRadius", 12));
+        obsidianTNTBlastRadius = CachedFloatValue.wrap(this, builder.comment("Radius of the explosion of Obsidian TNT.")
+              .defineInRange("obsidianTNTBlastRadius", 12, 0.1, 1_000));
 
         voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.").worldRestart()
               .define("voiceServerEnabled", false));

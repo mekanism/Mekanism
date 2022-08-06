@@ -155,7 +155,7 @@ public class GearConfig extends BaseMekanismConfig {
         disassemblerEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
               "energyUsageWeapon", FloatingLong.createConst(2_000));
         disassemblerMiningCount = CachedIntValue.wrap(this, builder.comment("The max Atomic Disassembler Vein Mining Block Count.")
-              .define("miningCount", 128));
+              .defineInRange("miningCount", 128, 2, 1_000_000));
         disassemblerSlowMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Slow' mode for the Atomic Disassembler.")
               .define("slowMode", true));
         disassemblerFastMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Fast' mode for the Atomic Disassembler.")
@@ -163,9 +163,9 @@ public class GearConfig extends BaseMekanismConfig {
         disassemblerVeinMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Vein Mining' mode for the Atomic Disassembler.")
               .define("veinMining", false));
         disassemblerMinDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)")
-              .define("minDamage", 4));
+              .defineInRange("minDamage", 4, 0, 1_000));
         disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")
-              .define("maxDamage", 20));
+              .defineInRange("maxDamage", 20, 1, 10_000));
         disassemblerMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain.",
               "maxEnergy", FloatingLong.createConst(1_000_000));
         disassemblerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Atomic Disassembler can accept per tick.",
@@ -257,7 +257,7 @@ public class GearConfig extends BaseMekanismConfig {
         portableTeleporterChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Portable Teleporter can accept per tick.",
               "chargeRate", FloatingLong.createConst(5_000));
         portableTeleporterDelay = CachedIntValue.wrap(this, builder.comment("Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.")
-              .define("delay", 0));
+              .defineInRange("delay", 0, 0, 6_000));//Max is 5 minutes
         builder.pop();
 
         builder.comment("Scuba Tank Settings").push(SCUBA_TANK_CATEGORY);
@@ -293,11 +293,11 @@ public class GearConfig extends BaseMekanismConfig {
         mekaToolEnergyUsageTeleport = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to teleport 10 blocks.",
               "energyUsageTeleport", FloatingLong.createConst(1_000));
         mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the Meka-Tool.")
-              .define("maxTeleportReach", 100));
+              .defineInRange("maxTeleportReach", 100, 2, 1_024));
         mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base damage applied by the Meka-Tool without using any energy.")
-              .define("baseDamage", 4));
+              .defineInRange("baseDamage", 4, 0, 100_000));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the Meka-Tool with energy but without any upgrades.")
-              .define("baseEfficiency", 4D));
+              .defineInRange("baseEfficiency", 4, 0.1, 100));
         mekaToolBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades.",
               "baseEnergyCapacity", FloatingLong.createConst(16_000_000));
         mekaToolBaseChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Meka-Tool can accept per tick. Quadratically scaled by upgrades.",

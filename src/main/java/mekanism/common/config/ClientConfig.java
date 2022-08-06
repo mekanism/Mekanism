@@ -69,7 +69,7 @@ public class ClientConfig extends BaseMekanismConfig {
         holidays = CachedBooleanValue.wrap(this, builder.comment("Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years).")
               .define("holidays", true));
         baseSoundVolume = CachedFloatValue.wrap(this, builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.")
-              .defineInRange("baseSoundVolume", 1, 0, Float.MAX_VALUE));
+              .defineInRange("baseSoundVolume", 1D, 0, 10));
         opaqueTransmitters = CachedBooleanValue.wrap(this, builder.comment("If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.")
               .define("opaqueTransmitters", false));
         allowModeScroll = CachedBooleanValue.wrap(this, builder.comment("Allow sneak + scroll to change item modes.")
@@ -91,9 +91,9 @@ public class ClientConfig extends BaseMekanismConfig {
         machineEffects = CachedBooleanValue.wrap(this, builder.comment("Show particles when machines active.")
               .define("machineEffects", true));
         radiationParticleRadius = CachedIntValue.wrap(this, builder.comment("How far (in blocks) from the player radiation particles can spawn.")
-              .define("radiationParticleRadius", 30));
+              .defineInRange("radiationParticleRadius", 30, 2, 64));
         radiationParticleCount = CachedIntValue.wrap(this, builder.comment("How many particles spawn when rendering radiation effects (scaled by radiation level).")
-              .define("radiationParticleCount", 100));
+              .defineInRange("radiationParticleCount", 100, 0, 1_000));
         renderMagneticAttractionParticles = CachedBooleanValue.wrap(this, builder.comment("Show bolts when the Magnetic Attraction Unit is pulling items.")
               .define("magneticAttraction", true));
         renderToolAOEParticles = CachedBooleanValue.wrap(this, builder.comment("Show bolts for various AOE tool behaviors such as tilling, debarking, and vein mining.")
