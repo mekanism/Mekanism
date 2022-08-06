@@ -64,7 +64,7 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleBlastingUnit> BLASTING_UNIT = MODULES.register("blasting_unit", ModuleBlastingUnit::new,
           () -> MekanismItems.MODULE_BLASTING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).rendersHUD());
     public static final ModuleRegistryObject<ModuleVeinMiningUnit> VEIN_MINING_UNIT = MODULES.register("vein_mining_unit", ModuleVeinMiningUnit::new,
-          () -> MekanismItems.MODULE_VEIN_MINING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).rendersHUD());
+          () -> MekanismItems.MODULE_VEIN_MINING.asItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).handlesModeChange().rendersHUD());
     public static final ModuleRegistryObject<ModuleTeleportationUnit> TELEPORTATION_UNIT = MODULES.register("teleportation_unit", ModuleTeleportationUnit::new,
           () -> MekanismItems.MODULE_TELEPORTATION.asItem(), builder -> builder.rarity(Rarity.EPIC).exclusive(ExclusiveFlag.INTERACT_ANY));
 

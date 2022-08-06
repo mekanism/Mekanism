@@ -633,11 +633,6 @@ public enum MekanismLang implements ILangEntry {
     //Disassembler Mode
     DISASSEMBLER_MODE_CHANGE("disassembler", "mode_change"),
     DISASSEMBLER_EFFICIENCY("disassembler", "efficiency"),
-    DISASSEMBLER_NORMAL("disassembler", "normal"),
-    DISASSEMBLER_SLOW("disassembler", "slow"),
-    DISASSEMBLER_FAST("disassembler", "fast"),
-    DISASSEMBLER_VEIN("disassembler", "vein"),
-    DISASSEMBLER_OFF("disassembler", "off"),
     //Flamethrower Modes
     FLAMETHROWER_MODE_CHANGE("flamethrower", "mode_change"),
     FLAMETHROWER_COMBAT("flamethrower", "combat"),
@@ -766,6 +761,17 @@ public enum MekanismLang implements ILangEntry {
     INJECTING("factory", "injecting"),
     INFUSING("factory", "infusing"),
     SAWING("factory", "sawing"),
+    //Radial Menu
+    RADIAL_VEIN("radial", "vein"),
+    RADIAL_VEIN_NORMAL("radial", "vein.normal"),
+    RADIAL_VEIN_EXTENDED("radial", "vein.extended"),
+    RADIAL_EXCAVATION_SPEED("radial", "excavation_speed"),
+    RADIAL_EXCAVATION_SPEED_OFF("radial", "excavation_speed.off"),
+    RADIAL_EXCAVATION_SPEED_SLOW("radial", "excavation_speed.slow"),
+    RADIAL_EXCAVATION_SPEED_NORMAL("radial", "excavation_speed.normal"),
+    RADIAL_EXCAVATION_SPEED_FAST("radial", "excavation_speed.fast"),
+    RADIAL_EXCAVATION_SPEED_SUPER("radial", "excavation_speed.super_fast"),
+    RADIAL_EXCAVATION_SPEED_EXTREME("radial", "excavation_speed.extreme"),
     //Modules
     MODULE_ENABLED("module", "enabled"),
     MODULE_ENABLED_LOWER("module", "enabled_lower"),

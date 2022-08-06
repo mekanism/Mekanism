@@ -32,7 +32,7 @@ public class MekanismKeyHandler {
               if (player != null) {
                   if (IModeItem.isModeItem(player, EquipmentSlot.MAINHAND, false)) {
                       Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, player.isShiftKeyDown()));
-                  } else if (!IModeItem.isModeItem(player, EquipmentSlot.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlot.OFFHAND)) {
+                  } else if (!IModeItem.isModeItem(player, EquipmentSlot.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlot.OFFHAND, false)) {
                       //Otherwise, try their offhand
                       Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.OFFHAND, player.isShiftKeyDown()));
                   }

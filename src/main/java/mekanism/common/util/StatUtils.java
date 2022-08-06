@@ -39,4 +39,12 @@ public class StatUtils {
         }
         return max;
     }
+
+    public static float wrapDegrees(float angle) {
+        angle = angle % 360;
+        if (angle < 0) {
+            angle += 360;
+        }
+        return angle;
+    }
 }

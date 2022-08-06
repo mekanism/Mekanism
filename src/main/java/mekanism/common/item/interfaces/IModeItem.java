@@ -1,5 +1,6 @@
 package mekanism.common.item.interfaces;
 
+import mekanism.common.lib.radial.IGenericRadialModeItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +42,9 @@ public interface IModeItem {
     }
 
     static boolean isModeItem(@NotNull ItemStack stack, @NotNull EquipmentSlot slotType, boolean allowRadial) {
-        return !stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem && modeItem.supportsSlotType(stack, slotType) &&
-               (allowRadial || !(stack.getItem() instanceof IRadialModeItem));
+        if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem && modeItem.supportsSlotType(stack, slotType)) {
+            return allowRadial || !(modeItem instanceof IGenericRadialModeItem radialModeItem) || radialModeItem.getRadialData(stack) == null;
+        }
+        return false;
     }
 }

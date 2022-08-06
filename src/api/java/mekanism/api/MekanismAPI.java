@@ -13,6 +13,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
+import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.ISecurityUtils;
@@ -71,11 +72,12 @@ public class MekanismAPI {
     private static IForgeRegistry<Slurry> SLURRY_REGISTRY;
     private static IForgeRegistry<ModuleData<?>> MODULE_REGISTRY;
     private static IForgeRegistry<RobitSkin> ROBIT_SKIN_REGISTRY;
-    private static IModuleHelper MODULE_HELPER;
-    private static IRadiationManager RADIATION_MANAGER;
-    private static ITooltipHelper TOOLTIP_HELPER;
-    private static ISecurityUtils SECURITY_UTILS;
     private static IMekanismJEIHelper JEI_HELPER;
+    private static IModuleHelper MODULE_HELPER;
+    private static IRadialDataHelper RADIAL_DATA_HELPER;
+    private static IRadiationManager RADIATION_MANAGER;
+    private static ISecurityUtils SECURITY_UTILS;
+    private static ITooltipHelper TOOLTIP_HELPER;
 
     //Note: None of the empty variants support registry replacement
     //TODO: Potentially define these with ObjectHolder for purposes of fully defining them outside of the API
@@ -292,6 +294,18 @@ public class MekanismAPI {
             lookupInstance(IModuleHelper.class, "mekanism.common.content.gear.ModuleHelper", helper -> MODULE_HELPER = helper);
         }
         return MODULE_HELPER;
+    }
+
+    /**
+     * Gets Mekanism's {@link IRadialDataHelper} that provides various utility methods for creating prebuild {@link mekanism.api.radial.RadialData}.
+     *
+     * @since 10.3.2
+     */
+    public static IRadialDataHelper getRadialDataHelper() {
+        if (RADIAL_DATA_HELPER == null) {//Harmless race
+            lookupInstance(IRadialDataHelper.class, "mekanism.common.lib.radial.data.RadialDataHelper", helper -> RADIAL_DATA_HELPER = helper);
+        }
+        return RADIAL_DATA_HELPER;
     }
 
     /**

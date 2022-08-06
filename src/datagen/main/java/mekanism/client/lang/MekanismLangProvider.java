@@ -1282,11 +1282,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Disassembler Mode
         add(MekanismLang.DISASSEMBLER_MODE_CHANGE, "Mode toggled to: %1$s (%2$s)");
         add(MekanismLang.DISASSEMBLER_EFFICIENCY, "Efficiency: %1$s");
-        add(MekanismLang.DISASSEMBLER_NORMAL, "normal");
-        add(MekanismLang.DISASSEMBLER_SLOW, "slow");
-        add(MekanismLang.DISASSEMBLER_FAST, "fast");
-        add(MekanismLang.DISASSEMBLER_VEIN, "vein");
-        add(MekanismLang.DISASSEMBLER_OFF, "off");
         //Flamethrower Modes
         add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %1$s");
         add(MekanismLang.FLAMETHROWER_COMBAT, "Combat");
@@ -1405,6 +1400,18 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_SPS_PORT, "A port used for the transfer of energy and substances in the Supercritical Phase Shifter.");
         add(MekanismLang.DESCRIPTION_SUPERCHARGED_COIL, "Used in Supercritical Phase Shifter multiblock to supply large quantities of energy. Must be attached to a SPS Port.");
         add(MekanismLang.DESCRIPTION_DIMENSIONAL_STABILIZER, "A machine that prevents areas of the world from disappearing when not observed.");
+        // Radial Menu
+        add(MekanismLang.RADIAL_VEIN, "Vein Mining");
+        add(MekanismLang.RADIAL_VEIN_NORMAL, "Vein");
+        add(MekanismLang.RADIAL_VEIN_EXTENDED, "Extended Vein");
+
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED, "Excavation Speed");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, "Off");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, "Slow");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, "Normal");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, "Fast");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_SUPER, "Super Fast");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, "Extreme");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");

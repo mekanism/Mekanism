@@ -48,6 +48,15 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     boolean handlesModeChange();
 
     /**
+     * Gets if this module type ({@link #getData()}) can currently handle radial mode changes.
+     *
+     * @return {@code true} if this module can handle radial mode changes.
+     *
+     * @since 10.3.2
+     */
+    boolean handlesRadialModeChange();
+
+    /**
      * Gets if this module type ({@link #getData()}) has any data that should be added to the HUD and if this module is configured to render to the HUD in the Module
      * Tweaker.
      *
@@ -119,8 +128,8 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     boolean canUseEnergy(LivingEntity wearer, FloatingLong energy, boolean ignoreCreative);
 
     /**
-     * Helper to check if the item this module is installed on can provide the given amount of energy. If the {@code energyContainer} is null this will return {@code
-     * false}. If {@code checkCreative} is {@code false} this method will return {@code false} for players in creative or spectator.
+     * Helper to check if the item this module is installed on can provide the given amount of energy. If the {@code energyContainer} is null this will return
+     * {@code false}. If {@code checkCreative} is {@code false} this method will return {@code false} for players in creative or spectator.
      *
      * @param wearer          Wearer/User of the item the module is installed on.
      * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer()}.

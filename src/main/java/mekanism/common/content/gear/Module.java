@@ -3,6 +3,7 @@ package mekanism.common.content.gear;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -17,6 +18,9 @@ import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.radial.RadialData;
+import mekanism.api.radial.mode.IRadialMode;
+import mekanism.api.radial.mode.NestedRadialMode;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -249,6 +253,24 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         customModule.addHUDElements(this, player, list::add);
     }
 
+    public void addRadialModes(@NotNull ItemStack stack, Consumer<NestedRadialMode> adder) {
+        customModule.addRadialModes(this, stack, adder);
+    }
+
+    @Nullable
+    public <M extends IRadialMode> M getMode(@NotNull ItemStack stack, RadialData<M> radialData) {
+        return customModule.getMode(this, stack, radialData);
+    }
+
+    public <M extends IRadialMode> boolean setMode(@NotNull Player player, @NotNull ItemStack stack, RadialData<M> radialData, M mode) {
+        return customModule.setMode(this, player, stack, radialData, mode);
+    }
+
+    @Nullable
+    public Component getModeScrollComponent(ItemStack stack) {
+        return customModule.getModeScrollComponent(this, stack);
+    }
+
     public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         customModule.changeMode(this, player, stack, shift, displayChangeMessage);
     }
@@ -256,6 +278,18 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     @Override
     public boolean handlesModeChange() {
         return data.handlesModeChange() && handleModeChange.get() && (isEnabled() || customModule.canChangeModeWhenDisabled(this));
+    }
+
+    @Override
+    public boolean handlesRadialModeChange() {
+        return data.handlesModeChange() && (isEnabled() || customModule.canChangeRadialModeWhenDisabled(this));
+    }
+
+    public boolean handlesAnyModeChange() {
+        if (data.handlesModeChange()) {
+            return isEnabled() || handleModeChange.get() && customModule.canChangeModeWhenDisabled(this) || customModule.canChangeRadialModeWhenDisabled(this);
+        }
+        return false;
     }
 
     public void setModeHandlingDisabledForce() {

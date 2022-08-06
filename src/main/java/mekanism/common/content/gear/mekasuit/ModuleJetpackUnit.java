@@ -41,13 +41,12 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
 
     @Override
     public void changeMode(IModule<ModuleJetpackUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
-        if (module.isEnabled()) {
-            JetpackMode newMode = jetpackMode.get().adjust(shift);
-            if (jetpackMode.get() != newMode) {
-                jetpackMode.set(newMode);
-                if (displayChangeMessage) {
-                    module.displayModeChange(player, MekanismLang.MODULE_JETPACK_MODE.translate(), newMode);
-                }
+        JetpackMode currentMode = getMode();
+        JetpackMode newMode = currentMode.adjust(shift);
+        if (currentMode != newMode) {
+            jetpackMode.set(newMode);
+            if (displayChangeMessage) {
+                module.displayModeChange(player, MekanismLang.MODULE_JETPACK_MODE.translate(), newMode);
             }
         }
     }

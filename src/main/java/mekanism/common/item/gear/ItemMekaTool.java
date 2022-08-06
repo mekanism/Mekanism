@@ -7,10 +7,12 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -19,6 +21,9 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.radial.RadialData;
+import mekanism.api.radial.mode.IRadialMode;
+import mekanism.api.radial.mode.NestedRadialMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -35,7 +40,8 @@ import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.lib.radial.IGenericRadialModeItem;
+import mekanism.common.lib.radial.data.NestingRadialData;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
@@ -45,6 +51,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -77,8 +84,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IBlastingItem {
+public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IBlastingItem, IGenericRadialModeItem {
+
+    private static final ResourceLocation RADIAL_ID = Mekanism.rl("meka_tool");
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -396,7 +406,13 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return IModeItem.super.supportsSlotType(stack, slotType) && getModules(stack).stream().anyMatch(Module::handlesModeChange);
+        return IGenericRadialModeItem.super.supportsSlotType(stack, slotType) && getModules(stack).stream().anyMatch(Module::handlesAnyModeChange);
+    }
+
+    @Nullable
+    @Override
+    public Component getScrollTextComponent(@NotNull ItemStack stack) {
+        return getModules(stack).stream().filter(Module::handlesModeChange).findFirst().map(module -> module.getModeScrollComponent(stack)).orElse(null);
     }
 
     @Override
@@ -419,5 +435,48 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     protected FloatingLong getChargeRate(ItemStack stack) {
         IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
         return module == null ? MekanismConfig.gear.mekaToolBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
+    }
+
+    @Nullable
+    @Override
+    public RadialData<?> getRadialData(ItemStack stack) {
+        List<NestedRadialMode> nestedModes = new ArrayList<>();
+        Consumer<NestedRadialMode> adder = nestedModes::add;
+        for (Module<?> module : getModules(stack)) {
+            if (module.handlesRadialModeChange()) {
+                module.addRadialModes(stack, adder);
+            }
+        }
+        if (nestedModes.isEmpty()) {
+            //No modes available, return that we don't actually currently support radials
+            return null;
+        } else if (nestedModes.size() == 1) {
+            //If we only have one mode available, just return it rather than having to select the singular mode
+            return nestedModes.get(0).nestedData();
+        }
+        return new NestingRadialData(RADIAL_ID, nestedModes);
+    }
+
+    @Nullable
+    @Override
+    public <M extends IRadialMode> M getMode(ItemStack stack, RadialData<M> radialData) {
+        for (Module<?> module : getModules(stack)) {
+            if (module.handlesRadialModeChange()) {
+                M mode = module.getMode(stack, radialData);
+                if (mode != null) {
+                    return mode;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public <M extends IRadialMode> void setMode(ItemStack stack, Player player, RadialData<M> radialData, M mode) {
+        for (Module<?> module : getModules(stack)) {
+            if (module.handlesRadialModeChange() && module.setMode(player, stack, radialData, mode)) {
+                return;
+            }
+        }
     }
 }

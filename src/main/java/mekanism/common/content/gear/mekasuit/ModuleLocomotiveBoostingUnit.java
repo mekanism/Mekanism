@@ -31,14 +31,12 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
 
     @Override
     public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
-        if (module.isEnabled()) {
-            SprintBoost currentMode = sprintBoost.get();
-            SprintBoost newMode = currentMode.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
-            if (currentMode != newMode) {
-                sprintBoost.set(newMode);
-                if (displayChangeMessage) {
-                    module.displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
-                }
+        SprintBoost currentMode = sprintBoost.get();
+        SprintBoost newMode = currentMode.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
+        if (currentMode != newMode) {
+            sprintBoost.set(newMode);
+            if (displayChangeMessage) {
+                module.displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
             }
         }
     }

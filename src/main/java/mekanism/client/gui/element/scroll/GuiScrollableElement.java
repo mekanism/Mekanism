@@ -107,6 +107,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         if (delta != 0 && needsScrollBars()) {
             int elements = getElements();
             if (elements > 0) {
+                //TODO - 1.19: Should this make use of ScrollIncrementer
                 if (delta > 0) {
                     delta = 1;
                 } else {

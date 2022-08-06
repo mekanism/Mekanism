@@ -312,6 +312,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
+        //Note: We ignore radial modes as those are just for the Meka-Tool currently
         return slotType == getSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
     }
 
