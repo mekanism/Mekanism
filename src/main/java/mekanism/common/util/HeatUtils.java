@@ -6,6 +6,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import net.minecraft.util.Mth;
 
 public class HeatUtils {
 
@@ -76,10 +77,10 @@ public class HeatUtils {
         alpha = temperature / 1_000;
 
         //clamp to 0 <= n >= 1
-        red = Math.min(Math.max(red, 0), 1);
-        green = Math.min(Math.max(green, 0), 1);
-        blue = Math.min(Math.max(blue, 0), 1);
-        alpha = Math.min(Math.max(alpha, 0), 1);
+        red = Mth.clamp(red, 0, 1);
+        green = Mth.clamp(green, 0, 1);
+        blue = Mth.clamp(blue, 0, 1);
+        alpha = Mth.clamp(alpha, 0, 1);
 
         Color colorTemperature = Color.rgbad(red, green, blue, alpha);
         colorCache.put((int) absTemp, colorTemperature);

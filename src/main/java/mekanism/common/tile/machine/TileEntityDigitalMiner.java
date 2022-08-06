@@ -87,6 +87,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -352,7 +353,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public void setRadiusFromPacket(int newRadius) {
-        setRadius(Math.min(Math.max(0, newRadius), MekanismConfig.general.minerMaxRadius.get()));
+        setRadius(Mth.clamp(newRadius, 0, MekanismConfig.general.minerMaxRadius.get()));
         //Send a packet to update the visual renderer
         //TODO: Only do this if the renderer is actually active
         sendUpdatePacket();
@@ -371,7 +372,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public void setMinYFromPacket(int newMinY) {
         if (level != null) {
-            setMinY(Math.min(Math.max(level.getMinBuildHeight(), newMinY), getMaxY()));
+            setMinY(Mth.clamp(newMinY, level.getMinBuildHeight(), getMaxY()));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
@@ -389,7 +390,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     public void setMaxYFromPacket(int newMaxY) {
         if (level != null) {
-            setMaxY(Math.max(Math.min(newMaxY, level.getMaxBuildHeight() - 1), getMinY()));
+            setMaxY(Mth.clamp(newMaxY, getMinY(), level.getMaxBuildHeight() - 1));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();

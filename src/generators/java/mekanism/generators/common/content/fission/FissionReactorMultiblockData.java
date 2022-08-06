@@ -45,6 +45,7 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -345,7 +346,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (!fluidCoolantTank.isEmpty()) {
             double caseCoolantHeat = heat * waterConductivity;
             coolantHeated = (int) (HeatUtils.getSteamEnergyEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy());
-            coolantHeated = Math.max(0, Math.min(coolantHeated, fluidCoolantTank.getFluidAmount()));
+            coolantHeated = Mth.clamp(coolantHeated, 0, fluidCoolantTank.getFluidAmount());
             if (coolantHeated > 0) {
                 MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
                 // extra steam is dumped
@@ -358,7 +359,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             if (coolantType != null) {
                 double caseCoolantHeat = heat * coolantType.getConductivity();
                 coolantHeated = (int) (caseCoolantHeat / coolantType.getThermalEnthalpy());
-                coolantHeated = Math.max(0, Math.min(coolantHeated, gasCoolantTank.getStored()));
+                coolantHeated = Mth.clamp(coolantHeated, 0, gasCoolantTank.getStored());
                 if (coolantHeated > 0) {
                     MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
                     heatedCoolantTank.insert(coolantType.getHeatedGas().getStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
@@ -472,7 +473,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     public void setRateLimit(double rate) {
-        rate = Math.max(Math.min(getMaxBurnRate(), rate), 0);
+        rate = Mth.clamp(rate, 0, getMaxBurnRate());
         if (rateLimit != rate) {
             rateLimit = rate;
             markDirty();

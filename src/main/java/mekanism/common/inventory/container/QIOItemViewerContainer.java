@@ -39,6 +39,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -54,7 +55,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public static int getSlotsYMax() {
         int maxY = (int) Math.ceil(Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.05 - 8) + 1;
-        return Math.max(Math.min(maxY, SLOTS_Y_MAX), SLOTS_Y_MIN);
+        return Mth.clamp(maxY, SLOTS_Y_MIN, SLOTS_Y_MAX);
     }
 
     private ListSortType sortType;
@@ -481,7 +482,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         } else if (button == 1) {
             if (heldItem.isEmpty() && slot != null) {
                 //Cap it out at the max stack size of the item, but try to take half of what is stored (taking at least one if it is a single item)
-                int toTake = Math.min(slot.getItem().getStack().getMaxStackSize(), Math.max(1, MathUtils.clampToInt(slot.getCount() / 2)));
+                int toTake = Mth.clamp(MathUtils.clampToInt(slot.getCount() / 2), 1, slot.getItem().getStack().getMaxStackSize());
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(1));

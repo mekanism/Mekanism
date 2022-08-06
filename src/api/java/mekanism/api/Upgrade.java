@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -59,7 +60,7 @@ public enum Upgrade implements IHasTranslationKey {
                 CompoundTag compound = list.getCompound(tagCount);
                 Upgrade upgrade = byIndexStatic(compound.getInt(NBTConstants.TYPE));
                 //Validate the nbt isn't malformed with a negative or zero amount
-                int installed = Math.max(0, Math.min(upgrade.maxStack, compound.getInt(NBTConstants.AMOUNT)));
+                int installed = Mth.clamp(compound.getInt(NBTConstants.AMOUNT), 0, upgrade.maxStack);
                 if (installed > 0) {
                     if (upgrades == null) {
                         upgrades = new EnumMap<>(Upgrade.class);
