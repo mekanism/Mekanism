@@ -46,9 +46,17 @@ public abstract class CachedValue<T> {
 
     protected abstract boolean clearCachedValue(boolean checkChanged);
 
-    public void clearCache() {
-        if (clearCachedValue(hasInvalidationListeners())) {
-            invalidationListeners.forEach(IConfigValueInvalidationListener::run);
+    public final void clearCache() {
+        if (hasInvalidationListeners()) {
+            //Only clear cached values that have invalidation listeners if the config is loaded, as if it isn't loaded then
+            // we will fail to clear the cache when we check for if the values have changed. Having a few config values using
+            // slightly extra memory, and invalid values shouldn't matter as the config should only be used if it is loaded
+            // so once the config is loaded there should be another clearCache call that then causes these values to get updated
+            if (isLoaded() && clearCachedValue(true)) {
+                invalidationListeners.forEach(IConfigValueInvalidationListener::run);
+            }
+        } else {
+            clearCachedValue(false);
         }
     }
 
