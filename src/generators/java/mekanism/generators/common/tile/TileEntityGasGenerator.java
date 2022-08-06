@@ -57,7 +57,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, MekanismConfig.general.FROM_H2.get().multiply(2));
+        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, MekanismConfig.general.FROM_H2);
     }
 
     @NotNull
@@ -97,7 +97,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
             long toUse = getToUse();
             FloatingLong toUseGeneration = generationRate.multiply(toUse);
-            output = MekanismConfig.general.FROM_H2.get().max(toUseGeneration).multiply(2);
+            updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get().max(toUseGeneration));
 
             long total = burnTicks + fuelTank.getStored() * maxBurnTicks;
             total -= toUse;
@@ -121,7 +121,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         burnTicks = 0;
         maxBurnTicks = 0;
         generationRate = FloatingLong.ZERO;
-        output = MekanismConfig.general.FROM_H2.get().multiply(2);
+        updateMaxOutputRaw(MekanismConfig.general.FROM_H2.get());
     }
 
     private long getToUse() {
@@ -161,7 +161,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getGenerationRate, value -> generationRate = value));
-        container.track(SyncableFloatingLong.create(() -> output, value -> output = value));
+        container.track(syncableMaxOutput());
         container.track(SyncableDouble.create(this::getUsed, value -> gasUsedLastTick = value));
         container.track(SyncableInt.create(this::getMaxBurnTicks, value -> maxBurnTicks = value));
     }
@@ -197,7 +197,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         private void recheckOutput(@NotNull GasStack stack, boolean wasEmpty) {
             if (wasEmpty && !stack.isEmpty()) {
                 if (getType().has(Fuel.class)) {
-                    output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);
+                    updateMaxOutputRaw(getType().get(Fuel.class).getEnergyPerTick());
                 }
             }
         }

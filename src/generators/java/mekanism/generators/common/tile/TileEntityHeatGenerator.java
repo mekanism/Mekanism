@@ -53,7 +53,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     public static final int MAX_FLUID = 24_000;
     private static final double THERMAL_EFFICIENCY = 0.5;
-    private static final FloatingLong MAX_PRODUCTION = FloatingLong.createConst(500);
 
     /**
      * The FluidTank for this generator.
@@ -72,7 +71,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     private EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.heatGeneration.get().multiply(2));
+        super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, TileEntityHeatGenerator::theoreticalMax);
     }
 
     @NotNull
@@ -171,8 +170,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         double carnotEfficiency = 1 - Math.min(ambientTemp, temp) / Math.max(ambientTemp, temp);
         double heatLost = THERMAL_EFFICIENCY * (temp - ambientTemp);
         heatCapacitor.handleHeat(-heatLost);
-        getEnergyContainer().insert(MAX_PRODUCTION.min(FloatingLong.create(Math.abs(heatLost) * carnotEfficiency)), Action.EXECUTE, AutomationType.INTERNAL);
+        FloatingLong energyFromHeat = FloatingLong.create(Math.abs(heatLost) * carnotEfficiency);
+        getEnergyContainer().insert(energyFromHeat.min(theoreticalMax()), Action.EXECUTE, AutomationType.INTERNAL);
         return super.simulate();
+    }
+
+    private static FloatingLong theoreticalMax() {
+        //Default configs this is 510 compared to the previous 500
+        //TODO: Look into caching this
+        FloatingLong passiveMax = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(7);
+        passiveMax = passiveMax.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
+        return passiveMax.plusEqual(MekanismGeneratorsConfig.generators.heatGeneration.get());
     }
 
     @Nullable

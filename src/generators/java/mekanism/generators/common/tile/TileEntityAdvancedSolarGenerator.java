@@ -18,7 +18,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     private final SolarCheck[] solarChecks = new SolarCheck[8];
 
     public TileEntityAdvancedSolarGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.advancedSolarGeneration.get().multiply(2));
+        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.advancedSolarGeneration);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.EVAPORATION_SOLAR, this));
     }
 
@@ -52,7 +52,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
             }
             totalPeak += solarChecks[i].getPeakMultiplier();
         }
-        peakOutput = getConfiguredMax().multiply(totalPeak / 9);
+        updateMaxOutputRaw(getConfiguredMax().multiply(totalPeak / 9));
     }
 
     @Override
@@ -91,8 +91,9 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         for (SolarCheck check : solarChecks) {
             generationMultiplier += check.getGenerationMultiplier();
         }
+        generationMultiplier /= solarChecks.length + 1;
         //Production is a function of the peak possible output in this biome and sun's current brightness
-        return getConfiguredMax().multiply(brightness * generationMultiplier / 9);
+        return getConfiguredMax().multiply(brightness * generationMultiplier);
     }
 
     private static class AdvancedSolarCheck extends SolarCheck {

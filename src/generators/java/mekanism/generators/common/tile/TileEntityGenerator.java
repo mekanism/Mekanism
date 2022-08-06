@@ -5,6 +5,7 @@ import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -13,6 +14,8 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.inventory.container.sync.ISyncableData;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -26,15 +29,15 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     /**
      * Output per tick this generator can transfer.
      */
-    public FloatingLong output;
+    private FloatingLong maxOutput;
     private BasicEnergyContainer energyContainer;
 
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
      */
-    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLong out) {
+    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLongSupplier maxOutput) {
         super(blockProvider, pos, state);
-        output = out;
+        updateMaxOutputRaw(maxOutput.get());
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
@@ -66,7 +69,15 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
 
     @ComputerMethod
     public FloatingLong getMaxOutput() {
-        return output;
+        return maxOutput;
+    }
+
+    protected void updateMaxOutputRaw(FloatingLong maxOutput) {
+        this.maxOutput = maxOutput.multiply(2);
+    }
+
+    protected ISyncableData syncableMaxOutput() {
+        return SyncableFloatingLong.create(this::getMaxOutput, value -> maxOutput = value);
     }
 
     public BasicEnergyContainer getEnergyContainer() {
