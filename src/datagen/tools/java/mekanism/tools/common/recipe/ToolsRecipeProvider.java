@@ -22,6 +22,8 @@ import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -129,9 +131,9 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         tool(HOE, hoe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "hoe"));
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
-              .key(AXE_CHAR, axe)
-              .key(PICKAXE_CHAR, pickaxe)
-              .key(SHOVEL_CHAR, shovel)
+              .key(AXE_CHAR, ItemTags.create(new ResourceLocation("forge", "tools/axes/" + name)))
+              .key(PICKAXE_CHAR, ItemTags.create(new ResourceLocation("forge", "tools/pickaxes/" + name)))
+              .key(SHOVEL_CHAR, ItemTags.create(new ResourceLocation("forge", "tools/shovels/" + name)))
               .key(ROD_CHAR, rod)
               .build(consumer, MekanismTools.rl(baseToolsPath + "paxel"));
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget

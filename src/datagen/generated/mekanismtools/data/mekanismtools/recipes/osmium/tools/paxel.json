@@ -2,16 +2,16 @@
   "type": "mekanismtools:paxel",
   "key": {
     "A": {
-      "item": "mekanismtools:osmium_axe"
+      "tag": "forge:tools/axes/osmium"
     },
     "P": {
-      "item": "mekanismtools:osmium_pickaxe"
+      "tag": "forge:tools/pickaxes/osmium"
     },
     "R": {
       "tag": "forge:rods/wooden"
     },
     "S": {
-      "item": "mekanismtools:osmium_shovel"
+      "tag": "forge:tools/shovels/osmium"
     }
   },
   "pattern": [

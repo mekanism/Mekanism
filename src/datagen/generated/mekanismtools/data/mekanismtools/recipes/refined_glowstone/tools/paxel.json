@@ -2,16 +2,16 @@
   "type": "mekanismtools:paxel",
   "key": {
     "A": {
-      "item": "mekanismtools:refined_glowstone_axe"
+      "tag": "forge:tools/axes/refined_glowstone"
     },
     "P": {
-      "item": "mekanismtools:refined_glowstone_pickaxe"
+      "tag": "forge:tools/pickaxes/refined_glowstone"
     },
     "R": {
       "tag": "forge:rods/wooden"
     },
     "S": {
-      "item": "mekanismtools:refined_glowstone_shovel"
+      "tag": "forge:tools/shovels/refined_glowstone"
     }
   },
   "pattern": [

@@ -2,16 +2,16 @@
   "type": "mekanismtools:paxel",
   "key": {
     "A": {
-      "item": "mekanismtools:refined_obsidian_axe"
+      "tag": "forge:tools/axes/refined_obsidian"
     },
     "P": {
-      "item": "mekanismtools:refined_obsidian_pickaxe"
+      "tag": "forge:tools/pickaxes/refined_obsidian"
     },
     "R": {
       "tag": "forge:rods/wooden"
     },
     "S": {
-      "item": "mekanismtools:refined_obsidian_shovel"
+      "tag": "forge:tools/shovels/refined_obsidian"
     }
   },
   "pattern": [

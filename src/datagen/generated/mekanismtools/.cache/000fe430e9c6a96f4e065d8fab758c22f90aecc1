@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-05T21:57:21.5784116	Recipes: mekanismtools
+// 1.19.2	2022-08-06T15:58:39.074551	Recipes: mekanismtools
 f62585da2a5445e54226454c7cbcbfbd7bf0e51a data/mekanismtools/recipes/banner_shield.json
 8d4f91ac97b3e431a638fb61d21528afe948fc36 data/mekanismtools/recipes/bronze/armor/boots.json
 3c3f49bc954deb2c5bd59444518212034be146f9 data/mekanismtools/recipes/bronze/armor/chestplate.json
@@ -9,7 +9,7 @@ b59d5c21035d69167cc537dc4567e39d2189264c data/mekanismtools/recipes/bronze/nugge
 8a5f821b8306f9a53eee221fa904228d8af7fada data/mekanismtools/recipes/bronze/shield.json
 3af4434b410698f29a17e183fe3e6bed90c30a2b data/mekanismtools/recipes/bronze/tools/axe.json
 e25af0b4e9b82cd1899f859dc520942e46a917d2 data/mekanismtools/recipes/bronze/tools/hoe.json
-e3e0d8a39d7951d08c6e6d68bc57dfeeea722954 data/mekanismtools/recipes/bronze/tools/paxel.json
+d11e6636f95894de8089536fa6cec9702822ca73 data/mekanismtools/recipes/bronze/tools/paxel.json
 e0c719fbbacc4ce6c330f0e9792a7bba8f761d6d data/mekanismtools/recipes/bronze/tools/pickaxe.json
 c7259b934a12d782593c27f0b5b44909c5f98669 data/mekanismtools/recipes/bronze/tools/shovel.json
 e5e058c08b2a0ea8def622dba2c9444479d41349 data/mekanismtools/recipes/bronze/tools/sword.json
@@ -27,7 +27,7 @@ c802289a50c3aa73aa9f256379c7c850662c0bd0 data/mekanismtools/recipes/lapis_lazuli
 54ec21939a3d358ebc568e8b8fc5d248ee0e4198 data/mekanismtools/recipes/lapis_lazuli/shield.json
 7c0f369a707b9a080a4fa2049f6c6ec58791d002 data/mekanismtools/recipes/lapis_lazuli/tools/axe.json
 8c907b634b504e5aca34ffbafa4f9054b3a4a589 data/mekanismtools/recipes/lapis_lazuli/tools/hoe.json
-24494812ea73ae8e0d513f13eca6b05e6777b576 data/mekanismtools/recipes/lapis_lazuli/tools/paxel.json
+55e18f87f3345b6ec3777231dbc6c7b6adc5d14e data/mekanismtools/recipes/lapis_lazuli/tools/paxel.json
 2d2cd031930b1feb0cb9aefe2eae3f62b7a49277 data/mekanismtools/recipes/lapis_lazuli/tools/pickaxe.json
 42671de32acf2eb214ea4f64daa127bf659ff46d data/mekanismtools/recipes/lapis_lazuli/tools/shovel.json
 9524d792d2570615e41ea81b580c22b483ffb90c data/mekanismtools/recipes/lapis_lazuli/tools/sword.json
@@ -41,7 +41,7 @@ e37851844cc390c665d90322e5c805f237a4f749 data/mekanismtools/recipes/osmium/armor
 26652619d71cd9cd31e9bc167e30e7c5a1c57f81 data/mekanismtools/recipes/osmium/shield.json
 7fe1e0ac852516b5d01dee07698d9e71f93c0e6a data/mekanismtools/recipes/osmium/tools/axe.json
 9401634890abef04468af26136c863f9c70a6f70 data/mekanismtools/recipes/osmium/tools/hoe.json
-8c839ebb78cfe085fbce21b89e3efe26c8223d03 data/mekanismtools/recipes/osmium/tools/paxel.json
+b735d793e8f0d59f713c1134f79c4ad8a201e4dd data/mekanismtools/recipes/osmium/tools/paxel.json
 b9dcc79a1967e3f0454b346744d8bac46f4d1042 data/mekanismtools/recipes/osmium/tools/pickaxe.json
 2b294333fca942f1878dfeb66cb18e0d5982d015 data/mekanismtools/recipes/osmium/tools/shovel.json
 1876b7e0d32ffb0cffc2e09f1f71a57e85c5e2c6 data/mekanismtools/recipes/osmium/tools/sword.json
@@ -54,7 +54,7 @@ a1be00b27981d535e7d026e66ab461b060030a80 data/mekanismtools/recipes/refined_glow
 39b01e560122778ccccd4aaba643835e251cbffa data/mekanismtools/recipes/refined_glowstone/shield.json
 f0f79db579b0e7c136af781eb1b914eed92d1c06 data/mekanismtools/recipes/refined_glowstone/tools/axe.json
 d9c5517d144fbd270c6efd6d3aa8483cf4960dbd data/mekanismtools/recipes/refined_glowstone/tools/hoe.json
-33105ff3579337fe0d70b3cf8a6bd11f05803fc0 data/mekanismtools/recipes/refined_glowstone/tools/paxel.json
+2d2aae96eba066cbc7f98b1b0c8ba084164453c9 data/mekanismtools/recipes/refined_glowstone/tools/paxel.json
 7f6bff9db0612cfa3b86875af124b6735636df0f data/mekanismtools/recipes/refined_glowstone/tools/pickaxe.json
 656d497fa907bcb894a5efd9a4c6dbb7737c8447 data/mekanismtools/recipes/refined_glowstone/tools/shovel.json
 31c515dd13ef65b5d158c3b6a8c8fb0385a7d618 data/mekanismtools/recipes/refined_glowstone/tools/sword.json
@@ -67,7 +67,7 @@ d9efe955beb42dd09139d74b8d445fdf2136e6f0 data/mekanismtools/recipes/refined_obsi
 faf2a2f4ffc5815871f1f83b5827365020b5dac5 data/mekanismtools/recipes/refined_obsidian/shield.json
 f843d704588abfe02427ec23c2537b86c338a75a data/mekanismtools/recipes/refined_obsidian/tools/axe.json
 b464d61fdb81d24b5d7bd069a8f82900a0b47f43 data/mekanismtools/recipes/refined_obsidian/tools/hoe.json
-3648b4defce83883588de1ad9b5d29a97a30e465 data/mekanismtools/recipes/refined_obsidian/tools/paxel.json
+4074721c606c7c18902f768b90e1d36bdc9c09de data/mekanismtools/recipes/refined_obsidian/tools/paxel.json
 8932cd17b39219ad2a92047a70ab06afbcfd2c79 data/mekanismtools/recipes/refined_obsidian/tools/pickaxe.json
 f8cb00c2e27c6f0e917e00faf1c6fab01dba467a data/mekanismtools/recipes/refined_obsidian/tools/shovel.json
 b5d2b00fb8b684f36675b8609b3f2c2fb9e7ea5c data/mekanismtools/recipes/refined_obsidian/tools/sword.json
@@ -80,7 +80,7 @@ de3186dc63bd4def9ac6cce40450abce5bea0e08 data/mekanismtools/recipes/steel/nugget
 f97d1cac1ec296259e5b207f41808487a1eaf41a data/mekanismtools/recipes/steel/shield.json
 28061613b349c6c27354cbd13fa0636a759e4378 data/mekanismtools/recipes/steel/tools/axe.json
 910e5863983d537a50bab08ffff0f84110c4221c data/mekanismtools/recipes/steel/tools/hoe.json
-4c46d4f2c8bc907902ebae58e68a66265ee1bb8a data/mekanismtools/recipes/steel/tools/paxel.json
+5e2b3954e328ef55347320183d920940d0acb77e data/mekanismtools/recipes/steel/tools/paxel.json
 8c9b7c831557e39a292c02c5cb682308053931d0 data/mekanismtools/recipes/steel/tools/pickaxe.json
 560150dcc8ed9718f6813774ff5fd1ca6c2a52c1 data/mekanismtools/recipes/steel/tools/shovel.json
 f1f3720655abf0e2be5597551f05e0fd94522c7f data/mekanismtools/recipes/steel/tools/sword.json
