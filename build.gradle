@@ -461,8 +461,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO - 1.19: datagenMainImplementation once ae2 update
-    datagenMainCompileOnly fg.deobf("appeng:appliedenergistics2:${ae2_version}")
+    datagenMainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenMainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")

@@ -38,7 +38,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
           "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final Set<String> COMPAT_RECIPES_TO_SKIP = Set.of(
-          "ae2/"//,
+          //"ae2/",
           //"biomesoplenty/",
           //"byg/",//Biomes You'll Go
           //"ilikewood/",
