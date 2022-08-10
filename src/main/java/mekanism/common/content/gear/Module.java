@@ -83,9 +83,42 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
                     customModule.onEnabledStateChange(Module.this);
                 }
             }
+
+            @Override
+            protected void checkValidity(@NotNull Boolean value, @Nullable Runnable callback) {
+                //If enabled state of the module changes, recheck about mode changes and exclusivity flags
+                // but only if this module can handle mode changes or has any exclusive flags set
+                if (value && (handlesModeChange() || data.getExclusiveFlags() != 0)) {
+                    for (Module<?> m : ModuleHelper.INSTANCE.loadAll(getContainer())) {
+                        if (data != m.getData()) {
+                            // disable other exclusive modules
+                            if (m.getData().isExclusive(data.getExclusiveFlags())) {
+                                m.setDisabledForce(callback != null);
+                            }
+                            // turn off mode change handling for other modules
+                            if (handlesModeChange() && m.handlesModeChange()) {
+                                m.setModeHandlingDisabledForce();
+                            }
+                        }
+                    }
+                }
+            }
         });
         if (data.handlesModeChange()) {
-            handleModeChange = addConfigItem(new ModuleConfigItem<>(this, HANDLE_MODE_CHANGE_KEY, MekanismLang.MODULE_HANDLE_MODE_CHANGE, new ModuleBooleanData()));
+            handleModeChange = addConfigItem(new ModuleConfigItem<>(this, HANDLE_MODE_CHANGE_KEY, MekanismLang.MODULE_HANDLE_MODE_CHANGE, new ModuleBooleanData()) {
+                @Override
+                protected void checkValidity(@NotNull Boolean value, @Nullable Runnable callback) {
+                    //If the mode change is being enabled, and we handle mode changes
+                    if (value && handlesModeChange()) {
+                        for (Module<?> m : ModuleHelper.INSTANCE.loadAll(getContainer())) {
+                            // turn off mode change handling for other modules
+                            if (data != m.getData() && m.handlesModeChange()) {
+                                m.setModeHandlingDisabledForce();
+                            }
+                        }
+                    }
+                }
+            });
         }
         if (data.rendersHUD()) {
             renderHUD = addConfigItem(new ModuleConfigItem<>(this, "renderHUD", MekanismLang.MODULE_RENDER_HUD, new ModuleBooleanData()));
