@@ -30,7 +30,6 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO: Eventually we might want to try and improve the "scroll sensitivity"
 public class GuiModuleScreen extends GuiScrollableElement {
 
     private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
@@ -127,6 +126,11 @@ public class GuiModuleScreen extends GuiScrollableElement {
     @Override
     protected int getFocusedElements() {
         return height - 2;
+    }
+
+    @Override
+    protected int getScrollElementScaler() {
+        return 10;
     }
 
     @Override
@@ -279,6 +283,10 @@ public class GuiModuleScreen extends GuiScrollableElement {
             int y = getY();
             return mouseX >= x + relativeX && mouseX < x + relativeX + width && mouseY >= y + relativeY && mouseY < y + relativeY + height;
         }
+
+        protected <TYPE> void setData(ModuleConfigItem<TYPE> data, TYPE value) {
+            data.set(value, getCallback(data.getData(), dataIndex));
+        }
     }
 
     class BooleanToggle extends MiniElement {
@@ -333,7 +341,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         }
 
         private void setDataFromClick(boolean value) {
-            data.set(value, getCallback(data.getData(), dataIndex));
+            setData(data, value);
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
         }
     }
@@ -406,7 +414,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
             int cur = (int) Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * size);
             cur = Mth.clamp(cur, 0, size);
             if (cur != data.get().ordinal()) {
-                data.set(options.get(cur), getCallback(data.getData(), dataIndex));
+                setData(data, options.get(cur));
             }
         }
 

@@ -2,6 +2,7 @@ package mekanism.client.gui.element.scroll;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -89,6 +90,10 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         return getMaxElements() - getFocusedElements();
     }
 
+    protected int getScrollElementScaler() {
+        return 1;
+    }
+
     private int getMax() {
         return maxBarHeight - barHeight;
     }
@@ -105,7 +110,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
 
     public boolean adjustScroll(double delta) {
         if (delta != 0 && needsScrollBars()) {
-            int elements = getElements();
+            int elements = MathUtils.clampToInt(Math.ceil(getElements() / (double) getScrollElementScaler()));
             if (elements > 0) {
                 //TODO - 1.19: Should this make use of ScrollIncrementer
                 if (delta > 0) {
@@ -113,12 +118,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
                 } else {
                     delta = -1;
                 }
-                scroll = (float) (scroll - delta / elements);
-                if (scroll < 0.0F) {
-                    scroll = 0.0F;
-                } else if (scroll > 1.0F) {
-                    scroll = 1.0F;
-                }
+                scroll = (float) Mth.clamp(scroll - delta / elements, 0, 1);
                 return true;
             }
         }
