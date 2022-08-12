@@ -93,6 +93,10 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         addChild(new GuiCloseButton(gui(), relativeX + 6, relativeY + 6, this));
     }
 
+    public final InteractionStrategy getInteractionStrategy() {
+        return interactionStrategy;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean ret = super.mouseClicked(mouseX, mouseY, button);
@@ -239,11 +243,11 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         CONTAINER,
         ALL;
 
-        boolean allowContainer() {
+        public boolean allowContainer() {
             return this != NONE;
         }
 
-        boolean allowAll() {
+        public boolean allowAll() {
             return this == ALL;
         }
     }

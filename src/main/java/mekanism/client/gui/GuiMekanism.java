@@ -322,6 +322,21 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        // first try to send the mouse event to our focused window
+        GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
+        if (top != null) {
+            boolean windowScroll = top.mouseScrolled(mouseX, mouseY, delta);
+            if (windowScroll || !top.getInteractionStrategy().allowAll()) {
+                //If our focused window was able to handle the scroll or doesn't allow interacting with
+                // things outside the window, return our scroll result
+                return windowScroll;
+            }
+        }
+        return super.mouseScrolled(mouseX, mouseY, delta);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
@@ -345,7 +360,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             }
             return true;
         }
-        // otherwise, we send it to the current element
+        // otherwise, we send it to the current element (this is the same as super.super, but in reverse order)
         for (int i = children().size() - 1; i >= 0; i--) {
             GuiEventListener listener = children().get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
