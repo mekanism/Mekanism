@@ -7,6 +7,7 @@ import java.util.function.IntSupplier;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.SpecialColors;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -212,13 +213,7 @@ public class GuiTextField extends GuiElement {
 
     private void renderTextField(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Apply matrix via render system so that it applies to the highlight
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        modelViewStack.mulPoseMatrix(matrix.last().pose());
-        RenderSystem.applyModelViewMatrix();
-        textField.render(new PoseStack(), mouseX, mouseY, partialTicks);
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
+        GuiUtils.renderWithPose(matrix, () -> textField.render(new PoseStack(), mouseX, mouseY, partialTicks));
     }
 
     @Override

@@ -272,27 +272,38 @@ public class GuiUtils {
                 //Apply our matrix stack to the render system and pass an unmodified one to the render methods
                 // Vanilla still renders the items using render system transformations so this is required to
                 // have things render in the correct order
-                PoseStack modelViewStack = RenderSystem.getModelViewStack();
-                modelViewStack.pushPose();
-                modelViewStack.mulPoseMatrix(matrix.last().pose());
-                RenderSystem.applyModelViewMatrix();
-                renderer.renderAndDecorateItem(stack, xAxis, yAxis);
-                if (overlay) {
-                    //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
-                    // for rendering the stored count so that it doesn't clip with later windows
-                    float previousOffset = renderer.blitOffset;
-                    renderer.blitOffset -= 25;
-                    renderer.renderGuiItemDecorations(font, stack, xAxis, yAxis, text);
-                    renderer.blitOffset = previousOffset;
-                }
-                modelViewStack.popPose();
-                RenderSystem.applyModelViewMatrix();
+                int finalXAxis = xAxis;
+                int finalYAxis = yAxis;
+                renderWithPose(matrix, () -> {
+                    renderer.renderAndDecorateItem(stack, finalXAxis, finalYAxis);
+                    if (overlay) {
+                        //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
+                        // for rendering the stored count so that it doesn't clip with later windows
+                        float previousOffset = renderer.blitOffset;
+                        renderer.blitOffset -= 25;
+                        renderer.renderGuiItemDecorations(font, stack, finalXAxis, finalYAxis, text);
+                        renderer.blitOffset = previousOffset;
+                    }
+                });
                 RenderSystem.disableDepthTest();
                 matrix.popPose();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);
             }
         }
+    }
+
+    public static void renderWithPose(PoseStack poseStack, Runnable toRender) {
+        //Apply our pose stack to the render system as the code ran via toRender does not accept a passed in pose stack
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+        modelViewStack.mulPoseMatrix(poseStack.last().pose());
+        RenderSystem.applyModelViewMatrix();
+
+        toRender.run();
+
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
 
     /**
