@@ -130,16 +130,30 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @NothingNullByDefault
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
-        NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN),
-        DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED);
+        NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN, true, true),
+        SAFETY(MekanismLang.FREE_RUNNER_SAFETY, EnumColor.ORANGE, true, false),
+        DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED, false, false);
 
         private static final FreeRunnerMode[] MODES = values();
+
+        private final boolean preventsFallDamage;
+        private final boolean providesStepBoost;
         private final ILangEntry langEntry;
         private final EnumColor color;
 
-        FreeRunnerMode(ILangEntry langEntry, EnumColor color) {
+        FreeRunnerMode(ILangEntry langEntry, EnumColor color, boolean preventsFallDamage, boolean providesStepBoost) {
+            this.preventsFallDamage = preventsFallDamage;
+            this.providesStepBoost = providesStepBoost;
             this.langEntry = langEntry;
             this.color = color;
+        }
+
+        public boolean preventsFallDamage() {
+            return preventsFallDamage;
+        }
+
+        public boolean providesStepBoost() {
+            return providesStepBoost;
         }
 
         @Override
