@@ -34,37 +34,40 @@ public class GuiModuleScrollList extends GuiScrollList {
     private static final int TEXTURE_WIDTH = 100;
     private static final int TEXTURE_HEIGHT = 36;
 
-    private int selectIndex = -1;
-
     private final Consumer<Module<?>> callback;
     private final List<ModuleData<?>> currentList = new ArrayList<>();
     private final Supplier<ItemStack> itemSupplier;
     private ItemStack currentItem;
+    @Nullable
+    private ModuleData<?> selected;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
         super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
         this.itemSupplier = itemSupplier;
         this.callback = callback;
-        updateList(itemSupplier.get(), true);
+        updateItemAndList(itemSupplier.get());
     }
 
-    public void updateList(ItemStack currentItem, boolean forceReset) {
-        ModuleData<?> prevSelect = getSelection();
-        this.currentItem = currentItem;
+    public void updateItemAndList(ItemStack stack) {
+        currentItem = stack;
         currentList.clear();
         currentList.addAll(MekanismAPI.getModuleHelper().loadAllTypes(currentItem));
-        boolean selected = false;
-        if (!forceReset && prevSelect != null) {
-            for (int i = 0, size = currentList.size(); i < size; i++) {
-                if (currentList.get(i) == prevSelect) {
-                    setSelected(i);
-                    selected = true;
-                    break;
+    }
+
+    private void recheckItem() {
+        ItemStack stack = itemSupplier.get();
+        if (!ItemStack.matches(currentItem, stack)) {
+            updateItemAndList(stack);
+            ModuleData<?> prevSelect = getSelection();
+            if (prevSelect != null) {
+                if (currentList.contains(prevSelect)) {
+                    //The item still supports the existing selection, mark that the selected data changed
+                    onSelectedChange();
+                } else {
+                    //Otherwise, it doesn't have the same type still, we need to clear the current selection
+                    clearSelection();
                 }
             }
-        }
-        if (!selected) {
-            clearSelection();
         }
     }
 
@@ -75,35 +78,45 @@ public class GuiModuleScrollList extends GuiScrollList {
 
     @Override
     public boolean hasSelection() {
-        return selectIndex != -1;
+        return selected != null;
     }
 
     @Override
     protected void setSelected(int index) {
         if (index >= 0 && index < currentList.size()) {
-            selectIndex = index;
-            callback.accept(ModuleHelper.INSTANCE.load(currentItem, currentList.get(index)));
+            setSelected(currentList.get(index));
+        }
+    }
+
+    private void setSelected(@Nullable ModuleData<?> newData) {
+        if (selected != newData) {
+            selected = newData;
+            onSelectedChange();
+        }
+    }
+
+    private void onSelectedChange() {
+        if (selected == null) {
+            callback.accept(null);
+        } else {
+            callback.accept(ModuleHelper.INSTANCE.load(currentItem, selected));
         }
     }
 
     @Nullable
     public ModuleData<?> getSelection() {
-        return selectIndex == -1 ? null : currentList.get(selectIndex);
+        return selected;
     }
 
     @Override
     public void clearSelection() {
-        selectIndex = -1;
-        callback.accept(null);
+        setSelected(null);
     }
 
     @Override
     public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        ItemStack stack = itemSupplier.get();
-        if (!ItemStack.matches(currentItem, stack)) {
-            updateList(stack, false);
-        }
+        recheckItem();
         forEachModule((module, multipliedElement) -> {
             IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
             if (instance != null) {
@@ -161,6 +174,20 @@ public class GuiModuleScrollList extends GuiScrollList {
     public void syncFrom(GuiElement element) {
         super.syncFrom(element);
         GuiModuleScrollList old = (GuiModuleScrollList) element;
-        setSelected(old.selectIndex);
+        if (ItemStack.matches(currentItem, old.currentItem)) {
+            //If the item is the same just change what module data we have as our selected
+            // and don't notify the callback with a fresh read of the module data as it
+            // should have the data it expects already
+            selected = old.selected;
+        } else if (old.selected != null) {
+            if (currentList.contains(old.selected)) {
+                //If the item doesn't match (in general it will) and it still has the corresponding module,
+                // we need to update the selected value and fire the corresponding callbacks
+                setSelected(old.selected);
+            } else {
+                //If the data is no longer present we need to fire the callbacks to ensure we propagate the clear to the current selection
+                onSelectedChange();
+            }
+        }
     }
 }

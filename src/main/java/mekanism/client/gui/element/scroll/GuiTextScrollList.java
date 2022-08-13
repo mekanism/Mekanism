@@ -86,9 +86,9 @@ public class GuiTextScrollList extends GuiScrollList {
 
     @Override
     public void syncFrom(GuiElement element) {
-        super.syncFrom(element);
         GuiTextScrollList old = (GuiTextScrollList) element;
         setText(old.textEntries);
         setSelected(old.getSelection());
+        super.syncFrom(element);
     }
 }

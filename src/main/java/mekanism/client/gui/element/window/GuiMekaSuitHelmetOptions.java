@@ -15,18 +15,18 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
     public GuiMekaSuitHelmetOptions(IGuiWrapper gui, int x, int y) {
         super(gui, x, y, 140, 115, WindowType.MEKA_SUIT_HELMET);
         interactionStrategy = InteractionStrategy.NONE;
-        addChild(new GuiColorPickerSlot(gui, relativeX + 12, relativeY + 32, HUDColor.REGULAR::getColor, color -> {
-            MekanismConfig.client.hudColor.set(color.argb());
+        addChild(new GuiColorPickerSlot(gui, relativeX + 12, relativeY + 32, false, HUDColor.REGULAR::getColor, color -> {
+            MekanismConfig.client.hudColor.set(color.rgb());
             // save the updated config info
             MekanismConfig.client.save();
         }));
-        addChild(new GuiColorPickerSlot(gui, relativeX + 61, relativeY + 32, HUDColor.WARNING::getColor, color -> {
-            MekanismConfig.client.hudWarningColor.set(color.argb());
+        addChild(new GuiColorPickerSlot(gui, relativeX + 61, relativeY + 32, false, HUDColor.WARNING::getColor, color -> {
+            MekanismConfig.client.hudWarningColor.set(color.rgb());
             // save the updated config info
             MekanismConfig.client.save();
         }));
-        addChild(new GuiColorPickerSlot(gui, relativeX + 110, relativeY + 32, HUDColor.DANGER::getColor, color -> {
-            MekanismConfig.client.hudDangerColor.set(color.argb());
+        addChild(new GuiColorPickerSlot(gui, relativeX + 110, relativeY + 32, false, HUDColor.DANGER::getColor, color -> {
+            MekanismConfig.client.hudDangerColor.set(color.rgb());
             // save the updated config info
             MekanismConfig.client.save();
         }));

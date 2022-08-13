@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
@@ -157,11 +158,13 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
+import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
+import mekanism.common.lib.Color;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -550,6 +553,22 @@ public class ClientRegistration {
             }
             return -1;
         }, MekanismItems.PORTABLE_QIO_DASHBOARD);
+
+        ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
+            if (index == 1) {
+                IModule<ModuleColorModulationUnit> colorModulation = MekanismAPI.getModuleHelper().load(stack, MekanismModules.COLOR_MODULATION_UNIT);
+                if (colorModulation != null) {
+                    Color color = colorModulation.getCustomInstance().getColor();
+                    //Calculate actual tint from alpha in the same way we do in the shader. Ideally we would expose this somehow for resource packs
+                    // like is done for the shader but oh well
+                    color = Color.rgbd(color.ad() * color.rd() + (1.0 - color.ad()), color.ad() * color.gd() + (1.0 - color.ad()),
+                          color.ad() * color.bd() + (1.0 - color.ad()));
+                    return color.argb();
+                }
+            }
+            return -1;
+        }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
+
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             if (entry.getKey() instanceof PrimaryResource primaryResource) {
                 int tint = primaryResource.getTint();

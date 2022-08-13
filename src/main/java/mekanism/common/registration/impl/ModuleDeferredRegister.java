@@ -22,6 +22,10 @@ public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?
         return register(name, builderModifier.apply(ModuleDataBuilder.marker(itemProvider)));
     }
 
+    public <MODULE extends ICustomModule<MODULE>> ModuleRegistryObject<MODULE> register(String name, NonNullSupplier<MODULE> supplier, IItemProvider itemProvider) {
+        return register(name, supplier, itemProvider, UnaryOperator.identity());
+    }
+
     public <MODULE extends ICustomModule<MODULE>> ModuleRegistryObject<MODULE> register(String name, NonNullSupplier<MODULE> supplier, IItemProvider itemProvider,
           UnaryOperator<ModuleDataBuilder<MODULE>> builderModifier) {
         return register(name, builderModifier.apply(ModuleDataBuilder.custom(supplier, itemProvider)));

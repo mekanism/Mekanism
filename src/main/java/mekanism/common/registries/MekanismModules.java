@@ -22,6 +22,7 @@ import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
 import mekanism.common.content.gear.mekatool.ModuleShearingUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
+import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.registration.impl.ModuleDeferredRegister;
 import mekanism.common.registration.impl.ModuleRegistryObject;
@@ -41,6 +42,8 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleEnergyUnit> ENERGY_UNIT = MODULES.register("energy_unit", ModuleEnergyUnit::new,
           () -> MekanismItems.MODULE_ENERGY.asItem(), builder -> builder.maxStackSize(8).rarity(Rarity.UNCOMMON).noDisable());
     //Shared Armor
+    public static final ModuleRegistryObject<ModuleColorModulationUnit> COLOR_MODULATION_UNIT = MODULES.register("color_modulation_unit",
+          ModuleColorModulationUnit::new, () -> MekanismItems.MODULE_COLOR_MODULATION.asItem(), builder -> builder.rarity(Rarity.UNCOMMON).noDisable());
     public static final ModuleRegistryObject<?> LASER_DISSIPATION_UNIT = MODULES.registerMarker("laser_dissipation_unit",
           () -> MekanismItems.MODULE_LASER_DISSIPATION.asItem(), builder -> builder.rarity(Rarity.UNCOMMON));
     public static final ModuleRegistryObject<?> RADIATION_SHIELDING_UNIT = MODULES.registerMarker("radiation_shielding_unit",

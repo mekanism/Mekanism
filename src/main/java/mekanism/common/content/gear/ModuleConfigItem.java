@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
+import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -54,6 +55,10 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
     }
 
     protected void checkValidity(@NotNull TYPE val, @Nullable Runnable callback) {
+    }
+
+    public boolean matches(IModuleDataProvider<?> moduleType, String name) {
+        return module.getData() == moduleType.getModuleData() && getName().equals(name);
     }
 
     public void read(CompoundTag tag) {

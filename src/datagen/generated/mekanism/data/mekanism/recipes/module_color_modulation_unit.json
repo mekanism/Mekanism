@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "mekanism:laser"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "M": {
+      "item": "mekanism:pigment_mixer"
+    },
+    "O": {
+      "item": "mekanism:painting_machine"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "M#M",
+    "OPO",
+    "HHH"
+  ],
+  "result": {
+    "item": "mekanism:module_color_modulation_unit"
+  }
+}

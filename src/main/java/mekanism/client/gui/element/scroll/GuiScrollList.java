@@ -53,16 +53,17 @@ public abstract class GuiScrollList extends GuiScrollableElement {
         super.onClick(mouseX, mouseY);
         if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 && mouseY < y + height - 1) {
             int index = getCurrentSelection();
-            clearSelection();
-            for (int i = 0; i < getFocusedElements(); i++) {
-                if (index + i < getMaxElements()) {
-                    int shiftedY = y + 1 + elementHeight * i;
-                    if (mouseY >= shiftedY && mouseY <= shiftedY + elementHeight) {
-                        setSelected(index + i);
-                        break;
-                    }
+            int focused = getFocusedElements();
+            int maxElements = getMaxElements();
+            for (int i = 0; i < focused && index + i < maxElements; i++) {
+                int shiftedY = y + 1 + elementHeight * i;
+                if (mouseY >= shiftedY && mouseY <= shiftedY + elementHeight) {
+                    setSelected(index + i);
+                    return;
                 }
             }
+            //Only clear the selection if we clicked in the area but not on a selectable index
+            clearSelection();
         }
     }
 

@@ -45,6 +45,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     static final char DIAMOND_CHAR = 'D';
     static final char GLASS_CHAR = 'G';
     static final char PERSONAL_STORAGE_CHAR = 'P';
+    static final char MIXING_CHAR = 'M';
     static final char ROBIT_CHAR = 'R';
     static final char SORTER_CHAR = 'S';
     static final char TELEPORTATION_CORE_CHAR = 'T';
@@ -1315,6 +1316,18 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD))
+              .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Color Modulation Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_COLOR_MODULATION)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(MIXING_CHAR, Pattern.CONSTANT, MIXING_CHAR),
+                    TripleLine.of(Pattern.OTHER, Pattern.PREVIOUS, Pattern.OTHER),
+                    TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR))
+              ).key(MIXING_CHAR, MekanismBlocks.PIGMENT_MIXER)
+              .key(Pattern.OTHER, MekanismBlocks.PAINTING_MACHINE)
+              .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismBlocks.LASER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
               .build(consumer);
         //Charge Distribution Module

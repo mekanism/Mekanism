@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 public final class Module<MODULE extends ICustomModule<MODULE>> implements IModule<MODULE> {
 
     public static final String ENABLED_KEY = "enabled";
-    public static final String HANDLE_MODE_CHANGE_KEY = "handleModeChange";
 
     private final List<ModuleConfigItem<?>> configItems = new ArrayList<>();
 
@@ -105,7 +104,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             }
         });
         if (data.handlesModeChange()) {
-            handleModeChange = addConfigItem(new ModuleConfigItem<>(this, HANDLE_MODE_CHANGE_KEY, MekanismLang.MODULE_HANDLE_MODE_CHANGE, new ModuleBooleanData()) {
+            handleModeChange = addConfigItem(new ModuleConfigItem<>(this, "handleModeChange", MekanismLang.MODULE_HANDLE_MODE_CHANGE, new ModuleBooleanData()) {
                 @Override
                 protected void checkValidity(@NotNull Boolean value, @Nullable Runnable callback) {
                     //If the mode change is being enabled, and we handle mode changes

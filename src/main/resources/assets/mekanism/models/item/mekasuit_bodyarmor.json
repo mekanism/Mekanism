@@ -1,6 +1,7 @@
 {
     "parent": "minecraft:item/generated",
     "textures": { 
-        "layer0": "mekanism:item/mekasuit_bodyarmor"
+        "layer0": "mekanism:item/mekasuit_bodyarmor",
+        "layer1": "mekanism:item/mekasuit_bodyarmor_tint_layer"
     }
 }

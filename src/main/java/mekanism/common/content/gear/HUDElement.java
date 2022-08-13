@@ -43,7 +43,7 @@ public class HUDElement implements IHUDElement {
 
     public enum HUDColor {
         REGULAR(MekanismConfig.client.hudColor),
-        FADED(() -> REGULAR.getColor().darken(0.5).argb()),
+        FADED(() -> REGULAR.getColor().darken(0.5).rgb()),
         WARNING(MekanismConfig.client.hudWarningColor),
         DANGER(MekanismConfig.client.hudDangerColor);
 

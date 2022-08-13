@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
+import java.util.function.UnaryOperator;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.SpecialColors;
@@ -36,6 +37,7 @@ public class GuiTextField extends GuiElement {
     private Runnable enterHandler;
     private CharPredicate inputValidator;
     private CharUnaryOperator inputTransformer;
+    private UnaryOperator<String> pasteTransformer;
     private Consumer<String> responder;
 
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
@@ -114,6 +116,11 @@ public class GuiTextField extends GuiElement {
 
     public GuiTextField setInputTransformer(CharUnaryOperator inputTransformer) {
         this.inputTransformer = inputTransformer;
+        return this;
+    }
+
+    public GuiTextField setPasteTransformer(UnaryOperator<String> pasteTransformer) {
+        this.pasteTransformer = pasteTransformer;
         return this;
     }
 
@@ -246,6 +253,9 @@ public class GuiTextField extends GuiElement {
             } else if (Screen.isPaste(keyCode)) {
                 //Manual handling of textField#keyPressed for pasting so that we can filter things as needed
                 String text = Minecraft.getInstance().keyboardHandler.getClipboard();
+                if (pasteTransformer != null) {
+                    text = pasteTransformer.apply(text);
+                }
                 if (inputTransformer != null || inputValidator != null) {
                     boolean transformed = false;
                     char[] charArray = text.toCharArray();

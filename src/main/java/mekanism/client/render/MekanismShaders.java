@@ -19,7 +19,7 @@ public class MekanismShaders {
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
-        registerShader(event, Mekanism.rl("rendertype_mekasuit"), DefaultVertexFormat.BLOCK, MEKASUIT);
+        registerShader(event, Mekanism.rl("rendertype_mekasuit"), DefaultVertexFormat.NEW_ENTITY, MEKASUIT);
     }
 
     private static void registerShader(RegisterShadersEvent event, ResourceLocation shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {

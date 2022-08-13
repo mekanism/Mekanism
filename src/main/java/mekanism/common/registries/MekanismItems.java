@@ -111,6 +111,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
 
     public static final ItemRegistryObject<ItemModule> MODULE_ENERGY = ITEMS.registerModule(MekanismModules.ENERGY_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_COLOR_MODULATION = ITEMS.registerModule(MekanismModules.COLOR_MODULATION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_LASER_DISSIPATION = ITEMS.registerModule(MekanismModules.LASER_DISSIPATION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_RADIATION_SHIELDING = ITEMS.registerModule(MekanismModules.RADIATION_SHIELDING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_EXCAVATION_ESCALATION = ITEMS.registerModule(MekanismModules.EXCAVATION_ESCALATION_UNIT);

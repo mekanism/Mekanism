@@ -874,6 +874,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %1$s");
         add(MekanismLang.RADIATION_DECAY_TIME, "Time to Decay: %1$s");
         add(MekanismLang.RGB, "RGB:");
+        add(MekanismLang.RGBA, "RGBA:");
         add(MekanismLang.COLOR_PICKER, "Color Picker");
         add(MekanismLang.HELMET_OPTIONS, "Helmet Options");
         add(MekanismLang.HUD_OVERLAY, "HUD Overlay:");
@@ -1426,6 +1427,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_HANDLE_MODE_CHANGE, "Handle Mode Key");
         add(MekanismLang.MODULE_RENDER_HUD, "Show in HUD");
         add(MekanismLang.MODULE_MODE, "Mode");
+        add(MekanismLang.MODULE_COLOR, "ARGB Color");
         add(MekanismLang.MODULE_BONUS_ATTACK_DAMAGE, "Bonus Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_JUMP_BOOST, "Jump Boost");
@@ -1455,6 +1457,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_TELEPORT_REQUIRES_BLOCK, "Requires Block Target");
 
         add(MekanismModules.ENERGY_UNIT, "Energy Unit", "Increases maximum energy capacity.");
+        add(MekanismModules.COLOR_MODULATION_UNIT, "Color Modulation Unit", "Uses advanced holographic projectors to modulate the perceived color of the MekaSuit.");
         add(MekanismModules.LASER_DISSIPATION_UNIT, "Laser Dissipation Unit", "Refracts and safely dissipates lasers that hit any MekaSuit armor piece.");
         add(MekanismModules.RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit", "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
 

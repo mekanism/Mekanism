@@ -10,11 +10,13 @@
         "Position",
         "Color",
         "UV0",
+        "UV1",
         "UV2",
         "Normal"
     ],
     "samplers": [
         { "name": "Sampler0" },
+        { "name": "Sampler1" },
         { "name": "Sampler2" }
     ],
     "uniforms": [

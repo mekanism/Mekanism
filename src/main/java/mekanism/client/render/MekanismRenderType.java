@@ -77,7 +77,7 @@ public class MekanismRenderType extends RenderType {
                 .createCompositeState(false)
     );
 
-    public static final RenderType MEKASUIT = create("mekasuit", DefaultVertexFormat.BLOCK, Mode.QUADS, 131_072, true, true,
+    public static final RenderType MEKASUIT = create("mekasuit", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 131_072, true, true,
           RenderType.CompositeState.builder()
                 .setShaderState(MekanismShaders.MEKASUIT.shard)
                 .setTextureState(BLOCK_SHEET)

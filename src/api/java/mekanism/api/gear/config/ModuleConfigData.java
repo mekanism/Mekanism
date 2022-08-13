@@ -6,8 +6,8 @@ import net.minecraft.nbt.CompoundTag;
 /**
  * Class representing config data types that modules can make use of.
  *
- * @apiNote Currently Mekanism only has rendering/GUI support for handling {@link ModuleBooleanData} and {@link ModuleEnumData}; if more types are needed either open an
- * issue or create a PR implementing support for them.
+ * @apiNote Currently Mekanism only has rendering/GUI support for handling {@link ModuleBooleanData}, {@link ModuleEnumData}, and {@link ModuleColorData}; if more types
+ * are needed either open an issue or create a PR implementing support for them.
  */
 @NothingNullByDefault
 public interface ModuleConfigData<TYPE> {

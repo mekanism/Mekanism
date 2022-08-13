@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-05T21:57:17.7402206	Item model provider: mekanism
+// 1.19.2	2022-08-08T14:34:51.1225283	Item model provider: mekanism
 5e924bf9d92f8776b37a58ef3f0a371bed92fdd9 assets/mekanism/models/item/brine_bucket.json
 40077bcd8b751a027ff7a12a80c654749267fb5f assets/mekanism/models/item/chlorine_bucket.json
 bdbc104ebfd36f0fdc9b83a8d22be99adeae531b assets/mekanism/models/item/clump_copper.json
@@ -42,6 +42,7 @@ d59fa3dca8b4a30ae3aeb571c809f251a9682e82 assets/mekanism/models/item/hydrogen_ch
 018479795d81768603f13e8dc5651208e69c4452 assets/mekanism/models/item/module_attack_amplification_unit.json
 07801a3e429679b66c4b3916529f2db30bd228fc assets/mekanism/models/item/module_blasting_unit.json
 1d06b7b0471e84e587a2f66b1cf3a1a8d592b3aa assets/mekanism/models/item/module_charge_distribution_unit.json
+aba4f92cc0cdfcd36bfe32bf25cd29f6aa227d6d assets/mekanism/models/item/module_color_modulation_unit.json
 ce617fe712c0872c3316060948c68837942fb7c9 assets/mekanism/models/item/module_dosimeter_unit.json
 ffd81e07b807efe1125be4600ea4740b75097eda assets/mekanism/models/item/module_electrolytic_breathing_unit.json
 5dd5cb6cc013d1c8966f7c344b1f6372bc9ae236 assets/mekanism/models/item/module_elytra_unit.json

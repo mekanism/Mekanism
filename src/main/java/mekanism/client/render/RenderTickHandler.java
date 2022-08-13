@@ -178,7 +178,7 @@ public class RenderTickHandler {
             model.crouching = false;
             model.swimAmount = 0.0F;
             model.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-            armor.renderArm(model, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, chestStack.hasFoil(), player, rightHand);
+            armor.renderArm(model, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, player, chestStack, rightHand);
             event.setCanceled(true);
         }
     }

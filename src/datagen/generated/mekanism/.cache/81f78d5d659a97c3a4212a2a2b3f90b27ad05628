@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-06T18:05:52.8028827	Recipes: mekanism
+// 1.19.2	2022-08-10T19:34:29.4335246	Recipes: mekanism
 76d04fb8c6d3843742c65aa81fc27c7baf08a732 data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 c55e764416488800531198c1a7605739ece64535 data/mekanism/recipes/atomic_disassembler.json
 b8659417402b744db4a14e2d085d5111877ab4a4 data/mekanism/recipes/bin/advanced.json
@@ -3164,6 +3164,7 @@ f38c000af7bc208fb290f4b43a76794989194dbb data/mekanism/recipes/module_attack_amp
 35c7010e26a80941b8af295c4cb6c4aca93f3fec data/mekanism/recipes/module_base.json
 ee4b763c3514a7218a5733b8c99984db2bdf2c8d data/mekanism/recipes/module_blasting_unit.json
 4cc591c676f9daef6385fe21120c9bff421adf17 data/mekanism/recipes/module_charge_distribution_unit.json
+0b2241b2f9c4da3c626ba8932e46b15ca2b48a28 data/mekanism/recipes/module_color_modulation_unit.json
 e71c3d5a611b717d77b33817be0109f27e7c3eff data/mekanism/recipes/module_dosimeter_unit.json
 d0ab8edf2f2752229e0f1ca76ea943b92be8edd3 data/mekanism/recipes/module_electrolytic_breathing_unit.json
 c74a049ba26058b059d232e720267bb4afadda19 data/mekanism/recipes/module_elytra_unit.json
