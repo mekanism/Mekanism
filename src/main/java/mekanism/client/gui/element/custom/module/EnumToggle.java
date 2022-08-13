@@ -9,6 +9,7 @@ import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -54,7 +55,21 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
         List<TYPE> options = getData().getEnums();
         for (int i = 0, count = options.size(); i < count; i++) {
             int center = optionDistance * i;
-            parent.drawScaledCenteredText(matrix, options.get(i).getTextComponent(), getRelativeX() + BAR_START + center, getRelativeY() + 20, textColor, TEXT_SCALE);
+            Component text = options.get(i).getTextComponent();
+            //Similar to logic for drawScaledCenteredText except shifts values slightly if they go past the max length
+            int textWidth = parent.getStringWidth(text);
+            float widthScaling = (textWidth / 2F) * TEXT_SCALE;
+            float left = BAR_START + center - widthScaling;
+            if (left < 0) {
+                left = 0;
+            } else {
+                int max = parent.getScreenWidth() - 1;
+                int end = xPos + (int) Math.ceil(left + textWidth * TEXT_SCALE);
+                if (end > max) {
+                    left -= end - max;
+                }
+            }
+            parent.drawTextWithScale(matrix, text, getRelativeX() + left, getRelativeY() + 20, textColor, TEXT_SCALE);
         }
     }
 
