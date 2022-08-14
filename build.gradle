@@ -256,7 +256,7 @@ java {
 
 minecraft {
     if (mappings_channel == "parchment_previous") {
-        mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}-${minecraft_version}"
+        mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}"
     } else {
         mappings channel: "${mappings_channel}", version: "${mappings_version}"
     }
@@ -425,10 +425,9 @@ dependencies {
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
     testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
-    //TODO - 1.19.2: Update when this updates to 1.19.2
-    compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${previous_minor_minecraft_version}-forge:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //TODO: Re-enable in dev once https://github.com/Chisel-Team/ConnectedTexturesMod/issues/174 is fixed
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
@@ -451,8 +450,7 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    //TODO - 1.19.2: Update when this when it updates to 1.19.2
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${previous_minor_minecraft_version}-${curios_version}:api")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
     def cc = fg.deobf("curse.maven:cc-tweaked-282001:${cc_tweaked_id}")
     compileOnly cc
