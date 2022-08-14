@@ -879,6 +879,7 @@
   "free_runner.mekanism.disabled": "Wyłączony",
   "free_runner.mekanism.mode_change": "Tryb butów swobody zmieniony na: %1$s",
   "free_runner.mekanism.normal": "Normalny",
+  "free_runner.mekanism.safety": "Bezpieczeństwo",
   "frequency.mekanism.delete_confirm": "Czy na pewno chcesz usunąć tą częstotliwość? Operacji nie można cofnąć.",
   "frequency.mekanism.format": "Częstotliwość: %1$s",
   "frequency.mekanism.none": "Brak częstotliwości",
