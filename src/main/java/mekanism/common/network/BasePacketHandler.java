@@ -142,7 +142,7 @@ public abstract class BasePacketHandler {
     public <MSG> void sendTo(MSG message, ServerPlayer player) {
         //Validate it is not a fake player, even though none of our code should call this with a fake player
         if (!(player instanceof FakePlayer)) {
-            getChannel().sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+            getChannel().send(PacketDistributor.PLAYER.with(() -> player), message);
         }
     }
 
@@ -152,7 +152,11 @@ public abstract class BasePacketHandler {
      * @param message - message to send
      */
     public <MSG> void sendToAll(MSG message) {
-        getChannel().send(PacketDistributor.ALL.noArg(), message);
+        //Note: Loops players manually and sends to them as PacketDistributor.ALL has issues in LAN worlds (and maybe even all worlds?)
+        for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+            sendTo(message, player);
+        }
+        //getChannel().send(PacketDistributor.ALL.noArg(), message);
     }
 
     /**
