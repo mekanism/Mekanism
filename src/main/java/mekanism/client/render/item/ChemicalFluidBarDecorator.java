@@ -1,9 +1,7 @@
 package mekanism.client.render.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.math.MathUtils;
@@ -46,8 +44,6 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return false;
         }
         RenderSystem.disableDepthTest();
-        RenderSystem.disableTexture();
-        RenderSystem.disableBlend();
         yOffset = yOffset + 12;
         for (Capability<? extends IChemicalHandler<?,?>> chemicalCap : chemicalCaps) {
             Optional<? extends IChemicalHandler<?, ?>> capabilityInstance = stack.getCapability(chemicalCap).resolve();
