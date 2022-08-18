@@ -44,17 +44,20 @@ public final class FluidUtils {
     }
 
     public static OptionalInt getRGBDurabilityForDisplay(ItemStack stack) {
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-        if (!fluidStack.isEmpty()) {
+        return getRGBDurabilityForDisplay(StorageUtils.getStoredFluidFromNBT(stack));
+    }
+
+    public static OptionalInt getRGBDurabilityForDisplay(FluidStack stack) {
+        if (!stack.isEmpty()) {
             //TODO: Technically doesn't support things where the color is part of the texture such as lava
             // for chemicals it is supported via allowing people to override getColorRepresentation in their
             // chemicals
-            if (fluidStack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
+            if (stack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
                 return OptionalInt.of(0xFFDB6B19);
             } else if (FMLEnvironment.dist == Dist.CLIENT) {
                 //Note: We can only return an accurate result on the client side. This method should never be called from the server
                 // but in case it is make sure we only run on the client side
-                return OptionalInt.of(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack));
+                return OptionalInt.of(IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack));
             }
         }
         return OptionalInt.empty();

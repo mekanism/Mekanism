@@ -208,6 +208,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.IItemDecorator;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
@@ -583,7 +584,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
-        var mekaSuitDecorator = new ChemicalFluidBarDecorator(true,
+        IItemDecorator mekaSuitDecorator = new ChemicalFluidBarDecorator(true,
                 itemStack -> itemStack.getItem() instanceof ItemMekaSuitArmor armor && //only show bar for parts that have the module installed
                         (armor.hasModule(itemStack, MekanismModules.NUTRITIONAL_INJECTION_UNIT) || armor.hasModule(itemStack, MekanismModules.JETPACK_UNIT)),
                 Capabilities.GAS_HANDLER);
