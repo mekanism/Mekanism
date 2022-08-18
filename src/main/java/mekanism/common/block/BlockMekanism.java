@@ -263,7 +263,7 @@ public abstract class BlockMekanism extends Block {
             return;
         }
         if (tile.supportsRedstone()) {
-            tile.redstone = world.hasNeighborSignal(pos);
+            tile.updatePower();
         }
         // Check if the stack has a custom name, and if the tile supports naming, name it
         if (tile.isNameable() && stack.hasCustomHoverName()) {

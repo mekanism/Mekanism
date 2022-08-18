@@ -188,7 +188,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling ITileRedstone
     //TODO: Move these to private variables?
-    public boolean redstone = false;
+    protected boolean redstone = false;
     private boolean redstoneLastTick = false;
     /**
      * This machine's current RedstoneControl type.
@@ -819,7 +819,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public void onNeighborChange(Block block, BlockPos neighborPos) {
-        if (!isRemote() && supportsRedstone()) {
+        if (!isRemote()) {
             updatePower();
         }
     }
@@ -828,9 +828,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      * Called when block is placed in world
      */
     public void onAdded() {
-        if (supportsRedstone()) {
-            updatePower();
-        }
+        updatePower();
     }
 
     @Override
@@ -907,11 +905,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return supportsRedstone() && redstoneLastTick;
     }
 
-    private void updatePower() {
-        boolean power = level.hasNeighborSignal(getBlockPos());
-        if (redstone != power) {
-            redstone = power;
-            onPowerChange();
+    public final void updatePower() {
+        if (supportsRedstone()) {
+            boolean power = level.hasNeighborSignal(getBlockPos());
+            if (redstone != power) {
+                redstone = power;
+                onPowerChange();
+            }
         }
     }
     //End methods ITileRedstone
