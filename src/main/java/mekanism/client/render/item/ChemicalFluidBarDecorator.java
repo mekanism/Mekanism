@@ -49,12 +49,10 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             Optional<? extends IChemicalHandler<?, ?>> capabilityInstance = stack.getCapability(chemicalCap).resolve();
             if (capabilityInstance.isPresent()) {
                 IChemicalHandler<?, ?> chemicalHandler = capabilityInstance.get();
-                if (chemicalHandler.getTanks() == 0) {
-                    continue;
-                }
                 int tank = getDisplayTank(chemicalHandler.getTanks());
                 if (tank != -1) {
-                    renderBarChemical(xOffset, yOffset, chemicalHandler.getChemicalInTank(tank), chemicalHandler.getTankCapacity(tank));
+                    ChemicalStack<?> chemicalInTank = chemicalHandler.getChemicalInTank(tank);
+                    renderBar(xOffset, yOffset, chemicalInTank.getAmount(), chemicalHandler.getTankCapacity(tank), chemicalInTank.getChemicalColorRepresentation());
                     yOffset--;
                 }
             }
@@ -64,29 +62,18 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack).resolve();
             if (capabilityInstance.isPresent()) {
                 IFluidHandlerItem fluidHandler = capabilityInstance.get();
-                if (fluidHandler.getTanks() != 0) {
-                    int tank = getDisplayTank(fluidHandler.getTanks());
-                    if (tank != -1) {
-                        renderBarFluid(xOffset, yOffset, fluidHandler.getFluidInTank(tank), fluidHandler.getTankCapacity(tank));
-                    }
+                int tank = getDisplayTank(fluidHandler.getTanks());
+                if (tank != -1) {
+                    FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
+                    renderBar(xOffset, yOffset, fluidInTank.getAmount(), fluidHandler.getTankCapacity(tank), FluidUtils.getRGBDurabilityForDisplay(stack).orElse(0xFFFFFFFF));
                 }
             }
         }
         return true;
     }
 
-    private void renderBarChemical( int stackXPos, int yPos, ChemicalStack<?> stack, long capacity) {
-        int color = stack.getChemicalColorRepresentation();
-        renderBar(stackXPos, yPos, StorageUtils.getRatio(stack.getAmount(), capacity), color);
-    }
-
-    private void renderBarFluid(int stackXPos, int yPos, FluidStack stack, long capacity) {
-        int color = FluidUtils.getRGBDurabilityForDisplay(stack).orElse(0xFFFFFFFF);
-        renderBar(stackXPos, yPos, StorageUtils.getRatio(stack.getAmount(), capacity), color);
-    }
-
-    private void renderBar(int stackXPos, int yPos, double width, int color) {
-        int pixelWidth = convertWidth(width);
+    private void renderBar(int stackXPos, int yPos, long amount, long capacity, int color) {
+        int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
         GuiUtils.fill(new PoseStack(), stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
         GuiUtils.fill(new PoseStack(), stackXPos + 2, yPos, pixelWidth, 1, color);
     }
