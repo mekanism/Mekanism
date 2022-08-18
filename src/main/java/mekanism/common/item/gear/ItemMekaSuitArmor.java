@@ -195,7 +195,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public int getBarWidth(@NotNull ItemStack stack) {
-        //TODO: Eventually look into making it so that we can have a "secondary durability" bar for rendering things like stored gas
         return StorageUtils.getEnergyBarWidth(stack);
     }
 

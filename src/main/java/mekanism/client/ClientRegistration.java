@@ -116,6 +116,7 @@ import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.hud.MekaSuitEnergyLevel;
 import mekanism.client.render.hud.MekaSuitHUD;
+import mekanism.client.render.item.ChemicalFluidBarDecorator;
 import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -158,12 +159,14 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -212,6 +215,7 @@ import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -575,6 +579,16 @@ public class ClientRegistration {
                 ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, entry.getValue());
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
+        var mekaSuitDecorator = new ChemicalFluidBarDecorator(true,
+                itemStack -> itemStack.getItem() instanceof ItemMekaSuitArmor armor && //only show bar for parts that have the module installed
+                        (armor.hasModule(itemStack, MekanismModules.NUTRITIONAL_INJECTION_UNIT) || armor.hasModule(itemStack, MekanismModules.JETPACK_UNIT)),
+                Capabilities.GAS_HANDLER);
+        event.register(MekanismItems.MEKASUIT_HELMET, mekaSuitDecorator);
+        event.register(MekanismItems.MEKASUIT_BODYARMOR, mekaSuitDecorator);
     }
 
     @SubscribeEvent
