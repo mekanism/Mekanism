@@ -3,6 +3,7 @@ package mekanism.client.render.item;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.math.MathUtils;
@@ -15,6 +16,7 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -49,7 +51,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         for (Capability<? extends IChemicalHandler<?,?>> chemicalCap : chemicalCaps) {
             Optional<? extends IChemicalHandler<?, ?>> capabilityInstance = stack.getCapability(chemicalCap).resolve();
             if (capabilityInstance.isPresent()) {
-                var chemicalHandler = capabilityInstance.get();
+                IChemicalHandler<?, ?> chemicalHandler = capabilityInstance.get();
                 if (chemicalHandler.getTanks() == 0) {
                     continue;
                 }
@@ -64,9 +66,9 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         }
 
         if (showFluid) {
-            var capabilityInstance = FluidUtil.getFluidHandler(stack).resolve();
+            Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack).resolve();
             if (capabilityInstance.isPresent()) {
-                var fluidHandler = capabilityInstance.get();
+                IFluidHandlerItem fluidHandler = capabilityInstance.get();
                 if (fluidHandler.getTanks() != 0) {
                     int tank = 0;
                     if (fluidHandler.getTanks() > 1 && Minecraft.getInstance().level != null) {
