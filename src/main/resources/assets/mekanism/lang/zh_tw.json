@@ -879,6 +879,7 @@
   "free_runner.mekanism.disabled": "禁用",
   "free_runner.mekanism.mode_change": "自由助跑器模式更改為: %1$s",
   "free_runner.mekanism.normal": "標準",
+  "free_runner.mekanism.safety": "安全",
   "frequency.mekanism.delete_confirm": "確定想刪除此頻率? 一旦刪除將不能撤銷.",
   "frequency.mekanism.format": "頻率: %1$s",
   "frequency.mekanism.none": "沒有頻率",
