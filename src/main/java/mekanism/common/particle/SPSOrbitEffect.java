@@ -12,13 +12,13 @@ import net.minecraft.world.phys.Vec3;
 public class SPSOrbitEffect extends CustomEffect {
 
     private static final ResourceLocation TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "sps_orbit_effect.png");
+    private static final Color COLOR = Color.rgbai(102, 215, 237, 240);
 
     private final Vec3 center;
     private final Vec3 start;
     private final Vec3 axis;
 
     private float speed = 0.5F;
-    private final float radius;
 
     private SPSMultiblockData multiblock;
 
@@ -26,12 +26,12 @@ public class SPSOrbitEffect extends CustomEffect {
         super(TEXTURE, 1);
         this.multiblock = multiblock;
         this.center = center;
-        radius = 1 + (float) rand.nextDouble();
+        float radius = 1 + (float) rand.nextDouble();
         start = randVec().scale(radius);
-        pos = center.add(start);
         axis = randVec();
-        scale = 0.01F + rand.nextFloat() * 0.04F;
-        color = Color.rgbai(102, 215, 237, 240);
+        setPos(this.center.add(start));
+        setScale(0.01F + rand.nextFloat() * 0.04F);
+        setColor(COLOR);
     }
 
     public void updateMultiblock(SPSMultiblockData multiblock) {
@@ -40,11 +40,11 @@ public class SPSOrbitEffect extends CustomEffect {
 
     @Override
     public boolean tick() {
-        if (super.tick()) {
+        if (super.tick() || !multiblock.isFormed()) {
             return true;
         }
         speed = (float) Math.log10(multiblock.lastReceivedEnergy.doubleValue());
-        return !multiblock.isFormed();
+        return false;
     }
 
     @Override

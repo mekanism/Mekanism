@@ -2,14 +2,15 @@ package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
@@ -30,7 +31,8 @@ public class RenderEnergyCubeItem extends MekanismISTER {
     }
 
     @Override
-    public void renderByItem(@NotNull ItemStack stack, @NotNull TransformType transformType, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight) {
+    public void renderByItem(@NotNull ItemStack stack, @NotNull TransformType transformType, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light,
+          int overlayLight) {
         EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier();
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
@@ -43,10 +45,12 @@ public class RenderEnergyCubeItem extends MekanismISTER {
         matrix.popPose();
         double energyPercentage = StorageUtils.getStoredEnergyFromNBT(stack).divideToLevel(tier.getMaxEnergy());
         if (energyPercentage > 0) {
+            float ticks = Minecraft.getInstance().levelRenderer.ticks + MekanismRenderer.getPartialTick();
+            float scaledTicks = 4 * ticks;
             matrix.scale(0.4F, 0.4F, 0.4F);
-            matrix.translate(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
-            matrix.mulPose(Vector3f.YP.rotationDegrees(4 * MekanismClient.ticksPassed));
-            matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + 4 * MekanismClient.ticksPassed));
+            matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            matrix.mulPose(Vector3f.YP.rotationDegrees(scaledTicks));
+            matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
             core.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.popPose();

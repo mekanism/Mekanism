@@ -1,19 +1,24 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.MekanismClient;
+import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderTickHandler;
+import mekanism.client.render.RenderTickHandler.LazyRender;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
 public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
@@ -29,7 +34,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
     }
 
     @Override
-    protected void render(TileEntityEnergyCube tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
+    protected void render(TileEntityEnergyCube tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         profiler.push(ProfilerConstants.FRAME);
         matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
@@ -56,16 +61,28 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         profiler.popPush(ProfilerConstants.CORE);//End frame start core
         float energyScale = tile.getEnergyScale();
         if (energyScale > 0) {
-            matrix.pushPose();
-            matrix.translate(0.5, 0.5, 0.5);
-            float ticks = MekanismClient.ticksPassed + partialTick;
-            matrix.scale(0.4F, 0.4F, 0.4F);
-            matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            float scaledTicks = 4 * ticks;
-            matrix.mulPose(Vector3f.YP.rotationDegrees(scaledTicks));
-            matrix.mulPose(coreVec.rotationDegrees(36F + scaledTicks));
-            core.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, tile.getTier().getBaseTier().getColor(), energyScale);
-            matrix.popPose();
+            Vec3 renderPos = Vec3.atCenterOf(tile.getBlockPos());
+            EnumColor color = tile.getTier().getBaseTier().getColor();
+            RenderTickHandler.addTransparentRenderer(ModelEnergyCore.BATCHED_RENDER_TYPE, new LazyRender() {
+                @Override
+                public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick) {
+                    float ticks = renderTick + partialTick;
+                    float scaledTicks = 4 * ticks;
+                    poseStack.pushPose();
+                    poseStack.translate(renderPos.x, renderPos.y, renderPos.z);
+                    poseStack.scale(0.4F, 0.4F, 0.4F);
+                    poseStack.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+                    poseStack.mulPose(Vector3f.YP.rotationDegrees(scaledTicks));
+                    poseStack.mulPose(coreVec.rotationDegrees(36F + scaledTicks));
+                    core.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, color, energyScale);
+                    poseStack.popPose();
+                }
+
+                @Override
+                public Vec3 getCenterPos(float partialTick) {
+                    return renderPos;
+                }
+            });
         }
         profiler.pop();
     }

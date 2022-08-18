@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector4f;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
@@ -98,6 +100,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RenderTickHandler {
 
@@ -105,6 +108,7 @@ public class RenderTickHandler {
 
     private static final Map<BlockState, List<Vertex[]>> cachedWireFrames = new HashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static final Map<RenderType, List<LazyRender>> transparentRenderers = new HashMap<>();
 
     public static int modeSwitchTimer = 0;
     public static double prevRadiation = 0;
@@ -124,7 +128,7 @@ public class RenderTickHandler {
 
     //Note: This listener is only registered if JEI is loaded
     public static void guiOpening(ScreenEvent.Opening event) {
-        if (event.getCurrentScreen() instanceof GuiMekanism screen) {
+        if (event.getCurrentScreen() instanceof GuiMekanism<?> screen) {
             //If JEI is loaded and our current screen is a mekanism gui,
             // check if the new screen is a JEI recipe screen
             if (event.getNewScreen() instanceof IRecipesGui) {
@@ -134,18 +138,74 @@ public class RenderTickHandler {
         }
     }
 
+    public static void addTransparentRenderer(RenderType renderType, LazyRender render) {
+        transparentRenderers.computeIfAbsent(renderType, r -> new ArrayList<>()).add(render);
+    }
+
     @SubscribeEvent
     public void renderWorld(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+            //Only do matrix transforms and mess with buffers if we actually have any renders to render
+            //TODO: Try to figure out a good way to make this rendering able to be profiled like it used to be able when done as a Block Entity Renderer
+            renderStage(event, !transparentRenderers.isEmpty(), (camera, renderer, poseStack, renderTick, partialTick) -> {
+                record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
+                }
+                Consumer<TransparentRenderInfo> renderInfoConsumer = info -> {
+                    //Batch all renders for a single render type into a single buffer addition
+                    VertexConsumer buffer = renderer.getBuffer(info.renderType);
+                    for (LazyRender transparentRender : info.renders) {
+                        //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
+                        transparentRender.render(camera, buffer, poseStack, renderTick, partialTick);
+                    }
+                    renderer.endBatch(info.renderType);
+                };
+                if (transparentRenderers.size() == 1) {
+                    //If we only have one render type we don't need to bother calculating any distances
+                    for (Map.Entry<RenderType, List<LazyRender>> entry : transparentRenderers.entrySet()) {
+                        renderInfoConsumer.accept(new TransparentRenderInfo(entry.getKey(), entry.getValue(), 0));
+                    }
+                } else {
+                    transparentRenderers.entrySet().stream()
+                          .map(entry -> {
+                              List<LazyRender> renders = entry.getValue();
+                              double closest = Double.MAX_VALUE;
+                              for (LazyRender render : renders) {
+                                  Vec3 renderPos = render.getCenterPos(partialTick);
+                                  if (renderPos != null) {
+                                      //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
+                                      double distanceSqr = camera.getPosition().distanceToSqr(renderPos);
+                                      if (distanceSqr < closest) {
+                                          closest = distanceSqr;
+                                      }
+                                  }
+                              }
+                              //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
+                              return new TransparentRenderInfo(entry.getKey(), renders, closest);
+                          })
+                          //Sort in the order of furthest to closest (reverse of by closest)
+                          .sorted(Comparator.comparingDouble(info -> -info.closest))
+                          .forEachOrdered(renderInfoConsumer);
+                }
+                transparentRenderers.clear();
+            });
+        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
             //Only do matrix transforms and mess with buffers if we actually have any bolts to render
+            renderStage(event, boltRenderer.hasBoltsToRender(), (camera, renderer, poseStack, renderTick, partialTick) -> {
+                boltRenderer.render(partialTick, poseStack, renderer);
+                renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+            });
+        }
+    }
+
+    private void renderStage(RenderLevelStageEvent event, boolean shouldRender, StageRenderer renderer) {
+        if (shouldRender) {
+            Camera camera = event.getCamera();
             PoseStack matrix = event.getPoseStack();
             matrix.pushPose();
             // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-            Vec3 camVec = event.getCamera().getPosition();
+            Vec3 camVec = camera.getPosition();
             matrix.translate(-camVec.x, -camVec.y, -camVec.z);
-            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-            boltRenderer.render(event.getPartialTick(), matrix, renderer);
-            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+            renderer.render(camera, minecraft.renderBuffers().bufferSource(), matrix, event.getRenderTick(), event.getPartialTick());
             matrix.popPose();
         }
     }
@@ -502,6 +562,23 @@ public class RenderTickHandler {
         MekanismRenderer.prepSingleFaceModelSize(toReturn, side);
         cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).put(type, toReturn);
         return toReturn;
+    }
+
+    @FunctionalInterface
+    private interface StageRenderer {
+
+        void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick);
+    }
+
+    @FunctionalInterface
+    public interface LazyRender {
+
+        void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick);
+
+        @Nullable
+        default Vec3 getCenterPos(float partialTick) {
+            return null;
+        }
     }
 
     @FunctionalInterface

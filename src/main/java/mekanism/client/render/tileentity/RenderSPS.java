@@ -37,6 +37,9 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
     private static final float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
     private static final Random rand = new Random();
+    static {
+        CORE.setColor(Color.rgbai(255, 255, 255, 240));
+    }
 
     public static void clearBoltRenderers() {
         boltRendererMap.clear();
@@ -46,7 +49,6 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     public RenderSPS(BlockEntityRendererProvider.Context context) {
         super(context);
-        CORE.setColor(Color.rgbai(255, 255, 255, 240));
     }
 
     @Override
@@ -61,7 +63,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
                 if (!minecraft.isPaused()) {
                     for (CoilData data : multiblock.coilData.coilMap.values()) {
                         if (data.prevLevel > 0) {
-                            bolts.update(data.coilPos.hashCode(), getBoltFromData(data, tile.getBlockPos(), multiblock, renderCenter), partialTick);
+                            bolts.update(data.coilPos.hashCode(), getBoltFromData(data, tile.getBlockPos(), renderCenter), partialTick);
                         }
                     }
                 }
@@ -92,12 +94,16 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
                 bolts.render(partialTick, matrix, renderer);
 
                 if (multiblock.lastProcessed > 0) {
-                    CORE.setPos(center);
-                    CORE.setScale(getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE));
-                    BillboardingEffectRenderer.render(CORE, tile.getBlockPos(), matrix, renderer, tile.getLevel().getGameTime(), partialTick);
+                    float scale = getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE);
+                    BillboardingEffectRenderer.render(CORE.getTexture(), () -> {
+                        //Lazily update the position and stuff, so it gets set just before rendering
+                        CORE.setPos(center);
+                        CORE.setScale(scale);
+                        return CORE;
+                    });
                 }
 
-                tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, tile.getBlockPos(), matrix, renderer, tile.getLevel().getGameTime(), partialTick));
+                tile.orbitEffects.forEach(BillboardingEffectRenderer::render);
             }
         }
     }
@@ -110,7 +116,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
         return min + scale * (max - min);
     }
 
-    private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, SPSMultiblockData multiblock, Vec3 center) {
+    private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, Vec3 center) {
         Vec3 start = Vec3.atCenterOf(data.coilPos.relative(data.side));
         start = start.add(Vec3.atLowerCornerOf(data.side.getNormal()).scale(0.5));
         int count = 1 + (data.prevLevel - 1) / 2;

@@ -16,14 +16,14 @@ public class RenderIndustrialAlarmItem extends MekanismISTER {
 
     @Override
     public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
-        industrialAlarm = new ModelIndustrialAlarm(getEntityModels());
+        industrialAlarm = new ModelIndustrialAlarm(getEntityModels(), true);
     }
 
     @Override
     public void renderByItem(@NotNull ItemStack stack, @NotNull TransformType transformType, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight) {
         matrix.pushPose();
         matrix.translate(0.5, 0.3, 0.5);
-        industrialAlarm.render(matrix, renderer, light, overlayLight, false, 0, true, stack.hasFoil());
+        industrialAlarm.renderItem(matrix, renderer, light, overlayLight, stack.hasFoil());
         matrix.popPose();
     }
 }

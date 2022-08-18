@@ -372,6 +372,7 @@ public class ModelEnergyCube extends MekanismJavaModel {
             return createLayerDefinition(32, 32, CUBE);
         }
 
+        public static final RenderType BATCHED_RENDER_TYPE = MekanismRenderType.standardTranslucentTarget(CORE_TEXTURE);
         private final RenderType RENDER_TYPE = renderType(CORE_TEXTURE);
         private final ModelPart cube;
 
@@ -386,12 +387,11 @@ public class ModelEnergyCube extends MekanismJavaModel {
         }
 
         public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, EnumColor color, float energyPercentage) {
-            renderToBuffer(matrix, getBuffer(renderer), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2),
-                  energyPercentage);
+            render(matrix, getBuffer(renderer), light, overlayLight, color, energyPercentage);
         }
 
         public void render(@NotNull PoseStack matrix, @NotNull VertexConsumer buffer, int light, int overlayLight, EnumColor color, float energyPercentage) {
-            cube.render(matrix, buffer, light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), energyPercentage);
+            renderToBuffer(matrix, buffer, light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), energyPercentage);
         }
 
         @Override

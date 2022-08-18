@@ -195,15 +195,15 @@ public class ModelQuantumEntangloporter extends MekanismJavaModel {
     private final RenderType RENDER_TYPE_OVERLAY = MekanismRenderType.standard(OVERLAY);
     private final RenderType RENDER_TYPE = renderType(ENTANGLOPORTER_TEXTURE);
     private final List<ModelPart> parts;
+    private final List<ModelPart> overlay;
 
     public ModelQuantumEntangloporter(EntityModelSet entityModelSet) {
         super(RenderType::entitySolid);
         ModelPart root = entityModelSet.bakeLayer(ENTANGLOPORTER_LAYER);
-        parts = getRenderableParts(root, PORT_TOP, PORT_BOTTOM, PORT_LEFT, PORT_RIGHT, PORT_BACK, PORT_FRONT, ENERGY_CUBE_CORE, FRAME_EDGE_1, FRAME_EDGE_2,
-              FRAME_EDGE_3, FRAME_EDGE_4, FRAME_EDGE_5, FRAME_EDGE_6, FRAME_EDGE_7, FRAME_EDGE_8, FRAME_EDGE_9, FRAME_EDGE_10, FRAME_EDGE_11, FRAME_EDGE_12,
-              FRAME_1, FRAME_2, FRAME_3, FRAME_4, FRAME_5, FRAME_6, FRAME_7, FRAME_8, FRAME_9, FRAME_10, FRAME_11, FRAME_12, CORNER_1, CORNER_2, CORNER_3,
-              CORNER_4, CORNER_5, CORNER_6, CORNER_7, CORNER_8);
-
+        parts = getRenderableParts(root, PORT_TOP, PORT_BOTTOM, PORT_LEFT, PORT_RIGHT, PORT_BACK, PORT_FRONT, FRAME_EDGE_1, FRAME_EDGE_2, FRAME_EDGE_3, FRAME_EDGE_4,
+              FRAME_EDGE_5, FRAME_EDGE_6, FRAME_EDGE_7, FRAME_EDGE_8, FRAME_EDGE_9, FRAME_EDGE_10, FRAME_EDGE_11, FRAME_EDGE_12, FRAME_1, FRAME_2, FRAME_3, FRAME_4,
+              FRAME_5, FRAME_6, FRAME_7, FRAME_8, FRAME_9, FRAME_10, FRAME_11, FRAME_12, CORNER_1, CORNER_2, CORNER_3, CORNER_4, CORNER_5, CORNER_6, CORNER_7, CORNER_8);
+        overlay = getRenderableParts(root, PORT_TOP, PORT_BOTTOM, PORT_LEFT, PORT_RIGHT, PORT_BACK, PORT_FRONT, ENERGY_CUBE_CORE);
     }
 
     public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean renderMain, boolean hasEffect) {
@@ -213,7 +213,7 @@ public class ModelQuantumEntangloporter extends MekanismJavaModel {
         matrix.pushPose();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(0, -0.0011, 0);
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE_OVERLAY, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 1);
+        renderPartsToBuffer(overlay, matrix, getVertexConsumer(renderer, RENDER_TYPE_OVERLAY, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 1);
         matrix.popPose();
     }
 

@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
@@ -45,7 +46,7 @@ public class ModelAtomicDisassembler extends MekanismJavaModel {
           PartPose.rotation(-0.7853982F, 0, 0));
     private static final ModelPartData BLADE_FRONT_LOWER = new ModelPartData("bladeFrontLower", CubeListBuilder.create()
           .texOffs(58, 0)
-          .addBox(0, -9.58F, -4, 1, 5, 2),
+          .addBox(0, -9.58F, -4, 1, 5, 2, new CubeDeformation(0.01F)),
           PartPose.rotation(0.7853982F, 0, 0));
     private static final ModelPartData NECK_ANGLED = new ModelPartData("neckAngled", CubeListBuilder.create()
           .texOffs(12, 0)
