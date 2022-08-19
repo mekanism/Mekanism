@@ -4,7 +4,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.ISidedFluidHandler;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +15,6 @@ import org.jetbrains.annotations.Nullable;
 public class FluidHandlerManager extends CapabilityHandlerManager<IFluidTankHolder, IExtendedFluidTank, IFluidHandler, ISidedFluidHandler> {
 
     public FluidHandlerManager(@Nullable IFluidTankHolder holder, @NotNull ISidedFluidHandler baseHandler) {
-        super(holder, baseHandler, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, ProxyFluidHandler::new, IFluidTankHolder::getTanks);
+        super(holder, baseHandler, ForgeCapabilities.FLUID_HANDLER, ProxyFluidHandler::new, IFluidTankHolder::getTanks);
     }
 }

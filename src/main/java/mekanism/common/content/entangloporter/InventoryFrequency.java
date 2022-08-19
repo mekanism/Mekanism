@@ -62,8 +62,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -310,7 +310,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         if (!fluidToSend.isEmpty()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, expected);
             typesToEject.put(TransmissionType.FLUID, (tile, side) ->
-                  CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                  CapabilityUtils.getCapability(tile, ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).ifPresent(handler -> {
                       if (FluidUtils.canFill(handler, fluidToSend)) {
                           target.addHandler(handler);
                       }

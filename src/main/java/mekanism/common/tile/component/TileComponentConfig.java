@@ -47,8 +47,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,12 +85,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
-            case FLUID -> tile.invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+            case FLUID -> tile.invalidateCapability(ForgeCapabilities.FLUID_HANDLER, direction);
             case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER, direction);
             case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER, direction);
             case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER, direction);
             case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER, direction);
-            case ITEM -> tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
+            case ITEM -> tile.invalidateCapability(ForgeCapabilities.ITEM_HANDLER, direction);
             case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER, direction);
         }
         tile.markForSave();
@@ -119,7 +118,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     public boolean isCapabilityDisabled(@NotNull Capability<?> capability, Direction side) {
         TransmissionType type = null;
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
             type = TransmissionType.ITEM;
         } else if (capability == Capabilities.GAS_HANDLER) {
             type = TransmissionType.GAS;
@@ -131,7 +130,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             type = TransmissionType.SLURRY;
         } else if (capability == Capabilities.HEAT_HANDLER) {
             type = TransmissionType.HEAT;
-        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == ForgeCapabilities.FLUID_HANDLER) {
             type = TransmissionType.FLUID;
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             type = TransmissionType.ENERGY;

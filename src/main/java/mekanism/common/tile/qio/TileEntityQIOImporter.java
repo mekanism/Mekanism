@@ -26,7 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
@@ -62,7 +62,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         if (!importWithoutFilter && getFilters().isEmpty()) {
             return;
         }
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(back, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction).resolve();
+        Optional<IItemHandler> capability = CapabilityUtils.getCapability(back, ForgeCapabilities.ITEM_HANDLER, direction).resolve();
         if (capability.isEmpty()) {
             return;
         }

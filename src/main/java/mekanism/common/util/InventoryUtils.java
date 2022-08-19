@@ -19,7 +19,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
@@ -91,7 +91,7 @@ public final class InventoryUtils {
 
     @Nullable
     public static IItemHandler assertItemHandler(String desc, BlockEntity tile, Direction side) {
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).resolve();
+        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, ForgeCapabilities.ITEM_HANDLER, side).resolve();
         if (capability.isPresent()) {
             return capability.get();
         }
@@ -105,7 +105,7 @@ public final class InventoryUtils {
     }
 
     public static boolean isItemHandler(BlockEntity tile, Direction side) {
-        return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
+        return CapabilityUtils.getCapability(tile, ForgeCapabilities.ITEM_HANDLER, side).isPresent();
     }
 
     public static TileTransitRequest getEjectItemMap(BlockEntity tile, Direction side, List<IInventorySlot> slots) {

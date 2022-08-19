@@ -14,7 +14,7 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +68,7 @@ public abstract class TransitRequest {
         if (isEmpty()) {
             return getEmptyResponse();
         }
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).resolve();
+        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve();
         if (capability.isPresent()) {
             IItemHandler inventory = capability.get();
             if (min > 1) {

@@ -24,7 +24,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +58,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         }
         Item item = stack.getItem();
         boolean isBin = item instanceof ItemBlockBin;
-        Optional<IItemHandler> capability = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
+        Optional<IItemHandler> capability = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
         List<IInventorySlot> stackSlots = new ArrayList<>();
         if (capability.isPresent()) {
             IItemHandler itemHandler = capability.get();

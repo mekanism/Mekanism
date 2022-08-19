@@ -7,17 +7,16 @@ import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class TileEntityFusionReactorController extends TileEntityFusionReactorBlock {
 
     public TileEntityFusionReactorController(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, pos, state);
         //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
-        addDisabledCapabilities(Capabilities.GAS_HANDLER, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Capabilities.HEAT_HANDLER);
+        addDisabledCapabilities(Capabilities.GAS_HANDLER, ForgeCapabilities.FLUID_HANDLER, Capabilities.HEAT_HANDLER);
         addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
-        addSemiDisabledCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, () -> !getMultiblock().isFormed());
+        addSemiDisabledCapability(ForgeCapabilities.ITEM_HANDLER, () -> !getMultiblock().isFormed());
         delaySupplier = () -> 0;
     }
 

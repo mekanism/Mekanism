@@ -7,9 +7,9 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ public class ForgeEnergyCompat implements IEnergyCompat {
 
     @Override
     public Capability<IEnergyStorage> getCapability() {
-        return CapabilityEnergy.ENERGY;
+        return ForgeCapabilities.ENERGY;
     }
 
     @Override
