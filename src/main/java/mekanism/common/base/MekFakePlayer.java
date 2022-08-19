@@ -7,11 +7,9 @@ import java.util.UUID;
 import java.util.function.Function;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,22 +55,10 @@ public class MekFakePlayer extends FakePlayer {
         return this.emulatingUUID == null ? super.getUUID() : this.emulatingUUID;
     }
 
-    @Override
-    public Vec3 position() {
-        //Provide the actual position that forge's fake player hides in this method
-        return new Vec3(getX(), getY(), getZ());
-    }
-
-    @Override
-    public BlockPos blockPosition() {
-        //Provide the actual block position that forge's fake player hides in this method
-        return new BlockPos(getBlockX(), getBlockY(), getBlockZ());
-    }
-
     /**
      * Acquire a Fake Player and call a function which makes use of the player. Afterwards, the Fake Player's world is nulled out to prevent GC issues. Emulated UUID is
      * also reset.
-     *
+     * <br>
      * Do NOT store a reference to the Fake Player, so that it may be Garbage Collected. A fake player _should_ only need to be short-lived
      *
      * @param world              World to set on the fake player

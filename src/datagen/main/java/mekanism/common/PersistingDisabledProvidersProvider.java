@@ -34,20 +34,20 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private static final Set<String> PATHS_TO_SKIP = Set.of(
-          "/scripts/",//CraftTweaker script files
-          "/pe_custom_conversions/"//ProjectE custom conversion files
+          "/scripts/"//CraftTweaker script files
+          //, "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final Set<String> COMPAT_RECIPES_TO_SKIP = Set.of(
-          //"ae2/",
-          //"biomesoplenty/",
-          //"byg/",//Biomes You'll Go
-          //"ilikewood/",
-          //"ilikewoodxbiomesoplenty/",//I Like Wood Biomes O' Plenty
-          //"ilikewoodxbyg/"//I Like Wood Biomes You'll Go
+          //"ae2/"
+          //, "biomesoplenty/"
+          //, "byg/"//Biomes You'll Go
+          //, "ilikewood/"
+          //, "ilikewoodxbiomesoplenty/"//I Like Wood Biomes O' Plenty
+          //, "ilikewoodxbyg/"//I Like Wood Biomes You'll Go
     );
     private static final List<DataProvider> FAKE_PROVIDERS = Stream.of(
-          "CraftTweaker Examples: mekanism",
-          "Custom EMC Conversions: mekanism"
+          "CraftTweaker Examples: mekanism"
+          //, "Custom EMC Conversions: mekanism"
     ).<DataProvider>map(name -> new DataProvider() {
         @Override
         public void run(@NotNull CachedOutput cache) {

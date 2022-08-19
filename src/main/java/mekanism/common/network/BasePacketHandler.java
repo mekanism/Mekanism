@@ -152,11 +152,7 @@ public abstract class BasePacketHandler {
      * @param message - message to send
      */
     public <MSG> void sendToAll(MSG message) {
-        //Note: Loops players manually and sends to them as PacketDistributor.ALL has issues in LAN worlds (and maybe even all worlds?)
-        for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-            sendTo(message, player);
-        }
-        //getChannel().send(PacketDistributor.ALL.noArg(), message);
+        getChannel().send(PacketDistributor.ALL.noArg(), message);
     }
 
     /**

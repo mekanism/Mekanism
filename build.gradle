@@ -467,8 +467,7 @@ dependencies {
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    //TODO - 1.19: Re-enable when this updates
-    //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 }
 
 def getManifestAttributes(String title) {
