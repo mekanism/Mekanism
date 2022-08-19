@@ -149,7 +149,9 @@ public class GuiUtils {
     }
 
     public static void fill(PoseStack matrix, int x, int y, int width, int height, int color) {
-        GuiComponent.fill(matrix, x, y, x + width, y + height, color);
+        if (width != 0 && height != 0) {
+            GuiComponent.fill(matrix, x, y, x + width, y + height, color);
+        }
     }
 
     public static void drawSprite(PoseStack matrix, int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {

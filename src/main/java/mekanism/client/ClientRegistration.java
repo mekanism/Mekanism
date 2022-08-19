@@ -116,6 +116,7 @@ import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.hud.MekaSuitEnergyLevel;
 import mekanism.client.render.hud.MekaSuitHUD;
+import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -212,6 +213,7 @@ import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -575,6 +577,12 @@ public class ClientRegistration {
                 ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, entry.getValue());
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
+        event.register(MekanismItems.MEKASUIT_HELMET, MekaSuitBarDecorator.INSTANCE);
+        event.register(MekanismItems.MEKASUIT_BODYARMOR, MekaSuitBarDecorator.INSTANCE);
     }
 
     @SubscribeEvent

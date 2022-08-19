@@ -7,6 +7,7 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
@@ -103,17 +104,15 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
-        superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> superheatedCoolantCapacity,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
-              gas -> gas.has(HeatedCoolant.class));
+        superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> superheatedCoolantCapacity, ChemicalTankBuilder.GAS.notExternal,
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), gas -> gas.has(HeatedCoolant.class));
         waterTank = MultiblockFluidTank.input(this, tile, () -> waterTankCapacity, fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()));
         fluidTanks.add(waterTank);
         steamTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> steamTankCapacity,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), ChemicalTankBuilder.GAS.notExternal,
               gas -> gas == MekanismGases.STEAM.getChemical());
         cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> cooledCoolantCapacity,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-              gas -> gas.has(CooledCoolant.class));
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), ChemicalTankBuilder.GAS.notExternal, gas -> gas.has(CooledCoolant.class));
         Collections.addAll(gasTanks, steamTank, superheatedCoolantTank, cooledCoolantTank);
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile, CASING_HEAT_CAPACITY, () -> CASING_INVERSE_CONDUCTION_COEFFICIENT,
               () -> CASING_INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);

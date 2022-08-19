@@ -11,7 +11,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.TriPredicate;
@@ -41,38 +41,31 @@ public class RateLimitMultiTankFluidHandler extends ItemStackMekanismFluidHandle
         return tanks;
     }
 
-    public static class FluidTankSpec {
+    public static class FluidTankSpec extends GenericTankSpec<FluidStack> {
 
         final IntSupplier rate;
         final IntSupplier capacity;
-        final Predicate<@NotNull FluidStack> isValid;
-        final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract;
-        final TriPredicate<@NotNull FluidStack, @NotNull AutomationType, @NotNull ItemStack> canInsert;
 
         public FluidTankSpec(IntSupplier rate, IntSupplier capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
-              TriPredicate<@NotNull FluidStack, @NotNull AutomationType, @NotNull ItemStack> canInsert, Predicate<@NotNull FluidStack> isValid) {
+              TriPredicate<@NotNull FluidStack, @NotNull AutomationType, @NotNull ItemStack> canInsert, Predicate<@NotNull FluidStack> isValid,
+              Predicate<@NotNull ItemStack> supportsStack) {
+            super(canExtract, canInsert, isValid, supportsStack);
             this.rate = rate;
             this.capacity = capacity;
-            this.isValid = isValid;
-            this.canExtract = canExtract;
-            this.canInsert = canInsert;
         }
 
         public static FluidTankSpec create(IntSupplier rate, IntSupplier capacity) {
-            return new FluidTankSpec(rate, capacity, BasicFluidTank.alwaysTrueBi, ConstantPredicates.alwaysTrueTri(), BasicFluidTank.alwaysTrue);
+            return new FluidTankSpec(rate, capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueTri(), ConstantPredicates.alwaysTrue(),
+                  ConstantPredicates.alwaysTrue());
         }
 
         public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity, Predicate<@NotNull FluidStack> isValid) {
-            return createFillOnly(rate, capacity, ConstantPredicates.alwaysTrueTri(), isValid);
+            return createFillOnly(rate, capacity, isValid, ConstantPredicates.alwaysTrue());
         }
 
-        public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity,
-              TriPredicate<@NotNull FluidStack, @NotNull AutomationType, @NotNull ItemStack> canInsert, Predicate<@NotNull FluidStack> isValid) {
-            return new FluidTankSpec(rate, capacity, BasicFluidTank.notExternal, canInsert, isValid);
-        }
-
-        public boolean isValid(@NotNull FluidStack gas) {
-            return isValid.test(gas);
+        public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity, Predicate<@NotNull FluidStack> isValid,
+              Predicate<@NotNull ItemStack> supportsStack) {
+            return new FluidTankSpec(rate, capacity, ConstantPredicates.notExternal(), (chemical, automation, stack) -> supportsStack.test(stack), isValid, supportsStack);
         }
     }
 }

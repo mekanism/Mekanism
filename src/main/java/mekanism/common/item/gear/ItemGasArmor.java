@@ -2,7 +2,6 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.LongSupplier;
-import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
@@ -66,7 +65,7 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem 
     @Override
     protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
         super.gatherCapabilities(capabilities, stack, nbt);
-        capabilities.add(RateLimitGasHandler.create(getFillRate(), getMaxGas(), (item, automationType) -> automationType != AutomationType.EXTERNAL,
-              ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == getGasType().getChemical()));
+        capabilities.add(RateLimitGasHandler.create(getFillRate(), getMaxGas(), ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
+              gas -> gas == getGasType().getChemical()));
     }
 }

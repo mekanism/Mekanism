@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import mekanism.api.AutomationType;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -101,8 +100,7 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
         super.gatherCapabilities(capabilities, stack, nbt);
         capabilities.add(RateLimitGasHandler.create(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas,
-              (item, automationType) -> automationType != AutomationType.EXTERNAL, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              gas -> gas == MekanismGases.HYDROGEN.getChemical()));
+              ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getChemical()));
     }
 
     @Override

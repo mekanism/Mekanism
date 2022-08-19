@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +33,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
 import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler;
-import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler.GasTankSpec;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler;
@@ -105,8 +104,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     private final AttributeCache attributeCache;
     //TODO: Expand this system so that modules can maybe define needed tanks?
-    private final Set<GasTankSpec> gasTankSpecs = new HashSet<>();
-    private final Set<FluidTankSpec> fluidTankSpecs = new HashSet<>();
+    private final List<ChemicalTankSpec<Gas>> gasTankSpecs = new ArrayList<>();
+    private final List<ChemicalTankSpec<Gas>> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
+    private final List<FluidTankSpec> fluidTankSpecs = new ArrayList<>();
+    private final List<FluidTankSpec> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
     private final double laserDissipation;
@@ -117,15 +118,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         CachedIntValue armorConfig;
         if (slot == EquipmentSlot.HEAD) {
             fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT),
-                  fluid -> fluid.getFluid() == MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
+                  fluid -> fluid.getFluid() == MekanismFluids.NUTRITIONAL_PASTE.getFluid(), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
             absorption = 0.15F;
             laserDissipation = 0.15;
             laserRefraction = 0.2;
             armorConfig = MekanismConfig.gear.mekaSuitHelmetArmor;
         } else if (slot == EquipmentSlot.CHEST) {
-            gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
-                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.JETPACK_UNIT), gas -> gas == MekanismGases.HYDROGEN.get()));
+            gasTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
+                  gas -> gas == MekanismGases.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
             absorption = 0.4F;
             laserDissipation = 0.3;
             laserRefraction = 0.4;
@@ -195,7 +195,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public int getBarWidth(@NotNull ItemStack stack) {
-        //TODO: Eventually look into making it so that we can have a "secondary durability" bar for rendering things like stored gas
         return StorageUtils.getEnergyBarWidth(stack);
     }
 
@@ -260,6 +259,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!fluidTankSpecs.isEmpty()) {
             capabilities.add(RateLimitMultiTankFluidHandler.create(fluidTankSpecs));
         }
+    }
+
+    public List<ChemicalTankSpec<Gas>> getGasTankSpecs() {
+        return gasTankSpecsView;
+    }
+
+    public List<FluidTankSpec> getFluidTankSpecs() {
+        return fluidTankSpecsView;
     }
 
     @NotNull

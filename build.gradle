@@ -791,8 +791,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             }
             addArtifact apiJar.get()
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
-            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
 
@@ -808,8 +806,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
-            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
 
@@ -840,8 +836,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
-            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
 
@@ -857,8 +851,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addGameVersion "Java ${java_version}"
-            //TODO - 1.19.2: Remove this once we require features specific to forge 1.19.2
-            addGameVersion "1.19.1"
             addGameVersion "${minecraft_version}"
         }
     }
@@ -886,8 +878,7 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         changelog = changeLogResolver.call()
         uploadFile = jar
         additionalFiles = [apiJar.get()]
-        //TODO - 1.19.2: Stop specifying 1.19 once we require features specific to forge 1.19.2
-        gameVersions = ["1.19.1", "${minecraft_version}"]
+        gameVersions = ["${minecraft_version}"]
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
         dependencies = [
                 new ModDependency("XxWD5pD3", "optional"),//AE2
