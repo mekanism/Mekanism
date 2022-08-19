@@ -116,7 +116,7 @@ import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.hud.MekaSuitEnergyLevel;
 import mekanism.client.render.hud.MekaSuitHUD;
-import mekanism.client.render.item.ChemicalFluidBarDecorator;
+import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -159,14 +159,12 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -208,7 +206,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.IItemDecorator;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
@@ -584,12 +581,8 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
-        IItemDecorator mekaSuitDecorator = new ChemicalFluidBarDecorator(true,
-                itemStack -> itemStack.getItem() instanceof ItemMekaSuitArmor armor && //only show bar for parts that have the module installed
-                        (armor.hasModule(itemStack, MekanismModules.NUTRITIONAL_INJECTION_UNIT) || armor.hasModule(itemStack, MekanismModules.JETPACK_UNIT)),
-                Capabilities.GAS_HANDLER);
-        event.register(MekanismItems.MEKASUIT_HELMET, mekaSuitDecorator);
-        event.register(MekanismItems.MEKASUIT_BODYARMOR, mekaSuitDecorator);
+        event.register(MekanismItems.MEKASUIT_HELMET, MekaSuitBarDecorator.INSTANCE);
+        event.register(MekanismItems.MEKASUIT_BODYARMOR, MekaSuitBarDecorator.INSTANCE);
     }
 
     @SubscribeEvent

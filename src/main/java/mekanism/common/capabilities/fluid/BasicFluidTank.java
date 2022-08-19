@@ -23,8 +23,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public static final Predicate<@NotNull FluidStack> alwaysTrue = ConstantPredicates.alwaysTrue();
     public static final Predicate<@NotNull FluidStack> alwaysFalse = ConstantPredicates.alwaysFalse();
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
-    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
 
     public static BasicFluidTank create(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {

@@ -22,13 +22,13 @@ import java.util.function.Predicate;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 
-    private final Capability<? extends IChemicalHandler<?,?>>[] chemicalCaps;
+    private final Capability<? extends IChemicalHandler<?, ?>>[] chemicalCaps;
     private final boolean showFluid;
     private final Predicate<ItemStack> visibleFor;
 
     /**
-     * @param showFluid if the fluidcapability should be checked for display, display above chemicalCaps if both are present
-     * @param visibleFor checks if bars should be rendered for the given itemstack
+     * @param showFluid    if the fluid capability should be checked for display, display above chemicalCaps if both are present
+     * @param visibleFor   checks if bars should be rendered for the given itemstack
      * @param chemicalCaps the capabilities to be displayed in order, starting from the bottom
      */
     @SafeVarargs
@@ -44,8 +44,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return false;
         }
         RenderSystem.disableDepthTest();
-        yOffset = yOffset + 12;
-        for (Capability<? extends IChemicalHandler<?,?>> chemicalCap : chemicalCaps) {
+        yOffset += 12;
+        for (Capability<? extends IChemicalHandler<?, ?>> chemicalCap : chemicalCaps) {
             Optional<? extends IChemicalHandler<?, ?>> capabilityInstance = stack.getCapability(chemicalCap).resolve();
             if (capabilityInstance.isPresent()) {
                 IChemicalHandler<?, ?> chemicalHandler = capabilityInstance.get();
@@ -69,16 +69,17 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
                 }
             }
         }
+        RenderSystem.enableDepthTest();
         return true;
     }
 
-    private void renderBar(int stackXPos, int yPos, long amount, long capacity, int color) {
+    protected static void renderBar(int stackXPos, int yPos, long amount, long capacity, int color) {
         int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
         GuiUtils.fill(new PoseStack(), stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
         GuiUtils.fill(new PoseStack(), stackXPos + 2, yPos, pixelWidth, 1, color);
     }
 
-    private int convertWidth(double width) {
+    private static int convertWidth(double width) {
         return MathUtils.clampToInt(Math.round(13.0F * width));
     }
 
