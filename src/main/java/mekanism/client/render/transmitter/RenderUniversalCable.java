@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
 public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable> {
@@ -23,22 +24,27 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
     @Override
     protected void render(TileEntityUniversalCable tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        UniversalCable cable = tile.getTransmitter();
-        if (cable.hasTransmitterNetwork()) {
-            EnergyNetwork network = cable.getTransmitterNetwork();
-            //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client
-            if (network.currentScale > 0) {
-                matrix.pushPose();
-                matrix.translate(0.5, 0.5, 0.5);
-                renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, network.currentScale, LightTexture.FULL_BRIGHT,
-                      overlayLight, MekanismRenderer.energyIcon);
-                matrix.popPose();
-            }
-        }
+        EnergyNetwork network = tile.getTransmitter().getTransmitterNetwork();
+        matrix.pushPose();
+        matrix.translate(0.5, 0.5, 0.5);
+        renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, network.currentScale, LightTexture.FULL_BRIGHT,
+              overlayLight, MekanismRenderer.energyIcon);
+        matrix.popPose();
     }
 
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.UNIVERSAL_CABLE;
+    }
+
+    @Override
+    protected boolean shouldRenderTransmitter(TileEntityUniversalCable tile, Vec3 camera) {
+        UniversalCable cable = tile.getTransmitter();
+        if (cable.hasTransmitterNetwork()) {
+            EnergyNetwork network = cable.getTransmitterNetwork();
+            //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client
+            return network.currentScale > 0;
+        }
+        return false;
     }
 }

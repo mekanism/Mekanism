@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -34,10 +35,8 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     @Override
     protected void render(TileEntityTeleporter tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        if (tile.shouldRender && tile.getLevel() != null) {
-            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                  MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
-        }
+        MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+              MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
     }
 
     @Override
@@ -134,6 +133,11 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityTeleporter tile) {
-        return tile.shouldRender && tile.getLevel() != null;
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityTeleporter tile, Vec3 camera) {
+        return tile.shouldRender && tile.getLevel() != null && super.shouldRender(tile, camera);
     }
 }

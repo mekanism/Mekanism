@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 
 @NothingNullByDefault
@@ -39,21 +40,24 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
 
     @Override
     protected void render(TileEntityBioGenerator tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        if (!tile.bioFuelTank.isEmpty()) {
-            matrix.pushPose();
-            FluidStack fluid = tile.bioFuelTank.getFluid();
-            float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
-            int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
-            MekanismRenderer.renderObject(getModel(tile.getDirection(), modelNumber), matrix,
-                  renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), LightTexture.FULL_BRIGHT, overlayLight,
-                  FaceDisplay.FRONT);
-            matrix.popPose();
-        }
+        matrix.pushPose();
+        FluidStack fluid = tile.bioFuelTank.getFluid();
+        float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
+        int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
+        MekanismRenderer.renderObject(getModel(tile.getDirection(), modelNumber), matrix,
+              renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), LightTexture.FULL_BRIGHT, overlayLight,
+              FaceDisplay.FRONT);
+        matrix.popPose();
     }
 
     @Override
     protected String getProfilerSection() {
         return GeneratorsProfilerConstants.BIO_GENERATOR;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityBioGenerator tile, Vec3 camera) {
+        return !tile.bioFuelTank.isEmpty() && super.shouldRender(tile, camera);
     }
 
     @SuppressWarnings("incomplete-switch")

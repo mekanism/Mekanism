@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -32,28 +33,24 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     protected void render(TileEntityDynamicTank tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        if (tile.isMaster()) {
-            TankMultiblockData multiblock = tile.getMultiblock();
-            if (multiblock.isFormed() && multiblock.renderLocation != null) {
-                RenderData data = getRenderData(multiblock);
-                if (data != null) {
-                    data.location = multiblock.renderLocation;
-                    data.height = multiblock.height() - 2;
-                    data.length = multiblock.length();
-                    data.width = multiblock.width();
-                    matrix.pushPose();
+        TankMultiblockData multiblock = tile.getMultiblock();
+        RenderData data = getRenderData(multiblock);
+        if (data != null) {
+            data.location = multiblock.renderLocation;
+            data.height = multiblock.height() - 2;
+            data.length = multiblock.length();
+            data.width = multiblock.width();
+            matrix.pushPose();
 
-                    VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-                    BlockPos pos = tile.getBlockPos();
-                    matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                    int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
-                    Model3D model = ModelRenderer.getModel(data, multiblock.prevScale);
-                    MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
-                    matrix.popPose();
-                    if (data instanceof FluidRenderData fluidRenderData) {
-                        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, fluidRenderData, pos, glow, overlayLight, isInsideMultiblock(data));
-                    }
-                }
+            VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+            BlockPos pos = tile.getBlockPos();
+            matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
+            int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
+            Model3D model = ModelRenderer.getModel(data, multiblock.prevScale);
+            MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
+            matrix.popPose();
+            if (data instanceof FluidRenderData fluidRenderData) {
+                MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, fluidRenderData, pos, glow, overlayLight, isInsideMultiblock(data));
             }
         }
     }
@@ -77,9 +74,14 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityDynamicTank tile) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityDynamicTank tile, Vec3 camera) {
         if (tile.isMaster()) {
             TankMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.isFormed() && !multiblock.isEmpty() && multiblock.renderLocation != null;
+            return multiblock.isFormed() && !multiblock.isEmpty() && multiblock.renderLocation != null && super.shouldRender(tile, camera);
         }
         return false;
     }

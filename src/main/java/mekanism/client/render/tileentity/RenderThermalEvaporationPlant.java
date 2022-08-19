@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
 public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
@@ -27,25 +28,21 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
     @Override
     protected void render(TileEntityThermalEvaporationController tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        if (tile.isMaster()) {
-            EvaporationMultiblockData multiblock = tile.getMultiblock();
-            if (multiblock.isFormed() && multiblock.renderLocation != null && !multiblock.inputTank.isEmpty()) {
-                FluidRenderData data = new FluidRenderData(multiblock.inputTank.getFluid());
-                data.location = multiblock.renderLocation.offset(1, 0, 1);
-                data.height = multiblock.height() - 2;
-                data.length = 2;
-                data.width = 2;
-                matrix.pushPose();
-                BlockPos pos = tile.getBlockPos();
-                int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
-                matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-                Model3D model = ModelRenderer.getModel(data, Math.min(1, multiblock.prevScale));
-                MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
-                matrix.popPose();
-                MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
-            }
-        }
+        EvaporationMultiblockData multiblock = tile.getMultiblock();
+        FluidRenderData data = new FluidRenderData(multiblock.inputTank.getFluid());
+        data.location = multiblock.renderLocation.offset(1, 0, 1);
+        data.height = multiblock.height() - 2;
+        data.length = 2;
+        data.width = 2;
+        matrix.pushPose();
+        BlockPos pos = tile.getBlockPos();
+        int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
+        matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
+        VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+        Model3D model = ModelRenderer.getModel(data, Math.min(1, multiblock.prevScale));
+        MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
+        matrix.popPose();
+        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
     }
 
     @Override
@@ -55,9 +52,14 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityThermalEvaporationController tile) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityThermalEvaporationController tile, Vec3 camera) {
         if (tile.isMaster()) {
             EvaporationMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.isFormed() && !multiblock.inputTank.isEmpty() && multiblock.renderLocation != null;
+            return multiblock.isFormed() && !multiblock.inputTank.isEmpty() && multiblock.renderLocation != null && super.shouldRender(tile, camera);
         }
         return false;
     }

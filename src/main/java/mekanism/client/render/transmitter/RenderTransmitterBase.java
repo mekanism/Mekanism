@@ -23,7 +23,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -94,10 +93,12 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
     }
 
     @Override
-    public void render(TRANSMITTER transmitter, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight) {
-        if (!MekanismConfig.client.opaqueTransmitters.get()) {
-            super.render(transmitter, partialTick, matrix, renderer, light, overlayLight);
-        }
+    public boolean shouldRender(TRANSMITTER tile, Vec3 camera) {
+        return !MekanismConfig.client.opaqueTransmitters.get() && shouldRenderTransmitter(tile, camera) && super.shouldRender(tile, camera);
+    }
+
+    protected boolean shouldRenderTransmitter(TRANSMITTER tile, Vec3 camera) {
+        return true;
     }
 
     private record ContentsModelData(List<String> visible, TextureAtlasSprite icon) {

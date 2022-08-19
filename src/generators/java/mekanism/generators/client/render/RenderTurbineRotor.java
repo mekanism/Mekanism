@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -32,9 +33,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     protected void render(TileEntityTurbineRotor tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        if (tile.getMultiblockUUID() == null) {
-            render(tile, matrix, model.getBuffer(renderer), light, overlayLight);
-        }
+        render(tile, matrix, model.getBuffer(renderer), light, overlayLight);
     }
 
     public void render(TileEntityTurbineRotor tile, PoseStack matrix, VertexConsumer buffer, int light, int overlayLight) {
@@ -77,6 +76,11 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityTurbineRotor tile) {
-        return tile.getMultiblockUUID() == null && tile.getHousedBlades() > 0;
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityTurbineRotor tile, Vec3 camera) {
+        return tile.getMultiblockUUID() == null && tile.getHousedBlades() > 0 && super.shouldRender(tile, camera);
     }
 }

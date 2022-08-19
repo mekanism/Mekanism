@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
 public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFusionReactorController> {
@@ -33,24 +34,22 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
     protected void render(TileEntityFusionReactorController tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
-        if (multiblock.isFormed() && multiblock.isBurning()) {
-            long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
-            float ticks = Minecraft.getInstance().levelRenderer.ticks + partialTicks;
-            float ticksScaledTemp = ticks * scaledTemp;
-            VertexConsumer buffer = core.getBuffer(renderer);
-            matrix.pushPose();
-            matrix.translate(0.5, -1.5, 0.5);
-            float scale = 1 + 0.7F * sinDegrees(3.14F * ticksScaledTemp + 135);
-            renderPart(matrix, buffer, overlayLight, EnumColor.AQUA, scale, ticksScaledTemp, -6, -7, 0, 36);
+        long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
+        float ticks = Minecraft.getInstance().levelRenderer.ticks + partialTicks;
+        float ticksScaledTemp = ticks * scaledTemp;
+        VertexConsumer buffer = core.getBuffer(renderer);
+        matrix.pushPose();
+        matrix.translate(0.5, -1.5, 0.5);
+        float scale = 1 + 0.7F * sinDegrees(3.14F * ticksScaledTemp + 135);
+        renderPart(matrix, buffer, overlayLight, EnumColor.AQUA, scale, ticksScaledTemp, -6, -7, 0, 36);
 
-            scale = 1 + 0.8F * sinDegrees(3 * ticksScaledTemp);
-            renderPart(matrix, buffer, overlayLight, EnumColor.RED, scale, ticksScaledTemp, 4, 4, 0, 36);
+        scale = 1 + 0.8F * sinDegrees(3 * ticksScaledTemp);
+        renderPart(matrix, buffer, overlayLight, EnumColor.RED, scale, ticksScaledTemp, 4, 4, 0, 36);
 
-            scale = 1 - 0.9F * sinDegrees(4 * ticksScaledTemp + 90);
-            renderPart(matrix, buffer, overlayLight, EnumColor.ORANGE, scale, ticksScaledTemp, 5, -3, -35, 106);
+        scale = 1 - 0.9F * sinDegrees(4 * ticksScaledTemp + 90);
+        renderPart(matrix, buffer, overlayLight, EnumColor.ORANGE, scale, ticksScaledTemp, 5, -3, -35, 106);
 
-            matrix.popPose();
-        }
+        matrix.popPose();
     }
 
     private static float sinDegrees(float degrees) {
@@ -74,7 +73,12 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityFusionReactorController tile) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityFusionReactorController tile, Vec3 camera) {
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
-        return multiblock.isFormed() && multiblock.isBurning();
+        return multiblock.isFormed() && multiblock.isBurning() && super.shouldRender(tile, camera);
     }
 }

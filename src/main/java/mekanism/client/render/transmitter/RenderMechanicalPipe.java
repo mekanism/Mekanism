@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,50 +51,56 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     protected void render(TileEntityMechanicalPipe tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
         MechanicalPipe pipe = tile.getTransmitter();
-        if (pipe.hasTransmitterNetwork()) {
-            FluidNetwork network = pipe.getTransmitterNetwork();
-            if (!network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0) {
-                FluidStack fluidStack = network.lastFluid;
-                float fluidScale = network.currentScale;
-                int stage;
-                if (MekanismUtils.lighterThanAirGas(fluidStack)) {
-                    stage = stages - 1;
-                } else {
-                    stage = Math.max(3, (int) (fluidScale * (stages - 1)));
-                }
-                int glow = MekanismRenderer.calculateGlowLight(light, fluidStack);
-                int color = MekanismRenderer.getColorARGB(fluidStack, fluidScale);
-                List<String> connectionContents = new ArrayList<>();
-                Model3D model = getModel(null, fluidStack, stage);
-                VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-                for (Direction side : EnumUtils.DIRECTIONS) {
-                    ConnectionType connectionType = pipe.getConnectionType(side);
-                    if (connectionType == ConnectionType.NORMAL) {
-                        //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
-                        MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight, FaceDisplay.FRONT);
-                    } else if (connectionType != ConnectionType.NONE) {
-                        connectionContents.add(side.getSerializedName() + connectionType.getSerializedName().toUpperCase(Locale.ROOT));
-                    }
-                    if (model != null) {
-                        //Render the side if there is no connection on that side, or it is a vertical connection, and we are not full
-                        model.setSideRender(side, connectionType == ConnectionType.NONE || (side.getAxis().isVertical() && stage != stages - 1));
-                    }
-                }
-                MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, fluidScale), glow, overlayLight, FaceDisplay.FRONT);
-                if (!connectionContents.isEmpty()) {
-                    matrix.pushPose();
-                    matrix.translate(0.5, 0.5, 0.5);
-                    renderModel(tile, matrix, buffer, MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color),
-                          MekanismRenderer.getAlpha(color), glow, overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL), connectionContents);
-                    matrix.popPose();
-                }
+        FluidNetwork network = pipe.getTransmitterNetwork();
+        FluidStack fluidStack = network.lastFluid;
+        float fluidScale = network.currentScale;
+        int stage;
+        if (MekanismUtils.lighterThanAirGas(fluidStack)) {
+            stage = stages - 1;
+        } else {
+            stage = Math.max(3, (int) (fluidScale * (stages - 1)));
+        }
+        int glow = MekanismRenderer.calculateGlowLight(light, fluidStack);
+        int color = MekanismRenderer.getColorARGB(fluidStack, fluidScale);
+        List<String> connectionContents = new ArrayList<>();
+        Model3D model = getModel(null, fluidStack, stage);
+        VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            ConnectionType connectionType = pipe.getConnectionType(side);
+            if (connectionType == ConnectionType.NORMAL) {
+                //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
+                MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight, FaceDisplay.FRONT);
+            } else if (connectionType != ConnectionType.NONE) {
+                connectionContents.add(side.getSerializedName() + connectionType.getSerializedName().toUpperCase(Locale.ROOT));
             }
+            if (model != null) {
+                //Render the side if there is no connection on that side, or it is a vertical connection, and we are not full
+                model.setSideRender(side, connectionType == ConnectionType.NONE || (side.getAxis().isVertical() && stage != stages - 1));
+            }
+        }
+        MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, fluidScale), glow, overlayLight, FaceDisplay.FRONT);
+        if (!connectionContents.isEmpty()) {
+            matrix.pushPose();
+            matrix.translate(0.5, 0.5, 0.5);
+            renderModel(tile, matrix, buffer, MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color),
+                  MekanismRenderer.getAlpha(color), glow, overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL), connectionContents);
+            matrix.popPose();
         }
     }
 
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.MECHANICAL_PIPE;
+    }
+
+    @Override
+    protected boolean shouldRenderTransmitter(TileEntityMechanicalPipe tile, Vec3 camera) {
+        MechanicalPipe pipe = tile.getTransmitter();
+        if (pipe.hasTransmitterNetwork()) {
+            FluidNetwork network = pipe.getTransmitterNetwork();
+            return !network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0;
+        }
+        return false;
     }
 
     @Nullable

@@ -69,7 +69,6 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
                 }
             }
         }
-        RenderSystem.enableDepthTest();
         return true;
     }
 
