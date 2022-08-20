@@ -444,7 +444,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ComputerMethod
     private FloatingLong getProductionRate() {
-        return getPassiveGeneration(false, false);
+        return getPassiveGeneration(false, true);
     }
     //End computer related methods
 }
