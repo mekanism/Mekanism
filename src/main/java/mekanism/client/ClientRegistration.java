@@ -163,7 +163,6 @@ import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.FieldReflectionHelper;
@@ -204,7 +203,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
@@ -509,9 +507,9 @@ public class ClientRegistration {
         registerIColoredBlocks(event);
         ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, tintIndex) -> {
                   if (pos != null) {
-                      BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                      if (tile instanceof TileEntityQIOComponent qioComponent) {
-                          EnumColor color = qioComponent.getColor();
+                      TileEntityQIOComponent tile = WorldUtils.getTileEntity(TileEntityQIOComponent.class, world, pos);
+                      if (tile != null) {
+                          EnumColor color = tile.getColor();
                           return color == null ? -1 : MekanismRenderer.getColorARGB(color, 1);
                       }
                   }
@@ -547,14 +545,8 @@ public class ClientRegistration {
             int tint = item.getColumnKey().getTint();
             ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, item.getValue());
         }
-        ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
-            if (index == 1) {
-                ItemPortableQIODashboard item = (ItemPortableQIODashboard) stack.getItem();
-                EnumColor color = item.getColor(stack);
-                return color == null ? 0xFF555555 : MekanismRenderer.getColorARGB(color, 1);
-            }
-            return -1;
-        }, MekanismItems.PORTABLE_QIO_DASHBOARD);
+        ClientRegistrationUtil.registerIColoredItemHandler(event, MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
+              MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER);
 
         ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
             if (index == 1) {

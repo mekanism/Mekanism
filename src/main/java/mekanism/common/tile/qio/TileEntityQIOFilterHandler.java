@@ -1,6 +1,5 @@
 package mekanism.common.tile.qio;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -14,7 +13,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
@@ -23,7 +21,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>>, IHasSortableFilters, ISustainedData {
+public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>>, IHasSortableFilters {
 
     private HashList<QIOFilter<?>> filters = new HashList<>();
 
@@ -39,6 +37,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         if (!filters.isEmpty()) {
             ListTag filterTags = new ListTag();
             for (QIOFilter<?> filter : filters) {
@@ -50,6 +49,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         filters.clear();
         NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
             for (int i = 0, size = tagList.size(); i < size; i++) {
@@ -63,7 +63,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        Map<String, String> remap = super.getTileDataRemap();
         remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
     }

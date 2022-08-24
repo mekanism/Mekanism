@@ -46,6 +46,11 @@
                 },
                 {
                   "op": "replace",
+                  "source": "color",
+                  "target": "mekData.color"
+                },
+                {
+                  "op": "replace",
                   "source": "fuzzyMode",
                   "target": "mekData.fuzzyMode"
                 }

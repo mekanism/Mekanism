@@ -26,7 +26,7 @@
 			"to": [14, 1.005, 14],
 			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 8]},
 			"faces": {
-				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 0, "emissivity": 15}
+				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 1, "emissivity": 15}
 			}
 		}
 	],

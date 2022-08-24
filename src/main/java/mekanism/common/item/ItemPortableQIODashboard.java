@@ -2,13 +2,13 @@ package mekanism.common.item;
 
 import java.util.List;
 import mekanism.api.MekanismAPI;
-import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
+import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.Frequency;
@@ -17,16 +17,15 @@ import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +34,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemPortableQIODashboard extends CapabilityItem implements IFrequencyItem, IGuiItem, IItemSustainedInventory {
+public class ItemPortableQIODashboard extends CapabilityItem implements IFrequencyItem, IGuiItem, IItemSustainedInventory, IColoredItem {
 
     public ItemPortableQIODashboard(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE));
@@ -76,18 +75,15 @@ public class ItemPortableQIODashboard extends CapabilityItem implements IFrequen
         return FrequencyType.QIO;
     }
 
-    public EnumColor getColor(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COLOR, Tag.TAG_INT)) {
-            return EnumColor.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.COLOR));
-        }
-        return null;
-    }
-
-    public void setColor(ItemStack stack, EnumColor color) {
-        if (color == null) {
-            ItemDataUtils.removeData(stack, NBTConstants.COLOR);
-        } else {
-            ItemDataUtils.setInt(stack, NBTConstants.COLOR, color.ordinal());
+    @Override
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+        if (!level.isClientSide && level.getGameTime() % 100 == 0) {
+            EnumColor frequencyColor = getFrequency(stack) instanceof QIOFrequency frequency ? frequency.getColor() : null;
+            EnumColor color = getColor(stack);
+            if (color != frequencyColor) {
+                setColor(stack, frequencyColor);
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package mekanism.common.tile.qio;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.qio.QIOFrequency;
@@ -12,7 +11,6 @@ import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +25,7 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent implements ISustainedData {
+public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public static final ModelProperty<Void> POWERING_PROPERTY = new ModelProperty<>();
 
@@ -104,6 +102,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         if (itemType != null) {
             dataMap.put(NBTConstants.SINGLE_ITEM, itemType.getStack().serializeNBT());
         }
@@ -113,6 +112,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         NBTUtils.setItemStackIfPresent(dataMap, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(dataMap, NBTConstants.AMOUNT, value -> count = value);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.FUZZY_MODE, value -> fuzzy = value);
@@ -120,7 +120,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        Map<String, String> remap = super.getTileDataRemap();
         remap.put(NBTConstants.SINGLE_ITEM, NBTConstants.SINGLE_ITEM);
         remap.put(NBTConstants.AMOUNT, NBTConstants.AMOUNT);
         remap.put(NBTConstants.FUZZY_MODE, NBTConstants.FUZZY_MODE);

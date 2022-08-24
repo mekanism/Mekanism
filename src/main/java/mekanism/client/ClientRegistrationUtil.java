@@ -3,11 +3,13 @@ package mekanism.client;
 import java.lang.ref.WeakReference;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
@@ -61,6 +63,17 @@ public class ClientRegistrationUtil {
             if (block instanceof IColoredBlock coloredBlock) {
                 return MekanismRenderer.getColorARGB(coloredBlock.getColor(), 1);
             }
+        }
+        return -1;
+    };
+    private static final ItemColor COLORED_ITEM_COLOR = (stack, tintIndex) -> {
+        Item item = stack.getItem();
+        if (tintIndex == 1 && item instanceof IColoredItem coloredItem) {
+            EnumColor color = coloredItem.getColor(stack);
+            if (color != null) {
+                return MekanismRenderer.getColorARGB(color, 1);
+            }
+            return 0xFF555555;
         }
         return -1;
     };
@@ -171,6 +184,10 @@ public class ClientRegistrationUtil {
         } else if (event instanceof RegisterColorHandlersEvent.Item itemEvent) {
             registerItemColorHandler(itemEvent, COLORED_BLOCK_ITEM_COLOR, blocks);
         }
+    }
+
+    public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, IItemProvider... items) {
+        registerItemColorHandler(event, COLORED_ITEM_COLOR, items);
     }
 
     public static void setRenderLayer(RenderType type, FluidRegistryObject<?, ?, ?, ?, ?>... fluidROs) {

@@ -49,7 +49,7 @@
 			"to": [15, 13, 16.005],
 			"rotation": {"angle": 0, "axis": "y", "origin": [14.5, 11.5, 15.505]},
 			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "tintindex": 0, "emissivity": 15}
+				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "tintindex": 1, "emissivity": 15}
 			}
 		},
 		{
@@ -58,7 +58,7 @@
 			"to": [2, 13, 16.005],
 			"rotation": {"angle": 0, "axis": "y", "origin": [1.5, 11.5, 15.505]},
 			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "tintindex": 0, "emissivity": 15}
+				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "tintindex": 1, "emissivity": 15}
 			}
 		},
 		{

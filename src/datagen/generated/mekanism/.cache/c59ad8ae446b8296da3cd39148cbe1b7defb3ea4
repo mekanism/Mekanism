@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-05T21:57:17.7362217	LootTables: mekanism
+// 1.19.2	2022-08-24T15:03:46.5163995	LootTables: mekanism
 a587e31a0d1bc81ccedfa330e48e114ffbccbe24 data/mekanism/loot_tables/blocks/advanced_bin.json
 20960dd0b8d8e463b270ee157f354df9081656f7 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 2db5d1f3ea049b9e987b32e01aadbf2bfb075f44 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -133,11 +133,11 @@ d45be5e29128727a389d35dc6bd3829b313d8ce1 data/mekanism/loot_tables/blocks/person
 efdbe1f3ae76a1bdb1a967f430f42e36f65f0b4e data/mekanism/loot_tables/blocks/pressure_disperser.json
 5f7aa554ee5435827629cea63980e28f37710773 data/mekanism/loot_tables/blocks/pressurized_reaction_chamber.json
 f600cb3a3ac0de3ff370375d4f980ed5b7d2037f data/mekanism/loot_tables/blocks/purification_chamber.json
-cc7b4208d2d9da8543908fc3bb845703b1ddf85b data/mekanism/loot_tables/blocks/qio_dashboard.json
-50250492fa778f7227f66c414aa3a51f93007720 data/mekanism/loot_tables/blocks/qio_drive_array.json
-7b6ec63ac1660fc9e0feb7f43b8689c45b261177 data/mekanism/loot_tables/blocks/qio_exporter.json
-395ee1f6478cf4675b41e0dc966723cd8bc466bf data/mekanism/loot_tables/blocks/qio_importer.json
-15082b9a64b24bbff765bbbc30dccff3107b7ff3 data/mekanism/loot_tables/blocks/qio_redstone_adapter.json
+0dcce51bdba9967c22d82cd8d49544ca7b04ef14 data/mekanism/loot_tables/blocks/qio_dashboard.json
+5fed167a30d766df562b5315fc09bc16755e052e data/mekanism/loot_tables/blocks/qio_drive_array.json
+510790b3c87e4a13896210b6fd118b6e8a96a1bb data/mekanism/loot_tables/blocks/qio_exporter.json
+5a53f0e9b79e7f12ff8aea9fd75dfbebe4680d54 data/mekanism/loot_tables/blocks/qio_importer.json
+a3106e22207789226f8e9f6ea308040525992890 data/mekanism/loot_tables/blocks/qio_redstone_adapter.json
 88af94a9aaad20fcecb5283dbd7b6fdd33ecd7e7 data/mekanism/loot_tables/blocks/quantum_entangloporter.json
 06c9c5fe915f97a189462fcae74a9694f4086ba0 data/mekanism/loot_tables/blocks/radioactive_waste_barrel.json
 789825d42fed114ca6a558d1ee22ac312d412e7b data/mekanism/loot_tables/blocks/resistive_heater.json
