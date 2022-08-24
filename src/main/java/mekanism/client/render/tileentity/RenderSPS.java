@@ -31,7 +31,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
-public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
+public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing> {
 
     private static final CustomEffect CORE = new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
@@ -53,58 +53,56 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
     }
 
     @Override
-    protected void render(TileEntitySPSCasing tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        SPSMultiblockData multiblock = tile.getMultiblock();
-        if (multiblock.getBounds() != null) {
-            BoltRenderer bolts = boltRendererMap.computeIfAbsent(multiblock.inventoryID, mb -> new BoltRenderer());
-            Vec3 center = Vec3.atLowerCornerOf(multiblock.getMinPos()).add(Vec3.atLowerCornerOf(multiblock.getMaxPos()))
-                  .add(new Vec3(1, 1, 1)).scale(0.5);
-            Vec3 renderCenter = center.subtract(tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ());
-            if (!minecraft.isPaused()) {
-                for (CoilData data : multiblock.coilData.coilMap.values()) {
-                    if (data.prevLevel > 0) {
-                        bolts.update(data.coilPos.hashCode(), getBoltFromData(data, tile.getBlockPos(), renderCenter), partialTick);
-                    }
+    protected void render(TileEntitySPSCasing tile, SPSMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light,
+          int overlayLight, ProfilerFiller profiler) {
+        BoltRenderer bolts = boltRendererMap.computeIfAbsent(multiblock.inventoryID, mb -> new BoltRenderer());
+        Vec3 center = Vec3.atLowerCornerOf(multiblock.getMinPos()).add(Vec3.atLowerCornerOf(multiblock.getMaxPos()))
+              .add(new Vec3(1, 1, 1)).scale(0.5);
+        Vec3 renderCenter = center.subtract(tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ());
+        if (!minecraft.isPaused()) {
+            for (CoilData data : multiblock.coilData.coilMap.values()) {
+                if (data.prevLevel > 0) {
+                    bolts.update(data.coilPos.hashCode(), getBoltFromData(data, tile.getBlockPos(), renderCenter), partialTick);
                 }
             }
-
-            float energyScale = getEnergyScale(multiblock.lastProcessed);
-            int targetEffectCount = 0;
-
-            if (!minecraft.isPaused() && !multiblock.lastReceivedEnergy.isZero()) {
-                if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
-                    CuboidSide side = CuboidSide.SIDES[rand.nextInt(6)];
-                    Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);
-                    Vec3 endPos = plane.getRandomPoint(rand).subtract(tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ());
-                    BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)
-                          .size(0.01F * getBoundedScale(energyScale, 0.5F, 5))
-                          .lifespan(8)
-                          .spawn(SpawnFunction.NO_DELAY);
-                    bolts.update(Objects.hash(side, endPos), bolt, partialTick);
-                }
-                targetEffectCount = (int) getBoundedScale(energyScale, 10, 120);
-            }
-
-            if (tile.orbitEffects.size() > targetEffectCount) {
-                tile.orbitEffects.poll();
-            } else if (tile.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
-                tile.orbitEffects.add(new SPSOrbitEffect(multiblock, center));
-            }
-
-            bolts.render(partialTick, matrix, renderer);
-
-            if (multiblock.lastProcessed > 0) {
-                float scale = getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE);
-                BillboardingEffectRenderer.render(CORE.getTexture(), () -> {
-                    //Lazily update the position and stuff, so it gets set just before rendering
-                    CORE.setPos(center);
-                    CORE.setScale(scale);
-                    return CORE;
-                });
-            }
-
-            tile.orbitEffects.forEach(BillboardingEffectRenderer::render);
         }
+
+        float energyScale = getEnergyScale(multiblock.lastProcessed);
+        int targetEffectCount = 0;
+
+        if (!minecraft.isPaused() && !multiblock.lastReceivedEnergy.isZero()) {
+            if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
+                CuboidSide side = CuboidSide.SIDES[rand.nextInt(6)];
+                Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);
+                Vec3 endPos = plane.getRandomPoint(rand).subtract(tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ());
+                BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)
+                      .size(0.01F * getBoundedScale(energyScale, 0.5F, 5))
+                      .lifespan(8)
+                      .spawn(SpawnFunction.NO_DELAY);
+                bolts.update(Objects.hash(side, endPos), bolt, partialTick);
+            }
+            targetEffectCount = (int) getBoundedScale(energyScale, 10, 120);
+        }
+
+        if (tile.orbitEffects.size() > targetEffectCount) {
+            tile.orbitEffects.poll();
+        } else if (tile.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
+            tile.orbitEffects.add(new SPSOrbitEffect(multiblock, center));
+        }
+
+        bolts.render(partialTick, matrix, renderer);
+
+        if (multiblock.lastProcessed > 0) {
+            float scale = getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE);
+            BillboardingEffectRenderer.render(CORE.getTexture(), () -> {
+                //Lazily update the position and stuff, so it gets set just before rendering
+                CORE.setPos(center);
+                CORE.setScale(scale);
+                return CORE;
+            });
+        }
+
+        tile.orbitEffects.forEach(BillboardingEffectRenderer::render);
     }
 
     private static float getEnergyScale(double lastProcessed) {
@@ -130,16 +128,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileEntitySPSCasing tile) {
-        return true;
-    }
-
-    @Override
-    public boolean shouldRender(TileEntitySPSCasing tile, Vec3 camera) {
-        if (tile.isMaster()) {
-            SPSMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.isFormed() && multiblock.renderLocation != null && super.shouldRender(tile, camera);
-        }
-        return false;
+    protected boolean shouldRender(TileEntitySPSCasing tile, SPSMultiblockData multiblock, Vec3 camera) {
+        return super.shouldRender(tile, multiblock, camera) && multiblock.getBounds() != null;
     }
 }

@@ -14,7 +14,6 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent implements ISustainedData {
 
-    public static final ModelProperty<Boolean> POWERING_PROPERTY = new ModelProperty<>();
+    public static final ModelProperty<Void> POWERING_PROPERTY = new ModelProperty<>();
 
     private boolean prevPowering;
     private HashedItem itemType = null;
@@ -100,7 +99,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     @NotNull
     @Override
     public ModelData getModelData() {
-        return ModelData.builder().with(POWERING_PROPERTY, prevPowering).build();
+        return prevPowering ? ModelData.builder().with(POWERING_PROPERTY, null).build() : super.getModelData();
     }
 
     @Override
@@ -139,9 +138,10 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent impleme
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
-        prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
-        requestModelDataUpdate();
-        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
+        if (prevPowering != tag.getBoolean(NBTConstants.ACTIVE)) {
+            prevPowering = !prevPowering;
+            updateModelData();
+        }
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

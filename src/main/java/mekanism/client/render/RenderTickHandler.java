@@ -554,14 +554,11 @@ public class RenderTickHandler {
     }
 
     private Model3D getOverlayModel(Direction side, TransmissionType type) {
-        if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
-            return cachedOverlays.get(side).get(type);
-        }
-        Model3D toReturn = new Model3D();
-        toReturn.setTexture(MekanismRenderer.overlays.get(type));
-        MekanismRenderer.prepSingleFaceModelSize(toReturn, side);
-        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).put(type, toReturn);
-        return toReturn;
+        return cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class))
+              .computeIfAbsent(type, t -> new Model3D()
+                    .setTexture(MekanismRenderer.overlays.get(t))
+                    .prepSingleFaceModelSize(side)
+              );
     }
 
     @FunctionalInterface

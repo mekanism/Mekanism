@@ -12,13 +12,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 @NothingNullByDefault
-public class RenderQuantumEntangloporter extends MekanismTileEntityRenderer<TileEntityQuantumEntangloporter> {
-
-    private final ModelQuantumEntangloporter model;
+public class RenderQuantumEntangloporter extends ModelTileEntityRenderer<TileEntityQuantumEntangloporter, ModelQuantumEntangloporter> {
 
     public RenderQuantumEntangloporter(BlockEntityRendererProvider.Context context) {
-        super(context);
-        model = new ModelQuantumEntangloporter(context.getModelSet());
+        super(context, ModelQuantumEntangloporter::new);
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.LazyModel;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
@@ -25,13 +26,16 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<TileEntityDimensionalStabilizer> {
 
-    @Nullable
-    private static Model3D model;
+    private static final MekanismRenderer.LazyModel model = new LazyModel(() -> new Model3D()
+          .setTexture(MekanismRenderer.whiteIcon)
+          .bounds(0, 1)
+          //Don't bother rendering the top or the bottom as it is always at world bounds
+          .setSideRender(direction -> direction.getAxis().isHorizontal())
+    );
     private static final int[] colors = new int[EnumUtils.DIRECTIONS.length];
 
     static {
@@ -45,7 +49,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     }
 
     public static void resetCachedVisuals() {
-        model = null;
+        model.reset();
     }
 
     public RenderDimensionalStabilizer(BlockEntityRendererProvider.Context context) {
@@ -55,19 +59,6 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     @Override
     protected void render(TileEntityDimensionalStabilizer stabilizer, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        if (model == null) {
-            model = new Model3D();
-            model.setTexture(MekanismRenderer.whiteIcon);
-            //Don't bother rendering the top or the bottom as it is always at world bounds
-            model.setSideRender(Direction.UP, false);
-            model.setSideRender(Direction.DOWN, false);
-            model.minX = 0;
-            model.minY = 0;
-            model.minZ = 0;
-            model.maxX = 1;
-            model.maxY = 1;
-            model.maxZ = 1;
-        }
         //Calculate the different sides that should be rendered, as a 3D array. The last parameter is of length 5 to support the four cardinal directions
         // PLUS a marker for if the chunk is loaded and should be rendered at all. As if a chunk is surrounded on all sides by other chunks, then none of
         // its sides will actually need to be drawn, but it still should be able to combine with neighboring pieces
@@ -103,13 +94,14 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         BlockPos pos = stabilizer.getBlockPos();
         int chunkX = SectionPos.blockToSectionCoord(pos.getX());
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
+        Model3D model = RenderDimensionalStabilizer.model.get();
         VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
         for (RenderPiece piece : calculateRenderPieces(allRenderSides)) {
             //Set the visibility of the sides that are going to render for this piece
-            model.setSideRender(Direction.NORTH, piece.renderNorth);
-            model.setSideRender(Direction.EAST, piece.renderEast);
-            model.setSideRender(Direction.SOUTH, piece.renderSouth);
-            model.setSideRender(Direction.WEST, piece.renderWest);
+            model.setSideRender(Direction.NORTH, piece.renderNorth)
+                  .setSideRender(Direction.EAST, piece.renderEast)
+                  .setSideRender(Direction.SOUTH, piece.renderSouth)
+                  .setSideRender(Direction.WEST, piece.renderWest);
             int xChunkOffset = piece.x - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             int zChunkOffset = piece.z - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             ChunkPos startChunk = new ChunkPos(chunkX + xChunkOffset, chunkZ + zChunkOffset);

@@ -76,6 +76,9 @@ public class GeneratorsClientRegistration {
         // adv solar gen requires to be translated up 1 block, so handle the model separately
         ClientRegistration.addCustomModel(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, (orig, evt) -> new TransformedBakedModel<Void>(orig,
               QuadTransformation.translate(new Vec3(0, 1, 0))));
+        //TODO: Eventually make use of these custom model wrappers
+        //ClientRegistration.addCustomModel(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.75));
+        //ClientRegistration.addCustomModel(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, (orig, evt) -> new FuelAssemblyBakedModel(orig, 0.375));
 
         IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
         moduleHelper.addMekaSuitModuleModels(MekanismGenerators.rl("models/entity/mekasuit_modules.obj"));

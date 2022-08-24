@@ -17,7 +17,6 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -119,9 +118,11 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
-        driveStatus = tag.getByteArray(NBTConstants.DRIVES);
-        requestModelDataUpdate();
-        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
+        byte[] status = tag.getByteArray(NBTConstants.DRIVES);
+        if (!Arrays.equals(status, driveStatus)) {
+            driveStatus = status;
+            updateModelData();
+        }
     }
 
     @Override

@@ -91,21 +91,18 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
         TransmitterModelData data = extraData.get(TileEntityTransmitter.TRANSMITTER_PROPERTY);
         if (data != null) {
             boolean hasColor = data.getHasColor() && renderType == RenderType.translucent();
-            QuickHash hash = new QuickHash(data.getConnectionsMap(), hasColor);
-            if (!modelCache.containsKey(hash)) {
+            QuickHash quickHash = new QuickHash(data.getConnectionsMap(), hasColor);
+            return modelCache.computeIfAbsent(quickHash, hash -> {
                 List<String> visible = new ArrayList<>();
                 for (Direction dir : EnumUtils.DIRECTIONS) {
                     visible.add(dir.getSerializedName() + data.getConnectionType(dir).getSerializedName().toUpperCase(Locale.ROOT));
                 }
-                List<BakedQuad> result = bake(rand, new TransmitterModelConfiguration(owner, visible, extraData), hasColor, extraData, renderType)
+                return bake(rand, new TransmitterModelConfiguration(owner, visible, extraData), hasColor, extraData, renderType)
                       .getQuads(state, null, rand, extraData, renderType);
-                modelCache.put(hash, result);
-                return result;
-            }
-            return modelCache.get(hash);
+            });
         }
         //Fallback to our "default" model arrangement. The item variant uses this
-        return originalModel.getQuads(state, null, rand, extraData, renderType);
+        return super.getQuads(state, null, rand, extraData, renderType);
     }
 
     /**

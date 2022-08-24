@@ -44,9 +44,9 @@ public class RenderResizableCuboid {
         // that may improve performance some, but definitely would reduce/remove the majority of remaining z-fighting that is going on
         //Shift it so that the min values are all greater than or equal to zero as the various drawing code
         // has some issues when it comes to handling negative numbers
-        float xShift = Mth.floor(cube.minX);
-        float yShift = Mth.floor(cube.minY);
-        float zShift = Mth.floor(cube.minZ);
+        int xShift = Mth.floor(cube.minX);
+        int yShift = Mth.floor(cube.minY);
+        int zShift = Mth.floor(cube.minZ);
         matrix.pushPose();
         matrix.translate(xShift, yShift, zShift);
         float minX = cube.minX - xShift;

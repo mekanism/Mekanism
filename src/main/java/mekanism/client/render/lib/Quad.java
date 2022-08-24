@@ -4,10 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.function.Consumer;
 import mekanism.common.lib.Color;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.NotNull;
@@ -100,7 +103,6 @@ public class Quad {
         for (Vertex vertex : vertices) {
             vertex.write(quadBaker);
         }
-        quadBaker.endVertex();
         return quads[0];
     }
 
@@ -191,6 +193,7 @@ public class Quad {
 
         private TextureAtlasSprite texture;
         private final Direction side;
+        private Color color = Color.WHITE;
 
         private Vec3 vec1, vec2, vec3, vec4;
 
@@ -204,6 +207,10 @@ public class Quad {
         public Builder(TextureAtlasSprite texture, Direction side) {
             this.texture = texture;
             this.side = side;
+        }
+
+        public Builder light(int light) {
+            return light(LightTexture.block(light), LightTexture.sky(light));
         }
 
         public Builder light(int u, int v) {
@@ -227,6 +234,11 @@ public class Quad {
 
         public Builder tint(int tintIndex) {
             this.tintIndex = tintIndex;
+            return this;
+        }
+
+        public Builder color(Color color) {
+            this.color = color;
             return this;
         }
 
@@ -255,16 +267,27 @@ public class Quad {
         // start = bottom left
         public Builder rect(Vec3 start, double width, double height, double scale) {
             start = start.scale(scale);
-            return pos(start.add(0, height * scale, 0), start, start.add(width * scale, 0, 0), start.add(width * scale, height * scale, 0));
+            Vec3 end;
+            if (side.getAxis().isHorizontal()) {
+                Vec3i normal = side.getNormal();
+                end = start.add(normal.getZ() * width * scale, 0, normal.getX() * width * scale);
+                if (side.getAxis() == Axis.X) {
+                    //Wind vertices in a different order so that it faces the correct direction
+                    return pos(start, start.add(0, height * scale, 0), end.add(0, height * scale, 0), end);
+                }
+            } else {
+                end = start.add(width * scale, 0, 0);
+            }
+            return pos(start.add(0, height * scale, 0), start, end, end.add(0, height * scale, 0));
         }
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
             Vec3 normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize();
-            vertices[0] = Vertex.create(vec1, normal, texture, minU, minV).light(lightU, lightV);
-            vertices[1] = Vertex.create(vec2, normal, texture, minU, maxV).light(lightU, lightV);
-            vertices[2] = Vertex.create(vec3, normal, texture, maxU, maxV).light(lightU, lightV);
-            vertices[3] = Vertex.create(vec4, normal, texture, maxU, minV).light(lightU, lightV);
+            vertices[0] = Vertex.create(vec1, normal, color, texture, minU, minV).light(lightU, lightV);
+            vertices[1] = Vertex.create(vec2, normal, color, texture, minU, maxV).light(lightU, lightV);
+            vertices[2] = Vertex.create(vec3, normal, color, texture, maxU, maxV).light(lightU, lightV);
+            vertices[3] = Vertex.create(vec4, normal, color, texture, maxU, minV).light(lightU, lightV);
             Quad quad = new Quad(texture, side, vertices, tintIndex, shade);
             if (contractUVs) {
                 QuadUtils.contractUVs(quad);

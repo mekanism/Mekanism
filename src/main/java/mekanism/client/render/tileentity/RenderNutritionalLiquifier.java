@@ -22,7 +22,6 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
@@ -63,8 +62,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         if (!tile.fluidTank.isEmpty()) {
             FluidStack paste = tile.fluidTank.getFluid();
             float fluidScale = paste.getAmount() / (float) tile.fluidTank.getCapacity();
-            int modelNumber = ModelRenderer.getStage(paste, stages, fluidScale);
-            MekanismRenderer.renderObject(getPasteModel(modelNumber), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+            MekanismRenderer.renderObject(getPasteModel(paste, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
                   MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT);
         }
         boolean active = tile.getActive();
@@ -126,21 +124,13 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         return ProfilerConstants.NUTRITIONAL_LIQUIFIER;
     }
 
-    private Model3D getPasteModel(int stage) {
-        if (cachedModels.containsKey(stage)) {
-            return cachedModels.get(stage);
-        }
-        Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidTextureType.STILL));
-        model.minX = 0.001F;
-        model.minY = 0.313F;
-        model.minZ = 0.001F;
-
-        model.maxX = 0.999F;
-        model.maxY = 0.313F + 0.624F * (stage / (float) stages);
-        model.maxZ = 0.999F;
-        cachedModels.putIfAbsent(stage, model);
-        return model;
+    private Model3D getPasteModel(FluidStack paste, float fluidScale) {
+        return cachedModels.computeIfAbsent(ModelRenderer.getStage(paste, stages, fluidScale), stage -> new Model3D()
+              .setTexture(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL))
+              .xBounds(0.001F, 0.999F)
+              .yBounds(0.313F, 0.313F + 0.624F * (stage / (float) stages))
+              .zBounds(0.001F, 0.999F)
+        );
     }
 
     private static class PseudoParticleData {

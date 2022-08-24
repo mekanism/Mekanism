@@ -12,13 +12,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 @NothingNullByDefault
-public class RenderChemicalDissolutionChamber extends MekanismTileEntityRenderer<TileEntityChemicalDissolutionChamber> {
-
-    private final ModelChemicalDissolutionChamber model;
+public class RenderChemicalDissolutionChamber extends ModelTileEntityRenderer<TileEntityChemicalDissolutionChamber, ModelChemicalDissolutionChamber> {
 
     public RenderChemicalDissolutionChamber(BlockEntityRendererProvider.Context context) {
-        super(context);
-        model = new ModelChemicalDissolutionChamber(context.getModelSet());
+        super(context, ModelChemicalDissolutionChamber::new);
     }
 
     @Override

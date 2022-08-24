@@ -3,46 +3,33 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
+import mekanism.client.render.data.RenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
-public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
+public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<EvaporationMultiblockData, TileEntityThermalEvaporationController> {
 
     public RenderThermalEvaporationPlant(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    protected void render(TileEntityThermalEvaporationController tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
-          ProfilerFiller profiler) {
-        EvaporationMultiblockData multiblock = tile.getMultiblock();
-        FluidRenderData data = new FluidRenderData(multiblock.inputTank.getFluid());
-        data.location = multiblock.renderLocation.offset(1, 0, 1);
-        data.height = multiblock.height() - 2;
-        data.length = 2;
-        data.width = 2;
-        matrix.pushPose();
-        BlockPos pos = tile.getBlockPos();
-        int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
-        matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
+    protected void render(TileEntityThermalEvaporationController tile, EvaporationMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer,
+          int light, int overlayLight, ProfilerFiller profiler) {
         VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-        Model3D model = ModelRenderer.getModel(data, Math.min(1, multiblock.prevScale));
-        MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
-        matrix.popPose();
-        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
+        FluidRenderData data = RenderData.Builder.create(multiblock.inputTank.getFluid())
+              .location(multiblock.renderLocation.offset(1, 0, 1))
+              .dimensions(2, multiblock.height() - 2, 2)
+              .build();
+        renderObject(data, multiblock.valves, tile.getBlockPos(), matrix, buffer, overlayLight, Math.min(1, multiblock.prevScale));
     }
 
     @Override
@@ -51,16 +38,7 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileEntityThermalEvaporationController tile) {
-        return true;
-    }
-
-    @Override
-    public boolean shouldRender(TileEntityThermalEvaporationController tile, Vec3 camera) {
-        if (tile.isMaster()) {
-            EvaporationMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.isFormed() && !multiblock.inputTank.isEmpty() && multiblock.renderLocation != null && super.shouldRender(tile, camera);
-        }
-        return false;
+    protected boolean shouldRender(TileEntityThermalEvaporationController tile, EvaporationMultiblockData multiblock, Vec3 camera) {
+        return super.shouldRender(tile, multiblock, camera) && !multiblock.inputTank.isEmpty();
     }
 }

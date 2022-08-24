@@ -156,6 +156,11 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         }
     }
 
+    protected void updateModelData() {
+        requestModelDataUpdate();
+        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
+    }
+
     @Override
     public Level getTileWorld() {
         return level;

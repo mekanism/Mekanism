@@ -13,7 +13,6 @@ import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
-import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -43,8 +42,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         matrix.pushPose();
         FluidStack fluid = tile.bioFuelTank.getFluid();
         float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
-        int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
-        MekanismRenderer.renderObject(getModel(tile.getDirection(), modelNumber), matrix,
+        MekanismRenderer.renderObject(getModel(fluid, tile.getDirection(), fluidScale), matrix,
               renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), LightTexture.FULL_BRIGHT, overlayLight,
               FaceDisplay.FRONT);
         matrix.popPose();
@@ -60,42 +58,27 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         return !tile.bioFuelTank.isEmpty() && super.shouldRender(tile, camera);
     }
 
-    @SuppressWarnings("incomplete-switch")
-    private Model3D getModel(Direction side, int stage) {
-        if (fuelModels.containsKey(side) && fuelModels.get(side).containsKey(stage)) {
-            return fuelModels.get(side).get(stage);
-        }
-        Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidTextureType.STILL));
-        switch (side) {
-            case NORTH -> {
-                model.minZ = 0.499F;
-                model.maxZ = 0.875F;
-                model.minX = 0.188F;
-                model.maxX = 0.821F;
-            }
-            case SOUTH -> {
-                model.minZ = 0.125F;
-                model.maxZ = 0.499F;
-                model.minX = 0.188F;
-                model.maxX = 0.821F;
-            }
-            case WEST -> {
-                model.minX = 0.499F;
-                model.maxX = 0.875F;
-                model.minZ = 0.187F;
-                model.maxZ = 0.821F;
-            }
-            case EAST -> {
-                model.minX = 0.125F;
-                model.maxX = 0.499F;
-                model.minZ = 0.186F;
-                model.maxZ = 0.821F;
-            }
-        }
-        model.minY = 0.4385F;//0.4375 + 0.001; - prevent z fighting at low fuel levels
-        model.maxY = 0.4385F + 0.4375F * (stage / (float) stages);//0.4375 + 0.001 + 0.4375 * (stage / (float) stages);
-        fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
-        return model;
+    private Model3D getModel(FluidStack fluid, Direction side, float fluidScale) {
+        return fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>())
+              .computeIfAbsent(ModelRenderer.getStage(fluid, stages, fluidScale), stage -> {
+                  Model3D model = new Model3D()
+                        .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
+                        .yBounds(0.4385F, 0.4385F + 0.4375F * (stage / (float) stages));
+                  return switch (side) {
+                      case NORTH -> model
+                            .xBounds(0.188F, 0.821F)
+                            .zBounds(0.499F, 0.875F);
+                      case SOUTH -> model
+                            .xBounds(0.188F, 0.821F)
+                            .zBounds(0.125F, 0.499F);
+                      case WEST -> model
+                            .xBounds(0.499F, 0.875F)
+                            .zBounds(0.187F, 0.821F);
+                      case EAST -> model
+                            .xBounds(0.125F, 0.499F)
+                            .zBounds(0.186F, 0.821F);
+                      default -> model;
+                  };
+              });
     }
 }

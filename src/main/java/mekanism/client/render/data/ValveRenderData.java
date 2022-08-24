@@ -1,41 +1,42 @@
 package mekanism.client.render.data;
 
+import java.util.Objects;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
+@NothingNullByDefault
 public class ValveRenderData extends FluidRenderData {
 
-    public Direction side;
-    public BlockPos valveLocation;
+    private final Direction side;
+    private final int valveFluidHeight;
 
-    private ValveRenderData(@NotNull FluidStack fluidType) {
-        super(fluidType);
+    private ValveRenderData(FluidRenderData renderData, Direction side, BlockPos valveLocation) {
+        super(renderData.location, renderData.width, renderData.height, renderData.length, renderData.fluidType);
+        this.side = side;
+        this.valveFluidHeight = valveLocation.getY() - location.getY();
     }
 
     public static ValveRenderData get(FluidRenderData renderData, ValveData valveData) {
-        ValveRenderData data = new ValveRenderData(renderData.fluidType);
-        data.location = renderData.location;
-        data.height = renderData.height;
-        data.length = renderData.length;
-        data.width = renderData.width;
-        data.side = valveData.side;
-        data.valveLocation = valveData.location;
-        return data;
+        return new ValveRenderData(renderData, valveData.side, valveData.location);
+    }
+
+    public int getValveFluidHeight() {
+        return valveFluidHeight;
+    }
+
+    public Direction getSide() {
+        return side;
     }
 
     @Override
     public boolean equals(Object data) {
-        return data instanceof ValveRenderData other && super.equals(data) && other.side == side;
+        return data instanceof ValveRenderData other && super.equals(data) && side == other.side && valveFluidHeight == other.valveFluidHeight;
     }
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + side.ordinal();
-        code = 31 * code + valveLocation.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), side, valveFluidHeight);
     }
 }

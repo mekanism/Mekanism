@@ -21,7 +21,6 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
@@ -48,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
     private static final Map<Direction, Model3D> cachedOverlays = new EnumMap<>(Direction.class);
+    private static final int DIVERSION_OVERLAY_ARGB = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
     @Nullable
     private static SpriteInfo gunpowderIcon;
     @Nullable
@@ -105,7 +105,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
                     MekanismRenderer.renderObject(getOverlayModel(diversionTransporter, side), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
+                          DIVERSION_OVERLAY_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
                     matrix.popPose();
                 }
             }
@@ -135,23 +135,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     private Model3D getOverlayModel(DiversionTransporter transporter, Direction side) {
         //Get the model or set it up if needed
-        Model3D model = cachedOverlays.computeIfAbsent(side, face -> {
-            Model3D m = new Model3D();
-            MekanismRenderer.prepSingleFaceModelSize(m, face);
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                m.setSideRender(direction, direction == face);
-            }
-            return m;
-        });
-        // and then figure out which texture we need to use
-        SpriteInfo icon = switch (transporter.modes[side.ordinal()]) {
+        Model3D model = cachedOverlays.computeIfAbsent(side, face -> new Model3D()
+              .prepSingleFaceModelSize(face)
+              .setSideRender(direction -> direction == face)
+        );
+        //set the proper side to the texture we need to use
+        return model.setTexture(side, switch (transporter.modes[side.ordinal()]) {
             case DISABLED -> gunpowderIcon;
             case HIGH -> torchOnIcon;
             case LOW -> torchOffIcon;
-        };
-        // and set that proper side to that texture
-        model.setTexture(side, icon);
-        return model;
+        });
     }
 
     private static class TransportInformation {

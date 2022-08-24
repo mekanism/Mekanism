@@ -44,8 +44,12 @@ public class Vertex {
         return create(pos, normal, color, sprite, texU, texV, OverlayTexture.NO_WHITE_U, OverlayTexture.WHITE_OVERLAY_V, lightU, lightV);
     }
 
+    public static Vertex create(Vec3 pos, Vec3 normal, Color color, TextureAtlasSprite sprite, float u, float v) {
+        return create(pos, normal, color, sprite, u, v, 0, 0);
+    }
+
     public static Vertex create(Vec3 pos, Vec3 normal, TextureAtlasSprite sprite, float u, float v) {
-        return create(pos, normal, Color.WHITE, sprite, u, v, 0, 0);
+        return create(pos, normal, Color.WHITE, sprite, u, v);
     }
 
     public Vec3 getPos() {

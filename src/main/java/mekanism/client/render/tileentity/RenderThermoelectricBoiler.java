@@ -3,70 +3,50 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.ModelRenderer;
-import mekanism.client.render.data.ChemicalRenderData.GasRenderData;
 import mekanism.client.render.data.FluidRenderData;
+import mekanism.client.render.data.RenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.Lazy;
 
 @NothingNullByDefault
-public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileEntityBoilerCasing> {
+public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<BoilerMultiblockData, TileEntityBoilerCasing> {
 
     public RenderThermoelectricBoiler(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    protected void render(TileEntityBoilerCasing tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        BoilerMultiblockData multiblock = tile.getMultiblock();
+    protected void render(TileEntityBoilerCasing tile, BoilerMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light,
+          int overlayLight, ProfilerFiller profiler) {
         BlockPos pos = tile.getBlockPos();
-        VertexConsumer buffer = null;
+        Lazy<VertexConsumer> buffer = Lazy.of(() -> renderer.getBuffer(Sheets.translucentCullBlockSheet()));
         if (!multiblock.waterTank.isEmpty()) {
             int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
-            if (height >= 1) {
-                FluidRenderData data = new FluidRenderData(multiblock.waterTank.getFluid());
-                data.location = multiblock.renderLocation;
-                data.height = height;
-                data.length = multiblock.length();
-                data.width = multiblock.width();
-                int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
-                matrix.pushPose();
-                matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-                Model3D model = ModelRenderer.getModel(data, multiblock.prevWaterScale);
-                MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevWaterScale), glow, overlayLight, getFaceDisplay(data, model));
-                matrix.popPose();
-                MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
+            if (height > 0) {
+                FluidRenderData data = RenderData.Builder.create(multiblock.waterTank.getFluid())
+                      .of(multiblock)
+                      .height(height)
+                      .build();
+                renderObject(data, multiblock.valves, pos, matrix, buffer.get(), overlayLight, multiblock.prevWaterScale);
             }
         }
         if (!multiblock.steamTank.isEmpty()) {
             int height = multiblock.renderLocation.getY() + multiblock.height() - 2 - multiblock.upperRenderLocation.getY();
-            if (height >= 1) {
-                GasRenderData data = new GasRenderData(multiblock.steamTank.getStack());
-                data.location = multiblock.upperRenderLocation;
-                data.height = height;
-                data.length = multiblock.length();
-                data.width = multiblock.width();
-                if (buffer == null) {
-                    buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-                }
-                int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
-                matrix.pushPose();
-                matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                Model3D gasModel = ModelRenderer.getModel(data, 1);
-                MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight,
-                      getFaceDisplay(data, gasModel));
-                matrix.popPose();
+            if (height > 0) {
+                RenderData data = RenderData.Builder.create(multiblock.steamTank.getStack())
+                      .of(multiblock)
+                      .location(multiblock.upperRenderLocation)
+                      .height(height)
+                      .build();
+                renderObject(data, pos, matrix, buffer.get(), overlayLight, multiblock.prevSteamScale);
             }
         }
     }
@@ -77,16 +57,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileEntityBoilerCasing tile) {
-        return true;
-    }
-
-    @Override
-    public boolean shouldRender(TileEntityBoilerCasing tile, Vec3 camera) {
-        if (tile.isMaster()) {
-            BoilerMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.isFormed() && multiblock.renderLocation != null && multiblock.upperRenderLocation != null && super.shouldRender(tile, camera);
-        }
-        return false;
+    protected boolean shouldRender(TileEntityBoilerCasing tile, BoilerMultiblockData multiblock, Vec3 camera) {
+        return super.shouldRender(tile, multiblock, camera) && multiblock.upperRenderLocation != null;
     }
 }

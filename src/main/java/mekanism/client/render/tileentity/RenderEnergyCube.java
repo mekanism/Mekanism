@@ -21,15 +21,13 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
-public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
+public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCube, ModelEnergyCube> {
 
     public static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
-    private final ModelEnergyCube model;
     private final ModelEnergyCore core;
 
     public RenderEnergyCube(BlockEntityRendererProvider.Context context) {
-        super(context);
-        model = new ModelEnergyCube(context.getModelSet());
+        super(context, ModelEnergyCube::new);
         core = new ModelEnergyCore(context.getModelSet());
     }
 

@@ -1,18 +1,21 @@
 package mekanism.client.render.data;
 
+import java.util.Objects;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
+@NothingNullByDefault
 public class FluidRenderData extends RenderData {
 
-    @NotNull
     public final FluidStack fluidType;
 
-    public FluidRenderData(@NotNull FluidStack fluidType) {
+    public FluidRenderData(BlockPos renderLocation, int width, int height, int length, FluidStack fluidType) {
+        super(renderLocation, width, height, length);
         this.fluidType = fluidType;
     }
 
@@ -42,12 +45,7 @@ public class FluidRenderData extends RenderData {
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + fluidType.getFluid().hashCode();
-        if (fluidType.hasTag()) {
-            code = 31 * code + fluidType.getTag().hashCode();
-        }
-        return code;
+        return Objects.hash(super.hashCode(), fluidType.getFluid(), fluidType.getTag());
     }
 
     @Override

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -23,11 +25,8 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
-import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.FluidRenderData;
-import mekanism.client.render.data.ValveRenderData;
-import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -114,65 +113,6 @@ public class MekanismRenderer {
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(spriteLocation);
     }
 
-    public static void prepFlowing(Model3D model, @NotNull FluidStack fluid) {
-        SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.STILL), 16);
-        SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.FLOWING), 8);
-        model.setTextures(still, still, flowing, flowing, flowing, flowing);
-    }
-
-    public static void prepSingleFaceModelSize(Model3D model, Direction face) {
-        switch (face) {
-            case DOWN -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = -0.01F;
-                model.maxY = -0.001F;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-            case UP -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = 1.001F;
-                model.maxY = 1.01F;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-            case NORTH -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = -0.01F;
-                model.maxZ = -0.001F;
-            }
-            case SOUTH -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = 1.001F;
-                model.maxZ = 1.01F;
-            }
-            case WEST -> {
-                model.minX = -0.01F;
-                model.maxX = -0.001F;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-            case EAST -> {
-                model.minX = 1.001F;
-                model.maxX = 1.01F;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-        }
-    }
-
     public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
           FaceDisplay faceDisplay) {
         renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, true);
@@ -194,15 +134,14 @@ public class MekanismRenderer {
 
     public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay,
           BooleanSupplier inMultiblock) {
-        FaceDisplay faceDisplay;
         if (!valves.isEmpty()) {
             //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
             // if we aren't in the multiblock though we can just get away with only rendering the front faces
-            faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
+            FaceDisplay faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
             for (ValveData valveData : valves) {
                 matrix.pushPose();
                 matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-                renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
+                renderObject(ModelRenderer.getValveModel(data, valveData), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
                 matrix.popPose();
             }
         }
@@ -295,10 +234,14 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(@NotNull ChemicalStack<?> stack, float scale, boolean gaseous) {
-        if (stack.isEmpty()) {
+        return getColorARGB(stack.getType(), scale, gaseous);
+    }
+
+    public static int getColorARGB(@NotNull Chemical<?> chemical, float scale, boolean gaseous) {
+        if (chemical.isEmptyType()) {
             return -1;
         }
-        int color = stack.getChemicalTint();
+        int color = chemical.getTint();
         return getColorARGB(getRed(color), getGreen(color), getBlue(color), gaseous ? Math.min(1, scale + 0.2F) : 1);
     }
 
@@ -403,7 +346,6 @@ public class MekanismRenderer {
         RenderDigitalMiner.resetCachedVisuals();
         RenderDimensionalStabilizer.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
-        RenderFluidTankItem.resetCachedModels();
         RenderNutritionalLiquifier.resetCachedModels();
         RenderPigmentMixer.resetCached();
         RenderMechanicalPipe.onStitch();
@@ -470,54 +412,138 @@ public class MekanismRenderer {
         private final SpriteInfo[] textures = new SpriteInfo[6];
         private final boolean[] renderSides = {true, true, true, true, true, true};
 
-        public void setSideRender(Direction side, boolean value) {
+        public Model3D setSideRender(Predicate<Direction> shouldRender) {
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                setSideRender(direction, shouldRender.test(direction));
+            }
+            return this;
+        }
+
+        public Model3D setSideRender(Direction side, boolean value) {
             renderSides[side.ordinal()] = value;
+            return this;
         }
 
         public Model3D copy() {
             Model3D copy = new Model3D();
             System.arraycopy(textures, 0, copy.textures, 0, textures.length);
             System.arraycopy(renderSides, 0, copy.renderSides, 0, renderSides.length);
-            copy.minX = minX;
-            copy.minY = minY;
-            copy.minZ = minZ;
-            copy.maxX = maxX;
-            copy.maxY = maxY;
-            copy.maxZ = maxZ;
-            return copy;
+            return copy.bounds(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
         @Nullable
         public SpriteInfo getSpriteToRender(Direction side) {
             int ordinal = side.ordinal();
-            if (renderSides[ordinal]) {
-                return textures[ordinal];
-            }
-            return null;
+            return renderSides[ordinal] ? textures[ordinal] : null;
         }
 
-        public void setTexture(Direction side, SpriteInfo spriteInfo) {
+        public Model3D shrink(float amount) {
+            return grow(-amount);
+        }
+
+        public Model3D grow(float amount) {
+            return bounds(minX - amount, minY - amount, minZ - amount, maxX + amount, maxY + amount, maxZ + amount);
+        }
+
+        public Model3D xBounds(float min, float max) {
+            this.minX = min;
+            this.maxX = max;
+            return this;
+        }
+
+        public Model3D yBounds(float min, float max) {
+            this.minY = min;
+            this.maxY = max;
+            return this;
+        }
+
+        public Model3D zBounds(float min, float max) {
+            this.minZ = min;
+            this.maxZ = max;
+            return this;
+        }
+
+        public Model3D bounds(float min, float max) {
+            return bounds(min, min, min, max, max, max);
+        }
+
+        public Model3D bounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return xBounds(minX, maxX)
+                  .yBounds(minY, maxY)
+                  .zBounds(minZ, maxZ);
+        }
+
+        public Model3D prepSingleFaceModelSize(Direction face) {
+            bounds(0, 1);
+            return switch (face) {
+                case DOWN -> yBounds(-0.01F, -0.001F);
+                case UP -> yBounds(1.001F, 1.01F);
+                case NORTH -> zBounds(-0.01F, -0.001F);
+                case SOUTH -> zBounds(1.001F, 1.01F);
+                case WEST -> xBounds(-0.01F, -0.001F);
+                case EAST -> xBounds(1.001F, 1.01F);
+            };
+        }
+
+        public Model3D prepFlowing(@NotNull FluidStack fluid) {
+            SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.STILL), 16);
+            SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.FLOWING), 8);
+            return setTextures(still, still, flowing, flowing, flowing, flowing);
+        }
+
+        public Model3D setTexture(Direction side, SpriteInfo spriteInfo) {
             textures[side.ordinal()] = spriteInfo;
+            return this;
         }
 
-        public void setTexture(TextureAtlasSprite tex) {
-            setTexture(tex, 16);
+        public Model3D setTexture(TextureAtlasSprite tex) {
+            return setTexture(tex, 16);
         }
 
-        public void setTexture(TextureAtlasSprite tex, int size) {
+        public Model3D setTexture(TextureAtlasSprite tex, int size) {
             Arrays.fill(textures, new SpriteInfo(tex, size));
+            return this;
         }
 
-        public void setTextures(SpriteInfo down, SpriteInfo up, SpriteInfo north, SpriteInfo south, SpriteInfo west, SpriteInfo east) {
+        public Model3D setTextures(SpriteInfo down, SpriteInfo up, SpriteInfo north, SpriteInfo south, SpriteInfo west, SpriteInfo east) {
             textures[0] = down;
             textures[1] = up;
             textures[2] = north;
             textures[3] = south;
             textures[4] = west;
             textures[5] = east;
+            return this;
         }
 
         public record SpriteInfo(TextureAtlasSprite sprite, int size) {
+        }
+
+        public interface ModelBoundsSetter {
+
+            Model3D set(float min, float max);
+        }
+    }
+
+    public static class LazyModel implements Supplier<Model3D> {
+
+        private final Supplier<Model3D> supplier;
+        @Nullable
+        private Model3D model;
+
+        public LazyModel(Supplier<Model3D> supplier) {
+            this.supplier = supplier;
+        }
+
+        public void reset() {
+            model = null;
+        }
+
+        @Override
+        public Model3D get() {
+            if (model == null) {
+                model = supplier.get();
+            }
+            return model;
         }
     }
 }

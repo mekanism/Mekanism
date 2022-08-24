@@ -17,14 +17,12 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
-public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntityIndustrialAlarm> {
+public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityIndustrialAlarm, ModelIndustrialAlarm> {
 
     private static final float ROTATE_SPEED = 10F;
-    private final ModelIndustrialAlarm model;
 
     public RenderIndustrialAlarm(BlockEntityRendererProvider.Context context) {
-        super(context);
-        model = new ModelIndustrialAlarm(context.getModelSet(), false);
+        super(context, entityModelSet -> new ModelIndustrialAlarm(entityModelSet, false));
     }
 
     @Override

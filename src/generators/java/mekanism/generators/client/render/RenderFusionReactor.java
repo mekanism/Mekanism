@@ -6,7 +6,7 @@ import com.mojang.math.Vector3f;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
+import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
@@ -20,7 +20,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
-public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFusionReactorController> {
+public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReactorMultiblockData, TileEntityFusionReactorController> {
 
     private static final double SCALE = 100_000_000;
     private final ModelEnergyCore core;
@@ -31,9 +31,8 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
     }
 
     @Override
-    protected void render(TileEntityFusionReactorController tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
-          ProfilerFiller profiler) {
-        FusionReactorMultiblockData multiblock = tile.getMultiblock();
+    protected void render(TileEntityFusionReactorController tile, FusionReactorMultiblockData multiblock, float partialTicks, PoseStack matrix, MultiBufferSource renderer,
+          int light, int overlayLight, ProfilerFiller profiler) {
         long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
         float ticks = Minecraft.getInstance().levelRenderer.ticks + partialTicks;
         float ticksScaledTemp = ticks * scaledTemp;
@@ -72,13 +71,7 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileEntityFusionReactorController tile) {
-        return true;
-    }
-
-    @Override
-    public boolean shouldRender(TileEntityFusionReactorController tile, Vec3 camera) {
-        FusionReactorMultiblockData multiblock = tile.getMultiblock();
-        return multiblock.isFormed() && multiblock.isBurning() && super.shouldRender(tile, camera);
+    protected boolean shouldRender(TileEntityFusionReactorController tile, FusionReactorMultiblockData multiblock, Vec3 camera) {
+        return multiblock.isBurning();
     }
 }

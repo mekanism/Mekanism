@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
+import mekanism.client.render.tileentity.ModelTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
@@ -15,20 +15,23 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor> {
+public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbineRotor, ModelTurbine> {
 
     @Nullable
     public static RenderTurbineRotor INSTANCE;
     private static final float BASE_SPEED = 512F;
-    public final ModelTurbine model;
 
     public RenderTurbineRotor(BlockEntityRendererProvider.Context context) {
-        super(context);
+        super(context, ModelTurbine::new);
         INSTANCE = this;
-        model = new ModelTurbine(context.getModelSet());
+    }
+
+    public VertexConsumer getBuffer(@NotNull MultiBufferSource renderer) {
+        return model.getBuffer(renderer);
     }
 
     @Override
