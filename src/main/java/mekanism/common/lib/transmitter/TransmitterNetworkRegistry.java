@@ -78,6 +78,8 @@ public class TransmitterNetworkRegistry {
         getInstance().networksToChange.clear();
         getInstance().invalidTransmitters.clear();
         getInstance().newOrphanTransmitters.clear();
+        getInstance().transmitters.clear();
+        getInstance().changedTicketChunks.clear();
     }
 
     public static void trackTransmitter(Transmitter<?, ?, ?> transmitter) {
