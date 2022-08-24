@@ -313,10 +313,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setSilkTouch(boolean newSilkTouch) {
-        boolean changed = silkTouch != newSilkTouch;
-        silkTouch = newSilkTouch;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
+        if (silkTouch != newSilkTouch) {
+            silkTouch = newSilkTouch;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+            }
         }
     }
 
@@ -361,12 +362,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setRadius(int newRadius) {
-        boolean changed = radius != newRadius;
-        radius = newRadius;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
-            // If the radius changed, and we're on the server, go ahead and refresh the chunk set
-            getChunkLoader().refreshChunkTickets();
+        if (radius != newRadius) {
+            radius = newRadius;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+                // If the radius changed, and we're on the server, go ahead and refresh the chunk set
+                getChunkLoader().refreshChunkTickets();
+            }
         }
     }
 
@@ -381,10 +383,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setMinY(int newMinY) {
-        boolean changed = minY != newMinY;
-        minY = newMinY;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
+        if (minY != newMinY) {
+            minY = newMinY;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+            }
         }
     }
 
@@ -399,10 +402,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setMaxY(int newMaxY) {
-        boolean changed = maxY != newMaxY;
-        maxY = newMaxY;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
+        if (maxY != newMaxY) {
+            maxY = newMaxY;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+            }
         }
     }
 
@@ -899,8 +903,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void readSustainedData(CompoundTag dataMap) {
         setRadius(Math.min(dataMap.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, this::setMinY);
-        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MAX, this::setMaxY);
+        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, newMinY -> {
+            if (hasLevel() && !isRemote()) {
+                setMinY(Math.max(newMinY, level.getMinBuildHeight()));
+            } else {
+                setMinY(newMinY);
+            }
+        });
+        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MAX, newMaxY -> {
+            if (hasLevel() && !isRemote()) {
+                setMaxY(Math.min(newMaxY, level.getMaxBuildHeight() - 1));
+            } else {
+                setMaxY(newMaxY);
+            }
+        });
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.EJECT, eject -> doEject = eject);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.PULL, pull -> doPull = pull);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.SILK_TOUCH, this::setSilkTouch);
