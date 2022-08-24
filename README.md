@@ -5,6 +5,9 @@
 #### Download at curseforge
 https://www.curseforge.com/minecraft/mc-mods/mekanism-ce
 
+#### Builds at our maven
+https://maven.thorfusion.com/ui/packages
+
 ### Building Mekanism 1.7.10 Community Edition
 
 ```bash
