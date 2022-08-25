@@ -58,7 +58,7 @@ public class MekanismClient {
         SoundHandler.radiationSoundMap.clear();
         RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();
-        RenderTickHandler.prevRadiation = 0;
+        RenderTickHandler.clearQueued();
         MekanismRecipeType.clearCache();
 
         for (IModModule module : Mekanism.modulesLoaded) {

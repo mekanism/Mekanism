@@ -27,6 +27,7 @@ public class RenderQuantumEntangloporter extends ModelTileEntityRenderer<TileEnt
         matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight, false, false);
         matrix.popPose();
+        endIfNeeded(renderer, model.RENDER_TYPE_OVERLAY);
     }
 
     @Override

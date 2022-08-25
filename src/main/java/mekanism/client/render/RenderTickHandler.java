@@ -111,11 +111,16 @@ public class RenderTickHandler {
     private static final Map<RenderType, List<LazyRender>> transparentRenderers = new HashMap<>();
 
     public static int modeSwitchTimer = 0;
-    public static double prevRadiation = 0;
+    private static double prevRadiation = 0;
 
     private static final BoltRenderer boltRenderer = new BoltRenderer();
 
     private boolean outliningArea = false;
+
+    public static void clearQueued() {
+        prevRadiation = 0;
+        transparentRenderers.clear();
+    }
 
     public static void resetCached() {
         cachedOverlays.clear();

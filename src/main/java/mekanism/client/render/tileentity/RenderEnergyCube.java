@@ -55,6 +55,7 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
         model.renderSidesBatched(tile, matrix, renderer, light, overlayLight);
         profiler.pop();//End sides
         matrix.popPose();
+        endIfNeeded(renderer, null);
 
         profiler.popPush(ProfilerConstants.CORE);//End frame start core
         float energyScale = tile.getEnergyScale();

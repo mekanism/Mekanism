@@ -13,8 +13,10 @@ import mekanism.client.render.data.RenderData;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -22,6 +24,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> implements BlockEntityRenderer<TILE> {
@@ -49,6 +52,20 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
     }
 
     protected abstract void render(TILE tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler);
+
+    protected void endIfNeeded(MultiBufferSource renderer, @Nullable RenderType renderType) {
+        //If we are not on fabulous, and we are a multi buffer source, then we manually end the render type to ensure it can render
+        // behind translucent things properly. If we are on fabulous we can skip this as it will be ended at the proper time
+        //Note: Ideally we wouldn't have to do this so that if two TERs happen to render consecutively with the same render type
+        // then they can batch themselves properly together, but such is the limitations of MC's rendering system
+        if (!Minecraft.useShaderTransparency() && renderer instanceof MultiBufferSource.BufferSource source) {
+            if (renderType == null) {
+                source.endLastBatch();
+            } else {
+                source.endBatch(renderType);
+            }
+        }
+    }
 
     protected abstract String getProfilerSection();
 

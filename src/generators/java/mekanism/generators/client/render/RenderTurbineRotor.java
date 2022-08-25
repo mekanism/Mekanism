@@ -36,7 +36,7 @@ public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbin
 
     @Override
     protected void render(TileEntityTurbineRotor tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        render(tile, matrix, model.getBuffer(renderer), light, overlayLight);
+        render(tile, matrix, getBuffer(renderer), light, overlayLight);
     }
 
     public void render(TileEntityTurbineRotor tile, PoseStack matrix, VertexConsumer buffer, int light, int overlayLight) {

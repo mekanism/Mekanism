@@ -192,7 +192,7 @@ public class ModelQuantumEntangloporter extends MekanismJavaModel {
               CORNER_1, CORNER_2, CORNER_3, CORNER_4, CORNER_5, CORNER_6, CORNER_7, CORNER_8);
     }
 
-    private final RenderType RENDER_TYPE_OVERLAY = MekanismRenderType.standard(OVERLAY);
+    public final RenderType RENDER_TYPE_OVERLAY = MekanismRenderType.standard(OVERLAY);
     private final RenderType RENDER_TYPE = renderType(ENTANGLOPORTER_TEXTURE);
     private final List<ModelPart> parts;
     private final List<ModelPart> overlay;

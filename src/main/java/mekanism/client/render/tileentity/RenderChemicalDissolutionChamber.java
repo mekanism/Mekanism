@@ -27,6 +27,7 @@ public class RenderChemicalDissolutionChamber extends ModelTileEntityRenderer<Ti
         matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight, false);
         matrix.popPose();
+        endIfNeeded(renderer, model.GLASS_RENDER_TYPE);
     }
 
     @Override

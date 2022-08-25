@@ -141,7 +141,7 @@ public class ModelChemicalDissolutionChamber extends MekanismJavaModel {
     }
 
     private final RenderType RENDER_TYPE = renderType(DISSOLUTION_TEXTURE);
-    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.standard(DISSOLUTION_TEXTURE);
+    public final RenderType GLASS_RENDER_TYPE = MekanismRenderType.standard(DISSOLUTION_TEXTURE);
     private final List<ModelPart> parts;
     private final ModelPart glass;
 

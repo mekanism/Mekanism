@@ -36,7 +36,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
         float ticks = Minecraft.getInstance().levelRenderer.ticks + partialTicks;
         float ticksScaledTemp = ticks * scaledTemp;
-        VertexConsumer buffer = core.getBuffer(renderer);
+        VertexConsumer buffer = renderer.getBuffer(core.RENDER_TYPE);
         matrix.pushPose();
         matrix.translate(0.5, -1.5, 0.5);
         float scale = 1 + 0.7F * sinDegrees(3.14F * ticksScaledTemp + 135);
@@ -49,10 +49,11 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         renderPart(matrix, buffer, overlayLight, EnumColor.ORANGE, scale, ticksScaledTemp, 5, -3, -35, 106);
 
         matrix.popPose();
+        endIfNeeded(renderer, core.RENDER_TYPE);
     }
 
     private static float sinDegrees(float degrees) {
-        return Mth.sin(degrees * Mth.DEG_TO_RAD);
+        return Mth.sin((degrees % 360) * Mth.DEG_TO_RAD);
     }
 
     @Override
