@@ -281,11 +281,11 @@ public class ModelEnergyCube extends MekanismJavaModel {
             for (RelativeSide side : EnumUtils.SIDES) {
                 ISlotInfo slotInfo = config.getSlotInfo(side);
                 if (slotInfo != null) {
-                    if (slotInfo.canInput()) {
-                        enabledSides.add(side);
-                    } else if (slotInfo.canOutput()) {
+                    if (slotInfo.canOutput()) {
                         enabledSides.add(side);
                         outputSides.add(side);
+                    } else if (slotInfo.canInput()) {
+                        enabledSides.add(side);
                     }
                 }
             }
@@ -305,11 +305,11 @@ public class ModelEnergyCube extends MekanismJavaModel {
             //TODO: Maybe improve on this, but for now this is a decent way of making it not have disabled sides show
             for (RelativeSide side : EnumUtils.SIDES) {
                 DataType dataType = DataType.byIndexStatic(sideConfig.getInt(NBTConstants.SIDE + side.ordinal()));
-                if (dataType == DataType.INPUT) {
-                    enabledSides.add(side);
-                } else if (dataType == DataType.OUTPUT) {
+                if (dataType.canOutput()) {
                     enabledSides.add(side);
                     outputSides.add(side);
+                } else if (dataType == DataType.INPUT) {
+                    enabledSides.add(side);
                 }
             }
         } else {
