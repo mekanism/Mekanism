@@ -2,14 +2,11 @@ package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -39,14 +36,11 @@ public class GuiArrowSelection extends GuiTexturedElement {
             int tooltipX = mouseX + 5;
             int tooltipY = mouseY - 5;
             GuiUtils.renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16, 256, 256);
-            MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             matrix.pushPose();
             //Make sure the text is above other renders like JEI
-            matrix.translate(0.0D, 0.0D, 300);
-            getFont().drawInBatch(component, tooltipX, tooltipY, screenTextColor(), false, matrix.last().pose(),
-                  renderType, false, 0, LightTexture.FULL_BRIGHT);
+            matrix.translate(0, 0, 300);
+            drawString(matrix, component, tooltipX, tooltipY, screenTextColor());
             matrix.popPose();
-            renderType.endBatch();
         }
     }
 
