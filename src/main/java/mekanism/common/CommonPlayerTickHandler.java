@@ -27,6 +27,7 @@ import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
@@ -133,6 +134,9 @@ public class CommonPlayerTickHandler {
                         }
                     }
                     ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
+                    if (player.level.getGameTime() % 10 == 0) {
+                        player.gameEvent(MekanismGameEvents.JETPACK_BURN.get());
+                    }
                 }
             }
         }

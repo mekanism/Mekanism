@@ -20,6 +20,8 @@ import mekanism.common.network.to_client.PacketFlyingSync;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
+import mekanism.common.registration.impl.GameEventRegistryObject;
+import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -31,6 +33,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 
@@ -282,6 +285,7 @@ public class PlayerState {
                 IModule<ModuleGravitationalModulatingUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
                 if (module != null) {//Should not be null but double check
                     FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
+                    GameEventRegistryObject<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
                     if (Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                         FloatingLong boostUsage = usage.multiply(4);
                         if (module.canUseEnergy(player, boostUsage, false)) {
@@ -289,10 +293,14 @@ public class PlayerState {
                             if (boost > 0) {
                                 player.moveRelative(boost, new Vec3(0, 0, 1));
                                 usage = boostUsage;
+                                gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
                             }
                         }
                     }
                     module.useEnergy(player, usage);
+                    if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level.getGameTime() % 10 == 0) {
+                        player.gameEvent(gameEvent.get());
+                    }
                 }
             }
         } else {

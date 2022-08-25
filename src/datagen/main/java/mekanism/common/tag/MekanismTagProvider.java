@@ -502,8 +502,10 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addGameEvents() {
-        addToTag(GameEventTags.VIBRATIONS, MekanismGameEvents.SEISMIC_VIBRATION);
-        addToTag(GameEventTags.WARDEN_CAN_LISTEN, MekanismGameEvents.SEISMIC_VIBRATION);
+        addToTag(GameEventTags.VIBRATIONS, MekanismGameEvents.SEISMIC_VIBRATION, MekanismGameEvents.JETPACK_BURN, MekanismGameEvents.GRAVITY_MODULATE,
+              MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
+        addToTag(GameEventTags.WARDEN_CAN_LISTEN, MekanismGameEvents.SEISMIC_VIBRATION, MekanismGameEvents.JETPACK_BURN, MekanismGameEvents.GRAVITY_MODULATE,
+              MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
     }
 
     private void addGasTags() {

@@ -130,6 +130,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
     public final CachedFloatingLongValue mekaSuitEnergyUsageDamage;
     public final CachedFloatingLongValue mekaSuitEnergyUsageItemAttraction;
+    public final CachedBooleanValue mekaSuitGravitationalVibrations;
     public final CachedIntValue mekaSuitNutritionalMaxStorage;
     public final CachedIntValue mekaSuitNutritionalTransferRate;
     public final CachedLongValue mekaSuitJetpackMaxStorage;
@@ -347,6 +348,8 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageDamage", FloatingLong.createConst(100_000));
         mekaSuitEnergyUsageItemAttraction = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
               "energyUsageItemAttraction", FloatingLong.createConst(250));
+        mekaSuitGravitationalVibrations = CachedBooleanValue.wrap(this, builder.comment("Should the Gravitational Modulation unit give off vibrations when in use.")
+              .define("gravitationalVibrations", true));
         mekaSuitNutritionalMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the nutritional injection unit.")
               .defineInRange("nutritionalMaxStorage", 128_000, 1, Integer.MAX_VALUE));
         mekaSuitNutritionalTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into the nutritional injection unit.")
