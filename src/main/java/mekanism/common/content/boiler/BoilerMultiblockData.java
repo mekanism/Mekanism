@@ -7,7 +7,6 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
@@ -15,8 +14,8 @@ import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
-import mekanism.common.capabilities.fluid.MultiblockFluidTank;
-import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -64,13 +63,13 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     public IGasTank cooledCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"})
-    public MultiblockFluidTank<BoilerMultiblockData> waterTank;
+    public VariableCapacityFluidTank waterTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
     public IGasTank steamTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
-    public MultiblockHeatCapacitor<BoilerMultiblockData> heatCapacitor;
+    public VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
     @ContainerSync
@@ -104,18 +103,15 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
-        superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> superheatedCoolantCapacity, ChemicalTankBuilder.GAS.notExternal,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), gas -> gas.has(HeatedCoolant.class));
-        waterTank = MultiblockFluidTank.input(this, tile, () -> waterTankCapacity, fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()));
+        superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> superheatedCoolantCapacity, gas -> gas.has(HeatedCoolant.class), this);
+        waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()),
+              createSaveAndComparator());
         fluidTanks.add(waterTank);
-        steamTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> steamTankCapacity,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), ChemicalTankBuilder.GAS.notExternal,
-              gas -> gas == MekanismGases.STEAM.getChemical());
-        cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> cooledCoolantCapacity,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), ChemicalTankBuilder.GAS.notExternal, gas -> gas.has(CooledCoolant.class));
+        steamTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> steamTankCapacity, gas -> gas == MekanismGases.STEAM.getChemical(), this);
+        cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> cooledCoolantCapacity, gas -> gas.has(CooledCoolant.class), this);
         Collections.addAll(gasTanks, steamTank, superheatedCoolantTank, cooledCoolantTank);
-        heatCapacitor = MultiblockHeatCapacitor.create(this, tile, CASING_HEAT_CAPACITY, () -> CASING_INVERSE_CONDUCTION_COEFFICIENT,
-              () -> CASING_INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);
+        heatCapacitor = VariableHeatCapacitor.create(CASING_HEAT_CAPACITY, () -> CASING_INVERSE_CONDUCTION_COEFFICIENT, () -> CASING_INVERSE_INSULATION_COEFFICIENT,
+              () -> biomeAmbientTemp, this);
         heatCapacitors.add(heatCapacitor);
     }
 

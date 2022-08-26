@@ -2,20 +2,23 @@ package mekanism.generators.common.content.turbine;
 
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder.MultiblockGasTank;
 import mekanism.common.registries.MekanismGases;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class TurbineGasTank extends MultiblockGasTank<TurbineMultiblockData> {
+public class TurbineGasTank extends MultiblockGasTank {
 
-    public TurbineGasTank(TurbineMultiblockData multiblock, TileEntityTurbineCasing tile) {
-        super(multiblock, tile, multiblock::getSteamCapacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(),
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), gas -> gas == MekanismGases.STEAM.getChemical(),
-              null, null);
+    private final TurbineMultiblockData multiblock;
+
+    public TurbineGasTank(TurbineMultiblockData multiblock, @Nullable IContentsListener listener) {
+        super(multiblock::getSteamCapacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(), gas -> gas == MekanismGases.STEAM.getChemical(),
+              null, listener);
+        this.multiblock = multiblock;
     }
 
     @Override

@@ -36,7 +36,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -327,10 +326,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!getMultiblock().isFormed()) {
             NBTUtils.setUUIDIfPresent(nbt, NBTConstants.INVENTORY_ID, id -> {
                 cachedID = id;
-                if (nbt.contains(NBTConstants.CACHE, Tag.TAG_COMPOUND)) {
+                NBTUtils.setCompoundIfPresent(nbt, NBTConstants.CACHE, cache -> {
                     cachedData = getManager().createCache();
-                    cachedData.load(nbt.getCompound(NBTConstants.CACHE));
-                }
+                    cachedData.load(cache);
+                });
             });
         }
     }
@@ -349,7 +348,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 CompoundTag cacheTags = new CompoundTag();
                 cachedData.save(cacheTags);
                 nbtTags.put(NBTConstants.CACHE, cacheTags);
-
             }
         }
     }

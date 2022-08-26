@@ -80,6 +80,11 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         return InteractionResult.SUCCESS;
     }
 
+    @Override
+    public int getRedstoneLevel() {
+        return getMultiblock().getCurrentRedstoneLevel();
+    }
+
     //Methods relating to IComputerTile
     @ComputerMethod
     private boolean getMode() {

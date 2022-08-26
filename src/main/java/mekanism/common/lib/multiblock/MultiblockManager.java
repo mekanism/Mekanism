@@ -93,7 +93,7 @@ public class MultiblockManager<T extends MultiblockData> {
     public MultiblockCache<T> pullInventory(Level world, UUID id) {
         CacheWrapper toReturn = inventories.get(id);
         for (Coord4D obj : toReturn.locations) {
-            BlockEntity tile = WorldUtils.getTileEntity(BlockEntity.class, world, obj.getPos());
+            BlockEntity tile = WorldUtils.getTileEntity(world, obj.getPos());
             if (tile instanceof IMultiblock<?> multiblock) {
                 multiblock.resetCache();
             }

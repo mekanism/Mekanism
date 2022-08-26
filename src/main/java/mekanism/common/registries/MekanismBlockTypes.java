@@ -720,7 +720,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
           .withEnergyConfig(MekanismConfig.storage.spsPort)
-          .with(Attributes.ACTIVE)
+          .with(Attributes.ACTIVE, Attributes.COMPARATOR)
           .externalMultiblock()
           .withComputerSupport("spsPort")
           .build();

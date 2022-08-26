@@ -9,9 +9,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -96,11 +99,37 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
+    private final BiPredicate<Object, @NotNull AutomationType> formedBiPred = (t, automationType) -> isFormed();
+    private final BiPredicate<Object, @NotNull AutomationType> notExternalFormedBiPred = (t, automationType) -> automationType != AutomationType.EXTERNAL && isFormed();
+
     private boolean dirty;
 
     public MultiblockData(BlockEntity tile) {
         remoteSupplier = () -> tile.getLevel().isClientSide();
         worldSupplier = tile::getLevel;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> BiPredicate<T, @NotNull AutomationType> formedBiPred() {
+        return (BiPredicate<T, @NotNull AutomationType>) formedBiPred;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> BiPredicate<T, @NotNull AutomationType> notExternalFormedBiPred() {
+        return (BiPredicate<T, @NotNull AutomationType>) notExternalFormedBiPred;
+    }
+
+    protected IContentsListener createSaveAndComparator() {
+        return createSaveAndComparator(this);
+    }
+
+    protected IContentsListener createSaveAndComparator(IContentsListener contentsListener) {
+        return () -> {
+            contentsListener.onContentsChanged();
+            if (!isRemote()) {
+                markDirtyComparator(getWorld());
+            }
+        };
     }
 
     public boolean isDirty() {

@@ -28,8 +28,8 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.tile.prefab.TileEntityMultiblock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,93 +50,90 @@ public class MultiblockChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, 
         this.tankCreator = tankCreator;
     }
 
-    public <MULTIBLOCK extends MultiblockData> TANK create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
-          LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator) {
-        Objects.requireNonNull(tile, "Tile cannot be null");
+    public TANK create(MultiblockData multiblock, LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
-        return createUnchecked(multiblock, tile, capacity, validator);
+        return createUnchecked(multiblock, capacity, validator, listener);
     }
 
-    private <MULTIBLOCK extends MultiblockData> TANK createUnchecked(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-          Predicate<@NotNull CHEMICAL> validator) {
-        return tankCreator.create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(),
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null, null);
+    private TANK createUnchecked(MultiblockData multiblock, LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+        return tankCreator.create(capacity, multiblock.formedBiPred(), multiblock.formedBiPred(), validator, null, listener);
     }
 
-    public <MULTIBLOCK extends MultiblockData> TANK create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
-          LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert,
-          Predicate<@NotNull CHEMICAL> validator) {
-        return create(multiblock, tile, capacity, canExtract, canInsert, validator, null, null);
+    public TANK create(LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+        return create(capacity, canExtract, canInsert, validator, null, listener);
     }
 
-    public <MULTIBLOCK extends MultiblockData> TANK input(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-          Predicate<@NotNull CHEMICAL> validator) {
-        return create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(),
-              (stack, automationType) -> multiblock.isFormed(), validator, null, null);
+    public TANK input(MultiblockData multiblock, LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+        return input(multiblock, capacity, validator, null, listener);
     }
 
-    public <MULTIBLOCK extends MultiblockData> TANK output(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-          Predicate<@NotNull CHEMICAL> validator) {
-        return create(multiblock, tile, capacity, (stack, automationType) -> multiblock.isFormed(),
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(), validator, null, null);
+    public TANK input(MultiblockData multiblock, LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator,
+          @Nullable IContentsListener listener) {
+        return create(capacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(), validator, attributeValidator, listener);
     }
 
-    public <MULTIBLOCK extends MultiblockData> TANK create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert,
-          Predicate<@NotNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-        Objects.requireNonNull(tile, "Tile cannot be null");
+    public TANK output(MultiblockData multiblock, LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+        return output(multiblock, capacity, validator, null, listener);
+    }
+
+    public TANK output(MultiblockData multiblock, LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator,
+          @Nullable IContentsListener listener) {
+        return create(capacity, multiblock.formedBiPred(), multiblock.notExternalFormedBiPred(), validator, attributeValidator, listener);
+    }
+
+    public TANK create(LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator,
+          @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return tankCreator.create(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
+        return tankCreator.create(capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 
     @FunctionalInterface
     private interface MultiblockTankCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
-        <MULTIBLOCK extends MultiblockData> TANK create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-              BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert,
-              Predicate<@NotNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
+        TANK create(LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator,
+              @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
     }
 
-    public static class MultiblockGasTank<MULTIBLOCK extends MultiblockData> extends MultiblockChemicalTank<Gas, GasStack, MULTIBLOCK> implements IGasHandler, IGasTank {
+    public static class MultiblockGasTank extends VariableCapacityChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
-        protected MultiblockGasTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-              BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract, BiPredicate<@NotNull Gas, @NotNull AutomationType> canInsert,
-              Predicate<@NotNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
+        protected MultiblockGasTank(LongSupplier capacity, BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull Gas, @NotNull AutomationType> canInsert, Predicate<@NotNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator,
+              @Nullable IContentsListener listener) {
+            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }
     }
 
-    public static class MultiblockInfusionTank<MULTIBLOCK extends MultiblockData> extends MultiblockChemicalTank<InfuseType, InfusionStack, MULTIBLOCK>
-          implements IInfusionHandler, IInfusionTank {
+    public static class MultiblockInfusionTank extends VariableCapacityChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler, IInfusionTank {
 
-        protected MultiblockInfusionTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-              BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canExtract, BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canInsert,
-              Predicate<@NotNull InfuseType> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
+        protected MultiblockInfusionTank(LongSupplier capacity, BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canInsert, Predicate<@NotNull InfuseType> validator,
+              @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
+            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }
     }
 
-    public static class MultiblockPigmentTank<MULTIBLOCK extends MultiblockData> extends MultiblockChemicalTank<Pigment, PigmentStack, MULTIBLOCK>
-          implements IPigmentHandler, IPigmentTank {
+    public static class MultiblockPigmentTank extends VariableCapacityChemicalTank<Pigment, PigmentStack> implements IPigmentHandler, IPigmentTank {
 
-        protected MultiblockPigmentTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-              BiPredicate<@NotNull Pigment, @NotNull AutomationType> canExtract, BiPredicate<@NotNull Pigment, @NotNull AutomationType> canInsert,
-              Predicate<@NotNull Pigment> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
+        protected MultiblockPigmentTank(LongSupplier capacity, BiPredicate<@NotNull Pigment, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull Pigment, @NotNull AutomationType> canInsert, Predicate<@NotNull Pigment> validator,
+              @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
+            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }
     }
 
-    public static class MultiblockSlurryTank<MULTIBLOCK extends MultiblockData> extends MultiblockChemicalTank<Slurry, SlurryStack, MULTIBLOCK>
-          implements ISlurryHandler, ISlurryTank {
+    public static class MultiblockSlurryTank extends VariableCapacityChemicalTank<Slurry, SlurryStack> implements ISlurryHandler, ISlurryTank {
 
-        protected MultiblockSlurryTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
-              BiPredicate<@NotNull Slurry, @NotNull AutomationType> canExtract, BiPredicate<@NotNull Slurry, @NotNull AutomationType> canInsert,
-              Predicate<@NotNull Slurry> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-            super(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
+        protected MultiblockSlurryTank(LongSupplier capacity, BiPredicate<@NotNull Slurry, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull Slurry, @NotNull AutomationType> canInsert, Predicate<@NotNull Slurry> validator,
+              @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
+            super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }
     }
 }

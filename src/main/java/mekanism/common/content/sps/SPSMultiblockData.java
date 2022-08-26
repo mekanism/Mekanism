@@ -22,6 +22,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -63,12 +64,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
-        gasTanks.add(inputTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getMaxInputGas,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(), (stack, automationType) -> isFormed(),
-              gas -> gas == MekanismGases.POLONIUM.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
-        gasTanks.add(outputTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> MAX_OUTPUT_GAS,
-              (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(),
-              gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
+        gasTanks.add(inputTank = MultiblockChemicalTankBuilder.GAS.input(this, this::getMaxInputGas, gas -> gas == MekanismGases.POLONIUM.get(),
+              ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator()));
+        gasTanks.add(outputTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> MAX_OUTPUT_GAS, gas -> gas == MekanismGases.ANTIMATTER.get(),
+              ChemicalAttributeValidator.ALWAYS_ALLOW, this));
     }
 
     @Override
@@ -139,6 +138,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         coilData.write(tag);
         tag.putString(NBTConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
         tag.putDouble(NBTConstants.LAST_PROCESSED, lastProcessed);
+    }
+
+    @Override
+    protected int getMultiblockRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
     }
 
     private long process(long operations) {

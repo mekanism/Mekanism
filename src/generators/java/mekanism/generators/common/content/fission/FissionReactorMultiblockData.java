@@ -9,7 +9,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -19,9 +18,8 @@ import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.fluid.MultiblockFluidTank;
-import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
@@ -80,7 +78,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     public IGasTank gasCoolantTank;
     @ContainerSync
-    public MultiblockFluidTank<FissionReactorMultiblockData> fluidCoolantTank;
+    public VariableCapacityFluidTank fluidCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"})
     public IGasTank fuelTank;
@@ -94,7 +92,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public IGasTank wasteTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
-    public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
+    public VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
     @ContainerSync
@@ -130,21 +128,20 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
-        fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME, BasicFluidTank.notExternal,
-              (stack, automationType) -> isFormed(), fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()) && gasCoolantTank.isEmpty(), null);
+        fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> getVolume() * COOLANT_PER_VOLUME,
+              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()) && gasCoolantTank.isEmpty(), this);
         fluidTanks.add(fluidCoolantTank);
-        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> (long) getVolume() * COOLANT_PER_VOLUME, ChemicalTankBuilder.GAS.notExternal,
-              (stack, automationType) -> isFormed(), gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
-        fuelTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY, ChemicalTankBuilder.GAS.notExternal,
-              (stack, automationType) -> isFormed(), gas -> gas == MekanismGases.FISSILE_FUEL.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        heatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
-              (stack, automationType) -> isFormed(), ChemicalTankBuilder.GAS.notExternal, gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class));
-        wasteTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
-              (stack, automationType) -> isFormed(), ChemicalTankBuilder.GAS.notExternal, gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(),
-              ChemicalAttributeValidator.ALWAYS_ALLOW, null);
+        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> (long) getVolume() * COOLANT_PER_VOLUME,
+              gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty(), this);
+        fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> fuelAssemblies * FUEL_PER_ASSEMBLY, gas -> gas == MekanismGases.FISSILE_FUEL.getChemical(),
+              ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
+        heatedCoolantTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
+              gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class), this);
+        wasteTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
+              gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         Collections.addAll(gasTanks, fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
-        heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
-              () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);
+        heatCapacitor = VariableHeatCapacitor.create(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
+              () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp, this);
         heatCapacitors.add(heatCapacitor);
     }
 

@@ -13,9 +13,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
@@ -90,13 +88,12 @@ public class TurbineMultiblockData extends MultiblockData {
 
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         super(tile);
-        gasTanks.add(gasTank = new TurbineGasTank(this, tile));
-        ventTank = VariableCapacityFluidTank.create(() -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : 1_000,
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), BasicFluidTank.internalOnly,
-              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), null);
+        gasTanks.add(gasTank = new TurbineGasTank(this, createSaveAndComparator()));
+        ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : 1_000,
+              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), this);
         ventTanks = Collections.singletonList(ventTank);
-        energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity,
-              automationType -> automationType != AutomationType.EXTERNAL || isFormed(), BasicEnergyContainer.internalOnly, null);
+        energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity, automationType -> isFormed(),
+              automationType -> automationType == AutomationType.INTERNAL && isFormed(), this);
         energyContainers.add(energyContainer);
     }
 
