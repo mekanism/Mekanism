@@ -31,7 +31,7 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
         boolean active = Attribute.isActive(tile.getBlockState());
         RenderTickHandler.addTransparentRenderer(model.getRenderType(active), new LazyRender() {
             @Override
-            public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick) {
+            public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
                 float rot = (renderTick + partialTick) * ROTATE_SPEED % 360;
                 Vec3 renderPos = Vec3.atBottomCenterOf(tile.getBlockPos());
                 poseStack.pushPose();
@@ -66,6 +66,11 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
             public Vec3 getCenterPos(float partialTick) {
                 //Centered position, does not need to be cached as it is only called once
                 return Vec3.atCenterOf(tile.getBlockPos());
+            }
+
+            @Override
+            public String getProfilerSection() {
+                return ProfilerConstants.INDUSTRIAL_ALARM;
             }
         });
     }

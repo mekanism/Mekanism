@@ -64,7 +64,7 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
             EnumColor color = tile.getTier().getBaseTier().getColor();
             RenderTickHandler.addTransparentRenderer(ModelEnergyCore.BATCHED_RENDER_TYPE, new LazyRender() {
                 @Override
-                public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick) {
+                public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
                     float ticks = renderTick + partialTick;
                     float scaledTicks = 4 * ticks;
                     poseStack.pushPose();
@@ -80,6 +80,11 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
                 @Override
                 public Vec3 getCenterPos(float partialTick) {
                     return renderPos;
+                }
+
+                @Override
+                public String getProfilerSection() {
+                    return ProfilerConstants.ENERGY_CUBE_CORE;
                 }
             });
         }

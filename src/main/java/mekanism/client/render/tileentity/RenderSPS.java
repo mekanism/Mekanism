@@ -94,7 +94,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
 
         if (multiblock.lastProcessed > 0) {
             float scale = getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE);
-            BillboardingEffectRenderer.render(CORE.getTexture(), () -> {
+            BillboardingEffectRenderer.render(CORE.getTexture(), ProfilerConstants.SPS_CORE, () -> {
                 //Lazily update the position and stuff, so it gets set just before rendering
                 CORE.setPos(center);
                 CORE.setScale(scale);
@@ -102,7 +102,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             });
         }
 
-        tile.orbitEffects.forEach(BillboardingEffectRenderer::render);
+        tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, ProfilerConstants.SPS_ORBIT));
     }
 
     private static float getEnergyScale(double lastProcessed) {

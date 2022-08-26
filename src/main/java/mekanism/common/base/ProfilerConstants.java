@@ -43,4 +43,10 @@ public class ProfilerConstants {
     public static final String PRESSURIZED_TUBE = "pressurizedTube";
     public static final String THERMODYNAMIC_CONDUCTOR = "thermodynamicConductor";
     public static final String UNIVERSAL_CABLE = "universalCable";
+
+    //Lazy/delayed rendering
+    public static final String DELAYED = "delayedMekanismTranslucentBERs";
+    public static final String ENERGY_CUBE_CORE = ENERGY_CUBE + "." + CORE;
+    public static final String SPS_CORE = SPS + "." + CORE;
+    public static final String SPS_ORBIT = SPS + ".orbitEffect";
 }

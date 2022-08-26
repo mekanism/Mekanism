@@ -151,16 +151,24 @@ public class RenderTickHandler {
     public void renderWorld(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             //Only do matrix transforms and mess with buffers if we actually have any renders to render
-            //TODO: Try to figure out a good way to make this rendering able to be profiled like it used to be able when done as a Block Entity Renderer
             renderStage(event, !transparentRenderers.isEmpty(), (camera, renderer, poseStack, renderTick, partialTick) -> {
+                ProfilerFiller profiler = minecraft.getProfiler();
+                profiler.push(ProfilerConstants.DELAYED);
                 record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
                 }
                 Consumer<TransparentRenderInfo> renderInfoConsumer = info -> {
                     //Batch all renders for a single render type into a single buffer addition
                     VertexConsumer buffer = renderer.getBuffer(info.renderType);
                     for (LazyRender transparentRender : info.renders) {
+                        String profilerSection = transparentRender.getProfilerSection();
+                        if (profilerSection != null) {
+                            profiler.push(profilerSection);
+                        }
                         //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
-                        transparentRender.render(camera, buffer, poseStack, renderTick, partialTick);
+                        transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
+                        if (profilerSection != null) {
+                            profiler.pop();
+                        }
                     }
                     renderer.endBatch(info.renderType);
                 };
@@ -192,6 +200,7 @@ public class RenderTickHandler {
                           .forEachOrdered(renderInfoConsumer);
                 }
                 transparentRenderers.clear();
+                profiler.pop();
             });
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
             //Only do matrix transforms and mess with buffers if we actually have any bolts to render
@@ -575,10 +584,15 @@ public class RenderTickHandler {
     @FunctionalInterface
     public interface LazyRender {
 
-        void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick);
+        void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler);
 
         @Nullable
         default Vec3 getCenterPos(float partialTick) {
+            return null;
+        }
+
+        @Nullable
+        default String getProfilerSection() {
             return null;
         }
     }
