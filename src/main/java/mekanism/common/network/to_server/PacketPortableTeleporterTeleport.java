@@ -55,7 +55,7 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.getPos());
                 if (teleporter != null) {
                     if (!player.isCreative()) {
-                        FloatingLong energyCost = TileEntityTeleporter.calculateEnergyCost(player, coords);
+                        FloatingLong energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                         if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyCost)) {
                             return;

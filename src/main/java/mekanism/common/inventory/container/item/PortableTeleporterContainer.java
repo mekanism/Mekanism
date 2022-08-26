@@ -60,7 +60,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                             Coord4D coords = freq.getClosestCoords(new Coord4D(inv.player));
                             if (coords != null) {
                                 FloatingLong energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
-                                if (energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
+                                if (energyNeeded != null && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
                                     status = 4;
                                 }
                             }
