@@ -139,31 +139,49 @@ public class FormationProtocol<T extends MultiblockData> {
 
     public static class FormationResult {
 
-        public static final FormationResult SUCCESS = new FormationResult(true, null);
-        public static final FormationResult FAIL = new FormationResult(false, null);
+        public static final FormationResult SUCCESS = new FormationResult(true, null, false);
+        public static final FormationResult FAIL = new FormationResult(false, null, false);
 
         private final Component resultText;
         private final boolean formed;
+        private final boolean noIgnore;
 
-        private FormationResult(boolean formed, Component resultText) {
+        private FormationResult(boolean formed, Component resultText, boolean noIgnore) {
             this.formed = formed;
             this.resultText = resultText;
+            this.noIgnore = noIgnore;
         }
 
         public static FormationResult fail(ILangEntry text, BlockPos pos) {
-            return fail(text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, text(pos)));
+            return fail(text, pos, false);
+        }
+
+        public static FormationResult fail(ILangEntry text, BlockPos pos, boolean noIgnore) {
+            return fail(text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, text(pos)), noIgnore);
         }
 
         public static FormationResult fail(ILangEntry text) {
-            return fail(text.translateColored(EnumColor.GRAY));
+            return fail(text, false);
+        }
+
+        public static FormationResult fail(ILangEntry text, boolean noIgnore) {
+            return fail(text.translateColored(EnumColor.GRAY), noIgnore);
         }
 
         public static FormationResult fail(Component text) {
-            return new FormationResult(false, text);
+            return fail(text, false);
+        }
+
+        public static FormationResult fail(Component text, boolean noIgnore) {
+            return new FormationResult(false, text, noIgnore);
         }
 
         public boolean isFormed() {
             return formed;
+        }
+
+        public boolean isNoIgnore() {
+            return noIgnore;
         }
 
         public Component getResultText() {
