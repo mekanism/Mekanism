@@ -11,6 +11,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -33,18 +34,20 @@ public class Meltdown {
     private final BlockPos minPos, maxPos;
     private final double magnitude, chance;
     private final UUID multiblockID;
+    private final float radius;
 
     private int ticksExisted;
 
-    public Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, UUID multiblockID) {
-        this(minPos, maxPos, magnitude, chance, multiblockID, 0);
+    public Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, float radius, UUID multiblockID) {
+        this(minPos, maxPos, magnitude, chance, radius, multiblockID, 0);
     }
 
-    private Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, UUID multiblockID, int ticksExisted) {
+    private Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, float radius, UUID multiblockID, int ticksExisted) {
         this.minPos = minPos;
         this.maxPos = maxPos;
         this.magnitude = magnitude;
         this.chance = chance;
+        this.radius = radius;
         this.multiblockID = multiblockID;
         this.ticksExisted = ticksExisted;
     }
@@ -55,6 +58,8 @@ public class Meltdown {
               NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MAX)),
               tag.getDouble(NBTConstants.MAGNITUDE),
               tag.getDouble(NBTConstants.CHANCE),
+              //TODO - 1.20: Just get the radius directly rather than the get or default
+              tag.contains(NBTConstants.RADIUS, Tag.TAG_FLOAT) ? tag.getFloat(NBTConstants.RADIUS) : 8,
               tag.getUUID(NBTConstants.INVENTORY_ID),
               tag.getInt(NBTConstants.AGE)
         );
@@ -65,6 +70,7 @@ public class Meltdown {
         tag.put(NBTConstants.MAX, NbtUtils.writeBlockPos(maxPos));
         tag.putDouble(NBTConstants.MAGNITUDE, magnitude);
         tag.putDouble(NBTConstants.CHANCE, chance);
+        tag.putFloat(NBTConstants.RADIUS, radius);
         tag.putUUID(NBTConstants.INVENTORY_ID, multiblockID);
         tag.putInt(NBTConstants.AGE, ticksExisted);
     }
@@ -76,7 +82,7 @@ public class Meltdown {
             int x = Mth.nextInt(world.random, minPos.getX(), maxPos.getX());
             int y = Mth.nextInt(world.random, minPos.getY(), maxPos.getY());
             int z = Mth.nextInt(world.random, minPos.getZ(), maxPos.getZ());
-            createExplosion(world, x, y, z, 8, true, Explosion.BlockInteraction.DESTROY);
+            createExplosion(world, x, y, z, radius, true, Explosion.BlockInteraction.DESTROY);
         }
 
         if (!WorldUtils.isBlockLoaded(world, minPos) || !WorldUtils.isBlockLoaded(world, maxPos)) {

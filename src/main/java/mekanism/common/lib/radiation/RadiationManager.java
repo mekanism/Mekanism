@@ -272,8 +272,8 @@ public class RadiationManager implements IRadiationManager {
         return false;
     }
 
-    public void createMeltdown(Level world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance, UUID multiblockID) {
-        meltdowns.computeIfAbsent(world.dimension().location(), id -> new ArrayList<>()).add(new Meltdown(minPos, maxPos, magnitude, chance, multiblockID));
+    public void createMeltdown(Level world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance, float radius, UUID multiblockID) {
+        meltdowns.computeIfAbsent(world.dimension().location(), id -> new ArrayList<>()).add(new Meltdown(minPos, maxPos, magnitude, chance, radius, multiblockID));
         markDirty();
     }
 

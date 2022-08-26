@@ -5,6 +5,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
@@ -48,6 +49,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fissionCasingHeatCapacity;
     public final CachedDoubleValue fissionSurfaceAreaTarget;
     public final CachedBooleanValue fissionMeltdownsEnabled;
+    public final CachedFloatValue fissionMeltdownRadius;
     public final CachedDoubleValue fissionMeltdownChance;
     public final CachedDoubleValue fissionMeltdownRadiationMultiplier;
     public final CachedDoubleValue fissionPostMeltdownDamage;
@@ -138,6 +140,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
         fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catastrophic meltdowns can occur from Fission Reactors. If disabled instead of melting down the reactor will turn off and not be able to be turned back on until the damage level decreases.")
               .define("meltdownsEnabled", true));
+        fissionMeltdownRadius = CachedFloatValue.wrap(this, builder.comment("The radius of the explosion that occurs from a meltdown.")
+              .defineInRange("meltdownRadius", 8D, 1, 500));
         fissionMeltdownChance = CachedDoubleValue.wrap(this, builder.comment("The chance of a meltdown occurring once damage passes 100%. Will linearly scale as damage continues increasing.")
               .defineInRange("meltdownChance", 0.001D, 0D, 1D));
         fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")

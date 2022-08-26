@@ -257,11 +257,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 //If we have meltdowns enabled, and we would have had one before, but they were disabled, just meltdown immediately
                 // if we still meet the requirements for a meltdown
                 setForceDisable(false);
-                RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, inventoryID);
+                createMeltdown(world);
             } else if (world.random.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
                 // Otherwise, if our chance is hit either create a meltdown if it is enabled in the config, or force disable the reactor
                 if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get()) {
-                    RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, inventoryID);
+                    createMeltdown(world);
                 } else {
                     setForceDisable(true);
                 }
@@ -273,6 +273,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (reactorDamage != lastDamage) {
             markDirty();
         }
+    }
+
+    private void createMeltdown(Level world) {
+        RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE,
+              MekanismGeneratorsConfig.generators.fissionMeltdownRadius.get(), inventoryID);
     }
 
     @Override
