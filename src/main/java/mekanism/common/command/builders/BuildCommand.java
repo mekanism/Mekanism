@@ -15,6 +15,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.MekanismPermissions;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
@@ -44,8 +45,9 @@ public class BuildCommand {
 
     public static final ArgumentBuilder<CommandSourceStack, ?> COMMAND =
           Commands.literal("build")
-                .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayer)
+                .requires(MekanismPermissions.COMMAND_BUILD.and(cs -> cs.getEntity() instanceof ServerPlayer))
                 .then(Commands.literal("remove")
+                      .requires(MekanismPermissions.COMMAND_BUILD_REMOVE)
                       .executes(ctx -> {
                           CommandSourceStack source = ctx.getSource();
                           destroy(source.getLevel(), rayTracePos(source));

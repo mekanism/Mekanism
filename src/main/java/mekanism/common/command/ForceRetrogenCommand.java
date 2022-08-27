@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.MekanismPermissions;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -26,7 +27,7 @@ public class ForceRetrogenCommand {
 
     static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("retrogen")
-              .requires(cs -> cs.hasPermission(2))
+              .requires(MekanismPermissions.COMMAND_FORCE_RETROGEN)
               .executes(ctx -> {
                   BlockPos blockPos = new BlockPos(ctx.getSource().getPosition());
                   ColumnPos pos = new ColumnPos(blockPos.getX(), blockPos.getZ());

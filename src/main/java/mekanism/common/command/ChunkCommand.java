@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.MekanismPermissions;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
@@ -28,7 +29,7 @@ public class ChunkCommand {
     static ArgumentBuilder<CommandSourceStack, ?> register() {
         MinecraftForge.EVENT_BUS.register(ChunkCommand.class);
         return Commands.literal("chunk")
-              .requires(cs -> cs.hasPermission(2))
+              .requires(MekanismPermissions.COMMAND_CHUNK)
               .then(WatchCommand.register())
               .then(UnwatchCommand.register())
               .then(ClearCommand.register())
@@ -39,6 +40,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("watch")
+                  .requires(MekanismPermissions.COMMAND_CHUNK_WATCH)
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
                       return watch(source, new ChunkPos(new BlockPos(source.getPosition())));
@@ -60,6 +62,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("unwatch")
+                  .requires(MekanismPermissions.COMMAND_CHUNK_UNWATCH)
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
                       return unwatch(source, new ChunkPos(new BlockPos(source.getPosition())));
@@ -81,6 +84,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("clear")
+                  .requires(MekanismPermissions.COMMAND_CHUNK_CLEAR)
                   .executes(ctx -> {
                       int count = chunkWatchers.size();
                       chunkWatchers.clear();
@@ -94,6 +98,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("flush")
+                  .requires(MekanismPermissions.COMMAND_CHUNK_FLUSH)
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
                       ServerChunkCache sp = source.getLevel().getChunkSource();

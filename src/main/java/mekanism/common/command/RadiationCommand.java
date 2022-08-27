@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.MekanismPermissions;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
@@ -28,8 +29,9 @@ public class RadiationCommand {
 
     static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("radiation")
-              .requires(cs -> cs.hasPermission(2))
+              .requires(MekanismPermissions.COMMAND_RADIATION)
               .then(Commands.literal("add")
+                    .requires(MekanismPermissions.COMMAND_RADIATION_ADD)
                     .then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10_000))
                           .executes(ctx -> {
                               //Get position based on source
@@ -52,6 +54,7 @@ public class RadiationCommand {
                           )
                     )
               ).then(Commands.literal("get")
+                    .requires(MekanismPermissions.COMMAND_RADIATION_GET)
                     .executes(ctx -> {
                         //Get position based on source
                         CommandSourceStack source = ctx.getSource();
@@ -70,6 +73,7 @@ public class RadiationCommand {
                           )
                     )
               ).then(Commands.literal("heal")
+                    .requires(MekanismPermissions.COMMAND_RADIATION_HEAL)
                     .executes(ctx -> {
                         CommandSourceStack source = ctx.getSource();
                         source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
@@ -78,6 +82,7 @@ public class RadiationCommand {
                         });
                         return 0;
                     }).then(Commands.argument("targets", EntityArgument.entities())
+                          .requires(MekanismPermissions.COMMAND_RADIATION_HEAL_OTHERS)
                           .executes(ctx -> {
                               CommandSourceStack source = ctx.getSource();
                               for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
@@ -93,6 +98,7 @@ public class RadiationCommand {
                           })
                     )
               ).then(Commands.literal("removeAll")
+                    .requires(MekanismPermissions.COMMAND_RADIATION_REMOVE_ALL)
                     .executes(ctx -> {
                         RadiationManager.INSTANCE.clearSources();
                         ctx.getSource().sendSuccess(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translateColored(EnumColor.GRAY), true);

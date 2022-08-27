@@ -277,7 +277,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.comment("Block security/protection Settings").push(SECURITY_CATEGORY);
         allowProtection = CachedBooleanValue.wrap(this, builder.comment("Enable the security system for players to prevent others from accessing their machines. Does NOT affect Frequencies.")
               .define("allowProtection", true));
-        opsBypassRestrictions = CachedBooleanValue.wrap(this, builder.comment("Ops can bypass the block security restrictions if enabled.")
+        opsBypassRestrictions = CachedBooleanValue.wrap(this, builder.comment("If this is enabled then players with the 'mekanism.bypass_security' permission (default ops) can bypass the block and item security restrictions.")
               .define("opsBypassRestrictions", false));
         builder.pop();
 
