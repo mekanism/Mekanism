@@ -32,6 +32,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     public int maxBurnTime;
 
     private double lastEnvironmentLoss;
+    private double lastTransferLoss;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
     private FuelInventorySlot fuelSlot;
@@ -74,6 +75,12 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         }
         HeatTransfer loss = simulate();
         lastEnvironmentLoss = loss.environmentTransfer();
+        lastTransferLoss = loss.adjacentTransfer();
+    }
+
+    @ComputerMethod(nameOverride = "getTransferLoss")
+    public double getLastTransferLoss() {
+        return lastTransferLoss;
     }
 
     @ComputerMethod(nameOverride = "getEnvironmentalLoss")
@@ -100,6 +107,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> burnTime, value -> burnTime = value));
         container.track(SyncableInt.create(() -> maxBurnTime, value -> maxBurnTime = value));
+        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 }

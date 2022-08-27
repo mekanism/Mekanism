@@ -17,7 +17,6 @@ import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
-import mekanism.common.inventory.container.tile.MatrixStatsTabContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.inventory.container.type.MekanismContainerType;
@@ -30,7 +29,6 @@ import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.TileEntityChemicalTank;
-import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -52,6 +50,7 @@ import mekanism.common.tile.machine.TileEntityChemicalWasher;
 import mekanism.common.tile.machine.TileEntityCombiner;
 import mekanism.common.tile.machine.TileEntityCrusher;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityElectricPump;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.machine.TileEntityEnergizedSmelter;
@@ -171,7 +170,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityQIOComponent>> QIO_FREQUENCY_SELECT_TILE = CONTAINER_TYPES.registerEmpty("qio_frequency_select_tile", TileEntityQIOComponent.class);
 
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.registerEmpty("boiler_stats", TileEntityBoilerCasing.class);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.register("matrix_stats", TileEntityInductionCasing.class, MatrixStatsTabContainer::new);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.registerEmpty("matrix_stats", TileEntityInductionCasing.class);
 
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDigitalMiner>> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.register("digital_miner_config", TileEntityDigitalMiner.class, DigitalMinerConfigContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLogisticalSorter>> LOGISTICAL_SORTER = CONTAINER_TYPES.custom(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter.class).offset(0, 86).build();

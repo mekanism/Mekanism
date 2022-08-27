@@ -42,6 +42,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     private float soundScale = 1;
     private double lastEnvironmentLoss;
+    private double lastTransferLoss;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
@@ -93,11 +94,17 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         setActive(!toUse.isZero());
         HeatTransfer transfer = simulate();
         lastEnvironmentLoss = transfer.environmentTransfer();
+        lastTransferLoss = transfer.adjacentTransfer();
         float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
             sendUpdatePacket();
         }
+    }
+
+    @ComputerMethod(nameOverride = "getTransferLoss")
+    public double getLastTransferLoss() {
+        return lastTransferLoss;
     }
 
     @ComputerMethod(nameOverride = "getEnvironmentalLoss")
@@ -135,6 +142,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 

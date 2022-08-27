@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MatrixMultiblockData extends MultiblockData {
 
+    public static final String STATS_TAB = "stats";
+
     @NotNull
     private final MatrixEnergyContainer energyContainer;
 
@@ -29,15 +31,15 @@ public class MatrixMultiblockData extends MultiblockData {
     @ContainerSync(getter = "getEnergy")
     private FloatingLong clientEnergy = FloatingLong.ZERO;
 
-    @ContainerSync(tags = "stats", getter = "getTransferCap")
+    @ContainerSync(tags = STATS_TAB, getter = "getTransferCap")
     private FloatingLong clientMaxTransfer = FloatingLong.ZERO;
 
     @ContainerSync(getter = "getStorageCap")
     private FloatingLong clientMaxEnergy = FloatingLong.ZERO;
 
-    @ContainerSync(tags = "stats", getter = "getProviderCount")
+    @ContainerSync(tags = STATS_TAB, getter = "getProviderCount")
     private int clientProviders;
-    @ContainerSync(tags = "stats", getter = "getCellCount")
+    @ContainerSync(tags = STATS_TAB, getter = "getCellCount")
     private int clientCells;
 
     @NotNull

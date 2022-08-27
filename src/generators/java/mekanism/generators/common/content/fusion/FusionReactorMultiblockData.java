@@ -13,6 +13,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI;
+import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
@@ -54,9 +55,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 public class FusionReactorMultiblockData extends MultiblockData {
 
+    public static final String HEAT_TAB = "heat";
+    public static final String FUEL_TAB = "fuel";
+    public static final String STATS_TAB = "stats";
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
     private static final int MAX_WATER = 1_000 * FluidType.BUCKET_VOLUME;
     private static final long MAX_STEAM = MAX_WATER * 100L;
@@ -82,35 +87,41 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IEnergyContainer energyContainer;
     public IHeatCapacitor heatCapacitor;
 
-    @ContainerSync(tags = "heat")
+    @ContainerSync(tags = HEAT_TAB)
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"})
     public IExtendedFluidTank waterTank;
-    @ContainerSync(tags = "heat")
+    @ContainerSync(tags = HEAT_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
     public IGasTank steamTank;
 
     private double biomeAmbientTemp;
-    @ContainerSync(tags = "heat")
+    @ContainerSync(tags = HEAT_TAB)
     @SyntheticComputerMethod(getter = "getPlasmaTemperature")
     private double lastPlasmaTemperature;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getCaseTemperature")
     private double lastCaseTemperature;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
+    public double lastEnvironmentLoss;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getTransferLoss")
+    public double lastTransferLoss;
 
-    @ContainerSync(tags = "fuel")
+    @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded",
                                                                                         "getDeuteriumFilledPercentage"})
     public IGasTank deuteriumTank;
-    @ContainerSync(tags = "fuel")
+    @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded",
                                                                                         "getTritiumFilledPercentage"})
     public IGasTank tritiumTank;
-    @ContainerSync(tags = "fuel")
+    @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"})
     public IGasTank fuelTank;
-    @ContainerSync(tags = {"fuel", "heat"}, getter = "getInjectionRate", setter = "setInjectionRate")
+    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
-    @ContainerSync(tags = {"fuel", "heat"})
+    @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB})
     private long lastBurned;
 
     public double plasmaTemperature;
@@ -303,14 +314,27 @@ public class FusionReactorMultiblockData extends MultiblockData {
             heatCapacitor.handleHeat(-caseWaterHeat);
         }
 
-        for (ITileHeatHandler source : heatHandlers) {
-            source.simulate();
-        }
+        HeatTransfer heatTransfer = simulate();
+        lastEnvironmentLoss = heatTransfer.environmentTransfer();
+        lastTransferLoss = heatTransfer.adjacentTransfer();
 
         //Passive energy generation
         double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
         heatCapacitor.handleHeat(-caseAirHeat);
         energyContainer.insert(FloatingLong.create(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
+    }
+
+    @NotNull
+    @Override
+    public HeatTransfer simulate() {
+        double environmentTransfer = 0;
+        double adjacentTransfer = 0;
+        for (ITileHeatHandler source : heatHandlers) {
+            HeatTransfer heatTransfer = source.simulate();
+            adjacentTransfer += heatTransfer.adjacentTransfer();
+            environmentTransfer += heatTransfer.environmentTransfer();
+        }
+        return new HeatTransfer(adjacentTransfer, environmentTransfer);
     }
 
     public void setLastPlasmaTemp(double temp) {

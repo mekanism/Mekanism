@@ -7,6 +7,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,7 +37,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
         return Mekanism.matrixManager;
     }
 
-    public void addStatsTabContainerTrackers(MekanismContainer container) {
-        SyncMapper.INSTANCE.setup(container, getMultiblock().getClass(), this::getMultiblock, "stats");
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        if (container.getType() == MekanismContainerTypes.MATRIX_STATS.get()) {
+            SyncMapper.INSTANCE.setup(container, MatrixMultiblockData.class, this::getMultiblock, MatrixMultiblockData.STATS_TAB);
+        }
     }
 }
