@@ -404,7 +404,7 @@
   "boiler.mekanism.max_water": "最大储水量：%1$s mB",
   "boiler.mekanism.stats": "锅炉数据",
   "boiler.mekanism.steam_tank": "蒸汽箱",
-  "boiler.mekanism.thermoelectric_boiler": "热电锅炉",
+  "boiler.mekanism.thermoelectric_boiler": "热力锅炉",
   "boiler.mekanism.valve_mode_change": "阀门模式变更为：%1$s",
   "boiler.mekanism.valve_mode_input": "仅输入",
   "boiler.mekanism.valve_mode_output_coolant": "输出冷却剂",
