@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/fir_logs"
+      "tag": "byg:fir_logs"
     }
   },
   "mainOutput": {

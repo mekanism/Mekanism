@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/cika_logs"
+      "tag": "byg:cika_logs"
     }
   },
   "mainOutput": {

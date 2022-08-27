@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/witch_hazel_logs"
+      "tag": "byg:witch_hazel_logs"
     }
   },
   "mainOutput": {

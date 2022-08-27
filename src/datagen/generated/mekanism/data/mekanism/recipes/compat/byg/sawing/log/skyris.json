@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/skyris_logs"
+      "tag": "byg:skyris_logs"
     }
   },
   "mainOutput": {

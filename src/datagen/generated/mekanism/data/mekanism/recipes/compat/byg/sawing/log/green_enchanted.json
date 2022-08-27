@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/green_enchanted_logs"
+      "tag": "byg:green_enchanted_logs"
     }
   },
   "mainOutput": {

@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/holly_logs"
+      "tag": "byg:holly_logs"
     }
   },
   "mainOutput": {

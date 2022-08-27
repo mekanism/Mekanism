@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/ether_logs"
+      "tag": "byg:ether_logs"
     }
   },
   "mainOutput": {

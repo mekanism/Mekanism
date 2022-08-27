@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/aspen_logs"
+      "tag": "byg:aspen_logs"
     }
   },
   "mainOutput": {

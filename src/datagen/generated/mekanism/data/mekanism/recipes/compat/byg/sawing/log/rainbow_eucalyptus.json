@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/rainbow_eucalyptus_logs"
+      "tag": "byg:rainbow_eucalyptus_logs"
     }
   },
   "mainOutput": {
