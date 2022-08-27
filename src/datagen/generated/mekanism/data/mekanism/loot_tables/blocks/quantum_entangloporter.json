@@ -48,6 +48,11 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
+                },
+                {
+                  "op": "replace",
+                  "source": "controlType",
+                  "target": "mekData.controlType"
                 }
               ],
               "source": "block_entity"

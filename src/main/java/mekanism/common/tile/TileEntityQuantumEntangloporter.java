@@ -67,6 +67,7 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -109,7 +110,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         ejectorComponent = new TileComponentEjector(this);
         //Note: All eject types except for items is handled by the frequency
         //Only allow trying to eject if we have a frequency, because otherwise all our containers and sides will just be empty anyway
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM).setCanEject(type -> hasFrequency());
+        // also require that we can function before auto ejecting
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM).setCanEject(type -> hasFrequency() && MekanismUtils.canFunction(this));
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);

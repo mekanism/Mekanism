@@ -111,11 +111,15 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
+    public boolean isEjecting(ConfigInfo info, TransmissionType type) {
+        return info.isEjecting() && (canEject == null || canEject.test(type));
+    }
+
     public void tickServer() {
         for (Map.Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            if (info.isEjecting() && (canEject == null || canEject.test(type))) {
+            if (isEjecting(info, type)) {
                 if (type == TransmissionType.ITEM) {
                     if (tickDelay == 0) {
                         outputItems(info);
