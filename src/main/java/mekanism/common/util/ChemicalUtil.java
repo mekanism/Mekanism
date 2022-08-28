@@ -147,7 +147,7 @@ public class ChemicalUtil {
      * @return Copy of the input stack with the desired size
      */
     public static <STACK extends ChemicalStack<?>> STACK copyWithAmount(STACK stack, long amount) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || amount <= 0) {
             return getEmptyStack(stack);
         }
         STACK result = copy(stack);

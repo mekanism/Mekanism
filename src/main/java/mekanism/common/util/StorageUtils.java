@@ -343,20 +343,70 @@ public class StorageUtils {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 
-    public static void mergeTanks(IExtendedFluidTank tank, IExtendedFluidTank mergeTank) {
-        if (tank.isEmpty()) {
-            tank.setStack(mergeTank.getFluid());
-        } else if (!mergeTank.isEmpty() && tank.isFluidEqual(mergeTank.getFluid())) {
-            tank.growStack(mergeTank.getFluidAmount(), Action.EXECUTE);
+    public static void mergeFluidTanks(List<IExtendedFluidTank> tanks, List<IExtendedFluidTank> toAdd, List<FluidStack> rejects) {
+        if (tanks.size() != toAdd.size()) {
+            throw new IllegalArgumentException("Mismatched tank count");
+        }
+        for (int i = 0; i < toAdd.size(); i++) {
+            IExtendedFluidTank mergeTank = toAdd.get(i);
+            if (!mergeTank.isEmpty()) {
+                IExtendedFluidTank tank = tanks.get(i);
+                FluidStack mergeStack = mergeTank.getFluid();
+                if (tank.isEmpty()) {
+                    int capacity = tank.getCapacity();
+                    if (mergeStack.getAmount() <= capacity) {
+                        tank.setStack(mergeStack);
+                    } else {
+                        tank.setStack(new FluidStack(mergeStack, capacity));
+                        int remaining = mergeStack.getAmount() - capacity;
+                        if (remaining > 0) {
+                            rejects.add(new FluidStack(mergeStack, remaining));
+                        }
+                    }
+                } else if (tank.isFluidEqual(mergeStack)) {
+                    int amount = tank.growStack(mergeStack.getAmount(), Action.EXECUTE);
+                    int remaining = mergeStack.getAmount() - amount;
+                    if (remaining > 0) {
+                        rejects.add(new FluidStack(mergeStack, remaining));
+                    }
+                } else {
+                    rejects.add(mergeStack);
+                }
+            }
         }
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void mergeTanks(IChemicalTank<CHEMICAL, STACK> tank,
-          IChemicalTank<CHEMICAL, STACK> mergeTank) {
-        if (tank.isEmpty()) {
-            tank.setStack(mergeTank.getStack());
-        } else if (!mergeTank.isEmpty() && tank.isTypeEqual(mergeTank.getStack())) {
-            tank.growStack(mergeTank.getStored(), Action.EXECUTE);
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void mergeTanks(
+          List<TANK> tanks, List<TANK> toAdd, List<STACK> rejects) {
+        if (tanks.size() != toAdd.size()) {
+            throw new IllegalArgumentException("Mismatched tank count");
+        }
+        for (int i = 0; i < toAdd.size(); i++) {
+            TANK mergeTank = toAdd.get(i);
+            if (!mergeTank.isEmpty()) {
+                TANK tank = tanks.get(i);
+                STACK mergeStack = mergeTank.getStack();
+                if (tank.isEmpty()) {
+                    long capacity = tank.getCapacity();
+                    if (mergeStack.getAmount() <= capacity) {
+                        tank.setStack(mergeStack);
+                    } else {
+                        tank.setStack(ChemicalUtil.copyWithAmount(mergeStack, capacity));
+                        long remaining = mergeStack.getAmount() - capacity;
+                        if (remaining > 0) {
+                            rejects.add(ChemicalUtil.copyWithAmount(mergeStack, remaining));
+                        }
+                    }
+                } else if (tank.isTypeEqual(mergeStack)) {
+                    long amount = tank.growStack(mergeStack.getAmount(), Action.EXECUTE);
+                    long remaining = mergeStack.getAmount() - amount;
+                    if (remaining > 0) {
+                        rejects.add(ChemicalUtil.copyWithAmount(mergeStack, remaining));
+                    }
+                } else {
+                    rejects.add(mergeStack);
+                }
+            }
         }
     }
 

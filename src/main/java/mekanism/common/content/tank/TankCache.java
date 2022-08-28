@@ -1,20 +1,18 @@
 package mekanism.common.content.tank;
 
-import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class TankCache extends MultiblockCache<TankMultiblockData> {
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     @Override
-    public void merge(MultiblockCache<TankMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
-        super.merge(mergeCache, rejectedItems);
+    public void merge(MultiblockCache<TankMultiblockData> mergeCache, RejectContents rejectContents) {
+        super.merge(mergeCache, rejectContents);
         editMode = ((TankCache) mergeCache).editMode;
     }
 

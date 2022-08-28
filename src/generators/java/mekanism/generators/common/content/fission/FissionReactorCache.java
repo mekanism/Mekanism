@@ -1,12 +1,10 @@
 package mekanism.generators.common.content.fission;
 
-import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
@@ -27,8 +25,8 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void merge(MultiblockCache<FissionReactorMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
-        super.merge(mergeCache, rejectedItems);
+    public void merge(MultiblockCache<FissionReactorMultiblockData> mergeCache, RejectContents rejectContents) {
+        super.merge(mergeCache, rejectContents);
         reactorDamage = Math.max(reactorDamage, ((FissionReactorCache) mergeCache).reactorDamage);
         rateLimit = Math.max(rateLimit, ((FissionReactorCache) mergeCache).rateLimit);
         burnRemaining += ((FissionReactorCache) mergeCache).burnRemaining;

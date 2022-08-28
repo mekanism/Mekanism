@@ -1,20 +1,18 @@
 package mekanism.generators.common.content.turbine;
 
-import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
 
     private GasMode dumpMode = GasMode.IDLE;
 
     @Override
-    public void merge(MultiblockCache<TurbineMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
-        super.merge(mergeCache, rejectedItems);
+    public void merge(MultiblockCache<TurbineMultiblockData> mergeCache, RejectContents rejectContents) {
+        super.merge(mergeCache, rejectContents);
         dumpMode = ((TurbineCache) mergeCache).dumpMode;
     }
 

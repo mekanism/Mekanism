@@ -1,10 +1,8 @@
 package mekanism.generators.common.content.fusion;
 
-import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockData> {
 
@@ -22,8 +20,8 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     }
 
     @Override
-    public void merge(MultiblockCache<FusionReactorMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
-        super.merge(mergeCache, rejectedItems);
+    public void merge(MultiblockCache<FusionReactorMultiblockData> mergeCache, RejectContents rejectContents) {
+        super.merge(mergeCache, rejectContents);
         plasmaTemperature = Math.max(plasmaTemperature, ((FusionReactorCache) mergeCache).plasmaTemperature);
         injectionRate = Math.max(injectionRate, ((FusionReactorCache) mergeCache).injectionRate);
         burning |= ((FusionReactorCache) mergeCache).burning;
