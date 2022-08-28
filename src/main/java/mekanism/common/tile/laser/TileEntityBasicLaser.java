@@ -46,6 +46,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -282,10 +283,18 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                     dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
                                     BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
                                     if (!MinecraftForge.EVENT_BUS.post(event)) {
-                                        handleBreakBlock(hitState, hitPos);
-                                        hitState.onRemove(level, hitPos, Blocks.AIR.defaultBlockState(), false);
-                                        level.removeBlock(hitPos, false);
-                                        level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(hitState));
+                                        if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, result.getDirection())) {
+                                            //Convert TNT that can be lit on fire into a tnt entity
+                                            //Note: We don't mark the fake player as the igniter as then when the tnt explodes if it hits a player
+                                            // there will be a crash as our fake player's level will be null
+                                            hitState.onCaughtFire(level, hitPos, result.getDirection(), null);
+                                            level.removeBlock(hitPos, false);
+                                        } else {
+                                            handleBreakBlock(hitState, hitPos);
+                                            hitState.onRemove(level, hitPos, Blocks.AIR.defaultBlockState(), false);
+                                            level.removeBlock(hitPos, false);
+                                            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(hitState));
+                                        }
                                     }
                                     return null;
                                 });
