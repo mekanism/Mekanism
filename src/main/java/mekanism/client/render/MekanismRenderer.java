@@ -52,6 +52,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -166,19 +167,19 @@ public class MekanismRenderer {
     }
 
     public static float getRed(int color) {
-        return (color >> 16 & 0xFF) / 255.0F;
+        return FastColor.ARGB32.red(color) / 255.0F;
     }
 
     public static float getGreen(int color) {
-        return (color >> 8 & 0xFF) / 255.0F;
+        return FastColor.ARGB32.green(color) / 255.0F;
     }
 
     public static float getBlue(int color) {
-        return (color & 0xFF) / 255.0F;
+        return FastColor.ARGB32.blue(color) / 255.0F;
     }
 
     public static float getAlpha(int color) {
-        return (color >> 24 & 0xFF) / 255.0F;
+        return FastColor.ARGB32.alpha(color) / 255.0F;
     }
 
     public static void color(int color) {
@@ -241,7 +242,7 @@ public class MekanismRenderer {
         int color = getColorARGB(fluidStack);
         if (MekanismUtils.lighterThanAirGas(fluidStack)) {
             //TODO: We probably want to factor in the fluid's alpha value somehow
-            return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+            return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), Math.min(1, fluidScale + 0.2F));
         }
         return color;
     }
@@ -255,7 +256,7 @@ public class MekanismRenderer {
             return -1;
         }
         int color = chemical.getTint();
-        return getColorARGB(getRed(color), getGreen(color), getBlue(color), gaseous ? Math.min(1, scale + 0.2F) : 1);
+        return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), gaseous ? Math.min(1, scale + 0.2F) : 1);
     }
 
     public static int getColorARGB(float red, float green, float blue, float alpha) {
@@ -268,11 +269,7 @@ public class MekanismRenderer {
         } else if (alpha > 1) {
             alpha = 1;
         }
-        int argb = (int) (255 * alpha) << 24;
-        argb |= red << 16;
-        argb |= green << 8;
-        argb |= blue;
-        return argb;
+        return FastColor.ARGB32.color((int) (255 * alpha), red, green, blue);
     }
 
     public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {
@@ -285,10 +282,10 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(PoseStack matrix, int x, int y, int width, int height, int color) {
-        float r = getRed(color);
-        float g = getGreen(color);
-        float b = getBlue(color);
-        float a = getAlpha(color);
+        int r = FastColor.ARGB32.red(color);
+        int g = FastColor.ARGB32.green(color);
+        int b = FastColor.ARGB32.blue(color);
+        int a = FastColor.ARGB32.alpha(color);
         RenderSystem.disableDepthTest();
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();

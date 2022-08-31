@@ -2,6 +2,7 @@ package mekanism.client.render.lib;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import java.util.function.Consumer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.LightTexture;
@@ -116,10 +117,9 @@ public class Quad {
 
     public Quad flip() {
         Vertex[] flipped = new Vertex[4];
-        flipped[3] = vertices[0].copy().normal(vertices[0].getNormal().scale(-1));
-        flipped[2] = vertices[1].copy().normal(vertices[1].getNormal().scale(-1));
-        flipped[1] = vertices[2].copy().normal(vertices[2].getNormal().scale(-1));
-        flipped[0] = vertices[3].copy().normal(vertices[3].getNormal().scale(-1));
+        for (int i = 0; i < 4; i++) {
+            flipped[i] = vertices[i].flip();
+        }
         return new Quad(sprite, side.getOpposite(), flipped, tintIndex, shade);
     }
 
@@ -138,7 +138,7 @@ public class Quad {
         @NotNull
         @Override
         public VertexConsumer color(int red, int green, int blue, int alpha) {
-            vertex.color(Color.rgbai(red, green, blue, alpha));
+            vertex.color(red, green, blue, alpha);
             return this;
         }
 
@@ -166,7 +166,7 @@ public class Quad {
         @NotNull
         @Override
         public VertexConsumer normal(float x, float y, float z) {
-            vertex.normal(new Vec3(x, y, z));
+            vertex.normal(x, y, z);
             return this;
         }
 
@@ -283,7 +283,7 @@ public class Quad {
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
-            Vec3 normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize();
+            Vector3f normal = new Vector3f(vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize());
             vertices[0] = Vertex.create(vec1, normal, color, texture, minU, minV).light(lightU, lightV);
             vertices[1] = Vertex.create(vec2, normal, color, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, color, texture, maxU, maxV).light(lightU, lightV);

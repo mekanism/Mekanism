@@ -158,7 +158,7 @@ public class ModelWindGenerator extends MekanismJavaModel {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, double angle, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, double angle, int red, int green, int blue, int alpha) {
         float baseRotation = getAbsoluteRotation(angle);
         setRotation(blade1a, 0F, 0F, baseRotation);
         setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);

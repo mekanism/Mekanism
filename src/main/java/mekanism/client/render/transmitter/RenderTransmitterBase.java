@@ -3,6 +3,7 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,7 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -45,7 +47,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
           .withUseAmbientOcclusion(false)
           .build(Mekanism.rl("transmitter_contents"));
     private static final Map<ContentsModelData, List<BakedQuad>> contentModelCache = new Object2ObjectOpenHashMap<>();
-    private static final Vec3 NORMAL = new Vec3(1, 1, 1).normalize();
+    private static final Vector3f NORMAL = Util.make(new Vector3f(1, 1, 1), Vector3f::normalize);
 
     public static void onStitch() {
         contentModelCache.clear();

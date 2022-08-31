@@ -227,7 +227,7 @@ public class ModelSolarNeutronActivator extends MekanismJavaModel {
         laserBeamToggle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, int red, int green, int blue, int alpha) {
         renderPartsAsWireFrame(parts, matrix, vertexBuilder, red, green, blue, alpha);
     }
 }

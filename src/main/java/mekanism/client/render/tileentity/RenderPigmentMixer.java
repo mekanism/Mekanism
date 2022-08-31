@@ -73,7 +73,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
             if (vertices.isEmpty()) {
                 for (Quad quad : QuadUtils.unpack(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random))) {

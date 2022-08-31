@@ -36,6 +36,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float size = (float) Math.pow(2 * alpha, 2);
         float f5 = 5 / 32F;
         float scale = 0.05625F * (0.8F + size);
+        int alphaColor = (int) (actualAlpha * 255);
         matrix.pushPose();
         matrix.mulPose(Vector3f.YP.rotationDegrees((flame.yRotO + (flame.getYRot() - flame.yRotO) * partialTick) - 90F));
         matrix.mulPose(Vector3f.ZP.rotationDegrees(flame.xRotO + (flame.getXRot() - flame.xRotO) * partialTick));
@@ -47,10 +48,10 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
             matrix.mulPose(Vector3f.XP.rotationDegrees(90));
             builder.normal(matrix.last().normal(), 0, 0, scale);
             Matrix4f matrix4f = matrix.last().pose();
-            builder.vertex(matrix4f, -8, -2, 0).color(1, 1, 1, actualAlpha).uv(0, 0).endVertex();
-            builder.vertex(matrix4f, 8, -2, 0).color(1, 1, 1, actualAlpha).uv(0.5F, 0).endVertex();
-            builder.vertex(matrix4f, 8, 2, 0).color(1, 1, 1, actualAlpha).uv(0.5F, f5).endVertex();
-            builder.vertex(matrix4f, -8, 2, 0).color(1, 1, 1, actualAlpha).uv(0, f5).endVertex();
+            builder.vertex(matrix4f, -8, -2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0, 0).endVertex();
+            builder.vertex(matrix4f, 8, -2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0.5F, 0).endVertex();
+            builder.vertex(matrix4f, 8, 2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0.5F, f5).endVertex();
+            builder.vertex(matrix4f, -8, 2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0, f5).endVertex();
         }
         matrix.popPose();
     }

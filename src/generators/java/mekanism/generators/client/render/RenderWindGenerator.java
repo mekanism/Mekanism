@@ -38,7 +38,7 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityWindGenerator windGenerator) {
             renderTranslated(windGenerator, partialTick, matrix, (poseStack, angle) -> model.renderWireFrame(poseStack, buffer, angle, red, green, blue, alpha));
         }

@@ -1,6 +1,7 @@
 package mekanism.client.render.lib;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -9,9 +10,10 @@ import net.minecraft.world.phys.Vec3;
 public class Vertex {
 
     private Vec3 pos;
-    private Vec3 normal;
+    private Vector3f normal;
 
-    private Color color;
+    //Store int representations of the colors so that we don't go between ints and doubles when unpacking and repacking a vertex
+    private int red, green, blue, alpha;
 
     // 0 to 16
     private float texU, texV;
@@ -23,10 +25,17 @@ public class Vertex {
     public Vertex() {
     }
 
-    public Vertex(Vec3 pos, Vec3 normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
+    public Vertex(Vec3 pos, Vector3f normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
+        this(pos, normal, color.r(), color.g(), color.b(), color.a(), texU, texV, overlayU, overlayV, lightU, lightV);
+    }
+
+    public Vertex(Vec3 pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
         this.pos = pos;
         this.normal = normal;
-        this.color = color;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.alpha = alpha;
         this.texU = texU;
         this.texV = texV;
         this.overlayU = overlayU;
@@ -35,20 +44,20 @@ public class Vertex {
         this.lightV = lightV;
     }
 
-    public static Vertex create(Vec3 pos, Vec3 normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int overlayU, int overlayV, int lightU,
+    public static Vertex create(Vec3 pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int overlayU, int overlayV, int lightU,
           int lightV) {
         return new Vertex(pos, normal, color, sprite.getU(texU), sprite.getV(texV), overlayU, overlayV, lightU, lightV);
     }
 
-    public static Vertex create(Vec3 pos, Vec3 normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int lightU, int lightV) {
+    public static Vertex create(Vec3 pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int lightU, int lightV) {
         return create(pos, normal, color, sprite, texU, texV, OverlayTexture.NO_WHITE_U, OverlayTexture.WHITE_OVERLAY_V, lightU, lightV);
     }
 
-    public static Vertex create(Vec3 pos, Vec3 normal, Color color, TextureAtlasSprite sprite, float u, float v) {
+    public static Vertex create(Vec3 pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float u, float v) {
         return create(pos, normal, color, sprite, u, v, 0, 0);
     }
 
-    public static Vertex create(Vec3 pos, Vec3 normal, TextureAtlasSprite sprite, float u, float v) {
+    public static Vertex create(Vec3 pos, Vector3f normal, TextureAtlasSprite sprite, float u, float v) {
         return create(pos, normal, Color.WHITE, sprite, u, v);
     }
 
@@ -56,12 +65,12 @@ public class Vertex {
         return pos;
     }
 
-    public Vec3 getNormal() {
+    public Vector3f getNormal() {
         return normal;
     }
 
-    public Color getColor() {
-        return color;
+    public Vec3 getNormalD() {
+        return new Vec3(getNormal());
     }
 
     public float getTexU() {
@@ -89,7 +98,14 @@ public class Vertex {
     }
 
     public Vertex color(Color color) {
-        this.color = color;
+        return color(color.r(), color.g(), color.b(), color.a());
+    }
+
+    public Vertex color(int red, int green, int blue, int alpha) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.alpha = alpha;
         return this;
     }
 
@@ -98,9 +114,17 @@ public class Vertex {
         return this;
     }
 
-    public Vertex normal(Vec3 normal) {
+    public Vertex normal(float x, float y, float z) {
+        return normal(new Vector3f(x, y, z));
+    }
+
+    public Vertex normal(Vector3f normal) {
         this.normal = normal;
         return this;
+    }
+
+    public Vertex normal(Vec3 normal) {
+        return normal(new Vector3f(normal));
     }
 
     public Vertex texRaw(float u, float v) {
@@ -125,17 +149,21 @@ public class Vertex {
         return lightRaw(u << 4, v << 4);
     }
 
+    public Vertex flip() {
+        return copy().normal(-normal.x(), -normal.y(), -normal.z());
+    }
+
     public Vertex copy() {
-        return new Vertex(pos, normal, color, texU, texV, overlayU, overlayV, lightU, lightV);
+        return new Vertex(pos, normal, red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV);
     }
 
     public void write(VertexConsumer consumer) {
         consumer.vertex(pos.x, pos.y, pos.z);
-        consumer.color(color.rf(), color.gf(), color.bf(), color.af());
+        consumer.color(red, green, blue, alpha);
         consumer.uv(texU, texV);
         consumer.overlayCoords(overlayU, overlayV);
         consumer.uv2(lightU, lightV);
-        consumer.normal((float) normal.x, (float) normal.y, (float) normal.z);
+        consumer.normal(normal.x(), normal.y(), normal.z());
         consumer.endVertex();
     }
 }

@@ -230,7 +230,7 @@ public class ModelSeismicVibrator extends MekanismJavaModel {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderWireFrame(PoseStack poseStack, VertexConsumer vertexConsumer, float piston, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(PoseStack poseStack, VertexConsumer vertexConsumer, float piston, int red, int green, int blue, int alpha) {
         shaft1.y = 6 - (piston * 12);
         plate2.y = 21 - (piston * 12);
         plate3.y = 22 - (piston * 12);

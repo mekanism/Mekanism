@@ -152,10 +152,10 @@ public class GuiColorWindow extends GuiWindow {
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         Matrix4f matrix4f = matrix.last().pose();
         buffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        buffer.vertex(matrix4f, x, y + height, 0).color(bl.rf(), bl.gf(), bl.bf(), bl.af()).endVertex();
-        buffer.vertex(matrix4f, x + width, y + height, 0).color(br.rf(), br.gf(), br.bf(), br.af()).endVertex();
-        buffer.vertex(matrix4f, x + width, y, 0).color(tr.rf(), tr.gf(), tr.bf(), tr.af()).endVertex();
-        buffer.vertex(matrix4f, x, y, 0).color(tl.rf(), tl.gf(), tl.bf(), tl.af()).endVertex();
+        buffer.vertex(matrix4f, x, y + height, 0).color(bl.r(), bl.g(), bl.b(), bl.a()).endVertex();
+        buffer.vertex(matrix4f, x + width, y + height, 0).color(br.r(), br.g(), br.b(), br.a()).endVertex();
+        buffer.vertex(matrix4f, x + width, y, 0).color(tr.r(), tr.g(), tr.b(), tr.a()).endVertex();
+        buffer.vertex(matrix4f, x, y, 0).color(tl.r(), tl.g(), tl.b(), tl.a()).endVertex();
         BufferUploader.drawWithShader(buffer.end());
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();

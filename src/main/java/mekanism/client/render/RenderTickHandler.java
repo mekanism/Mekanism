@@ -3,6 +3,7 @@ package mekanism.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -449,7 +450,8 @@ public class RenderTickHandler {
                         matrix.pushPose();
                         Vec3 viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0, 0, 0, 0.4F);
+                        //0.4 Alpha
+                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0xFF, 0xFF, 0xFF, 0x66);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -497,7 +499,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, float red, float green, float blue, float alpha) {
+    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, int red, int green, int blue, int alpha) {
         List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
             //TODO: Eventually we may want to add support for Model data and maybe render type
@@ -512,27 +514,27 @@ public class RenderTickHandler {
         renderVertexWireFrame(allVertices, buffer, matrix, red, green, blue, alpha);
     }
 
-    public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, float red, float green, float blue, float alpha) {
+    public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, int red, int green, int blue, int alpha) {
         for (Vertex[] vertices : allVertices) {
             Vector4f vertex = getVertex(matrix, vertices[0]);
-            Vec3 normal = vertices[0].getNormal();
+            Vector3f normal = vertices[0].getNormal();
             Vector4f vertex2 = getVertex(matrix, vertices[1]);
-            Vec3 normal2 = vertices[1].getNormal();
+            Vector3f normal2 = vertices[1].getNormal();
             Vector4f vertex3 = getVertex(matrix, vertices[2]);
-            Vec3 normal3 = vertices[2].getNormal();
+            Vector3f normal3 = vertices[2].getNormal();
             Vector4f vertex4 = getVertex(matrix, vertices[3]);
-            Vec3 normal4 = vertices[3].getNormal();
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).endVertex();
+            Vector3f normal4 = vertices[3].getNormal();
+            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
+            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
 
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).endVertex();
+            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
+            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
 
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).endVertex();
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).endVertex();
+            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
+            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
 
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).endVertex();
+            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
+            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
         }
     }
 
@@ -601,6 +603,6 @@ public class RenderTickHandler {
     @FunctionalInterface
     private interface WireFrameRenderer {
 
-        void render(VertexConsumer buffer, PoseStack matrix, BlockState state, float red, float green, float blue, float alpha);
+        void render(VertexConsumer buffer, PoseStack matrix, BlockState state, int red, int green, int blue, int alpha);
     }
 }

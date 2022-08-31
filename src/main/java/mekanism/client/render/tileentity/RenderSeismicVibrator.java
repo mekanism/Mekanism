@@ -37,7 +37,7 @@ public class RenderSeismicVibrator extends ModelTileEntityRenderer<TileEntitySei
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntitySeismicVibrator vibrator) {
             renderTranslated(vibrator, partialTick, matrix, (poseStack, actualRate) -> model.renderWireFrame(poseStack, buffer, actualRate, red, green, blue, alpha));
         }

@@ -243,22 +243,22 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float f6 = this.getV1();
             buffer.vertex(matrix, vectors[0].x(), vectors[0].y(), vectors[0].z())
                   .uv(f8, f6)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[1].x(), vectors[1].y(), vectors[1].z())
                   .uv(f8, f5)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[2].x(), vectors[2].y(), vectors[2].z())
                   .uv(f7, f5)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[3].x(), vectors[3].y(), vectors[3].z())
                   .uv(f7, f6)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
         }

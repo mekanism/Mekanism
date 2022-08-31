@@ -59,14 +59,13 @@ public abstract class MekanismJavaModel extends Model {
         return LayerDefinition.create(meshdefinition, textureWidth, textureHeight);
     }
 
-    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, float red, float green,
-          float blue, float alpha) {
+    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int red, int green, int blue, int alpha) {
         for (ModelPart part : parts) {
             renderWireFrame(part, poseStack, vertexConsumer, red, green, blue, alpha);
         }
     }
 
-    public static void renderWireFrame(ModelPart part, PoseStack matrix, VertexConsumer vertexConsumer, float red, float green, float blue, float alpha) {
+    public static void renderWireFrame(ModelPart part, PoseStack matrix, VertexConsumer vertexConsumer, int red, int green, int blue, int alpha) {
         if (part.visible) {
             part.visit(matrix, (pose, name, cubeIndex, cube) -> {
                 Matrix4f matrix4f = pose.pose();

@@ -38,7 +38,7 @@ public class RenderSolarNeutronActivator extends ModelTileEntityRenderer<TileEnt
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntitySolarNeutronActivator sna) {
             renderTranslated(sna, matrix, poseStack -> model.renderWireFrame(poseStack, buffer, red, green, blue, alpha));
         }

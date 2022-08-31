@@ -179,7 +179,7 @@ public interface QuadTransformation {
         public void transform(Quad quad) {
             quad.vertexTransform(v -> {
                 v.pos(round(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
-                v.normal(round(quaternion.rotate(v.getNormal()).normalize()));
+                v.normal(round(quaternion.rotate(v.getNormalD()).normalize()));
             });
         }
 
