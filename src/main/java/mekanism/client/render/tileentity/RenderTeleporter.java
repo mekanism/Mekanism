@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
@@ -38,7 +39,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     @Override
     protected void render(TileEntityTeleporter tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-              MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
+              MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
     }
 
     @Override
@@ -52,8 +53,10 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         }
         Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
         return cache.computeIfAbsent(direction, dir -> {
+            Axis renderAxis = dir.getAxis().isHorizontal() ? Axis.Y : rotated ? Axis.X : Axis.Z;
             Model3D model = new Model3D()
-                  .setTexture(MekanismRenderer.teleporterPortal);
+                  .setTexture(MekanismRenderer.teleporterPortal)
+                  .setSideRender(side -> side.getAxis() == renderAxis);
             int min = dir.getAxisDirection() == AxisDirection.POSITIVE ? 1 : -2;
             int max = dir.getAxisDirection() == AxisDirection.POSITIVE ? 3 : 0;
             return switch (dir.getAxis()) {

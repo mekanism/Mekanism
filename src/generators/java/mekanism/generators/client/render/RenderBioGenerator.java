@@ -44,7 +44,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
         MekanismRenderer.renderObject(getModel(fluid, tile.getDirection(), fluidScale), matrix,
               renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), LightTexture.FULL_BRIGHT, overlayLight,
-              FaceDisplay.FRONT);
+              FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
         matrix.popPose();
     }
 
@@ -61,9 +61,11 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     private Model3D getModel(FluidStack fluid, Direction side, float fluidScale) {
         return fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>())
               .computeIfAbsent(ModelRenderer.getStage(fluid, stages, fluidScale), stage -> {
+                  Direction opposite = side.getOpposite();
                   Model3D model = new Model3D()
                         .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
-                        .yBounds(0.4385F, 0.4385F + 0.4375F * (stage / (float) stages));
+                        .yBounds(0.4385F, 0.4385F + 0.4375F * (stage / (float) stages))
+                        .setSideRender(dir -> dir == Direction.UP || dir == opposite);
                   return switch (side) {
                       case NORTH -> model
                             .xBounds(0.188F, 0.821F)

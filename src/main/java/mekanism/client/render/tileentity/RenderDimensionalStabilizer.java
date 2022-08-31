@@ -15,6 +15,7 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -96,6 +97,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
         Model3D model = RenderDimensionalStabilizer.model.get();
         VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+        Camera camera = getCamera();
         for (RenderPiece piece : calculateRenderPieces(allRenderSides)) {
             //Set the visibility of the sides that are going to render for this piece
             model.setSideRender(Direction.NORTH, piece.renderNorth)
@@ -135,7 +137,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             // we want to be able to see all faces easily
             FaceDisplay faceDisplay = isInsideBounds(startChunk.getMinBlockX(), Double.NEGATIVE_INFINITY, startChunk.getMinBlockZ(),
                   endChunk.getMaxBlockX() + 1, Double.POSITIVE_INFINITY, endChunk.getMaxBlockZ() + 1) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-            MekanismRenderer.renderObject(model, matrix, buffer, colors, LightTexture.FULL_BRIGHT, overlayLight, faceDisplay);
+            MekanismRenderer.renderObject(model, matrix, buffer, colors, LightTexture.FULL_BRIGHT, overlayLight, faceDisplay, camera);
             matrix.popPose();
         }
     }

@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +64,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             FluidStack paste = tile.fluidTank.getFluid();
             float fluidScale = paste.getAmount() / (float) tile.fluidTank.getCapacity();
             MekanismRenderer.renderObject(getPasteModel(paste, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                  MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT);
+                  MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
         }
         boolean active = tile.getActive();
         matrix.pushPose();
@@ -127,6 +128,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
     private Model3D getPasteModel(FluidStack paste, float fluidScale) {
         return cachedModels.computeIfAbsent(ModelRenderer.getStage(paste, stages, fluidScale), stage -> new Model3D()
               .setTexture(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL))
+              .setSideRender(Direction.DOWN, false)
+              .setSideRender(Direction.UP, stage < stages)
               .xBounds(0.001F, 0.999F)
               .yBounds(0.313F, 0.313F + 0.624F * (stage / (float) stages))
               .zBounds(0.001F, 0.999F)

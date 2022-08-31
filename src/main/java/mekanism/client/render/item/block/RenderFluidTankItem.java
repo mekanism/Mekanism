@@ -37,8 +37,7 @@ public class RenderFluidTankItem extends MekanismISTER {
             float fluidScale = (float) fluid.getAmount() / tier.getStorage();
             if (fluidScale > 0) {
                 MekanismRenderer.renderObject(RenderFluidTank.getFluidModel(fluid, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT,
-                      transformType != TransformType.GUI);
+                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera());
             }
         }
         matrix.pushPose();

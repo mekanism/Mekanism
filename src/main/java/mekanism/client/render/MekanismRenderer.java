@@ -14,7 +14,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
@@ -27,6 +26,7 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.FluidRenderData;
+import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -44,6 +44,7 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -52,6 +53,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -114,34 +116,45 @@ public class MekanismRenderer {
     }
 
     public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
-          FaceDisplay faceDisplay) {
-        renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, true);
+          FaceDisplay faceDisplay, Camera camera, BlockPos renderPos) {
+        if (object != null) {
+            renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, camera, Vec3.atLowerCornerOf(renderPos));
+        }
     }
 
     public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
-          FaceDisplay faceDisplay, boolean fakeDisableDiffuse) {
+          FaceDisplay faceDisplay, Camera camera) {
+        renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, camera, (Vec3) null);
+    }
+
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
+          FaceDisplay faceDisplay, Camera camera, @Nullable Vec3 renderPos) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, fakeDisableDiffuse);
+            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, camera, renderPos);
         }
     }
 
     public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
-          FaceDisplay faceDisplay) {
+          FaceDisplay faceDisplay, Camera camera) {
+        renderObject(object, matrix, buffer, colors, light, overlay, faceDisplay, camera, null);
+    }
+
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
+          FaceDisplay faceDisplay, Camera camera, @Nullable Vec3 renderPos) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, true);
+            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, camera, renderPos);
         }
     }
 
-    public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay,
-          BooleanSupplier inMultiblock) {
-        if (!valves.isEmpty()) {
-            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
-            // if we aren't in the multiblock though we can just get away with only rendering the front faces
-            FaceDisplay faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
-            for (ValveData valveData : valves) {
+    public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, float fluidHeight, BlockPos pos, int glow,
+          int overlay, FaceDisplay faceDisplay, Camera camera) {
+        for (ValveData valveData : valves) {
+            ValveRenderData valveRenderData = ValveRenderData.get(data, valveData);
+            Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, fluidHeight);
+            if (valveModel != null) {
                 matrix.pushPose();
                 matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-                renderObject(ModelRenderer.getValveModel(data, valveData), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
+                renderObject(valveModel, matrix, buffer, valveRenderData.getColorARGB(), glow, overlay, faceDisplay, camera, valveData.location);
                 matrix.popPose();
             }
         }
@@ -491,7 +504,7 @@ public class MekanismRenderer {
             return setTextures(still, still, flowing, flowing, flowing, flowing);
         }
 
-        public Model3D setTexture(Direction side, SpriteInfo spriteInfo) {
+        public Model3D setTexture(Direction side, @Nullable SpriteInfo spriteInfo) {
             textures[side.ordinal()] = spriteInfo;
             return this;
         }
@@ -516,6 +529,14 @@ public class MekanismRenderer {
         }
 
         public record SpriteInfo(TextureAtlasSprite sprite, int size) {
+
+            public float getU(float u) {
+                return sprite.getU(u * size);
+            }
+
+            public float getV(float v) {
+                return sprite.getV(v * size);
+            }
         }
 
         public interface ModelBoundsSetter {

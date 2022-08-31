@@ -69,35 +69,37 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
 
     protected abstract String getProfilerSection();
 
-    protected boolean isInsideBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return isInsideBounds(context.getBlockEntityRenderDispatcher().camera, minX, minY, minZ, maxX, maxY, maxZ);
+    protected Camera getCamera() {
+        return context.getBlockEntityRenderDispatcher().camera;
     }
 
-    protected boolean isInsideBounds(Camera camera, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    protected final boolean isInsideBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return isInsideBounds(getCamera(), minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    protected final boolean isInsideBounds(Camera camera, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         Vec3 projectedView = camera.getPosition();
         return minX <= projectedView.x && projectedView.x <= maxX &&
                minY <= projectedView.y && projectedView.y <= maxY &&
                minZ <= projectedView.z && projectedView.z <= maxZ;
     }
 
-    protected FaceDisplay getFaceDisplay(RenderData data, Model3D model) {
-        return getFaceDisplay(context.getBlockEntityRenderDispatcher().camera, data, model);
-    }
-
-    protected FaceDisplay getFaceDisplay(Camera camera, RenderData data, Model3D model) {
+    protected final FaceDisplay getFaceDisplay(Camera camera, RenderData data, Model3D model) {
         return isInsideBounds(camera, data.location.getX(), data.location.getY(), data.location.getZ(),
               data.location.getX() + data.length, data.location.getY() + ModelRenderer.getActualHeight(model), data.location.getZ() + data.width)
                ? FaceDisplay.BACK : FaceDisplay.FRONT;
     }
 
     protected void renderObject(RenderData data, Set<ValveData> valves, BlockPos rendererPos, @NotNull PoseStack matrix, VertexConsumer buffer, int overlay, float scale) {
-        int glow = renderObject(data, rendererPos, matrix, buffer, overlay, scale);
-        if (data instanceof FluidRenderData fluidRenderData) {
+        Model3D model = ModelRenderer.getModel(data, scale);
+        int glow = renderObject(data, rendererPos, model, matrix, buffer, overlay, scale);
+        if (data instanceof FluidRenderData fluidRenderData && !valves.isEmpty()) {
             //Use the full multiblock's render data unlike getFaceDisplay which gets the current height for calculating if it is inside
-            MekanismRenderer.renderValves(matrix, buffer, valves, fluidRenderData, rendererPos, glow, overlay, () -> isInsideBounds(
-                  data.location.getX(), data.location.getY(), data.location.getZ(),
-                  data.location.getX() + data.length, data.location.getY() + data.height, data.location.getZ() + data.width
-            ));
+            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
+            // if we aren't in the multiblock though we can just get away with only rendering the front faces
+            FaceDisplay faceDisplay = isInsideBounds(data.location.getX(), data.location.getY(), data.location.getZ(), data.location.getX() + data.length,
+                  data.location.getY() + data.height, data.location.getZ() + data.width) ? FaceDisplay.BOTH : FaceDisplay.FRONT;
+            MekanismRenderer.renderValves(matrix, buffer, valves, fluidRenderData, model.maxY - model.minY, rendererPos, glow, overlay, faceDisplay, getCamera());
         }
     }
 
@@ -107,9 +109,10 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
 
     protected int renderObject(RenderData data, BlockPos rendererPos, Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int overlay, float scale) {
         int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
+        Camera camera = getCamera();
         matrix.pushPose();
         matrix.translate(data.location.getX() - rendererPos.getX(), data.location.getY() - rendererPos.getY(), data.location.getZ() - rendererPos.getZ());
-        MekanismRenderer.renderObject(object, matrix, buffer, data.getColorARGB(scale), glow, overlay, getFaceDisplay(data, object));
+        MekanismRenderer.renderObject(object, matrix, buffer, data.getColorARGB(scale), glow, overlay, getFaceDisplay(camera, data, object), camera, data.location);
         matrix.popPose();
         return glow;
     }

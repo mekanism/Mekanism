@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
@@ -46,11 +47,12 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         Lazy<VertexConsumer> buffer = Lazy.of(() -> renderer.getBuffer(Sheets.translucentCullBlockSheet()));
         if (!fluid.isEmpty() && fluidScale > 0) {
             MekanismRenderer.renderObject(getFluidModel(fluid, fluidScale), matrix, buffer.get(), MekanismRenderer.getColorARGB(fluid, fluidScale),
-                  MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT);
+                  MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
         }
         if (!tile.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tile.valveFluid)) {
             MekanismRenderer.renderObject(getValveModel(tile.valveFluid, fluidScale), matrix, buffer.get(),
-                  MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid), overlayLight, FaceDisplay.FRONT);
+                  MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid), overlayLight, FaceDisplay.FRONT,
+                  getCamera(), tile.getBlockPos());
         }
     }
 
@@ -62,9 +64,10 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     private Model3D getValveModel(@NotNull FluidStack fluid, float fluidScale) {
         return cachedValveFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>())
               .computeIfAbsent(Math.min(stages - 1, (int) (fluidScale * (stages - 1))), stage -> new Model3D()
+                    .setSideRender(side -> side.getAxis().isHorizontal())
                     .prepFlowing(fluid)
                     .xBounds(0.3225F, 0.6775F)
-                    .yBounds(0.0625F + 0.875F * (stage / (float) stages), 0.9275F)
+                    .yBounds(0.0625F + 0.875F * (stage / (float) stages), 0.9375F)
                     .zBounds(0.3225F, 0.6775F)
               );
     }
@@ -73,9 +76,10 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return cachedCenterFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>())
               .computeIfAbsent(ModelRenderer.getStage(fluid, stages, fluidScale), stage -> new Model3D()
                     .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
-                    //Adjust constants by 0.01 to avoid z-fighting
+                    .setSideRender(Direction.DOWN, false)
+                    .setSideRender(Direction.UP, stage < stages)
                     .xBounds(0.135F, 0.865F)
-                    .yBounds(0.0725F, 0.0525F + 0.875F * (stage / (float) stages))
+                    .yBounds(0.0625F, 0.0625F + 0.875F * (stage / (float) stages))
                     .zBounds(0.135F, 0.865F)
               );
     }

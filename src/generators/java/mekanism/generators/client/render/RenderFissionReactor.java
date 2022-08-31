@@ -17,6 +17,7 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -58,12 +59,14 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         if (multiblock.isBurning()) {
             profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
             Model3D model = glowModel.get();
+            Camera camera = getCamera();
             for (FormedAssembly assembly : multiblock.assemblies) {
+                BlockPos assemblyPos = assembly.pos();
                 matrix.pushPose();
-                matrix.translate(assembly.pos().getX() - pos.getX(), assembly.pos().getY() - pos.getY(), assembly.pos().getZ() - pos.getZ());
+                matrix.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
                 //Add a bit of extra distance so that it includes the lower part of the control rod
                 matrix.scale(1, assembly.height() + 0.625F, 1);
-                MekanismRenderer.renderObject(model, matrix, buffer.get(), GLOW_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT);
+                MekanismRenderer.renderObject(model, matrix, buffer.get(), GLOW_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT, camera, assemblyPos);
                 matrix.popPose();
             }
             profiler.pop();
