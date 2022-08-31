@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.scroll;
 
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
@@ -15,14 +16,11 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
-import mekanism.client.render.lib.Vertex;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.lib.math.Quaternion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -31,7 +29,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,11 +68,13 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         List<RobitSkin> skins = getUnlockedSkins();
         if (skins != null) {
+            Lighting.setupForFlatItems();
             //Every ten ticks consider the skin to change
             int index = ticks / 10;
             float oldRot = rotation;
             rotation = Mth.wrapDegrees(rotation - 0.5F);
             float rot = Mth.rotLerp(partialTicks, oldRot, rotation);
+            QuadTransformation rotation = QuadTransformation.rotateY(rot);
             int slotStart = scrollBar.getCurrentSelection() * SLOT_COUNT, max = SLOT_COUNT * SLOT_COUNT;
             for (int i = 0; i < max; i++) {
                 int slotX = x + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = y + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
@@ -87,11 +86,12 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     } else {
                         renderSlotBackground(matrix, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
                     }
-                    renderRobit(matrix, skins.get(slot), slotX, slotY, rot, index);
+                    renderRobit(matrix, skins.get(slot), slotX, slotY, rotation, index);
                 } else {
                     renderSlotBackground(matrix, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
                 }
             }
+            Lighting.setupFor3DItems();
         }
     }
 
@@ -163,7 +163,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         return null;
     }
 
-    private void renderRobit(PoseStack matrix, RobitSkin skin, int x, int y, float rotation, int index) {
+    private void renderRobit(PoseStack matrix, RobitSkin skin, int x, int y, QuadTransformation rotation, int index) {
         List<ResourceLocation> textures = skin.getTextures();
         if (textures.isEmpty()) {
             Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skin.getRegistryName());
@@ -186,52 +186,12 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         List<BakedQuad> quads = model.getQuads(null, null, robit.level.random, modelData, null);
         //TODO: Ideally at some point we will want to be able to have the rotations happen via the matrix stack
         // so that we aren't having to transform the quads directly
-        quads = QuadUtils.transformBakedQuads(quads, new BasicRotationTransformation(rotation));
+        quads = QuadUtils.transformBakedQuads(quads, rotation);
         for (BakedQuad quad : quads) {
             builder.putBulkData(matrixEntry, quad, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
         buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);
 
         matrix.popPose();
-    }
-
-    //Copy of QuadTransformation.RotationTransformation but sets the normal to 1, 0, 0
-    private static class BasicRotationTransformation implements QuadTransformation {
-
-        // quaternion math isn't exact- we round to nearest ten-thousandth
-        private static final double EPSILON = 10_000;
-        private static final Vec3 NORMAL = new Vec3(1, 0, 0);
-
-        private final Quaternion quaternion;
-
-        public BasicRotationTransformation(float rotation) {
-            this.quaternion = new Quaternion(0, rotation, 0, true);
-        }
-
-        @Override
-        public void transform(Quad quad) {
-            quad.vertexTransform(this::consumeVertex);
-        }
-
-        private void consumeVertex(Vertex v) {
-            v.pos(round(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
-            //v.normal(round(quaternion.rotate(v.getNormal()).normalize()));
-            //TODO: Figure out if there is a better way to be doing the normal as in 1.16 this used 0, 1, 0 and now we need to use 1, 0, 0
-            v.normal(NORMAL);
-        }
-
-        private static Vec3 round(Vec3 vec) {
-            return new Vec3(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof BasicRotationTransformation other && quaternion.equals(other.quaternion);
-        }
-
-        @Override
-        public int hashCode() {
-            return quaternion.hashCode();
-        }
     }
 }
