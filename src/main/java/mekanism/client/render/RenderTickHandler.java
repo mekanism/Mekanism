@@ -451,7 +451,7 @@ public class RenderTickHandler {
                         Vec3 viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                         //0.4 Alpha
-                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0xFF, 0xFF, 0xFF, 0x66);
+                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0, 0, 0, 0x66);
                         matrix.popPose();
                         shouldCancel = true;
                     }
