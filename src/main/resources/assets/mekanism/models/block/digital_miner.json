@@ -1,6 +1,5 @@
 {
 	"credit": "Model by CyanideX",
-	"texture_size": [64, 64],
 	"textures": {
 		"1": "mekanism:block/models/digital_miner_elements1",
 		"2": "mekanism:block/models/digital_miner_elements2",

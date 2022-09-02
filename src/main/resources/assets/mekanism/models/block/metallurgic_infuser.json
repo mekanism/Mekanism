@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"2": "mekanism:block/models/metallurgic_infuser_elements",
 		"all": "mekanism:block/models/metallurgic_infuser",

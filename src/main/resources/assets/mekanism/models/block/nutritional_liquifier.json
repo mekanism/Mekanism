@@ -1,9 +1,7 @@
 {
   "parent": "block/cube_all",
   "loader": "forge:composite",
-  "texture_size": [32, 32],
   "textures": {
-    "0": "mekanism:block/nutritional_liquifier",
     "particle": "mekanism:block/nutritional_liquifier"
   },
   "children": {
@@ -11,8 +9,7 @@
       "render_type": "minecraft:solid",
       "parent": "block/cube_all",
       "textures": {
-        "0": "mekanism:block/nutritional_liquifier",
-        "particle": "mekanism:block/nutritional_liquifier"
+        "0": "mekanism:block/nutritional_liquifier"
       },
       "elements": [
         {
@@ -191,8 +188,7 @@
       "render_type": "minecraft:translucent",
       "parent": "block/cube_all",
       "textures": {
-        "0": "mekanism:block/nutritional_liquifier",
-        "particle": "mekanism:block/nutritional_liquifier"
+        "0": "mekanism:block/nutritional_liquifier"
       },
       "elements": [
         {

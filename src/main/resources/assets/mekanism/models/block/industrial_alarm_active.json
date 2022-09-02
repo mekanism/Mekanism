@@ -1,6 +1,5 @@
 {
 	"parent": "block/cube_all",
-	"texture_size": [64, 64],
 	"textures": {
 		"1": "mekanism:block/models/industrial_alarm",
 		"particle": "mekanism:block/steel_casing"

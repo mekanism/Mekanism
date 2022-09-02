@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"all": "mekanism:block/models/electric_pump",
 		"particle": "mekanism:block/steel_casing"

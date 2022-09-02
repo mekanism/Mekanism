@@ -1,6 +1,5 @@
 {
 	"credit": "Model by CyanideX",
-	"texture_size": [64, 64],
 	"textures": {
 		"0": "mekanismgenerators:block/model/advanced_solar_generator",
 		"1": "mekanism:block/models/ports",

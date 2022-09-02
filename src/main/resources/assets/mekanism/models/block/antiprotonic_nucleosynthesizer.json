@@ -2,16 +2,6 @@
 	"parent": "block/cube_all",
 	"loader": "forge:composite",
 	"textures": {
-		"0": "mekanism:block/models/glass",
-		"1": "mekanism:block/models/antiprotonic_nucleosynthesizer_front",
-		"2": "mekanism:block/models/antiprotonic_nucleosynthesizer_side",
-		"3": "mekanism:block/models/antiprotonic_nucleosynthesizer_bottom",
-		"4": "mekanism:block/models/antiprotonic_nucleosynthesizer_top",
-		"5": "mekanism:block/models/ports",
-		"6": "mekanism:block/models/ports_led",
-		"7": "mekanism:block/models/antiprotonic_nucleosynthesizer_back",
-		"8": "mekanism:block/models/leds",
-		"9": "mekanism:block/models/antiprotonic_nucleosynthesizer_elements",
 		"particle": "mekanism:block/models/antiprotonic_nucleosynthesizer_front"
 	},
 	"display": {
@@ -53,7 +43,6 @@
 			"render_type": "minecraft:solid",
 			"parent": "block/cube_all",
 			"textures": {
-				"0": "mekanism:block/models/glass",
 				"1": "mekanism:block/models/antiprotonic_nucleosynthesizer_front",
 				"2": "mekanism:block/models/antiprotonic_nucleosynthesizer_side",
 				"3": "mekanism:block/models/antiprotonic_nucleosynthesizer_bottom",
@@ -62,8 +51,7 @@
 				"6": "mekanism:block/models/ports_led",
 				"7": "mekanism:block/models/antiprotonic_nucleosynthesizer_back",
 				"8": "mekanism:block/models/leds",
-				"9": "mekanism:block/models/antiprotonic_nucleosynthesizer_elements",
-				"particle": "mekanism:block/models/antiprotonic_nucleosynthesizer_front"
+				"9": "mekanism:block/models/antiprotonic_nucleosynthesizer_elements"
 			},
 			"elements": [
 				{
@@ -366,17 +354,7 @@
 			"render_type": "minecraft:translucent",
 			"parent": "block/cube_all",
 			"textures": {
-				"0": "mekanism:block/models/glass",
-				"1": "mekanism:block/models/antiprotonic_nucleosynthesizer_front",
-				"2": "mekanism:block/models/antiprotonic_nucleosynthesizer_side",
-				"3": "mekanism:block/models/antiprotonic_nucleosynthesizer_bottom",
-				"4": "mekanism:block/models/antiprotonic_nucleosynthesizer_top",
-				"5": "mekanism:block/models/ports",
-				"6": "mekanism:block/models/ports_led",
-				"7": "mekanism:block/models/antiprotonic_nucleosynthesizer_back",
-				"8": "mekanism:block/models/leds",
-				"9": "mekanism:block/models/antiprotonic_nucleosynthesizer_elements",
-				"particle": "mekanism:block/models/antiprotonic_nucleosynthesizer_front"
+				"0": "mekanism:block/models/glass"
 			},
 			"elements": [
 				{

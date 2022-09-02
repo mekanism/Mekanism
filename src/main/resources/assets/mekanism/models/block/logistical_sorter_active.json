@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "mekanism:block/logistical_sorter",
-	"texture_size": [32, 32],
 	"textures": {
 		"leds": "mekanism:block/models/leds",
 		"ports": "mekanism:block/models/ports",

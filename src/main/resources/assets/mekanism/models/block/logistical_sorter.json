@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"ports": "mekanism:block/models/ports",
 		"ports_large": "mekanism:block/models/ports_large",

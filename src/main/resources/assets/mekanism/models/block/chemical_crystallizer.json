@@ -1,7 +1,6 @@
 {
 	"parent": "block/cube_all",
 	"loader": "forge:composite",
-	"texture_size": [32, 32],
 	"display": {
 		"thirdperson_righthand": {
 			"rotation": [75, 45, 0],
@@ -34,11 +33,6 @@
 		}
 	},
 	"textures": {
-		"0": "mekanism:block/models/chemical_crystallizer",
-		"1": "mekanism:block/models/chemical_crystallizer_elements1",
-		"2": "mekanism:block/models/chemical_crystallizer_elements2",
-		"3": "mekanism:block/models/ports",
-		"4": "mekanism:block/models/ports_led",
 		"particle": "mekanism:block/models/chemical_crystallizer"
 	},
 	"children": {
@@ -50,8 +44,7 @@
 				"1": "mekanism:block/models/chemical_crystallizer_elements1",
 				"2": "mekanism:block/models/chemical_crystallizer_elements2",
 				"3": "mekanism:block/models/ports",
-				"4": "mekanism:block/models/ports_led",
-				"particle": "mekanism:block/models/chemical_crystallizer"
+				"4": "mekanism:block/models/ports_led"
 			},
 			"elements": [
 				{
@@ -296,12 +289,7 @@
 			"render_type": "minecraft:translucent",
 			"parent": "block/cube_all",
 			"textures": {
-				"0": "mekanism:block/models/chemical_crystallizer",
-				"1": "mekanism:block/models/chemical_crystallizer_elements1",
-				"2": "mekanism:block/models/chemical_crystallizer_elements2",
-				"3": "mekanism:block/models/ports",
-				"4": "mekanism:block/models/ports_led",
-				"particle": "mekanism:block/models/chemical_crystallizer"
+				"1": "mekanism:block/models/chemical_crystallizer_elements1"
 			},
 			"elements": [
 				{

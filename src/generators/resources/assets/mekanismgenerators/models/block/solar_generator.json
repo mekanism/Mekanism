@@ -1,6 +1,5 @@
 {
 	"credit": "Model by CyanideX",
-	"texture_size": [32, 32],
 	"textures": {
 		"particle": "mekanismgenerators:block/model/solar_generator",
 		"all": "mekanismgenerators:block/model/solar_generator"

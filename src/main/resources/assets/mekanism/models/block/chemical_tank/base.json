@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"particle": "mekanism:block/models/chemical_tank",
 		"body": "mekanism:block/models/chemical_tank"

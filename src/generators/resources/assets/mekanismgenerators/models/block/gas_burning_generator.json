@@ -1,6 +1,5 @@
 {
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"0": "mekanismgenerators:block/model/gas_burning_generator",
 		"2": "mekanism:block/models/ports",

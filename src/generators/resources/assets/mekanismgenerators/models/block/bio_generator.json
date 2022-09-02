@@ -1,7 +1,6 @@
 {
 	"parent": "block/cube_all",
 	"loader": "forge:composite",
-	"texture_size": [32, 32],
 	"display": {
 		"thirdperson_righthand": {
 			"rotation": [75, 45, 0],
@@ -34,9 +33,6 @@
 		}
 	},
 	"textures": {
-		"1": "mekanismgenerators:block/model/bio_generator1",
-		"2": "mekanismgenerators:block/model/bio_generator2",
-		"3": "mekanism:block/models/ports_led",
 		"particle": "mekanismgenerators:block/model/bio_generator2"
 	},
 	"children": {
@@ -46,8 +42,7 @@
 			"textures": {
 				"1": "mekanismgenerators:block/model/bio_generator1",
 				"2": "mekanismgenerators:block/model/bio_generator2",
-				"3": "mekanism:block/models/ports_led",
-				"particle": "mekanismgenerators:block/model/bio_generator2"
+				"3": "mekanism:block/models/ports_led"
 			},
 			"elements": [
 				{
@@ -153,10 +148,7 @@
 			"render_type": "minecraft:translucent",
 			"parent": "block/cube_all",
 			"textures": {
-				"1": "mekanismgenerators:block/model/bio_generator1",
-				"2": "mekanismgenerators:block/model/bio_generator2",
-				"3": "mekanism:block/models/ports_led",
-				"particle": "mekanismgenerators:block/model/bio_generator2"
+				"1": "mekanismgenerators:block/model/bio_generator1"
 			},
 			"elements": [
 				{
