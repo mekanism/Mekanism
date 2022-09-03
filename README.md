@@ -18,6 +18,7 @@ You will find the files inside ./output/
 ## For modpacks
 You need to include the [LICENSE](https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.7.10/LICENSE.md) for Mekanism 1.7.10 Community Edition and Aidanbrady as author, if your system supports it indicate that this is an custom version and give appreciable credits
 
+Mekanism CE also has two dependencies that it requires, as a modpack creator DO NOT USE the automatic downloader to get those file. It puts alot of strain to my server network. 
 ## Fixes by
 
 #### Clienthax : 
