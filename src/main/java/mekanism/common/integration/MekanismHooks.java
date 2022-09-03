@@ -41,9 +41,6 @@ public final class MekanismHooks
 	public boolean CCLoaded = false;
 	public boolean AE2Loaded = false;
 
-	public boolean MetallurgyCoreLoaded = false;
-	public boolean MetallurgyBaseLoaded = false;
-
 	public void hook()
 	{
 		if(Loader.isModLoaded("CoFHCore")) CoFHCoreLoaded = true;
@@ -52,13 +49,6 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
-		
-		if(Loader.isModLoaded("Metallurgy3Core"))
-		{
-			MetallurgyCoreLoaded = true;
-
-			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
-		}
 
 		if(IC2Loaded)
 		{
