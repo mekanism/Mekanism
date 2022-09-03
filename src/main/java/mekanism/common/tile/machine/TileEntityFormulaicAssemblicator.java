@@ -186,6 +186,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (!isRemote()) {
             checkFormula();
             recalculateRecipe();
+            if (formula != null && stockControl) {
+                //Ensure stock control is loaded before our first tick in case something inserting ticks before our first tick
+                // and inserts into the wrong slots
+                buildStockControlMap();
+            }
         }
     }
 
