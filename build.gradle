@@ -159,11 +159,19 @@ task MDKZip(type: Zip) {
     include 'mekanism/api/**'
 }
 
+task apiJar(type: Jar) {
+    classifier = 'API'
+    dependsOn processResources
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.output
+    include 'mekanism/api/**'
+}
+
 task fullBuild(type: Delete) {
     delete jar
 }
 
-fullBuild.dependsOn('toolsJar', 'coreJar', 'generatorsJar', 'MDKZip', 'alltJar')
+fullBuild.dependsOn('toolsJar', 'coreJar', 'generatorsJar', 'MDKZip', 'alltJar', 'apiJar')
 
 artifactory {
     contextUrl = System.getenv("MAVEN_URL")
@@ -198,7 +206,7 @@ publishing {
             artifactId = rootProject.name
             groupId = project.group
             version = project.version
-            artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar]
+            artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar, apiJar]
             components.java.withVariantsFromConfiguration(configurations.runtimeElements) {
                 skip()
             }
