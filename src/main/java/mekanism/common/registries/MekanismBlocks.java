@@ -50,7 +50,6 @@ import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
-import mekanism.common.item.block.ItemBlockIndustrialAlarm;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.ItemBlockRadioactiveWasteBarrel;
 import mekanism.common.item.block.ItemBlockResource;
@@ -242,7 +241,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityBoilerValve>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityBoilerValve>>> BOILER_VALVE = registerBlock("boiler_valve", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.BOILER_VALVE));
     public static final BlockRegistryObject<BlockTileModel<TileEntitySecurityDesk, BlockTypeTile<TileEntitySecurityDesk>>, ItemBlockSecurityDesk> SECURITY_DESK = BLOCKS.register("security_desk", () -> new BlockTileModel<>(MekanismBlockTypes.SECURITY_DESK), ItemBlockSecurityDesk::new);
     public static final BlockRegistryObject<BlockRadioactiveWasteBarrel, ItemBlockRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = BLOCKS.registerDefaultProperties("radioactive_waste_barrel", BlockRadioactiveWasteBarrel::new, ItemBlockRadioactiveWasteBarrel::new);
-    public static final BlockRegistryObject<BlockIndustrialAlarm, ItemBlockTooltip<BlockIndustrialAlarm>> INDUSTRIAL_ALARM = BLOCKS.register("industrial_alarm", BlockIndustrialAlarm::new, ItemBlockIndustrialAlarm::new);
+    public static final BlockRegistryObject<BlockIndustrialAlarm, ItemBlockTooltip<BlockIndustrialAlarm>> INDUSTRIAL_ALARM = BLOCKS.register("industrial_alarm", BlockIndustrialAlarm::new, ItemBlockTooltip::new);
 
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityEnrichmentChamber, FactoryMachine<TileEntityEnrichmentChamber>>, ItemBlockMachine> ENRICHMENT_CHAMBER = BLOCKS.register("enrichment_chamber", () -> new BlockFactoryMachine<>(MekanismBlockTypes.ENRICHMENT_CHAMBER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityOsmiumCompressor, FactoryMachine<TileEntityOsmiumCompressor>>, ItemBlockMachine> OSMIUM_COMPRESSOR = BLOCKS.register("osmium_compressor", () -> new BlockFactoryMachine<>(MekanismBlockTypes.OSMIUM_COMPRESSOR), ItemBlockMachine::new);

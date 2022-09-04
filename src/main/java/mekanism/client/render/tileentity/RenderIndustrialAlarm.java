@@ -8,9 +8,9 @@ import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.RenderTickHandler.LazyRender;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -22,14 +22,13 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
     private static final float ROTATE_SPEED = 10F;
 
     public RenderIndustrialAlarm(BlockEntityRendererProvider.Context context) {
-        super(context, entityModelSet -> new ModelIndustrialAlarm(entityModelSet, false));
+        super(context, ModelIndustrialAlarm::new);
     }
 
     @Override
     protected void render(TileEntityIndustrialAlarm tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        boolean active = Attribute.isActive(tile.getBlockState());
-        RenderTickHandler.addTransparentRenderer(model.getRenderType(active), new LazyRender() {
+        RenderTickHandler.addTransparentRenderer(model.getRenderType(), new LazyRender() {
             @Override
             public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
                 float rot = (renderTick + partialTick) * ROTATE_SPEED % 360;
@@ -58,7 +57,7 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
                         poseStack.mulPose(Vector3f.ZP.rotationDegrees(90));
                     }
                 }
-                model.render(poseStack, buffer, light, overlayLight, 1, 1, 1, 1, active, rot);
+                model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 1, rot);
                 poseStack.popPose();
             }
 
@@ -83,5 +82,10 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
     @Override
     public boolean shouldRenderOffScreen(TileEntityIndustrialAlarm tile) {
         return true;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityIndustrialAlarm tile, Vec3 camera) {
+        return tile.getActive() && super.shouldRender(tile, camera);
     }
 }

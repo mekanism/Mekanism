@@ -45,6 +45,9 @@ public class FuelAssemblyBakedModel extends BakedModelWrapper<BakedModel> {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
         List<BakedQuad> quads = super.getQuads(state, side, rand, data, renderType);
+        //Note: Technically we would want the null side rather than a cullable side, but as this only would end up being used in fission reactors where
+        // it should be in a checkerboard pattern we may as well allow it to be culled
+        //TODO: Re-evaluate the above thought if we ever end up being able to make use of this model
         if (side != null && side.getAxis().isHorizontal() && renderType == RenderType.translucent()) {
             if (data.has(TileEntityFissionAssembly.GLOWING)) {
                 //TODO: Eventually we may want to make the glow component be part of the json so resource packs can customize it more

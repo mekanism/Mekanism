@@ -11,12 +11,11 @@
 			"name": "desk_top",
 			"from": [0, 6, 0],
 			"to": [16, 13, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
-				"north": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
-				"east": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
-				"south": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
-				"west": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
+				"north": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "east"},
+				"south": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "south"},
+				"west": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "west"},
 				"up": {"uv": [0, 0, 8, 8], "texture": "#2"},
 				"down": {"uv": [8, 0, 16, 8], "texture": "#2"}
 			}
@@ -25,7 +24,6 @@
 			"name": "desk_middle",
 			"from": [1, 5, 1],
 			"to": [15, 6, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [8.5, 8, 15.5, 8.5], "texture": "#2"},
 				"east": {"uv": [8.5, 8, 15.5, 8.5], "texture": "#2"},
@@ -37,14 +35,13 @@
 			"name": "desk_base",
 			"from": [0, 0, 0],
 			"to": [16, 5, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
-				"north": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
-				"east": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
-				"south": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
-				"west": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
+				"north": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "east"},
+				"south": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "south"},
+				"west": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "west"},
 				"up": {"uv": [8, 8, 16, 16], "texture": "#3"},
-				"down": {"uv": [8, 0, 16, 8], "texture": "#2"}
+				"down": {"uv": [8, 0, 16, 8], "texture": "#2", "cullface": "down"}
 			}
 		},
 		{
@@ -100,7 +97,6 @@
 			"name": "stand_base",
 			"from": [4, 13, 10],
 			"to": [12, 14, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [1, 14.5, 5, 15], "texture": "#3"},
 				"east": {"uv": [2, 14, 4, 14.5], "texture": "#3"},
@@ -113,7 +109,6 @@
 			"name": "stand_neck",
 			"from": [7, 14, 13],
 			"to": [9, 21, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [1, 9, 2, 12.5], "texture": "#3"},
 				"east": {"uv": [2, 9, 2.5, 12.5], "texture": "#3"},
@@ -125,7 +120,6 @@
 			"name": "keyboard",
 			"from": [3, 13, 2],
 			"to": [13, 14, 7],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 13, 2]},
 			"faces": {
 				"north": {"uv": [0, 0, 5, 0.5], "texture": "#3"},
 				"east": {"uv": [0, 0, 2.5, 0.5], "texture": "#3"},

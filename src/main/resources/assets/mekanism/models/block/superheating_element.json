@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:block/basic_cube",
+  "parent": "block/cube_all",
   "textures": {
     "all": "mekanism:block/superheating_element"
   }

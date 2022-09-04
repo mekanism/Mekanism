@@ -20,7 +20,6 @@
       "name": "balloon_end",
       "from": [8, 7, 6],
       "to": [10, 8, 8],
-      "rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
       "faces": {
         "north": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
         "east": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},

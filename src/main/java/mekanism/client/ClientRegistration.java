@@ -120,7 +120,6 @@ import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.block.RenderIndustrialAlarmItem;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
 import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
@@ -375,7 +374,7 @@ public class ClientRegistration {
         event.registerReloadListener(new RobitSpriteUploader(Minecraft.getInstance().getTextureManager()));
         //ISTERs
         ClientRegistrationUtil.registerClientReloadListeners(event, RenderChemicalDissolutionChamberItem.RENDERER, RenderEnergyCubeItem.RENDERER,
-              RenderFluidTankItem.RENDERER, RenderIndustrialAlarmItem.RENDERER, RenderQuantumEntangloporterItem.RENDERER, RenderSeismicVibratorItem.RENDERER,
+              RenderFluidTankItem.RENDERER, RenderQuantumEntangloporterItem.RENDERER, RenderSeismicVibratorItem.RENDERER,
               RenderSolarNeutronActivatorItem.RENDERER, RenderJetpack.ARMORED_RENDERER, RenderAtomicDisassembler.RENDERER, RenderFlameThrower.RENDERER,
               RenderFreeRunners.RENDERER, RenderFreeRunners.ARMORED_RENDERER, RenderJetpack.RENDERER, RenderScubaMask.RENDERER, RenderScubaTank.RENDERER);
         //Custom Armor

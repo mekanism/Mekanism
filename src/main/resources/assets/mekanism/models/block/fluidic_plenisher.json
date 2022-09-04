@@ -32,7 +32,7 @@
             "from": [4, 0, 4],
             "to": [12, 1, 12],
             "faces": {
-                "down":  {"uv": [6, 13.25, 4, 15.25], "texture": "#all"},
+                "down":  {"uv": [6, 13.25, 4, 15.25], "texture": "#all", "cullface": "down"},
                 "up":    {"uv": [4, 15.25, 2, 13.25], "texture": "#all"},
                 "north": {"uv": [2, 15.25, 4, 15.5], "texture": "#all"},
                 "south": {"uv": [6, 15.25, 8, 15.5], "texture": "#all"},
@@ -46,7 +46,7 @@
             "to": [13, 16, 13],
             "faces": {
                 "down":  {"uv": [7.5, 5.25, 5, 7.75], "texture": "#all"},
-                "up":    {"uv": [5, 7.75, 2.5, 5.25], "texture": "#all"},
+                "up":    {"uv": [5, 7.75, 2.5, 5.25], "texture": "#all", "cullface": "up"},
                 "north": {"uv": [2.5, 7.75, 5, 8], "texture": "#all"},
                 "south": {"uv": [7.5, 7.75, 10, 8], "texture": "#all"},
                 "west":  {"uv": [5, 7.75, 7.5, 8], "texture": "#all"},
@@ -61,7 +61,7 @@
                 "down":  {"uv": [13.25, 0, 11.25, 0.25], "texture": "#all"},
                 "up":    {"uv": [11.25, 0.25, 9.25, 0], "texture": "#all"},
                 "north": {"uv": [9.25, 0.25, 11.25, 2.25], "texture": "#all"},
-                "south": {"uv": [11.5, 0.25, 13.5, 2.25], "texture": "#all"},
+                "south": {"uv": [11.5, 0.25, 13.5, 2.25], "texture": "#all", "cullface": "south"},
                 "west":  {"uv": [11.25, 0.25, 11.5, 2.25], "texture": "#all"},
                 "east":  {"uv": [9, 0.25, 9.25, 2.25], "texture": "#all"}
             }

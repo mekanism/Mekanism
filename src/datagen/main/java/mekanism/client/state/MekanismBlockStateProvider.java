@@ -29,16 +29,13 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
     protected void registerStatesAndModels() {
         registerFluidBlockStates(MekanismFluids.FLUIDS.getAllFluids());
 
-        ResourceLocation basicCube = modLoc("block/basic_cube");
-
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             String registrySuffix = entry.getKey().getRegistrySuffix();
             ResourceLocation texture = modLoc("block/block_" + registrySuffix);
             ModelFile file;
             if (models().textureExists(texture)) {
                 //If we have an override we can just use a basic cube that has no color tints in it
-                file = models().withExistingParent("block/storage/" + registrySuffix, basicCube)
-                      .texture("all", texture);
+                file = models().cubeAll("block/storage/" + registrySuffix, texture);
             } else {
                 //If the texture does not exist fallback to the default texture and use a colorable base model
                 file = models().withExistingParent("block/storage/" + registrySuffix, modLoc("block/colored_cube"))
@@ -51,8 +48,8 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
         for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
             String registrySuffix = entry.getKey().getResource().getRegistrySuffix();
             OreBlockType oreBlockType = entry.getValue();
-            addOreBlock(basicCube, oreBlockType.stone(), "block/ore/" + registrySuffix);
-            addOreBlock(basicCube, oreBlockType.deepslate(), "block/deepslate_ore/" + registrySuffix);
+            addOreBlock(oreBlockType.stone(), "block/ore/" + registrySuffix);
+            addOreBlock(oreBlockType.deepslate(), "block/deepslate_ore/" + registrySuffix);
         }
 
         BlockModelBuilder barrelModel = models().cubeBottomTop(MekanismBlocks.PERSONAL_BARREL.getName(),
@@ -78,10 +75,9 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
               .forAllStates(state -> new ConfiguredModel[]{new ConfiguredModel(Attribute.isActive(state) ? activeStabilizer : stabilizerModel)});
     }
 
-    private void addOreBlock(ResourceLocation basicCube, BlockRegistryObject<BlockOre, ?> oreBlock, String path) {
+    private void addOreBlock(BlockRegistryObject<BlockOre, ?> oreBlock, String path) {
         String name = oreBlock.getName();
-        ModelFile file = models().withExistingParent(path, basicCube)
-              .texture("all", modLoc("block/" + name));
+        ModelFile file = models().cubeAll(path, modLoc("block/" + name));
         simpleBlock(oreBlock.getBlock(), file);
         simpleBlockItem(oreBlock, file);
     }

@@ -1,6 +1,6 @@
 {
   "render_type": "minecraft:translucent",
-  "parent": "mekanismadditions:block/colored/cube",
+  "parent": "mekanism:block/colored_cube",
   "textures": {
     "all": "mekanismadditions:block/transparent_plastic_block"
   }

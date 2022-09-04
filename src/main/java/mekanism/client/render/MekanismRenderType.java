@@ -55,9 +55,7 @@ public class MekanismRenderType extends RenderType {
     private static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
           createStandard("mek_standard_translucent_target", resourceLocation, state -> state.setOutputState(RenderType.TRANSLUCENT_TARGET), true));
     public static final Function<ResourceLocation, RenderType> ALARM = Util.memoize(resourceLocation ->
-          createStandard("mek_alarm", resourceLocation, state -> state.setCullState(NO_CULL), false));
-    public static final Function<ResourceLocation, RenderType> ALARM_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
-          createStandard("mek_alarm_translucent_target", resourceLocation, state -> state.setCullState(NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));
+          createStandard("mek_alarm", resourceLocation, state -> state.setCullState(NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));
     //Similar to mekStandard but blurs the texture
     public static final Function<ResourceLocation, RenderType> JETPACK_GLASS = Util.memoize(resourceLocation -> createStandard("mek_jetpack_glass", resourceLocation,
           state -> state.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, true, false)), false));

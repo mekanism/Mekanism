@@ -32,10 +32,6 @@ public final class BlockShapes {
               box(3, 6, 1, 5, 15, 2), // bar1
               box(11, 6, 1, 13, 15, 2), // bar2
               box(4, 6, 0, 12, 12, 2), // port
-              box(5, 10, -0.005, 11, 11, 0.995), // port_led1
-              box(5, 5, -0.005, 11, 6, 0.995), // port_led2
-              box(10, 6, -0.005, 11, 10, 0.995), // port_led3
-              box(5, 6, -0.005, 6, 10, 0.995), // port_led4
               box(0, 13, 0, 16, 14, 2), // fin7
               box(0, 15, 0, 16, 16, 2), // fin8
               box(0, 11, 0, 4, 12, 2), // fin1
@@ -82,10 +78,6 @@ public final class BlockShapes {
               box(3, -14, 3, 13, -12, 13), // base2
               box(4, -12, 4, 12, -4, 12), // base3
               box(4, -12, 0, 12, -4, 1), // port
-              box(5, -6, -0.005, 11, -5, -0.005), // port_led1
-              box(5, -11, -0.005, 11, -10, -0.005), // port_led2
-              box(10, -10, -0.005, 11, -6, -0.005), // port_led3
-              box(5, -10, -0.005, 6, -6, -0.005), // port_led4
               box(14, 30, -16, 32, 31, 32), // solar_panel_east
               box(15, 29, -15, 31, 30, 31), // solar_panel_east_base
               box(12, 27, 7, 28, 29, 9), // solar_panel_east_arm
@@ -100,10 +92,6 @@ public final class BlockShapes {
               box(13, 7, 0, 16, 16, 8), // sideRight
               box(0, 7, 0, 3, 16, 8), // sideLeft
               box(0, 7, 8, 16, 16, 16), // back
-              box(10, 6, 16.005, 11, 10, 16.005), // port_led4
-              box(5, 6, 16.005, 6, 10, 16.005), // port_led3
-              box(5, 5, 16.005, 11, 6, 16.005), // port_led2
-              box(5, 10, 16.005, 11, 11, 16.005), // port_led1
               box(2, 7, 1, 14, 15, 8) // glass
         ), Rotation.CLOCKWISE_180), BIO_GENERATOR);
 
@@ -141,30 +129,9 @@ public final class BlockShapes {
               box(0, 0, 0, 16, 4, 16), // base
               box(2, 4, 2, 14, 5, 14), // base_platform
               box(4, 4, 0, 12, 12, 1), // port_north
-              box(5, 10, -0.005, 11, 11, -0.005), // port_north_led1
-              box(5, 5, -0.005, 11, 6, -0.005), // port_north_led2
-              box(10, 6, -0.005, 11, 10, -0.005), // port_north_led3
-              box(5, 6, -0.005, 6, 10, -0.005), // port_north_led4
               box(15, 4, 4, 16, 12, 12), // port_east
-              box(15.005, 10, 5, 16.005, 11, 11), // port_east_led1
-              box(15.005, 5, 5, 16.005, 6, 11), // port_east_led2
-              box(15.005, 6, 10, 16.005, 10, 11), // port_east_led3
-              box(15.005, 6, 5, 16.005, 10, 6), // port_east_led4
-              box(4, 15.005, 4, 12, 16.005, 12), // port_up
-              box(5, 15.01, 5, 6, 16.01, 11), // port_up_led1
-              box(6, 15.01, 10, 10, 16.01, 11), // port_up_led2
-              box(6, 15.01, 5, 10, 16.01, 6), // port_up_led3
-              box(10, 15.01, 5, 11, 16.01, 11), // port_up_led2
               box(4, 4, 15, 12, 12, 16), // port_south
-              box(5, 10, 16.005, 11, 11, 16.005), // port_south_led1
-              box(5, 5, 16.005, 11, 6, 16.005), // port_south_led2
-              box(5, 6, 16.005, 6, 10, 16.005), // port_south_led3
-              box(10, 6, 16.005, 11, 10, 16.005), // port_south_led4
-              box(0, 4, 4, 1, 12, 12), // port_west
-              box(-0.005, 10, 5, -0.005, 11, 11), // port_west_led1
-              box(-0.005, 5, 5, -0.005, 6, 11), // port_west_led2
-              box(-0.005, 6, 5, -0.005, 10, 6), // port_west_led3
-              box(-0.005, 6, 10, -0.005, 10, 11) // port_west_led4
+              box(0, 4, 4, 1, 12, 12) // port_west
         ), GAS_BURNING_GENERATOR);
 
         setShape(VoxelShapeUtils.combine(

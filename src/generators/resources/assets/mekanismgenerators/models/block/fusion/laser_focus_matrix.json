@@ -1,6 +1,6 @@
 {
   "render_type": "minecraft:translucent",
-  "parent": "mekanism:block/basic_cube",
+  "parent": "block/cube_all",
   "textures": {
     "all": "mekanismgenerators:block/laser_focus_matrix"
   }

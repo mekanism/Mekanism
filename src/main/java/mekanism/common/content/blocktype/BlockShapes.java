@@ -118,10 +118,10 @@ public final class BlockShapes {
               box(5, 1, 5, 11, 3, 11), // power_cable1b
               box(4, 0, 4, 12, 1, 12), // port1
               box(23, 5, 5, 31, 11, 11), // power_cable2
-              box(30.99, 4, 4, 31.99, 12, 12), // port2a
+              box(31, 4, 4, 32, 12, 12), // port2a
               box(24, 4, 4, 25, 12, 12), // port2b
               box(-15, 5, 5, -7, 11, 11), // power_cable3
-              box(-15.99, 4, 4, -14.99, 12, 12), // port3a
+              box(-16, 4, 4, -15, 12, 12), // port3a
               box(-9, 4, 4, -8, 12, 12), // port3b
               box(-14, 2, -7, -10, 30, 1), // beam1
               box(-15, 0, -8, -8, 2, 2), // foot1
@@ -131,8 +131,8 @@ public final class BlockShapes {
               box(24.5, 0, 21, 31.5, 2, 31), // foot3
               box(26.5, 2, -7, 30.5, 30, 1), // beam4
               box(24.5, 0, -8, 31.5, 2, 2), // foot4
-              box(4, 20, 30.993, 12, 28, 31.993), // port_back
-              box(4, 30.993, 4, 12, 31.993, 12) // port_top
+              box(4, 20, 31, 12, 28, 32), // port_back
+              box(4, 31, 4, 12, 32, 12) // port_top
         ), DIGITAL_MINER);
 
         setShape(VoxelShapeUtils.combine(
@@ -141,12 +141,8 @@ public final class BlockShapes {
               box(0, 5, 0, 16, 7, 2), // rim_north
               box(14, 5, 2, 16, 7, 14), // rim_east
               box(3, 5, 3, 13, 6, 13), // tray
-              box(-0.005, 4, 4, 0.995, 12, 12), // port_west
-              box(-0.01, 10, 5, 0.99, 11, 11), // port_west_led1
-              box(-0.01, 5, 5, 0.99, 6, 11), // port_west_led2
-              box(-0.01, 6, 5, 0.99, 10, 6), // port_west_led3
-              box(-0.01, 6, 10, 0.99, 10, 11), // port_west_led4
-              box(15.005, 4, 4, 16.005, 12, 12), // port_east
+              box(0, 4, 4, 1, 12, 12), // port_west
+              box(15, 4, 4, 16, 12, 12), // port_east
               box(0, 7, 0, 1, 11, 1), // support1
               box(0, 7, 15, 1, 11, 16), // support2
               box(15, 7, 15, 16, 11, 16), // support3
@@ -203,8 +199,8 @@ public final class BlockShapes {
               box(13, 14, 4, 14, 15, 12), // tubeLeft2
               box(1, 5, 8, 3, 11, 10), // connector2
               box(3, 15, 3, 13, 16, 13), // port_up
-              box(-0.01, 4, 4, 0.99, 12, 12), // port_west
-              box(15.01, 4, 4, 16.01, 12, 12) // port_east
+              box(0, 4, 4, 1, 12, 12), // port_west
+              box(15, 4, 4, 16, 12, 12) // port_east
         ), CHEMICAL_WASHER);
 
         setShape(VoxelShapeUtils.combine(
@@ -213,16 +209,16 @@ public final class BlockShapes {
               box(8, 5, 1, 14, 16, 6), // tower1
               box(7, 7, 9, 8, 10, 12), // pipe1
               box(0, 4, 0, 7, 16, 16), // tank
-              box(-0.005, 4, 4, 0.995, 12, 12), // connectorToggle
+              box(0, 4, 4, 1, 12, 12), // connectorToggle
               box(9, 6, 6, 13, 15, 7), // bridge
               box(13, 5, 5, 15, 11, 11), // pipe2
-              box(15.005, 3, 3, 16.005, 13, 13), // connector
+              box(15, 3, 3, 16, 13, 13), // connector
               box(0, 0, 0, 16, 4, 16) // base
         ), CHEMICAL_OXIDIZER);
 
         setShape(VoxelShapeUtils.combine(
-              box(-0.01, 4, 4, 0.99, 12, 12), // portRight
-              box(15.01, 4, 4, 16.01, 12, 12), // portLeft
+              box(0, 4, 4, 1, 12, 12), // portRight
+              box(15, 4, 4, 16, 12, 12), // portLeft
               box(2, 5, 1, 14, 12, 8), // tank3
               box(9, 13.5, 4, 10, 14.5, 6), // tube4
               box(7, 5, 13, 9, 11, 15), // connector1
@@ -232,13 +228,13 @@ public final class BlockShapes {
               box(6, 13.5, 4, 7, 14.5, 6), // tube5
               box(7, 14, 13, 9, 15, 14), // tube10
               box(11, 13.5, 6.5, 13, 14.5, 7.5), // tube2
-              box(4, 4, -0.01, 12, 12, 0.99), // portFront
+              box(4, 4, 0, 12, 12, 1), // portFront
               box(0, 0, 0, 16, 5, 16), // base
               box(3, 13.5, 7.5, 4, 14.5, 9.5), // tube8
               box(14, 5, 5, 15, 11, 9), // pipe1
               box(12, 13.5, 7.5, 13, 14.5, 9.5), // tube1
               box(6, 11.5, 4, 7, 13.5, 5), // tube6
-              box(4, 4, 15.01, 12, 12, 16.01), // portBack
+              box(4, 4, 15, 12, 12, 16), // portBack
               box(3, 13.5, 6.5, 5, 14.5, 7.5), // tube7
               box(7, 14, 10, 9, 15, 11), // tube9
               box(5, 12.5, 5.5, 11, 15.5, 8.5), // compressor
@@ -444,10 +440,8 @@ public final class BlockShapes {
         ), LASER_AMPLIFIER, true);
 
         setShape(VoxelShapeUtils.combine(
-              box(-0.005, 4, 4, 0.995, 12, 12), // port_left
-              box(-0.01, 5, 5, 0.99, 11, 11), // port_left_led
-              box(15.005, 4, 4, 16.005, 12, 12), // port_right
-              box(15.01, 5, 5, 16.01, 11, 11), // port_right_led
+              box(0, 4, 4, 1, 12, 12), // port_left
+              box(15, 4, 4, 16, 12, 12), // port_right
               box(4, 13, 1.5, 5, 14, 14.5), // bar1
               box(6, 13, 1.5, 7, 14, 14.5), // bar2
               box(9, 13, 1.5, 10, 14, 14.5), // bar3
@@ -617,10 +611,6 @@ public final class BlockShapes {
 
         setShape(VoxelShapeUtils.combine(
               box(0, 12, 0, 16, 16, 9), // drive_top
-              box(11, 5, 15.005, 12, 6, 16.005), // drive_status_led_1
-              box(11, 3, 15.005, 12, 4, 16.005), // drive_status_led_2
-              box(14, 10, 15.005, 15, 13, 16.005), // drive_frequency_led_right
-              box(1, 10, 15.005, 2, 13, 16.005), // drive_frequency_led_left
               box(0, 0, 9, 16, 16, 16), // drive_front
               box(0, 6, 0, 16, 9, 9), // rack_top
               box(0, 0, 0, 16, 3, 9), // rack_bottom
@@ -712,9 +702,9 @@ public final class BlockShapes {
               box(5, 16, 10, 11, 17, 14), // monitor_stand_base
               box(-14, 16, 2, -1, 17, 14), // modifier_base
               box(-14, 16, 14, -11, 30, 16), // modifier_arm_right1
-              box(-14, 6, 14.005, -11, 16, 16.005), // modifier_arm_right2
+              box(-14, 6, 14, -11, 16, 16), // modifier_arm_right2
               box(-4, 16, 14, -1, 30, 16), // modifier_arm_left1
-              box(-4, 6, 14.005, -1, 16, 16.005), // modifier_arm_left2
+              box(-4, 6, 14, -1, 16, 16), // modifier_arm_left2
               box(-11, 23, 8, -10, 27, 9), // modifier_probe_right
               box(-11, 22, 8, -10, 23, 9), // modifier_probe_right_led
               box(-5, 23, 8, -4, 27, 9), // modifier_probe_left
@@ -723,7 +713,7 @@ public final class BlockShapes {
               box(-11, 28, 6, -4, 30, 11), // modifier_arm_top_center
               box(-14, 28, 6, -11, 30, 14), // modifier_arm_top_right
               box(-4, 28, 6, -1, 30, 14), // modifier_arm_top_left
-              box(4, 4, 15.005, 12, 12, 16.005) // energy_port
+              box(4, 4, 15, 12, 12, 16) // energy_port
         ), MODIFICATION_STATION);
 
         setShape(VoxelShapeUtils.combine(
@@ -788,11 +778,7 @@ public final class BlockShapes {
               box(4, 8, 13, 5, 13, 14), // fuel_rod_led2
               box(11, 8, 13, 12, 13, 14), // fuel_rod_led3
               box(13, 8, 13, 14, 13, 14), // fuel_rod_led4
-              box(4, 4, 15.005, 12, 12, 16.005), // port
-              box(5, 10, 15.01, 11, 11, 16.01), // port_led1
-              box(5, 5, 15.01, 11, 6, 16.01), // port_led2
-              box(5, 6, 15.01, 6, 10, 16.01), // port_led3
-              box(10, 6, 15.01, 11, 10, 16.01), // port_led4
+              box(4, 4, 15, 12, 12, 16), // port
               box(4, 7.99, 1.01, 12, 14.99, 10.01) // glass
         ), ANTIPROTONIC_NUCLEOSYNTHESIZER);
 

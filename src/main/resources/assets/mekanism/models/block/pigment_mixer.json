@@ -1,22 +1,41 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
+		"2": "mekanism:block/models/ports",
+		"3": "mekanism:block/models/ports_led",
 		"particle": "mekanism:block/pigment_mixer/base",
 		"base": "mekanism:block/pigment_mixer/base",
 		"details": "mekanism:block/pigment_mixer/details"
 	},
+	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "base",
 			"from": [0, 0, 0],
 			"to": [16, 16, 16],
 			"faces": {
-				"north": {"uv": [0, 0, 8, 8], "texture": "#base"},
-				"east": {"uv": [0, 8, 8, 16], "texture": "#base"},
-				"south": {"uv": [8, 0, 16, 8], "texture": "#base"},
-				"west": {"uv": [8, 8, 0, 16], "texture": "#base"},
+				"north": {"uv": [0, 0, 8, 8], "texture": "#base", "cullface": "north"},
+				"east": {"uv": [0, 8, 8, 16], "texture": "#base", "cullface": "east"},
+				"south": {"uv": [8, 0, 16, 8], "texture": "#base", "cullface": "south"},
+				"west": {"uv": [8, 8, 0, 16], "texture": "#base", "cullface": "west"},
 				"up": {"uv": [0, 0, 8, 8], "texture": "#details"},
-				"down": {"uv": [8, 8, 16, 16], "texture": "#base"}
+				"down": {"uv": [8, 8, 16, 16], "texture": "#base", "cullface": "down"}
+			}
+		},
+		{
+			"name": "port",
+			"from": [4, 4, 16],
+			"to": [12, 12, 16],
+			"faces": {
+				"south": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "south"}
+			}
+		},
+		{
+			"name": "port_led",
+			"from": [5, 5, 16],
+			"to": [11, 11, 16],
+			"faces": {
+				"south": {"uv": [9, 9, 15, 15], "texture": "#3", "cullface": "south", "emissivity": 15}
 			}
 		},
 		{
