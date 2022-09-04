@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mekanism.api.ItemRetriever;
 import mekanism.api.MekanismConfig;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -408,7 +407,7 @@ public final class OreDictManager
 		if (MekanismConfig.general.EnableDiamondCompat) {
 			for (ItemStack ore : OreDictionary.getOres("gemDiamond")) {
 				InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
-				RecipeHelper.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), ItemRetriever.getItem("CompressedDiamond"));
+				RecipeHelper.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.CompressedDiamond));
 			}
 		}
 		if (MekanismConfig.general.EnablePoorOresCompat) {
