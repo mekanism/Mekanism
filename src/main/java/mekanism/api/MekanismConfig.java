@@ -14,7 +14,7 @@ public class MekanismConfig
 		public static boolean controlCircuitOreDict = true;
 		public static boolean logPackets = false;
 		public static boolean dynamicTankEasterEgg = false;
-		public static boolean voiceServerEnabled = true;
+		public static boolean voiceServerEnabled = false;
 		public static boolean cardboardSpawners = true;
 		public static boolean enableWorldRegeneration = true;
 		public static boolean spawnBabySkeletons = true;
@@ -67,6 +67,9 @@ public class MekanismConfig
 		public static double heatPerFuelTick = 4;
 		public static boolean allowTransmitterAlloyUpgrade;
 		public static boolean allowProtection = true;
+		public static boolean EnableQuartzCompat;
+		public static boolean EnableDiamondCompat;
+		public static boolean EnablePoorOresCompat;
 	}
 
 	public static class client
