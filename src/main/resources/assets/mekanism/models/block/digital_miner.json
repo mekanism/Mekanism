@@ -5,6 +5,7 @@
 		"2": "mekanism:block/models/digital_miner_elements2",
 		"3": "mekanism:block/models/ports",
 		"4": "mekanism:block/models/ports_led",
+		"5": "mekanism:block/models/leds",
 		"particle": "mekanism:block/models/digital_miner"
 	},
 	"render_type": "minecraft:cutout",
@@ -39,11 +40,11 @@
 			"from": [17, 17.5, -12.005],
 			"to": [18, 18.5, -11.005],
 			"faces": {
-				"north": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"east": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"south": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"west": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"down": {"uv": [10, 9, 11, 10], "texture": "#4"}
+				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"south": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"west": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"down": {"uv": [2, 0, 3, 1], "texture": "#5"}
 			}
 		},
 		{
@@ -76,11 +77,11 @@
 			"from": [2, 17.5, -12.005],
 			"to": [3, 18.5, -11.005],
 			"faces": {
-				"north": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"east": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"south": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"west": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"down": {"uv": [10, 9, 11, 10], "texture": "#4"}
+				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"south": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"west": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"down": {"uv": [2, 0, 3, 1], "texture": "#5"}
 			}
 		},
 		{
@@ -113,11 +114,11 @@
 			"from": [-13, 17.5, -12.005],
 			"to": [-12, 18.5, -11.005],
 			"faces": {
-				"north": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"east": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"south": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"west": {"uv": [10, 9, 11, 10], "texture": "#4"},
-				"down": {"uv": [10, 9, 11, 10], "texture": "#4"}
+				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"south": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"west": {"uv": [2, 0, 3, 1], "texture": "#5"},
+				"down": {"uv": [2, 0, 3, 1], "texture": "#5"}
 			}
 		},
 		{
