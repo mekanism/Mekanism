@@ -91,7 +91,7 @@ public class MekaSuitArmor implements ICustomArmor {
 
     private static final Map<UUID, BoltRenderer> boltRenderMap = new Object2ObjectOpenHashMap<>();
 
-    private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3(-1, 0.5, 0)));
+    private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(-1, 0.5, 0));
 
     private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
         @NotNull
@@ -225,10 +225,10 @@ public class MekaSuitArmor implements ICustomArmor {
     public enum ModelPos {
         HEAD(BASE_TRANSFORM, s -> s.contains("head")),
         BODY(BASE_TRANSFORM, s -> s.contains("body")),
-        LEFT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3(-0.3125, -0.125, 0))), s -> s.contains("left_arm")),
-        RIGHT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3(0.3125, -0.125, 0))), s -> s.contains("right_arm")),
-        LEFT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3(-0.125, -0.75, 0))), s -> s.contains("left_leg")),
-        RIGHT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3(0.125, -0.75, 0))), s -> s.contains("right_leg")),
+        LEFT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(-0.3125, -0.125, 0)), s -> s.contains("left_arm")),
+        RIGHT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(0.3125, -0.125, 0)), s -> s.contains("right_arm")),
+        LEFT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(-0.125, -0.75, 0)), s -> s.contains("left_leg")),
+        RIGHT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(0.125, -0.75, 0)), s -> s.contains("right_leg")),
         LEFT_WING(BASE_TRANSFORM, s -> s.contains("left_wing")),
         RIGHT_WING(BASE_TRANSFORM, s -> s.contains("right_wing"));
 

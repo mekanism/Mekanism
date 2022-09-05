@@ -3,8 +3,10 @@ package mekanism.client.model.baked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
+import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.block.attribute.Attribute;
@@ -14,7 +16,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,38 +33,42 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
 
     @Override
     public List<BakedQuad> createQuads(QuadsKey<byte[]> key) {
-        byte[] driveStatus = key.getData();
-        List<BakedQuad> ret = key.getQuads();
+        byte[] driveStatus = Objects.requireNonNull(key.getData());
+        BlockState blockState = Objects.requireNonNull(key.getBlockState());
+        //Side will always be null as we validate it when creating the key as we don't currently have any of the sides get culled
         Direction side = key.getSide();
-        BlockState blockState = key.getBlockState();
-        if (blockState != null && side == Attribute.getFacing(blockState)) {
-            ret = new ArrayList<>(ret);
-            List<BakedQuad> driveQuads = new ArrayList<>();
-            for (int i = 0; i < driveStatus.length; i++) {
-                DriveStatus status = DriveStatus.STATUSES[driveStatus[i]];
-                if (status != DriveStatus.NONE) {
-                    driveQuads.addAll(getDriveQuads(i, status, key));
+        List<Quad> driveQuads = new ArrayList<>();
+        for (int i = 0; i < driveStatus.length; i++) {
+            DriveStatus status = DriveStatus.STATUSES[driveStatus[i]];
+            if (status != DriveStatus.NONE) {
+                float[] translation = DRIVE_PLACEMENTS[i];
+                QuadTransformation transformation = QuadTransformation.translate(translation[0], translation[1], 0);
+                for (BakedQuad bakedQuad : MekanismModelCache.INSTANCE.QIO_DRIVES[status.ordinal()].getBakedModel().getQuads(blockState, side, key.getRandom())) {
+                    Quad quad = new Quad(bakedQuad);
+                    transformation.transform(quad);
+                    driveQuads.add(quad);
                 }
             }
-            ret.addAll(QuadUtils.transformBakedQuads(driveQuads, QuadTransformation.rotate(side)));
         }
-        return ret;
-    }
-
-    private List<BakedQuad> getDriveQuads(int index, DriveStatus status, QuadsKey<byte[]> key) {
-        List<BakedQuad> ret = MekanismModelCache.INSTANCE.QIO_DRIVES[status.ordinal()].getBakedModel().getQuads(key.getBlockState(), null, key.getRandom());
-        float[] translation = DRIVE_PLACEMENTS[index];
-        return QuadUtils.transformBakedQuads(ret, QuadTransformation.translate(new Vec3(translation[0], translation[1], 0)));
+        if (!driveQuads.isEmpty()) {
+            List<BakedQuad> ret = new ArrayList<>(key.getQuads());
+            ret.addAll(QuadUtils.transformAndBake(driveQuads, QuadTransformation.rotate(Attribute.getFacing(blockState))));
+            return ret;
+        }
+        return key.getQuads();
     }
 
     @Nullable
     @Override
     public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, ModelData data) {
-        byte[] driveStatus = data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
-        if (driveStatus == null) {
-            return null;
+        //Skip if we don't have a blockstate or we aren't for the null side (unculled)
+        if (key.getBlockState() != null && key.getSide() == null) {
+            byte[] driveStatus = data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
+            if (driveStatus != null) {
+                return key.data(driveStatus, Arrays.hashCode(driveStatus), Arrays::equals);
+            }
         }
-        return key.data(driveStatus, Arrays.hashCode(driveStatus), Arrays::equals);
+        return null;
     }
 
     @Override

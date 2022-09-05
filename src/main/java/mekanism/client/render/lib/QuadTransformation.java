@@ -40,6 +40,10 @@ public interface QuadTransformation {
         return new LightTransformation(LightTexture.block(light), LightTexture.sky(light));
     }
 
+    static QuadTransformation translate(double xTranslation, double yTranslation, double zTranslation) {
+        return translate(new Vec3(xTranslation, yTranslation, zTranslation));
+    }
+
     static QuadTransformation translate(Vec3 translation) {
         return new TranslationTransformation(translation);
     }
@@ -232,11 +236,10 @@ public interface QuadTransformation {
 
         @Override
         public void transform(Quad quad) {
-            if (texture == null) {
-                return;
+            if (texture != null) {
+                QuadUtils.remapUVs(quad, texture);
+                quad.setTexture(texture);
             }
-            QuadUtils.remapUVs(quad, texture);
-            quad.setTexture(texture);
         }
 
         @Override
