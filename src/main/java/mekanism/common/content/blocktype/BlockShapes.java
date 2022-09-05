@@ -64,12 +64,13 @@ public final class BlockShapes {
               box(8, 4, 0, 16, 16, 16), // tank1
               box(0, 4, 9, 7, 14, 16), // tank2
               box(0, 4, 0, 7, 14, 7), // tank3
-              box(6.5, 10, 7.5, 9.5, 11, 8.5), // tube1
-              box(3, 12, 7.5, 7, 13, 8.5), // tube2
+              box(7, 10, 7.5, 8, 11, 8.5), // tube1
+              box(4, 12, 7.5, 7, 13, 8.5), // tube2
               box(3, 12, 7.5, 4, 15, 8.5), // tube3
               box(3, 15, 3, 4, 16, 13), // tube4
               box(3, 14, 3, 4, 15, 4), // tube5
-              box(3, 14, 12, 4, 15, 13)// tube6
+              box(3, 14, 12, 4, 15, 13),// tube6
+              box(6, 10, 7.5, 7, 12, 8.5)// tube7
         ), Rotation.CLOCKWISE_90), ELECTROLYTIC_SEPARATOR);
 
         setShape(VoxelShapeUtils.combine(
