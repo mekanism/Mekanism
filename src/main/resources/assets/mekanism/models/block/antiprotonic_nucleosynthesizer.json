@@ -281,10 +281,10 @@
 				},
 				{
 					"name": "port_led1",
-					"from": [5, 5, 16.005],
-					"to": [11, 11, 16.005],
+					"from": [4, 4, 16.005],
+					"to": [12, 12, 16.005],
 					"faces": {
-						"south": {"uv": [9, 9, 15, 15], "texture": "#6", "cullface": "south", "emissivity": 15}
+						"south": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "south", "emissivity": 15}
 					}
 				}
 			]

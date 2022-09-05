@@ -29,18 +29,18 @@
 		},
 		{
 			"name": "port_left_led",
-			"from": [-0.005, 5, 5],
-			"to": [-0.005, 11, 11],
+			"from": [-0.005, 4, 4],
+			"to": [-0.005, 12, 12],
 			"faces": {
-				"west": {"uv": [9, 9, 15, 15], "texture": "#6", "cullface": "west", "emissivity": 15}
+				"west": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "west", "emissivity": 15}
 			}
 		},
 		{
 			"name": "port_right_led",
-			"from": [16.005, 5, 5],
-			"to": [16.005, 11, 11],
+			"from": [16.005, 4, 4],
+			"to": [16.005, 12, 12],
 			"faces": {
-				"east": {"uv": [9, 9, 15, 15], "texture": "#6", "cullface": "east", "emissivity": 15}
+				"east": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "east", "emissivity": 15}
 			}
 		},
 		{

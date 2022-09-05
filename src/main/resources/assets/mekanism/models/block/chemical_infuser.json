@@ -23,10 +23,10 @@
 		},
 		{
 			"name": "portRightLED",
-			"from": [0, 5, 5],
-			"to": [0, 11, 11],
+			"from": [0, 4, 4],
+			"to": [0, 12, 12],
 			"faces": {
-				"west": {"uv": [1, 1, 7, 7], "texture": "#2", "cullface": "west", "emissivity": 15}
+				"west": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "west", "emissivity": 15}
 			}
 		},
 		{
@@ -43,10 +43,10 @@
 		},
 		{
 			"name": "portLeftLED",
-			"from": [16, 5, 5],
-			"to": [16, 11, 11],
+			"from": [16, 4, 4],
+			"to": [16, 12, 12],
 			"faces": {
-				"east": {"uv": [1, 1, 7, 7], "texture": "#2", "cullface": "east", "emissivity": 15}
+				"east": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "east", "emissivity": 15}
 			}
 		},
 		{
@@ -164,10 +164,10 @@
 		},
 		{
 			"name": "portFrontLED",
-			"from": [5, 5, 0],
-			"to": [11, 11, 0],
+			"from": [4, 4, 0],
+			"to": [12, 12, 0],
 			"faces": {
-				"north": {"uv": [1, 1, 7, 7], "texture": "#2", "cullface": "north", "emissivity": 15}
+				"north": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "north", "emissivity": 15}
 			}
 		},
 		{
@@ -241,10 +241,10 @@
 		},
 		{
 			"name": "portBackLED",
-			"from": [5, 5, 16],
-			"to": [11, 11, 16],
+			"from": [4, 4, 16],
+			"to": [12, 12, 16],
 			"faces": {
-				"south": {"uv": [9, 9, 15, 15], "texture": "#2", "cullface": "south", "emissivity": 15}
+				"south": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "south", "emissivity": 15}
 			}
 		},
 		{

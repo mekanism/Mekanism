@@ -244,10 +244,10 @@
 		},
 		{
 			"name": "portLED",
-			"from": [5, 0, 5],
-			"to": [11, 0, 11],
+			"from": [4, 0, 4],
+			"to": [12, 0, 12],
 			"faces": {
-				"down": {"uv": [9, 9, 15, 15], "texture": "#3", "cullface": "down", "emissivity": 15}
+				"down": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "down", "emissivity": 15}
 			}
 		}
 	],

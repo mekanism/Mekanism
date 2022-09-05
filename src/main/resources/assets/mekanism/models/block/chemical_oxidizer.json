@@ -86,14 +86,34 @@
 		},
 		{
 			"name": "tank",
+			"from": [0, 12, 4],
+			"to": [7, 16, 12],
+			"faces": {
+				"east": {"uv": [2, 8, 6, 10], "texture": "#all"},
+				"west": {"uv": [10, 8, 14, 10], "texture": "#all", "cullface": "west"},
+				"up": {"uv": [12.5, 4, 16, 8], "texture": "#elements", "cullface": "up"}
+			}
+		},
+		{
+			"name": "tankNorth",
 			"from": [0, 4, 0],
-			"to": [7, 16, 16],
+			"to": [7, 16, 4],
 			"faces": {
 				"north": {"uv": [12.5, 10, 16, 16], "texture": "#elements", "cullface": "north"},
-				"east": {"uv": [0, 8, 8, 14], "texture": "#all"},
+				"east": {"uv": [6, 8, 8, 14], "texture": "#all"},
+				"west": {"uv": [8, 8, 10, 14], "texture": "#all", "cullface": "west"},
+				"up": {"uv": [12.5, 2, 16, 4], "texture": "#elements", "cullface": "up"}
+			}
+		},
+		{
+			"name": "tankSouth",
+			"from": [0, 4, 12],
+			"to": [7, 16, 16],
+			"faces": {
+				"east": {"uv": [0, 8, 2, 14], "texture": "#all"},
 				"south": {"uv": [12.5, 10, 16, 16], "texture": "#elements", "cullface": "south"},
-				"west": {"uv": [8, 8, 16, 14], "texture": "#all", "cullface": "west"},
-				"up": {"uv": [12.5, 2, 16, 10], "texture": "#elements", "cullface": "up"}
+				"west": {"uv": [14, 8, 16, 14], "texture": "#all", "cullface": "west"},
+				"up": {"uv": [12.5, 8, 16, 10], "texture": "#elements", "cullface": "up"}
 			}
 		},
 		{
@@ -109,10 +129,10 @@
 		},
 		{
 			"name": "port_large_east_led",
-			"from": [16, 4, 4],
-			"to": [16, 12, 12],
+			"from": [16, 3, 3],
+			"to": [16, 13, 13],
 			"faces": {
-				"east": {"uv": [0.5, 0.5, 4.5, 4.5], "texture": "#ports_large_led", "cullface": "east", "emissivity": 15}
+				"east": {"uv": [0, 0, 5, 5], "texture": "#ports_large_led", "cullface": "east", "emissivity": 15}
 			}
 		},
 		{
@@ -128,18 +148,19 @@
 			}
 		},
 		{
-			"name": "port_west_led_1",
-			"from": [0, 5, 5],
-			"to": [0, 11, 11],
+			"name": "port_west_led",
+			"from": [0, 4, 4],
+			"to": [0, 12, 12],
 			"faces": {
-				"west": {"uv": [9, 1, 15, 7], "texture": "#ports_led", "cullface": "west", "emissivity": 15}
+				"west": {"uv": [8, 0, 16, 8], "texture": "#ports_led", "cullface": "west", "emissivity": 15}
 			}
 		},
 		{
 			"name": "port_west",
 			"from": [0, 4, 4],
-			"to": [0, 12, 12],
+			"to": [7, 12, 12],
 			"faces": {
+				"east": {"uv": [1.5, 10, 6.5, 14], "texture": "#all"},
 				"west": {"uv": [0, 0, 8, 8], "texture": "#ports", "cullface": "west"}
 			}
 		}
@@ -180,7 +201,7 @@
 			"name": "chemical_oxidizer",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 		}
 	]
 }

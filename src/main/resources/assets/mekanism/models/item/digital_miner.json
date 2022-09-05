@@ -538,11 +538,11 @@
 		},
 		{
 			"name": "port1_led",
-			"from": [5, 0, 5],
-			"to": [11, 0, 11],
+			"from": [4, 0, 4],
+			"to": [12, 0, 12],
 			"shade": false,
 			"faces": {
-				"down": {"uv": [9, 9, 15, 15], "texture": "#4", "cullface": "down", "emissivity": 15}
+				"down": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "down", "emissivity": 15}
 			}
 		},
 		{
@@ -573,11 +573,11 @@
 		},
 		{
 			"name": "port2a_led",
-			"from": [32, 5, 5],
-			"to": [32, 11, 11],
+			"from": [32, 4, 4],
+			"to": [32, 12, 12],
 			"shade": false,
 			"faces": {
-				"east": {"uv": [9, 9, 15, 15], "texture": "#4", "emissivity": 15}
+				"east": {"uv": [8, 8, 16, 16], "texture": "#4", "emissivity": 15}
 			}
 		},
 		{
@@ -621,11 +621,11 @@
 		},
 		{
 			"name": "port3b_led",
-			"from": [-16, 5, 5],
-			"to": [-16, 11, 11],
+			"from": [-16, 4, 4],
+			"to": [-16, 12, 12],
 			"shade": false,
 			"faces": {
-				"west": {"uv": [9, 9, 15, 15], "texture": "#4", "emissivity": 15}
+				"west": {"uv": [8, 8, 16, 16], "texture": "#4", "emissivity": 15}
 			}
 		},
 		{
@@ -759,10 +759,10 @@
 		},
 		{
 			"name": "port_back_led",
-			"from": [5, 21, 32],
-			"to": [11, 27, 32],
+			"from": [4, 20, 32],
+			"to": [12, 28, 32],
 			"faces": {
-				"south": {"uv": [1, 1, 7, 7], "texture": "#4", "emissivity": 15}
+				"south": {"uv": [0, 0, 8, 8], "texture": "#4", "emissivity": 15}
 			}
 		},
 		{
@@ -775,10 +775,10 @@
 		},
 		{
 			"name": "port_top_led",
-			"from": [5, 32, 5],
-			"to": [11, 32, 11],
+			"from": [4, 32, 4],
+			"to": [12, 32, 12],
 			"faces": {
-				"up": {"uv": [1, 1, 7, 7], "texture": "#4", "emissivity": 15}
+				"up": {"uv": [0, 0, 8, 8], "texture": "#4", "emissivity": 15}
 			}
 		}
 	],
