@@ -70,6 +70,8 @@ public class MekanismConfig
 		public static boolean EnableQuartzCompat;
 		public static boolean EnableDiamondCompat;
 		public static boolean EnablePoorOresCompat;
+		public static boolean OreDictOsmium;
+		public static boolean OreDictPlatinum;
 	}
 
 	public static class client
