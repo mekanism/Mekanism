@@ -137,7 +137,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 @Mod(modid = "Mekanism", name = "Mekanism", version = "GRADLE_MODVERSION", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
-				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
+				"after:ComputerCraft;after:Galacticraft;after:MineTweaker3")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
