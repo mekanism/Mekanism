@@ -49,7 +49,9 @@ public final class OreDictManager
 				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Items.stick, 6), new ItemStack(MekanismItems.Sawdust), 0.25);
 			}
 		}
-
+		for (ItemStack ore : OreDictionary.getOres("ingotSteel")) {
+			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.EnrichedAlloy));
+		}
 		for (ItemStack ore : OreDictionary.getOres("oreNetherSteel")) {
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 4, 1));
 		}
