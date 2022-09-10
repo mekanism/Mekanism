@@ -9,7 +9,7 @@
 		"5": "mekanism:block/models/chemical_dissolution_chamber_2",
 		"6": "mekanism:block/bottom",
 		"7": "mekanism:block/glass",
-		"particle": "mekanism:block/models/ports_led"
+		"particle": "mekanism:block/bottom"
 	},
 	"display": {
 		"thirdperson_righthand": {
@@ -68,7 +68,7 @@
 				"5": "mekanism:block/models/chemical_dissolution_chamber_2",
 				"6": "mekanism:block/bottom",
 				"7": "mekanism:block/glass",
-				"particle": "mekanism:block/models/ports_led"
+				"particle": "mekanism:block/bottom"
 			},
 			"elements": [
 				{
@@ -355,7 +355,7 @@
 				"5": "mekanism:block/models/chemical_dissolution_chamber_2",
 				"6": "mekanism:block/bottom",
 				"7": "mekanism:block/glass",
-				"particle": "mekanism:block/models/ports_led"
+				"particle": "mekanism:block/bottom"
 			},
 			"elements": [
 				{
