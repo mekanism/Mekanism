@@ -6,6 +6,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.client;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -46,10 +47,11 @@ public class SparkleAnimation
 				public void run()
 				{
 					World world = pointer.getWorldObj();
+					int count = client.multiblockSparkleIntensity;
 					
 					for(Coord4D coord : iteratedNodes)
 					{
-						for(int i = 0; i < 6; i++)
+						for(int i = 0; i < count; i++)
 						{
 							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + -.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
 							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + 1.01, coord.zCoord + random.nextDouble(), 0, 0, 0);

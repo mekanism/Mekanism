@@ -231,6 +231,8 @@ public class ClientProxy extends CommonProxy
 		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
 		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
 		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
+		client.doMultiblockSparkle = Mekanism.configuration.get("client", "DoMultiblockSparkle", true).getBoolean();
+		client.multiblockSparkleIntensity = Mekanism.configuration.get("client", "MultiblockSparkleIntesity", 6).getInt();
 
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -567,13 +569,15 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity)
 	{
-		new SparkleAnimation(tileEntity, new INodeChecker() {
-			@Override
-			public boolean isNode(TileEntity tile)
-			{
+		if(client.doMultiblockSparkle == true){
+			new SparkleAnimation(tileEntity, new INodeChecker() {
+				@Override
+				public boolean isNode(TileEntity tile)
+				{
 				return MultiblockManager.areEqual(tile, tileEntity);
-			}
-		}).run();
+				}
+			}).run();
+		}
 	}
 
 	@Override
