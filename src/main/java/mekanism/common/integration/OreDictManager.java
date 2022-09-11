@@ -66,8 +66,7 @@ public final class OreDictManager
 
 		if (OreDictionary.getOres("itemRubber").size() > 0) {
 			for (ItemStack ore : OreDictionary.getOres("woodRubber")) {
-				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F);
-			}
+			RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRawRubber").get(0), 2), 1F);			}
 		}
 
 		for (ItemStack ore : OreDictionary.getOres("dustSulfur")) {
@@ -344,6 +343,12 @@ public final class OreDictManager
 		{
 			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.diamond));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("gemDiamond"))
+		{
+			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
+			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.CompressedDiamond));		
 		}
 			
 		for(ItemStack ore : OreDictionary.getOres("dustTin"))

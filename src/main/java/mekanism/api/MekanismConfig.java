@@ -87,6 +87,8 @@ public class MekanismConfig
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
 		public static boolean opaqueTransmitters = false;
+		public static boolean doMultiblockSparkle = true;
+		public static int multiblockSparkleIntensity = 6;
 	}
 	
 	public static class machines
@@ -140,6 +142,8 @@ public class MekanismConfig
 		public static double heatGeneration;
 		public static double heatGenerationLava;
 		public static double heatGenerationNether;
+		public static int heatGenerationFluidRate;
+		public static boolean heatGenEnable;
 		public static double solarGeneration;
 
 		public static double windGenerationMin;
