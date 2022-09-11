@@ -42,7 +42,6 @@ public interface IEnergyHandler extends IEnergyProvider, IEnergyReceiver {
 	@Override
 	int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate);
 
-
 	/**
 	 * Returns the amount of energy currently stored.
 	 */

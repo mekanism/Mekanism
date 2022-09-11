@@ -1,9 +1,31 @@
-# Mekanism Terralization version with bugfixes from community
+# Mekanism 1.7.10 Community Edition
 
-### This is a customized version of Mekanism made for Terralization modpack. It is made with several other contributions I found on GitHub and my own fixes. This version is supported but its limited, therefore it can be unstable.
+### This was made for Terralization Modpack and it's code is based on several other contributions I found on GitHub and fixes made by the community on this repo.
 
 #### Download at curseforge
-https://www.curseforge.com/minecraft/mc-mods/mekanism-terralization-edition
+https://www.curseforge.com/minecraft/mc-mods/mekanism-ce
+
+#### Builds at our maven
+https://maven.thorfusion.com/ui/packages
+
+### Building Mekanism 1.7.10 Community Edition
+
+```bash
+./gradlew fullBuild
+```
+You will find the files inside ./output/
+
+## For modpacks
+You need to include the [LICENSE](https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.7.10/LICENSE.md) for Mekanism 1.7.10 Community Edition and Aidanbrady as author, if your system supports it indicate that this is an custom version and give appreciable credits
+
+
+## Required Dependencies
+Mekanism CE also has three dependencies that it requires, as a modpack creator DO NOT USE the automatic downloader to get those file. It puts alot of strain to my server network.
+
+### Dependency list
++ ForgeMultipart
++ CodeChickenLib
++ CoFHLib or CoFHCore
 
 ## Fixes by
 
@@ -30,3 +52,10 @@ fix EnergyMatrix use IC2 cable(EnergyNetBug) connecting valve as a loop to fully
 #### maggi373 :
 fix for bin dupe bug, removed the ability to stack bins, quick solution but it works
 
+## All contributors get capes
+
+# License stuff
+
+[LICENSE](https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.7.10/LICENSE.md)
+
+[ORIGINAL MOD](https://github.com/mekanism/Mekanism)

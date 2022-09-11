@@ -2,6 +2,8 @@ package mekanism.client;
 
 import java.io.File;
 
+import com.jadarstudios.developercapes.DevCapes;
+import cpw.mods.fml.common.Loader;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
@@ -211,6 +213,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
+	public static boolean isThorfusionLoaded;
 	@Override
 	public void loadConfiguration()
 	{
@@ -540,6 +543,7 @@ public class ClientProxy extends CommonProxy
 			teleporter.clientFreq = message.frequency;
 			teleporter.clientPublicCache = message.publicCache;
 			teleporter.clientPrivateCache = message.privateCache;
+			teleporter.clientProtectedCache = message.protectedCache;
 			
 			teleporter.updateButtons();
 		}
@@ -591,6 +595,19 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		MekanismRenderer.init();
+		isThorfusionLoaded = Loader.isModLoaded("thorfusion");
+	}
+
+	@Override
+	public void Cape()
+	{
+		if(!isThorfusionLoaded) {
+			try {
+				DevCapes.getInstance().registerConfig("https://raw.githubusercontent.com/maggi373/files/main/capes/cape.json");
+			} catch (Exception e) {
+				System.out.print("Cant load capes\n"+e);
+			}
+		}
 	}
 
 	@Override

@@ -1,0 +1,41 @@
+[
+{
+  "modid": "Mekanism",
+  "name": "Mekanism Community Edition",
+  "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authorList": ["aidancbrady"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [],
+  "dependencies": ["ForgeMultipart"]
+},
+{
+  "modid": "MekanismGenerators",
+  "name": "MekanismGenerators Community Edition",
+  "description": "Generators module of Mekanism.",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authorList": ["aidancbrady"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ]
+},
+{
+  "modid": "MekanismTools",
+  "name": "MekanismTools Community Edition",
+  "description": "Tools module for Mekanism.",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
+  "updateUrl": "",
+  "authorList": ["aidancbrady"],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ]
+}
+]

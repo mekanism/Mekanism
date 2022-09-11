@@ -1,6 +1,8 @@
 build
 output
 .idea
+.gradle/
+buildSrc/
 *.iml
 *.ipr
 *.iws
@@ -20,3 +22,4 @@ MDK.zip
 *.blend1
 *.blend2
 /bin
+gradle.properties

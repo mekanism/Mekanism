@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.security.IOwnerItem;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.Entity;
@@ -30,7 +31,17 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		if(getFrequency(itemstack) != null)
 		{
 			list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(itemstack));
-			list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + (isPrivateMode(itemstack) ? "private" : "public")));
+
+			String name = "trusted";
+
+			ISecurityTile.SecurityMode access= getAccess(itemstack);
+			if(access == ISecurityTile.SecurityMode.PUBLIC) {
+				name = "public";
+			} else if(access == ISecurityTile.SecurityMode.PRIVATE) {
+				name = "private";
+			}
+
+			list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + name));
 		}
 		
 		super.addInformation(itemstack, entityplayer, list, flag);
@@ -102,7 +113,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	public void setOwner(ItemStack stack, String owner) 
 	{
 		setFrequency(stack, null);
-		setPrivateMode(stack, false);
+		setAccess(stack, ISecurityTile.SecurityMode.PUBLIC);
 		
 		if(owner == null || owner.isEmpty())
 		{
@@ -119,24 +130,31 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		return true;
 	}
 	
-	public boolean isPrivateMode(ItemStack stack) 
+	public ISecurityTile.SecurityMode getAccess(ItemStack stack)
 	{
 		if(stack.stackTagCompound != null)
 		{
-			return stack.stackTagCompound.getBoolean("private");
+			if(stack.stackTagCompound.hasKey("access")) {
+				return ISecurityTile.SecurityMode.values()[stack.stackTagCompound.getInteger("access")];
+			} else {
+				boolean priv = stack.stackTagCompound.getBoolean("private");
+
+				if(priv)
+					return ISecurityTile.SecurityMode.PRIVATE;
+			}
 		}
 		
-		return false;
+		return ISecurityTile.SecurityMode.PUBLIC;
 	}
 
-	public void setPrivateMode(ItemStack stack, boolean isPrivate) 
+	public void setAccess(ItemStack stack, ISecurityTile.SecurityMode access)
 	{
 		if(stack.stackTagCompound == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.stackTagCompound.setBoolean("private", isPrivate);
+		stack.stackTagCompound.setInteger("access", access.ordinal());
 	}
 	
 	public String getFrequency(ItemStack stack) 

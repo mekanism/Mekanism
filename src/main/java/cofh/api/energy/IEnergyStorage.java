@@ -5,15 +5,15 @@ package cofh.api.energy;
  * This is not to be implemented on TileEntities. This is for internal use only.
  * <p>
  * A reference implementation can be found at {@link EnergyStorage}.
- * 
+ *
  * @author King Lemming
- * 
+ *
  */
 public interface IEnergyStorage {
 
 	/**
 	 * Adds energy to the storage. Returns quantity of energy that was accepted.
-	 * 
+	 *
 	 * @param maxReceive
 	 *            Maximum amount of energy to be inserted.
 	 * @param simulate
@@ -24,7 +24,7 @@ public interface IEnergyStorage {
 
 	/**
 	 * Removes energy from the storage. Returns quantity of energy that was removed.
-	 * 
+	 *
 	 * @param maxExtract
 	 *            Maximum amount of energy to be extracted.
 	 * @param simulate

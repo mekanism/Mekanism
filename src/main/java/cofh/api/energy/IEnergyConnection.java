@@ -7,9 +7,9 @@ import net.minecraftforge.common.util.ForgeDirection;
  * accept it; otherwise just use IEnergyHandler.
  * <p>
  * Note that {@link IEnergyHandler} is an extension of this.
- * 
+ *
  * @author King Lemming
- * 
+ *
  */
 public interface IEnergyConnection {
 

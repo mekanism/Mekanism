@@ -97,7 +97,7 @@ public class TileComponentSecurity implements ITileComponent
 			}
 		}
 		
-		Frequency freq = new SecurityFrequency(owner).setPublic(true);
+		Frequency freq = new SecurityFrequency(owner).setAccess(SecurityMode.PUBLIC);
 		freq.activeCoords.add(Coord4D.get(tileEntity));
 		manager.addFrequency(freq);
 		frequency = (SecurityFrequency)freq;

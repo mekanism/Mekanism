@@ -17,6 +17,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	public TileEntityOsmiumCompressor()
 	{
 		super("compressor", "OsmiumCompressor", usage.osmiumCompressorUsage, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy);
+		MAX_GAS = 200; //FIXME with a better fix
 	}
 
 	@Override

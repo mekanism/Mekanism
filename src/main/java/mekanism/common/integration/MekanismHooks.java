@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import li.cil.oc.api.Driver;
+import mekanism.api.MekanismConfig;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
@@ -41,9 +42,6 @@ public final class MekanismHooks
 	public boolean CCLoaded = false;
 	public boolean AE2Loaded = false;
 
-	public boolean MetallurgyCoreLoaded = false;
-	public boolean MetallurgyBaseLoaded = false;
-
 	public void hook()
 	{
 		if(Loader.isModLoaded("CoFHCore")) CoFHCoreLoaded = true;
@@ -52,13 +50,6 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
-		
-		if(Loader.isModLoaded("Metallurgy3Core"))
-		{
-			MetallurgyCoreLoaded = true;
-
-			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
-		}
 
 		if(IC2Loaded)
 		{
@@ -102,11 +93,21 @@ public final class MekanismHooks
 		}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
+			if(MekanismConfig.general.OreDictOsmium) {
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
+			}
+			if(MekanismConfig.general.OreDictPlatinum) {
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("orePlatinum"), null, new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
+			}
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
+			if(MekanismConfig.general.OreDictOsmium) {
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
+			}
+			if(MekanismConfig.general.OreDictPlatinum) {
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotPlatinum"), null, new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
+			}
 			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(MekanismItems.OtherDust, 1, 5));
 			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.glowstone_dust));
 			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(MekanismItems.OtherDust, 1, 1));

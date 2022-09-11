@@ -26,6 +26,7 @@ import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -49,6 +50,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import scala.Int;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile
 {
@@ -68,7 +70,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();
-	
+	public List<Frequency> protectedCache = new ArrayList<Frequency>();
+
 	public Ticket chunkTicket;
 
 	/** This teleporter's current status. */
@@ -178,9 +181,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		return null;
 	}
 	
-	public void setFrequency(String name, boolean publicFreq)
+	public void setFrequency(String name, SecurityMode publicFreq)
 	{
-		FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
+		FrequencyManager manager = getManager(new Frequency(name, null).setAccess(publicFreq));
 		manager.deactivate(Coord4D.get(this));
 		
 		for(Frequency freq : manager.getFrequencies())
@@ -194,7 +197,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			}
 		}
 		
-		Frequency freq = new Frequency(name, getSecurity().getOwner()).setPublic(publicFreq);
+		Frequency freq = new Frequency(name, getSecurity().getOwner()).setAccess(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = freq;
@@ -213,7 +216,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		{
 			return Mekanism.publicTeleporters;
 		}
-		else {
+		else if(freq.isPrivate()) {
 			if(!Mekanism.privateTeleporters.containsKey(getSecurity().getOwner()))
 			{
 				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwner());
@@ -222,6 +225,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			}
 			
 			return Mekanism.privateTeleporters.get(getSecurity().getOwner());
+		} else {
+			if(!Mekanism.protectedTeleporters.containsKey( getSecurity().getOwner()))
+			{
+				FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER + "protected", getSecurity().getOwner());
+				Mekanism.protectedTeleporters.put(getSecurity().getOwner(), manager);
+				manager.createOrLoad(worldObj);
+			}
+
+			return Mekanism.protectedTeleporters.get(getSecurity().getOwner());
 		}
 	}
 	
@@ -597,16 +609,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			if(type == 0)
 			{
 				String name = PacketHandler.readString(dataStream);
-				boolean isPublic = dataStream.readBoolean();
+				int isPublic = dataStream.readInt();
 				
-				setFrequency(name, isPublic);
+				setFrequency(name, SecurityMode.values()[isPublic]);
 			}
 			else if(type == 1)
 			{
 				String freq = PacketHandler.readString(dataStream);
-				boolean isPublic = dataStream.readBoolean();
+				int isPublic = dataStream.readInt();
 				
-				FrequencyManager manager = getManager(new Frequency(freq, null).setPublic(isPublic));
+				FrequencyManager manager = getManager(new Frequency(freq, null).setAccess(SecurityMode.values()[isPublic]));
 				
 				if(manager != null)
 				{
@@ -635,7 +647,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			
 			publicCache.clear();
 			privateCache.clear();
-			
+			protectedCache.clear();
+
 			int amount = dataStream.readInt();
 			
 			for(int i = 0; i < amount; i++)
@@ -648,6 +661,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			for(int i = 0; i < amount; i++)
 			{
 				privateCache.add(new Frequency(dataStream));
+			}
+
+			amount = dataStream.readInt();
+
+			for(int i = 0; i < amount; i++)
+			{
+				protectedCache.add(new Frequency(dataStream));
 			}
 		}
 	}
@@ -677,7 +697,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			freq.write(data);
 		}
 		
-		FrequencyManager manager = getManager(new Frequency(null, null).setPublic(false));
+		FrequencyManager manager = getManager(new Frequency(null, null).setAccess(SecurityMode.PRIVATE));
 		
 		if(manager != null)
 		{
@@ -690,6 +710,27 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		}
 		else {
 			data.add(0);
+		}
+
+
+		List<Frequency> protectedFrqs = new ArrayList<Frequency>();
+
+		for (Frequency frequency : Mekanism.securityFrequencies.getFrequencies()) {
+			SecurityFrequency secure = (SecurityFrequency) frequency;
+			if(secure.trusted.contains(getSecurity().getOwner())) {
+				FrequencyManager protected_ = Mekanism.protectedTeleporters.get(secure.owner);
+				if(protected_ != null) {
+					protectedFrqs.addAll(protected_.getFrequencies());
+				}
+			}
+		}
+		if(getSecurity().getOwner() != null)
+			protectedFrqs.addAll(getManager(new Frequency(null, null).setAccess(SecurityMode.TRUSTED)).getFrequencies());
+
+		data.add(protectedFrqs.size());
+
+		for (Frequency freq : protectedFrqs) {
+			freq.write(data);
 		}
 
 		return data;
@@ -724,15 +765,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 				teleport();
 				return new Object[] {"Attempted to teleport."};
 			case 4:
-				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean))
+				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Integer))
 				{
 					return new Object[] {"Invalid parameters."};
 				}
 				
 				String freq = ((String)arguments[0]).trim();
-				boolean isPublic = (Boolean)arguments[1];
+				int isPublic = (int)arguments[1];
 				
-				setFrequency(freq, isPublic);
+				setFrequency(freq, SecurityMode.values()[isPublic]);
 				
 				return new Object[] {"Frequency set."};
 			default:

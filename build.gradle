@@ -1,34 +1,38 @@
-defaultTasks 'fullBuild'
-
 buildscript {
-    repositories {
-    maven { url = "https://repo1.maven.org/maven2/" }
-    maven {
-      name = "forge"
-        url = "https://files.minecraftforge.net/maven"
-    }
-    maven {
-      name = "sonatype"
-        url = "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
+  repositories {
+      maven {
+          name = "central"
+          url = "https://maven.thorfusion.com/artifactory/central/"
+      }
   }
-  dependencies {
-    classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-  }
+    dependencies {
+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+            changing = true
+        }
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
+    }
 }
+
+plugins {
+    id 'java-library'
+}
+
+apply plugin: 'forge'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: "com.jfrog.artifactory"
+apply plugin: "maven-publish"
+apply plugin: "maven"
+
+defaultTasks 'fullBuild'
 
 repositories {
     maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
+        name 'central'
+        url 'https://maven.thorfusion.com/artifactory/central/'
     }
-    maven {
-        name 'ForgeFS'
-        url 'http://files.minecraftforge.net/maven'
-     }
-}
 
-apply plugin: 'idea'
+}
 
 idea {
     module {
@@ -36,8 +40,6 @@ idea {
         inheritOutputDirs = true
     }
 }
-
-apply plugin: 'forge'
 
 // Define properties file
 ext.configFile = file "build.properties"
@@ -54,31 +56,39 @@ dependencies {
     compile "codechicken:ForgeMultipart:${config.minecraft_version}-${config.FMP_version}:dev"
     compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
     compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.CCC_version}:dev"
+    compile "inventorytweaks:inventory-tweaks:1.7.10-1.60.0:api"
+    compile "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
+    compile "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"
 }
 
-version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "terralization")
-archivesBaseName = "MekanismAll"
+version = "${config.minecraft_version}-${config.mod_version}"
+group= "mekanism"
+archivesBaseName = "Mekanism-1.7.10-Community-Edition"
 libsDirName = "../output"
 distsDirName = "../output"
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
+    replaceIn "mekanism/common/Mekanism.java"
+    replaceIn "mekanism/generators/common/MekanismGenerators.java"
+    replaceIn "mekanism/tools/common/MekanismTools.java"
+    replace "GRADLE_MODVERSION", config.mod_version
+    replace "GRADLE_VERSIONMOD", config.alt_version
 }
 
 processResources
-{
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-        exclude '**/*.blend*'
-    }
-}
+        {
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+                exclude '**/*.blend*'
+            }
+        }
 
 task coreJar(type: Jar) {
-    baseName = 'Mekanism'
-
+    classifier = 'Core'
     manifest {
         attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
@@ -95,12 +105,12 @@ task coreJar(type: Jar) {
 }
 
 task alltJar(type: Jar) {
-    baseName = 'MekanismALLT'
+    classifier = 'ALL'
     manifest {
         attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
-    from('etc/core') {
+    from('etc/all') {
         include '*.info'
         expand 'version': config.mod_version, 'mc_version': config.minecraft_version, 'fmp_version': config.FMP_version
     }
@@ -110,8 +120,7 @@ task alltJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    baseName = 'MekanismTools'
-
+    classifier = 'Tools'
     from('etc/tools') {
         include '*.info'
         expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
@@ -119,12 +128,12 @@ task toolsJar(type: Jar) {
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/tools/**'
+        exclude 'mcmod.info'
     }
 }
 
 task generatorsJar(type: Jar) {
-    baseName = 'MekanismGenerators'
-
+    classifier = 'Generators'
     from('etc/generators') {
         include '*.info'
         expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
@@ -132,6 +141,7 @@ task generatorsJar(type: Jar) {
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/generators/**'
+        exclude 'mcmod.info'
     }
 }
 
@@ -142,26 +152,78 @@ alltJar.dependsOn('reobf')
 
 
 task MDKZip(type: Zip) {
-    baseName = 'MDK'
+    classifier = 'MDK'
     from sourceSets.main.java.srcDirs
     include 'mekanism/api/**'
 }
 
-task releaseJars(type: Copy) {
-    from coreJar
-    from toolsJar
-    from generatorsJar
-    from MDKZip
-    from alltJar
-    rename '-(.*)jar', '.jar'
-    rename '-(.*)zip', '.zip'
-    into '.'
+task apiJar(type: Jar) {
+    classifier = 'API'
+    dependsOn processResources
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.output
+    include 'mekanism/api/**'
 }
-
 
 task fullBuild(type: Delete) {
     delete jar
 }
 
-fullBuild.dependsOn('releaseJars')
+fullBuild.dependsOn('toolsJar', 'coreJar', 'generatorsJar', 'MDKZip', 'alltJar', 'apiJar')
+
+artifactory {
+    contextUrl = System.getenv("MAVEN_URL")
+    publish {
+        repository {
+            repoKey = 'thorfusion'
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+        }
+        publishBuildInfo = false
+        publishArtifacts = true
+        publishPom = true
+    }
+    resolve {
+        repository {
+            repoKey = 'central'
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+            maven = true
+
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = rootProject.name
+            groupId = project.group
+            version = project.version
+            artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar, apiJar]
+            components.java.withVariantsFromConfiguration(configurations.runtimeElements) {
+                skip()
+            }
+            pom {
+                name.set("Mekanism 1.7.10 Community Edition")
+                description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
+                url.set('https://aidancbrady.com/mekanism/')
+                issueManagement {
+                    system.set('github')
+                    url.set('https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues')
+                }
+                licenses {
+                    license {
+                        name.set('EUPL-1.2')
+                        distribution.set('repo')
+                    }
+                }
+            }
+        }
+    }
+}
 

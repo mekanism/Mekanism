@@ -1,14 +1,12 @@
 [
 {
   "modid": "MekanismGenerators",
-  "name": "MekanismGenerators",
+  "name": "MekanismGenerators Community Edition",
   "description": "Generators module of Mekanism.",
   "version": "${version}",
   "mcversion": "${mc_version}",
   "updateUrl": "",
-  "authors": [
-    "aidancbrady"
-  ],
+  "authorList": ["aidancbrady"],
   "credits": "Thanks to everyone who has contributed to this ongoing project.",
   "logoFile": "logo.png",
   "screenshots": [

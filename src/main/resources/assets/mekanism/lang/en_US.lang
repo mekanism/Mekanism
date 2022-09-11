@@ -675,6 +675,7 @@ gui.digitalMiner.inverse=Inverse mode
 gui.digitalMiner.requireReplace=Require replace
 gui.digitalMiner.fuzzyMode=Fuzzy mode
 gui.digitalMiner.missingBlock=Missing block
+gui.trusted=Trusted
 
 //Recipe names
 recipe.mekanismShaped=Shaped
