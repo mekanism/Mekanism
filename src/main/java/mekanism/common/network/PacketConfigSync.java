@@ -44,6 +44,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.TO_TE);
 			dataStream.writeDouble(general.FROM_H2);
 			dataStream.writeInt(general.ETHENE_BURN_TIME);
+			dataStream.writeInt(general.METHANE_BURN_TIME);
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
 			dataStream.writeInt(general.VOICE_PORT);
@@ -138,6 +139,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.TO_TE = dataStream.readDouble();
 			general.FROM_H2 = dataStream.readDouble();
 			general.ETHENE_BURN_TIME = dataStream.readInt();
+			general.METHANE_BURN_TIME = dataStream.readInt();
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
 			general.VOICE_PORT = dataStream.readInt();

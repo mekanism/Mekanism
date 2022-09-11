@@ -30,6 +30,7 @@ public class MekanismConfig
 		public static int userWorldGenVersion = 0;
 		public static double ENERGY_PER_REDSTONE = 10000;
 		public static int ETHENE_BURN_TIME = 40;
+		public static int METHANE_BURN_TIME = 10;
 		public static double DISASSEMBLER_USAGE = 10;
 		public static EnergyType energyUnit = EnergyType.J;
 		public static TempType tempUnit =	TempType.K;
