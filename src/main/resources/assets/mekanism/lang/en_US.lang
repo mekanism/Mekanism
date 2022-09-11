@@ -487,6 +487,7 @@ gui.undefined=Undefined
 gui.owner=Owner
 gui.public=Public
 gui.private=Private
+gui.trusted=Trusted
 gui.add=Add
 gui.set=Set
 gui.freq=Freq
