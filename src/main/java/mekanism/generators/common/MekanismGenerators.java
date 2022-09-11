@@ -80,6 +80,7 @@ public class MekanismGenerators implements IModule
 
 		//Load the proxy
 		proxy.loadConfiguration();
+		proxy.loadwinddimension();
 		proxy.registerRegularTileEntities();
 		proxy.registerSpecialTileEntities();
 		proxy.registerRenderInformation();

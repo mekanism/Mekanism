@@ -56,6 +56,7 @@ dependencies {
     compile "codechicken:ForgeMultipart:${config.minecraft_version}-${config.FMP_version}:dev"
     compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
     compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.CCC_version}:dev"
+    implementation 'org.apache.commons:commons-collections4:4.4'
     compile "inventorytweaks:inventory-tweaks:1.7.10-1.60.0:api"
     compile "net.industrial-craft:industrialcraft-2:2.2.828-experimental:api"
     compile "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"

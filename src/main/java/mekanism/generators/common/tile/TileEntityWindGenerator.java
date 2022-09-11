@@ -3,16 +3,20 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsCommonProxy;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
@@ -72,6 +76,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
+		if (isInWhitelistedDimension())
+		{
+			return 0;
+		}
 		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
 		{
 			final float minY = (float)generators.windGenerationMinY;
@@ -91,7 +99,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 			return 0;
 		}
 	}
-
+	public boolean isInWhitelistedDimension()
+	{
+		if (CollectionUtils.isEmpty(GeneratorsCommonProxy.dimid)){
+			return true;
+		} else {
+			return !GeneratorsCommonProxy.dimid.contains(0);
+		}
+	}
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
