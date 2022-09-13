@@ -300,6 +300,7 @@ gas.deuterium=Deuterium
 gas.tritium=Tritium
 gas.lithium=Lithium
 gas.fusionFuelDT=D-T Fuel
+gas.methane=Methane
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -486,6 +487,7 @@ gui.undefined=Undefined
 gui.owner=Owner
 gui.public=Public
 gui.private=Private
+gui.trusted=Trusted
 gui.add=Add
 gui.set=Set
 gui.freq=Freq

@@ -181,6 +181,7 @@ public class MekanismGenerators implements IModule
 		}));
 
 		FuelHandler.addGas(GasRegistry.getGas("ethene"), general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+		FuelHandler.addGas(GasRegistry.getGas("methane"), general.METHANE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * general.METHANE_BURN_TIME);
 	}
 
 	@Override
@@ -203,6 +204,8 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.heatGeneration);
 		dataStream.writeDouble(generators.heatGenerationLava);
 		dataStream.writeDouble(generators.heatGenerationNether);
+		dataStream.writeInt(generators.heatGenerationFluidRate);
+		dataStream.writeBoolean(generators.heatGenEnable);
 		dataStream.writeDouble(generators.solarGeneration);
 		
 		dataStream.writeDouble(generators.windGenerationMin);
@@ -224,7 +227,9 @@ public class MekanismGenerators implements IModule
 		generators.bioGeneration = dataStream.readDouble();
 		generators.heatGeneration = dataStream.readDouble();
 		generators.heatGenerationLava = dataStream.readDouble();
-		generators.heatGenerationNether = dataStream.readDouble();
+		generators.heatGenerationNether = dataStream.readDouble();;
+		generators.heatGenerationFluidRate = dataStream.readInt();
+		generators.heatGenEnable = dataStream.readBoolean();
 		generators.solarGeneration = dataStream.readDouble();
 		
 		generators.windGenerationMin = dataStream.readDouble();

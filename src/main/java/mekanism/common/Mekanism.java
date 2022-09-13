@@ -1168,6 +1168,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("tritium")).registerFluid();
 		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();
+		GasRegistry.register(new Gas("methane")).registerFluid();
 
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
 		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));
