@@ -52,7 +52,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + oredict switcher for osmium: you can chose either or both of osmium/platinum
 + fixed minetweaker not working problerly with mekanism
 + fixed osmium compressor taking incorrect amount of osmium Thorfusion#32
-+ making enriched allow now uses steel ingots instead of iron ingots
++ making enriched alloy now uses steel ingots instead of iron ingots
 + updated libraries and removed unused metallurgy compat
 + voiceserver is now disabled by default
 + oredict recipes for poor ores from railcraft (1x ingot from using purification chamber) Thorfusion#30
