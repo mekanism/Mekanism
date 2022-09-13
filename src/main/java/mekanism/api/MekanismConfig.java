@@ -32,6 +32,7 @@ public class MekanismConfig
 		public static int userWorldGenVersion = 0;
 		public static double ENERGY_PER_REDSTONE = 10000;
 		public static int ETHENE_BURN_TIME = 40;
+		public static int METHANE_BURN_TIME = 10;
 		public static double DISASSEMBLER_USAGE = 10;
 		public static EnergyType energyUnit = EnergyType.J;
 		public static TempType tempUnit =	TempType.K;
@@ -89,6 +90,8 @@ public class MekanismConfig
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
 		public static boolean opaqueTransmitters = false;
+		public static boolean doMultiblockSparkle = true;
+		public static int multiblockSparkleIntensity = 6;
 	}
 	
 	public static class machines
@@ -142,6 +145,8 @@ public class MekanismConfig
 		public static double heatGeneration;
 		public static double heatGenerationLava;
 		public static double heatGenerationNether;
+		public static int heatGenerationFluidRate;
+		public static boolean heatGenEnable;
 		public static double solarGeneration;
 
 		public static double windGenerationMin;

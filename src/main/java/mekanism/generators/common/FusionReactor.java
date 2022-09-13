@@ -60,8 +60,8 @@ public class FusionReactor implements IFusionReactor
 	public static double plasmaHeatCapacity = 100;
 	public static double caseHeatCapacity = 1;
 	public static double enthalpyOfVaporization = 10;
-	public static double thermocoupleEfficiency = 0.05;
-	public static double steamTransferEfficiency = 0.1;
+	public static double thermocoupleEfficiency = 0.00125;
+	public static double steamTransferEfficiency = 0.0025;
 
 	//Heat transfer metrics
 	public static double plasmaCaseConductivity = 0.2;

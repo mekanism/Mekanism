@@ -114,6 +114,7 @@ public class MekanismRenderer
 			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidTritium"));
 			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDT"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidLithium"));
+			GasRegistry.getGas("methane").setIcon(event.map.registerIcon("mekanism:liquid/LiquidMethane"));
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{

@@ -130,7 +130,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			{
 				setActive(true);
 
-				lavaTank.drain(10, true);
+				lavaTank.drain(generators.heatGenerationFluidRate, true);
 				transferHeatTo(generators.heatGeneration);
 			}
 			else {
@@ -445,7 +445,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canConnectHeat(ForgeDirection side)
 	{
+		if(generators.heatGenEnable == true){
 		return side == ForgeDirection.DOWN;
+		}else {
+		return side == ForgeDirection.UNKNOWN;
+		}
 	}
 
 	@Override
