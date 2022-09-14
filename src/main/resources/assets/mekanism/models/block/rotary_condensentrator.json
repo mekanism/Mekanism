@@ -1,6 +1,6 @@
 {
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"2": "mekanism:block/models/ports",
 		"3": "mekanism:block/models/ports_large",
@@ -16,12 +16,12 @@
 			"from": [0, 15, 0],
 			"to": [16, 16, 16],
 			"faces": {
-				"north": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "up"},
-				"east": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "up"},
-				"south": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "up"},
-				"west": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "up"},
+				"north": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "north"},
+				"east": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "east"},
+				"south": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "south"},
+				"west": {"uv": [8, 8, 0, 7.5], "texture": "#all", "cullface": "west"},
 				"up": {"uv": [8, 8, 0, 0], "texture": "#all", "cullface": "up"},
-				"down": {"uv": [16, 8, 8, 0], "texture": "#all", "cullface": "up"}
+				"down": {"uv": [16, 8, 8, 0], "texture": "#all"}
 			}
 		},
 		{
@@ -29,10 +29,10 @@
 			"from": [0, 13, 0],
 			"to": [16, 14, 16],
 			"faces": {
-				"north": {"uv": [8, 7.5, 0, 8], "texture": "#all"},
-				"east": {"uv": [8, 7.5, 0, 8], "texture": "#all"},
-				"south": {"uv": [8, 7.5, 0, 8], "texture": "#all"},
-				"west": {"uv": [8, 7.5, 0, 8], "texture": "#all"},
+				"north": {"uv": [8, 7.5, 0, 8], "texture": "#all", "cullface": "north"},
+				"east": {"uv": [8, 7.5, 0, 8], "texture": "#all", "cullface": "east"},
+				"south": {"uv": [8, 7.5, 0, 8], "texture": "#all", "cullface": "south"},
+				"west": {"uv": [8, 7.5, 0, 8], "texture": "#all", "cullface": "west"},
 				"up": {"uv": [16, 0, 8, 8], "texture": "#all"},
 				"down": {"uv": [16, 0, 8, 8], "texture": "#all"}
 			}
@@ -219,11 +219,11 @@
 		},
 		{
 			"name": "portRight",
-			"from": [-0.02, 3, 3],
-			"to": [0.98, 13, 13],
+			"from": [-0.01, 3, 3],
+			"to": [0.99, 13, 13],
 			"faces": {
-				"north": {"uv": [4.5, 0, 5, 5], "texture": "#3", "cullface": "west"},
-				"south": {"uv": [0, 0, 0.5, 5], "texture": "#3", "cullface": "west"},
+				"north": {"uv": [4.5, 0, 5, 5], "texture": "#3"},
+				"south": {"uv": [0, 0, 0.5, 5], "texture": "#3"},
 				"west": {"uv": [0, 0, 5, 5], "texture": "#3", "cullface": "west"}
 			}
 		},
@@ -232,26 +232,26 @@
 			"from": [-0.01, 3, 3],
 			"to": [-0.01, 13, 13],
 			"faces": {
-				"west": {"uv": [0, 0, 5, 5], "texture": "#4", "cullface": "west"}
+				"west": {"uv": [0, 0, 5, 5], "texture": "#4", "cullface": "west", "emissivity": 15}
 			}
 		},
 		{
 			"name": "portLeft",
-			"from": [15.02, 4, 4],
-			"to": [16.02, 12, 12],
+			"from": [15.01, 4, 4],
+			"to": [16.01, 12, 12],
 			"faces": {
-				"north": {"uv": [7, 0, 8, 8], "texture": "#2", "cullface": "east"},
+				"north": {"uv": [7, 0, 8, 8], "texture": "#2"},
 				"east": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "east"},
-				"south": {"uv": [0, 0, 1, 8], "texture": "#2", "cullface": "east"},
-				"up": {"uv": [0, 0, 8, 1], "texture": "#2", "cullface": "east"}
+				"south": {"uv": [0, 0, 1, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 8, 1], "texture": "#2"}
 			}
 		},
 		{
 			"name": "portLeft_led",
-			"from": [16.02, 4, 4],
-			"to": [16.02, 12, 12],
+			"from": [16.01, 4, 4],
+			"to": [16.01, 12, 12],
 			"faces": {
-				"east": {"uv": [0, 0, 8, 8], "texture": "#5", "cullface": "east"}
+				"east": {"uv": [0, 0, 8, 8], "texture": "#5", "cullface": "east", "emissivity": 15}
 			}
 		},
 		{
@@ -282,12 +282,12 @@
 			"from": [0, 0, 0],
 			"to": [16, 5, 16],
 			"faces": {
-				"north": {"uv": [8, 8, 16, 10.5], "texture": "#all"},
-				"east": {"uv": [8, 8, 16, 10.5], "texture": "#all"},
-				"south": {"uv": [8, 8, 16, 10.5], "texture": "#all"},
-				"west": {"uv": [8, 8, 16, 10.5], "texture": "#all"},
+				"north": {"uv": [8, 8, 16, 10.5], "texture": "#all", "cullface": "north"},
+				"east": {"uv": [8, 8, 16, 10.5], "texture": "#all", "cullface": "east"},
+				"south": {"uv": [8, 8, 16, 10.5], "texture": "#all", "cullface": "south"},
+				"west": {"uv": [8, 8, 16, 10.5], "texture": "#all", "cullface": "west"},
 				"up": {"uv": [8, 0, 16, 8], "texture": "#all"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#6"}
+				"down": {"uv": [0, 0, 16, 16], "texture": "#6", "cullface": "down"}
 			}
 		}
 	],

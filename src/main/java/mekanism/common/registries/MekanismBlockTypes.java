@@ -341,7 +341,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR)
           .without(AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
-          .with(AttributeCustomSelectionBox.JAVA)
+          .with(AttributeCustomSelectionBox.JSON)
           .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("solarNeutronActivator")
           .replace(Attributes.ACTIVE)

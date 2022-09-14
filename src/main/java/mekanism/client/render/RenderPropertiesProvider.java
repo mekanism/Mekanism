@@ -7,12 +7,10 @@ import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.armor.ScubaMaskArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
-import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
 import mekanism.client.render.item.block.RenderSeismicVibratorItem;
-import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
@@ -48,10 +46,6 @@ public class RenderPropertiesProvider {
         return new MekRenderProperties(RenderEnergyCubeItem.RENDERER);
     }
 
-    public static IClientItemExtensions dissolution() {
-        return new MekRenderProperties(RenderChemicalDissolutionChamberItem.RENDERER);
-    }
-
     public static IClientItemExtensions fluidTank() {
         return new MekRenderProperties(RenderFluidTankItem.RENDERER);
     }
@@ -62,10 +56,6 @@ public class RenderPropertiesProvider {
 
     public static IClientItemExtensions seismicVibrator() {
         return new MekRenderProperties(RenderSeismicVibratorItem.RENDERER);
-    }
-
-    public static IClientItemExtensions activator() {
-        return new MekRenderProperties(RenderSolarNeutronActivatorItem.RENDERER);
     }
 
     public static IClientItemExtensions armoredJetpack() {

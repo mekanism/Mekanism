@@ -74,9 +74,14 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     @Deprecated
     public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         if (type.has(AttributeCustomShape.class)) {
+            VoxelShape[] bounds = type.get(AttributeCustomShape.class).bounds();
+            if (bounds.length == 1) {
+                //If there is only one voxel shape for this model use it directly regardless of the direction it is facing
+                return bounds[0];
+            }
             AttributeStateFacing attr = type.get(AttributeStateFacing.class);
             int index = attr == null ? 0 : (attr.getDirection(state).ordinal() - (attr.getFacingProperty() == BlockStateProperties.FACING ? 0 : 2));
-            return type.get(AttributeCustomShape.class).bounds()[index];
+            return bounds[index];
         }
         return super.getShape(state, world, pos, context);
     }

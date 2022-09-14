@@ -1,5 +1,5 @@
 {
-	"texture_size": [32, 32],
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "mekanism:block/models/seismic_vibrator_1",
 		"1": "mekanism:block/models/seismic_vibrator_2",
@@ -491,7 +491,7 @@
 			"from": [4, 5, 16.02],
 			"to": [12, 13, 16.02],
 			"faces": {
-				"south": {"uv": [8, 8, 16, 16], "texture": "#3"}
+				"south": {"uv": [8, 8, 16, 16], "texture": "#3", "emissivity": 15}
 			}
 		},
 		{
