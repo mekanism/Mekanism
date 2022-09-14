@@ -67,11 +67,12 @@ public class Quad {
         }
     }
 
-    public Quad transform(QuadTransformation... transformations) {
+    public boolean transform(QuadTransformation... transformations) {
+        boolean transformed = false;
         for (QuadTransformation transform : transformations) {
-            transform.transform(this);
+            transformed |= transform.transform(this);
         }
-        return this;
+        return transformed;
     }
 
     public Vertex[] getVertices() {

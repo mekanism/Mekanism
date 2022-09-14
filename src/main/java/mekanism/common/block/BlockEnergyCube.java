@@ -57,18 +57,18 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
               box(13, 3, 0, 16, 13, 3),
               box(13, 3, 13, 16, 13, 16),
               box(13, 13, 3, 16, 16, 13),
-              box(12.5, 14.9, 7.5, 13.5, 15.9, 8.5),//ledTop1
-              box(2.5, 14.9, 7.5, 3.5, 15.9, 8.5),//ledTop2
-              box(12.5, 7.5, 0.1, 13.5, 8.5, 1.1),//ledBack1
-              box(2.5, 7.5, 0.1, 3.5, 8.5, 1.1),//ledBack2
-              box(2.5, 0.1, 7.5, 3.5, 1.1, 8.5),//ledBottom2
-              box(12.5, 0.1, 7.5, 13.5, 1.1, 8.5),//ledBottom1
-              box(12.5, 7.5, 14.9, 13.5, 8.5, 15.9),//ledFront1
-              box(2.5, 7.5, 14.9, 3.5, 8.5, 15.9),//ledFront2
-              box(0.1, 7.5, 2.5, 1.1, 8.5, 3.5),//ledRight2
-              box(0.1, 7.5, 12.5, 1.1, 8.5, 13.5),//ledRight1
-              box(14.9, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
-              box(14.9, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
+              box(12.5, 15, 7.5, 13.5, 15.9, 8.5),//ledTop1
+              box(2.5, 15, 7.5, 3.5, 15.9, 8.5),//ledTop2
+              box(12.5, 7.5, 0.1, 13.5, 8.5, 1),//ledBack1
+              box(2.5, 7.5, 0.1, 3.5, 8.5, 1),//ledBack2
+              box(2.5, 0.1, 7.5, 3.5, 1, 8.5),//ledBottom2
+              box(12.5, 0.1, 7.5, 13.5, 1, 8.5),//ledBottom1
+              box(12.5, 7.5, 15, 13.5, 8.5, 15.9),//ledFront1
+              box(2.5, 7.5, 15, 3.5, 8.5, 15.9),//ledFront2
+              box(0.1, 7.5, 2.5, 1, 8.5, 3.5),//ledRight2
+              box(0.1, 7.5, 12.5, 1, 8.5, 13.5),//ledRight1
+              box(15, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
+              box(15, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
         );
         VoxelShape frontPanel = VoxelShapeUtils.combine(
               box(3, 5, 14, 13, 11, 15),//connectorFrontToggle

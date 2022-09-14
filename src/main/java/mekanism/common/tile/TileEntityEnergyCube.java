@@ -20,18 +20,26 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
+
+    public static final ModelProperty<CubeSideState[]> SIDE_STATE_PROPERTY = new ModelProperty<>();
 
     /**
      * This Energy Cube's tier.
@@ -149,7 +157,52 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag) {
+        ConfigInfo config = getConfig().getConfig(TransmissionType.ENERGY);
+        DataType[] currentConfig = new DataType[EnumUtils.SIDES.length];
+        if (config != null) {
+            for (RelativeSide side : EnumUtils.SIDES) {
+                currentConfig[side.ordinal()] = config.getDataType(side);
+            }
+        }
         super.handleUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
+        if (config != null) {
+            for (RelativeSide side : EnumUtils.SIDES) {
+                if (currentConfig[side.ordinal()] != config.getDataType(side)) {
+                    //Only update the model data if at least one side had the config change
+                    updateModelData();
+                    break;
+                }
+            }
+        }
+    }
+
+    @NotNull
+    @Override
+    public ModelData getModelData() {
+        ConfigInfo config = getConfig().getConfig(TransmissionType.ENERGY);
+        if (config == null) {//Should not happen but validate it anyway
+            return super.getModelData();
+        }
+        CubeSideState[] sideStates = new CubeSideState[EnumUtils.SIDES.length];
+        for (RelativeSide side : EnumUtils.SIDES) {
+            CubeSideState state = CubeSideState.INACTIVE;
+            ISlotInfo slotInfo = config.getSlotInfo(side);
+            if (slotInfo != null) {
+                if (slotInfo.canOutput()) {
+                    state = CubeSideState.ACTIVE_LIT;
+                } else if (slotInfo.canInput()) {
+                    state = CubeSideState.ACTIVE_UNLIT;
+                }
+            }
+            sideStates[side.ordinal()] = state;
+        }
+        return ModelData.builder().with(SIDE_STATE_PROPERTY, sideStates).build();
+    }
+
+    public enum CubeSideState {
+        ACTIVE_LIT,
+        ACTIVE_UNLIT,
+        INACTIVE
     }
 }

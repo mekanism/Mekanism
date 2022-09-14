@@ -32,10 +32,7 @@ public class ProfilerConstants {
     public static final String SPS = "supercriticalPhaseShifter";
 
     //Sub parts
-    public static final String CORE = "core";
-    public static final String FRAME = "frame";
-    public static final String SIDES = "sides";
-    public static final String CORNERS = "corners";
+    private static final String CORE = "core";
 
     //Transmitter
     public static final String LOGISTICAL_TRANSPORTER = "logisticalTransporter";

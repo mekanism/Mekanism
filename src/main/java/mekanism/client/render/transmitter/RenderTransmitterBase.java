@@ -14,7 +14,6 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
-import mekanism.client.render.lib.Vertex;
 import mekanism.client.render.obj.VisibleModelConfiguration;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.Mekanism;
@@ -62,10 +61,8 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
                   .getQuads(null, null, world.getRandom(), ModelData.EMPTY, null);
             List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);
             for (Quad unpackedQuad : unpackedQuads) {
-                for (Vertex vertex : unpackedQuad.getVertices()) {
-                    //Set the normals to ones that ignore the diffuse light in the same way we do it in Render Resizable Cuboid
-                    vertex.normal(NORMAL);
-                }
+                //Set the normals to ones that ignore the diffuse light in the same way we do it in Render Resizable Cuboid
+                unpackedQuad.vertexTransform(vertex -> vertex.normal(NORMAL));
             }
             return QuadUtils.bake(unpackedQuads);
         });

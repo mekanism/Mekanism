@@ -38,8 +38,13 @@ public class QuadUtils {
         List<BakedQuad> list = new ArrayList<>(orig.size());
         for (BakedQuad bakedQuad : orig) {
             Quad quad = new Quad(bakedQuad);
-            transformation.transform(quad);
-            list.add(quad.bake());
+            if (transformation.transform(quad)) {
+                //If the transformation actually changed the quad bake it again
+                list.add(quad.bake());
+            } else {
+                // otherwise, just add the original quad so that we can have a lower memory impact
+                list.add(bakedQuad);
+            }
         }
         return list;
     }
@@ -54,13 +59,14 @@ public class QuadUtils {
     }
 
     public static void remapUVs(Quad quad, TextureAtlasSprite newTexture) {
-        float uMin = quad.getTexture().getU0(), uMax = quad.getTexture().getU1();
-        float vMin = quad.getTexture().getV0(), vMax = quad.getTexture().getV1();
-        for (Vertex v : quad.getVertices()) {
+        TextureAtlasSprite texture = quad.getTexture();
+        float uMin = texture.getU0(), uMax = texture.getU1();
+        float vMin = texture.getV0(), vMax = texture.getV1();
+        quad.vertexTransform(v -> {
             float newU = (v.getTexU() - uMin) * 16F / (uMax - uMin);
             float newV = (v.getTexV() - vMin) * 16F / (vMax - vMin);
             v.texRaw(newTexture.getU(newU), newTexture.getV(newV));
-        }
+        });
     }
 
     // this is an adaptation of fry's original UV contractor (pulled from BakedQuadBuilder).
