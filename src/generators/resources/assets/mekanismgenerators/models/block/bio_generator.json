@@ -1,6 +1,6 @@
 {
-	"parent": "block/cube_all",
 	"loader": "forge:composite",
+	"gui_light": "side",
 	"display": {
 		"thirdperson_righthand": {
 			"rotation": [75, 45, 0],
@@ -38,7 +38,6 @@
 	"children": {
 		"cutout": {
 			"render_type": "minecraft:cutout",
-			"parent": "block/cube_all",
 			"textures": {
 				"1": "mekanismgenerators:block/model/bio_generator1",
 				"2": "mekanismgenerators:block/model/bio_generator2",
@@ -160,7 +159,6 @@
 		},
 		"translucent": {
 			"render_type": "minecraft:translucent",
-			"parent": "block/cube_all",
 			"textures": {
 				"1": "mekanismgenerators:block/model/bio_generator1"
 			},

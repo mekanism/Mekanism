@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"loader": "mekanism:energy_cube",
 	"render_type": "minecraft:cutout",
 	"textures": {

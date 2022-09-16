@@ -1,10 +1,9 @@
 {
 	"credit": "Model by CyanideX",
-	"parent": "block/cube_all",
+	"gui_light": "side",
 	"textures": {
 		"1": "mekanismadditions:entity/balloon_string",
-		"all": "mekanismadditions:entity/balloon",
-		"particle": "mekanismadditions:entity/balloon_string"
+		"all": "mekanismadditions:entity/balloon"
 	},
 	"elements": [
 		{

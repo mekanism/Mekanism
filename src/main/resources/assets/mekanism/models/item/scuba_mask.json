@@ -1,8 +1,5 @@
 {
     "parent": "builtin/entity",
-    "textures": {
-        "particle": "mekanism:block/steel_casing"
-    },
     "display": {
         "gui": {
             "rotation": [ 30, 225, 0 ],

@@ -1,6 +1,6 @@
 {
-	"parent": "block/cube_all",
 	"loader": "forge:composite",
+	"gui_light": "side",
 	"textures": {
 		"particle": "mekanism:block/models/isotopic_centrifuge"
 	},
@@ -43,7 +43,6 @@
 	"children": {
 		"cutout": {
 			"render_type": "minecraft:cutout",
-			"parent": "block/cube_all",
 			"textures": {
 				"0": "mekanism:block/models/isotopic_centrifuge",
 				"1": "mekanism:block/models/ports",
@@ -398,7 +397,6 @@
 		},
 		"translucent": {
 			"render_type": "minecraft:translucent",
-			"parent": "block/cube_all",
 			"textures": {
 				"0": "mekanism:block/models/isotopic_centrifuge"
 			},

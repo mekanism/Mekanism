@@ -1,7 +1,6 @@
 {
-  "parent": "block/cube_all",
+  "gui_light": "side",
   "textures": {
-    "particle": "mekanismadditions:entity/balloon",
     "all": "mekanismadditions:entity/balloon"
   },
   "elements": [
