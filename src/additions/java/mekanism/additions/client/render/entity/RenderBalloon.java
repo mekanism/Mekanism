@@ -51,7 +51,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
         JSONModelData model = balloon.isLatched() ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
 
-        List<BakedQuad> quads = model.getBakedModel().getQuads(null, null, balloon.level.random);
+        List<BakedQuad> quads = model.getQuads(balloon.level.random);
         RenderType renderType = RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
         VertexConsumer builder = renderer.getBuffer(renderType);
         PoseStack.Pose last = matrix.last();

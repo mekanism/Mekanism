@@ -10,7 +10,6 @@ import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
-import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
@@ -52,10 +51,6 @@ public class RenderPropertiesProvider {
 
     public static IClientItemExtensions entangloporter() {
         return new MekRenderProperties(RenderQuantumEntangloporterItem.RENDERER);
-    }
-
-    public static IClientItemExtensions seismicVibrator() {
-        return new MekRenderProperties(RenderSeismicVibratorItem.RENDERER);
     }
 
     public static IClientItemExtensions armoredJetpack() {

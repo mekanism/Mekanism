@@ -67,18 +67,19 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                   MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
         }
         boolean active = tile.getActive();
-        matrix.pushPose();
         if (active) {
+            //Render the blade at the correct rotation if we are active
+            matrix.pushPose();
             matrix.translate(0.5, 0.5, 0.5);
             matrix.mulPose(Vector3f.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * BLADE_SPEED % 360));
             matrix.translate(-0.5, -0.5, -0.5);
+            Pose entry = matrix.last();
+            VertexConsumer bladeBuffer = renderer.getBuffer(Sheets.solidBlockSheet());
+            for (BakedQuad quad : MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getQuads(tile.getLevel().random)) {
+                bladeBuffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
+            }
+            matrix.popPose();
         }
-        Pose entry = matrix.last();
-        VertexConsumer bladeBuffer = renderer.getBuffer(Sheets.solidBlockSheet());
-        for (BakedQuad quad : MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
-            bladeBuffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
-        }
-        matrix.popPose();
         //Render the item and particle
         ItemStack stack = tile.getRenderStack();
         if (!stack.isEmpty()) {

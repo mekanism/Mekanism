@@ -80,7 +80,7 @@ public class ModelToVoxelShapeUtil {
             ChildData childData = ChildData.from(childElements);
             int soFar = 0;
             for (JsonArray childElement : childData.childElements) {
-                soFar += printoutObject(childElement, df, soFar, childData.totalElements);
+                soFar = printoutObject(childElement, df, soFar, childData.totalElements);
             }
         } else {
             System.err.println("Unable to parse model file.");
@@ -88,16 +88,23 @@ public class ModelToVoxelShapeUtil {
     }
 
     private static int printoutObject(JsonArray elementsArray, DecimalFormat df, int soFar, int totalElements) {
-        int elements = elementsArray.size();
-        for (int i = 0; i < elements; i++) {
-            JsonObject element = elementsArray.get(i).getAsJsonObject();
-            JsonElement nameObj = element.get("name");
-            String name = nameObj == null ? "" : " // " + nameObj.getAsString();
-            String from = convertCorner(df, element.getAsJsonArray("from"));
-            String to = convertCorner(df, element.getAsJsonArray("to"));
-            System.out.println("box(" + from + ", " + to + ")" + (soFar + i < totalElements - 1 ? "," : "") + name);
+        for (JsonElement jsonElement : elementsArray) {
+            JsonObject element = jsonElement.getAsJsonObject();
+            StringBuilder line = new StringBuilder("box(")
+                  .append(convertCorner(df, element.getAsJsonArray("from")))
+                  .append(", ")
+                  .append(convertCorner(df, element.getAsJsonArray("to")))
+                  .append(')');
+            if (++soFar < totalElements) {
+                //If this isn't the last element we need to make sure we have a comma at the end
+                line.append(',');
+            }
+            if (element.has("name")) {
+                line.append(" // ").append(element.get("name").getAsString());
+            }
+            System.out.println(line);
         }
-        return elements;
+        return soFar;
     }
 
     private static String convertCorner(DecimalFormat df, JsonArray corner) {

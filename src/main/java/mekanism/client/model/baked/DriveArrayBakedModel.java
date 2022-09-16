@@ -11,6 +11,7 @@ import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -34,6 +35,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
     public List<BakedQuad> createQuads(QuadsKey<byte[]> key) {
         byte[] driveStatus = Objects.requireNonNull(key.getData());
         BlockState blockState = Objects.requireNonNull(key.getBlockState());
+        RenderType renderType = key.getLayer();
         QuadTransformation rotation = QuadTransformation.rotate(Attribute.getFacing(blockState));
         //Side will always be null as we validate it when creating the key as we don't currently have any of the sides get culled
         Direction side = key.getSide();
@@ -43,7 +45,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
             if (status != DriveStatus.NONE) {
                 float[] translation = DRIVE_PLACEMENTS[i];
                 QuadTransformation transformation = QuadTransformation.translate(translation[0], translation[1], 0);
-                for (BakedQuad bakedQuad : MekanismModelCache.INSTANCE.QIO_DRIVES[status.ordinal()].getBakedModel().getQuads(blockState, side, key.getRandom())) {
+                for (BakedQuad bakedQuad : MekanismModelCache.INSTANCE.QIO_DRIVES[status.ordinal()].getQuads(blockState, side, key.getRandom(), ModelData.EMPTY, renderType)) {
                     Quad quad = new Quad(bakedQuad);
                     if (quad.transform(transformation, rotation)) {
                         //Bake and add the quad if we transformed it

@@ -1,8 +1,6 @@
 {
-	"parent": "block/cube_all",
 	"textures": {
-		"0": "mekanism:block/nutritional_liquifier",
-		"particle": "mekanism:block/nutritional_liquifier"
+		"0": "mekanism:block/nutritional_liquifier"
 	},
 	"elements": [
 		{

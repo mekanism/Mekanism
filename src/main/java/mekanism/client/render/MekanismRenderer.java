@@ -34,6 +34,7 @@ import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
+import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
@@ -359,6 +360,7 @@ public class MekanismRenderer {
         RenderNutritionalLiquifier.resetCachedModels();
         RenderPigmentMixer.resetCached();
         RenderMechanicalPipe.onStitch();
+        RenderSeismicVibrator.resetCached();
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
 

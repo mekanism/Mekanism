@@ -26,9 +26,9 @@ public class MekanismModelCache extends BaseModelCache {
     public static final MekanismModelCache INSTANCE = new MekanismModelCache();
     private final Set<Runnable> callbacks = new HashSet<>();
 
-    public final OBJModelData MEKASUIT = registerOBJ(Mekanism.rl("models/entity/mekasuit.obj"));
-    public final OBJModelData MEKATOOL_LEFT_HAND = registerOBJ(Mekanism.rl("models/entity/mekatool_left.obj"));
-    public final OBJModelData MEKATOOL_RIGHT_HAND = registerOBJ(Mekanism.rl("models/entity/mekatool_right.obj"));
+    public final OBJModelData MEKASUIT = registerOBJ("models/entity/mekasuit.obj");
+    public final OBJModelData MEKATOOL_LEFT_HAND = registerOBJ("models/entity/mekatool_left.obj");
+    public final OBJModelData MEKATOOL_RIGHT_HAND = registerOBJ("models/entity/mekatool_right.obj");
     private final Set<ModuleOBJModelData> mekaSuitModules = new HashSet<>();
     public final Set<ModuleOBJModelData> MEKASUIT_MODULES = Collections.unmodifiableSet(mekaSuitModules);
 
@@ -38,13 +38,15 @@ public class MekanismModelCache extends BaseModelCache {
             return false;
         }
     });
-    public final JSONModelData LIQUIFIER_BLADE = registerJSON(Mekanism.rl("block/liquifier_blade"));
-    public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON(Mekanism.rl("block/pigment_mixer_shaft"));
+    public final JSONModelData LIQUIFIER_BLADE = registerJSON("block/liquifier_blade");
+    public final JSONModelData VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
+    public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
     public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.STATUSES.length];
     private final Map<ResourceLocation, JSONModelData> ROBIT_SKINS = new HashMap<>();
     private BakedModel BASE_ROBIT;
 
     private MekanismModelCache() {
+        super(Mekanism.MODID);
         for (DriveStatus status : DriveStatus.STATUSES) {
             if (status != DriveStatus.NONE) {
                 QIO_DRIVES[status.ordinal()] = registerJSON(status.getModel());

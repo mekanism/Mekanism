@@ -80,11 +80,6 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileEntityIndustrialAlarm tile) {
-        return true;
-    }
-
-    @Override
     public boolean shouldRender(TileEntityIndustrialAlarm tile, Vec3 camera) {
         return tile.getActive() && super.shouldRender(tile, camera);
     }

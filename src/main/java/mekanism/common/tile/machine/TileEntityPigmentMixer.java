@@ -222,7 +222,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @NotNull
     @Override
     public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 2, 1));
+        //We only care about the position that is above because we only use the BER to render the shaft which is in the upper block
+        return new AABB(worldPosition.above(), worldPosition.offset(1, 2, 1));
     }
 
     public MachineEnergyContainer<TileEntityPigmentMixer> getEnergyContainer() {

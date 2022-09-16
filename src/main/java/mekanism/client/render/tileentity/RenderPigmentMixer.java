@@ -10,8 +10,6 @@ import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.lib.Quad;
-import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
@@ -45,7 +43,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         renderTranslated(tile, partialTick, matrix, poseStack -> {
             Pose entry = poseStack.last();
             VertexConsumer buffer = renderer.getBuffer(Sheets.solidBlockSheet());
-            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
+            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getQuads(tile.getLevel().random)) {
                 buffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
             }
         });
@@ -76,9 +74,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
             if (vertices.isEmpty()) {
-                for (Quad quad : QuadUtils.unpack(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random))) {
-                    vertices.add(quad.getVertices());
-                }
+                MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.collectQuadVertices(vertices, tile.getLevel().random);
             }
             renderTranslated(mixer, partialTick, matrix, poseStack -> RenderTickHandler.renderVertexWireFrame(vertices, buffer, poseStack.last().pose(),
                   red, green, blue, alpha));

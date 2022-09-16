@@ -90,7 +90,6 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelQuantumEntangloporter;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
@@ -116,7 +115,6 @@ import mekanism.client.render.hud.MekaSuitHUD;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
-import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
@@ -353,7 +351,6 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModelQuantumEntangloporter.ENTANGLOPORTER_LAYER, ModelQuantumEntangloporter::createLayerDefinition);
         event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, ModelScubaMask::createLayerDefinition);
         event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, ModelScubaTank::createLayerDefinition);
-        event.registerLayerDefinition(ModelSeismicVibrator.VIBRATOR_LAYER, ModelSeismicVibrator::createLayerDefinition);
         event.registerLayerDefinition(ModelTransporterBox.BOX_LAYER, ModelTransporterBox::createLayerDefinition);
     }
 
@@ -363,8 +360,8 @@ public class ClientRegistration {
         event.registerReloadListener(new RobitSpriteUploader(Minecraft.getInstance().getTextureManager()));
         //ISTERs
         ClientRegistrationUtil.registerClientReloadListeners(event, RenderEnergyCubeItem.RENDERER, RenderQuantumEntangloporterItem.RENDERER,
-              RenderSeismicVibratorItem.RENDERER, RenderJetpack.ARMORED_RENDERER, RenderAtomicDisassembler.RENDERER, RenderFlameThrower.RENDERER,
-              RenderFreeRunners.RENDERER, RenderFreeRunners.ARMORED_RENDERER, RenderJetpack.RENDERER, RenderScubaMask.RENDERER, RenderScubaTank.RENDERER);
+              RenderJetpack.ARMORED_RENDERER, RenderAtomicDisassembler.RENDERER, RenderFlameThrower.RENDERER, RenderFreeRunners.RENDERER,
+              RenderFreeRunners.ARMORED_RENDERER, RenderJetpack.RENDERER, RenderScubaMask.RENDERER, RenderScubaTank.RENDERER);
         //Custom Armor
         ClientRegistrationUtil.registerClientReloadListeners(event, JetpackArmor.ARMORED_JETPACK, JetpackArmor.JETPACK, FreeRunnerArmor.ARMORED_FREE_RUNNERS,
               FreeRunnerArmor.FREE_RUNNERS, ScubaMaskArmor.SCUBA_MASK, ScubaTankArmor.SCUBA_TANK);
