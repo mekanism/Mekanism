@@ -1,16 +1,13 @@
 package mekanism.client.render.obj;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Objects;
-import java.util.function.Predicate;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,11 +15,11 @@ import org.jetbrains.annotations.Nullable;
 public class TransmitterModelConfiguration extends VisibleModelConfiguration {
 
     @NotNull
-    private final TransmitterModelData modelData;
+    private final IconStatus iconStatus;
 
-    public TransmitterModelConfiguration(IGeometryBakingContext internal, List<String> visibleGroups, @NotNull ModelData modelData) {
-        super(internal, visibleGroups);
-        this.modelData = Objects.requireNonNull(modelData.get(TileEntityTransmitter.TRANSMITTER_PROPERTY), "Transmitter property must be present.");
+    public TransmitterModelConfiguration(IGeometryBakingContext internal, String piece, @NotNull IconStatus iconStatus) {
+        super(internal, Collections.singletonList(piece));
+        this.iconStatus = Objects.requireNonNull(iconStatus, "Icon status must be present.");
     }
 
     @Nullable
@@ -46,7 +43,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     private String adjustTextureName(String name) {
         Direction direction = directionForPiece(name);
         if (direction != null) {
-            if (getIconStatus(direction) != IconStatus.NO_SHOW) {
+            if (iconStatus != IconStatus.NO_SHOW) {
                 name = name.contains("glass") ? "#side_glass" : "#side";
             }
             if (MekanismConfig.client.opaqueTransmitters.get()) {
@@ -65,45 +62,29 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         return name;
     }
 
-    public IconStatus getIconStatus(Direction side) {
-        if (modelData instanceof Diversion) {
+    public static IconStatus getIconStatus(TransmitterModelData modelData, Direction side, ConnectionType connectionType) {
+        if (modelData instanceof Diversion || connectionType != ConnectionType.NONE) {
             return IconStatus.NO_SHOW;
         }
-        boolean hasConnection = modelData.getConnectionType(side) != ConnectionType.NONE;
-        Predicate<Direction> has = dir -> modelData.getConnectionType(dir) != ConnectionType.NONE;
-        if (!hasConnection) {
-            //If we don't have a connection coming out of this side
-            boolean hasUpDown = has.test(Direction.DOWN) || has.test(Direction.UP);
-            boolean hasNorthSouth = has.test(Direction.NORTH) || has.test(Direction.SOUTH);
-            boolean hasEastWest = has.test(Direction.EAST) || has.test(Direction.WEST);
-            switch (side) {
-                case DOWN, UP -> {
-                    if (hasNorthSouth && !hasEastWest || !hasNorthSouth && hasEastWest) {
-                        if (has.test(Direction.NORTH) && has.test(Direction.SOUTH)) {
-                            return IconStatus.NO_ROTATION;
-                        } else if (has.test(Direction.EAST) && has.test(Direction.WEST)) {
-                            return IconStatus.ROTATE_270;
-                        }
-                    }
-                }
-                case NORTH, SOUTH -> {
-                    if (hasUpDown && !hasEastWest || !hasUpDown && hasEastWest) {
-                        if (has.test(Direction.UP) && has.test(Direction.DOWN)) {
-                            return IconStatus.NO_ROTATION;
-                        } else if (has.test(Direction.EAST) && has.test(Direction.WEST)) {
-                            return IconStatus.ROTATE_270;
-                        }
-                    }
-                }
-                case WEST, EAST -> {
-                    if (hasUpDown && !hasNorthSouth || !hasUpDown && hasNorthSouth) {
-                        if (has.test(Direction.UP) && has.test(Direction.DOWN)) {
-                            return IconStatus.NO_ROTATION;
-                        } else if (has.test(Direction.NORTH) && has.test(Direction.SOUTH)) {
-                            return IconStatus.ROTATE_270;
-                        }
-                    }
-                }
+        //If we don't have a connection coming out of this side
+        return switch (side) {
+            case DOWN, UP -> getStatus(modelData, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
+            case NORTH, SOUTH -> getStatus(modelData, Direction.UP, Direction.DOWN, Direction.EAST, Direction.WEST);
+            case WEST, EAST -> getStatus(modelData, Direction.UP, Direction.DOWN, Direction.NORTH, Direction.SOUTH);
+        };
+    }
+
+    private static IconStatus getStatus(TransmitterModelData modelData, Direction a, Direction b, Direction c, Direction d) {
+        boolean hasA = modelData.getConnectionType(a) != ConnectionType.NONE;
+        boolean hasB = modelData.getConnectionType(b) != ConnectionType.NONE;
+        boolean hasC = modelData.getConnectionType(c) != ConnectionType.NONE;
+        boolean hasD = modelData.getConnectionType(d) != ConnectionType.NONE;
+        //If we don't have a connection coming out of one side, but have one coming out of the perpendicular one
+        if ((hasA || hasB) != (hasC || hasD)) {
+            if (hasA && hasB) {
+                return IconStatus.NO_ROTATION;
+            } else if (hasC && hasD) {
+                return IconStatus.ROTATE_270;
             }
         }
         return IconStatus.NO_SHOW;

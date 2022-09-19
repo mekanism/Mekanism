@@ -37,7 +37,7 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.effect.BoltRenderer;
-import mekanism.client.render.obj.TransmitterBakedModel.QuickHash;
+import mekanism.client.render.lib.QuickHash;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.item.gear.ItemMekaSuitArmor;

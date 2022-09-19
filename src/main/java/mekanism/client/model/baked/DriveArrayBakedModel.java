@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.Quad;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
 
+    private static final BiPredicate<byte[], byte[]> DATA_EQUALITY_CHECK = Arrays::equals;
     private static final float[][] DRIVE_PLACEMENTS = {
           {0, 6F / 16}, {-2F / 16, 6F / 16}, {-4F / 16, 6F / 16}, {-7F / 16, 6F / 16}, {-9F / 16, 6F / 16}, {-11F / 16, 6F / 16},
           {0, 0}, {-2F / 16, 0}, {-4F / 16, 0}, {-7F / 16, 0}, {-9F / 16, 0}, {-11F / 16, 0}
@@ -72,7 +74,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
         if (key.getBlockState() != null && key.getSide() == null) {
             byte[] driveStatus = data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
             if (driveStatus != null) {
-                return key.data(driveStatus, Arrays.hashCode(driveStatus), Arrays::equals);
+                return key.data(driveStatus, Arrays.hashCode(driveStatus), DATA_EQUALITY_CHECK);
             }
         }
         return null;

@@ -10,6 +10,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import mekanism.api.RelativeSide;
 import mekanism.client.model.baked.ExtensionBakedModel.QuadsKey;
 import mekanism.client.model.energycube.EnergyCubeGeometry.FaceData;
@@ -38,6 +39,7 @@ public class EnergyCubeBakedModel implements IDynamicBakedModel {
 
     private static final CubeSideState[] INACTIVE = Util.make(new CubeSideState[EnumUtils.DIRECTIONS.length], sideStates -> Arrays.fill(sideStates, CubeSideState.INACTIVE));
     private static final QuadTransformation LED_TRANSFORMS = QuadTransformation.list(QuadTransformation.fullbright, QuadTransformation.uvShift(-2, 0));
+    private static final BiPredicate<CubeSideState[], CubeSideState[]> DATA_EQUALITY_CHECK = Arrays::equals;
 
     private final LoadingCache<QuadsKey<CubeSideState[]>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
         @NotNull
@@ -106,7 +108,7 @@ public class EnergyCubeBakedModel implements IDynamicBakedModel {
         //Note: We intentionally ignore the state and use null here to minimize cache size as it doesn't actually matter
         // or get used for energy cube models
         QuadsKey<CubeSideState[]> key = new QuadsKey<>(null, side, rand, renderType, frame.getFaces(side));
-        key.data(sideStates, Arrays.hashCode(sideStates), Arrays::equals);
+        key.data(sideStates, Arrays.hashCode(sideStates), DATA_EQUALITY_CHECK);
         return cache.getUnchecked(key);
     }
 

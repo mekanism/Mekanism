@@ -2,6 +2,7 @@ package mekanism.client.model.robit;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
@@ -24,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
+
+    private static final BiPredicate<ResourceLocation, ResourceLocation> DATA_EQUALITY_CHECK = ResourceLocation::equals;
 
     private final RobitItemOverrideList overrideList;
 
@@ -59,7 +62,7 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
         if (skinTexture == null) {
             return null;
         }
-        return key.data(skinTexture, skinTexture.hashCode(), ResourceLocation::equals);
+        return key.data(skinTexture, skinTexture.hashCode(), DATA_EQUALITY_CHECK);
     }
 
     @Override
