@@ -23,17 +23,19 @@ public class Quad {
     private TextureAtlasSprite sprite;
     private int tintIndex;
     private boolean shade;
+    private boolean hasAmbientOcclusion;
 
     public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices) {
-        this(sprite, side, vertices, -1, false);
+        this(sprite, side, vertices, -1, false, true);
     }
 
-    public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices, int tintIndex, boolean shade) {
+    public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices, int tintIndex, boolean shade, boolean hasAmbientOcclusion) {
         this.sprite = sprite;
         this.side = side;
         this.vertices = vertices;
         this.tintIndex = tintIndex;
         this.shade = shade;
+        this.hasAmbientOcclusion = hasAmbientOcclusion;
     }
 
     public Quad(BakedQuad quad) {
@@ -42,6 +44,7 @@ public class Quad {
         sprite = quad.getSprite();
         tintIndex = quad.getTintIndex();
         shade = quad.isShade();
+        hasAmbientOcclusion = quad.hasAmbientOcclusion();
         new BakedQuadUnpacker().putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY, true);
     }
 
@@ -95,6 +98,14 @@ public class Quad {
         this.shade = shade;
     }
 
+    public boolean hasAmbientOcclusion() {
+        return hasAmbientOcclusion;
+    }
+
+    public void setHasAmbientOcclusion(boolean hasAmbientOcclusion) {
+        this.hasAmbientOcclusion = hasAmbientOcclusion;
+    }
+
     public BakedQuad bake() {
         BakedQuad[] quads = new BakedQuad[1];
         QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer(q -> quads[0] = q);
@@ -102,6 +113,7 @@ public class Quad {
         quadBaker.setDirection(side);
         quadBaker.setTintIndex(tintIndex);
         quadBaker.setShade(shade);
+        quadBaker.setHasAmbientOcclusion(hasAmbientOcclusion);
         for (Vertex vertex : vertices) {
             vertex.write(quadBaker);
         }
@@ -109,19 +121,19 @@ public class Quad {
     }
 
     public Quad copy() {
-        Vertex[] newVertices = new Vertex[4];
-        for (int i = 0; i < 4; i++) {
+        Vertex[] newVertices = new Vertex[vertices.length];
+        for (int i = 0; i < newVertices.length; i++) {
             newVertices[i] = vertices[i].copy();
         }
-        return new Quad(sprite, side, newVertices, tintIndex, shade);
+        return new Quad(sprite, side, newVertices, tintIndex, shade, hasAmbientOcclusion);
     }
 
     public Quad flip() {
-        Vertex[] flipped = new Vertex[4];
-        for (int i = 0; i < 4; i++) {
+        Vertex[] flipped = new Vertex[vertices.length];
+        for (int i = 0; i < flipped.length; i++) {
             flipped[i] = vertices[i].flip();
         }
-        return new Quad(sprite, side.getOpposite(), flipped, tintIndex, shade);
+        return new Quad(sprite, side.getOpposite(), flipped, tintIndex, shade, hasAmbientOcclusion);
     }
 
     private class BakedQuadUnpacker implements VertexConsumer {
@@ -203,6 +215,7 @@ public class Quad {
 
         private int tintIndex = -1;
         private boolean shade;
+        private boolean hasAmbientOcclusion = true;
         private boolean contractUVs = true;
 
         public Builder(TextureAtlasSprite texture, Direction side) {
@@ -248,6 +261,11 @@ public class Quad {
             return this;
         }
 
+        public Builder setHasAmbientOcclusion(boolean hasAmbientOcclusion) {
+            this.hasAmbientOcclusion = hasAmbientOcclusion;
+            return this;
+        }
+
         public Builder contractUVs(boolean contractUVs) {
             this.contractUVs = contractUVs;
             return this;
@@ -289,7 +307,7 @@ public class Quad {
             vertices[1] = Vertex.create(vec2, normal, color, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, color, texture, maxU, maxV).light(lightU, lightV);
             vertices[3] = Vertex.create(vec4, normal, color, texture, maxU, minV).light(lightU, lightV);
-            Quad quad = new Quad(texture, side, vertices, tintIndex, shade);
+            Quad quad = new Quad(texture, side, vertices, tintIndex, shade, hasAmbientOcclusion);
             if (contractUVs) {
                 QuadUtils.contractUVs(quad);
             }
