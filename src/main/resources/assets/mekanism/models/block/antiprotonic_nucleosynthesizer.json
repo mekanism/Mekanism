@@ -230,6 +230,7 @@
 					"name": "fuel_rod_led1",
 					"from": [2, 8, 13],
 					"to": [3, 13, 14],
+					"shade": false,
 					"faces": {
 						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
@@ -240,6 +241,7 @@
 					"name": "fuel_rod_led2",
 					"from": [4, 8, 13],
 					"to": [5, 13, 14],
+					"shade": false,
 					"faces": {
 						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
@@ -250,6 +252,7 @@
 					"name": "fuel_rod_led3",
 					"from": [11, 8, 13],
 					"to": [12, 13, 14],
+					"shade": false,
 					"faces": {
 						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
@@ -260,6 +263,7 @@
 					"name": "fuel_rod_led4",
 					"from": [13, 8, 13],
 					"to": [14, 13, 14],
+					"shade": false,
 					"faces": {
 						"east": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8", "emissivity": 15},

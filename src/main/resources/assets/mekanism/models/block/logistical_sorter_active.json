@@ -279,6 +279,7 @@
 			"name": "bulb_led1",
 			"from": [11.5, 7.5, 8],
 			"to": [12.5, 8.5, 9],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},
 				"east": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},
@@ -291,6 +292,7 @@
 			"name": "bulb_led2",
 			"from": [3.5, 7.5, 8],
 			"to": [4.5, 8.5, 9],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},
 				"south": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},
@@ -303,6 +305,7 @@
 			"name": "bulb_led3",
 			"from": [3.5, 7.5, 6],
 			"to": [4.5, 8.5, 7],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},
 				"south": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},
@@ -315,6 +318,7 @@
 			"name": "bulb_led4",
 			"from": [11.5, 7.5, 6],
 			"to": [12.5, 8.5, 7],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},
 				"east": {"uv": [0, 0, 1, 1], "texture": "#leds", "emissivity": 15},

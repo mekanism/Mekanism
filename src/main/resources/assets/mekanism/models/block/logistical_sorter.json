@@ -3,6 +3,7 @@
 	"parent": "block/cube_all",
 	"textures": {
 		"3": "mekanism:block/models/ports_large_led",
+		"leds": "mekanism:block/models/leds",
 		"ports": "mekanism:block/models/ports",
 		"ports_large": "mekanism:block/models/ports_large",
 		"particle": "mekanism:block/models/logistical_sorter",
@@ -278,48 +279,52 @@
 			"name": "bulb1",
 			"from": [11.5, 7.5, 8],
 			"to": [12.5, 8.5, 9],
+			"shade": false,
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"east": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"south": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"up": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"down": {"uv": [15, 0, 16, 1], "texture": "#all"}
+				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"east": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"south": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"up": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"down": {"uv": [2, 0, 3, 1], "texture": "#leds"}
 			}
 		},
 		{
 			"name": "bulb2",
 			"from": [3.5, 7.5, 8],
 			"to": [4.5, 8.5, 9],
+			"shade": false,
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"south": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"west": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"up": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"down": {"uv": [15, 0, 16, 1], "texture": "#all"}
+				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"south": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"west": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"up": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"down": {"uv": [2, 0, 3, 1], "texture": "#leds"}
 			}
 		},
 		{
 			"name": "bulb3",
 			"from": [3.5, 7.5, 6],
 			"to": [4.5, 8.5, 7],
+			"shade": false,
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"south": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"west": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"up": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"down": {"uv": [15, 0, 16, 1], "texture": "#all"}
+				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"south": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"west": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"up": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"down": {"uv": [2, 0, 3, 1], "texture": "#leds"}
 			}
 		},
 		{
 			"name": "bulb4",
 			"from": [11.5, 7.5, 6],
 			"to": [12.5, 8.5, 7],
+			"shade": false,
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"east": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"south": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"up": {"uv": [15, 0, 16, 1], "texture": "#all"},
-				"down": {"uv": [15, 0, 16, 1], "texture": "#all"}
+				"north": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"east": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"south": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"up": {"uv": [2, 0, 3, 1], "texture": "#leds"},
+				"down": {"uv": [2, 0, 3, 1], "texture": "#leds"}
 			}
 		}
 	]

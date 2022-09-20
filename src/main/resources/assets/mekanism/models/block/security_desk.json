@@ -4,6 +4,7 @@
 		"2": "mekanism:block/models/security_desk_base",
 		"3": "mekanism:block/models/security_desk_monitor",
 		"4": "mekanism:block/models/security_desk_leds",
+		"5": "mekanism:block/models/leds",
 		"particle": "mekanism:block/models/security_desk_base"
 	},
 	"elements": [
@@ -71,13 +72,14 @@
 			"name": "button_led",
 			"from": [2, 13.5, 11.5],
 			"to": [3, 14.5, 12.5],
+			"shade": false,
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
-				"east": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
-				"south": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
-				"west": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15},
-				"down": {"uv": [15, 0, 16, 1], "texture": "#4", "emissivity": 15}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15}
 			}
 		},
 		{

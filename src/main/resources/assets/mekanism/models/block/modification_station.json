@@ -151,6 +151,7 @@
 			"name": "led",
 			"from": [2, 17, 11],
 			"to": [3, 18, 12],
+			"shade": false,
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 11.5]},
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3", "emissivity": 15},
@@ -270,6 +271,7 @@
 			"name": "modifier_probe_right_led",
 			"from": [-11, 22, 8],
 			"to": [-10, 23, 9],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
 				"east": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
@@ -293,6 +295,7 @@
 			"name": "modifier_probe_left_led",
 			"from": [-5, 22, 8],
 			"to": [-4, 23, 9],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},
 				"east": {"uv": [0, 0, 2, 2], "texture": "#3", "emissivity": 15},

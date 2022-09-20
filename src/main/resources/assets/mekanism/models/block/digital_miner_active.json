@@ -50,6 +50,7 @@
 			"name": "led1",
 			"from": [17, 17.5, -12.005],
 			"to": [18, 18.5, -11.005],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "texture": "#5", "emissivity": 15},
 				"east": {"uv": [0, 0, 2, 2], "texture": "#5", "emissivity": 15},
@@ -95,6 +96,7 @@
 			"name": "led2",
 			"from": [2, 17.5, -12.005],
 			"to": [3, 18.5, -11.005],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "texture": "#5", "emissivity": 15},
 				"east": {"uv": [0, 0, 2, 2], "texture": "#5", "emissivity": 15},
@@ -140,6 +142,7 @@
 			"name": "led3",
 			"from": [-13, 17.5, -12.005],
 			"to": [-12, 18.5, -11.005],
+			"shade": false,
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "texture": "#5", "emissivity": 15},
 				"east": {"uv": [0, 0, 2, 2], "texture": "#5", "emissivity": 15},
