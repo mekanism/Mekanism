@@ -7,8 +7,6 @@ public class ProfilerConstants {
 
     //Tile
     public static final String BIN = "bin";
-    public static final String CHEMICAL_CRYSTALLIZER = "chemicalCrystallizer";
-    public static final String CHEMICAL_DISSOLUTION_CHAMBER = "chemicalDissolutionChamber";
     public static final String CONFIGURABLE_MACHINE = "configurableMachine";
     public static final String DIGITAL_MINER = "digitalMiner";
     public static final String DIMENSIONAL_STABILIZER = "dimensionalStabilizer";
@@ -21,11 +19,8 @@ public class ProfilerConstants {
     public static final String NUTRITIONAL_LIQUIFIER = "nutritionalLiquifier";
     public static final String PERSONAL_CHEST = "personalChest";
     public static final String PIGMENT_MIXER = "pigmentMixer";
-    public static final String QUANTUM_ENTANGLOPORTER = "quantumEntangloporter";
     public static final String RESISTIVE_HEATER = "resistiveHeater";
-    public static final String SECURITY_DESK = "securityDesk";
     public static final String SEISMIC_VIBRATOR = "seismicVibrator";
-    public static final String SOLAR_NEUTRON_ACTIVATOR = "solarNeutronActivator";
     public static final String TELEPORTER = "teleporter";
     public static final String THERMAL_EVAPORATION_CONTROLLER = "thermalEvaporationController";
     public static final String THERMOELECTRIC_BOILER = "thermoelectricBoiler";

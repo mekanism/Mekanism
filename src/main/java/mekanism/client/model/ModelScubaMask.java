@@ -116,7 +116,7 @@ public class ModelScubaMask extends MekanismJavaModel {
               GLASS_BACK_R, GLASS_BACK_L, PIPE_CORNER_F_L, PIPE_CORNER_F_R, PIPE_CORNER_B_R, PIPE_CORNER_B_L, LIGHT_L, LIGHT_R);
     }
 
-    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.standard(MASK_TEXTURE);
+    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.STANDARD.apply(MASK_TEXTURE);
     private final RenderType RENDER_TYPE = renderType(MASK_TEXTURE);
     private final List<ModelPart> parts;
     private final List<ModelPart> litParts;

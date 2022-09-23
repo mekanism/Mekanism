@@ -100,18 +100,6 @@
 			}
 		},
 		{
-			"name": "pipe",
-			"from": [5, -7, 5],
-			"to": [11, 1, 11],
-			"faces": {
-				"north": {"uv": [13, 0, 16, 4], "texture": "#0", "cullface": "down"},
-				"east": {"uv": [13, 0, 16, 4], "texture": "#0", "cullface": "down"},
-				"south": {"uv": [13, 0, 16, 4], "texture": "#0", "cullface": "down"},
-				"west": {"uv": [13, 0, 16, 4], "texture": "#0", "cullface": "down"},
-				"down": {"uv": [10, 1, 13, 4], "texture": "#0", "cullface": "down"}
-			}
-		},
-		{
 			"name": "fluid_connector",
 			"from": [4, 14, 4],
 			"to": [12, 15, 12],
@@ -172,8 +160,7 @@
 		},
 		"gui": {
 			"rotation": [30, 225, 0],
-			"translation": [0, 1.25, 0],
-			"scale": [0.55, 0.55, 0.55]
+			"scale":[ 0.625, 0.625, 0.625 ]
 		},
 		"head": {
 			"translation": [0, 13.5, 0]

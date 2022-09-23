@@ -42,17 +42,9 @@ public class MekanismRenderType extends RenderType {
                 .createCompositeState(false)
     );
 
-    public static RenderType standard(ResourceLocation resourceLocation) {
-        return STANDARD.apply(resourceLocation);
-    }
-
-    public static RenderType standardTranslucentTarget(ResourceLocation resourceLocation) {
-        return STANDARD_TRANSLUCENT_TARGET.apply(resourceLocation);
-    }
-
-    private static final Function<ResourceLocation, RenderType> STANDARD = Util.memoize(resourceLocation ->
+    public static final Function<ResourceLocation, RenderType> STANDARD = Util.memoize(resourceLocation ->
           createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));
-    private static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
+    public static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
           createStandard("mek_standard_translucent_target", resourceLocation, state -> state.setOutputState(RenderType.TRANSLUCENT_TARGET), true));
     public static final Function<ResourceLocation, RenderType> ALARM = Util.memoize(resourceLocation ->
           createStandard("mek_alarm", resourceLocation, state -> state.setCullState(NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));

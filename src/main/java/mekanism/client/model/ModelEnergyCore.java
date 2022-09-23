@@ -30,12 +30,12 @@ public class ModelEnergyCore extends MekanismJavaModel {
         return createLayerDefinition(32, 32, CUBE);
     }
 
-    public static final RenderType BATCHED_RENDER_TYPE = MekanismRenderType.standardTranslucentTarget(CORE_TEXTURE);
+    public static final RenderType BATCHED_RENDER_TYPE = MekanismRenderType.STANDARD_TRANSLUCENT_TARGET.apply(CORE_TEXTURE);
     public final RenderType RENDER_TYPE = renderType(CORE_TEXTURE);
     private final ModelPart cube;
 
     public ModelEnergyCore(EntityModelSet entityModelSet) {
-        super(MekanismRenderType::standard);
+        super(MekanismRenderType.STANDARD);
         ModelPart root = entityModelSet.bakeLayer(CORE_LAYER);
         cube = CUBE.getFromRoot(root);
     }

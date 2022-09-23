@@ -453,44 +453,44 @@ public final class BlockShapes {
         ), PERSONAL_CHEST);
 
         setShape(VoxelShapeUtils.combine(
-              box(4, 4, 0, 12, 12, 1),//portFront
-              box(0, 4, 4, 1, 12, 12),//portRight
-              box(15, 4, 4, 16, 12, 12),//portLeft
-              box(4, 15, 4, 12, 16, 12),//portTop
-              box(4, 0, 4, 12, 1, 12),//portBottom
-              box(4, 4, 15, 12, 12, 16),//portBack
-              box(13, 13, 0, 16, 16, 3),//corner1
-              box(0, 13, 0, 3, 16, 3),//corner2
-              box(13, 13, 13, 16, 16, 16),//corner3
-              box(0, 13, 13, 3, 16, 16),//corner4
-              box(13, 0, 0, 16, 3, 3),//corner5
-              box(0, 0, 0, 3, 3, 3),//corner6
-              box(13, 0, 13, 16, 3, 16),//corner7
-              box(0, 0, 13, 3, 3, 16),//corner8
-              box(13, 3, 1, 15, 13, 3),//frame1
-              box(1, 3, 1, 3, 13, 3),//frame2
-              box(13, 3, 13, 15, 13, 15),//frame3
-              box(1, 3, 13, 3, 13, 15),//frame4
-              box(3, 1, 1, 13, 3, 3),//frame5
-              box(13, 1, 3, 15, 3, 13),//frame6
-              box(1, 1, 3, 3, 3, 13),//frame7
-              box(3, 1, 13, 13, 3, 15),//frame8
-              box(3, 13, 1, 13, 15, 3),//frame9
-              box(13, 13, 3, 15, 15, 13),//frame10
-              box(1, 13, 3, 3, 15, 13),//frame11
-              box(3, 13, 13, 13, 15, 15),//frame12
-              box(14.5, 3, 0.5, 15.5, 13, 1.5),//frameEdge1
-              box(0.5, 3, 0.5, 1.5, 13, 1.5),//frameEdge2
-              box(14.5, 3, 14.5, 15.5, 13, 15.5),//frameEdge3
-              box(0.5, 3, 14.5, 1.5, 13, 15.5),//frameEdge4
-              box(3, 0.5, 0.5, 13, 1.5, 1.5),//frameEdge5
-              box(14.5, 0.5, 3, 15.5, 1.5, 13),//frameEdge6
-              box(0.5, 0.5, 3, 1.5, 1.5, 13),//frameEdge7
-              box(3, 0.5, 14.5, 13, 1.5, 15.5),//frameEdge8
-              box(3, 14.5, 0.5, 13, 15.5, 1.5),//frameEdge9
-              box(14.5, 14.5, 3, 15.5, 15.5, 13),//frameEdge10
-              box(0.5, 14.5, 3, 1.5, 15.5, 13),//frameEdge11
-              box(3, 14.5, 14.5, 13, 15.5, 15.5)//frameEdge12
+              box(0, 0, 0, 3, 3, 3), // corner1
+              box(0, 0, 13, 3, 3, 16), // corner2
+              box(13, 0, 13, 16, 3, 16), // corner3
+              box(13, 0, 0, 16, 3, 3), // corner4
+              box(13, 13, 0, 16, 16, 3), // corner5
+              box(0, 13, 0, 3, 16, 3), // corner6
+              box(0, 13, 13, 3, 16, 16), // corner7
+              box(13, 13, 13, 16, 16, 16), // corner8
+              box(0, 0, 3, 1, 1, 13), // edge1
+              box(0, 15, 3, 1, 16, 13), // edge2
+              box(15, 15, 3, 16, 16, 13), // edge3
+              box(15, 0, 3, 16, 1, 13), // edge4
+              box(3, 0, 0, 13, 1, 1), // edge5
+              box(3, 15, 0, 13, 16, 1), // edge6
+              box(3, 15, 15, 13, 16, 16), // edge7
+              box(3, 0, 15, 13, 1, 16), // edge8
+              box(15, 3, 15, 16, 13, 16), // edge9
+              box(0, 3, 15, 1, 13, 16), // edge10
+              box(0, 3, 0, 1, 13, 1), // edge11
+              box(15, 3, 0, 16, 13, 1), // edge12
+              box(1, 13, 3, 3, 15, 13), // inner1
+              box(13, 13, 3, 15, 15, 13), // inner2
+              box(13, 1, 3, 15, 3, 13), // inner3
+              box(1, 1, 3, 3, 3, 13), // inner4
+              box(3, 1, 13, 13, 3, 15), // inner5
+              box(3, 1, 1, 13, 3, 3), // inner6
+              box(3, 13, 1, 13, 15, 3), // inner7
+              box(3, 13, 13, 13, 15, 15), // inner8
+              box(1, 3, 13, 3, 13, 15), // inner9
+              box(1, 3, 1, 3, 13, 3), // inner10
+              box(13, 3, 1, 15, 13, 3), // inner11
+              box(13, 3, 13, 15, 13, 15), // inner12
+              box(4, 4, 0, 12, 12, 1), // port_small_north
+              box(15, 4, 4, 16, 12, 12), // port_small_east
+              box(4, 4, 15, 12, 12, 16), // port_small_south
+              box(0, 4, 4, 1, 12, 12), // port_small_west
+              box(4, 15, 4, 12, 16, 12), // port_small_up
+              box(4, 0, 4, 12, 1, 12) // port_small_down
         ), QUANTUM_ENTANGLOPORTER, true);
 
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
