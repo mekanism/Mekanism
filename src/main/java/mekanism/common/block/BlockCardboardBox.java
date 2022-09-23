@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,7 +55,9 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 BlockData data = box.storedData;
                 //TODO: Note - this will not allow for rotation of the block based on how it is placed direction wise via the removal of
                 // the cardboard box and will instead leave it how it was when the box was initially put on
-                world.setBlockAndUpdate(pos, data.blockState);
+                //Adjust the state based on neighboring blocks to ensure double chests properly become single chests again
+                BlockState adjustedState = Block.updateFromNeighbourShapes(data.blockState, world, pos);
+                world.setBlockAndUpdate(pos, adjustedState);
                 if (data.tileTag != null) {
                     data.updateLocation(pos);
                     BlockEntity tile = WorldUtils.getTileEntity(world, pos);
@@ -62,8 +65,8 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                         tile.load(data.tileTag);
                     }
                 }
-                //TODO: Do we need to call onBlockPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
-                //data.blockState.getBlock().onBlockPlacedBy(world, pos, data.blockState, player, new ItemStack(data.block));
+                //TODO: Do we need to call setPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
+                //adjustedState.getBlock().setPlacedBy(world, pos, data.blockState, player, new ItemStack(adjustedState.getBlock()));
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
                 MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.trigger((ServerPlayer) player);
             }
