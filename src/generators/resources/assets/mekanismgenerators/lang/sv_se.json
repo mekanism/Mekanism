@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Tillverka en gasbrännande generator för att bränna etylen",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Bränn gasen",
+  "advancements.mekanismgenerators.heat_generator.description": "Tillverka en värmegenerator för att börja generera ström",
+  "advancements.mekanismgenerators.heat_generator.title": "Din första generator",
+  "advancements.mekanismgenerators.solar_generator.description": "Förnyelsebar energi på dagtid",
+  "advancements.mekanismgenerators.solar_generator.title": "Solens kraft",
+  "advancements.mekanismgenerators.wind_generator.description": "Förhoppningsvis finns det lite vind i närheten",
+  "advancements.mekanismgenerators.wind_generator.title": "Snurra, baby, snurra",
   "block.mekanismgenerators.advanced_solar_generator": "Avancerad Solpanel",
   "block.mekanismgenerators.deuterium": "Flytande Deuterium",
   "block.mekanismgenerators.electromagnetic_coil": "Elektromagnetisk spole",
