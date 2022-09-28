@@ -61,6 +61,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -201,6 +202,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
+    }
+
+    @Override
+    public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
+        //Try to avoid replacing this item if there are any modules currently installed
+        return super.isNotReplaceableByPickAction(stack, player, inventorySlot) || ItemDataUtils.hasData(stack, NBTConstants.MODULES, Tag.TAG_COMPOUND);
     }
 
     @Override

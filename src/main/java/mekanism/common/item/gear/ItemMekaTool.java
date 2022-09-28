@@ -50,6 +50,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -123,6 +124,12 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, ToolAction action) {
         return module.getCustomInstance().canPerformAction(module, action);
+    }
+
+    @Override
+    public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
+        //Try to avoid replacing this item if there are any modules currently installed
+        return super.isNotReplaceableByPickAction(stack, player, inventorySlot) || ItemDataUtils.hasData(stack, NBTConstants.MODULES, Tag.TAG_COMPOUND);
     }
 
     @Override
