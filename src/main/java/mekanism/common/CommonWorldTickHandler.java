@@ -21,6 +21,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -76,9 +78,14 @@ public class CommonWorldTickHandler {
         //If we are in the middle of breaking a block using a cardboard box, cancel any items
         // that are dropped, we do this at highest priority to ensure we cancel it the same tick
         // before forge replaces items with custom item entities with a tick delay
-        if (monitoringCardboardBox && event.getEntity() instanceof ItemEntity entity) {
-            entity.discard();
-            event.setCanceled(true);
+        // We also cancel any experience orbs from spawning as things like the furnace will store
+        // how much xp they have but also try to drop it on replace
+        if (monitoringCardboardBox) {
+            Entity entity = event.getEntity();
+            if (entity instanceof ItemEntity || entity instanceof ExperienceOrb) {
+                entity.discard();
+                event.setCanceled(true);
+            }
         }
     }
 
