@@ -76,13 +76,11 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -381,7 +379,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     private boolean isValidDestinationBlock(Level world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         //Allow teleporting into air or fluids
-        return blockState.isAir() || blockState.getBlock() instanceof LiquidBlock || blockState.getBlock() instanceof IFluidBlock;
+        return blockState.isAir() || MekanismUtils.isLiquidBlock(blockState.getBlock());
     }
 
     @Override

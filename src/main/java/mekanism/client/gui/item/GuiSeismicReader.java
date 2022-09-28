@@ -14,7 +14,6 @@ import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
@@ -25,11 +24,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
@@ -100,13 +101,21 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 ItemStack stack = new ItemStack(state.getBlock());
                 RenderTarget renderTarget;
                 if (stack.isEmpty()) {
-                    if (!(state.getBlock() instanceof LiquidBlock liquidBlock) || liquidBlock.getFluid() == Fluids.EMPTY) {
+                    Fluid fluid = Fluids.EMPTY;
+                    if (state.getBlock() instanceof LiquidBlock liquidBlock) {
+                        fluid = liquidBlock.getFluid();
+                    } else if (state.getBlock() instanceof IFluidBlock fluidBlock) {
+                        fluid = fluidBlock.getFluid();
+                    } else if (state.getBlock() instanceof BubbleColumnBlock bubbleColumn) {
+                        fluid = bubbleColumn.getFluidState(state).getType();
+                    }
+                    if (fluid == Fluids.EMPTY) {
                         continue;
                     }
+                    IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
                     renderTarget = (poseStack, x, y) -> {
-                        FlowingFluid fluid = liquidBlock.getFluid();
-                        MekanismRenderer.color(IClientFluidTypeExtensions.of(fluid).getTintColor());
-                        TextureAtlasSprite texture = MekanismRenderer.getBaseFluidTexture(fluid, FluidTextureType.STILL);
+                        MekanismRenderer.color(properties.getTintColor());
+                        TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
                         GuiUtils.drawSprite(poseStack, x, y, 16, 16, getBlitOffset(), texture);
                         MekanismRenderer.resetColor();
                     };

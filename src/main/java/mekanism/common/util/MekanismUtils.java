@@ -80,6 +80,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BubbleColumnBlock;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -94,6 +96,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
@@ -399,6 +402,11 @@ public final class MekanismUtils {
             }
         }
         return 0;
+    }
+
+    public static boolean isLiquidBlock(Block block) {
+        //Treat bubble columns as liquids
+        return block instanceof LiquidBlock || block instanceof BubbleColumnBlock || block instanceof IFluidBlock;
     }
 
     /**

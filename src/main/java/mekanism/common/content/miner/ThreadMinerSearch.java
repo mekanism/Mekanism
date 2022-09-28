@@ -14,15 +14,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
 
@@ -70,7 +69,7 @@ public class ThreadMinerSearch extends Thread {
                 continue;
             }
             info = state.getBlock();
-            if (info instanceof LiquidBlock || info instanceof IFluidBlock) {
+            if (MekanismUtils.isLiquidBlock(info)) {
                 //Skip liquids
                 continue;
             }
