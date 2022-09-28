@@ -1,13 +1,12 @@
 package mekanism.client.model.robit;
 
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.model.MekanismModelCache;
-import mekanism.client.model.baked.ExtensionBakedModel;
+import mekanism.client.model.baked.ExtensionOverrideBakedModel;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
 import mekanism.client.render.lib.QuadUtils;
@@ -24,20 +23,12 @@ import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
+public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocation> {
 
     private static final BiPredicate<ResourceLocation, ResourceLocation> DATA_EQUALITY_CHECK = ResourceLocation::equals;
 
-    private final RobitItemOverrideList overrideList;
-
     public RobitBakedModel(BakedModel original) {
-        super(original);
-        this.overrideList = new RobitItemOverrideList(super.getOverrides());
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return overrideList;
+        super(original, RobitItemOverrideList::new);
     }
 
     @Override
@@ -70,12 +61,10 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
         return new RobitBakedModel(model);
     }
 
-    private static class RobitItemOverrideList extends ItemOverrides {
-
-        private final ItemOverrides original;
+    private static class RobitItemOverrideList extends ExtendedItemOverrides {
 
         RobitItemOverrideList(ItemOverrides original) {
-            this.original = original;
+            super(original);
         }
 
         @Nullable
@@ -95,21 +84,10 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
                 if (!textures.isEmpty()) {
                     //Assuming the skin actually has textures (it should), grab the first texture as the model data
                     ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.get(0)).build();
-                    // perform any overrides the original may have (most likely it doesn't have any)
-                    // and then wrap the baked model so that it makes use of the model data
-                    BakedModel resolved = original.resolve(model, stack, world, entity, seed);
-                    if (resolved == null) {
-                        resolved = model;
-                    }
-                    return new RobitModelDataBakedModel(resolved, modelData);
+                    return wrap(model, stack, world, entity, seed, modelData, RobitModelDataBakedModel::new);
                 }
             }
             return original.resolve(model, stack, world, entity, seed);
-        }
-
-        @Override
-        public ImmutableList<BakedOverride> getOverrides() {
-            return original.getOverrides();
         }
     }
 }

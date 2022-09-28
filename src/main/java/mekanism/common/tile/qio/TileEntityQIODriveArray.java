@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public class TileEntityQIODriveArray extends TileEntityQIOComponent implements IQIODriveHolder {
 
     public static final ModelProperty<byte[]> DRIVE_STATUS_PROPERTY = new ModelProperty<>();
-    private static final int DRIVE_SLOTS = 12;
+    public static final int DRIVE_SLOTS = 12;
 
     private List<IInventorySlot> driveSlots;
     private byte[] driveStatus = new byte[DRIVE_SLOTS];
@@ -64,7 +64,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
                 QIODriveSlot slot = (QIODriveSlot) driveSlots.get(i);
                 QIODriveData data = frequency == null ? null : frequency.getDriveData(slot.getKey());
                 if (frequency == null || data == null) {
-                    setDriveStatus(i, slot.getStack().isEmpty() ? DriveStatus.NONE : DriveStatus.OFFLINE);
+                    setDriveStatus(i, slot.isEmpty() ? DriveStatus.NONE : DriveStatus.OFFLINE);
                     continue;
                 }
                 if (data.getTotalCount() == data.getCountCapacity()) {
@@ -88,7 +88,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     private void setDriveStatus(int slot, DriveStatus status) {
-        driveStatus[slot] = (byte) status.ordinal();
+        driveStatus[slot] = status.status();
     }
 
     @Override
@@ -214,6 +214,10 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
         public ResourceLocation getModel() {
             return model;
+        }
+
+        public byte status() {
+            return (byte) ordinal();
         }
 
         public static DriveStatus byIndexStatic(int index) {
