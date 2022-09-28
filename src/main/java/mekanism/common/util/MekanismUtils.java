@@ -487,7 +487,7 @@ public final class MekanismUtils {
 
     public static Component getEnergyDisplayShort(FloatingLong energy) {
         EnergyUnit configured = EnergyUnit.getConfigured();
-        return UnitDisplayUtils.getDisplayShort(configured.convertToAsFloatingLong(energy), configured);
+        return UnitDisplayUtils.getDisplayShort(configured.convertTo(energy), configured);
     }
 
     /**
@@ -509,7 +509,7 @@ public final class MekanismUtils {
      * @return energy converted to configured unit
      */
     public static FloatingLong convertToDisplay(FloatingLong energy) {
-        return EnergyUnit.getConfigured().convertToAsFloatingLong(energy);
+        return EnergyUnit.getConfigured().convertTo(energy);
     }
 
     /**

@@ -134,6 +134,7 @@ public class EnergyCompatUtils {
      */
     public static boolean useIC2() {
         //TODO: IC2
-        return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.get();
+        //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
+        return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.getOrDefault();
     }
 }

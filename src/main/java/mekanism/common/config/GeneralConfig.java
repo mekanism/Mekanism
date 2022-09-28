@@ -15,7 +15,6 @@ import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.util.UnitDisplayUtils.EnergyConversionRate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -68,9 +67,9 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue prefilledSlurryTanks;
     //Energy Conversion
     public final CachedBooleanValue blacklistIC2;
-    public final EnergyConversionRate IC2_CONVERSION_RATE;
+    public final CachedFloatingLongValue ic2ConversionRate;
     public final CachedBooleanValue blacklistForge;
-    public final EnergyConversionRate FORGE_CONVERSION_RATE;
+    public final CachedFloatingLongValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedFloatingLongValue FROM_H2;
     public final CachedIntValue ETHENE_BURN_TIME;
@@ -184,21 +183,15 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistIC2 = CachedBooleanValue.wrap(this, builder.comment("Disables IC2 power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistIC2", false));
-        IC2_CONVERSION_RATE = new EnergyConversionRate(
-              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * JoulePerEU = Joules)",
-                    "JoulePerEU", FloatingLong.createConst(10), CachedFloatingLongValue.POSITIVE),
-              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to EU (Joules * EUPerJoule = EU)",
-                    "EUPerJoule", FloatingLong.createConst(0.1), CachedFloatingLongValue.POSITIVE)
-        );
+        //TODO - 1.20: Rename config entry
+        ic2ConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * JoulePerEU = Joules)",
+              "JoulePerEU", FloatingLong.createConst(10), CachedFloatingLongValue.ENERGY_CONVERSION);
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));
-        FORGE_CONVERSION_RATE = new EnergyConversionRate(
-              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * JoulePerForgeEnergy = Joules)",
-                    "JoulePerForgeEnergy", FloatingLong.createConst(2.5), CachedFloatingLongValue.POSITIVE),
-              CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Joules to Forge Energy (Joules * ForgeEnergyPerJoule = FE)",
-                    "ForgeEnergyPerJoule", FloatingLong.createConst(0.4), CachedFloatingLongValue.POSITIVE)
-        );
+        //TODO - 1.20: Rename config entry
+        forgeConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * JoulePerForgeEnergy = Joules)",
+              "JoulePerForgeEnergy", FloatingLong.createConst(2.5), CachedFloatingLongValue.ENERGY_CONVERSION);
         blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistFluxNetworks", false));

@@ -183,10 +183,6 @@ public class Mekanism {
     public static final MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new, EvaporationValidator::new);
     public static final MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new, SPSValidator::new);
     /**
-     * Mekanism creative tab
-     */
-    public static final CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
-    /**
      * List of Mekanism modules loaded
      */
     public static final List<IModModule> modulesLoaded = new ArrayList<>();

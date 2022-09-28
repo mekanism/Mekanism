@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.config.IMekanismConfig;
+import net.minecraft.Util;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -20,6 +21,14 @@ public class CachedFloatingLongValue extends CachedResolvableConfigValue<Floatin
         FloatingLong value = tryGetValue(object);
         return value != null && value.greaterThan(FloatingLong.ZERO);
     };
+
+    public static final Predicate<Object> ENERGY_CONVERSION = Util.make(() -> {
+        FloatingLong max = FloatingLong.ONE.divide(FloatingLong.createConst(0, (short) 1)).copyAsConst();//Inverse of min positive value
+        return object -> {
+            FloatingLong value = tryGetValue(object);
+            return value != null && value.greaterThan(FloatingLong.ZERO) && value.smallerOrEqual(max);
+        };
+    });
 
     @Nullable
     private static FloatingLong tryGetValue(Object object) {

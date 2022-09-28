@@ -1,20 +1,26 @@
 package mekanism.common.util;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Code taken from UE and modified to fit Mekanism.
@@ -139,78 +145,113 @@ public class UnitDisplayUtils {
         ILangEntry getLabel();
     }
 
-    public record EnergyConversionRate(CachedFloatingLongValue from, CachedFloatingLongValue to) {
-    }
-
     @NothingNullByDefault
-    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IHasTranslationKey {
-        JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", () -> true) {
+    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion {
+        JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, () -> true) {
             @Override
-            protected EnergyConversionRate getConversionRate() {
-                //Return null and then override usages of it as there is no conversion needed
-                //noinspection ConstantConditions
-                return null;
+            protected FloatingLong getConversion() {
+                //Unused but override it anyway
+                return FloatingLong.ONE;
             }
 
             @Override
-            public FloatingLong convertFrom(FloatingLong energy) {
-                return energy;
+            protected FloatingLong getInverseConversion() {
+                //Unused but override it anyway
+                return FloatingLong.ONE;
             }
 
             @Override
-            public FloatingLong convertToAsFloatingLong(FloatingLong joules) {
+            public FloatingLong convertFrom(FloatingLong joules) {
+                return joules;
+            }
+
+            @Override
+            public FloatingLong convertInPlaceFrom(FloatingLong joules) {
+                return joules;
+            }
+
+            @Override
+            public FloatingLong convertTo(FloatingLong joules) {
+                return joules;
+            }
+
+            @Override
+            public FloatingLong convertInPlaceTo(FloatingLong joules) {
                 return joules;
             }
         },
-        FORGE_ENERGY(MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE_SHORT, "fe", () -> !MekanismConfig.general.blacklistForge.get()) {
-            @Override
-            protected EnergyConversionRate getConversionRate() {
-                return MekanismConfig.general.FORGE_CONVERSION_RATE;
-            }
-        },
-        ELECTRICAL_UNITS(MekanismLang.ENERGY_EU, MekanismLang.ENERGY_EU_PLURAL, MekanismLang.ENERGY_EU_SHORT, "eu", EnergyCompatUtils::useIC2) {
-            @Override
-            protected EnergyConversionRate getConversionRate() {
-                return MekanismConfig.general.IC2_CONVERSION_RATE;
-            }
-        };
+        FORGE_ENERGY(MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE_SHORT, "fe", () -> MekanismConfig.general.forgeConversionRate,
+              //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
+              () -> !MekanismConfig.general.blacklistForge.getOrDefault()),
+        ELECTRICAL_UNITS(MekanismLang.ENERGY_EU, MekanismLang.ENERGY_EU_PLURAL, MekanismLang.ENERGY_EU_SHORT, "eu", () -> MekanismConfig.general.ic2ConversionRate,
+              EnergyCompatUtils::useIC2);
 
         private static final EnergyUnit[] TYPES = values();
 
+        private final Supplier<CachedFloatingLongValue> conversion;
+        private final Supplier<FloatingLongSupplier> inverseConversion;
         private final BooleanSupplier checkEnabled;
         private final ILangEntry singularLangEntry;
         private final ILangEntry pluralLangEntry;
         private final ILangEntry shortLangEntry;
         private final String tabName;
 
-        EnergyUnit(ILangEntry singularLangEntry, ILangEntry pluralLangEntry, ILangEntry shortLangEntry, String tabName, BooleanSupplier checkEnabled) {
+        //Note: We ignore improper nulls as they only are null for joules which overrides the various use places
+        @SuppressWarnings("ConstantConditions")
+        EnergyUnit(ILangEntry singularLangEntry, ILangEntry pluralLangEntry, ILangEntry shortLangEntry, String tabName,
+              @Nullable Supplier<CachedFloatingLongValue> conversionRate, BooleanSupplier checkEnabled) {
             this.singularLangEntry = singularLangEntry;
             this.pluralLangEntry = pluralLangEntry;
             this.shortLangEntry = shortLangEntry;
             this.checkEnabled = checkEnabled;
             this.tabName = tabName;
+            this.conversion = conversionRate;
+            if (this.conversion == null) {
+                this.inverseConversion = null;
+            } else {
+                //Cache the inverse as multiplication for floating longs is more consistently fast compared to division
+                //Note: We also cache the creation of our cache so that when MC is not initialized we can still create
+                // this enum without having initialization errors. Use case: Unit tests
+                inverseConversion = Lazy.of(() -> new ConfigBasedCachedFLSupplier(() -> FloatingLong.ONE.divide(getConversion()), this.conversion.get()));
+            }
         }
 
-        protected abstract EnergyConversionRate getConversionRate();
-
-        public FloatingLong convertFrom(long energy) {
-            return convertFrom(FloatingLong.createConst(energy));
+        protected FloatingLong getConversion() {
+            //Note: Use default value if called before configs are loaded. In general this should never happen,
+            // but third party mods may just call it regardless
+            return conversion.get().getOrDefault();
         }
 
+        protected FloatingLong getInverseConversion() {
+            return inverseConversion.get().get();
+        }
+
+        @Override
         public FloatingLong convertFrom(FloatingLong energy) {
-            return energy.multiply(getConversionRate().from.get());
+            return energy.multiply(getConversion());
         }
 
-        public int convertToAsInt(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).intValue();
+        @Override
+        public FloatingLong convertInPlaceFrom(FloatingLong energy) {
+            return energy.timesEqual(getConversion());
         }
 
-        public long convertToAsLong(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).longValue();
+        @Override
+        public FloatingLong convertTo(FloatingLong joules) {
+            if (joules.isZero()) {
+                //Short circuit if energy is zero to avoid having to create any additional objects
+                return FloatingLong.ZERO;
+            }
+            return joules.multiply(getInverseConversion());
         }
 
-        public FloatingLong convertToAsFloatingLong(FloatingLong joules) {
-            return joules.multiply(getConversionRate().to.get());
+        @Override
+        public FloatingLong convertInPlaceTo(FloatingLong joules) {
+            if (joules.isZero()) {
+                //Short circuit if energy is zero to avoid having to create any additional objects
+                return joules;
+            }
+            return joules.timesEqual(getInverseConversion());
         }
 
         @Override

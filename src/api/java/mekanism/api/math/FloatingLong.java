@@ -244,7 +244,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toAdd.isZero()) {
             return this;
         } else if ((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
-            return setAndClampValues(-1, MAX_DECIMAL);
+            //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
+            return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
         }
         long newValue = value + toAdd.value;
         short newDecimal = (short) (decimal + toAdd.decimal);
@@ -272,11 +273,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.minusEqual(toSubtract)}
      */
     public FloatingLong minusEqual(FloatingLong toSubtract) {
-        if (toSubtract.isZero()) {
+        if (toSubtract.isZero() || isZero()) {
             return this;
         } else if (toSubtract.greaterOrEqual(this)) {
             //Clamp the result at zero as floating longs cannot become negative
-            return setAndClampValues(0, (short) 0);
+            //To save a tiny bit of memory if this is called on a constant we just return the constant zero as the object can't be modified anyway
+            return isConstant ? ZERO : setAndClampValues(0, (short) 0);
         }
         long newValue = value - toSubtract.value;
         short newDecimal = (short) (decimal - toSubtract.decimal);
@@ -300,13 +302,17 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.timesEqual(toMultiply)}
      */
     public FloatingLong timesEqual(FloatingLong toMultiply) {
-        if (toMultiply.isZero()) {
-            return ZERO;
-        } else if (toMultiply.equals(ONE)) {
+        if (isZero() || toMultiply.equals(ONE)) {
             return this;
+        } else if (toMultiply.isZero()) {
+            //To save a tiny bit of memory if this is called on a constant we just return the constant zero as the object can't be modified anyway
+            return isConstant ? ZERO : setAndClampValues(0, (short) 0);
+        } else if (equals(ONE)) {
+            return setAndClampValues(toMultiply.value, toMultiply.decimal);
         } else if (multiplyLongsWillOverFlow(value, toMultiply.value)) {
             //(a+b)*(c+d) where numbers represent decimal, numbers represent value
-            return MAX_VALUE;
+            //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
+            return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
         }
         FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
         temp = temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
@@ -331,9 +337,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong divideEquals(FloatingLong toDivide) {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
-        } else if (isZero()) {
-            return ZERO;
-        } else if (toDivide.equals(ONE)) {
+        } else if (isZero() || toDivide.equals(ONE)) {
             return this;
         } else if (toDivide.decimal == 0) {
             //If we are dividing by a whole number, use our more optimized division algorithm
@@ -361,9 +365,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong divideEquals(long toDivide) {
         if (toDivide == 0) {
             throw new ArithmeticException("Division by zero");
-        } else if (isZero()) {
-            return ZERO;
-        } else if (toDivide == 1) {
+        } else if (isZero() || toDivide == 1) {
             return this;
         }
         long val = Long.divideUnsigned(this.value, toDivide);
