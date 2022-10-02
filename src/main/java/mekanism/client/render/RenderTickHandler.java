@@ -34,6 +34,8 @@ import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.cosmeticarmor.CosmeticArmorIntegration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -163,6 +165,11 @@ public class RenderTickHandler {
     public void renderArm(RenderArmEvent event) {
         AbstractClientPlayer player = event.getPlayer();
         ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+        
+        if (Mekanism.hooks.CosmeticArmorLoaded) {
+            chestStack = CosmeticArmorIntegration.getCosmeticChestItemStack(player, chestStack);
+        }
+        
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
             MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) RenderProperties.get(armorItem)).getGearModel(EquipmentSlot.CHEST);
             PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
