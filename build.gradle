@@ -404,6 +404,8 @@ dependencies {
 
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
     implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
+    
+    implementation fg.deobf("curse.maven:cosmetic-armor-reworked-237307:${cosmetic_armror_id}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
