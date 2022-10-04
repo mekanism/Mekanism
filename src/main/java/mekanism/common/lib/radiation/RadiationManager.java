@@ -3,8 +3,6 @@ package mekanism.common.lib.radiation;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +26,7 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
@@ -103,8 +102,8 @@ public class RadiationManager implements IRadiationManager {
     private static final IntSupplier MAX_RANGE = () -> MekanismConfig.general.radiationChunkCheckRadius.get() * 16;
     private static final Random RAND = new Random();
 
-    public static final double BASELINE = 0.0000001; // 100 nSv/h
-    public static final double MIN_MAGNITUDE = 0.00001; // 10 uSv/h
+    public static final double BASELINE = 0.000_000_100; // 100 nSv/h
+    public static final double MIN_MAGNITUDE = 0.000_010; // 10 uSv/h
 
     private boolean loaded;
 
@@ -112,8 +111,8 @@ public class RadiationManager implements IRadiationManager {
     private final Table<Chunk3D, Coord4D, IRadiationSource> radiationView = Tables.unmodifiableTable(radiationTable);
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
-    private final Object2DoubleMap<UUID> playerEnvironmentalExposureMap = new Object2DoubleOpenHashMap<>();
-    private final Object2DoubleMap<UUID> playerExposureMap = new Object2DoubleOpenHashMap<>();
+    private final Map<UUID, PreviousRadiationData> playerEnvironmentalExposureMap = new Object2ObjectOpenHashMap<>();
+    private final Map<UUID, PreviousRadiationData> playerExposureMap = new Object2ObjectOpenHashMap<>();
 
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;
@@ -319,13 +318,10 @@ public class RadiationManager implements IRadiationManager {
 
     public void updateClientRadiation(ServerPlayer player) {
         LevelAndMaxMagnitude levelAndMaxMagnitude = RadiationManager.INSTANCE.getRadiationLevelAndMaxMagnitude(player);
-        double magnitude = levelAndMaxMagnitude.level();
-        double scaledMagnitude = Math.ceil(magnitude / BASELINE);
-        //If the last sync radiation value is different in magnitude by over the baseline, sync
-        // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
-        // to be zero as magnitude will always be at least BASELINE
-        if (scaledMagnitude != playerEnvironmentalExposureMap.getOrDefault(player.getUUID(), 0)) {
-            playerEnvironmentalExposureMap.put(player.getUUID(), scaledMagnitude);
+        PreviousRadiationData previousRadiationData = playerEnvironmentalExposureMap.get(player.getUUID());
+        PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, levelAndMaxMagnitude.level());
+        if (relevantData != null) {
+            playerEnvironmentalExposureMap.put(player.getUUID(), relevantData);
             Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(levelAndMaxMagnitude), player);
         }
     }
@@ -391,12 +387,10 @@ public class RadiationManager implements IRadiationManager {
             c.update(entity);
             if (entity instanceof ServerPlayer player) {
                 double radiation = c.getRadiation();
-                double scaledRadiation = Math.ceil(radiation / BASELINE);
-                //If the last sync radiation value is different in magnitude by over the baseline, sync
-                // Note: If it is not present this will always be marked as needing a sync as it is not possible for scaledMagnitude
-                // to be zero as magnitude will always be at least BASELINE
-                if (scaledRadiation != playerExposureMap.getOrDefault(player.getUUID(), 0)) {
-                    playerExposureMap.put(player.getUUID(), scaledRadiation);
+                PreviousRadiationData previousRadiationData = playerExposureMap.get(player.getUUID());
+                PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, radiation);
+                if (relevantData != null) {
+                    playerExposureMap.put(player.getUUID(), relevantData);
                     Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(radiation), player);
                 }
             }
@@ -475,8 +469,8 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void resetPlayer(UUID uuid) {
-        playerEnvironmentalExposureMap.removeDouble(uuid);
-        playerExposureMap.removeDouble(uuid);
+        playerEnvironmentalExposureMap.remove(uuid);
+        playerExposureMap.remove(uuid);
     }
 
     @SubscribeEvent
@@ -556,6 +550,40 @@ public class RadiationManager implements IRadiationManager {
                 case EXTREME -> MekanismSounds.GEIGER_FAST.get();
                 default -> null;
             };
+        }
+    }
+
+    private record PreviousRadiationData(double magnitude, int power, double base) {
+
+        private static int getPower(double magnitude) {
+            return MathUtils.clampToInt(Math.floor(Math.log10(magnitude)));
+        }
+
+        @Nullable
+        private static PreviousRadiationData compareTo(@Nullable PreviousRadiationData previousRadiationData, double magnitude) {
+            if (previousRadiationData == null || Math.abs(magnitude - previousRadiationData.magnitude) >= previousRadiationData.base) {
+                //No cached value or the magnitude changed by more than the smallest unit we display
+                return getData(magnitude, getPower(magnitude));
+            } else if (magnitude < previousRadiationData.magnitude) {
+                //Magnitude has decreased, and by a smaller amount than the smallest unit we currently are displaying
+                int power = getPower(magnitude);
+                if (power < previousRadiationData.power) {
+                    //Check if the number of digits decreased, in which case even if we potentially only decreased by a tiny amount
+                    // we still need to sync and update it
+                    return getData(magnitude, power);
+                }
+            }
+            //No need to sync
+            return null;
+        }
+
+        private static PreviousRadiationData getData(double magnitude, int power) {
+            //Unit display happens using SI units which is in factors of 1,000 (10^3) convert our power to the current SI unit it is for
+            int siPower = Math.floorDiv(power, 3) * 3;
+            //Note: We subtract two from the power because for places we sync to and read from on the client side
+            // we have two decimal places, so we need to shift our target to include those decimals
+            double base = Math.pow(10, siPower - 2);
+            return new PreviousRadiationData(magnitude, power, base);
         }
     }
 

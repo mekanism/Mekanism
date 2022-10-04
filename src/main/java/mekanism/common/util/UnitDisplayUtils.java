@@ -44,16 +44,13 @@ public class UnitDisplayUtils {
         }
         for (int i = 0; i < EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length; i++) {
             FloatingLongMeasurementUnit lowerMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i];
-            if (i == 0 && lowerMeasure.below(value)) {
+            if ((i == 0 && lowerMeasure.below(value)) ||
+                i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length ||
+                (lowerMeasure.aboveEqual(value) && EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1].below(value))) {
+                //First element and it is below it (no more unit abbreviations before),
+                // or last element (no more unit abbreviations past),
+                // or we are within the bounds between this one and the next one
                 return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-            }
-            if (i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length) {
-                return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-            } else {
-                FloatingLongMeasurementUnit upperMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1];
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value.equals(value)) {
-                    return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-                }
             }
         }
         return TextComponentUtil.build(value.toString(decimalPlaces), label);
@@ -63,15 +60,17 @@ public class UnitDisplayUtils {
         return getDisplay(value, unit, 2, true);
     }
 
-    public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
-        return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, false);
+    public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort, boolean spaceBetweenSymbol) {
+        return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, spaceBetweenSymbol);
     }
 
     public static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
-        ILangEntry label = unit.getLabel();
-        String spaceStr = spaceBetweenSymbol ? " " : "";
         if (value == 0) {
-            return isShort ? TextComponentUtil.getString(value + spaceStr + unit.getSymbol()) : TextComponentUtil.build(value, label);
+            if (isShort) {
+                String spaceStr = spaceBetweenSymbol ? " " : "";
+                return TextComponentUtil.getString(value + spaceStr + unit.getSymbol());
+            }
+            return TextComponentUtil.build(value, unit.getLabel());
         }
         boolean negative = value < 0;
         if (negative) {
@@ -79,33 +78,17 @@ public class UnitDisplayUtils {
         }
         for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
             MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
-            String symbolStr = spaceStr + lowerMeasure.symbol;
-            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
-                if (isShort) {
-                    return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
-                }
-                return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
-            }
-            if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
-                if (isShort) {
-                    return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
-                }
-                return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
-            }
-            if (i + 1 < EnumUtils.MEASUREMENT_UNITS.length) {
-                MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
-                    if (isShort) {
-                        return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
-                    }
-                    return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
-                }
+            if ((i == 0 && lowerMeasure.below(value)) ||
+                i + 1 >= EnumUtils.MEASUREMENT_UNITS.length ||
+                (lowerMeasure.aboveEqual(value) && EnumUtils.MEASUREMENT_UNITS[i + 1].below(value))) {
+                //First element and it is below it (no more unit abbreviations before),
+                // or last element (no more unit abbreviations past),
+                // or we are within the bounds between this one and the next one
+                return lowerMeasure.getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
             }
         }
-        if (isShort) {
-            return TextComponentUtil.getString(roundDecimals(negative, value, decimalPlaces) + spaceStr + unit.getSymbol());
-        }
-        return TextComponentUtil.build(roundDecimals(negative, value, decimalPlaces) + " ", label);
+        //Fallback, should never be reached as should have been captured by the check in the loop
+        return EnumUtils.MEASUREMENT_UNITS[EnumUtils.MEASUREMENT_UNITS.length - 1].getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
     }
 
     public static Component getDisplayShort(double value, TemperatureUnit unit) {
@@ -117,7 +100,7 @@ public class UnitDisplayUtils {
     }
 
     public static Component getDisplayShort(double value, TemperatureUnit unit, boolean shift, int decimalPlaces) {
-        return getDisplay(value, unit, decimalPlaces, shift, true);
+        return getDisplay(value, unit, decimalPlaces, shift, true, false);
     }
 
     public static Component getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
@@ -364,10 +347,10 @@ public class UnitDisplayUtils {
      * Metric system of measurement.
      */
     public enum MeasurementUnit {
-        FEMTO("Femto", "f", 0.000000000000001D),
-        PICO("Pico", "p", 0.000000000001D),
-        NANO("Nano", "n", 0.000000001D),
-        MICRO("Micro", "\u00B5", 0.000001D),
+        FEMTO("Femto", "f", 0.000_000_000_000_001D),
+        PICO("Pico", "p", 0.000_000_000_001D),
+        NANO("Nano", "n", 0.000_000_001D),
+        MICRO("Micro", "\u00B5", 0.000_001D),
         MILLI("Milli", "m", 0.001D),
         BASE("", "", 1),
         KILO("Kilo", "k", 1_000D),
@@ -400,8 +383,8 @@ public class UnitDisplayUtils {
             this.value = value;
         }
 
-        public String getName(boolean getShort) {
-            if (getShort) {
+        public String getName(boolean isShort) {
+            if (isShort) {
                 return symbol;
             }
             return name;
@@ -411,12 +394,24 @@ public class UnitDisplayUtils {
             return d / value;
         }
 
-        public boolean above(double d) {
-            return d > value;
+        public boolean aboveEqual(double d) {
+            return d >= value;
         }
 
         public boolean below(double d) {
             return d < value;
+        }
+
+        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol, boolean negative) {
+            double rounded = roundDecimals(negative, process(value), decimalPlaces);
+            String name = getName(isShort);
+            if (isShort) {
+                if (spaceBetweenSymbol) {
+                    name = " " + name;
+                }
+                return TextComponentUtil.getString(rounded + name + unit.getSymbol());
+            }
+            return TextComponentUtil.build(rounded + " " + name, unit.getLabel());
         }
     }
 
@@ -465,8 +460,8 @@ public class UnitDisplayUtils {
             return d.divide(value);
         }
 
-        public boolean above(FloatingLong d) {
-            return d.greaterThan(value);
+        public boolean aboveEqual(FloatingLong d) {
+            return d.greaterOrEqual(value);
         }
 
         public boolean below(FloatingLong d) {
