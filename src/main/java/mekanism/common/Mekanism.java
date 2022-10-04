@@ -10,25 +10,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.api.IAlloyInteraction;
-import mekanism.api.IConfigCardAccess;
-import mekanism.api.IConfigurable;
-import mekanism.api.IEvaporationSolar;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.slurry.ISlurryHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.heat.IHeatHandler;
-import mekanism.api.lasers.ILaserDissipation;
-import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.radiation.capability.IRadiationEntity;
-import mekanism.api.radiation.capability.IRadiationShielding;
-import mekanism.api.security.IOwnerObject;
-import mekanism.api.security.ISecurityObject;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
@@ -120,7 +104,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.data.loading.DatagenModLoader;
@@ -216,7 +199,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
         modEventBus.addListener(this::imcHandle);
@@ -360,28 +342,6 @@ public class Mekanism {
 
     private void imcHandle(InterModProcessEvent event) {
         ModuleHelper.INSTANCE.processIMC();
-    }
-
-    private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(IGasHandler.class);
-        event.register(IInfusionHandler.class);
-        event.register(IPigmentHandler.class);
-        event.register(ISlurryHandler.class);
-        event.register(IHeatHandler.class);
-        event.register(IStrictEnergyHandler.class);
-
-        event.register(IConfigurable.class);
-        event.register(IAlloyInteraction.class);
-        event.register(IConfigCardAccess.class);
-        event.register(IEvaporationSolar.class);
-        event.register(ILaserReceptor.class);
-        event.register(ILaserDissipation.class);
-
-        event.register(IRadiationShielding.class);
-        event.register(IRadiationEntity.class);
-
-        event.register(IOwnerObject.class);
-        event.register(ISecurityObject.class);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

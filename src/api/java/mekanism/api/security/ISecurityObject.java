@@ -1,6 +1,7 @@
 package mekanism.api.security;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
@@ -15,6 +16,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  * @since 10.2.1
  */
 @NothingNullByDefault
+@AutoRegisterCapability
 public interface ISecurityObject extends IOwnerObject {
 
     /**

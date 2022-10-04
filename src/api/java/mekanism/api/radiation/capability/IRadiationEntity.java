@@ -2,12 +2,14 @@ package mekanism.api.radiation.capability;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Base capability definition for handling radiation for entities.
  */
+@AutoRegisterCapability
 public interface IRadiationEntity extends INBTSerializable<CompoundTag> {
 
     /**

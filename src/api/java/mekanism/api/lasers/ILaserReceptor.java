@@ -1,11 +1,13 @@
 package mekanism.api.lasers;
 
 import mekanism.api.math.FloatingLong;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Expose this as a capability on your TileEntity to handle what happens when a laser hits it.
  */
+@AutoRegisterCapability
 public interface ILaserReceptor {
 
     /**
