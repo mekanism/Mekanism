@@ -986,6 +986,7 @@
   "gui.mekanism.radiation_decay_time": "Time to Decay: %1$s",
   "gui.mekanism.radiation_dose": "Radiation Dose: %1$s",
   "gui.mekanism.radiation_exposure": "Radiation Exposure: %1$s",
+  "gui.mekanism.radiation_exposure.entity": "Entity Radiation Exposure: %1$s",
   "gui.mekanism.rgb": "RGB:",
   "gui.mekanism.rgba": "RGBA:",
   "gui.mekanism.set": "Set:",

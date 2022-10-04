@@ -872,6 +872,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CLOSE, "Close");
         add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %1$s");
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %1$s");
+        add(MekanismLang.RADIATION_EXPOSURE_ENTITY, "Entity Radiation Exposure: %1$s");
         add(MekanismLang.RADIATION_DECAY_TIME, "Time to Decay: %1$s");
         add(MekanismLang.RGB, "RGB:");
         add(MekanismLang.RGBA, "RGBA:");
