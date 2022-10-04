@@ -1,15 +1,16 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import javax.imageio.ImageIO;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiElementHolder extends GuiScalableElement {
@@ -38,16 +39,16 @@ public class GuiElementHolder extends GuiScalableElement {
     public static void updateBackgroundColor() {
         //TODO: Try to do this in a more generic way. We don't directly use our ColorAtlas because we want to automatically
         // get it from the texture
-        try (InputStream stream = Minecraft.getInstance().getResourceManager().open(HOLDER)) {
-            BufferedImage img = ImageIO.read(stream);
-            int rgb = img.getRGB(HOLDER_SIZE + 1, HOLDER_SIZE + 1);
-            if (rgb >> 24 == 0) {
+        try (InputStream stream = Minecraft.getInstance().getResourceManager().open(HOLDER);
+             NativeImage image = NativeImage.read(stream)) {
+            int argb = Color.abgrToARGB(image.getPixelRGBA(HOLDER_SIZE + 1, HOLDER_SIZE + 1));
+            if (FastColor.ARGB32.alpha(argb) == 0) {
                 //Don't allow fully transparent colors, fallback to default color.
                 // Mark as null for now so that it can default to the proper color
-                rgb = 0xFF787878;
+                argb = 0xFF787878;
                 Mekanism.logger.warn("Unable to retrieve background color for element holder.");
             }
-            BACKGROUND_COLOR = rgb;
+            BACKGROUND_COLOR = argb;
         } catch (Exception e) {
             Mekanism.logger.error("Failed to retrieve background color for element holder", e);
         }

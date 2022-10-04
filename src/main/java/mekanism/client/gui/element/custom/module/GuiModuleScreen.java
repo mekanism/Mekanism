@@ -3,7 +3,7 @@ package mekanism.client.gui.element.custom.module;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.ObjIntConsumer;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.gear.config.ModuleBooleanData;
@@ -27,7 +27,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
     private static final int ELEMENT_SPACER = 4;
 
-    final BiConsumer<ModuleConfigItem<?>, Integer> saveCallback;
+    final ObjIntConsumer<ModuleConfigItem<?>> saveCallback;
     private final ArmorPreview armorPreview;
 
     @Nullable
@@ -35,11 +35,11 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private List<MiniElement> miniElements = new ArrayList<>();
     private int maxElements;
 
-    public GuiModuleScreen(IGuiWrapper gui, int x, int y, BiConsumer<ModuleConfigItem<?>, Integer> saveCallback, ArmorPreview armorPreview) {
+    public GuiModuleScreen(IGuiWrapper gui, int x, int y, ObjIntConsumer<ModuleConfigItem<?>> saveCallback, ArmorPreview armorPreview) {
         this(gui, x, y, 102, 134, saveCallback, armorPreview);
     }
 
-    private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, BiConsumer<ModuleConfigItem<?>, Integer> saveCallback, ArmorPreview armorPreview) {
+    private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, ObjIntConsumer<ModuleConfigItem<?>> saveCallback, ArmorPreview armorPreview) {
         super(GuiScrollList.SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.saveCallback = saveCallback;
         this.armorPreview = armorPreview;

@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -40,7 +40,7 @@ import org.lwjgl.glfw.GLFW;
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     private final ArmorPreview armorPreview = new ArmorPreview();
-    private final BiConsumer<ModuleConfigItem<?>, Integer> saveCallback;
+    private final ObjIntConsumer<ModuleConfigItem<?>> saveCallback;
 
     private GuiModuleScrollList scrollList;
     private GuiModuleScreen moduleScreen;

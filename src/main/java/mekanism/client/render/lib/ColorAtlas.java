@@ -1,16 +1,16 @@
 package mekanism.client.render.lib;
 
-import java.awt.image.BufferedImage;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import javax.imageio.ImageIO;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.Nullable;
 
 public class ColorAtlas {
@@ -57,17 +57,17 @@ public class ColorAtlas {
     }
 
     private static void loadColorAtlas(ResourceLocation rl, int count, List<Color> ret) throws IOException {
-        try (InputStream input = Minecraft.getInstance().getResourceManager().open(rl)) {
-            BufferedImage img = ImageIO.read(input);
+        try (InputStream input = Minecraft.getInstance().getResourceManager().open(rl);
+             NativeImage image = NativeImage.read(input)) {
             for (int i = 0; i < count; i++) {
-                int rgb = img.getRGB(i % ATLAS_SIZE, i / ATLAS_SIZE);
-                if (rgb >> 24 == 0) {
+                int argb = Color.abgrToARGB(image.getPixelRGBA(i % ATLAS_SIZE, i / ATLAS_SIZE));
+                if (FastColor.ARGB32.alpha(argb) == 0) {
                     //Don't allow fully transparent colors, fallback to default color.
                     // Mark as null for now so that it can default to the proper color
                     ret.add(null);
                     Mekanism.logger.warn("Unable to retrieve color marker: '{}' for atlas: '{}'. This is likely due to an out of date resource pack.", count, rl);
                 } else {
-                    ret.add(Color.argb(rgb));
+                    ret.add(Color.argb(argb));
                 }
             }
         }
