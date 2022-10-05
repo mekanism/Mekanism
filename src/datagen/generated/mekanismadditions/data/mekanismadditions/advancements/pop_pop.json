@@ -17,6 +17,7 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
       "translate": "advancements.mekanismadditions.pop_pop.description"
     },

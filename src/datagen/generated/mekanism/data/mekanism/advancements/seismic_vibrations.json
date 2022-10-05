@@ -31,6 +31,7 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
       "translate": "advancements.mekanism.seismic_vibrations.description"
     },

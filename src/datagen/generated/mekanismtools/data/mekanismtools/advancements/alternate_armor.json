@@ -38,6 +38,7 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
       "translate": "advancements.mekanismtools.alternate_armor.description"
     },

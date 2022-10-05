@@ -46,12 +46,12 @@ public class ExtendedAdvancementBuilder {
         return display(new ItemStack(item), background, frame, showToast, announceToChat, hidden);
     }
 
-    public ExtendedAdvancementBuilder display(ItemLike item, FrameType frame) {
-        return display(item, null, frame, true, true, false);
+    public ExtendedAdvancementBuilder display(ItemLike item, FrameType frame, boolean announceToChat) {
+        return display(item, null, frame, true, announceToChat, false);
     }
 
-    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, FrameType frame) {
-        display(item, frame);
+    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, FrameType frame, boolean announceToChat) {
+        display(item, frame, announceToChat);
         return addCriterion(item);
     }
 

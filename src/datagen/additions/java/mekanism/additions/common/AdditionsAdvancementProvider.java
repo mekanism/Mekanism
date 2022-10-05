@@ -27,19 +27,19 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     @Override
     protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
         advancement(AdditionsAdvancements.BALLOON)
-              .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), FrameType.TASK)
+              .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), FrameType.TASK, false)
               .addCriterion("balloon", hasItems(AdditionsTags.Items.BALLOONS))
               .save(consumer);
         advancement(AdditionsAdvancements.POP_POP)
-              .display(AdditionsItems.BALLOONS.get(EnumColor.RED), null, FrameType.GOAL, true, true, true)
+              .display(AdditionsItems.BALLOONS.get(EnumColor.RED), null, FrameType.GOAL, true, false, true)
               .addCriterion("pop", kill(AdditionsEntityTypes.BALLOON))
               .save(consumer);
         advancement(AdditionsAdvancements.GLOW_IN_THE_DARK)
-              .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE), FrameType.TASK)
+              .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE), FrameType.TASK, false)
               .addCriterion("glow_panel", hasItems(AdditionsTags.Items.GLOW_PANELS))
               .save(consumer);
         advancement(AdditionsAdvancements.NOT_THE_BABIES)
-              .display(Items.WITHER_SKELETON_SKULL, FrameType.GOAL)
+              .display(Items.WITHER_SKELETON_SKULL, FrameType.GOAL, false)
               .orCriteria(killCriterion(AdditionsEntityTypes.BABY_CREEPER),
                     killCriterion(AdditionsEntityTypes.BABY_ENDERMAN),
                     killCriterion(AdditionsEntityTypes.BABY_SKELETON),

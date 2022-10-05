@@ -1,5 +1,5 @@
-// 1.19.2	2022-08-05T21:57:21.6714095	Advancements: mekanismgenerators
+// 1.19.2	2022-10-05T11:44:02.5915876	Advancements: mekanismgenerators
 4c88c34c8748214663239b620b03bf98823b94a7 data/mekanismgenerators/advancements/burn_the_gas.json
 92c0233776581e78c2eb800d73a6ca17fa80931c data/mekanismgenerators/advancements/heat_generator.json
-4dec15e869d065d934fea9d72a8ccac0d1c4b844 data/mekanismgenerators/advancements/solar_generator.json
-99285860f62cc06c9264aa6dfc2b8ab41f64f8d4 data/mekanismgenerators/advancements/wind_generator.json
+9425836dc96805456b4deeba8d3656a5927d0302 data/mekanismgenerators/advancements/solar_generator.json
+f63ef4d830365fbe6ea9cb5ffe2428e256687077 data/mekanismgenerators/advancements/wind_generator.json

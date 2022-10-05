@@ -73,6 +73,7 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
       "translate": "advancements.mekanismadditions.not_the_babies.description"
     },
