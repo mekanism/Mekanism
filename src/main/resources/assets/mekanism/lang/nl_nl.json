@@ -250,6 +250,8 @@
   "capacity.mekanism.per_tick": "Capaciteit: %1$s/t",
   "cardboard_box.mekanism.block": "Blok: %1$s",
   "cardboard_box.mekanism.block_data": "Blok gegevens: %1$s",
+  "cardboard_box.mekanism.block_entity": "Blok entiteit: %1$s",
+  "chemical.mekanism.attribute.coolant.efficiency": " - Koelmiddel Effectiviteit: %1$s",
   "chemical.mekanism.attribute.fuel.energy_density": " - Energiedichtheid: %1$s",
   "chemical.mekanism.attribute.radiation": " - Radioactiviteit: %1$s",
   "color.mekanism.aqua": "Aqua",
