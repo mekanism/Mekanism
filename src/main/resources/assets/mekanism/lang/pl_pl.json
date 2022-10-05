@@ -986,6 +986,7 @@
   "gui.mekanism.radiation_decay_time": "Czas rozpadu: %1$s",
   "gui.mekanism.radiation_dose": "Dawka promieniowania: %1$s",
   "gui.mekanism.radiation_exposure": "Ekspozycja na promieniowanie: %1$s",
+  "gui.mekanism.radiation_exposure.entity": "Ekspozycja bytu na promieniowanie: %1$s",
   "gui.mekanism.rgb": "RGB:",
   "gui.mekanism.rgba": "RGBA:",
   "gui.mekanism.set": "Ustawienie:",
