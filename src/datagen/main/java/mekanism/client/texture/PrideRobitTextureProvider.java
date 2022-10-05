@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
+import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
@@ -16,7 +17,6 @@ import net.minecraft.data.DataGenerator.Target;
 import net.minecraft.data.DataProvider;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.util.FastColor;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,12 +101,7 @@ public class PrideRobitTextureProvider implements DataProvider {
             index += 9;
         }
         int[] colors = data.getColor();
-        int argb = colors[index % colors.length];
-        int red = FastColor.ARGB32.red(argb);
-        int green = FastColor.ARGB32.green(argb);
-        int blue = FastColor.ARGB32.blue(argb);
-        int alpha = FastColor.ARGB32.alpha(argb);
-        return alpha << 24 | blue << 16 | green << 8 | red;
+        return Color.argbToFromABGR(colors[index % colors.length]);
     }
 
     @NotNull

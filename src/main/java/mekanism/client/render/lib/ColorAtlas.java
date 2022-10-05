@@ -60,7 +60,7 @@ public class ColorAtlas {
         try (InputStream input = Minecraft.getInstance().getResourceManager().open(rl);
              NativeImage image = NativeImage.read(input)) {
             for (int i = 0; i < count; i++) {
-                int argb = Color.abgrToARGB(image.getPixelRGBA(i % ATLAS_SIZE, i / ATLAS_SIZE));
+                int argb = Color.argbToFromABGR(image.getPixelRGBA(i % ATLAS_SIZE, i / ATLAS_SIZE));
                 if (FastColor.ARGB32.alpha(argb) == 0) {
                     //Don't allow fully transparent colors, fallback to default color.
                     // Mark as null for now so that it can default to the proper color

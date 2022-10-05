@@ -41,7 +41,7 @@ public class GuiElementHolder extends GuiScalableElement {
         // get it from the texture
         try (InputStream stream = Minecraft.getInstance().getResourceManager().open(HOLDER);
              NativeImage image = NativeImage.read(stream)) {
-            int argb = Color.abgrToARGB(image.getPixelRGBA(HOLDER_SIZE + 1, HOLDER_SIZE + 1));
+            int argb = Color.argbToFromABGR(image.getPixelRGBA(HOLDER_SIZE + 1, HOLDER_SIZE + 1));
             if (FastColor.ARGB32.alpha(argb) == 0) {
                 //Don't allow fully transparent colors, fallback to default color.
                 // Mark as null for now so that it can default to the proper color

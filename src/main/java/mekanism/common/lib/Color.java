@@ -2,7 +2,6 @@ package mekanism.common.lib;
 
 import java.util.Objects;
 import mekanism.common.util.StatUtils;
-import net.minecraft.util.FastColor;
 
 public class Color {
 
@@ -195,12 +194,11 @@ public class Color {
         };
     }
 
-    public static int abgrToARGB(int abgr) {
-        int alpha = abgr >> 24;
-        int blue = abgr >> 16 & 0xFF;
-        int green = abgr >> 8 & 0xFF;
-        int red = abgr & 0xFF;
-        return FastColor.ARGB32.color(alpha, red, green, blue);
+    //Works both directions
+    public static int argbToFromABGR(int argb) {
+        int red = argb >> 16 & 0xFF;
+        int blue = argb & 0xFF;
+        return argb & 0xFF00FF00 | blue << 16 | red;
     }
 
     public double[] hsvArray() {
