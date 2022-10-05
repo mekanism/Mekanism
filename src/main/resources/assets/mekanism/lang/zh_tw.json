@@ -986,6 +986,7 @@
   "gui.mekanism.radiation_decay_time": "衰變時間: %1$s",
   "gui.mekanism.radiation_dose": "輻射劑量: %1$s",
   "gui.mekanism.radiation_exposure": "輻射量: %1$s",
+  "gui.mekanism.radiation_exposure.entity": "實體輻射量: %1$s",
   "gui.mekanism.rgb": "RGB:",
   "gui.mekanism.rgba": "RGBA:",
   "gui.mekanism.set": "設定:",
