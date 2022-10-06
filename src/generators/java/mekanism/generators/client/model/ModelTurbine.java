@@ -24,40 +24,40 @@ public class ModelTurbine extends MekanismJavaModel {
     private static final ResourceLocation TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
     private static final float BLADE_ROTATE = 0.418879F;
 
-    private static final ModelPartData EXTENSION_SOUTH = new ModelPartData("extensionSouth", CubeListBuilder.create()
-          .addBox(-1.0F, 0.0F, 1.0F, 2, 1, 3),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, -BLADE_ROTATE));
-    private static final ModelPartData EXTENSION_WEST = new ModelPartData("extensionWest", CubeListBuilder.create()
-          .texOffs(0, 4)
-          .addBox(-4.0F, 0.0F, -1.0F, 3, 1, 2),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, BLADE_ROTATE, 0.0F, 0.0F));
-    private static final ModelPartData BLADE_EAST = new ModelPartData("bladeEast", CubeListBuilder.create()
-          .texOffs(10, 5)
-          .addBox(4.0F, 0.0F, -1.5F, 4, 1, 3),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, -BLADE_ROTATE, 0.0F, 0.0F));
-    private static final ModelPartData BLADE_NORTH = new ModelPartData("bladeNorth", CubeListBuilder.create()
-          .texOffs(10, 0)
-          .addBox(-1.5F, 0.0F, -8.0F, 3, 1, 4),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, BLADE_ROTATE));
-    private static final ModelPartData EXTENSION_EAST = new ModelPartData("extensionEast", CubeListBuilder.create()
-          .texOffs(0, 4)
-          .addBox(1.0F, 0.0F, -1.0F, 3, 1, 2),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, -BLADE_ROTATE, 0.0F, 0.0F));
-    private static final ModelPartData BLADE_SOUTH = new ModelPartData("bladeSouth", CubeListBuilder.create()
-          .texOffs(10, 0)
-          .addBox(-1.5F, 0.0F, 4.0F, 3, 1, 4),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, -BLADE_ROTATE));
     private static final ModelPartData EXTENSION_NORTH = new ModelPartData("extensionNorth", CubeListBuilder.create()
-          .addBox(-1.0F, 0.0F, -4.0F, 2, 1, 3),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, BLADE_ROTATE));
+          .texOffs(0, 9)
+          .addBox(-1, 0, -4, 2, 1, 3),
+          PartPose.offsetAndRotation(0, 20, 0, 0, 0, BLADE_ROTATE));
+    private static final ModelPartData EXTENSION_EAST = new ModelPartData("extensionEast", CubeListBuilder.create()
+          .texOffs(0, 13)
+          .addBox(1, 0, -1, 3, 1, 2),
+          PartPose.offsetAndRotation(0, 20, 0, -BLADE_ROTATE, 0, 0));
+    private static final ModelPartData EXTENSION_SOUTH = new ModelPartData("extensionSouth", CubeListBuilder.create()
+          .texOffs(0, 9)
+          .addBox(-1, 0, 1, 2, 1, 3),
+          PartPose.offsetAndRotation(0, 20, 0, 0, 0, -BLADE_ROTATE));
+    private static final ModelPartData EXTENSION_WEST = new ModelPartData("extensionWest", CubeListBuilder.create()
+          .texOffs(0, 13)
+          .addBox(-4, 0, -1, 3, 1, 2),
+          PartPose.offsetAndRotation(0, 20, 0, BLADE_ROTATE, 0, 0));
+    private static final ModelPartData BLADE_NORTH = new ModelPartData("bladeNorth", CubeListBuilder.create()
+          .addBox(-1.5F, 0, -8, 3, 1, 4),
+          PartPose.offsetAndRotation(0, 20, 0, 0, 0, BLADE_ROTATE));
+    private static final ModelPartData BLADE_EAST = new ModelPartData("bladeEast", CubeListBuilder.create()
+          .texOffs(0, 5)
+          .addBox(4, 0, -1.5F, 4, 1, 3),
+          PartPose.offsetAndRotation(0, 20, 0, -BLADE_ROTATE, 0, 0));
+    private static final ModelPartData BLADE_SOUTH = new ModelPartData("bladeSouth", CubeListBuilder.create()
+          .addBox(-1.5F, 0, 4, 3, 1, 4),
+          PartPose.offsetAndRotation(0, 20, 0, 0, 0, -BLADE_ROTATE));
     private static final ModelPartData BLADE_WEST = new ModelPartData("bladeWest", CubeListBuilder.create()
-          .texOffs(10, 5)
-          .addBox(-8.0F, 0.0F, -1.5F, 4, 1, 3),
-          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, BLADE_ROTATE, 0.0F, 0.0F));
+          .texOffs(0, 5)
+          .addBox(-8, 0, -1.5F, 4, 1, 3),
+          PartPose.offsetAndRotation(0, 20, 0, BLADE_ROTATE, 0, 0));
 
     public static LayerDefinition createLayerDefinition() {
-        return createLayerDefinition(64, 64, EXTENSION_SOUTH, EXTENSION_WEST, BLADE_EAST, BLADE_NORTH, EXTENSION_EAST, BLADE_SOUTH,
-              EXTENSION_NORTH, BLADE_WEST);
+        return createLayerDefinition(16, 16, EXTENSION_NORTH, EXTENSION_EAST, EXTENSION_SOUTH, EXTENSION_WEST, BLADE_NORTH, BLADE_EAST, BLADE_SOUTH,
+              BLADE_WEST);
     }
 
     private final RenderType RENDER_TYPE = renderType(TURBINE_TEXTURE);
@@ -86,11 +86,11 @@ public class ModelTurbine extends MekanismJavaModel {
         matrix.mulPose(Vector3f.YP.rotationDegrees(index * 5));
         renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
         float scale = index * 0.5F;
-        float widthDiv = 16;
-        renderBlade(matrix, buffer, light, overlayLight, bladeWest, scale, scale / widthDiv, -0.25, 0);
-        renderBlade(matrix, buffer, light, overlayLight, bladeEast, scale, scale / widthDiv, 0.25, 0);
-        renderBlade(matrix, buffer, light, overlayLight, bladeNorth, scale / widthDiv, scale, 0, -0.25);
-        renderBlade(matrix, buffer, light, overlayLight, bladeSouth, scale / widthDiv, scale, 0, 0.25);
+        float adjustedScale = scale / 16;
+        renderBlade(matrix, buffer, light, overlayLight, bladeWest, scale, adjustedScale, -0.25, 0);
+        renderBlade(matrix, buffer, light, overlayLight, bladeEast, scale, adjustedScale, 0.25, 0);
+        renderBlade(matrix, buffer, light, overlayLight, bladeNorth, adjustedScale, scale, 0, -0.25);
+        renderBlade(matrix, buffer, light, overlayLight, bladeSouth, adjustedScale, scale, 0, 0.25);
         matrix.popPose();
     }
 
@@ -104,7 +104,7 @@ public class ModelTurbine extends MekanismJavaModel {
           float scaleZ, double transX, double transZ) {
         matrix.pushPose();
         matrix.translate(transX, 0, transZ);
-        matrix.scale(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
+        matrix.scale(1 + scaleX, 1, 1 + scaleZ);
         matrix.translate(-transX, 0, -transZ);
         blade.render(matrix, vertexBuilder, light, overlayLight, 1, 1, 1, 1);
         matrix.popPose();
