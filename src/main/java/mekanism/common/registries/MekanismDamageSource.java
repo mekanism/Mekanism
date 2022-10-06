@@ -1,5 +1,8 @@
 package mekanism.common.registries;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
@@ -12,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class MekanismDamageSource extends DamageSource implements IHasTranslationKey {
 
+    private static final List<MekanismDamageSource> INTERNAL_DAMAGE_SOURCES = new ArrayList<>();
+    public static final List<MekanismDamageSource> DAMAGE_SOURCES = Collections.unmodifiableList(INTERNAL_DAMAGE_SOURCES);
     public static final MekanismDamageSource LASER = new MekanismDamageSource("laser");
     public static final MekanismDamageSource RADIATION = new MekanismDamageSource("radiation").bypassArmor();
 
@@ -20,8 +25,9 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
     private final Vec3 damageLocation;
 
 
-    public MekanismDamageSource(String damageType) {
+    private MekanismDamageSource(String damageType) {
         this(damageType, null);
+        INTERNAL_DAMAGE_SOURCES.add(this);
     }
 
     private MekanismDamageSource(@NotNull String damageType, @Nullable Vec3 damageLocation) {

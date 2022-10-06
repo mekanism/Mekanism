@@ -10,7 +10,10 @@ import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.critereon.DamagePredicate;
+import net.minecraft.advancements.critereon.EntityHurtPlayerTrigger;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.KilledTrigger;
 import net.minecraft.data.DataGenerator;
@@ -38,6 +41,14 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
               .display(AdditionsBlocks.GLOW_PANELS.get(EnumColor.ORANGE), FrameType.TASK, false)
               .addCriterion("glow_panel", hasItems(AdditionsTags.Items.GLOW_PANELS))
               .save(consumer);
+        advancement(AdditionsAdvancements.HURT_BY_BABIES)
+              .display(Items.CREEPER_HEAD, null, FrameType.GOAL, true, true, true)
+              .andCriteria(damagedCriterion(AdditionsEntityTypes.BABY_CREEPER),
+                    damagedCriterion(AdditionsEntityTypes.BABY_ENDERMAN),
+                    damagedCriterion(AdditionsEntityTypes.BABY_SKELETON),
+                    damagedCriterion(AdditionsEntityTypes.BABY_STRAY),
+                    damagedCriterion(AdditionsEntityTypes.BABY_WITHER_SKELETON)
+              ).save(consumer);
         advancement(AdditionsAdvancements.NOT_THE_BABIES)
               .display(Items.WITHER_SKELETON_SKULL, FrameType.GOAL, false)
               .orCriteria(killCriterion(AdditionsEntityTypes.BABY_CREEPER),
@@ -52,7 +63,19 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
         return new RecipeCriterion(entityTypeProvider.getName(), kill(entityTypeProvider));
     }
 
-    private KilledTrigger.TriggerInstance kill(IEntityTypeProvider entityTypeProvider) {
+    private CriterionTriggerInstance kill(IEntityTypeProvider entityTypeProvider) {
         return KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entityTypeProvider.getEntityType()));
+    }
+
+    private RecipeCriterion damagedCriterion(IEntityTypeProvider entityTypeProvider) {
+        return new RecipeCriterion(entityTypeProvider.getName(), damaged(entityTypeProvider));
+    }
+
+    private CriterionTriggerInstance damaged(IEntityTypeProvider entityTypeProvider) {
+        //Damaged by entity and not blocked
+        return EntityHurtPlayerTrigger.TriggerInstance.entityHurtPlayer(DamagePredicate.Builder.damageInstance()
+              .sourceEntity(EntityPredicate.Builder.entity().of(entityTypeProvider.getEntityType()).build())
+              .blocked(false)
+        );
     }
 }

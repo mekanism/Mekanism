@@ -496,6 +496,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismAdvancements.ALLOY_UPGRADING, "In Place Transmitter Upgrades", "Upgrade transmitters in world using the next tier of alloy");
         add(MekanismAdvancements.LASER, "Shooting Lasers", "Craft a Laser");
+        add(MekanismAdvancements.STOPPING_LASERS, "Stopping Lasers", "Block a Laser with a shield");
+        add(MekanismAdvancements.LASER_DEATH, "Shooting Lasers", "Die to a Laser");
         add(MekanismAdvancements.AUTO_COLLECTION, "A Real Short Trip", "Tractor beams pull in the drops of blocks they break");
 
         add(MekanismAdvancements.ALARM, "Making Noise", "Alarms are loud, especially the industrial kind");

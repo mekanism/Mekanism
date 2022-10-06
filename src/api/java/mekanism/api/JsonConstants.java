@@ -55,6 +55,10 @@ public class JsonConstants {
     //Advancement Triggers
     public static final String ACTION = "action";
     public static final String COPY = "copy";
+    /**
+     * @since 10.3.4
+     */
+    public static final String DAMAGE = "damage";
     public static final String KILLED = "killed";
     public static final String SKIN = "skin";
 }

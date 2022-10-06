@@ -15,10 +15,13 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -54,9 +57,19 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             float strength = Math.max(1, (float) Math.log1p(radiation));
             //Hurt randomly
             if (rand.nextBoolean()) {
-                entity.hurt(MekanismDamageSource.RADIATION, strength);
                 if (entity instanceof ServerPlayer player) {
-                    MekanismCriteriaTriggers.RADIATION_DAMAGE.trigger(player);
+                    MinecraftServer server = entity.getServer();
+                    int totemTimesUsed = -1;
+                    if (server != null && server.isHardcore()) {//Only allow totems to count on hardcore
+                        totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                    }
+                    if (entity.hurt(MekanismDamageSource.RADIATION, strength)) {
+                        //If the damage actually went through fire the trigger
+                        boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                        MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageSource.RADIATION, hardcoreTotem);
+                    }
+                } else {
+                    entity.hurt(MekanismDamageSource.RADIATION, strength);
                 }
             }
             if (entity instanceof ServerPlayer player && strength > 0) {

@@ -5,9 +5,10 @@ import java.util.stream.Stream;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.triggers.AlloyUpgradeTrigger;
+import mekanism.common.advancements.triggers.BlockLaserTrigger;
 import mekanism.common.advancements.triggers.ChangeRobitSkinTrigger;
 import mekanism.common.advancements.triggers.ConfigurationCardTrigger;
-import mekanism.common.advancements.triggers.RadiationDamageTrigger;
+import mekanism.common.advancements.triggers.MekanismDamageTrigger;
 import mekanism.common.advancements.triggers.UnboxCardboardBoxTrigger;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger;
 import mekanism.common.advancements.triggers.ViewVibrationsTrigger;
@@ -17,6 +18,7 @@ import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -103,6 +105,14 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.LASER)
               .displayAndCriterion(MekanismBlocks.LASER, FrameType.TASK, false)
+              .save(consumer);
+        advancement(MekanismAdvancements.LASER_DEATH)
+              .display(Items.SKELETON_SKULL, null, FrameType.TASK, true, true, true)
+              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageSource.LASER))
+              .save(consumer);
+        advancement(MekanismAdvancements.STOPPING_LASERS)
+              .display(Items.SHIELD, FrameType.TASK, true)
+              .addCriterion("block", BlockLaserTrigger.TriggerInstance.block())
               .save(consumer);
         advancement(MekanismAdvancements.AUTO_COLLECTION)
               .displayAndCriterion(MekanismBlocks.LASER_TRACTOR_BEAM, FrameType.TASK, false)
@@ -198,11 +208,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               )).save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING)
               .display(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, FrameType.TASK, true)
-              .addCriterion("poisoned", RadiationDamageTrigger.TriggerInstance.damaged())
+              .addCriterion("poisoned", MekanismDamageTrigger.TriggerInstance.damaged(MekanismDamageSource.RADIATION))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING_DEATH)
               .display(Items.PLAYER_HEAD, null, FrameType.TASK, true, true, true)
-              .addCriterion("death", RadiationDamageTrigger.TriggerInstance.killed())
+              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageSource.RADIATION))
               .save(consumer);
 
         advancement(MekanismAdvancements.PLUTONIUM)

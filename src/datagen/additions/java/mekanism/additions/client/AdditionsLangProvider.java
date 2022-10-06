@@ -80,6 +80,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         add(AdditionsAdvancements.BALLOON, "Reach for the Skies", "Craft any color Balloon");
         add(AdditionsAdvancements.POP_POP, "Pop Pop", "Pop a balloon");
         add(AdditionsAdvancements.GLOW_IN_THE_DARK, "Glow in the Dark", "Craft any color Glow Panel");
+        add(AdditionsAdvancements.HURT_BY_BABIES, "Don't Try Taking Candy From Those Babies", "Get injured by all baby mobs from Mekanism Addition's");
         add(AdditionsAdvancements.NOT_THE_BABIES, "Not the Babies", "Kill any baby Mekanism Addition's mob");
     }
 

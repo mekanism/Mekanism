@@ -12,6 +12,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
@@ -30,6 +31,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -42,6 +44,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -144,6 +147,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 // maybe even implement this ability but don't add it to any of our things yet?
                                 float damageBlocked = damageShield(livingEntity, livingEntity.getUseItem(), damage, 2);
                                 if (damageBlocked > 0) {
+                                    if (livingEntity instanceof ServerPlayer player) {
+                                        //If the entity is a player trigger the advancement criteria for blocking a laser with a shield
+                                        MekanismCriteriaTriggers.BLOCK_LASER.trigger(player);
+                                    }
                                     //Remove however much energy we were able to block
                                     remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
                                     if (remainingEnergy.isZero()) {
@@ -216,6 +223,13 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         if (!entity.fireImmune()) {
                             entity.setSecondsOnFire(value.intValue());
                         }
+                        int totemTimesUsed = -1;
+                        if (entity instanceof ServerPlayer player) {
+                            MinecraftServer server = entity.getServer();
+                            if (server != null && server.isHardcore()) {
+                                totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                            }
+                        }
                         int lastHurtResistTime = entity.invulnerableTime;
                         //Set the hurt resistance time to zero to ensure we get a chance to do damage
                         entity.invulnerableTime = 0;
@@ -227,6 +241,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             if (entity instanceof LivingEntity livingEntity) {
                                 //Update the damage to match how much health the entity lost
                                 damage = Math.min(damage, Math.max(0, health - livingEntity.getHealth()));
+                                if (entity instanceof ServerPlayer player) {
+                                    //If the damage actually went through fire the trigger
+                                    boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                                    MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageSource.LASER, hardcoreTotem);
+                                }
                             }
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
                             if (remainingEnergy.isZero()) {
