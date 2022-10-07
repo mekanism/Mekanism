@@ -986,6 +986,7 @@
   "gui.mekanism.radiation_decay_time": "Timpo de descomposición: %1$s",
   "gui.mekanism.radiation_dose": "Dosis de Radiación: %1$s",
   "gui.mekanism.radiation_exposure": "Exposición a la Radiación: %1$s",
+  "gui.mekanism.radiation_exposure.entity": "Exposición de radiación de la entidad: %1$s",
   "gui.mekanism.rgb": "RGB:",
   "gui.mekanism.rgba": "RGBA:",
   "gui.mekanism.set": "Definir:",

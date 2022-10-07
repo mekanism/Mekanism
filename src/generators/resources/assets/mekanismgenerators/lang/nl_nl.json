@@ -62,6 +62,7 @@
   "turbine.mekanismgenerators.stats.limiting": "(links)",
   "turbine.mekanismgenerators.stats.production": "Productie",
   "turbine.mekanismgenerators.stats.steam_flow": "Stoom Doorstroom",
+  "turbine.mekanismgenerators.steam_input": "Stoom Ingang: %1$s mB/t",
   "wind_generator.mekanismgenerators.no_wind": "Geen wind",
   "wind_generator.mekanismgenerators.sky_blocked": "Lucht geblokkeerd"
 }
