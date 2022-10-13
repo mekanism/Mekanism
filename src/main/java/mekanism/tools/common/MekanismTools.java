@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import mekanism.api.MekanismConfig.tools;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.recipe.ShapedMekanismRecipe;
@@ -28,6 +29,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 @Mod(modid = "MekanismTools", name = "MekanismTools", version = "GRADLE_MODVERSION", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 public class MekanismTools implements IModule
@@ -84,6 +86,7 @@ public class MekanismTools implements IModule
 		
 		//Load this module
 		addRecipes();
+		registerOreDict();
 		
 		//Finalization
 		Mekanism.logger.info("Loaded MekanismTools module.");
@@ -300,6 +303,15 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(ToolsItems.SteelBoots, 1), new Object[] {
 			"I *", "* I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Items.iron_ingot
 		}));
+	}
+	public void registerOreDict()
+	{
+		OreDictionary.registerOre("axeSteel", new ItemStack(ToolsItems.SteelAxe));
+		OreDictionary.registerOre("pickSteel", new ItemStack(ToolsItems.SteelPickaxe));
+		OreDictionary.registerOre("shovelSteel", new ItemStack(ToolsItems.SteelShovel));
+		OreDictionary.registerOre("swordSteel", new ItemStack(ToolsItems.SteelSword));
+		OreDictionary.registerOre("hoeSteel", new ItemStack(ToolsItems.SteelHoe));
+		OreDictionary.registerOre("paxelSteel", new ItemStack(ToolsItems.SteelPaxel));
 	}
 	
 	public void addItems()
