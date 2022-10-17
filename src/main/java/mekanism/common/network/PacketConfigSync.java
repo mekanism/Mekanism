@@ -35,6 +35,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.voiceServerEnabled);
 			dataStream.writeBoolean(general.cardboardSpawners);
 			dataStream.writeBoolean(general.spawnBabySkeletons);
+			dataStream.writeBoolean(general.enableBoPProgression);
 			dataStream.writeInt(general.obsidianTNTDelay);
 			dataStream.writeInt(general.obsidianTNTBlastRadius);
 			dataStream.writeInt(general.UPDATE_DELAY);
@@ -130,6 +131,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.voiceServerEnabled = dataStream.readBoolean();
 			general.cardboardSpawners = dataStream.readBoolean();
 			general.spawnBabySkeletons = dataStream.readBoolean();
+			general.enableBoPProgression = dataStream.readBoolean();
 			general.obsidianTNTDelay = dataStream.readInt();
 			general.obsidianTNTBlastRadius = dataStream.readInt();
 			general.UPDATE_DELAY = dataStream.readInt();
