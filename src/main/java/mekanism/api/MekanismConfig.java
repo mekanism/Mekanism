@@ -18,7 +18,7 @@ public class MekanismConfig
 		public static boolean cardboardSpawners = true;
 		public static boolean enableWorldRegeneration = true;
 		public static boolean spawnBabySkeletons = true;
-		public static boolean enableBoPProgression = false;
+		public static boolean enableBoPProgression = true;
 		public static int obsidianTNTBlastRadius = 12;
 		public static int osmiumPerChunk = 12;
 		public static int copperPerChunk = 16;

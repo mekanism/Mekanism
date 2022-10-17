@@ -255,7 +255,7 @@ public class CommonProxy implements IGuiProvider
 		general.voiceServerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoiceServerEnabled", false).getBoolean();
 		general.cardboardSpawners = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowSpawnerBoxPickup", true).getBoolean();
 		general.enableWorldRegeneration = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableWorldRegeneration", false).getBoolean();
-		general.enableBoPProgression = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "enableBoPProgression", false).getBoolean();
+		general.enableBoPProgression = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "enableBoPProgression", true).getBoolean();
 		general.spawnBabySkeletons = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SpawnBabySkeletons", true).getBoolean();
 		general.obsidianTNTDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTDelay", 100).getInt();
 		general.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
