@@ -101,12 +101,14 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	}
 	public boolean isInWhitelistedDimension()
 	{
-		if (CollectionUtils.isEmpty(GeneratorsCommonProxy.dimid)){
+		if (GeneratorsCommonProxy.dimid != null && GeneratorsCommonProxy.dimid.contains(worldObj.provider.dimensionId)){
+			//System.out.println("Windmill can operate");
 			return true;
-		} else {
-			return !GeneratorsCommonProxy.dimid.contains(0);
 		}
+		//System.out.println("Windmill has no wind");
+		return false;
 	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
