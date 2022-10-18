@@ -21,6 +21,7 @@ item.CompressedCarbon.name=Compressed Carbon
 item.CompressedRedstone.name=Compressed Redstone
 item.CompressedDiamond.name=Compressed Diamond
 item.CompressedObsidian.name=Compressed Obsidian
+item.CompressedEnder.name=Compressed Ender Amethyst
 item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
@@ -176,6 +177,7 @@ infuse.redstone=Redstone
 infuse.fungi=Fungi
 infuse.obsidian=Obsidian
 infuse.bio=Biomass
+infuse.ender=Ender
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
