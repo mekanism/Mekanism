@@ -30,10 +30,12 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.Optional.Method;
+import appeng.api.recipes.IIngredient;
 
 public final class OreDictManager
 {
 	private static final List<String> minorCompat = Arrays.asList("Nickel", "Aluminum");
+	private static final List<String> siliconcompat = Arrays.asList("itemSilicon", "silicon");
 	private static List<String> osmiumcompat = new ArrayList<>();
 
 	
@@ -204,12 +206,20 @@ public final class OreDictManager
 							"APA", "PTP", "APA", Character.valueOf('P'), "ingot" + s, Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getEmptyGasTank(Tier.GasTankTier.ELITE)
 					}));
 				}
-				for (ItemStack ore : OreDictionary.getOres("ingot" + s)) {
+				if (!Mekanism.isSiliconLoaded) {
+					for (ItemStack ore : OreDictionary.getOres("ingot" + s)) {
+						RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.ControlCircuit, 1, 0));
+					}
+				}
+			}
+		}
+		if (Mekanism.isSiliconLoaded) {
+			for (String s : siliconcompat) {
+				for (ItemStack ore : OreDictionary.getOres(s)) {
 					RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.ControlCircuit, 1, 0));
 				}
 			}
 		}
-
 		for (String s : minorCompat) {
 			for (ItemStack ore : OreDictionary.getOres("ore" + s)) {
 				try {
