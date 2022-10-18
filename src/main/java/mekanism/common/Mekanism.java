@@ -217,6 +217,8 @@ public class Mekanism
 
 	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
 
+	public static boolean isSiliconLoaded;
+
 	/**
 	 * Adds all in-game crafting, smelting and machine recipes.
 	 */
@@ -1295,6 +1297,7 @@ public class Mekanism
 		{
 			OreDictionary.registerOre("circuitBasic", new ItemStack(MekanismItems.ControlCircuit, 1, 0));
 			OreDictionary.registerOre("circuitAdvanced", new ItemStack(MekanismItems.ControlCircuit, 1, 1));
+			OreDictionary.registerOre("componentControlCircuit", new ItemStack(MekanismItems.ControlCircuit, 1, 1));
 			OreDictionary.registerOre("circuitElite", new ItemStack(MekanismItems.ControlCircuit, 1, 2));
 			OreDictionary.registerOre("circuitUltimate", new ItemStack(MekanismItems.ControlCircuit, 1, 3));
 		}
@@ -1509,7 +1512,14 @@ public class Mekanism
 				}
 			}
 		}
-
+		if(Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore"))
+		{
+			isSiliconLoaded = true;
+		}
+		if(Loader.isModLoaded("ProjRed|Core"))
+		{
+			isSiliconLoaded = true;
+		}
 		//Integrate certain OreDictionary recipes
 		registerOreDict();
 
@@ -1533,6 +1543,8 @@ public class Mekanism
 		{
 			hooks.registerAE2P2P();
 		}
+
+
 
 		//Packet registrations
 		packetHandler.initialize();
