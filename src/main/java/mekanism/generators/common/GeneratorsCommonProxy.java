@@ -40,7 +40,6 @@ import net.minecraft.world.World;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -122,8 +121,8 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	{
 		String[] windid = {"0"};
 		generators.winddimensionids = Arrays.asList(Mekanism.configuration.getStringList("winddimensionids", "generation", windid, "List of dimension id to be whitelisted"));
-		dimid.addAll(generators.winddimensionids.stream().map(Integer::valueOf).collect(Collectors.toList()));
-		System.out.println("Windmill whitelist : " + dimid.toString());
+		dimid = generators.winddimensionids.stream().map(Integer::parseInt).collect(Collectors.toList());
+		System.out.println("Windmill whitelist : " + dimid);
 	}
 
 	private void loadWindConfiguration() 
