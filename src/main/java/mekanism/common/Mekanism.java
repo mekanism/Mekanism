@@ -1041,7 +1041,9 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismBlocks.SaltBlock), new ItemStack(MekanismItems.Salt, 4));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.diamond), new ItemStack(MekanismItems.CompressedDiamond));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismItems.Polyethene, 3, 0), new ItemStack(MekanismItems.Polyethene, 1, 2));
-		RecipeHandler.addEnrichmentChamberRecipe(Amethyst, new ItemStack(MekanismItems.CompressedEnder));
+		if (MekanismConfig.general.enableBoPProgression && Loader.isModLoaded("BiomesOPlenty")) {
+			RecipeHandler.addEnrichmentChamberRecipe(Amethyst, new ItemStack(MekanismItems.CompressedEnder));
+		}
 
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
@@ -1194,10 +1196,12 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedRedstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 80));
         InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.red_mushroom), new InfuseObject(InfuseRegistry.get("FUNGI"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.brown_mushroom), new InfuseObject(InfuseRegistry.get("FUNGI"), 10));
-        InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedDiamond), new InfuseObject(InfuseRegistry.get("DIAMOND"), 80));
-        InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedObsidian), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 80));
+		InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedDiamond), new InfuseObject(InfuseRegistry.get("DIAMOND"), 80));
+		InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedObsidian), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 80));
 		InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedEnder), new InfuseObject(InfuseRegistry.get("ENDER"), 80));
-		InfuseRegistry.registerInfuseObject(Amethyst, new InfuseObject(InfuseRegistry.get("ENDER"), 10));
+		if (MekanismConfig.general.enableBoPProgression && Loader.isModLoaded("BiomesOPlenty")) {
+			InfuseRegistry.registerInfuseObject(Amethyst, new InfuseObject(InfuseRegistry.get("ENDER"), 10));
+		}
 
 		//Fuels
         GameRegistry.registerFuelHandler(new IFuelHandler() {
