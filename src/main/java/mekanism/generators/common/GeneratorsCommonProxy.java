@@ -122,7 +122,7 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	{
 		String[] windid = {"0"};
 		generators.winddimensionids = Arrays.asList(Mekanism.configuration.getStringList("winddimensionids", "generation", windid, "List of dimension id to be whitelisted"));
-		// dimid.addAll(generators.winddimensionids.stream().map(Integer::valueOf).collect(Collectors.toList()));
+		dimid.addAll(generators.winddimensionids.stream().map(Integer::valueOf).collect(Collectors.toList()));
 	}
 
 	private void loadWindConfiguration() 
