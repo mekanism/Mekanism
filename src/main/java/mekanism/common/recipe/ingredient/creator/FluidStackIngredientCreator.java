@@ -219,6 +219,23 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             }
             return json;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            SingleFluidStackIngredient other = (SingleFluidStackIngredient) o;
+            //Need to use this over equals to ensure we compare amounts
+            return fluidInstance.isFluidStackIdentical(other.fluidInstance);
+        }
+
+        @Override
+        public int hashCode() {
+            return fluidInstance.hashCode();
+        }
     }
 
     @NothingNullByDefault
@@ -296,6 +313,22 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
             return json;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            TaggedFluidStackIngredient other = (TaggedFluidStackIngredient) o;
+            return amount == other.amount && tag.equals(other.tag);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(tag, amount);
+        }
     }
 
     @NothingNullByDefault
@@ -363,6 +396,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
+        public final List<FluidStackIngredient> getIngredients() {
+            return List.of(ingredients);
+        }
+
+        @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
@@ -375,6 +413,21 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 json.add(ingredient.serialize());
             }
             return json;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            return Arrays.equals(ingredients, ((MultiFluidStackIngredient) o).ingredients);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(ingredients);
         }
     }
 

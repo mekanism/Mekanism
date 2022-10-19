@@ -4,7 +4,6 @@ import com.blamejared.jeitweaker.api.IngredientEnumerator;
 import com.blamejared.jeitweaker.api.IngredientEnumeratorRegistration;
 import com.blamejared.jeitweaker.api.IngredientTypeHolder;
 import com.blamejared.jeitweaker.api.IngredientTypeRegistration;
-import com.blamejared.jeitweaker.api.JeiTweakerPlugin;
 import com.blamejared.jeitweaker.api.JeiTweakerPluginProvider;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
@@ -15,10 +14,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
@@ -28,13 +24,14 @@ import mekanism.common.util.ChemicalUtil;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@JeiTweakerPlugin
+//TODO - 1.19: Update once JEI Tweaker updates
+//@JeiTweakerPlugin
 public class MekanismJeiTweakerPluginProvider implements JeiTweakerPluginProvider {
 
-    public static final IngredientTypeHolder<ICrTGasStack, GasStack> GAS = createTypeHolder("gas", ICrTGasStack.class, GasStack.class, CrTGasStack::new);
-    public static final IngredientTypeHolder<ICrTInfusionStack, InfusionStack> INFUSION = createTypeHolder("infusion", ICrTInfusionStack.class, InfusionStack.class, CrTInfusionStack::new);
-    public static final IngredientTypeHolder<ICrTPigmentStack, PigmentStack> PIGMENT = createTypeHolder("pigment", ICrTPigmentStack.class, PigmentStack.class, CrTPigmentStack::new);
-    public static final IngredientTypeHolder<ICrTSlurryStack, SlurryStack> SLURRY = createTypeHolder("slurry", ICrTSlurryStack.class, SlurryStack.class, CrTSlurryStack::new);
+    public static final IngredientTypeHolder<ICrTGasStack, GasStack> GAS = createTypeHolder("gas", ICrTGasStack.class, GasStack.class, CrTUtils.GAS_CONVERTER);
+    public static final IngredientTypeHolder<ICrTInfusionStack, InfusionStack> INFUSION = createTypeHolder("infusion", ICrTInfusionStack.class, InfusionStack.class, CrTUtils.INFUSION_CONVERTER);
+    public static final IngredientTypeHolder<ICrTPigmentStack, PigmentStack> PIGMENT = createTypeHolder("pigment", ICrTPigmentStack.class, PigmentStack.class, CrTUtils.PIGMENT_CONVERTER);
+    public static final IngredientTypeHolder<ICrTSlurryStack, SlurryStack> SLURRY = createTypeHolder("slurry", ICrTSlurryStack.class, SlurryStack.class, CrTUtils.SLURRY_CONVERTER);
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
     IngredientTypeHolder<CRT_STACK, STACK> createTypeHolder(String type, Class<CRT_STACK> crtClass, Class<STACK> clazz, Function<STACK, CRT_STACK> converter) {

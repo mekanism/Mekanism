@@ -34,7 +34,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private static final Set<String> PATHS_TO_SKIP = Set.of(
-          "/scripts/"//CraftTweaker script files
+          //"/scripts/"//CraftTweaker script files
           //, "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final Set<String> COMPAT_RECIPES_TO_SKIP = Set.of(
@@ -45,8 +45,8 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
           //, "ilikewoodxbiomesoplenty/"//I Like Wood Biomes O' Plenty
           //, "ilikewoodxbyg/"//I Like Wood Biomes You'll Go
     );
-    private static final List<DataProvider> FAKE_PROVIDERS = Stream.of(
-          "CraftTweaker Examples: mekanism"
+    private static final List<DataProvider> FAKE_PROVIDERS = Stream.<String>of(
+          //"CraftTweaker Examples: mekanism"
           //, "Custom EMC Conversions: mekanism"
     ).<DataProvider>map(name -> new DataProvider() {
         @Override
@@ -68,10 +68,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
 
     @Override
     public void run(@NotNull CachedOutput cache) throws IOException {
-        if (PATHS_TO_SKIP.isEmpty() && COMPAT_RECIPES_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
-            //Skip if we don't have any things to override and persist
-            return;
-        }
         if (globalCache == null) {
             throw new RuntimeException("Failed to retrieve global cache");
         }
@@ -79,8 +75,16 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private <PROVIDER_CACHE, CACHE_UPDATER> void tryPersist(HashCache cache) throws IOException {
-        FieldReflectionHelper<HashCache, Map<DataProvider, PROVIDER_CACHE>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "f_236082_", () -> null);
         FieldReflectionHelper<HashCache, Map<DataProvider, CACHE_UPDATER>> cachesToWrite = new FieldReflectionHelper<>(HashCache.class, "f_236083_", () -> null);
+        Map<DataProvider, CACHE_UPDATER> toWrite = cachesToWrite.getValue(cache);
+        //Skip writing a cache for this data generator
+        toWrite.remove(this);
+        if (PATHS_TO_SKIP.isEmpty() && COMPAT_RECIPES_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
+            //Skip if we don't have any things to override and persist
+            return;
+        }
+
+        FieldReflectionHelper<HashCache, Map<DataProvider, PROVIDER_CACHE>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "f_236082_", () -> null);
         FieldReflectionHelper<HashCache, Set<Path>> cachePaths = new FieldReflectionHelper<>(HashCache.class, "f_236084_", () -> null);
         FieldReflectionHelper<HashCache, Integer> initialCount = new FieldReflectionHelper<>(HashCache.class, "f_236085_", () -> null);
         Class<CACHE_UPDATER> cacheUpdater;
@@ -100,9 +104,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         Path cacheDir = baseOutputPath.resolve(".cache");
 
         Map<DataProvider, PROVIDER_CACHE> existing = existingCaches.getValue(cache);
-        Map<DataProvider, CACHE_UPDATER> toWrite = cachesToWrite.getValue(cache);
-        //Skip writing a cache for this data generator
-        toWrite.remove(this);
 
         Set<Path> paths = cachePaths.getValue(cache);
         //Load and inject any providers we have that are fully disabled into the cache system

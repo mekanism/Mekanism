@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeMethod;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
@@ -37,7 +36,7 @@ public class CrTItemStackChemicalToItemStackRecipe {
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
         public static List<IItemStack> getOutputs(ItemStackGasToItemStackRecipe _this) {
-            return CrTUtils.convert(_this.getOutputDefinition(), MCItemStack::new);
+            return CrTUtils.convertItems(_this.getOutputDefinition());
         }
 
         @ZenRegister
@@ -71,7 +70,7 @@ public class CrTItemStackChemicalToItemStackRecipe {
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
         public static List<IItemStack> getOutputs(MetallurgicInfuserRecipe _this) {
-            return CrTUtils.convert(_this.getOutputDefinition(), MCItemStack::new);
+            return CrTUtils.convertItems(_this.getOutputDefinition());
         }
     }
 
@@ -88,7 +87,7 @@ public class CrTItemStackChemicalToItemStackRecipe {
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
         public static List<IItemStack> getOutputs(PaintingRecipe _this) {
-            return CrTUtils.convert(_this.getOutputDefinition(), MCItemStack::new);
+            return CrTUtils.convertItems(_this.getOutputDefinition());
         }
     }
 }

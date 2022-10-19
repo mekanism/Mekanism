@@ -36,10 +36,8 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
 
     protected abstract ChemicalIngredientInfo<CHEMICAL, STACK> getIngredientInfo();
 
-    /**
-     * @apiNote For use in flattening multi ingredients
-     */
-    List<INGREDIENT> getIngredients() {
+    @Override
+    public final List<INGREDIENT> getIngredients() {
         return List.of(ingredients);
     }
 
@@ -119,6 +117,21 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
             json.add(ingredient.serialize());
         }
         return json;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return Arrays.equals(ingredients, ((MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>) o).ingredients);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(ingredients);
     }
 
     public static class MultiGasStackIngredient extends MultiChemicalStackIngredient<Gas, GasStack, GasStackIngredient> implements GasStackIngredient {

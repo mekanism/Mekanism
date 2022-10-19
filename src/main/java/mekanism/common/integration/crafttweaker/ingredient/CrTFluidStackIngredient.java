@@ -1,11 +1,10 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.data.base.IData;
-import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -156,7 +155,7 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<IFluidStack> getRepresentations(FluidStackIngredient _this) {
-        return CrTUtils.convert(_this.getRepresentations(), MCFluidStack::new);
+        return CrTUtils.convertFluids(_this.getRepresentations());
     }
 
     /**

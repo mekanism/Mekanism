@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.RotaryRecipe;
@@ -10,7 +9,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -29,7 +27,7 @@ public class CrTRotaryRecipe {
     @ZenCodeType.Getter("gasToFluid")
     public static GasToFluid getGasToFluid(RotaryRecipe _this) {
         if (_this.hasGasToFluid()) {
-            return new GasToFluid(_this.getGasInput(), CrTUtils.convert(_this.getFluidOutputDefinition(), MCFluidStack::new));
+            return new GasToFluid(_this.getGasInput(), CrTUtils.convertFluids(_this.getFluidOutputDefinition()));
         }
         return null;
     }
@@ -42,7 +40,7 @@ public class CrTRotaryRecipe {
     @ZenCodeType.Getter("fluidToGas")
     public static FluidToGas getFluidToGas(RotaryRecipe _this) {
         if (_this.hasFluidToGas()) {
-            return new FluidToGas(_this.getFluidInput(), CrTUtils.convert(_this.getGasOutputDefinition(), CrTGasStack::new));
+            return new FluidToGas(_this.getFluidInput(), CrTUtils.convertGas(_this.getGasOutputDefinition()));
         }
         return null;
     }

@@ -87,4 +87,19 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
         json.addProperty(getIngredientInfo().getSerializationKey(), chemicalInstance.getTypeRegistryName().toString());
         return json;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return chemicalInstance.equals(((SingleChemicalStackIngredient<CHEMICAL, STACK>) o).chemicalInstance);
+    }
+
+    @Override
+    public int hashCode() {
+        return chemicalInstance.hashCode();
+    }
 }

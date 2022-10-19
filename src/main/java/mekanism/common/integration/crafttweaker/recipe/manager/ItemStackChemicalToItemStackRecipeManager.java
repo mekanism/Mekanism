@@ -55,8 +55,9 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
      * If this is called from the purifying recipe manager, this will be a purifying recipe and the chemical input must be a {@link GasStackIngredient} that will be used
      * at a near constant rate over the duration of the recipe. Purification Chambers and Purifying Factories can process this recipe type.
      * <br>
-     * If this is called from the metallurgic infusing recipe manager, this will be a metallurgic infusing recipe and the chemical input must be an {@link
-     * InfusionStackIngredient} that will be consumed at the end along with the item input. Metallurgic Infusers and Infusing Factories can process this recipe type.
+     * If this is called from the metallurgic infusing recipe manager, this will be a metallurgic infusing recipe and the chemical input must be an
+     * {@link InfusionStackIngredient} that will be consumed at the end along with the item input. Metallurgic Infusers and Infusing Factories can process this recipe
+     * type.
      * <br>
      * If this is called from the painting recipe manager, this will be a painting recipe and the chemical input must be a {@link PigmentStackIngredient} that will be
      * consumed at the end along with the item input. Painting Machines can process this recipe type.
@@ -69,7 +70,20 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), itemInput, chemicalInput, getAndValidateNotEmpty(output)));
+        addRecipe(makeRecipe(getAndValidateName(name), itemInput, chemicalInput, output));
+    }
+
+    /**
+     * Creates a recipe that converts an item and a chemical into an item.
+     *
+     * @param id            Name of the new recipe.
+     * @param itemInput     {@link ItemStackIngredient} representing the item input of the recipe.
+     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
+     *                      called from.
+     * @param output        {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
+     */
+    public final RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
+        return makeRecipe(id, itemInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
     protected abstract RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);

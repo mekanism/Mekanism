@@ -279,8 +279,6 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         for (Map.Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
             String examplePath = entry.getKey();
             Path path = pathProvider.file(new ResourceLocation(modid, examplePath), "zs");
-            //TODO - 1.19: Validate the above once CrT updates and we can test this
-            //.getOutputFolder(Target.DATA_PACK).resolve(modid + "/scripts/" + examplePath + ".zs");
             try {
                 save(cache, entry.getValue().build(), path);
             } catch (IOException e) {

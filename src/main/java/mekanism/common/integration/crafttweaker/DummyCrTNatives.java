@@ -5,7 +5,6 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.ICustomModule;
-import mekanism.api.providers.IBaseProvider;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.providers.IRobitSkinProvider;
@@ -60,14 +59,6 @@ public class DummyCrTNatives {
     public static class CrTNativeChemicalProvider {
 
         private CrTNativeChemicalProvider() {
-        }
-    }
-
-    @ZenRegister
-    @NativeTypeRegistration(value = IBaseProvider.class, zenCodeName = "mods." + Mekanism.MODID + ".api.provider.BaseProvider" + DUMMY)
-    public static class CrTNativeBaseProvider {
-
-        private CrTNativeBaseProvider() {
         }
     }
 

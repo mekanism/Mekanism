@@ -8,6 +8,7 @@ import mekanism.client.state.MekanismBlockStateProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.advancements.MekanismAdvancementProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
@@ -50,8 +51,7 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeServer(), new MekanismRecipeProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new MekanismCustomConversions(gen));
-        //TODO - 1.19: Re-enable when CrT updates and then disable it in the persisting data providers
-        //gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(gen, existingFileHelper));
+        gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(gen, existingFileHelper));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         gen.addProvider(true, new PersistingDisabledProvidersProvider(gen));
     }

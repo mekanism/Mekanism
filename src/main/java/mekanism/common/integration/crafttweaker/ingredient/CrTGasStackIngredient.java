@@ -1,8 +1,8 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.data.base.IData;
-import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -12,7 +12,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
@@ -131,7 +130,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<ICrTGasStack> getRepresentations(GasStackIngredient _this) {
-        return CrTUtils.convert(_this.getRepresentations(), CrTGasStack::new);
+        return CrTUtils.convertGas(_this.getRepresentations());
     }
 
     /**

@@ -10,6 +10,7 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGas
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ElectrolysisIRecipe;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,11 +36,25 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
           @ZenCodeType.Optional("1 as " + CrTConstants.CLASS_FLOATING_LONG) FloatingLong energyMultiplier) {
+        addRecipe(makeRecipe(getAndValidateName(name), input, leftGasOutput, rightGasOutput, energyMultiplier));
+    }
+
+    /**
+     * Creates a separating recipe that separates a fluid into two gases.
+     *
+     * @param id               Name of the new recipe.
+     * @param input            {@link FluidStackIngredient} representing the input of the recipe.
+     * @param leftGasOutput    {@link ICrTGasStack} representing the left output of the recipe. Will be validated as not empty.
+     * @param rightGasOutput   {@link ICrTGasStack} representing the right output of the recipe. Will be validated as not empty.
+     * @param energyMultiplier Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Will be validated to be
+     *                         greater than or equal to one.
+     */
+    public final ElectrolysisRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
+          FloatingLong energyMultiplier) {
         if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
-        addRecipe(new ElectrolysisIRecipe(getAndValidateName(name), input, energyMultiplier.copyAsConst(), getAndValidateNotEmpty(leftGasOutput),
-              getAndValidateNotEmpty(rightGasOutput)));
+        return new ElectrolysisIRecipe(id, input, energyMultiplier.copyAsConst(), getAndValidateNotEmpty(leftGasOutput), getAndValidateNotEmpty(rightGasOutput));
     }
 
     @Override

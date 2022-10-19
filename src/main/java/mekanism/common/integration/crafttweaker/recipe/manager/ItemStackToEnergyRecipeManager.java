@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.google.gson.JsonSyntaxException;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -33,13 +32,24 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, FloatingLong output) {
-        if (output.isZero()) {
-            throw new JsonSyntaxException("Output must be greater than zero.");
-        }
-        addRecipe(makeRecipe(getAndValidateName(name), input, output.copyAsConst()));
+        addRecipe(makeRecipe(getAndValidateName(name), input, output));
     }
 
-    protected abstract ItemStackToEnergyRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output);
+    /**
+     * Creates a recipe that an item into energy.
+     *
+     * @param id     Name of the new recipe.
+     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param output Energy output. Will be validated as being greater than zero.
+     */
+    public final ItemStackToEnergyRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
+        if (output.isZero()) {
+            throw new IllegalArgumentException("Output must be greater than zero.");
+        }
+        return makeRecipeInternal(id, input, output.copyAsConst());
+    }
+
+    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(ResourceLocation id, ItemStackIngredient input, FloatingLong output);
 
     @Override
     protected ActionAddMekanismRecipe getAction(ItemStackToEnergyRecipe recipe) {
@@ -62,7 +72,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         }
 
         @Override
-        protected ItemStackToEnergyRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
+        protected ItemStackToEnergyRecipe makeRecipeInternal(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
             return new EnergyConversionIRecipe(id, input, output);
         }
     }

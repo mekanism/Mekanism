@@ -199,6 +199,13 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             return ingredient;
         }
 
+        /**
+         * For use in CrT comparing.
+         */
+        public int getAmountRaw() {
+            return amount;
+        }
+
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
@@ -282,6 +289,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
+        public final List<ItemStackIngredient> getIngredients() {
+            return List.of(ingredients);
+        }
+
+        @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
@@ -294,6 +306,21 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                 json.add(ingredient.serialize());
             }
             return json;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            return Arrays.equals(ingredients, ((MultiItemStackIngredient) o).ingredients);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(ingredients);
         }
     }
 

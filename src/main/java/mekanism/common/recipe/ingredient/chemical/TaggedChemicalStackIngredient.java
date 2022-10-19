@@ -103,4 +103,20 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
         return json;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TaggedChemicalStackIngredient<CHEMICAL, STACK> other = (TaggedChemicalStackIngredient<CHEMICAL, STACK>) o;
+        return amount == other.amount && tag.equals(other.tag);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag, amount);
+    }
 }

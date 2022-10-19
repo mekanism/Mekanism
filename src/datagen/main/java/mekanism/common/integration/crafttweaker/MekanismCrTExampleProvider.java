@@ -23,9 +23,10 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTS
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalToChemicalRecipeManager.ChemicalInfuserRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalToChemicalRecipeManager.PigmentMixingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalCrystallizerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalDissolutionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalInfuserRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.CombinerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ElectrolysisRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.FluidSlurryToSlurryRecipeManager.ChemicalWasherRecipeManager;
@@ -46,7 +47,6 @@ import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemSt
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnrichmentChamberRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToPigmentRecipeManager.PigmentExtractingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.NucleosynthesizingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.PigmentMixingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.PressurizedReactionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.SawmillRecipeManager;

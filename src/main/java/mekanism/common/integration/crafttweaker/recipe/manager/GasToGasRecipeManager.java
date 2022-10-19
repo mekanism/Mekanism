@@ -6,7 +6,6 @@ import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -36,7 +35,18 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
      */
     @ZenCodeType.Method
     public void addRecipe(String name, GasStackIngredient input, ICrTGasStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
+        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+    }
+
+    /**
+     * Creates a recipe that converts a gas into another gas.
+     *
+     * @param id     Name of the new recipe.
+     * @param input  {@link GasStackIngredient} representing the input of the recipe.
+     * @param output {@link ICrTGasStack} representing the output of the recipe. Will be validated as not empty.
+     */
+    public final GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient input, ICrTGasStack output) {
+        return makeRecipe(id, input, getAndValidateNotEmpty(output));
     }
 
     protected abstract GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output);
@@ -46,7 +56,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), CrTGasStack::new);
+                return CrTUtils.describeOutputs(recipe.getOutputDefinition());
             }
         };
     }

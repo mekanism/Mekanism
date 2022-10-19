@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
@@ -33,7 +32,7 @@ public class CrTSawmillRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("mainOutputs")
     public static List<IItemStack> getMainOutputs(SawmillRecipe _this) {
-        return CrTUtils.convert(_this.getMainOutputDefinition(), MCItemStack::new);
+        return CrTUtils.convertItems(_this.getMainOutputDefinition());
     }
 
     /**
@@ -43,7 +42,7 @@ public class CrTSawmillRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("secondaryOutputs")
     public static List<IItemStack> getSecondaryOutputs(SawmillRecipe _this) {
-        return CrTUtils.convert(_this.getSecondaryOutputDefinition(), MCItemStack::new);
+        return CrTUtils.convertItems(_this.getSecondaryOutputDefinition());
     }
 
     /**
