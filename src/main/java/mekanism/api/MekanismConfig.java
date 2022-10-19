@@ -160,6 +160,7 @@ public class MekanismConfig
 		public static double turbineVentGasFlow;
 		public static double turbineDisperserGasFlow;
 		public static int condenserRate;
+		public static boolean enableWindmillWhitelist;
 		public static List<String> winddimensionids;
 
 	}

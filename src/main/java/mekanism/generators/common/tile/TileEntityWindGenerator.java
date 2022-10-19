@@ -98,6 +98,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	}
 	public boolean isInWhitelistedDimension()
 	{
+		if (!generators.enableWindmillWhitelist)
+		{
+			return true;
+		}
 		if (GeneratorsCommonProxy.dimid != null && GeneratorsCommonProxy.dimid.contains(worldObj.provider.dimensionId)){
 			//System.out.println("Windmill can operate");
 			return true;

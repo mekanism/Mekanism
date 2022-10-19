@@ -110,6 +110,7 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
 		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
 		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
+		generators.enableWindmillWhitelist = Mekanism.configuration.get("generation", "EnableWindmillWhitelist", true).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
