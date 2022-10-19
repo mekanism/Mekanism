@@ -76,7 +76,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
-		if (isInWhitelistedDimension())
+		if (!isInWhitelistedDimension())
 		{
 			return 0;
 		}
