@@ -61,6 +61,7 @@ public class MekanismItems
 	public static final Item CompressedRedstone = new ItemMekanism().setUnlocalizedName("CompressedRedstone");
 	public static final Item CompressedDiamond = new ItemMekanism().setUnlocalizedName("CompressedDiamond");
 	public static final Item CompressedObsidian = new ItemMekanism().setUnlocalizedName("CompressedObsidian");
+	public static final Item CompressedEnder = new ItemMekanism().setUnlocalizedName("CompressedEnder");
 	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
 	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("LithiumBucket");
 	public static final Item HeavyWaterBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("HeavyWaterBucket");
@@ -132,6 +133,7 @@ public class MekanismItems
 		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
 		GameRegistry.registerItem(CompressedDiamond, "CompressedDiamond");
 		GameRegistry.registerItem(CompressedObsidian, "CompressedObsidian");
+		GameRegistry.registerItem(CompressedEnder, "CompressedEnder");
 		GameRegistry.registerItem(PortableTeleporter, "PortableTeleporter");
 		GameRegistry.registerItem(TeleportationCore, "TeleportationCore");
 		GameRegistry.registerItem(Clump, "Clump");
