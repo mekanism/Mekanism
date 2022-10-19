@@ -3,7 +3,6 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
@@ -15,8 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.collections4.CollectionUtils;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
