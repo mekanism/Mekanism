@@ -1516,11 +1516,7 @@ public class Mekanism
 				}
 			}
 		}
-		if(Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore"))
-		{
-			isSiliconLoaded = true;
-		}
-		if(Loader.isModLoaded("ProjRed|Core"))
+		if(Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core"))
 		{
 			isSiliconLoaded = true;
 		}
