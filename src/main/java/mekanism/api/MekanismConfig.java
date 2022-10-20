@@ -1,6 +1,8 @@
 package mekanism.api;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
@@ -74,6 +76,7 @@ public class MekanismConfig
 		public static boolean EnablePoorOresCompat;
 		public static boolean OreDictOsmium;
 		public static boolean OreDictPlatinum;
+		public static boolean enableSiliconCompat;
 	}
 
 	public static class client
@@ -158,6 +161,9 @@ public class MekanismConfig
 		public static double turbineVentGasFlow;
 		public static double turbineDisperserGasFlow;
 		public static int condenserRate;
+		public static boolean enableWindmillWhitelist;
+		public static List<String> winddimensionids;
+
 	}
 
 	public static class tools

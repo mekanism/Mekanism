@@ -9,6 +9,7 @@ import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsCommonProxy;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
@@ -72,6 +73,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
+		if (!isInWhitelistedDimension())
+		{
+			return 0;
+		}
 		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
 		{
 			final float minY = (float)generators.windGenerationMinY;
@@ -91,7 +96,20 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 			return 0;
 		}
 	}
-
+	public boolean isInWhitelistedDimension()
+	{
+		if (!generators.enableWindmillWhitelist)
+		{
+			return true;
+		}
+		if (GeneratorsCommonProxy.dimid != null && GeneratorsCommonProxy.dimid.contains(worldObj.provider.dimensionId)){
+			//System.out.println("Windmill can operate");
+			return true;
+		}
+		//System.out.println("Windmill has no wind");
+		return false;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public float getVolume()

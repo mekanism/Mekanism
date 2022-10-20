@@ -40,6 +40,10 @@ import net.minecraft.world.World;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Common proxy for the Mekanism Generators module.
  * @author AidanBrady
@@ -48,6 +52,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class GeneratorsCommonProxy implements IGuiProvider
 {
 	public static int GENERATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static List<Integer> dimid = null;
 
 	/**
 	 * Register normal tile entities
@@ -101,18 +106,26 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble();
 		
 		loadWindConfiguration();
-		
 		generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4).getInt();
 		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
 		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
 		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
+		generators.enableWindmillWhitelist = Mekanism.configuration.get("generation", "EnableWindmillWhitelist", true).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
 			Mekanism.configuration.save();
 		}
 	}
-	
+
+	public void loadwinddimension()
+	{
+		String[] windid = {"0"};
+		generators.winddimensionids = Arrays.asList(Mekanism.configuration.getStringList("winddimensionids", "generation", windid, "List of dimension id to be whitelisted"));
+		dimid = generators.winddimensionids.stream().map(Integer::parseInt).collect(Collectors.toList());
+		System.out.println("Windmill whitelist : " + dimid);
+	}
+
 	private void loadWindConfiguration() 
 	{
 		generators.windGenerationMin = Mekanism.configuration.get("generation", "WindGenerationMin", 60D).getDouble();

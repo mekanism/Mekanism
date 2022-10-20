@@ -81,6 +81,7 @@ public class MekanismGenerators implements IModule
 
 		//Load the proxy
 		proxy.loadConfiguration();
+		proxy.loadwinddimension();
 		proxy.registerRegularTileEntities();
 		proxy.registerSpecialTileEntities();
 		proxy.registerRenderInformation();
@@ -281,6 +282,7 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.turbineVentGasFlow);
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 		dataStream.writeInt(generators.condenserRate);
+		dataStream.writeBoolean(generators.enableWindmillWhitelist);
 	}
 
 	@Override
@@ -305,6 +307,7 @@ public class MekanismGenerators implements IModule
 		generators.turbineVentGasFlow = dataStream.readDouble();
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
 		generators.condenserRate = dataStream.readInt();
+		generators.enableWindmillWhitelist = dataStream.readBoolean();
 	}
 	
 	@Override
