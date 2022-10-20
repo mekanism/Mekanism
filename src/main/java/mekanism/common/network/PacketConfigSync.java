@@ -81,6 +81,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.EnablePoorOresCompat);
 			dataStream.writeBoolean(general.OreDictOsmium);
 			dataStream.writeBoolean(general.OreDictPlatinum);
+			dataStream.writeBoolean(general.enableSiliconCompat);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -295,6 +296,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.EnablePoorOresCompat = dataStream.readBoolean();
 			general.OreDictOsmium = dataStream.readBoolean();
 			general.OreDictPlatinum = dataStream.readBoolean();
+			general.enableSiliconCompat = dataStream.readBoolean();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{

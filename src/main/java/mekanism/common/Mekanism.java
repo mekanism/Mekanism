@@ -1516,9 +1516,11 @@ public class Mekanism
 				}
 			}
 		}
-		if(Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core"))
+		if (MekanismConfig.general.enableSiliconCompat)
 		{
-			isSiliconLoaded = true;
+			if (Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core")) {
+				isSiliconLoaded = true;
+			}
 		}
 		//Integrate certain OreDictionary recipes
 		registerOreDict();

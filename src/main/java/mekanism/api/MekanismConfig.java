@@ -76,6 +76,7 @@ public class MekanismConfig
 		public static boolean EnablePoorOresCompat;
 		public static boolean OreDictOsmium;
 		public static boolean OreDictPlatinum;
+		public static boolean enableSiliconCompat;
 	}
 
 	public static class client
