@@ -1,5 +1,5 @@
 # Mekanism 1.7.10 Community Edition
-Originally made for Terralization Modpack with fixes from several different mods. Now with new features, bugfixes and performance enhancement.
+Originally made for Terralization Modpack with fixes from several different forks. Now with new features, bugfixes and performance enhancement.
 
 #### Download at [curseforge](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce)
 
