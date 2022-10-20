@@ -1397,7 +1397,7 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		File config = event.getSuggestedConfigurationFile();
+		File config = new File("config/mekanism/Mekanism.cfg");
 
 		//Set the mod's configuration
 		configuration = new Configuration(config);
