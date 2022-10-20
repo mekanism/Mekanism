@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -270,6 +269,10 @@ public class MekanismConfig
 		public static boolean enableFlamethrower = true;
 		public static boolean enableGaugeDropper = true;
 		public static boolean enableTierInstaller = true;
+
+
+	}
+	public static class generatorsrecipes {
 		public static boolean enableHeatGenerator = true;
 		public static boolean enableSolarGenerator = true;
 		public static boolean enableGasGenerator = true;
@@ -291,6 +294,5 @@ public class MekanismConfig
 		public static boolean enableReactorMatrix = true;
 		public static boolean enableSolarPanel = true;
 		public static boolean enableTurbineBlade = true;
-
 	}
 }

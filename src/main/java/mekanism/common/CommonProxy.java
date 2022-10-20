@@ -496,27 +496,7 @@ public class CommonProxy implements IGuiProvider
 		recipes.enableFlamethrower = Mekanism.configuration.get("Recipes","enableFlamethrower", true).getBoolean();
 		recipes.enableGaugeDropper = Mekanism.configuration.get("Recipes","enableGaugeDropper", true).getBoolean();
 		recipes.enableTierInstaller = Mekanism.configuration.get("Recipes","enableTierInstaller", true).getBoolean();
-		recipes.enableHeatGenerator = Mekanism.configuration.get("Recipes","enableHeatGenerator", true).getBoolean();
-		recipes.enableSolarGenerator = Mekanism.configuration.get("Recipes","enableSolarGenerator", true).getBoolean();
-		recipes.enableGasGenerator = Mekanism.configuration.get("Recipes","enableGasGenerator", true).getBoolean();
-		recipes.enableBioGenerator = Mekanism.configuration.get("Recipes","enableBioGenerator", true).getBoolean();
-		recipes.enableAdvSolarGenerator = Mekanism.configuration.get("Recipes","enableAdvSolarGenerator", true).getBoolean();
-		recipes.enableWindGenerator = Mekanism.configuration.get("Recipes","enableWindGenerator", true).getBoolean();
-		recipes.enableTurbineRotor = Mekanism.configuration.get("Recipes","enableTurbineRotor", true).getBoolean();
-		recipes.enableRotationalComplex = Mekanism.configuration.get("Recipes","enableRotationalComplex", true).getBoolean();
-		recipes.enableElectromagneticCoil = Mekanism.configuration.get("Recipes","enableElectromagneticCoil", true).getBoolean();
-		recipes.enableTurbineCasing = Mekanism.configuration.get("Recipes","enableTurbineCasing", true).getBoolean();
-		recipes.enableTurbineValve = Mekanism.configuration.get("Recipes","enableTurbineValve", true).getBoolean();
-		recipes.enableTurbineVent = Mekanism.configuration.get("Recipes","enableTurbineVent", true).getBoolean();
-		recipes.enableSaturatingCondenser = Mekanism.configuration.get("Recipes","enableSaturatingCondenser", true).getBoolean();
-		recipes.enableReactorController = Mekanism.configuration.get("Recipes","enableReactorController", true).getBoolean();
-		recipes.enableReactorFrame = Mekanism.configuration.get("Recipes","enableReactorFrame", true).getBoolean();
-		recipes.enableReactorPort = Mekanism.configuration.get("Recipes","enableReactorPort", true).getBoolean();
-		recipes.enableReactorAdapter = Mekanism.configuration.get("Recipes","enableReactorAdapter", true).getBoolean();
-		recipes.enableReactorGlass = Mekanism.configuration.get("Recipes","enableReactorGlass", true).getBoolean();
-		recipes.enableReactorMatrix = Mekanism.configuration.get("Recipes","enableReactorMatrix", true).getBoolean();
-		recipes.enableSolarPanel = Mekanism.configuration.get("Recipes","enableSolarPanel", true).getBoolean();
-		recipes.enableTurbineBlade = Mekanism.configuration.get("Recipes","enableTurbineBlade", true).getBoolean();
+
 		
 		if(Mekanism.configuration.hasChanged())
 		{

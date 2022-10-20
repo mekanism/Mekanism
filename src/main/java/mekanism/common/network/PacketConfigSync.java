@@ -207,27 +207,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(recipes.enableFlamethrower);
 			dataStream.writeBoolean(recipes.enableGaugeDropper);
 			dataStream.writeBoolean(recipes.enableTierInstaller);
-			dataStream.writeBoolean(recipes.enableHeatGenerator);
-			dataStream.writeBoolean(recipes.enableSolarGenerator);
-			dataStream.writeBoolean(recipes.enableGasGenerator);
-			dataStream.writeBoolean(recipes.enableBioGenerator);
-			dataStream.writeBoolean(recipes.enableAdvSolarGenerator);
-			dataStream.writeBoolean(recipes.enableWindGenerator);
-			dataStream.writeBoolean(recipes.enableTurbineRotor);
-			dataStream.writeBoolean(recipes.enableRotationalComplex);
-			dataStream.writeBoolean(recipes.enableElectromagneticCoil);
-			dataStream.writeBoolean(recipes.enableTurbineCasing);
-			dataStream.writeBoolean(recipes.enableTurbineValve);
-			dataStream.writeBoolean(recipes.enableTurbineVent);
-			dataStream.writeBoolean(recipes.enableSaturatingCondenser);
-			dataStream.writeBoolean(recipes.enableReactorController);
-			dataStream.writeBoolean(recipes.enableReactorFrame);
-			dataStream.writeBoolean(recipes.enableReactorPort);
-			dataStream.writeBoolean(recipes.enableReactorAdapter);
-			dataStream.writeBoolean(recipes.enableReactorGlass);
-			dataStream.writeBoolean(recipes.enableReactorMatrix);
-			dataStream.writeBoolean(recipes.enableSolarPanel);
-			dataStream.writeBoolean(recipes.enableTurbineBlade);
+
 
 			
 			Tier.writeConfig(dataStream);
@@ -422,27 +402,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			recipes.enableFlamethrower = dataStream.readBoolean();
 			recipes.enableGaugeDropper = dataStream.readBoolean();
 			recipes.enableTierInstaller = dataStream.readBoolean();
-			recipes.enableHeatGenerator = dataStream.readBoolean();
-			recipes.enableSolarGenerator = dataStream.readBoolean();
-			recipes.enableGasGenerator = dataStream.readBoolean();
-			recipes.enableBioGenerator = dataStream.readBoolean();
-			recipes.enableAdvSolarGenerator = dataStream.readBoolean();
-			recipes.enableWindGenerator = dataStream.readBoolean();
-			recipes.enableTurbineRotor = dataStream.readBoolean();
-			recipes.enableRotationalComplex = dataStream.readBoolean();
-			recipes.enableElectromagneticCoil = dataStream.readBoolean();
-			recipes.enableTurbineCasing = dataStream.readBoolean();
-			recipes.enableTurbineValve = dataStream.readBoolean();
-			recipes.enableTurbineVent = dataStream.readBoolean();
-			recipes.enableSaturatingCondenser = dataStream.readBoolean();
-			recipes.enableReactorController = dataStream.readBoolean();
-			recipes.enableReactorFrame = dataStream.readBoolean();
-			recipes.enableReactorPort = dataStream.readBoolean();
-			recipes.enableReactorAdapter = dataStream.readBoolean();
-			recipes.enableReactorGlass = dataStream.readBoolean();
-			recipes.enableReactorMatrix = dataStream.readBoolean();
-			recipes.enableSolarPanel = dataStream.readBoolean();
-			recipes.enableTurbineBlade = dataStream.readBoolean();
+
 			
 			Tier.readConfig(dataStream);
 	

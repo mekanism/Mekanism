@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
+import mekanism.api.MekanismConfig.generatorsrecipes;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseRegistry;
@@ -116,91 +116,91 @@ public class MekanismGenerators implements IModule
 	
 	public void addRecipes()
 	{
-		if (MekanismConfig.recipes.enableHeatGenerator) {
+		if (generatorsrecipes.enableHeatGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 0), new Object[]{
 					"III", "WOW", "CFC", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingotOsmium", Character.valueOf('F'), Blocks.furnace, Character.valueOf('W'), "plankWood"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableSolarGenerator) {
+		if (generatorsrecipes.enableSolarGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 1), new Object[]{
 					"SSS", "AIA", "PEP", Character.valueOf('S'), GeneratorsItems.SolarPanel, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron", Character.valueOf('P'), "dustOsmium", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableAdvSolarGenerator) {
+		if (generatorsrecipes.enableAdvSolarGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 5), new Object[]{
 					"SES", "SES", "III", Character.valueOf('S'), new ItemStack(GeneratorsBlocks.Generator, 1, 1), Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), "ingotIron"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableBioGenerator) {
+		if (generatorsrecipes.enableBioGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 4), new Object[]{
 					"RER", "BCB", "NEN", Character.valueOf('R'), "dustRedstone", Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('B'), MekanismItems.BioFuel, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('N'), "ingotIron"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableGasGenerator) {
+		if (generatorsrecipes.enableGasGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 3), new Object[]{
 					"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), MekanismItems.ElectrolyticCore
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableSolarPanel) {
+		if (generatorsrecipes.enableSolarPanel) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsItems.SolarPanel), new Object[]{
 					"GGG", "RAR", "PPP", Character.valueOf('G'), "paneGlass", Character.valueOf('R'), "dustRedstone", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('P'), "ingotOsmium"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableWindGenerator) {
+		if (generatorsrecipes.enableWindGenerator) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 6), new Object[]{
 					" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableTurbineBlade) {
+		if (generatorsrecipes.enableTurbineBlade) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsItems.TurbineBlade), new Object[]{
 					" S ", "SAS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableTurbineRotor) {
+		if (generatorsrecipes.enableTurbineRotor) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 7), new Object[]{
 					"SAS", "SAS", "SAS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableRotationalComplex) {
+		if (generatorsrecipes.enableRotationalComplex) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 8), new Object[]{
 					"SAS", "CAC", "SAS", Character.valueOf('S'), "ingotSteel", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED)
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableElectromagneticCoil) {
+		if (generatorsrecipes.enableElectromagneticCoil) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 9), new Object[]{
 					"SGS", "GEG", "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "ingotGold", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableTurbineCasing) {
+		if (generatorsrecipes.enableTurbineCasing) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 4, 10), new Object[]{
 					" S ", "SOS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('O'), "ingotOsmium"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableTurbineValve) {
+		if (generatorsrecipes.enableTurbineValve) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 11), new Object[]{
 					" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED)
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableTurbineVent) {
+		if (generatorsrecipes.enableTurbineVent) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 2, 12), new Object[]{
 					" I ", "IFI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Generator, 1, 10), Character.valueOf('F'), Blocks.iron_bars
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableSaturatingCondenser) {
+		if (generatorsrecipes.enableSaturatingCondenser) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 13), new Object[]{
 					"STS", "TBT", "STS", Character.valueOf('S'), "ingotSteel", Character.valueOf('T'), "ingotTin", Character.valueOf('B'), Items.bucket
 			}));
@@ -208,37 +208,37 @@ public class MekanismGenerators implements IModule
 
 
 		//Reactor Recipes
-		if (MekanismConfig.recipes.enableReactorFrame) {
+		if (generatorsrecipes.enableReactorFrame) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 4, 1), new Object[]{
 					" C ", "CAC", " C ", Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('A'), "alloyUltimate"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableReactorPort) {
+		if (generatorsrecipes.enableReactorPort) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 2, 3), new Object[]{
 					" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE)
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableReactorGlass) {
+		if (generatorsrecipes.enableReactorGlass) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 4, 0), new Object[]{
 					" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('G'), "blockGlass"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableReactorController) {
+		if (generatorsrecipes.enableReactorController) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 0), new Object[]{
 					"CGC", "ITI", "III", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('G'), "paneGlass", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1), Character.valueOf('T'), MekanismUtils.getEmptyGasTank(GasTankTier.BASIC)
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableReactorMatrix) {
+		if (generatorsrecipes.enableReactorMatrix) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[]{
 					" I ", "ILI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.ReactorGlass, 1, 0), Character.valueOf('L'), "blockRedstone"
 			}));
 		}
 
-		if (MekanismConfig.recipes.enableReactorAdapter) {
+		if (generatorsrecipes.enableReactorAdapter) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 4), new Object[]{
 					" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1)
 			}));
@@ -283,6 +283,28 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.turbineDisperserGasFlow);
 		dataStream.writeInt(generators.condenserRate);
 		dataStream.writeBoolean(generators.enableWindmillWhitelist);
+
+		dataStream.writeBoolean(generatorsrecipes.enableHeatGenerator);
+		dataStream.writeBoolean(generatorsrecipes.enableSolarGenerator);
+		dataStream.writeBoolean(generatorsrecipes.enableGasGenerator);
+		dataStream.writeBoolean(generatorsrecipes.enableBioGenerator);
+		dataStream.writeBoolean(generatorsrecipes.enableAdvSolarGenerator);
+		dataStream.writeBoolean(generatorsrecipes.enableWindGenerator);
+		dataStream.writeBoolean(generatorsrecipes.enableTurbineRotor);
+		dataStream.writeBoolean(generatorsrecipes.enableRotationalComplex);
+		dataStream.writeBoolean(generatorsrecipes.enableElectromagneticCoil);
+		dataStream.writeBoolean(generatorsrecipes.enableTurbineCasing);
+		dataStream.writeBoolean(generatorsrecipes.enableTurbineValve);
+		dataStream.writeBoolean(generatorsrecipes.enableTurbineVent);
+		dataStream.writeBoolean(generatorsrecipes.enableSaturatingCondenser);
+		dataStream.writeBoolean(generatorsrecipes.enableReactorController);
+		dataStream.writeBoolean(generatorsrecipes.enableReactorFrame);
+		dataStream.writeBoolean(generatorsrecipes.enableReactorPort);
+		dataStream.writeBoolean(generatorsrecipes.enableReactorAdapter);
+		dataStream.writeBoolean(generatorsrecipes.enableReactorGlass);
+		dataStream.writeBoolean(generatorsrecipes.enableReactorMatrix);
+		dataStream.writeBoolean(generatorsrecipes.enableSolarPanel);
+		dataStream.writeBoolean(generatorsrecipes.enableTurbineBlade);
 	}
 
 	@Override
@@ -308,6 +330,28 @@ public class MekanismGenerators implements IModule
 		generators.turbineDisperserGasFlow = dataStream.readDouble();
 		generators.condenserRate = dataStream.readInt();
 		generators.enableWindmillWhitelist = dataStream.readBoolean();
+
+		generatorsrecipes.enableHeatGenerator = dataStream.readBoolean();
+		generatorsrecipes.enableSolarGenerator = dataStream.readBoolean();
+		generatorsrecipes.enableGasGenerator = dataStream.readBoolean();
+		generatorsrecipes.enableBioGenerator = dataStream.readBoolean();
+		generatorsrecipes.enableAdvSolarGenerator = dataStream.readBoolean();
+		generatorsrecipes.enableWindGenerator = dataStream.readBoolean();
+		generatorsrecipes.enableTurbineRotor = dataStream.readBoolean();
+		generatorsrecipes.enableRotationalComplex = dataStream.readBoolean();
+		generatorsrecipes.enableElectromagneticCoil = dataStream.readBoolean();
+		generatorsrecipes.enableTurbineCasing = dataStream.readBoolean();
+		generatorsrecipes.enableTurbineValve = dataStream.readBoolean();
+		generatorsrecipes.enableTurbineVent = dataStream.readBoolean();
+		generatorsrecipes.enableSaturatingCondenser = dataStream.readBoolean();
+		generatorsrecipes.enableReactorController = dataStream.readBoolean();
+		generatorsrecipes.enableReactorFrame = dataStream.readBoolean();
+		generatorsrecipes.enableReactorPort = dataStream.readBoolean();
+		generatorsrecipes.enableReactorAdapter = dataStream.readBoolean();
+		generatorsrecipes.enableReactorGlass = dataStream.readBoolean();
+		generatorsrecipes.enableReactorMatrix = dataStream.readBoolean();
+		generatorsrecipes.enableSolarPanel = dataStream.readBoolean();
+		generatorsrecipes.enableTurbineBlade = dataStream.readBoolean();
 	}
 	
 	@Override
