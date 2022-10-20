@@ -27,9 +27,10 @@ If applicable, add screenshots to help explain your problem.
  - OS: 
  - Modpack:
  - Modpack Version:
- - Mekanism Version: 
- - Forge Version:
+ - Mekanism Version:
 
+**Crash log**
+Provide a log for the issue here, use gist.github.com
 
 **Additional context**
 Add any other context about the problem here.
