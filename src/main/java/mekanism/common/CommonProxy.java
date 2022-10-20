@@ -311,6 +311,7 @@ public class CommonProxy implements IGuiProvider
 		general.EnablePoorOresCompat = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnablePoorOresCompat", true).getBoolean();
 		general.OreDictOsmium = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreDictOsmium", true).getBoolean();
 		general.OreDictPlatinum = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreDictPlatinum", false).getBoolean();
+		general.enableSiliconCompat = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSiliconCompat", true).getBoolean();
 
 
 		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J", null, new String[]{"J", "RF", "MJ", "EU"}).getString();
