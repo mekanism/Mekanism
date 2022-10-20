@@ -61,6 +61,10 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + oredict recipe for gemDiamond to be enriched(mekanism) to compresseddiamonds Thorfusion#30
 + cleaned and upgraded gradle building
 + added autodownload for dependencies and missing dependency warning
++ oredict for steeltools
++ added dimension whitelist config for windmills, by default only overworld is whitelisted Thorfusion#47
++ silicon integration is enabled if enderio or gc or project red is installed, silicon is now used to make instead of iron control circuits Thorfusion#45
++ added oredict componentcontrolcircuit for advanced control circuit
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
@@ -73,6 +77,8 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + added config for reducing particles for completed multiblocks Thorfusion#36
 + sawmill now outputs raw rubber instead of rubber Thorfusion#36
 + added methane to gas burner fuel list Thorfusion#36
++ Added a workaround for minetweaker regarding removal of recipes, use the config file to disable them. Thorfusion#43
++ Added BoP integration, when enabled atomic alloy is made with Ender Amethyst from BoP Thorfusion#44
 
 ## All contributors get capes
 
