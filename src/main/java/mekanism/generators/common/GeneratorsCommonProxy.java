@@ -113,27 +113,27 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
 		generators.enableWindmillWhitelist = Mekanism.configuration.get("generation", "EnableWindmillWhitelist", true).getBoolean();
 
-		generatorsrecipes.enableHeatGenerator = Mekanism.configuration.get("GeneratorRecipes","enableHeatGenerator", true).getBoolean();
-		generatorsrecipes.enableSolarGenerator = Mekanism.configuration.get("GeneratorRecipes","enableSolarGenerator", true).getBoolean();
-		generatorsrecipes.enableGasGenerator = Mekanism.configuration.get("GeneratorRecipes","enableGasGenerator", true).getBoolean();
-		generatorsrecipes.enableBioGenerator = Mekanism.configuration.get("GeneratorRecipes","enableBioGenerator", true).getBoolean();
-		generatorsrecipes.enableAdvSolarGenerator = Mekanism.configuration.get("GeneratorRecipes","enableAdvSolarGenerator", true).getBoolean();
-		generatorsrecipes.enableWindGenerator = Mekanism.configuration.get("GeneratorRecipes","enableWindGenerator", true).getBoolean();
-		generatorsrecipes.enableTurbineRotor = Mekanism.configuration.get("GeneratorRecipes","enableTurbineRotor", true).getBoolean();
-		generatorsrecipes.enableRotationalComplex = Mekanism.configuration.get("GeneratorRecipes","enableRotationalComplex", true).getBoolean();
-		generatorsrecipes.enableElectromagneticCoil = Mekanism.configuration.get("GeneratorRecipes","enableElectromagneticCoil", true).getBoolean();
-		generatorsrecipes.enableTurbineCasing = Mekanism.configuration.get("GeneratorRecipes","enableTurbineCasing", true).getBoolean();
-		generatorsrecipes.enableTurbineValve = Mekanism.configuration.get("GeneratorRecipes","enableTurbineValve", true).getBoolean();
-		generatorsrecipes.enableTurbineVent = Mekanism.configuration.get("GeneratorRecipes","enableTurbineVent", true).getBoolean();
-		generatorsrecipes.enableSaturatingCondenser = Mekanism.configuration.get("GeneratorRecipes","enableSaturatingCondenser", true).getBoolean();
-		generatorsrecipes.enableReactorController = Mekanism.configuration.get("GeneratorRecipes","enableReactorController", true).getBoolean();
-		generatorsrecipes.enableReactorFrame = Mekanism.configuration.get("GeneratorRecipes","enableReactorFrame", true).getBoolean();
-		generatorsrecipes.enableReactorPort = Mekanism.configuration.get("GeneratorRecipes","enableReactorPort", true).getBoolean();
-		generatorsrecipes.enableReactorAdapter = Mekanism.configuration.get("GeneratorRecipes","enableReactorAdapter", true).getBoolean();
-		generatorsrecipes.enableReactorGlass = Mekanism.configuration.get("GeneratorRecipes","enableReactorGlass", true).getBoolean();
-		generatorsrecipes.enableReactorMatrix = Mekanism.configuration.get("GeneratorRecipes","enableReactorMatrix", true).getBoolean();
-		generatorsrecipes.enableSolarPanel = Mekanism.configuration.get("GeneratorRecipes","enableSolarPanel", true).getBoolean();
-		generatorsrecipes.enableTurbineBlade = Mekanism.configuration.get("GeneratorRecipes","enableTurbineBlade", true).getBoolean();
+		generatorsrecipes.enableHeatGenerator = Mekanism.configuration.get("generationrecipes","enableHeatGenerator", true).getBoolean();
+		generatorsrecipes.enableSolarGenerator = Mekanism.configuration.get("generationrecipes","enableSolarGenerator", true).getBoolean();
+		generatorsrecipes.enableGasGenerator = Mekanism.configuration.get("generationrecipes","enableGasGenerator", true).getBoolean();
+		generatorsrecipes.enableBioGenerator = Mekanism.configuration.get("generationrecipes","enableBioGenerator", true).getBoolean();
+		generatorsrecipes.enableAdvSolarGenerator = Mekanism.configuration.get("generationrecipes","enableAdvSolarGenerator", true).getBoolean();
+		generatorsrecipes.enableWindGenerator = Mekanism.configuration.get("generationrecipes","enableWindGenerator", true).getBoolean();
+		generatorsrecipes.enableTurbineRotor = Mekanism.configuration.get("generationrecipes","enableTurbineRotor", true).getBoolean();
+		generatorsrecipes.enableRotationalComplex = Mekanism.configuration.get("generationrecipes","enableRotationalComplex", true).getBoolean();
+		generatorsrecipes.enableElectromagneticCoil = Mekanism.configuration.get("generationrecipes","enableElectromagneticCoil", true).getBoolean();
+		generatorsrecipes.enableTurbineCasing = Mekanism.configuration.get("generationrecipes","enableTurbineCasing", true).getBoolean();
+		generatorsrecipes.enableTurbineValve = Mekanism.configuration.get("generationrecipes","enableTurbineValve", true).getBoolean();
+		generatorsrecipes.enableTurbineVent = Mekanism.configuration.get("generationrecipes","enableTurbineVent", true).getBoolean();
+		generatorsrecipes.enableSaturatingCondenser = Mekanism.configuration.get("generationrecipes","enableSaturatingCondenser", true).getBoolean();
+		generatorsrecipes.enableReactorController = Mekanism.configuration.get("generationrecipes","enableReactorController", true).getBoolean();
+		generatorsrecipes.enableReactorFrame = Mekanism.configuration.get("generationrecipes","enableReactorFrame", true).getBoolean();
+		generatorsrecipes.enableReactorPort = Mekanism.configuration.get("generationrecipes","enableReactorPort", true).getBoolean();
+		generatorsrecipes.enableReactorAdapter = Mekanism.configuration.get("generationrecipes","enableReactorAdapter", true).getBoolean();
+		generatorsrecipes.enableReactorGlass = Mekanism.configuration.get("generationrecipes","enableReactorGlass", true).getBoolean();
+		generatorsrecipes.enableReactorMatrix = Mekanism.configuration.get("generationrecipes","enableReactorMatrix", true).getBoolean();
+		generatorsrecipes.enableSolarPanel = Mekanism.configuration.get("generationrecipes","enableSolarPanel", true).getBoolean();
+		generatorsrecipes.enableTurbineBlade = Mekanism.configuration.get("generationrecipes","enableTurbineBlade", true).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
