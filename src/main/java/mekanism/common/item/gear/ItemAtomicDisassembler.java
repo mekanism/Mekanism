@@ -19,6 +19,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.radial.RadialData;
+import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -31,8 +33,8 @@ import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.api.radial.RadialData;
-import mekanism.api.radial.mode.IRadialMode;
+import mekanism.common.lib.attribute.AttributeCache;
+import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.lib.radial.IRadialEnumModeItem;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
@@ -41,8 +43,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -51,7 +51,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -64,7 +63,7 @@ import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialEnumModeItem<DisassemblerMode> {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialEnumModeItem<DisassemblerMode>, IAttributeRefresher {
 
     //All basic dig actions except shears
     public static final Set<ToolAction> ALWAYS_SUPPORTED_ACTIONS = Set.of(ToolActions.AXE_DIG, ToolActions.HOE_DIG, ToolActions.SHOVEL_DIG, ToolActions.PICKAXE_DIG,
@@ -72,13 +71,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           MekanismAPI.getRadialDataHelper().dataForEnum(Mekanism.rl("disassembler_mode"), DisassemblerMode.NORMAL));
 
-    private final Multimap<Attribute, AttributeModifier> attributes;
+    private final AttributeCache attributeCache;
 
     public ItemAtomicDisassembler(Properties properties) {
         super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.rarity(Rarity.RARE).setNoRepair());
-        Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4D, Operation.ADDITION));
-        this.attributes = builder.build();
+        this.attributeCache = new AttributeCache(this, MekanismConfig.gear.disassemblerMaxDamage, MekanismConfig.gear.disassemblerAttackSpeed);
     }
 
     @Override
@@ -106,41 +103,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean onLeftClickEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull Entity target) {
-        //If it is a vehicle that we want to damage
-        if (target.getType().is(MekanismTags.Entities.HURTABLE_VEHICLES)) {
-            if (target.isAttackable() && !target.skipAttackInteraction(player)) {
-                //Always apply max damage to vehicles that can be hurt regardless of energy and don't actually
-                target.hurt(DamageSource.playerAttack(player), MekanismConfig.gear.disassemblerMaxDamage.get());
-                //Note: We fall through and call super regardless so any other processing that may need to happen, happens,
-                // this is similar to how we return super from hurtEnemy
-            }
-        }
-        return super.onLeftClickEntity(stack, player, target);
-    }
-
-    @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
-        FloatingLong energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
-        int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
-        int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
-        //If we don't have enough power use it at a reduced power level
-        double percent = 1;
-        if (energy.smallerThan(energyCost)) {
-            percent = energy.divideToLevel(energyCost);
+        if (energyContainer != null && !energyContainer.isEmpty()) {
+            //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
+            // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
+            // to the amount of damage we will actually do
+            energyContainer.extract(MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), Action.EXECUTE, AutomationType.MANUAL);
         }
-        float damage = (float) (minDamage + damageDifference * percent);
-        if (attacker instanceof Player player) {
-            target.hurt(DamageSource.playerAttack(player), damage);
-        } else {
-            target.hurt(DamageSource.mobAttack(attacker), damage);
-        }
-        if (energyContainer != null && !energy.isZero()) {
-            energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
-        }
-        return super.hurtEnemy(stack, target, attacker);
+        return true;
     }
 
     @Override
@@ -222,7 +193,31 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @NotNull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == EquipmentSlot.MAINHAND ? attributes : super.getAttributeModifiers(slot, stack);
+        if (slot == EquipmentSlot.MAINHAND) {
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+            FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
+            FloatingLong energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
+            if (energy.greaterOrEqual(energyCost)) {
+                //If we have enough energy to act at full damage, use the cached multimap rather than creating a new one
+                // This will be the case the vast majority of the time
+                return attributeCache.get();
+            }
+            //If we don't have enough power use it at a reduced power level
+            int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
+            int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
+            double damage = minDamage + damageDifference * energy.divideToLevel(energyCost);
+            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", damage, Operation.ADDITION));
+            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADDITION));
+            return builder.build();
+        }
+        return super.getAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public void addToBuilder(Builder<Attribute, AttributeModifier> builder) {
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerMaxDamage.get(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADDITION));
     }
 
     @Override
@@ -250,11 +245,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public Component getScrollTextComponent(@NotNull ItemStack stack) {
         DisassemblerMode mode = getMode(stack);
         return MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.INDIGO, mode, EnumColor.AQUA, mode.getEfficiency());
-    }
-
-    @Override
-    public int getDefaultTooltipHideFlags(@NotNull ItemStack stack) {
-        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @Override

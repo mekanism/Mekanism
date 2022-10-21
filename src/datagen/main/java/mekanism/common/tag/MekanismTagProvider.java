@@ -1,6 +1,5 @@
 package mekanism.common.tag;
 
-import biomesoplenty.api.entity.BOPEntities;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-import potionstudios.byg.common.entity.BYGEntities;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
@@ -126,20 +124,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS, MekanismEntityTypes.ROBIT);
         addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
         addToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
-        getBuilder(TagType.ENTITY_TYPE, MekanismTags.Entities.HURTABLE_VEHICLES).add(
-                    EntityType.BOAT,
-                    EntityType.CHEST_BOAT,
-                    EntityType.MINECART,
-                    EntityType.CHEST_MINECART,
-                    EntityType.COMMAND_BLOCK_MINECART,
-                    EntityType.FURNACE_MINECART,
-                    EntityType.HOPPER_MINECART,
-                    EntityType.SPAWNER_MINECART,
-                    EntityType.TNT_MINECART
-              )
-              .addOptional(BOPEntities.BOAT.get(), BOPEntities.CHEST_BOAT.get())
-              .addOptional(BYGEntities.BOAT.get(), BYGEntities.CHEST_BOAT.get())
-        ;
     }
 
     private void addProcessedResources() {

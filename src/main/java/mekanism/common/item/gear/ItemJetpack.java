@@ -126,10 +126,10 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Override
     public int getDefaultTooltipHideFlags(@NotNull ItemStack stack) {
-        if (!(this instanceof ItemArmoredJetpack)) {
-            return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
+        if (this instanceof ItemArmoredJetpack) {
+            return super.getDefaultTooltipHideFlags(stack);
         }
-        return super.getDefaultTooltipHideFlags(stack);
+        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @NothingNullByDefault

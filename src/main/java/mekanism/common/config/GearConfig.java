@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
+import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -11,6 +12,7 @@ import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -45,6 +47,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedBooleanValue disassemblerVeinMining;
     public final CachedIntValue disassemblerMinDamage;
     public final CachedIntValue disassemblerMaxDamage;
+    public final CachedDoubleValue disassemblerAttackSpeed;
     public final CachedFloatingLongValue disassemblerMaxEnergy;
     public final CachedFloatingLongValue disassemblerChargeRate;
     //Configurator
@@ -105,6 +108,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsageSilk;
     public final CachedIntValue mekaToolMaxTeleportReach;
     public final CachedIntValue mekaToolBaseDamage;
+    public final CachedDoubleValue mekaToolAttackSpeed;
     public final CachedFloatValue mekaToolBaseEfficiency;
     public final CachedFloatingLongValue mekaToolBaseEnergyCapacity;
     public final CachedFloatingLongValue mekaToolBaseChargeRate;
@@ -163,10 +167,12 @@ public class GearConfig extends BaseMekanismConfig {
               .define("fastMode", true));
         disassemblerVeinMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Vein Mining' mode for the Atomic Disassembler.")
               .define("veinMining", false));
-        disassemblerMinDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)")
+        disassemblerMinDamage = CachedIntValue.wrap(this, builder.comment("The bonus attack damage of the Atomic Disassembler when it is out of power. (Value is in number of half hearts)")
               .defineInRange("minDamage", 4, 0, 1_000));
-        disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")
+        disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The bonus attack damage of the Atomic Disassembler when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")
               .defineInRange("maxDamage", 20, 1, 10_000));
+        disassemblerAttackSpeed = CachedDoubleValue.wrap(this, builder.comment("Attack speed of the Atomic Disassembler.")
+              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.getDefaultValue(), 100));
         disassemblerMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain.",
               "maxEnergy", FloatingLong.createConst(1_000_000));
         disassemblerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Atomic Disassembler can accept per tick.",
@@ -295,8 +301,10 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageTeleport", FloatingLong.createConst(1_000));
         mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the Meka-Tool.")
               .defineInRange("maxTeleportReach", 100, 2, 1_024));
-        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base damage applied by the Meka-Tool without using any energy.")
+        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base bonus damage applied by the Meka-Tool without using any energy.")
               .defineInRange("baseDamage", 4, 0, 100_000));
+        mekaToolAttackSpeed = CachedDoubleValue.wrap(this, builder.comment("Attack speed of the Meka-Tool.")
+              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.getDefaultValue(), 100));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the Meka-Tool with energy but without any upgrades.")
               .defineInRange("baseEfficiency", 4, 0.1, 100));
         mekaToolBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades.",

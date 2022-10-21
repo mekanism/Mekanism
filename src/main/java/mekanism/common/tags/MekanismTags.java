@@ -21,7 +21,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,7 +35,6 @@ public class MekanismTags {
     public static void init() {
         Items.init();
         Blocks.init();
-        Entities.init();
         Fluids.init();
         Gases.init();
         InfuseTypes.init();
@@ -244,21 +242,6 @@ public class MekanismTags {
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(Mekanism.rl(name));
-        }
-    }
-
-    public static class Entities {
-
-        private static void init() {
-        }
-
-        private Entities() {
-        }
-
-        public static final TagKey<EntityType<?>> HURTABLE_VEHICLES = tag("hurtable_vehicles");
-
-        private static TagKey<EntityType<?>> tag(String name) {
-            return TagUtils.createKey(ForgeRegistries.ENTITY_TYPES, Mekanism.rl(name));
         }
     }
 
