@@ -78,12 +78,9 @@ sourceSets {
 }
 
 // no kotlin for the main mod
-sourceSets.api.kotlin.srcDirs.removeAll()
-sourceSets.main.kotlin.srcDirs.removeAll()
-sourceSets.test.kotlin.srcDirs.removeAll()
-
-//Add all extra source sets that the main sourceSet should have
-setupExtraSourceSets(sourceSets.main)
+sourceSets.api.kotlin.srcDirs = []
+sourceSets.main.kotlin.srcDirs = []
+sourceSets.test.kotlin.srcDirs = []
 
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
@@ -93,6 +90,9 @@ configurations {
     extendConfigurations(runtimeOnly, apiRuntimeOnly)
     kotlinLibrary
 }
+
+//Add all extra source sets that the main sourceSet should have
+setupExtraSourceSets(sourceSets.main)
 
 //Create sourceSets and configurations for each of the additional modules in src/$name and adds a reference to
 // the corresponding data gen's resource directory excluding the cache. It also adds the api and main mekanism
@@ -108,7 +108,7 @@ for (def name : secondaryModules) {
     }
     sourceSet.compileClasspath += sourceSets.api.output
     sourceSet.compileClasspath += sourceSets.main.output
-    sourceSet.kotlin.srcDirs.removeAll()
+    sourceSet.kotlin.srcDirs = []
     //Create all secondary sourceSets for this module
     setupExtraSourceSets(sourceSet)
 }
@@ -153,6 +153,8 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     extraSourceSet.java.srcDirs = ["src/${extra}/${name}/java"]
     if (extra == 'datagen') {
         extraSourceSet.kotlin.srcDirs = ["src/${extra}/${name}/kotlin"]
+    } else {
+        extraSourceSet.kotlin.srcDirs = []
     }
     //Resources folder for if we have anything get created by our annotation processors or in the case of game tests, for any nbt presets
     extraSourceSet.resources.srcDirs = ["src/${extra}/${name}/resources"]
